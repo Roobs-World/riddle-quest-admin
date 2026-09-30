@@ -1,3 +1,4 @@
+import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "@qwordly/core/race";
 import {initializeApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
@@ -29,6 +30,8 @@ import type {
   RaceChallengePreview,
   RaceOutcome,
   RaceRunResponse,
+  RaceMatchRequest,
+  RaceMatchResponse,
   RequestRaceHintRequest,
   RequestRaceHintResponse,
   SkipRaceRiddleRequest,
@@ -175,7 +178,8 @@ export const skipRiddle = httpsCallable<
 export const getLeaderboard = httpsCallable<
   {
     /** Stores type. */
-    type: "xp" | "totalWins" | "bestStreak"; /** Stores limit. */
+    type: "xp" | "totalWins" | "bestStreak";
+    /** Stores limit. */
     /** Stores limit. */
     limit?: number;
   },
@@ -210,7 +214,8 @@ export const updateUsername = httpsCallable<
   },
   {
     /** Stores success. */
-    success: boolean; /** Stores message. */
+    success: boolean;
+    /** Stores message. */
     /** Stores message. */
     message: string;
   }
@@ -224,9 +229,11 @@ export const updateAvatar = httpsCallable<
   },
   {
     /** Stores success. */
-    success: true; /** Stores message. */
+    success: true;
     /** Stores message. */
-    message: string; /** Stores avatar url. */
+    /** Stores message. */
+    message: string;
+    /** Stores avatar url. */
     /** Stores avatar url. */
     avatarUrl: string;
   }
@@ -258,7 +265,8 @@ export const setPresenceConsent = httpsCallable<
   },
   {
     /** Stores success. */
-    success: true; /** Stores enabled. */
+    success: true;
+    /** Stores enabled. */
     /** Stores enabled. */
     enabled: boolean;
   }
@@ -273,6 +281,8 @@ export const listRaceCategories = httpsCallable<ListRaceCategoriesRequest, ListR
 export const startRaceRun = httpsCallable<StartRaceRunRequest, RaceRunResponse>(functions, "startRaceRun");
 /** Schedules an owned prepared run with a server-controlled countdown. */
 export const readyRaceRun = httpsCallable<ReadyRaceRunRequest, RaceRunResponse>(functions, "readyRaceRun");
+/** Provider scope comes from authenticated Firebase identity, never from matchmaking preferences. */
+export const findRaceMatch = httpsCallable<RaceMatchRequest, RaceMatchResponse>(functions, "findRaceMatch");
 /** Submits race guess. */
 export const submitRaceGuess = httpsCallable<SubmitRaceGuessRequest, SubmitRaceGuessResponse>(
   functions,
@@ -345,15 +355,18 @@ export const blockRival = httpsCallable<
 export const reportRival = httpsCallable<
   {
     /** Stores target user id. */
-    targetUserId: string; /** Stores category. */
+    targetUserId: string;
     /** Stores category. */
-    category: import("@qwordly/core/race").SocialReportCategory; /** Stores request id. */
+    /** Stores category. */
+    category: import("@qwordly/core/race").SocialReportCategory;
+    /** Stores request id. */
     /** Stores request id. */
     requestId: string;
   },
   {
     /** Stores report id. */
-    reportId: string; /** Stores queued. */
+    reportId: string;
+    /** Stores queued. */
     /** Stores queued. */
     queued: true;
   }
@@ -454,3 +467,10 @@ type GetHintOutput = {
   /** Stores newly unlocked achievement ids. */
   newlyUnlockedAchievementIds?: string[];
 } | null;
+
+/** Reads lifecycle-aware readiness for public recordings and private reservations. */
+export const getRaceEntry = httpsCallable<{
+    /** Incoming challenge. */ challengeId: string;
+    /** Content language. */ locale: RaceLocale}, RaceEntryResponse>(functions, "getRaceEntry");
+/** Cancels only a creator-owned reservation, preserving reusable public challenges. */
+export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntryResponse>(functions, "cancelRaceInvite");

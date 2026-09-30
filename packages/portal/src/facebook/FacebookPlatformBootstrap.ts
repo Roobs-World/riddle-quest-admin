@@ -10,6 +10,7 @@ import {parsePlayerData} from "../platform/playerDataValidation";
 import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
 import {resolveFacebookCapabilityVisibility, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookOverlayCapability} from "./FacebookOverlayCapability";
+import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
 
 /** Defines the preferences key value. */
 const PREFERENCES_KEY = "riddleQuestPreferences";
@@ -247,6 +248,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
         capabilities: {
           accountManagement: {username: true, avatar: false, deletion: true},
           ...(nativeSocial ? {nativeSocial} : {}),
+          ...(this.ageCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking()} : {}),
           ...(overlay ? {overlay} : {}),
           lifecycle: {
             /** Provides on pause behavior. */

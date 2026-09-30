@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Campuran",
-    "CATEGORY_MIXED_DESCRIPTION": "Kejutan dari setiap kategori"
+    "CATEGORY_MIXED_DESCRIPTION": "Kejutan dari setiap kategori",
+    "WAITING_PUBLICATION": "Menunggu pembuat menyelesaikan dan menerbitkan balapannya.",
+    "INVITATION_EXPIRED": "Undangan ini telah kedaluwarsa.",
+    "INVITATION_CANCELLED": "Undangan ini dibatalkan.",
+    "CANCEL_INVITATION": "Batalkan undangan",
+    "MATCH_TEMPORARY": "Pencarian lawan sementara tidak tersedia. Coba lagi sebentar lagi.",
+    "MATCH_TRY_NEW": "Mulai pencarian baru untuk menemukan lawan.",
+    "MATCH_EXPIRED": "Pencarian lawan ini telah kedaluwarsa. Coba lagi.",
+    "MATCH_CONSUMED": "Pencarian ini sudah digunakan. Cari lawan lain.",
+    "MATCH_UNAVAILABLE": "Pencarian lawan tidak tersedia untuk akun ini.",
+    "MATCH_EMPTY": "Belum ada lawan yang cocok. Coba lagi nanti."
   }
 }

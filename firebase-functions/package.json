@@ -25,8 +25,8 @@
     "test:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js --runInBand --coverage",
     "pretest:scalability:coverage": "node scripts/prepare-deploy.js",
     "test:scalability:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.scalability-coverage.config.js --runInBand",
-    "pretest:race:coverage": "node scripts/prepare-deploy.js",
-    "test:race:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.race-coverage.config.js --runInBand",
+    "pretest:race:coverage": "pnpm build && node --test scripts/race-delivery-replay.test.js scripts/race-match-calibration.test.js scripts/race-match-benchmark.test.js",
+    "test:race:coverage": "firebase emulators:exec --only firestore --project demo-riddle-quest-multiplayer \"pnpm exec jest --config jest.race-coverage.config.js --runInBand\"",
     "emulators:start": "firebase emulators:start --only firestore,auth",
     "emulators:kill": "firebase emulators:exec --only firestore,auth \"echo 'Stopping emulators'\"",
     "race:content:author": "pnpm build && node scripts/run-with-functions-node.js scripts/race-content-author.js",
@@ -44,10 +44,13 @@
     "race:rollout:configure": "node scripts/run-with-functions-node.js scripts/race-rollout-configure.js",
     "race:privacy:anonymize": "pnpm build && node scripts/run-with-functions-node.js scripts/anonymize-legacy-race-identities.js",
     "race:architecture:migrate": "pnpm build && node scripts/run-with-functions-node.js scripts/race-architecture-migrate.js",
+    "race:match:benchmark": "pnpm build && firebase emulators:exec --only firestore --project demo-riddle-quest-match-benchmark \"node scripts/race-match-benchmark.js\"",
+    "race:match:calibrate": "pnpm build && node scripts/run-with-functions-node.js scripts/race-match-calibration.js",
+    "race:delivery:replay": "pnpm build && node scripts/run-with-functions-node.js scripts/race-delivery-replay.js",
     "leaderboard:privacy:purge-orphans": "pnpm build && node scripts/run-with-functions-node.js scripts/purge-orphan-leaderboard-rows.js",
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "usernames:migrate": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/migrate-username-reservations.js",
-    "test:race:rules": "node scripts/prepare-deploy.js && firebase emulators:exec --only firestore,storage,database \"pnpm jest --config jest.rules.config.js --runInBand\""
+    "test:race:rules": "pnpm build && firebase emulators:exec --only firestore,storage,database \"pnpm jest --config jest.rules.config.js --runInBand\""
   },
   "engines": {
     "node": "22"

@@ -309,6 +309,7 @@ app.post("/api/game/:operation", async (request) => {
     "race.abandon",
     "race.publish",
     "race.challenge",
+    "race.entry",
     "race.outcome",
     "race.inbox",
     "race.match",

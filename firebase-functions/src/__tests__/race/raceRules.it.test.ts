@@ -38,6 +38,15 @@ beforeAll(async () => {
       setDoc(doc(db, "raceAttempts/attempt-1"), {playerId: "player-1"}),
       setDoc(doc(db, "raceStartRequests/start-1"), {userId: "player-1"}),
       setDoc(doc(db, "raceConfig/rollout"), {enabled: false, percentage: 0}),
+      setDoc(doc(db, "raceConfig/maintenance"), {projectionReconciliationEnabled: false}),
+      setDoc(doc(db, "raceConfig/matchPolicy"), {schemaVersion: 1, algorithmVersion: 2}),
+      setDoc(doc(db, "raceMaintenance/projectionReconciliation"), {phase: "challenges", afterId: null}),
+      setDoc(doc(db, "raceMatchCandidates/challenge-1"), {challengeId: "challenge-1"}),
+      setDoc(doc(db, "raceMatchOffers/offer-1"), {userId: "player-1"}),
+      setDoc(doc(db, "raceSettlementOutbox/run-1"), {userId: "player-1"}),
+      setDoc(doc(db, "racePerformanceOutbox/run-1"), {userId: "player-1"}),
+      setDoc(doc(db, "raceDeadlineFailures/run-1"), {runId: "run-1"}),
+      setDoc(doc(db, "users/player-1/raceMatchProfiles/en"), {version: 1}),
       setDoc(doc(db, "raceAnalytics/event-1"), {eventName: "race_mode_viewed"}),
       setDoc(doc(db, "users/player-1/raceInbox/item-1"), {challengeId: "challenge-1"}),
       setDoc(doc(db, "users/player-1"), {userId: "player-1", username: "Player", coins: 300}),
@@ -71,6 +80,15 @@ describe("Race to 10 Firestore trust boundary", () => {
       "raceAttempts/attempt-1",
       "raceStartRequests/start-1",
       "raceConfig/rollout",
+      "raceConfig/maintenance",
+      "raceConfig/matchPolicy",
+      "raceMaintenance/projectionReconciliation",
+      "raceMatchCandidates/challenge-1",
+      "raceMatchOffers/offer-1",
+      "raceSettlementOutbox/run-1",
+      "racePerformanceOutbox/run-1",
+      "raceDeadlineFailures/run-1",
+      "users/player-1/raceMatchProfiles/en",
       "raceAnalytics/event-1",
       "users/player-1/raceInbox/item-1",
     ];
@@ -85,6 +103,10 @@ describe("Race to 10 Firestore trust boundary", () => {
     const db = testEnvironment.unauthenticatedContext().firestore();
     await assertFails(getDoc(doc(db, "raceChallenges/challenge-1")));
     await assertFails(setDoc(doc(db, "raceRuns/run-2"), {userId: "attacker"}));
+    await assertFails(getDoc(doc(db, "raceMaintenance/projectionReconciliation")));
+    await assertFails(setDoc(doc(db, "raceConfig/maintenance"), {projectionReconciliationEnabled: true}));
+    await assertFails(getDoc(doc(db, "raceConfig/matchPolicy")));
+    await assertFails(setDoc(doc(db, "raceConfig/matchPolicy"), {revision: 999}));
   });
 
   it("allows a player to read but never directly mutate their authoritative profile", async () => {

@@ -150,7 +150,7 @@ export async function recordFacebookContextBoardRun(
     /** Provides member behavior. */
     const member = requireMember(userId, input.locale, nowMs, competition);
     /** Provides run behavior. */
-    const run = parseRunRecord(runSnapshot.data());
+    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
     /** Provides deck snapshot behavior. */
     const deckSnapshot = await transaction.get(db.doc(`raceDecks/${run.deckId}`));
     if (!deckSnapshot.exists) throw new HttpsError("data-loss", "Facebook context race deck was not found.");

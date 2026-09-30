@@ -29,6 +29,8 @@ export type HostOperationName =
   | "raceAbandon"
   | "racePublish"
   | "raceInviteReserve"
+  | "raceInviteCancel"
+  | "raceEntry"
   | "raceChallenge"
   | "raceOutcome"
   | "raceInbox"
@@ -518,6 +520,18 @@ export const createPlayHostMessageHandlers = ({
       if (!race.reserveRaceInvite) throw new Error("Race invite lobbies are unavailable.");
       return race.reserveRaceInvite(message.payload);
     }),
+  getRaceEntry: (message) => runRaceOperation(message.requestId, "raceEntry", () => {
+    /** Target race authority must provide the typed lifecycle contract. */
+    const race = requireRaceAuthority(authority);
+    if (!race.getRaceEntry) throw new Error("Race entry lifecycle is unavailable.");
+    return race.getRaceEntry(message.payload.challengeId, message.payload.locale);
+  }),
+  cancelRaceInvite: (message) => runRaceOperation(message.requestId, "raceInviteCancel", () => {
+    /** Cancellation is a target capability, never a simulated success. */
+    const race = requireRaceAuthority(authority);
+    if (!race.cancelRaceInvite) throw new Error("Race invitation cancellation is unavailable.");
+    return race.cancelRaceInvite(message.payload);
+  }),
   getRaceChallenge: (message) =>
     runRaceOperation(message.requestId, "raceChallenge", () => {
       /** Provides race behavior. */

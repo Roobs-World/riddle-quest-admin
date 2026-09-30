@@ -162,7 +162,10 @@ export type HostMessageHandlers = {
     >,
   ): void | Promise<void>;
   /** Schedules a prepared authoritative run. */
-  readyRace(message: Extract<GameToHostMessage, {/** Bridge command discriminator. */ type: "game:readyRace"}>): void | Promise<void>;
+  readyRace(message: Extract<GameToHostMessage, {
+    /** Bridge command discriminator. */ /** Stores type. */
+  /** Stores type. */
+  type: "game:readyRace"}>): void | Promise<void>;
   /** Starts race. */
   startRace(
     message: Extract<
@@ -243,6 +246,12 @@ export type HostMessageHandlers = {
       }
     >,
   ): void | Promise<void>;
+  /** Delivers lifecycle-aware challenge reads. */
+  getRaceEntry(message: Extract<GameToHostMessage, {
+    /** Bridge command. */ type: "game:getRaceEntry"}>): void | Promise<void>;
+  /** Delivers creator reservation cancellation. */
+  cancelRaceInvite(message: Extract<GameToHostMessage, {
+    /** Bridge command. */ type: "game:cancelRaceInvite"}>): void | Promise<void>;
   /** Gets race challenge. */
   getRaceChallenge(
     message: Extract<
@@ -395,6 +404,12 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:reserveRaceInvite":
         await handlers.reserveRaceInvite(message);
+        break;
+      case "game:getRaceEntry":
+        await handlers.getRaceEntry(message);
+        break;
+      case "game:cancelRaceInvite":
+        await handlers.cancelRaceInvite(message);
         break;
       case "game:getRaceChallenge":
         await handlers.getRaceChallenge(message);

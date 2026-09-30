@@ -121,6 +121,7 @@ const createLazyHostServices = (
   /** Starts race. */
   /** Schedules through the lazily loaded provider adapter. */
   async readyRace(input) { return (await loadServices()).readyRace(input); },
+  /** Starts race. */
   async startRace(input) {
     return (await loadServices()).startRace(input);
   },
@@ -156,6 +157,20 @@ const createLazyHostServices = (
     return services.reserveRaceInvite(input);
   },
   /** Gets race challenge. */
+  async getRaceEntry(challengeId, locale) {
+    /** Lifecycle capability resolved only inside the target-specific lazy module. */
+    const services = await loadServices();
+    if (!services.getRaceEntry) throw new Error("Race entry lifecycle is unavailable.");
+    return services.getRaceEntry(challengeId, locale);
+  },
+  /** Cancels a reservation using the target's authenticated authority adapter. */
+  async cancelRaceInvite(input) {
+    /** Optional cancellation capability. */
+    const services = await loadServices();
+    if (!services.cancelRaceInvite) throw new Error("Race invitation cancellation is unavailable.");
+    return services.cancelRaceInvite(input);
+  },
+  /** Reads the established legacy preview contract. */
   async getRaceChallenge(challengeId, locale) {
     return (await loadServices()).getRaceChallenge(challengeId, locale);
   },

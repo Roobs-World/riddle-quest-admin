@@ -18,6 +18,8 @@ export const RACE_START_LEAD_MS = 3_000;
 
 /** Immutable riddle content captured when an authoritative race run starts. */
 export type RaceRiddleSnapshot = {
+  /** Archived server-authored difficulty used only for the versioned matching heuristic. */
+  difficultyBand?: "easy" | "medium" | "hard";
   /** Stores riddle id. */
   riddleId: string;
   /** Stores canonical riddle id. */
@@ -32,6 +34,8 @@ export type RaceRiddleSnapshot = {
 
 /** Opponent ghost data attached to a challenger run. */
 export type RaceOpponentRecord = {
+  /** Internal synthetic rival marker; never projected to the player. */
+  kind?: "bot";
   /** Server-only subject used to remove identity snapshots after account deletion. */
   subjectUserId?: string;
   /** Stores display name. */
@@ -46,6 +50,14 @@ export type RaceOpponentRecord = {
 
 /** Complete server-only state for an authoritative Race to 10 run. */
 export type RaceRunRecord = {
+  /** Owner-bound empty-pool receipt consumed by this immutable run. */
+  fallbackOfferId?: string;
+  /** Server-issued discovery receipt used only for owner-bound funnel attribution. */
+  matchOfferId?: string;
+  /** Server-only immutable source recording digest, independent of presentation and catalog tokens. */
+  recordingFingerprint?: string;
+  /** Storage contract revision; absent on supported legacy records. */
+  recordVersion?: 1;
   /** Expiring unscored preparation; absent on legacy immediately-active runs. */
   preparationExpiresAtMs?: number;
   /** Stores run id. */
@@ -161,7 +173,9 @@ export function raceDeadlineAtMs(run: RaceRunRecord): number | undefined {
   if (run.status === "prepared") return run.preparationExpiresAtMs;
   if (!["active", "scheduled"].includes(run.status)) return undefined;
   if (run.role === "creator") return undefined;
+  /** Provides maximum behavior. */
   const maximum = raceRules(run).maxAdjustedTimeMs;
+  /** Provides target behavior. */
   const target = Math.min(maximum, run.opponent ? run.opponent.adjustedFinishMs + 1 : maximum);
   return run.startedAtMs + Math.max(0, target - run.hintPenaltyMs - run.skipPenaltyMs);
 }
@@ -477,7 +491,7 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvalua
     events: run.events.map((event) => ({...event})),
     opponent: run.opponent
       ? {
-          displayName: linkedOpponentIdentity ? run.opponent.displayName : "Riddle Quest player",
+          displayName: linkedOpponentIdentity || run.opponent.kind === "bot" ? run.opponent.displayName : "Riddle Quest player",
           ...(linkedOpponentIdentity ? {avatarUrl: run.opponent.avatarUrl} : {}),
           adjustedFinishMs: run.opponent.adjustedFinishMs,
           events: run.opponent.events.map((event) => ({...event})),

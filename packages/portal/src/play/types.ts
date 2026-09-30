@@ -1,3 +1,4 @@
+import type {RaceEntryResponse, CancelRaceInviteRequest} from "@qwordly/core/race";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {ProductPricing} from "@qwordly/core/pricing/catalog";
 import type {
@@ -310,6 +311,10 @@ export type HostServices = {
   publishRace(input: PublishRaceChallengeRequest): Promise<PublishRaceChallengeResponse>;
   /** Reserves an expiring provider-invite lobby. */
   reserveRaceInvite?(input: ReserveRaceInviteRequest): Promise<ReserveRaceInviteResponse>;
+  /** Reads typed readiness when this target supplies multiplayer. */
+  getRaceEntry?(challengeId: string, locale: StartRaceRunRequest["locale"]): Promise<RaceEntryResponse>;
+  /** Cancels a reserved invitation only on an authorized target. */
+  cancelRaceInvite?(input: CancelRaceInviteRequest): Promise<RaceEntryResponse>;
   /** Gets race challenge. */
   getRaceChallenge(challengeId: string, locale: StartRaceRunRequest["locale"]): Promise<RaceChallengePreview>;
   /** Gets race outcome. */

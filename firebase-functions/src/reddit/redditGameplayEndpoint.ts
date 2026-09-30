@@ -27,6 +27,7 @@ import {
   ListFacebookTournamentResponseSchema,
   RecordFacebookTournamentRunRequestSchema,
   RecordFacebookTournamentRunResponseSchema,
+  classifyRaceMatchFailure,
 } from "@qwordly/core/race";
 import {findRedditRaceMatch} from "./redditMatchmaking";
 import {assertRaceAccess} from "../race/raceRollout";
@@ -34,6 +35,7 @@ import {
   abandonRaceRun,
   getRaceAccess,
   getRaceChallenge,
+  getRaceEntry,
   getRaceOutcome,
   listRaceCategories,
   listRaceInbox,
@@ -90,6 +92,7 @@ export const REDDIT_GAMEPLAY_OPERATIONS = [
   "gameplay.race.abandon",
   "gameplay.race.publish",
   "gameplay.race.challenge",
+  "gameplay.race.entry",
   "gameplay.race.outcome",
   "gameplay.race.inbox",
   "gameplay.race.match",
@@ -224,6 +227,8 @@ const dispatch = async (
       return abandonRaceRun.run(callableRequest(uid, payload) as never);
     case "gameplay.race.publish":
       return publishRaceChallenge.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.entry":
+      return getRaceEntry.run(callableRequest(uid, payload) as never);
     case "gameplay.race.challenge":
       return getRaceChallenge.run(callableRequest(uid, payload) as never);
     case "gameplay.race.outcome":
@@ -381,6 +386,8 @@ const dispatch = async (
 export const redditGameplay = onRequestWithSentry("redditGameplay", options, async (request, response) => {
   /** The verified guess used by the authoritative operation. */
   let verifiedGuess = false;
+  /** Only authenticated matchmaking failures expose the portable recovery contract. */
+  let verifiedMatch = false;
   response.set("Cache-Control", "no-store");
   response.set("X-Content-Type-Options", "nosniff");
   if (request.method !== "POST") {
@@ -441,6 +448,7 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
       },
     );
     verifiedGuess = operation === "gameplay.guess.submit";
+    verifiedMatch = operation === "gameplay.race.match";
     if (
       !(await consumeRedditRequestQuota(
         `${assertion.appName}\0${assertion.userId}\0${assertion.operation}`,
@@ -472,6 +480,15 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
         : result,
     });
   } catch (error) {
+    if (verifiedMatch) {
+      /** No raw exception details, player IDs or answer-bearing payloads reach the gateway. */
+      const matchmaking = classifyRaceMatchFailure(error);
+      /** Portable recovery policy remains intact through the same-origin Devvit proxy. */
+      const status = matchmaking.reason === "access-denied" ? 403 : matchmaking.reason === "invalid-request" ? 400 :
+        matchmaking.reason === "search-budget-exceeded" ? 429 : matchmaking.recovery === "new-intent" ? 409 : 503;
+      response.status(status).json({error: "race-matchmaking-failed", matchmaking});
+      return;
+    }
     if (verifiedGuess) {
       /** The code used by the authoritative operation. */
       const code = error instanceof HttpsError ? error.code : "unknown";

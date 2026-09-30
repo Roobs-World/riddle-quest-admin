@@ -6,6 +6,10 @@ import {resumeRaceRunForUser} from "../../race/raceService";
 import {settleRaceRun} from "../../race/raceSettlement";
 import {deliverRaceSettlement} from "../../race/raceSettlementDelivery";
 import {processRaceSettlementJobs} from "../../race/raceSettlementJobs";
+import {deliverRacePerformance} from "../../race/racePerformanceDelivery";
+import {processRaceDeadline, replayRaceDeadline} from "../../race/raceDeadlineRecovery";
+import {replayRaceDelivery} from "../../race/raceDeliveryRecovery";
+import {emptyRaceMatchProfile} from "../../race/raceMatchPerformance";
 
 /** Independent demo-project database; these tests never contact production. */
 let db: FirebaseFirestore.Firestore;
@@ -26,19 +30,208 @@ beforeAll(() => {
   db = getFirestore();
 });
 beforeEach(async () => {
-  await Promise.all(["raceRuns", "users", "raceSettlementOutbox", "jestAccountDeletionTombstones"].map(
+  await Promise.all(["raceRuns", "users", "raceSettlementOutbox", "racePerformanceOutbox", "raceDeadlineFailures", "raceMatchOffers", "raceMaintenance", "jestAccountDeletionTombstones"].map(
     (name) => db.recursiveDelete(db.collection(name)),
   ));
   await db.doc("users/player-1").set({displayName: "Challenger", coins: 0});
   await db.doc("users/creator-1").set({displayName: "Creator", coins: 0});
+  /** Provides run behavior. */
   const run = fixture();
   await db.doc("raceRuns/run-1").set({...run, deadlineAtMs: raceDeadlineAtMs(run), expiresAt: Timestamp.fromMillis(1_000_000)});
 });
 
+it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("backs off transient %s failures and delivers exactly once when due", async collection => {
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+    wallFinishMs: 9000, finishedAtMs: 10000});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10001});
+  /** Provides deliver behavior. */
+  const deliver = collection === "raceSettlementOutbox" ? deliverRaceSettlement : deliverRacePerformance;
+  jest.spyOn(db, "runTransaction").mockRejectedValueOnce(new Error("temporary-storage-failure"));
+  await expect(deliver("run-1", db, 10002)).rejects.toThrow("temporary-storage-failure");
+  jest.restoreAllMocks();
+  /** Provides receipt behavior. */
+  const receipt = (await db.doc(`${collection}/run-1`).get()).data()!;
+  expect(receipt).toMatchObject({delivered: false, deliveryState: "pending", deliveryAttempts: 1, createdAtMs: 10001});
+  expect(receipt.nextAttemptAtMs).toBeGreaterThan(10002);
+  expect(await deliver("run-1", db, receipt.nextAttemptAtMs - 1)).toBe(false);
+  expect(await deliver("run-1", db, receipt.nextAttemptAtMs)).toBe(true);
+  expect(await deliver("run-1", db, receipt.nextAttemptAtMs + 1)).toBe(false);
+  expect((await db.doc("users/player-1").get()).data()?.stats.multiplayerGamesPlayed).toBe(1);
+  if (collection === "raceSettlementOutbox") expect((await db.collection("users/creator-1/raceInbox").get()).size).toBe(1);
+  else expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).data()?.overall.evidence).toBe(1);
+});
+
+it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("validates repair before replaying %s and survives concurrent retries", async collection => {
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+    wallFinishMs: 9000, finishedAtMs: 10000});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10001});
+  /** Provides ref behavior. */
+  const ref = db.doc(`${collection}/run-1`);
+  /** Provides original behavior. */
+  const original = (await ref.get()).data()!;
+  await ref.update({createdAtMs: 123});
+  /** Provides deliver behavior. */
+  const deliver = collection === "raceSettlementOutbox" ? deliverRaceSettlement : deliverRacePerformance;
+  expect(await deliver("run-1", db, 10002)).toBe(false);
+  expect((await ref.get()).data()).toMatchObject({deliveryState: "quarantined", delivered: true});
+  await expect(replayRaceDelivery(db, collection, "run-1", 10003)).rejects.toMatchObject({code: "data-loss"});
+  expect((await ref.get()).data()?.deliveryState).toBe("quarantined");
+  await ref.update({createdAtMs: original.createdAtMs});
+  expect(await replayRaceDelivery(db, collection, "run-1", 10004, {dryRun: true})).toBe(false);
+  expect((await ref.get()).data()?.deliveryState).toBe("quarantined");
+  /** Provides results behavior. */
+  const results = await Promise.all(Array.from({length: 6}, () => replayRaceDelivery(db, collection, "run-1", 10004)));
+  expect(results.filter(Boolean)).toHaveLength(1);
+  expect(await replayRaceDelivery(db, collection, "run-1", 10005)).toBe(false);
+  expect((await ref.get()).data()).toMatchObject({deliveryState: "delivered", createdAtMs: original.createdAtMs});
+  expect((await ref.get()).data()?.expiresAt.toMillis()).toBe(original.expiresAt.toMillis());
+  if (collection === "raceSettlementOutbox") expect((await db.collection("users/creator-1/raceInbox").get()).size).toBe(1);
+  else expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).data()?.overall.evidence).toBe(1);
+});
+
+it.each(["missing", "expired-source", "expired-receipt", "unsettled", "not-quarantined", "wrong-owner", "wrong-creator"])("rejects unsafe delivery replay: %s", async reason => {
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+  /** Provides event behavior. */
+  const event = db.doc("raceSettlementOutbox/run-1");
+  await event.update({delivered: true, deliveryState: "quarantined", quarantined: true});
+  if (reason === "missing") await db.doc("raceRuns/run-1").delete();
+  if (reason === "expired-source") await db.doc("raceRuns/run-1").update({expiresAt: Timestamp.fromMillis(12001)});
+  if (reason === "expired-receipt") await event.update({expiresAt: Timestamp.fromMillis(12001)});
+  if (reason === "unsettled") await db.doc("raceRuns/run-1").update({settledOutcome: FieldValue.delete()});
+  if (reason === "not-quarantined") await event.update({delivered: false, deliveryState: "pending", quarantined: FieldValue.delete()});
+  if (reason === "wrong-owner") await event.update({userId: "different-owner"});
+  if (reason === "wrong-creator") await event.update({creatorId: "different-creator"});
+  await expect(replayRaceDelivery(db, "raceSettlementOutbox", "run-1", 12002)).rejects.toThrow();
+  expect((await db.collection("users/creator-1/raceInbox").get()).empty).toBe(true);
+});
+
+it.each(["block", "deletion"])("replay rechecks %s without granting creator rewards", async reason => {
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+  await db.doc("raceSettlementOutbox/run-1").update({delivered: true, deliveryState: "quarantined", quarantined: true});
+  if (reason === "block") await db.doc("users/creator-1/blockedRivals/player-1").set({blocked: true});
+  else await db.doc("jestAccountDeletionTombstones/creator-1").set({deleted: true});
+  expect(await replayRaceDelivery(db, "raceSettlementOutbox", "run-1", 12001)).toBe(false);
+  expect((await db.doc("raceSettlementOutbox/run-1").get()).data()?.deliveryState).toBe("suppressed");
+  expect((await db.doc("users/creator-1").get()).data()?.coins).toBe(0);
+});
+
+it("quarantines creator delivery when canonical run identity differs from the source document", async () => {
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+  await db.doc("raceRuns/run-1").update({runId: "different-run"});
+  expect(await deliverRaceSettlement("run-1", db, 12001)).toBe(false);
+  expect((await db.doc("raceSettlementOutbox/run-1").get()).data()?.deliveryState).toBe("quarantined");
+  expect((await db.collection("users/creator-1/raceInbox").get()).empty).toBe(true);
+  expect((await db.doc("users/creator-1").get()).data()?.coins).toBe(0);
+});
+
+it("requires a repaired performance profile before dry-run can approve quarantined delivery", async () => {
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+    wallFinishMs: 9000, finishedAtMs: 10000});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10001});
+  await db.doc("users/player-1/raceMatchProfiles/en").set({version: 999});
+  expect(await deliverRacePerformance("run-1", db, 10002)).toBe(false);
+  await expect(replayRaceDelivery(db, "racePerformanceOutbox", "run-1", 10003, {dryRun: true}))
+    .rejects.toMatchObject({code: "data-loss", message: "Stored race performance profile is invalid."});
+  expect((await db.doc("racePerformanceOutbox/run-1").get()).data()?.deliveryState).toBe("quarantined");
+  await db.doc("users/player-1/raceMatchProfiles/en").set(emptyRaceMatchProfile());
+  expect(await replayRaceDelivery(db, "racePerformanceOutbox", "run-1", 10004, {dryRun: true})).toBe(false);
+  expect(await replayRaceDelivery(db, "racePerformanceOutbox", "run-1", 10005)).toBe(true);
+  expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).data()?.overall.evidence).toBe(1);
+});
+
+it("records the challenger's performance once without changing the fixed ghost creator's estimate", async () => {
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+    wallFinishMs: 9_000, finishedAtMs: 10_000});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10_001});
+  /** Provides delivered behavior. */
+  const delivered = await Promise.all(Array.from({length: 6}, () => deliverRacePerformance("run-1", db, 10_002)));
+  expect(delivered.filter(Boolean)).toHaveLength(1);
+  expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).data()).toMatchObject({version: 2,
+    overall: {evidence: 1, updatedAtMs: 10000}, categories: {history: {evidence: 1}},
+    completion: {challenger: {overall: {finished: 1, unfinished: 0, updatedAtMs: 10000}}}});
+  expect((await db.doc("users/creator-1/raceMatchProfiles/en").get()).exists).toBe(false);
+});
+
+it.each([0, 5])("records completion once for a ghost loss with %i correct answers without extrapolating speed", async correctCount => {
+  await db.doc("raceRuns/run-1").update({correctCount});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+  /** Concurrent and delayed delivery folds exactly one actual opportunity. */
+  const delivered = await Promise.all(Array.from({length: 6}, () => deliverRacePerformance("run-1", db, 20000)));
+  expect(delivered.filter(Boolean)).toHaveLength(1);
+  /** Idle and partial losses keep fully observed speed confidence separate. */
+  const profile = (await db.doc("users/player-1/raceMatchProfiles/en").get()).data()!;
+  expect(profile).toMatchObject({version: 2, overall: {evidence: 0}, completion: {
+    challenger: {overall: {finished: 0, unfinished: 1, updatedAtMs: 11000}, categories: {history: {unfinished: 1}}},
+  }});
+  if (correctCount) expect(profile.overall.censored).toMatchObject({logMs: Math.log(10000), evidence: 0.25, updatedAtMs: 11000});
+  else expect(profile.overall.censored).toBeUndefined();
+  expect((await db.doc("users/creator-1/raceMatchProfiles/en").get()).exists).toBe(false);
+  expect(await deliverRacePerformance("run-1", db, 21000)).toBe(false);
+});
+
+it("lazily upgrades a legacy profile during authoritative performance delivery", async () => {
+  await db.doc("users/player-1/raceMatchProfiles/en").set({version: 1, overall: {logMs: Math.log(40000), evidence: 20, updatedAtMs: 12000},
+    categories: {}, recentOpponents: ["a".repeat(64)], exposedRiddleIds: ["retained-question"]});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+  expect(await deliverRacePerformance("run-1", db, 12001)).toBe(true);
+  expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).data()).toMatchObject({version: 2,
+    overall: {evidence: 1}, completion: {challenger: {overall: {finished: 0, unfinished: 1}}},
+    recentOpponents: ["a".repeat(64)], exposedRiddleIds: ["retained-question"]});
+});
+
+it("quarantines a future finish timestamp rather than creating fresh performance evidence", async () => {
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+  await db.doc("raceRuns/run-1").update({finishedAtMs: 12001});
+  expect(await deliverRacePerformance("run-1", db, 12002)).toBe(false);
+  expect((await db.doc("racePerformanceOutbox/run-1").get()).data()?.deliveryState).toBe("quarantined");
+  expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).exists).toBe(false);
+  await expect(replayRaceDelivery(db, "racePerformanceOutbox", "run-1", 12003, {dryRun: true}))
+    .rejects.toMatchObject({code: "data-loss", message: "Stored Race to 10 run is invalid."});
+});
+
+it.each([{runId: "another-run"}, {challengeId: "another-challenge"}, {result: "player_win"}, {adjustedFinishMs: 9999}])(
+  "rejects a contradictory canonical settled outcome across reads and performance recovery: %j", async corruption => {
+    await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+    /** Existing canonical rewards cannot be changed by a later contradictory outcome payload. */
+    const ownerBefore = (await db.doc("users/player-1").get()).data();
+    /** Corrupt only one owned outcome field, preserving valid outer record shape. */
+    const snapshot = (await db.doc("raceRuns/run-1").get()).data()!;
+    await db.doc("raceRuns/run-1").update({settledOutcome: {...snapshot.settledOutcome, ...corruption}});
+    await expect(resumeRaceRunForUser("player-1", "run-1", {db, nowMs: 12001})).rejects.toMatchObject({code: "data-loss"});
+    await expect(getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12001})).rejects.toMatchObject({code: "data-loss"});
+    expect(await deliverRacePerformance("run-1", db, 12002)).toBe(false);
+    expect((await db.doc("racePerformanceOutbox/run-1").get()).data()?.deliveryState).toBe("quarantined");
+    await expect(replayRaceDelivery(db, "racePerformanceOutbox", "run-1", 12003, {dryRun: true})).rejects.toMatchObject({code: "data-loss"});
+    expect((await db.doc("users/player-1").get()).data()).toEqual(ownerBefore);
+    expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).exists).toBe(false);
+  });
+
+it("settles rewards despite corrupt derived attribution and never writes another owner's offer", async () => {
+  /** Provides offer id behavior. */
+  const offerId = "a".repeat(64);
+  await db.doc("raceRuns/run-1").update({matchOfferId: offerId});
+  await db.doc(`raceMatchOffers/${offerId}`).set({userId: "another-owner", challengeId: "challenge-1", acceptedRunId: "run-1"});
+  expect((await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000})).result).toBe("ghost_win");
+  expect((await db.doc("users/player-1").get()).data()?.coins).toBe(25);
+  expect((await db.doc(`raceMatchOffers/${offerId}`).get()).data()?.terminalStatus).toBeUndefined();
+  expect(await deliverRaceSettlement("run-1", db, 12001)).toBe(true);
+});
+
+it("suppresses pending performance projection after owner deletion", async () => {
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+    wallFinishMs: 9_000, finishedAtMs: 10_000});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10_001});
+  await db.doc("jestAccountDeletionTombstones/player-1").set({deleted: true});
+  expect(await deliverRacePerformance("run-1", db, 10_002)).toBe(false);
+  expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).exists).toBe(false);
+});
+
 it("settles an idle ghost loss as a creator win rather than a zero-delta tie", async () => {
+  /** Provides outcome behavior. */
   const outcome = await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12_000});
   expect(outcome.result).toBe("ghost_win");
   expect(await deliverRaceSettlement("run-1", db, 12_001)).toBe(true);
+  /** Provides inbox behavior. */
   const inbox = await db.collection("users/creator-1/raceInbox").get();
   expect(inbox.docs[0].data()).toMatchObject({result: "win", adjustedDeltaMs: 0});
   expect((await db.doc("raceRuns/run-1").get()).data()).toMatchObject({status: "completed", settledAtMs: 12_000});
@@ -46,6 +239,7 @@ it("settles an idle ghost loss as a creator win rather than a zero-delta tie", a
 
 it("settles via resume and repeated outcome reads without duplicate owner rewards", async () => {
   await resumeRaceRunForUser("player-1", "run-1", {db, nowMs: 12_000});
+  /** Provides results behavior. */
   const results = await Promise.all(Array.from({length: 6}, () => getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12_001})));
   expect(results.every((outcome) => outcome.result === "ghost_win")).toBe(true);
   expect(results.filter((outcome) => outcome.achievementCoinsAwarded > 0)).toHaveLength(1);
@@ -55,6 +249,7 @@ it("settles via resume and repeated outcome reads without duplicate owner reward
 
 it("delivers concurrent/replayed outbox events once, including creator currency grants", async () => {
   await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12_000});
+  /** Provides results behavior. */
   const results = await Promise.all(Array.from({length: 8}, () => deliverRaceSettlement("run-1", db, 12_001)));
   expect(results.filter(Boolean)).toHaveLength(1);
   expect((await db.collection("users/creator-1/raceInbox").get()).size).toBe(1);
@@ -79,14 +274,69 @@ it("settles unattended deadlines and retries missed event delivery with a bounde
   expect((await db.doc("users/player-1").get()).data()?.stats.multiplayerGamesPlayed).toBe(1);
 });
 
+it("expires unattended preparation without creating rewards or opponent delivery", async () => {
+  await db.doc("raceRuns/run-1").update({status: "prepared", startedAtMs: 0,
+    preparationExpiresAtMs: 12_000, deadlineAtMs: 12_000});
+  await processRaceSettlementJobs(db, 12_000);
+  expect((await db.doc("raceRuns/run-1").get()).data()).toMatchObject({status: "abandoned", result: null, wallFinishMs: 0});
+  expect((await db.doc("users/player-1").get()).data()?.coins).toBe(0);
+  expect((await db.collection("raceSettlementOutbox").get()).empty).toBe(true);
+});
+
+it("quarantines a poison event and continues delivering valid deadline results", async () => {
+  await db.doc("raceSettlementOutbox/poison").set({userId: 123, delivered: false, createdAtMs: 0});
+  await processRaceSettlementJobs(db, 12_000);
+  expect((await db.doc("raceSettlementOutbox/poison").get()).data()).toMatchObject({delivered: true, quarantined: true, failureCode: "data-loss"});
+  expect((await db.doc("raceSettlementOutbox/run-1").get()).data()?.delivered).toBe(true);
+  expect((await db.doc("users/creator-1").get()).data()?.stats.multiplayerWins).toBe(1);
+  await processRaceSettlementJobs(db, 12_100);
+  expect((await db.doc("users/creator-1").get()).data()?.stats.multiplayerWins).toBe(1);
+});
+
+it("drains a full page of corrupt deadlines and safely replays a repaired source", async () => {
+  /** Earlier malformed entries occupy the entire first indexed page. */
+  const batch = db.batch();
+  for (let index = 0; index < 100; index++) batch.set(db.doc(`raceRuns/corrupt-${index}`), {status: "active", deadlineAtMs: 0});
+  await batch.commit();
+  await processRaceSettlementJobs(db, 12_000);
+  expect((await db.collection("raceDeadlineFailures").get()).size).toBe(100);
+  expect((await db.doc("raceRuns/run-1").get()).data()?.settledAtMs).toBeUndefined();
+  await processRaceSettlementJobs(db, 12_001);
+  expect((await db.doc("raceRuns/run-1").get()).data()?.settledOutcome.result).toBe("ghost_win");
+  await expect(replayRaceDeadline(db, "corrupt-0", 12_002)).rejects.toThrow();
+  await db.doc("raceRuns/corrupt-0").set(fixture({runId: "corrupt-0"}));
+  await replayRaceDeadline(db, "corrupt-0", 12_003);
+  await processRaceSettlementJobs(db, 12_004);
+  expect((await db.doc("raceRuns/corrupt-0").get()).data()?.settledOutcome.result).toBe("ghost_win");
+  expect((await db.doc("raceDeadlineFailures/corrupt-0").get()).data()?.state).toBe("replayed");
+});
+
+it("backs off a transient storage failure without granting extra solving time", async () => {
+  /** Only the first processing transaction fails; retry bookkeeping uses real storage. */
+  const failure = jest.spyOn(db, "runTransaction").mockRejectedValueOnce(new Error("storage-unavailable"));
+  await expect(processRaceDeadline(db, db.doc("raceRuns/run-1"), 12_000)).rejects.toThrow("storage-unavailable");
+  failure.mockRestore();
+  expect((await db.doc("raceRuns/run-1").get()).data()).toMatchObject({deadlineAtMs: 42_000,
+    deadlineRecovery: {attempts: 1, nextAttemptAtMs: 42_000}});
+  await processRaceSettlementJobs(db, 12_001);
+  expect((await db.doc("raceRuns/run-1").get()).data()?.settledAtMs).toBeUndefined();
+  /** Provides outcome behavior. */
+  const outcome = await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12_002});
+  expect(outcome.result).toBe("ghost_win");
+  expect(outcome.adjustedFinishMs).toBe(10_000);
+});
+
 it("settles maximum-time expiry independently of ghost completion", async () => {
   await db.doc("raceRuns/run-1").update({opponent: FieldValue.delete()});
+  /** Provides outcome behavior. */
   const outcome = await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 301_000});
   expect(outcome.result).toBe("timed_out");
 });
 
 it("derives a loss when the tenth clearing action pushes adjusted time past the ghost", async () => {
+  /** Provides run behavior. */
   const run = fixture({correctCount: 9});
+  /** Provides completed behavior. */
   const completed = applyRaceSkip(run, {riddleId: "q-1"}, 2_000);
   expect(completed.result).toBe("ghost_win");
   await db.runTransaction(async (transaction) => {await settleRaceRun(transaction, db, completed, 2_000);});
@@ -100,4 +350,32 @@ it("never recreates a deleted owner or grants its delayed reward", async () => {
   await processRaceSettlementJobs(db, 12_000);
   expect((await db.doc("users/player-1").get()).exists).toBe(false);
   expect((await db.collection("raceSettlementOutbox").get()).empty).toBe(true);
+});
+
+it.each([10, 5, 0])("projects complete-only calibration evidence idempotently for %i solved answers", async correctCount => {
+  /** Server-issued receipt ownership links attribution to exactly this accepted run. */
+  const offerId = "a".repeat(64);
+  await db.doc(`raceMatchOffers/${offerId}`).set({userId: "player-1", challengeId: "challenge-1", acceptedRunId: "run-1", acceptedAtMs: 1000, createdAtMs: 0, expiresAtMs: 60000, fingerprint: JSON.stringify({locale: "en", categoryId: null}), expectedPerformanceMs: 12000});
+  await db.doc("raceRuns/run-1").update({matchOfferId: offerId, status: "completed", result: correctCount === 10 ? "player_win" : "ghost_win",
+    correctCount, wallFinishMs: 9000, finishedAtMs: 10000});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10010});
+  /** Partial and idle runs never supply an extrapolated finish gap or prediction error. */
+  const receipt = (await db.doc(`raceMatchOffers/${offerId}`).get()).data()!;
+  expect(receipt).toMatchObject({finishedTen: correctCount === 10, actualPerformanceMs: correctCount === 10 ? 9000 : null,
+    finishTimeDeltaMs: correctCount === 10 ? -1000 : null, opponentAdjustedFinishMs: 10000, settlementDelayMs: 10});
+  expect(receipt.predictionLogError).toBe(correctCount === 10 ? Math.log(9000 / 12000) : null);
+  await Promise.all(Array.from({length: 4}, () => getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 20000})));
+  expect((await db.doc(`raceMatchOffers/${offerId}`).get()).data()).toEqual(receipt);
+});
+
+it("rejects a mismatched canonical run identity before settling or overwriting another document", async () => {
+  await db.doc("raceRuns/run-1").update({runId: "other-run"});
+  await db.doc("raceRuns/other-run").set(fixture({runId: "other-run"}));
+  /** Both canonical sources must remain untouched after an unsafe read. */
+  const before = (await db.collection("raceRuns").get()).docs.map(document => document.data());
+  await expect(getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 20000})).rejects.toMatchObject({code: "data-loss"});
+  await expect(resumeRaceRunForUser("player-1", "run-1", {db, nowMs: 20000})).rejects.toMatchObject({code: "data-loss"});
+  expect((await db.collection("raceRuns").get()).docs.map(document => document.data())).toEqual(before);
+  expect((await db.collection("raceSettlementOutbox").get()).empty).toBe(true);
+  expect((await db.collection("racePerformanceOutbox").get()).empty).toBe(true);
 });

@@ -5,6 +5,7 @@ import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {raceClock, raceOutcome, refreshRaceRun, type RaceRunRecord} from "./raceEngine";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
 import {persistRaceAchievementEvent, stripUndefined, type Firestore} from "./raceSetupService";
+import {readRaceMatchOffer, recordRaceMatchTerminal} from "./raceMatchOffer";
 
 /** Maps a canonical challenger outcome into the recording creator's result. */
 export function creatorRaceResult(result: RaceOutcome["result"]): "win" | "loss" | "tie" {
@@ -25,37 +26,52 @@ export async function settleRaceRun(
   input: RaceRunRecord,
   nowMs: number,
 ): Promise<RaceRunRecord> {
+  /** Provides privacy behavior. */
   const privacy = await resolveRaceOpponentPrivacy(transaction, db, input);
+  /** Provides offer behavior. */
+  const offer = await readRaceMatchOffer(transaction, db, input);
   if (["prepared", "scheduled", "active"].includes(input.status) && privacy.run.opponent?.subjectUserId) {
+    /** Provides opponent behavior. */
     const opponent = privacy.run.opponent.subjectUserId;
+    /** Provides blocks behavior. */
     const blocks = await Promise.all([
       transaction.get(db.doc(`users/${input.userId}/blockedRivals/${opponent}`)),
       transaction.get(db.doc(`users/${opponent}/blockedRivals/${input.userId}`)),
     ]);
     if (blocks.some((block) => block.exists)) {
+      /** Provides abandoned behavior. */
       const abandoned: RaceRunRecord = {...privacy.run, status: "abandoned", result: null,
         wallFinishMs: raceClock(input, nowMs).wallElapsedMs, finishedAtMs: nowMs};
       transaction.set(db.doc(`raceRuns/${input.runId}`), raceRunPrivacyWrite(abandoned, privacy.scrubbed), {merge: true});
+      recordRaceMatchTerminal(transaction, offer, abandoned, nowMs);
       return abandoned;
     }
   }
+  /** Provides run behavior. */
   const run = refreshRaceRun(privacy.run, nowMs);
   if (["prepared", "scheduled", "active", "abandoned"].includes(run.status) || run.settledAtMs !== undefined) {
     if (run.status !== input.status) transaction.set(db.doc(`raceRuns/${run.runId}`), raceRunPrivacyWrite(run, privacy.scrubbed), {merge: true});
+    recordRaceMatchTerminal(transaction, offer, run, nowMs);
     return run;
   }
+  /** Provides outcome behavior. */
   const outcome = raceOutcome(run, nowMs);
+  /** Provides owner ref behavior. */
   const ownerRef = db.doc(`users/${run.userId}`);
+  /** Provides [owner, deletion] behavior. */
   const [owner, deletion] = await Promise.all([
     transaction.get(ownerRef),
     transaction.get(getJestAccountDeletionRef(db, run.userId)),
   ]);
   // Deleted accounts must never be recreated by a delayed deadline or retry.
   if (deletion.exists || !owner.exists) {
+    /** Provides settled behavior. */
     const settled = {...run, settledAtMs: nowMs, settledOutcome: outcome};
     transaction.set(db.doc(`raceRuns/${run.runId}`), raceRunPrivacyWrite(settled, privacy.scrubbed), {merge: true});
+    recordRaceMatchTerminal(transaction, offer, settled, nowMs);
     return settled;
   }
+  /** Provides award behavior. */
   const award = run.achievementProgressRecordedAtMs === undefined
     ? persistRaceAchievementEvent(transaction, ownerRef, owner.data() ?? {}, {
       kind: "completed",
@@ -63,6 +79,7 @@ export async function settleRaceRun(
       cleanRun: outcome.correctCount === RACE_TARGET_CORRECT && outcome.totalPenaltyMs === 0,
     }, nowMs)
     : undefined;
+  /** Provides settled behavior. */
   const settled: RaceRunRecord = {
     ...run,
     settledAtMs: nowMs,
@@ -74,6 +91,11 @@ export async function settleRaceRun(
     }} : {}),
   };
   transaction.set(db.doc(`raceRuns/${run.runId}`), raceRunPrivacyWrite(settled, privacy.scrubbed), {merge: true});
+  recordRaceMatchTerminal(transaction, offer, settled, nowMs);
+  transaction.create(db.doc(`racePerformanceOutbox/${run.runId}`), {
+    runId: run.runId, userId: run.userId, createdAtMs: nowMs, ...pendingRaceDelivery(nowMs),
+    expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + RACE_CHALLENGE_TTL_MS),
+  });
   if (run.challengeId && run.opponent?.subjectUserId) {
     transaction.create(db.doc(`raceSettlementOutbox/${run.runId}`), stripUndefined({
       runId: run.runId,
@@ -84,7 +106,7 @@ export async function settleRaceRun(
       result: creatorRaceResult(outcome.result),
       adjustedDeltaMs: outcome.adjustedFinishMs - run.opponent.adjustedFinishMs,
       createdAtMs: nowMs,
-      delivered: false,
+      ...pendingRaceDelivery(nowMs),
       expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + RACE_CHALLENGE_TTL_MS),
     }));
   }
@@ -99,12 +121,16 @@ export async function readSettledRaceOutcome(
   nowMs: number,
 ): Promise<RaceOutcome> {
   // Fetch before settlement can write; the transaction retries if the balance changes.
+  /** Provides owner behavior. */
   const owner = await transaction.get(db.doc(`users/${run.userId}`));
   if (!owner.exists) throw new HttpsError("internal", "Player progress is unavailable for this race.");
+  /** Provides settled behavior. */
   const settled = await settleRaceRun(transaction, db, run, nowMs);
+  /** Provides outcome behavior. */
   const outcome = settled.settledOutcome ?? raceOutcome(settled, nowMs);
   if (!settled.settlementAwards || settled.achievementOutcomePresentedAtMs !== undefined) return outcome;
   transaction.set(db.doc(`raceRuns/${run.runId}`), {achievementOutcomePresentedAtMs: nowMs}, {merge: true});
+  /** Provides coins behavior. */
   const coins = Number(owner.data()?.coins ?? 0);
   return {
     ...outcome,
@@ -112,3 +138,4 @@ export async function readSettledRaceOutcome(
     newCoins: coins + (run.achievementProgressRecordedAtMs === undefined ? settled.settlementAwards.achievementCoinsAwarded : 0),
   };
 }
+import {pendingRaceDelivery} from "./raceDeliveryFailures";

@@ -1,0 +1,103 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-guess-draft-confirmation",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Bind confirmed guess drafts and histories to riddle identity, deck position and answer length; merge authoritative hints before resuming input and preserve rollback when reveal metadata is inconsistent.",
+    "revision": "c34be5711775a38b22d5f38b64a9fed905efac72",
+    "sourceDigest": "a426e31c2d38f78b8e4711d6b06ca764bccb4f3fec3409602ab5543434d33dc7",
+    "completedAt": "2026-09-30T03:56:24.044Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "race-transitions",
+      "portal-types",
+      "isolated-target-builds",
+      "injected-guess-draft-confirmation",
+      "artifact-dependency-evidence",
+      "maintainable-file-sizes"
+    ],
+    "checks": [
+      {
+        "id": "race-transitions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; output SHA-256 d7c8bd4b27d9eec04f0420b4073ea6dcc927500a6de7534f2109c8b053786900"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; output SHA-256 ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; output SHA-256 1e1b12735577562858ddbfe723545655b474c8d5d0e306ed55e35de17e5d19e7"
+      },
+      {
+        "id": "injected-guess-draft-confirmation",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=merges guess confirmation hints|restores successor typing after|rejects inconsistent hint confirmations|preserves the player.s draft through projected|confirms the result when a hint penalty; output SHA-256 5c5d55a38fa5981da7cb6b88551e8c28c65cd961d54a3c76e4f0f55ed82bd563"
+      },
+      {
+        "id": "artifact-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; output SHA-256 cd32315d6b5f0ebccaf2cc530efdfc96ef606aa88af57fae8f7fddb67d9e8978"
+      },
+      {
+        "id": "maintainable-file-sizes",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; output SHA-256 ae9de39f6c0387a30213be85189d667b4e6626224531ee042bbd3bbf2fbe9bba"
+      }
+    ],
+    "remainingGates": [
+      "Remaining multiplayer architecture requirements have independent development checks.",
+      "Provider submission, approval and deployment require their own receipts."
+    ],
+    "nextAction": "Continue the remaining multiplayer requirements and accepted-revision release verification.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "sha256": "bfb6fa499e517fd78726499c0a640dd45830b57928f361d76a50964b3335b7d0"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "sha256": "653268df6ae61c25bffb6dc419dd9f6d3500f8250a027ca7681cd40c5ea57518"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "sha256": "8e48a6cf4772cb982926537c6809742d0f6a5d648e225c45e2b1874c79a9c3a3"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "sha256": "9e5536e3b3eec437d441b3715f618def57f87aca670edc33345b02a31d23c63f"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "sha256": "92af2405d48f6c5f2f6278201237865cad2a4b487d422b4c83216376b811d456"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "sha256": "d779bc5f172ddef4fedb50fd36d2ccf2b0c957aa3e3f22f7d043c977a0929db7"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "sha256": "be210ed14715669c285818a379dce2675d5eb80ab1855376909e3b007e5262d4"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Karışık",
-    "CATEGORY_MIXED_DESCRIPTION": "Her kategoriden bir sürpriz"
+    "CATEGORY_MIXED_DESCRIPTION": "Her kategoriden bir sürpriz",
+    "WAITING_PUBLICATION": "Oluşturan kişinin yarışı bitirip yayımlaması bekleniyor.",
+    "INVITATION_EXPIRED": "Bu davetin süresi doldu.",
+    "INVITATION_CANCELLED": "Bu davet iptal edildi.",
+    "CANCEL_INVITATION": "Daveti iptal et",
+    "MATCH_TEMPORARY": "Rakip arama geçici olarak kullanılamıyor. Kısa bir süre sonra tekrar deneyin.",
+    "MATCH_TRY_NEW": "Rakip bulmak için yeni bir arama başlatın.",
+    "MATCH_EXPIRED": "Bu rakip aramasının süresi doldu. Tekrar deneyin.",
+    "MATCH_CONSUMED": "Bu arama zaten kullanıldı. Başka bir rakip bulun.",
+    "MATCH_UNAVAILABLE": "Bu hesap için rakip arama kullanılamıyor.",
+    "MATCH_EMPTY": "Henüz uygun rakip yok. Daha sonra tekrar deneyin."
   }
 }

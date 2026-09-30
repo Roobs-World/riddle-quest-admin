@@ -178,6 +178,10 @@ async function deleteOwnedRaceParticipation(
     if (collection === "raceRuns") {
       // Parent deletion does not remove Firestore subcollections.
       for (const document of snapshot.docs) await deleteRaceRequestReceipts(document);
+      /** Diagnostics contain run linkage and follow account-owned source deletion. */
+      const failures = db.batch();
+      snapshot.docs.forEach(document => failures.delete(db.collection("raceDeadlineFailures").doc(document.id)));
+      await failures.commit();
     }
     /** Provides batch behavior. */
     const batch = db.batch();
@@ -222,8 +226,10 @@ async function deleteOwnedRaceChallenges(userId: string): Promise<void> {
 export async function removeCrossUserRaceIdentitySnapshots(userId: string): Promise<void> {
   await deleteMatchingCollectionGroupDocuments("raceMatchCandidates", "creatorId", userId);
   await deleteMatchingCollectionGroupDocuments("raceMatchOffers", "userId", userId);
+  await deleteMatchingCollectionGroupDocuments("raceBotOffers", "userId", userId);
   await deleteMatchingCollectionGroupDocuments("raceSettlementOutbox", "userId", userId);
   await deleteMatchingCollectionGroupDocuments("raceSettlementOutbox", "creatorId", userId);
+  await deleteMatchingCollectionGroupDocuments("racePerformanceOutbox", "userId", userId);
   await deleteMatchingCollectionGroupDocuments("raceInbox", "opponentUserId", userId);
   await deleteMatchingCollectionGroupDocuments("raceInviteLobbies", "creatorId", userId);
   await deleteMatchingCollectionGroupDocuments("raceInviteLobbies", "recipientId", userId);

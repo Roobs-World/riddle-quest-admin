@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Misto",
-    "CATEGORY_MIXED_DESCRIPTION": "Uma surpresa de cada categoria"
+    "CATEGORY_MIXED_DESCRIPTION": "Uma surpresa de cada categoria",
+    "WAITING_PUBLICATION": "A aguardar que o criador termine e publique a sua corrida.",
+    "INVITATION_EXPIRED": "Este convite expirou.",
+    "INVITATION_CANCELLED": "Este convite foi cancelado.",
+    "CANCEL_INVITATION": "Cancelar convite",
+    "MATCH_TEMPORARY": "A busca de adversários está temporariamente indisponível. Tente novamente em breve.",
+    "MATCH_TRY_NEW": "Inicie uma nova busca para encontrar um adversário.",
+    "MATCH_EXPIRED": "Esta busca de adversários expirou. Tente novamente.",
+    "MATCH_CONSUMED": "Esta busca já foi utilizada. Encontre outro adversário.",
+    "MATCH_UNAVAILABLE": "A busca de adversários não está disponível para esta conta.",
+    "MATCH_EMPTY": "Ainda não há adversários adequados disponíveis. Tente novamente mais tarde."
   }
 }

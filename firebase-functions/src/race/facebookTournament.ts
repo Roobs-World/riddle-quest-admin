@@ -228,7 +228,7 @@ export async function recordFacebookTournamentRun(
     const runSnapshot = await transaction.get(runRef);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Tournament race run was not found.");
     /** Provides run behavior. */
-    const run = parseRunRecord(runSnapshot.data());
+    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
     if (run.finishedAtMs === undefined) {
       throw new HttpsError("failed-precondition", "Only completed authoritative Race to 10 runs qualify.");
     }

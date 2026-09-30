@@ -5,6 +5,7 @@ import type {
   PublishRaceChallengeResponse,
   RaceCategoryId,
   RaceChallengePreview,
+  RaceEntryResponse,
   RaceInboxItem,
   RaceOutcome,
   RaceRunView,
@@ -30,7 +31,8 @@ import type {RaceOperation} from "./logic/raceOperations";
 import type {OverlayCapability} from "../../platform/types";
 
 /** Describes race stage. */
-export type RaceStage = "categories" | "challenge" | "inbox" | "tournaments" | "countdown" | "racing" | "result";
+export type {RaceStage} from "./RaceSession.types";
+import type {RaceStage} from "./RaceSession.types";
 
 /** Describes race to10 view props. */
 export type RaceTo10ViewProps = {
@@ -60,6 +62,10 @@ export type RaceTo10ViewProps = {
   playerOverlay?: OverlayCapability;
   /** Stores platform player id. */
   platformPlayerId?: string;
+  /** Typed readiness for incoming invitations. */
+  entryStatus?: RaceEntryResponse | null;
+  /** Creator-only cancellation capability. */
+  onCancelInvitation?: () => void;
   /** Stores challenge. */
   challenge: RaceChallengePreview | null;
   /** Stores countdown. */
@@ -120,6 +126,8 @@ export type RaceTo10ViewProps = {
   onClose: () => void;
   /** Stores on retry. */
   onRetry: () => void;
+  /** Search backoff or terminal failure disables recovery until permitted. */
+  retryDisabled?: boolean;
   /** Stores on request close. */
   onRequestClose: () => void;
   /** Stores on show inbox. */
@@ -191,6 +199,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     contextBoard,
     contextBoardLoading,
     challenge,
+    entryStatus,
+    onCancelInvitation,
     countdown,
     loadingProgress,
     countdownReady,
@@ -220,6 +230,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     quitDialogRef,
     onClose,
     onRetry,
+    retryDisabled = false,
     onRequestClose,
     onShowInbox,
     onShowTournaments,
@@ -259,7 +270,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
       {error && (
         <div className="race-error" role="alert">
           {error}
-          <button onClick={onRetry}>{tr("RaceTo10.RETRY")}</button>
+          <button onClick={onRetry} disabled={retryDisabled}>{tr("RaceTo10.RETRY")}</button>
         </div>
       )}
       {safetyNotice && (
@@ -307,7 +318,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
         />
       )}
       {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading} />}
-      {stage === "challenge" && <RaceChallengePanel challenge={challenge} onAccept={onSelectCategory} />}
+      {stage === "challenge" && <RaceChallengePanel challenge={challenge} entryStatus={entryStatus} onAccept={onSelectCategory} onCancel={onCancelInvitation} busy={Boolean(pending)} />}
       {stage === "countdown" && (
         <RaceCountdown
           countdown={countdown}

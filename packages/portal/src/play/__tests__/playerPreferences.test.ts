@@ -210,6 +210,7 @@ it("blocks stale Jest callbacks from recreating browser state after deletion", (
   const removeGuard = installBrowserPlayerStateMutationGuard(() => mutationAllowed);
   try {
     safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.activeRace, "race-before");
+    safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.raceRecovery, "recovery-before");
     clearBrowserPlayerState();
     mutationAllowed = false;
 
@@ -220,6 +221,7 @@ it("blocks stale Jest callbacks from recreating browser state after deletion", (
 
     expect(localStorage.getItem(PLAYER_PREFERENCE_STORAGE_KEYS.locale)).toBeNull();
     expect(localStorage.getItem(PLAYER_PREFERENCE_STORAGE_KEYS.activeRace)).toBeNull();
+    expect(localStorage.getItem(PLAYER_PREFERENCE_STORAGE_KEYS.raceRecovery)).toBeNull();
     expect(localStorage.getItem("riddleQuest:tooltipSeen:hint:user-1")).toBeNull();
     expect(sessionStorage.getItem("riddleQuest:welcomeSession:user-1")).toBeNull();
   } finally {

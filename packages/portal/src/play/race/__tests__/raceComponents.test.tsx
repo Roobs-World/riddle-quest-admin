@@ -35,6 +35,12 @@ type TestElementProps = {
   className?: string;
   /** Stores on click. */
   onClick?: () => void;
+  /** Accessible navigation role exposed by the presented element. */ role?: string;
+  /** Keyboard navigation callback exercised through its presentation interface. */
+  onKeyDown?: (event: {
+    /** Browser keyboard key identifying a navigation action. */ key: string;
+    /** Consumes default browser behavior only for supported navigation keys. */ preventDefault: () => void;
+  }) => void;
 };
 
 /** Finds a server-renderable element so its presentation callback can be verified directly. */
@@ -53,6 +59,37 @@ function findElement(
 }
 
 describe("race presentation components", () => {
+  it.each([false, true])("supports keyboard wraparound and endpoint navigation with tournament capability %s", tournaments => {
+    /** Player navigation effects are observable independently of rendering. */
+    const selected: string[] = [];
+    /** Focus adapters represent the mounted accessible buttons. */
+    const focus = [jest.fn(), jest.fn(), jest.fn()];
+    /** Direct callback tests use a ref adapter; injected browser checks retain real React refs. */
+    const react = jest.requireActual<typeof import("react")>("react");
+    /** Spy on the real module export rather than TypeScript's immutable namespace wrapper. */
+    const ref = jest.spyOn(react, "useRef").mockReturnValue({current: focus.map(callback => ({focus: callback}))});
+    try {
+      /** Optional tournament capability changes the set of reachable tabs. */
+      const rendered = RaceHubTabs({active: "play", onPlay: () => selected.push("play"), onActivity: () => selected.push("activity"),
+        ...(tournaments ? {onTournaments: () => selected.push("tournaments")} : {})});
+      /** First accessible tab receives arrow/home/end events. */
+      const play = findElement(rendered, props => props.role === "tab")!;
+      for (const key of ["ArrowLeft", "ArrowRight", "Home", "End"]) {
+        /** Only navigation keys should consume the browser's default behavior. */
+        const preventDefault = jest.fn();
+        play.props.onKeyDown!({key, preventDefault});
+        expect(preventDefault).toHaveBeenCalledTimes(1);
+      }
+      expect(selected).toEqual([tournaments ? "tournaments" : "activity", "activity", "play", tournaments ? "tournaments" : "activity"]);
+      expect(focus[0]).toHaveBeenCalledTimes(1);
+      expect(focus[tournaments ? 2 : 1]).toHaveBeenCalledTimes(tournaments ? 2 : 3);
+      /** Non-navigation keys retain browser behavior and do not switch tabs. */
+      const unchanged = jest.fn();
+      play.props.onKeyDown!({key: "Enter", preventDefault: unchanged});
+      expect(unchanged).not.toHaveBeenCalled();
+      expect(selected).toHaveLength(4);
+    } finally {ref.mockRestore();}
+  });
   it("renders capability-appropriate accessible hub tabs", () => {
     /** Provides jest html behavior. */
     const jestHtml = renderToString(<RaceHubTabs active="play" onPlay={noop} onActivity={noop} />);

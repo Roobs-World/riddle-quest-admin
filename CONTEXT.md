@@ -117,3 +117,11 @@ _Avoid_: Provider integration, live release
 **Race Projection**:
 The immediate local display of a competitive answer or action, which the game authority may confirm or roll back without accepting local scores or rankings as authoritative.
 _Avoid_: Confirmed race result, local ranking
+
+**Race Session**:
+One player's multiplayer journey, including challenge discovery, preparation, an owned race attempt, completion, and rematch. Changing the player, language, or incoming challenge starts a new journey.
+_Avoid_: Race run, provider session
+
+**Race Invitation**:
+An expiring invitation for a designated race challenge. A recipient's claim and the creator's publication are independent facts; a claim alone does not make the recorded challenge ready to play.
+_Avoid_: Published challenge, claimed challenge

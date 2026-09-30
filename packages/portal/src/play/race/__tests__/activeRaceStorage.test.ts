@@ -13,6 +13,14 @@ jest.mock("../../playerPreferences", () => ({
 
 import {readActiveRace, saveActiveRace, clearActiveRace} from "../logic/activeRaceStorage";
 
+it("preserves a newer hint for the same account when an older race is cleared", () => {
+  saveActiveRace("alice", "newer-run");
+  clearActiveRace("alice", "older-run");
+  expect(readActiveRace("alice")).toBe("newer-run");
+  clearActiveRace("alice", "newer-run");
+  expect(readActiveRace("alice")).toBeNull();
+});
+
 beforeEach(() => { mockSaved = null; });
 
 it("resumes only the authenticated owner's run after an account switch", () => {

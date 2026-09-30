@@ -273,12 +273,14 @@ describe("FacebookPlatformBootstrap", () => {
     expect(unknown.status).toBe("success");
     if (unknown.status !== "success") return;
     expect(unknown.value.capabilities.overlay).toBeUndefined();
+    expect(unknown.value.capabilities.matchmaking).toBeUndefined();
 
     /** Provides adult behavior. */
     const adult = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     expect(adult.status).toBe("success");
     if (adult.status !== "success") return;
     expect(adult.value.capabilities.overlay).toBeDefined();
+    expect(adult.value.capabilities.matchmaking).toBeDefined();
   });
 
   test("pause handlers can be revoked", async () => {

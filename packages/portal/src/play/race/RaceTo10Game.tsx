@@ -1,966 +1,174 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore} from "react";
 import "../../styles.race-lobby.css";
 import "../../styles.race-gameplay.css";
-import {parseHostToGameMessage} from "@qwordly/core/bridge";
-import {type ScoredGuess} from "@qwordly/core/game";
-import {
-  AbandonRaceRunResponseSchema,
-  ListRaceCategoriesResponseSchema,
-  ListRaceInboxResponseSchema,
-  PublishRaceChallengeResponseSchema,
-  RaceChallengePreviewSchema,
-  RaceOutcomeSchema,
-  RaceRunResponseSchema,
-  RequestRaceHintResponseSchema,
-  SkipRaceRiddleResponseSchema,
-  SubmitRaceGuessResponseSchema,
-  type ListRaceCategoriesResponse,
-  type RaceInboxItem,
-  type RaceCategoryId,
-  type RaceChallengePreview,
-  type RaceOutcome,
-  type RaceAnalyticsEventName,
-  type RaceRunView,
-  type ListFacebookTournamentResponse,
-  type ListFacebookContextBoardResponse,
-} from "@qwordly/core/race";
+import type {PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceInboxItem} from "@qwordly/core/race";
 import {tr} from "../i18n";
-import {createRequestId} from "../requestIds";
-import {HOST_TO_GAME_EVENT} from "../localBridge";
-import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
-import {
-  advanceRaceLoadingProgress,
-  RACE_COUNTDOWN_START,
-  RACE_LOADING_COMPLETE_DISPLAY_MS,
-  RACE_LOADING_TICK_MS,
-} from "./logic/raceCountdown";
-import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
-import type {RaceOperation} from "./logic/raceOperations";
-import {getGhostCorrectCount} from "./logic/racePlayback";
-import {
-  applyRaceOutcome,
-  createRaceAttempt,
-  findFirstEditableRaceSlot,
-  getAdjustedRaceTime,
-  getRaceLetterStates,
-} from "./logic/racePresentation";
-import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
-import {RaceTo10View, type RaceStage} from "./RaceTo10View";
-import {readActiveRace, clearActiveRace} from "./logic/activeRaceStorage";
-import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
-import {
-  useActiveRacePersistence,
-  useRaceClockEffects,
-  useRaceEntryTracking,
-  useRaceFeedbackTimers,
-} from "./hooks/useRaceRuntimeEffects";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
-/** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
-export function RaceTo10Game({
-  locale,
-  challengeId,
-  openInbox = false,
-  coins,
-  ownerId,
-  postToHost,
-  onClose,
-  initialCategories = EMPTY_RACE_CATEGORIES,
-  nativeSocial,
-  matchmaking,
-  playerOverlay,
-  platformPlayerId,
-  tournaments,
-  contextBoard,
-}: RaceTo10GameProps) {
-  /** Optional outbound sharing supplied by the active release target. */
+import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
+import {getGhostCorrectCount} from "./logic/racePlayback";
+import {getRaceLetterStates} from "./logic/racePresentation";
+import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard} from "./hooks";
+import {useRaceSession} from "./hooks/useRaceSession";
+import {useRaceEntryTracking} from "./hooks/useRaceRuntimeEffects";
+import {RaceTo10View} from "./RaceTo10View";
+import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
+import type {RaceSessionEffect} from "./RaceSession.types";
+import {RaceProviderViews} from "./RaceProviderViews";
+
+/** Rendering and optional provider adapters for the observable Race Session module. */
+export function RaceTo10Game({locale, challengeId, openInbox = false, coins, ownerId, postToHost, onClose,
+  initialCategories = EMPTY_RACE_CATEGORIES, nativeSocial, matchmaking, playerOverlay, platformPlayerId,
+  tournaments, contextBoard}: RaceTo10GameProps) {
+  /** Sharing remains a target capability, independent of competitive scoring. */
   const referralSharing = useReferralSharing();
-  /** Currently visible multiplayer screen. */
-  const [stage, setStage] = useState<RaceStage>(openInbox ? "inbox" : challengeId ? "challenge" : "categories");
-  /** Challenge being loaded or accepted by this client. */
-  const [activeChallengeId, setActiveChallengeId] = useState(openInbox ? undefined : challengeId);
-  /** Challenge used to establish a rematch rivalry. */
-  const [rivalryChallengeId, setRivalryChallengeId] = useState<string>();
-  /** Server-provided categories available to the player. */
-  const [categories, setCategories] = useState<ListRaceCategoriesResponse["categories"]>(initialCategories);
-  /** Preview of an incoming multiplayer challenge. */
-  const [challenge, setChallenge] = useState<RaceChallengePreview | null>(null);
-  /** Completed race results available in the multiplayer inbox. */
-  const [inboxItems, setInboxItems] = useState<RaceInboxItem[]>([]);
-  /** Briefly reuses this mounted player session’s activity results. */
-  const inboxLoadedAtRef = useRef(0);
-  /** Provides [tournament, set tournament] behavior. */
-  const [tournament, setTournament] = useState<ListFacebookTournamentResponse | null>(null);
-  /** Provides [tournament loading, set tournament loading] behavior. */
-  const [tournamentLoading, setTournamentLoading] = useState(false);
-  /** Provides [context board data, set context board data] behavior. */
-  const [contextBoardData, setContextBoardData] = useState<ListFacebookContextBoardResponse | null>(null);
-  /** Provides [context board loading, set context board loading] behavior. */
-  const [contextBoardLoading, setContextBoardLoading] = useState(false);
-  /** Latest authoritative view of the active or completed run. */
-  const [run, setRun] = useState<RaceRunView | null>(null);
-  /** Authoritative outcome returned after a run finishes. */
-  const [outcome, setOutcome] = useState<RaceOutcome | null>(null);
-  /** Number currently displayed by the pre-race countdown. */
-  const [countdown, setCountdown] = useState(RACE_COUNTDOWN_START);
-  /** Visible progress while the complete immutable multiplayer deck is loading. */
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  /** Becomes true after 100% has been displayed, allowing 3-2-1 to begin. */
-  const [countdownReady, setCountdownReady] = useState(false);
-  /** Letters currently entered for the active riddle. */
-  const [currentLetters, setCurrentLetters] = useState<string[]>([]);
-  /** Answer slot that receives the next keyboard input. */
-  const [activeSlotIndex, setActiveSlotIndex] = useState(0);
-  /** Locally rendered history of guesses scored by the server. */
-  const [raceGuesses, setRaceGuesses] = useState<ScoredGuess[]>([]);
-  /** Temporary correctness feedback for the latest submitted guess. */
-  const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
-  /** Run most recently reported after this client entered its final screen. */
-  const finalScreenNotifiedRunRef = useRef<string | null>(null);
-  /** Temporary text describing a server-applied time penalty. */
-  const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
-  /** Whether the active-race abandonment confirmation is visible. */
-  const [quitConfirmationOpen, setQuitConfirmationOpen] = useState(false);
-  /** Whether close was requested before the authoritative race-start response arrived. */
-  const [closeAfterStart, setCloseAfterStart] = useState(false);
-  /** Latest recoverable multiplayer error shown to the player. */
-  const [error, setError] = useState<string | null>(null);
-  /** Latest successful block/report announcement. */
-  const [safetyNotice, setSafetyNotice] = useState<string | null>(null);
-  /** Provides [social pending, set social pending] behavior. */
+  /** Native context dialog lifetime. */
   const [socialPending, setSocialPending] = useState<"context" | "match" | null>(null);
-  /** Published challenge created from the completed run. */
-  const [published, setPublished] = useState<ReturnType<typeof PublishRaceChallengeResponseSchema.parse> | null>(null);
-  /** Player intent to publish, retained while background outcome reconciliation finishes. */
-  const [publishRequested, setPublishRequested] = useState(false);
-  /** Whether the provider-owned recipient picker is being prepared or displayed. */
+  /** Native calls are guarded synchronously before React can render disabled buttons. */
+  const socialPendingRef = useRef(false);
+  /** Outbound share dialog loading state. */
   const [sharing, setSharing] = useState(false);
-  /** Local receipt time used to advance the displayed authoritative clock. */
-  const [receivedAtMs, setReceivedAtMs] = useState(performance.now());
-  /** Render trigger used to refresh the displayed race clock. */
-  const [, setTick] = useState(0);
-  /** Provides {
-    expected request ref,
-    finish operation,
-    pending,
-    race guess loading,
-    send,
-    set race guess awaiting outcome,
-  } behavior. */
-  const {play, finishOperation, pending, raceGuessLoading, send, setRaceGuessAwaitingOutcome} =
-    useRaceOperationLifecycle({postToHost, setError});
-  /** Latest rivalry identifier available synchronously to rematch callbacks. */
-  const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
-  /** Target associated with the one correlated social-safety operation. */
-  const [safetyTargetUserId, setSafetyTargetUserId] = useState<string | null>(null);
-  /** Whether a successful publication should immediately open Jest's recipient picker. */
-  const shareAfterPublishRef = useRef(false);
-  /** Synchronous guard preventing duplicate provider share dialogs. */
+  /** Synchronous duplicate-dialog guard. */
   const sharingRef = useRef(false);
-  /** Synchronous close intent consumed by the correlated race-start response. */
-  const closeAfterStartRef = useRef(false);
-  /** Records ed tournament runs ref. */
-  const recordedTournamentRunsRef = useRef(new Set<string>());
-  /** Records ed context runs ref. */
-  const recordedContextRunsRef = useRef(new Set<string>());
-  /** Provides close state ref behavior. */
-  const closeStateRef = useRef<{
-    /** Stores stage. */
-    stage: RaceStage;
-    /** Stores run status. */
-    runStatus?: RaceRunView["status"];
-  }>({stage});
-  closeStateRef.current = {stage, ...(run?.status ? {runStatus: run.status} : {})};
-  /** Root race dialog used for focus containment and viewport measurement. */
+  /** Provider dialogs and views belong to the current account/language/entry. */
+  const adapterGeneration = useRef(0);
+  /** Root dialog focus and sizing adapter. */
   const dialogRef = useRef<HTMLElement | null>(null);
-  /** Viewport whose height is adjusted when gameplay is scaled. */
+  /** Scaled gameplay viewport. */
   const gameplayViewportRef = useRef<HTMLDivElement | null>(null);
-  /** Natural gameplay surface measured for responsive scaling. */
+  /** Natural gameplay sizing surface. */
   const gameplayRef = useRef<HTMLDivElement | null>(null);
-  /** Quit dialog used for focus management while abandonment is confirmed. */
+  /** Active abandonment dialog focus adapter. */
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
-  useRaceEntryTracking(stage, challengeId);
-  /** Resets local answer input from the latest authoritative riddle. */
-  const resetAttempt = useCallback((nextRun: RaceRunView) => {
-    setCurrentLetters(createRaceAttempt(nextRun.currentRiddle));
-    setActiveSlotIndex(findFirstEditableRaceSlot(nextRun.currentRiddle));
-    setRaceGuesses([]);
-    setFeedback(null);
-  }, []);
-  /** Emits a schema-constrained multiplayer analytics event through the host. */
-  const analytics = useCallback(
-    (eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) =>
-      postToHost(createRaceAnalyticsMessage(eventName, params)),
-    [postToHost],
-  );
-  /** Opens the host-owned recipient picker for an authoritative published challenge. */
-  const sharePublishedChallenge = useCallback(
-    async (publication: ReturnType<typeof PublishRaceChallengeResponseSchema.parse>) => {
-      if (!referralSharing || sharingRef.current) return;
-      sharingRef.current = true;
-      setSharing(true);
-      analytics("race_share_dialog_opened", {categoryId: publication.preview.categoryId});
-      try {
-        if (
-          (await referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview})) ===
-          "error"
-        ) {
-          setError(tr("RaceTo10.ERROR_GENERIC"));
-        }
-      } finally {
-        sharingRef.current = false;
-        setSharing(false);
-      }
-    },
-    [analytics, referralSharing],
-  );
-  /** Opens and refreshes the multiplayer results inbox. */
-  const showInbox = useCallback(() => {
-    setStage("inbox");
-    if (Date.now() - inboxLoadedAtRef.current >= 30_000) send("raceInbox", "game:listRaceInbox", {limit: 20});
-    if (contextBoard) {
-      setContextBoardLoading(true);
-      void contextBoard
-        .list(locale)
-        .then(setContextBoardData)
-        .catch(() => setContextBoardData(null))
-        .finally(() => setContextBoardLoading(false));
-    }
-  }, [contextBoard, locale, send]);
-  /** Opens and refreshes the identity-free optional Facebook tournament. */
-  const showTournaments = useCallback(() => {
-    if (!tournaments || tournamentLoading) return;
-    setStage("tournaments");
-    setTournamentLoading(true);
-    setError(null);
-    void tournaments
-      .list(locale)
-      .then(setTournament)
-      .catch(() => setError(tr("RaceTo10.ERROR_GENERIC")))
-      .finally(() => setTournamentLoading(false));
-  }, [locale, tournamentLoading, tournaments]);
-  /** Closes the race or opens confirmation when an active run would be abandoned. */
-  const requestClose = useCallback(() => {
-    if (closeStateRef.current.stage === "countdown" && (pending === "raceStart" || pending === "raceReady")) {
-      closeAfterStartRef.current = true;
-      setCloseAfterStart(true);
-      return;
-    }
-    if (closeStateRef.current.stage === "racing" && closeStateRef.current.runStatus === "active") {
-      setQuitConfirmationOpen(true);
-      return;
-    }
-    onClose();
-  }, [onClose, pending]);
-  /** Hides the active-race abandonment confirmation. */
-  const dismissQuitConfirmation = useCallback(() => setQuitConfirmationOpen(false), []);
-  useRaceDialogFocus({
-    dialogRef,
-    quitDialogRef,
-    quitConfirmationOpen,
-    dismissQuitConfirmation,
-    requestClose,
+  /** Current effect implementation used by the session adapter. */
+  const effectRef = useRef<(effect: RaceSessionEffect) => void>(() => undefined);
+  /** The session owns every protocol and competitive presentation transition. */
+  const {session, state} = useRaceSession({ownerId, locale, challengeId, openInbox, initialCategories}, {
+    postToHost, effect: effect => effectRef.current(effect), getMatchmaking: () => matchmaking,
   });
-  /** Stores a new authoritative run view. */
-  const updateRun = useCallback((next: RaceRunView) => {
-    setRun(next);
-    setReceivedAtMs(performance.now());
-  }, []);
-  /** Promotes the displayed scheduled run using the same server-clock anchor as countdown. */
-  const activateScheduledRun = useCallback((serverNowMs: number) => {
-    if (run?.status !== "scheduled" || run.startsAtMs === undefined) return;
-    const wallElapsedMs = Math.max(0, serverNowMs - run.startsAtMs);
-    updateRun({...run, status: "active", serverNowMs, wallElapsedMs,
-      adjustedElapsedMs: wallElapsedMs + run.totalPenaltyMs});
-  }, [run, updateRun]);
-
+  /** One provider-view module follows the owned session across React renders. */
+  const providerViewsRef = useRef<RaceProviderViews | null>(null);
+  if (!providerViewsRef.current) providerViewsRef.current = new RaceProviderViews({reportError: session.reportError});
+  /** Stable provider request ownership is independent of dialog adapters. */
+  const providerViews = providerViewsRef.current;
+  /** Rendering consumes whole provider cache transitions. */
+  const providerState = useSyncExternalStore(providerViews.subscribe, providerViews.getSnapshot, providerViews.getSnapshot);
   useEffect(() => {
-    /** Deferred request used to avoid issuing host messages during render. */
-    const timer = window.setTimeout(() => {
-      if (openInbox) send("raceInbox", "game:listRaceInbox", {limit: 20});
-      else if (challengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId, locale});
-      else {
-        /** Provides active run id behavior. */
-        const activeRunId = readActiveRace(ownerId);
-        if (activeRunId) send("raceResume", "game:resumeRace", {runId: activeRunId, includeEvaluation: true});
-        else if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
-      }
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, [challengeId, initialCategories.length, locale, openInbox, ownerId, send]);
-  /** Applies one module-owned rollback for rejected or malformed authority responses. */
-  const rollbackProjection = useCallback(
-    (operation: RaceOperation) => {
-      /** Provides rollback behavior. */
-      const rollback = play.rejectProjection(operation);
-      if (!rollback) return;
-      if (rollback.kind === "guess") {
-        setRaceGuesses(rollback.guesses);
-        if (rollback.run) {
-          setRun(rollback.run);
-          setReceivedAtMs(rollback.receivedAt);
-        }
-        setCurrentLetters(rollback.letters);
-        setFeedback(null);
-      } else {
-        setRun(rollback.run);
-        setReceivedAtMs(performance.now());
-        resetAttempt(rollback.run);
-        setPenaltyFlash(null);
-      }
-    },
-    [play, resetAttempt, updateRun],
-  );
-
-  useEffect(() => {
-    /** Processes correlated race-operation responses emitted by the host bridge. */
-    const handle = (event: Event) => {
-      /** Provides message behavior. */
-      let message;
-      try {
-        message = parseHostToGameMessage((event as CustomEvent<unknown>).detail);
-      } catch {
-        return;
-      }
-      if (message.type !== "host:operationResult" || !message.payload.operation.startsWith("race")) return;
-      /** Provides operation behavior. */
-      const operation = message.payload.operation as RaceOperation;
-      if (!play.acceptResponse(message.requestId, operation)) return;
-      if (!message.payload.ok) {
-        rollbackProjection(operation);
-
-        if (operation === "racePublish") {
-          shareAfterPublishRef.current = false;
-          setPublishRequested(false);
-        }
-        if (
-          operation === "raceChallenge" &&
-          activeChallengeId?.startsWith("jest-invite-") &&
-          message.payload.error?.includes("not found")
-        ) {
-          setError(null);
-        } else if (operation === "raceGuess" && message.payload.error?.includes("no longer active")) {
-          // The local ghost clock presents the terminal result as soon as this
-          // request settles, then reconciles the authoritative outcome.
-          setError(null);
-        } else {
-          setError(
-            message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH"
-              ? tr("RaceTo10.ERROR_LOCALE_MISMATCH")
-              : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")),
-          );
-        }
-        if (operation === "raceBlock" || operation === "raceReport") setSafetyTargetUserId(null);
-        if (operation === "raceStart") {
-          setRun(null);
-          if (closeAfterStartRef.current) {
-            closeAfterStartRef.current = false;
-            setCloseAfterStart(false);
-            onClose();
-          } else {
-            setStage(activeChallengeId ? "challenge" : "categories");
-          }
-        } else if (operation === "raceAbandon" && closeAfterStartRef.current) {
-          closeAfterStartRef.current = false;
-          setCloseAfterStart(false);
-          setStage("racing");
-        } else if (operation === "raceResume") {
-          clearActiveRace(ownerId);
-          setRun(null);
-          setStage("categories");
-          if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
-        }
-        finishOperation(operation);
-        return;
-      }
-      try {
-        if (operation === "raceCategories") {
-          setCategories(ListRaceCategoriesResponseSchema.parse(message.payload.data).categories);
-        } else if (operation === "raceResume") {
-          /** Provides next run behavior. */
-          const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
-          setStage(["prepared", "scheduled"].includes(nextRun.status) ? "countdown" : "racing");
-          updateRun(nextRun);
-          if (["prepared", "scheduled", "active"].includes(nextRun.status)) resetAttempt(nextRun);
-          if (nextRun.status === "prepared") send("raceReady", "game:readyRace", {runId: nextRun.runId, includeEvaluation: true});
-        } else if (operation === "raceInbox") {
-          /** Provides inbox behavior. */
-          const inbox = ListRaceInboxResponseSchema.parse(message.payload.data);
-          setInboxItems(inbox.items);
-          inboxLoadedAtRef.current = Date.now();
-          // Navigation belongs to the player; a delayed refresh only updates data.
-          analytics("race_inbox_viewed", {resultCount: inbox.items.length});
-        } else if (operation === "raceBlock") {
-          /** Provides target user id behavior. */
-          const targetUserId = safetyTargetUserId;
-          if (
-            !targetUserId ||
-            typeof message.payload.data !== "object" ||
-            message.payload.data === null ||
-            (
-              message.payload.data as {
-                /** Stores blocked. */
-                blocked?: unknown;
-              }
-            ).blocked !== true
-          )
-            throw new Error("Invalid block response");
-          setInboxItems((items) => items.filter((item) => item.opponentUserId !== targetUserId));
-          setSafetyNotice(tr("RaceTo10.BLOCK_SUCCESS"));
-          setSafetyTargetUserId(null);
-        } else if (operation === "raceReport") {
-          if (
-            typeof message.payload.data !== "object" ||
-            message.payload.data === null ||
-            (
-              message.payload.data as {
-                /** Stores queued. */
-                queued?: unknown;
-              }
-            ).queued !== true
-          )
-            throw new Error("Invalid report response");
-          setSafetyNotice(tr("RaceTo10.REPORT_SUCCESS"));
-          setSafetyTargetUserId(null);
-        } else if (operation === "raceChallenge") {
-          /** Provides preview behavior. */
-          const preview = RaceChallengePreviewSchema.parse(message.payload.data);
-          setChallenge(preview);
-          setError(null);
-          analytics("race_link_entered");
-        } else if (operation === "raceStart" || operation === "raceReady") {
-          /** Provides next run behavior. */
-          const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
-          updateRun(nextRun);
-          if (closeAfterStartRef.current) {
-            send("raceAbandon", "game:abandonRace", {runId: nextRun.runId});
-          } else {
-            resetAttempt(nextRun);
-            if (nextRun.status === "prepared") send("raceReady", "game:readyRace", {runId: nextRun.runId, includeEvaluation: true});
-            if (nextRun.status === "abandoned") { clearActiveRace(ownerId); setStage("categories"); setRun(null); }
-            analytics("race_started", {kind: activeChallengeId ? "challenge" : "creator"});
-            analytics("race_attempt_started", {categoryId: nextRun.categoryId});
-          }
-        } else if (operation === "raceAbandon") {
-          /** Provides abandoned behavior. */
-          const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
-          if (abandoned.run.status !== "abandoned" || abandoned.result !== null)
-            throw new Error("Invalid abandon response");
-          clearActiveRace(ownerId);
-          closeAfterStartRef.current = false;
-          setCloseAfterStart(false);
-          setRun(abandoned.run);
-          setQuitConfirmationOpen(false);
-          onClose();
-        } else if (operation === "raceGuess") {
-          /** Provides result behavior. */
-          const result = SubmitRaceGuessResponseSchema.parse(message.payload.data);
-          /** Provides confirmation behavior. */
-          const confirmation = play.confirmGuess(result, run, raceGuesses, currentLetters);
-          setRaceGuessAwaitingOutcome(result.run.status !== "active");
-          updateRun(result.run);
-          if (result.autoSkipped) setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
-          if (confirmation.guesses) setRaceGuesses(confirmation.guesses);
-          if (confirmation.resetAttempt) resetAttempt(result.run);
-          setFeedback(result.isCorrect ? "correct" : "incorrect");
-        } else if (operation === "raceHint") {
-          /** Provides result behavior. */
-          const result = RequestRaceHintResponseSchema.parse(message.payload.data);
-          play.confirmPaid("raceHint");
-          updateRun(result.run);
-          setCurrentLetters((letters) => {
-            /** Provides next behavior. */
-            const next = [...letters];
-            next[result.index] = result.revealedLetter;
-            return next;
-          });
-          if (activeSlotIndex === result.index) setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
-          setPenaltyFlash(tr("RaceTo10.HINT_PENALTY"));
-          analytics("race_hint_used", {penaltyMs: 15_000});
-        } else if (operation === "raceSkip") {
-          /** Provides result behavior. */
-          const result = SkipRaceRiddleResponseSchema.parse(message.payload.data);
-          play.confirmPaid("raceSkip");
-          updateRun(result.run);
-          resetAttempt(result.run);
-          setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
-          analytics("race_skip_used", {penaltyMs: 45_000});
-        } else if (operation === "raceOutcome") {
-          /** Confirmed outcome replacing any immediate deterministic projection. */
-          const result = RaceOutcomeSchema.parse(message.payload.data);
-          setOutcome(result);
-          setRun((current) =>
-            current && current.runId === result.runId ? applyRaceOutcome(current, result) : current,
-          );
-          setReceivedAtMs(performance.now());
-          setStage("result");
-          analytics("race_completed", {
-            result: result.result,
-            correctCount: result.correctCount,
-            hintPenaltyMs: result.hintPenaltyMs,
-            skipPenaltyMs: result.skipPenaltyMs,
-            adjustedFinishMs: result.adjustedFinishMs,
-          });
-          analytics("race_attempt_completed", {
-            result: result.result,
-            adjustedFinishMs: result.adjustedFinishMs,
-          });
-          analytics("race_result_viewed", {result: result.result});
-          if (tournaments && run?.runId && !recordedTournamentRunsRef.current.has(run.runId)) {
-            /** Provides tournament run id behavior. */
-            const tournamentRunId = run.runId;
-            recordedTournamentRunsRef.current.add(tournamentRunId);
-            void tournaments.record(tournamentRunId, locale).catch(() => {
-              recordedTournamentRunsRef.current.delete(tournamentRunId);
-            });
-          }
-          if (contextBoard && run?.runId && !recordedContextRunsRef.current.has(run.runId)) {
-            /** Provides context run id behavior. */
-            const contextRunId = run.runId;
-            recordedContextRunsRef.current.add(contextRunId);
-            void contextBoard.record(contextRunId, locale).catch(() => {
-              recordedContextRunsRef.current.delete(contextRunId);
-            });
-          }
-        } else if (operation === "racePublish") {
-          /** Provides publication behavior. */
-          const publication = PublishRaceChallengeResponseSchema.parse(message.payload.data);
-          setPublished(publication);
-          setPublishRequested(false);
-          analytics("race_challenge_published", {categoryId: publication.preview.categoryId});
-          window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: publication}));
-          if (shareAfterPublishRef.current) {
-            shareAfterPublishRef.current = false;
-            void sharePublishedChallenge(publication);
-          }
-        }
-      } catch {
-        rollbackProjection(operation);
-        setError(tr("RaceTo10.ERROR_INVALID_RESPONSE"));
-      } finally {
-        finishOperation(operation);
-      }
-    };
-    window.addEventListener(HOST_TO_GAME_EVENT, handle);
-    return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [
-    activeChallengeId,
-    activeSlotIndex,
-    analytics,
-    currentLetters,
-    raceGuesses,
-    play,
-    rollbackProjection,
-    finishOperation,
-    initialCategories.length,
-    locale,
-    onClose,
-    ownerId,
-    referralSharing,
-    resetAttempt,
-    run?.currentRiddle?.riddleId,
-    safetyTargetUserId,
-    send,
-    setRaceGuessAwaitingOutcome,
-    sharePublishedChallenge,
-    updateRun,
-  ]);
-
-  useEffect(() => {
-    if (
-      stage !== "challenge" ||
-      !activeChallengeId?.startsWith("jest-invite-") ||
-      challenge ||
-      pending === "raceChallenge"
-    )
-      return;
-    /** Retry timer while the creator records the invitation's time to beat. */
-    const timer = window.setTimeout(() => {
-      send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
-    }, 10_000);
-    return () => window.clearTimeout(timer);
-  }, [activeChallengeId, challenge, locale, pending, send, stage]);
-
-  useEffect(() => {
-    if (stage !== "countdown") return;
-    if (run && run.status !== "prepared") {
-      setLoadingProgress(100);
-      /** Keeps the completed loading state visible briefly before countdown. */
-      const completeTimer = window.setTimeout(() => setCountdownReady(true), RACE_LOADING_COMPLETE_DISPLAY_MS);
-      return () => window.clearTimeout(completeTimer);
+    providerViews.enter({locale, tournaments, contextBoard});
+    /** Session notifications invalidate old reads before a late provider can settle. */
+    const select = () => providerViews.selectStage(session.getSnapshot().stage);
+    select();
+    /** Subscription follows navigation, rematch and authority transitions synchronously. */
+    const unsubscribe = session.subscribe(select);
+    return () => {unsubscribe(); providerViews.dispose();};
+  }, [providerViews, session, ownerId, locale, challengeId, openInbox, tournaments, contextBoard]);
+  /** Optional analytics transport cannot interrupt a share dialog or rematch action. */
+  const trackAnalytics = useCallback((event: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) => {
+    try {postToHost(createRaceAnalyticsMessage(event, params));} catch {
+      // Analytics delivery is independent of player actions and canonical scoring.
     }
-    /** Advances simulated progress while the authoritative race payload loads. */
-    const progressTimer = window.setInterval(
-      () => setLoadingProgress((current) => advanceRaceLoadingProgress(current, false)),
-      RACE_LOADING_TICK_MS,
-    );
-    return () => window.clearInterval(progressTimer);
-  }, [run, stage]);
-
-  useRaceClockEffects(
-    stage,
-    countdown,
-    closeAfterStart || !countdownReady ? null : run,
-    setStage,
-    setCountdown,
-    setTick,
-    receivedAtMs,
-    activateScheduledRun,
-  );
-
-  useRaceGameplayFit({
-    active: stage === "racing",
-    screenRef: dialogRef,
-    viewportRef: gameplayViewportRef,
-    gameplayRef,
-  });
-
-  useRaceFeedbackTimers(penaltyFlash, feedback, setPenaltyFlash, setFeedback);
-  /** Authoritative adjusted elapsed time advanced locally since the last response. */
-  const adjustedNow = getAdjustedRaceTime(run, receivedAtMs, performance.now());
-
-  useEffect(() => {
-    if (stage !== "racing" || !run || outcome) return;
-    // A mutation already in flight may still establish a last-moment win.
-    /** Immediate result determined entirely by the latest authoritative run and shared clock. */
-    const projected = play.projectOutcome(run, adjustedNow);
-    if (!projected) return;
-    setError(null);
-    setOutcome(projected);
-    setStage("result");
-  }, [adjustedNow, outcome, pending, play, run, stage]);
-
-  useEffect(() => {
-    if (stage !== "result" || !run || finalScreenNotifiedRunRef.current === run.runId) return;
-    finalScreenNotifiedRunRef.current = run.runId;
-    send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
-  }, [run, send, stage]);
-
-  useEffect(() => {
-    if (!publishRequested || published || !play.canPublish(run) || !referralSharing || !run) return;
-    shareAfterPublishRef.current = true;
-    send("racePublish", "game:publishRace", {runId: run.runId});
-  }, [pending, play, publishRequested, published, referralSharing, run, send]);
-
-  useActiveRacePersistence(run, ownerId);
-  /** Opponent score replayed against the adjusted race clock. */
-  const ghostCorrect = useMemo(() => getGhostCorrectCount(run?.opponent, adjustedNow), [adjustedNow, run?.opponent]);
-  /** Best server-scored feedback seen for each keyboard letter. */
-  const letterStates = useMemo(() => getRaceLetterStates(raceGuesses), [raceGuesses]);
-  /** Starts an authoritative run and displays its synchronized countdown. */
-  const begin = (
-    categoryId: RaceCategoryId,
-    startContext?: {
-      /** Stores challenge id. */
-      challengeId?: string;
-      /** Stores rivalry challenge id. */
-      rivalryChallengeId?: string;
-    },
-  ) => {
-    /** Provides challenge id for start behavior. */
-    const challengeIdForStart = startContext ? startContext.challengeId : activeChallengeId;
-    /** Provides rivalry id for start behavior. */
-    const rivalryIdForStart = startContext ? startContext.rivalryChallengeId : rivalryChallengeId;
-    analytics("race_category_selected", {categoryId});
-    if (rivalryChallengeIdRef.current) analytics("race_counter_challenge_started", {categoryId});
-    inboxLoadedAtRef.current = 0;
-    setCountdown(RACE_COUNTDOWN_START);
-    setLoadingProgress(0);
-    setCountdownReady(false);
-    setStage("countdown");
-    send(
-      "raceStart",
-      "game:startRace",
-      challengeIdForStart
-        ? {locale, challengeId: challengeIdForStart, includeEvaluation: true, prepare: true}
-        : {
-            locale,
-            categoryId,
-            includeEvaluation: true,
-            prepare: true,
-            ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {}),
-          },
-    );
-  };
-  /** Submits the complete current answer attempt to the server. */
-  const submit = () => {
-    if (
-      !run?.currentRiddle ||
-      currentLetters.length !== run.currentRiddle.answerLength ||
-      currentLetters.some((letter) => !letter) ||
-      pending
-    )
-      return;
-    /** Provides projection behavior. */
-    const projection = play.projectGuess(run, currentLetters, raceGuesses, receivedAtMs);
-    if (projection) {
-      setRaceGuesses(projection.guesses);
-      setCurrentLetters(projection.letters);
-      setActiveSlotIndex(projection.slot);
-      setFeedback(projection.feedback);
-      if (projection.run) updateRun(projection.run);
+  }, [postToHost]);
+  /** Starts a provider share dialog only for a confirmed published challenge. */
+  const sharePublishedChallenge = useCallback(async (publication: PublishRaceChallengeResponse) => {
+    if (!referralSharing || sharingRef.current) return;
+    /** Dialog completion belongs to this adapter lifetime. */
+    const generation = adapterGeneration.current;
+    /** Navigation away and back cannot reclaim an earlier share dialog's error. */
+    const current = session.captureJourney();
+    sharingRef.current = true;
+    setSharing(true);
+    trackAnalytics("race_share_dialog_opened", {categoryId: publication.preview.categoryId});
+    try {
+      /** Public score challenges remain reusable; dialog cancellation never cancels the challenge. */
+      const result = await referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview});
+      if (generation === adapterGeneration.current && current() && result === "error") session.reportError("RaceTo10.ERROR_GENERIC");
+    } catch {if (generation === adapterGeneration.current && current()) session.reportError("RaceTo10.ERROR_GENERIC");}
+    finally {if (generation === adapterGeneration.current) {sharingRef.current = false; setSharing(false);}}
+  }, [referralSharing, trackAnalytics, session]);
+  effectRef.current = effect => {
+    if (effect.kind === "close") onClose();
+    else if (effect.kind === "analytics") trackAnalytics(effect.event, effect.params);
+    else if (effect.kind === "publication") {
+      window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: effect.publication}));
+      if (effect.share) void sharePublishedChallenge(effect.publication);
+    } else if (effect.kind === "outcome") {
+      providerViews.record(effect.outcome.runId);
     }
-    send("raceGuess", "game:submitRaceGuess", {
-      runId: run.runId,
-      riddleId: run.currentRiddle.riddleId,
-      guess: currentLetters.join(""),
-      includeEvaluation: true,
-    });
   };
-  /** Requests the next server-selected hint for the active riddle. */
-  const requestHint = () => {
-    if (!run?.currentRiddle || pending) return;
-    /** Hint projected entirely from the deck downloaded before the countdown. */
-    const projected = play.projectPaid("raceHint", run);
-    if (projected) {
-      setRun(projected);
-      setReceivedAtMs(performance.now());
-      setCurrentLetters(createRaceAttempt(projected.currentRiddle));
-      setActiveSlotIndex(findFirstEditableRaceSlot(projected.currentRiddle));
-      setPenaltyFlash(tr("RaceTo10.HINT_PENALTY"));
-    }
-    send("raceHint", "game:requestRaceHint", {
-      runId: run.runId,
-      riddleId: run.currentRiddle.riddleId,
-      includeEvaluation: true,
-    });
-  };
-  /** Requests a server-authoritative skip with the published time penalty. */
-  const skip = () => {
-    if (!run?.currentRiddle || pending) return;
-    /** Next riddle projected entirely from the deck downloaded before the countdown. */
-    const projected = play.projectPaid("raceSkip", run);
-    if (projected) {
-      setRun(projected);
-      setReceivedAtMs(performance.now());
-      resetAttempt(projected);
-      setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
-    }
-    send("raceSkip", "game:skipRaceRiddle", {
-      runId: run.runId,
-      riddleId: run.currentRiddle.riddleId,
-      includeEvaluation: true,
-    });
-  };
-  /** Selects an editable answer position. */
-  const selectSlot = (index: number) => {
-    if (!run?.currentRiddle || !isRaceSlotEditable(run.currentRiddle, index)) return;
-    setActiveSlotIndex(index);
-  };
-  /** Writes a keyboard letter into the active editable answer position. */
-  const typeLetter = (letter: string) => {
-    /** Current authoritative riddle accepting the letter. */
-    const riddle = run?.currentRiddle;
-    if (!riddle || (pending && !play.typingWhilePending)) return;
-    /** Input state produced by the pure multiplayer editing rules. */
-    const nextState = insertRaceLetter(riddle, {letters: currentLetters, activeSlotIndex}, letter);
-    if (nextState.letters === currentLetters) return;
-    setCurrentLetters(nextState.letters);
-    setActiveSlotIndex(nextState.activeSlotIndex);
-  };
-  /** Commits a complete device-keyboard composition or paste in one React state transition. */
-  const typeText = (text: string) => {
-    /** Provides riddle behavior. */
-    const riddle = run?.currentRiddle;
-    if (!riddle || (pending && !play.typingWhilePending)) return;
-    /** Provides next state behavior. */
-    const nextState = insertRaceText(riddle, {letters: currentLetters, activeSlotIndex}, text);
-    if (nextState.letters === currentLetters) return;
-    setCurrentLetters(nextState.letters);
-    setActiveSlotIndex(nextState.activeSlotIndex);
-  };
-  /** Clears the active or nearest previous editable answer position. */
-  const backspace = () => {
-    /** Current authoritative riddle accepting deletion. */
-    const riddle = run?.currentRiddle;
-    if (!riddle || (pending && !play.typingWhilePending)) return;
-    /** Input state produced by the pure multiplayer deletion rules. */
-    const nextState = deleteRaceLetter(riddle, {letters: currentLetters, activeSlotIndex});
-    if (nextState.letters === currentLetters) return;
-    setCurrentLetters(nextState.letters);
-    setActiveSlotIndex(nextState.activeSlotIndex);
-  };
-
-  useRaceGameplayKeyboard({
-    active: stage === "racing" && !quitConfirmationOpen && (!pending || play.typingWhilePending),
-    onLetter: typeLetter,
-    onBackspace: backspace,
-    onSubmit: submit,
-  });
-  /** Publishes a completed creator run as a shareable challenge. */
-  const publish = () => {
-    if (!referralSharing || !run || published || publishRequested) return;
-    setPublishRequested(true);
-  };
-  /** Opens the host share flow for a published race challenge. */
-  const share = () => {
-    if (!referralSharing || !published) return;
-    void sharePublishedChallenge(published);
-  };
-  /** Clears completed-run presentation state and optionally starts a rematch. */
-  const resetForNewRace = (categoryId?: RaceCategoryId, rivalryId?: string) => {
-    /** Challenge identifier carried into the next rivalry attempt. */
-    const nextRivalryChallengeId = rivalryId ?? run?.challengeId ?? run?.rivalryChallengeId ?? challenge?.challengeId;
-    rivalryChallengeIdRef.current = nextRivalryChallengeId;
-    setRivalryChallengeId(nextRivalryChallengeId);
-    setActiveChallengeId(undefined);
-    setRun(null);
-    setOutcome(null);
-    finalScreenNotifiedRunRef.current = null;
-    setPublished(null);
-    setPublishRequested(false);
-    closeAfterStartRef.current = false;
-    setCloseAfterStart(false);
+  useEffect(() => {
+    adapterGeneration.current++;
     sharingRef.current = false;
+    socialPendingRef.current = false;
     setSharing(false);
-    setCurrentLetters([]);
-    setActiveSlotIndex(0);
-    setRaceGuesses([]);
-    setFeedback(null);
-    setPenaltyFlash(null);
-    if (categoryId) begin(categoryId, {rivalryChallengeId: nextRivalryChallengeId});
-    else {
-      setStage("categories");
-      if (categories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
-    }
+    setSocialPending(null);
+    return () => {adapterGeneration.current++;};
+  }, [ownerId, locale, challengeId, openInbox]);
+  useRaceEntryTracking(state.stage, challengeId);
+  useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: state.quitConfirmationOpen,
+    dismissQuitConfirmation: session.dismissQuit, requestClose: session.requestClose});
+  useRaceGameplayFit({active: state.stage === "racing", screenRef: dialogRef, viewportRef: gameplayViewportRef, gameplayRef});
+  useRaceGameplayKeyboard({active: state.stage === "racing" && !state.quitConfirmationOpen && (!state.pending || state.allowTypingWhilePending),
+    onLetter: letter => session.input("letter", letter), onBackspace: () => session.input("backspace"), onSubmit: session.submit});
+  /** Optional context view refresh does not own session navigation. */
+  const showInbox = () => {
+    session.navigate("inbox");
+    providerViews.refresh("inbox");
   };
-  /** Starts a rivalry rematch from a multiplayer inbox item. */
-  const startInboxRematch = (item: RaceInboxItem) => {
-    analytics("race_rematch_started", {categoryId: item.categoryId, result: item.result});
-    resetForNewRace(item.categoryId, item.challengeId);
+  /** Optional tournament discovery uses the platform's own adapter. */
+  const showTournaments = () => {
+    if (!tournaments) return;
+    session.navigate("tournaments");
+    providerViews.refresh("tournaments");
   };
-  /** Immediately blocks a linked rival through the authenticated host boundary. */
-  const blockInboxRival = (item: RaceInboxItem) => {
-    if (!item.opponentUserId || pending) return;
-    setSafetyTargetUserId(item.opponentUserId);
-    setSafetyNotice(null);
-    send("raceBlock", "game:blockRival", {targetUserId: item.opponentUserId});
-  };
-  /** Sends one categorized report through the authenticated host boundary. */
-  const reportInboxRival = (item: RaceInboxItem, category: import("@qwordly/core/race").SocialReportCategory) => {
-    if (!item.opponentUserId || pending) return;
-    setSafetyTargetUserId(item.opponentUserId);
-    setSafetyNotice(null);
-    send("raceReport", "game:reportRival", {targetUserId: item.opponentUserId, category});
-  };
-  /** Provides retry behavior. */
-  const retry = () => {
-    if (stage === "result" && run) send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
-    else if (stage === "tournaments") showTournaments();
-    else if (stage === "inbox") send("raceInbox", "game:listRaceInbox", {limit: 20});
-    else if (activeChallengeId)
-      send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
-    else send("raceCategories", "game:listRaceCategories", {locale});
-  };
-  /** Provides run native social behavior. */
+  /** Native social effects have no ownership over competitive state. */
   const runNativeSocial = async (kind: "context" | "match") => {
-    if (!nativeSocial || socialPending) return;
+    if (!nativeSocial || socialPendingRef.current || session.getSnapshot().findingOpponent || session.getSnapshot().pending) return;
+    /** Dialog receipt must still belong to the visible player journey. */
+    const generation = adapterGeneration.current;
+    /** Native dialog errors belong to the screen and run that opened the dialog. */
+    const current = session.captureJourney();
+    socialPendingRef.current = true;
     setSocialPending(kind);
-    setError(null);
     try {
-      /** Provides result behavior. */
-      const result =
-        kind === "context" ? await nativeSocial.chooseContext() : await nativeSocial.matchPlayer(`race10_v1:${locale}`);
-      if (result.status !== "success" && result.status !== "cancelled") {
-        setError(tr("RaceTo10.ERROR_GENERIC"));
+      /** Target capability owns native context selection. */
+      const result = kind === "context" ? await nativeSocial.chooseContext() : await nativeSocial.matchPlayer(`race10_v1:${locale}`);
+      if (generation === adapterGeneration.current) {
+        if (result.status === "success") providerViews.contextChanged();
+        else if (current() && result.status !== "cancelled") session.reportError("RaceTo10.ERROR_GENERIC");
       }
-    } catch {
-      setError(tr("RaceTo10.ERROR_GENERIC"));
-    } finally {
-      setSocialPending(null);
-    }
+    } catch {if (generation === adapterGeneration.current && current()) session.reportError("RaceTo10.ERROR_GENERIC");}
+    finally {if (generation === adapterGeneration.current) {socialPendingRef.current = false; setSocialPending(null);}}
   };
-  /** Finds offline match. */
-  const findOfflineMatch = async () => {
-    if (!matchmaking || socialPending) return;
-    setSocialPending("match");
-    setError(null);
-    try {
-      /** Provides result behavior. */
-      const result = await matchmaking.find({locale, requestId: createRequestId("raceMatch")});
-      if (result.status === "success" && result.value.status === "matched") {
-        setActiveChallengeId(result.value.challenge.challengeId);
-        setChallenge(result.value.challenge);
-        setStage("challenge");
-      } else if (result.status === "success" && result.value.status === "empty") {
-        setError(tr("RaceTo10.RESULTS_EMPTY"));
-      } else if (result.status !== "cancelled") setError(tr("RaceTo10.ERROR_GENERIC"));
-    } catch {
-      setError(tr("RaceTo10.ERROR_GENERIC"));
-    } finally {
-      setSocialPending(null);
-    }
+  /** Confirmed opponent events replay against the owned adjusted clock. */
+  const ghostCorrect = useMemo(() => getGhostCorrectCount(state.run?.opponent, state.adjustedNow), [state.run?.opponent, state.adjustedNow]);
+  /** Keyboard coloring follows the owned scored history. */
+  const letterStates = useMemo(() => getRaceLetterStates(state.raceGuesses), [state.raceGuesses]);
+  /** Records rematch intent before starting the new attempt. */
+  const inboxRematch = (item: RaceInboxItem) => {
+    trackAnalytics("race_rematch_started", {categoryId: item.categoryId, result: item.result});
+    session.rematch(item.categoryId, item.challengeId);
   };
-  return (
-    <RaceTo10View
-      {...{
-        stage,
-        coins,
-        error,
-        safetyNotice,
-        safetyTargetUserId: safetyTargetUserId,
-        categories,
-        inboxItems,
-        tournament,
-        tournamentLoading,
-        contextBoard: contextBoardData,
-        contextBoardLoading,
-        challenge,
-        countdown,
-        loadingProgress,
-        countdownReady,
-        run,
-        outcome,
-        pending,
-        adjustedNow,
-        ghostCorrect,
-        feedback,
-        penaltyFlash,
-        currentLetters,
-        activeSlotIndex,
-        raceGuesses,
-        letterStates,
-        quitConfirmationOpen,
-        raceGuessLoading,
-        allowTypingWhilePending: play.typingWhilePending,
-        closeAfterStart,
-        published,
-        dialogRef,
-        gameplayViewportRef,
-        gameplayRef,
-        quitDialogRef,
-        socialPending,
-        playerOverlay,
-        platformPlayerId,
-        sharingRewardCoins: referralSharing?.rewardCoins,
-        publishRequested,
-        sharing,
-      }}
-      onClose={onClose}
-      onRetry={retry}
-      onRequestClose={requestClose}
-      onShowInbox={showInbox}
-      onShowTournaments={tournaments ? showTournaments : undefined}
-      onChooseCategory={() => setStage("categories")}
-      onSelectCategory={begin}
-      onInboxRematch={startInboxRematch}
-      onBlockRival={blockInboxRival}
-      onReportRival={reportInboxRival}
-      onSelectSlot={selectSlot}
-      onLetter={typeLetter}
-      onText={typeText}
-      onBackspace={backspace}
-      onHint={requestHint}
-      onSubmit={submit}
-      onSkip={skip}
-      onPublish={publish}
-      onShare={share}
-      onRematch={resetForNewRace}
-      onDismissQuit={dismissQuitConfirmation}
-      onChooseNativeContext={nativeSocial ? () => void runNativeSocial("context") : undefined}
-      onMatchNativePlayer={
-        matchmaking ? () => void findOfflineMatch() : nativeSocial ? () => void runNativeSocial("match") : undefined
+  return <RaceTo10View {...state} coins={coins}
+    error={state.error ? tr(state.error) : null} penaltyFlash={state.penaltyFlash ? tr(state.penaltyFlash) : null}
+    safetyNotice={state.safetyNotice ? tr(state.safetyNotice) : null}
+    tournament={providerState.tournament} tournamentLoading={providerState.tournamentLoading} contextBoard={providerState.contextBoard} contextBoardLoading={providerState.contextBoardLoading}
+    ghostCorrect={ghostCorrect} letterStates={letterStates} dialogRef={dialogRef} gameplayViewportRef={gameplayViewportRef} gameplayRef={gameplayRef} quitDialogRef={quitDialogRef}
+    socialPending={state.findingOpponent || state.pending ? "match" : socialPending} playerOverlay={playerOverlay} platformPlayerId={platformPlayerId}
+    sharingRewardCoins={referralSharing?.rewardCoins} sharing={sharing}
+    onClose={session.requestClose} onRetry={() => {
+      if (providerState.failed) {
+        providerViews.refresh(state.stage);
+        if (state.stage === "inbox") session.retry();
       }
-      onAbandon={() => run && send("raceAbandon", "game:abandonRace", {runId: run.runId})}
-    />
-  );
+      else if (state.stage === "tournaments" && !["failed", "empty"].includes(state.matchSearchStatus)) showTournaments();
+      else session.retry();
+    }} onRequestClose={session.requestClose}
+    retryDisabled={state.findingOpponent || Boolean(state.pending) || state.matchSearchStatus === "failed" && !state.matchRetryReady}
+    onShowInbox={showInbox} onShowTournaments={tournaments ? showTournaments : undefined} onChooseCategory={() => session.navigate("categories")}
+    onSelectCategory={session.begin} onInboxRematch={inboxRematch} onBlockRival={item => session.safety("block", item)} onReportRival={(item, category) => session.safety("report", item, category)}
+    onSelectSlot={index => session.input("slot", index)} onLetter={letter => session.input("letter", letter)} onText={text => session.input("text", text)} onBackspace={() => session.input("backspace")}
+    onHint={session.hint} onSubmit={session.submit} onSkip={session.skip} onPublish={referralSharing ? session.publish : () => undefined}
+    onShare={() => {if (state.published) void sharePublishedChallenge(state.published);}} onRematch={session.rematch} onDismissQuit={session.dismissQuit}
+    onChooseNativeContext={nativeSocial ? () => void runNativeSocial("context") : undefined}
+    onMatchNativePlayer={matchmaking ? () => void session.findOpponent(matchmaking) : nativeSocial ? () => void runNativeSocial("match") : undefined}
+    onCancelInvitation={session.cancelInvitation} onAbandon={session.abandon} />;
 }

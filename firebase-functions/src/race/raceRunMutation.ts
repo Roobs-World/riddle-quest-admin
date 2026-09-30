@@ -62,7 +62,7 @@ export async function mutateRaceRun<T>(
     ]);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
     /** Stores d run. */
-    const storedRun = parseRunRecord(runSnapshot.data());
+    const storedRun = parseRunRecord(runSnapshot.data(), runSnapshot.id);
     if (storedRun.userId !== userId)
       throw new HttpsError("permission-denied", "This race run belongs to another player.");
     /** Provides privacy behavior. */
@@ -85,8 +85,11 @@ export async function mutateRaceRun<T>(
     ) {
       throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
     }
+    /** Provides mutation behavior. */
     const mutation = mutate(applyActionRateLimit(run, userId, nowMs));
+    /** Provides settled behavior. */
     const settled = await settleRaceRun(transaction, db, mutation.run, nowMs);
+    /** Provides response behavior. */
     const response = hydrateRaceReceiptResponse(mutation.response, settled);
     transaction.set(runRef, raceRunPrivacyWrite({...settled, deadlineAtMs: raceDeadlineAtMs(settled)}, privacy.scrubbed), {merge: true});
     transaction.create(requestRef, {

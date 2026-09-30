@@ -15,22 +15,33 @@ const MAX_ATTEMPTS_PER_CARD = 3;
 
 /** Local progress is bound by the CLI to the source and authoring model. */
 type AuthoringProgress = {
+  /** Stores completed. */
   completed?: unknown;
+  /** Stores save. */
   save?: (riddles: RaceContentImportFile["riddles"]) => Promise<void>;
 };
 
 /** Authors an English bank locally, with the same blind solve and review as single player. */
 export async function authorRaceContent(
-  existing: {text: string; answer: string}[] = [],
+  existing: {
+    /** Existing riddle prompt. */
+    text: string;
+    /** Existing riddle answer. */
+    answer: string;
+  }[] = [],
   onProgress?: (completed: number, total: number) => void,
   progress: AuthoringProgress = {},
 ): Promise<RaceContentImportFile> {
+  /** Provides total behavior. */
   const total = RACE_CATEGORY_IDS.length * RACE_POOL_SIZE;
+  /** Provides riddles behavior. */
   const riddles = RaceContentImportItemSchema.array()
     .max(total)
     .parse(progress.completed ?? []);
   for (const [index, card] of riddles.entries()) {
+    /** Provides category behavior. */
     const category = RACE_CATEGORY_IDS[Math.floor(index / RACE_POOL_SIZE)];
+    /** Provides slot behavior. */
     const slot = index % RACE_POOL_SIZE;
     if (
       card.canonicalRiddleId !== `race:sol61:${category}:${String(slot + 1).padStart(2, "0")}` ||
@@ -47,16 +58,22 @@ export async function authorRaceContent(
       throw new Error("Invalid race authoring checkpoint.");
     }
   }
+  /** Provides excluded answers behavior. */
   const excludedAnswers = [...existing, ...riddles].map((item) => item.answer);
+  /** Provides excluded questions behavior. */
   const excludedQuestions = [...existing, ...riddles].map((item) => item.text);
 
   for (const categoryId of RACE_CATEGORY_IDS) {
     for (let index = 0; index < RACE_POOL_SIZE; index++) {
+      /** Provides slot behavior. */
       const slot = RACE_CATEGORY_IDS.indexOf(categoryId) * RACE_POOL_SIZE + index;
       if (slot < riddles.length) continue;
+      /** Provides difficulty band behavior. */
       const difficultyBand = index < RACE_AUTHORING_EASY_COUNT ? "easy" : "medium";
+      /** Provides accepted behavior. */
       let accepted = false;
       for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_CARD; attempt++) {
+        /** Provides candidate behavior. */
         const candidate = await generateUniqueRiddle("en", excludedAnswers, {
           mode: "multiplayer",
           categoryId,
@@ -64,6 +81,7 @@ export async function authorRaceContent(
           excludedQuestions,
         });
         if (!candidate) continue;
+        /** Provides [text, answer] behavior. */
         const [text, answer] = candidate;
         riddles.push({
           canonicalRiddleId: `race:sol61:${categoryId}:${String(index + 1).padStart(2, "0")}`,
@@ -84,6 +102,7 @@ export async function authorRaceContent(
     }
   }
 
+  /** Provides file behavior. */
   const file: RaceContentImportFile = {locale: "en", riddles};
   if (!createRaceContentImportPlan(file).valid) throw new Error("Generated race bank failed import validation.");
   return file;

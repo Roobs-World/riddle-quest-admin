@@ -1,0 +1,103 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-quit-recovery",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Recover failed or malformed abandonment confirmations with the original owned mutation receipt, preserve preparation close intent and defer deadline outcomes while quit recovery is unresolved.",
+    "revision": "c34be5711775a38b22d5f38b64a9fed905efac72",
+    "sourceDigest": "d5d550cae5e445527f70cbbc83b41ceaa245e93840471037c117f0c99d8168e4",
+    "completedAt": "2026-09-30T02:06:59.310Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "race-transitions",
+      "portal-types",
+      "matchmaking-failure-adapter",
+      "isolated-target-builds",
+      "injected-quit-recovery",
+      "artifact-dependency-evidence"
+    ],
+    "checks": [
+      {
+        "id": "race-transitions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; output SHA-256 01ee7532d7477892bbd3c71cc43e1811a8bba3da420253442436a3968436f110"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; output SHA-256 ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+      },
+      {
+        "id": "matchmaking-failure-adapter",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/play/__tests__/firebaseRaceMatchmaking.test.ts; output SHA-256 4403d0a3d066a9dc6aac46453ccbdac951bf6e3dec25094e50c4d17dd6408976"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; output SHA-256 a8c10c42f95d90d92b2a57c976dd42464c825d3de79ffde15b6a822d02555b26"
+      },
+      {
+        "id": "injected-quit-recovery",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=recovers lost quit confirmations|confirms quitting an active race|acknowledges close during a delayed start|recovers lost publication confirmations|recovers a guess rejected after the ghost deadline; output SHA-256 50083b3b76d171732955f10ee3bf7a9ef3bc94c88f2dd97082dcd55f66f8731e"
+      },
+      {
+        "id": "artifact-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; output SHA-256 cd32315d6b5f0ebccaf2cc530efdfc96ef606aa88af57fae8f7fddb67d9e8978"
+      }
+    ],
+    "remainingGates": [
+      "Remaining multiplayer architecture requirements have independent development checks.",
+      "Provider submission, approval and deployment require their own receipts."
+    ],
+    "nextAction": "Continue the remaining multiplayer requirements and accepted-revision release verification.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "sha256": "420c3871542f3c4ba61386ea5772346cd53fb1fce5b1b3cc752d2dfd2a11251f"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "sha256": "b9cb0cf86fe9f01aa9ade79b9ddd8d1a228bfd6d832520cd20c25861d5c92be7"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "sha256": "2c69cf4bf47a287139a8d9e9682c2a8b325b3a423ef0e0ffcc09f5179992f736"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "sha256": "9e5536e3b3eec437d441b3715f618def57f87aca670edc33345b02a31d23c63f"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "sha256": "92af2405d48f6c5f2f6278201237865cad2a4b487d422b4c83216376b811d456"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "sha256": "d779bc5f172ddef4fedb50fd36d2ccf2b0c957aa3e3f22f7d043c977a0929db7"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "sha256": "be210ed14715669c285818a379dce2675d5eb80ab1855376909e3b007e5262d4"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

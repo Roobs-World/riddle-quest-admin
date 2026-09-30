@@ -187,7 +187,7 @@ export async function recordRedditTournamentRun(
     const runSnapshot = await transaction.get(db.collection("raceRuns").doc(input.runId));
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Tournament race run was not found.");
     /** Provides run behavior. */
-    const run = parseRunRecord(runSnapshot.data());
+    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
     if (run.finishedAtMs === undefined)
       throw new HttpsError("failed-precondition", "Only completed authoritative Race to 10 runs qualify.");
     if (nowMs < run.finishedAtMs)

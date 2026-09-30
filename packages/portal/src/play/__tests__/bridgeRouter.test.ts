@@ -6,6 +6,10 @@ describe("portal bridge routers", () => {
   it("routes game messages to host handlers", async () => {
     /** Loads riddle. */
     const loadRiddle = jest.fn();
+    /** Typed invitation reads use their own command handler. */
+    const getRaceEntry = jest.fn();
+    /** Receipt-bearing creator cancellation uses a separate mutation handler. */
+    const cancelRaceInvite = jest.fn();
     /** Provides router behavior. */
     const router = createHostMessageRouter({
       ready: jest.fn(),
@@ -30,6 +34,8 @@ describe("portal bridge routers", () => {
       abandonRace: jest.fn(),
       publishRace: jest.fn(),
       reserveRaceInvite: jest.fn(),
+      getRaceEntry,
+      cancelRaceInvite,
       getRaceChallenge: jest.fn(),
       getRaceOutcome: jest.fn(),
       listRaceInbox: jest.fn(),
@@ -55,6 +61,10 @@ describe("portal bridge routers", () => {
         requestId: "load-1",
       }),
     );
+    await router({type: "game:getRaceEntry", requestId: "read-seat", payload: {challengeId: "opaque-seat", locale: "en"}});
+    await router({type: "game:cancelRaceInvite", requestId: "cancel-seat", payload: {challengeId: "opaque-seat", locale: "en", requestId: "cancel-seat"}});
+    expect(getRaceEntry).toHaveBeenCalledWith(expect.objectContaining({type: "game:getRaceEntry", requestId: "read-seat"}));
+    expect(cancelRaceInvite).toHaveBeenCalledWith(expect.objectContaining({type: "game:cancelRaceInvite", payload: {challengeId: "opaque-seat", locale: "en", requestId: "cancel-seat"}}));
   });
 
   it("routes host messages to the game session", async () => {

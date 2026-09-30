@@ -1,0 +1,109 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-provider-view-recovery",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Own provider standings deliveries across navigation and account changes, expire stalled reads, reject stale/language-mismatched replies, recover through read-only retry, and restore scheduled GO without changing the scored clock.",
+    "revision": "c34be5711775a38b22d5f38b64a9fed905efac72",
+    "sourceDigest": "42ad864dc5d3dc3d7a337a439dd96016e3fa2328a008d814a2fefef8a03da726",
+    "completedAt": "2026-09-30T06:07:53.876Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "race-transitions",
+      "portal-types",
+      "isolated-target-builds",
+      "injected-provider-view-recovery",
+      "injected-publication-and-rollback",
+      "artifact-dependency-evidence",
+      "maintainable-file-sizes"
+    ],
+    "checks": [
+      {
+        "id": "race-transitions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; output SHA-256 aee826e14e9c4efd77af05f88f274e5c5926f9e85c66ccd414551e23131bc475"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; output SHA-256 ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; output SHA-256 c87322b9409c05e0e225a83c70d8000f411182476fde6fb0445d37fd1f06b64a"
+      },
+      {
+        "id": "injected-provider-view-recovery",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/reddit/__tests__/redditBrowser.jest-playwright.test.ts; output SHA-256 d488654a17b240c08e71a42fcc6587642d559331503e258092f32a548bf1e49c"
+      },
+      {
+        "id": "injected-publication-and-rollback",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=preserves solving time when hint and skip|publishes a completed score before reusable Jest invites; output SHA-256 3a0f94974a2ef4dcc3740334d614996ba17aec74493a9913480fc5059223391b"
+      },
+      {
+        "id": "artifact-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; output SHA-256 cd32315d6b5f0ebccaf2cc530efdfc96ef606aa88af57fae8f7fddb67d9e8978"
+      },
+      {
+        "id": "maintainable-file-sizes",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; output SHA-256 c789979091e13561ef1a768b4d41fbecf52b5ba04b49b3eed1734078c5db42b8"
+      }
+    ],
+    "remainingGates": [
+      "The full multiplayer reliability audit remains active, including repository-wide TSDoc findings in concurrent changes.",
+      "Provider submission, approval and deployment require independent evidence."
+    ],
+    "nextAction": "Continue provider effects, semantic run validation and complete multiplayer transaction/integration verification.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "sha256": "33dd3d204165b82b3b105513fb7f430f75e186414ce7f64a3756b8979be47054"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "sha256": "41bfe1e04a96429e55625050c167be8e61517af813c715c8f4bf38235a71e472"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "sha256": "de5e56d1a46a846e6b032cc0f488a6e6fd4c61ad9966099af24552891d083738"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "sha256": "9e5536e3b3eec437d441b3715f618def57f87aca670edc33345b02a31d23c63f"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "sha256": "92af2405d48f6c5f2f6278201237865cad2a4b487d422b4c83216376b811d456"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "sha256": "d779bc5f172ddef4fedb50fd36d2ccf2b0c957aa3e3f22f7d043c977a0929db7"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "sha256": "be210ed14715669c285818a379dce2675d5eb80ab1855376909e3b007e5262d4"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

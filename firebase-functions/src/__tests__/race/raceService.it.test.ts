@@ -1,4 +1,5 @@
 import {getApps, initializeApp} from "firebase-admin/app";
+import {logger} from "firebase-functions";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_CHALLENGE_TTL_MS} from "@qwordly/core/race";
 import {
@@ -8,6 +9,7 @@ import {
   listRaceInboxForUser,
   publishRaceChallengeForUser,
   reserveRaceInviteForUser,
+  readyRaceRunForUser,
   claimRaceInviteForUser,
   requestRaceHintForUser,
   resumeRaceRunForUser,
@@ -112,6 +114,7 @@ beforeAll(async () => {
       "raceMatchCandidates",
       "raceMatchOffers",
       "raceSettlementOutbox",
+      "racePerformanceOutbox",
       "raceRuns",
       "raceDecks",
       "raceChallenges",
@@ -155,6 +158,7 @@ afterAll(async () => {
       "raceMatchCandidates",
       "raceMatchOffers",
       "raceSettlementOutbox",
+      "racePerformanceOutbox",
       "raceRuns",
       "raceDecks",
       "raceChallenges",
@@ -169,6 +173,84 @@ afterAll(async () => {
 });
 
 describe("Race to 10 transactional service", () => {
+  it("observes returned, replayed and failed start commands without logging account or offer identifiers", async () => {
+    /** Logs count commands, while existing receipts remain the unique-run authority. */
+    const returned = jest.spyOn(logger, "info");
+    /** Failed offered entries remain visible even when no accepted run exists. */
+    const failed = jest.spyOn(logger, "warn");
+    try {
+      /** A successful preparation and its duplicate both return the same canonical run. */
+      const input = {locale: "en" as const, categoryId: "history" as const, requestId: "telemetry-start-request"};
+      /** Original response creates one run. */
+      const first = await startRaceRunForUser("creator-1", input, {db, nowMs: NOW});
+      expect((await startRaceRunForUser("creator-1", input, {db, nowMs: NOW + 1})).run.runId).toBe(first.run.runId);
+      expect(returned.mock.calls.filter(([message]) => message === "Race start command")).toHaveLength(2);
+      await expect(startRaceRunForUser("creator-1", {locale: "en", challengeId: "missing-offered-recording",
+        offerId: "a".repeat(64), requestId: "telemetry-failed-start"}, {db, nowMs: NOW})).rejects.toMatchObject({code: "not-found"});
+      expect(failed).toHaveBeenCalledWith("Race start command", expect.objectContaining({telemetryVersion: 1,
+        disposition: "failed", entryKind: "offer", locale: "en", failureCode: "not-found"}));
+      expect(JSON.stringify([...returned.mock.calls, ...failed.mock.calls])).not.toMatch(/creator-1|missing-offered-recording|telemetry-start-request/);
+    } finally {returned.mockRestore(); failed.mockRestore();}
+  });
+
+  it("does not charge preparation or countdown and rejects actions before the immutable scheduled start", async () => {
+    /** Provides prepared behavior. */
+    const prepared = await startRaceRunForUser("creator-1", {locale: "en", categoryId: "history",
+      requestId: "prepared-start-0001", prepare: true, includeEvaluation: true}, {db, nowMs: NOW});
+    expect(prepared.run).toMatchObject({status: "prepared", wallElapsedMs: 0, serverNowMs: NOW});
+    expect(prepared.run.startsAtMs).toBeUndefined();
+    /** Provides scheduled behavior. */
+    const scheduled = await readyRaceRunForUser("creator-1", {runId: prepared.run.runId,
+      requestId: "prepared-ready-0001", includeEvaluation: true}, {db, nowMs: NOW + 10_000});
+    expect(scheduled.run).toMatchObject({status: "scheduled", wallElapsedMs: 0, startsAtMs: NOW + 13_000});
+    /** Provides retry behavior. */
+    const retry = await readyRaceRunForUser("creator-1", {runId: prepared.run.runId,
+      requestId: "prepared-ready-0002"}, {db, nowMs: NOW + 11_000});
+    expect(retry.run.startsAtMs).toBe(NOW + 13_000);
+    /** Provides concurrent behavior. */
+    const concurrent = await Promise.all(Array.from({length: 6}, (_, index) => readyRaceRunForUser("creator-1",
+      {runId: prepared.run.runId, requestId: `concurrent-ready-${index}`}, {db, nowMs: NOW + 11_100 + index})));
+    expect(concurrent.every((response) => response.run.startsAtMs === NOW + 13_000)).toBe(true);
+    /** Provides riddle behavior. */
+    const riddle = (await db.doc(`raceRuns/${prepared.run.runId}`).get()).data()!.riddles[0];
+    /** Provides guess behavior. */
+    const guess = {runId: prepared.run.runId, riddleId: riddle.riddleId, guess: riddle.answer, requestId: "prepared-guess-0001"};
+    await expect(submitRaceGuessForUser("creator-1", guess, {db, nowMs: NOW + 12_999})).rejects.toMatchObject({code: "failed-precondition"});
+    /** Provides scored behavior. */
+    const scored = await submitRaceGuessForUser("creator-1", guess, {db, nowMs: NOW + 13_000});
+    expect(scored.run).toMatchObject({status: "active", wallElapsedMs: 0, correctCount: 1});
+    /** Provides resumed behavior. */
+    const resumed = await resumeRaceRunForUser("creator-1", prepared.run.runId, {db, nowMs: NOW + 18_000});
+    expect(resumed.run.wallElapsedMs).toBe(5_000);
+  });
+
+  it("expires unready preparation without granting a result or consuming solving time", async () => {
+    await db.doc("users/preparation-expiry-player").set({coins: 25});
+    /** Provides prepared behavior. */
+    const prepared = await startRaceRunForUser("preparation-expiry-player", {locale: "en", categoryId: "history",
+      requestId: "expired-preparation-start", prepare: true}, {db, nowMs: NOW});
+    /** Provides expired behavior. */
+    const expired = await readyRaceRunForUser("preparation-expiry-player", {runId: prepared.run.runId,
+      requestId: "expired-preparation-ready"}, {db, nowMs: NOW + 30_000});
+    expect(expired.run).toMatchObject({status: "abandoned", wallElapsedMs: 0});
+    expect((await db.doc(`raceRuns/${prepared.run.runId}`).get()).data()).toMatchObject({status: "abandoned", result: null});
+    expect((await db.doc("users/preparation-expiry-player").get()).data()?.coins).toBe(25);
+  });
+
+  it("schedules concurrent initial readiness once and rejects a foreign owner", async () => {
+    /** Provides prepared behavior. */
+    const prepared = await startRaceRunForUser("creator-1", {locale: "en", categoryId: "history",
+      requestId: "concurrent-preparation-start", prepare: true}, {db, nowMs: NOW});
+    await expect(readyRaceRunForUser("challenger-1", {runId: prepared.run.runId,
+      requestId: "foreign-ready-request"}, {db, nowMs: NOW + 1_000})).rejects.toMatchObject({code: "permission-denied"});
+    /** Provides results behavior. */
+    const results = await Promise.all(Array.from({length: 6}, (_, index) => readyRaceRunForUser("creator-1",
+      {runId: prepared.run.runId, requestId: `initial-ready-${index}`}, {db, nowMs: NOW + 5_000 + index * 100})));
+    expect(new Set(results.map((response) => response.run.startsAtMs)).size).toBe(1);
+    expect(results[0].run.startsAtMs).toBeGreaterThanOrEqual(NOW + 8_000);
+    expect(results[0].run.startsAtMs).toBeLessThanOrEqual(NOW + 8_500);
+  });
+
   it("reserves one Jest invite recipient idempotently", async () => {
     /** Initial server-owned invite lobby reservation. */
     const reservation = await reserveRaceInviteForUser(

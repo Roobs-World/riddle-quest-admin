@@ -25,11 +25,14 @@ import {
   abandonRaceRun,
   getRaceChallenge,
   getRaceAccess,
+  findRaceMatch,
   getRaceOutcome,
   listRaceCategories,
   listRaceInbox,
   publishRaceChallenge,
   reserveRaceInvite,
+  getRaceEntry,
+  cancelRaceInvite,
   recordRaceAnalytics,
   requestRaceHint,
   resumeRaceRun,
@@ -99,8 +102,11 @@ export {
   abandonRaceRun,
   publishRaceChallenge,
   reserveRaceInvite,
+  getRaceEntry,
+  cancelRaceInvite,
   getRaceChallenge,
   getRaceAccess,
+  findRaceMatch,
   getRaceOutcome,
   recordRaceAnalytics,
   exchangeJestIdentity,
@@ -140,4 +146,6 @@ export {
   yahooStripeWebhook,
 };
 
-export {deliverRaceSettlementEvent, settleRaceDeadlines} from "./race/raceSettlementJobs";
+export {deliverRaceSettlementEvent, deliverRacePerformanceEvent, settleRaceDeadlines} from "./race/raceSettlementJobs";
+export {reconcileRaceMatchProjections} from "./race/raceProjectionReconciliation";
+export {monitorRaceRecoveryHealth} from "./race/raceRecoveryHealth";

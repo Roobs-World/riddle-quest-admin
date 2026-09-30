@@ -199,9 +199,13 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
 
 /** Context shared by the author and independent editor. */
 export type RiddleGenerationOptions = {
+  /** Stores mode. */
   mode?: "classic" | "daily" | "multiplayer";
+  /** Stores category id. */
   categoryId?: RaceCategoryId;
+  /** Stores difficulty. */
   difficulty?: "easy" | "medium";
+  /** Stores excluded questions. */
   excludedQuestions?: string[];
 };
 
@@ -212,6 +216,7 @@ const requestOptions = (options: RiddleGenerationOptions) => ({
 
 /** Defines difficulty by knowledge and inference rather than answer length. */
 function getGenerationBrief(options: RiddleGenerationOptions): string {
+  /** Provides mode behavior. */
   const mode = options.mode ?? "classic";
   return (
     `Mode: ${mode}. ` +
@@ -246,7 +251,7 @@ function reviewPassed(review: RiddleReview, options: RiddleGenerationOptions): b
     review.naturalLanguage &&
     review.fairForCasualPlayers &&
     review.noAnswerSpoiler &&
-    review.categoryMatch &&
+    (!options.categoryId || review.categoryMatch) &&
     (review.difficulty === "easy" || review.difficulty === "medium") &&
     (!options.difficulty || review.difficulty === options.difficulty) &&
     review.issues.length === 0

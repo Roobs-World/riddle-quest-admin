@@ -167,6 +167,11 @@ describe("Reddit social profile projection", () => {
       creator: {displayName: "FreshSolver", avatarUrl: "https://styles.redditmedia.com/avatar.png"},
     });
     expect(JSON.stringify(hydrated)).not.toContain("t2_");
+    /** Typed ready response uses the same provider identity adapter as legacy previews. */
+    const entry = await hydrateRedditRaceSocialResult("gameplay.race.entry", {challengeId: "challenge-1"},
+      {status: "ready", challenge: preview, serverNowMs: 10000}, {db: database, nowMs: 10000});
+    expect(entry).toMatchObject({status: "ready", challenge: {creator: {displayName: "FreshSolver"}}});
+    expect(JSON.stringify(entry)).not.toContain("t2_");
 
     /** Provides inbox behavior. */
     const inbox = await hydrateRedditRaceSocialResult(

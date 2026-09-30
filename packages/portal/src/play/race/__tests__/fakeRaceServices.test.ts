@@ -1,4 +1,4 @@
-import {describe, expect, it} from "@jest/globals";
+import {describe, expect, it, jest} from "@jest/globals";
 import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RaceRunResponseSchema} from "@qwordly/core/race";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 import {projectInstantRaceHint} from "../logic/racePresentation";
@@ -7,6 +7,110 @@ import {projectInstantRaceHint} from "../logic/racePresentation";
 const answers = ["piano", "clock", "towel", "bottle", "stamp", "needle", "name", "comb", "water", "book"];
 
 describe("createFakeRaceServices", () => {
+  it("clears automatic skips once, including the tenth question, with production-shaped events", async () => {
+    /** Every exhausted attempt counts as a cleared question just as the authoritative engine does. */
+    const services = createFakeRaceServices();
+    /** Mutable run follows the public response after every recorded attempt. */
+    let run = (await services.startRace({locale: "en", categoryId: "mixed", requestId: "automatic-skip-start"})).run;
+    for (let position = 0; position < 10; position++) {
+      for (let attempt = 0; attempt < 5; attempt++) {
+        /** Each new attempt has its own idempotent mutation receipt. */
+        const request = {runId: run.runId, riddleId: run.currentRiddle!.riddleId, requestId: `automatic-skip-${position}-${attempt}`, guess: "x".repeat(run.currentRiddle!.answerLength)};
+        /** Cached replay cannot add another penalty or cleared question. */
+        const guessed = await services.submitRaceGuess(request);
+        await expect(services.submitRaceGuess(request)).resolves.toEqual(guessed);
+        expect(guessed.autoSkipped).toBe(attempt === 4);
+        expect(guessed.run.correctCount).toBe(position + (attempt === 4 ? 1 : 0));
+        run = guessed.run;
+      }
+      expect(run.events.at(-1)).toMatchObject({type: "skip", riddlePosition: position, correctCount: position + 1, penaltyAddedMs: 45000});
+    }
+    expect(run).toMatchObject({status: "completed", currentRiddle: null, correctCount: 10, totalPenaltyMs: 450000});
+    expect(run.events).toHaveLength(10);
+    await expect(services.getRaceOutcome(run.runId)).resolves.toMatchObject({result: "recorded", correctCount: 10, skipPenaltyMs: 450000, publishable: true, rematchEligible: false});
+  });
+  it.each(["prepared", "scheduled", "abandoned", "completed"])("rejects new play mutations on a %s run without charging", async status => {
+    /** Controlled time prevents a scheduled countdown from accidentally completing in the test. */
+    const clock = jest.spyOn(Date, "now").mockReturnValue(100000);
+    try {
+      /** Independent authority-owned run for each lifecycle status. */
+      const services = createFakeRaceServices();
+      /** Prepared runs retain their question but cannot be mutated before readiness. */
+      let run = (await services.startRace({locale: "en", categoryId: "mixed", requestId: "inactive-start", prepare: status !== "completed"})).run;
+      if (status === "scheduled") run = (await services.readyRace({runId: run.runId, requestId: "inactive-ready"})).run;
+      if (status === "abandoned") run = (await services.abandonRace({runId: run.runId, requestId: "inactive-quit"})).run;
+      if (status === "completed") for (const [index, guess] of answers.entries()) run = (await services.submitRaceGuess({runId: run.runId, riddleId: run.currentRiddle!.riddleId, guess, requestId: `inactive-guess-${index}`})).run;
+      expect(run.status).toBe(status);
+      await expect(services.submitRaceGuess({runId: run.runId, riddleId: "fake-race-1", guess: "piano", requestId: "invalid-guess"})).rejects.toThrow("no longer active");
+      await expect(services.requestRaceHint({runId: run.runId, riddleId: "fake-race-1", requestId: "invalid-hint"})).rejects.toThrow("no longer active");
+      await expect(services.skipRaceRiddle({runId: run.runId, riddleId: "fake-race-1", requestId: "invalid-skip"})).rejects.toThrow("no longer active");
+      expect((await services.resumeRace(run.runId)).run).toMatchObject({status, totalPenaltyMs: 0, correctCount: status === "completed" ? 10 : 0});
+    } finally {clock.mockRestore();}
+  });
+  it("rejects stale question mutations after a skip while preserving the original receipt replay", async () => {
+    /** Stale commands cannot mutate the successor merely because they refer to the same run. */
+    const services = createFakeRaceServices();
+    /** Initial authority-issued active question. */
+    const {run} = await services.startRace({locale: "en", categoryId: "mixed", requestId: "stale-question-start"});
+    /** Original skip receipt is still valid for replay after advancement. */
+    const request = {runId: run.runId, riddleId: run.currentRiddle!.riddleId, requestId: "stale-question-skip"};
+    /** Exactly one paid advancement is recorded. */
+    const skipped = await services.skipRaceRiddle(request);
+    await expect(services.skipRaceRiddle(request)).resolves.toEqual(skipped);
+    await expect(services.submitRaceGuess({...request, guess: "piano", requestId: "new-stale-guess"})).rejects.toThrow("riddle is no longer active");
+    await expect(services.requestRaceHint({...request, requestId: "new-stale-hint"})).rejects.toThrow("riddle is no longer active");
+    await expect(services.skipRaceRiddle({...request, requestId: "new-stale-skip"})).rejects.toThrow("riddle is no longer active");
+    expect((await services.resumeRace(run.runId)).run).toMatchObject({correctCount: 1, totalPenaltyMs: 45000, currentRiddle: {position: 1}});
+  });
+  it.each(["ghost", "timeout"].flatMap(ending => ["hint", "skip", "automatic"].map(action => ({ending, action}))))("returns a terminal $action view, freezes its clock and charges once at the $ending boundary", async ({ending, action}) => {
+    /** Controlled server time proves deadline behavior without wall-clock races. */
+    const clock = jest.spyOn(Date, "now").mockReturnValue(100000);
+    try {
+      /** Published creator recording gives the challenger a genuine authority-owned opponent. */
+      const services = createFakeRaceServices();
+      /** Creator time can exceed the challenger limit because creators remain uncapped. */
+      const creator = await services.startRace({locale: "en", categoryId: "mixed", requestId: "creator-start"});
+      for (const [index, guess] of answers.entries()) {
+        clock.mockReturnValue(100000 + (index + 1) * 1000);
+        if (ending === "timeout" && index === 9) clock.mockReturnValue(100000 + creator.run.rules.maxAdjustedTimeMs + 60000);
+        await services.submitRaceGuess({runId: creator.run.runId, riddleId: `fake-race-${index + 1}`, guess, requestId: `creator-guess-${index}`});
+      }
+      /** Immutable recording is the same one returned by the normal publication contract. */
+      const published = await services.publishRace({runId: creator.run.runId, requestId: "creator-publish"});
+      /** Challenger is active before requesting the penalty that ends its run. */
+      const {run} = await services.startRace({locale: "en", challengeId: published.challengeId, requestId: "challenger-start", includeEvaluation: true});
+      if (ending === "timeout") clock.mockReturnValue(run.serverNowMs + run.rules.maxAdjustedTimeMs - 10000);
+      if (action === "automatic") for (let attempt = 0; attempt < 4; attempt++) await services.submitRaceGuess({runId: run.runId, riddleId: run.currentRiddle!.riddleId, guess: "xxxxx", requestId: `wrong-${attempt}`});
+      /** Idempotency identity belongs to the original action that crosses the boundary. */
+      const request = {runId: run.runId, riddleId: run.currentRiddle!.riddleId, requestId: "terminal-action", guess: "xxxxx"};
+      /** The same public mutation is replayed after terminal completion. */
+      const apply = () => action === "hint" ? services.requestRaceHint(request) : action === "skip" ? services.skipRaceRiddle(request) : services.submitRaceGuess(request);
+      /** Production-shaped terminal response retains the recorded event and omits its active question. */
+      const hinted = await apply();
+      expect(hinted.run).toMatchObject({status: ending === "ghost" ? "completed" : "timed_out", currentRiddle: null, totalPenaltyMs: action === "hint" ? 15000 : 45000, correctCount: action === "hint" ? 0 : 1});
+      expect(hinted.run.events).toHaveLength(1);
+      clock.mockReturnValue(Date.now() + 60000);
+      expect((await services.resumeRace(run.runId)).run.adjustedElapsedMs).toBe(hinted.run.adjustedElapsedMs);
+      await expect(apply()).resolves.toEqual(hinted);
+      expect(await services.getRaceOutcome(run.runId)).toMatchObject({result: ending === "ghost" ? "ghost_win" : "timed_out", hintPenaltyMs: action === "hint" ? 15000 : 0, skipPenaltyMs: action === "hint" ? 0 : 45000,
+        publishable: false, rematchEligible: ending === "ghost"});
+    } finally {clock.mockRestore();}
+  });
+  it("allows quitting prepared and scheduled runs without creating a result", async () => {
+    for (const schedule of [false, true]) {
+      /** Independent race adapter for each pre-start status. */
+      const services = createFakeRaceServices();
+      /** Complete prepared deck before solving time begins. */
+      const prepared = await services.startRace({locale: "en", categoryId: "mixed", requestId: "prepare-quit", prepare: true});
+      if (schedule) await services.readyRace({runId: prepared.run.runId, requestId: "ready-quit"});
+      /** Correlated quit is safe to retry and never counts as a race result. */
+      const request = {runId: prepared.run.runId, requestId: "abandon-prestart"};
+      /** Authoritative null-result confirmation for a pre-start exit. */
+      const abandoned = await services.abandonRace(request);
+      expect(abandoned).toMatchObject({run: {status: "abandoned", wallElapsedMs: 0, currentRiddle: null}, result: null});
+      await expect(services.abandonRace(request)).resolves.toEqual(abandoned);
+    }
+  });
   it("accepts an earlier race-start response without preloaded hint fields", async () => {
     /** Local authoritative race harness. */
     const services = createFakeRaceServices();
@@ -74,6 +178,23 @@ describe("createFakeRaceServices", () => {
     const advanced = await services.submitRaceGuess({runId: run.runId, riddleId: run.currentRiddle!.riddleId,
       requestId: "answer-1", guess: "piano"});
     expect(advanced.run.currentRiddle?.evaluation).toEqual({answer: "clock", locale: "en"});
+  });
+  it("deduplicates concurrent starts and replays the latest prepared run state", async () => {
+    /** Independent authority adapter owns these start receipts. */
+    const services = createFakeRaceServices();
+    /** Both concurrent deliveries represent one player start intent. */
+    const request = {locale: "en" as const, categoryId: "history" as const, requestId: "same-start-receipt", prepare: true, includeEvaluation: true};
+    /** Duplicate transport deliveries cannot create separate runs. */
+    const [first, duplicate] = await Promise.all([services.startRace(request), services.startRace(request)]);
+    expect(first.run.runId).toBe(duplicate.run.runId);
+    expect(first.run.status).toBe("prepared");
+    await services.readyRace({runId: first.run.runId, requestId: "ready-start-receipt", includeEvaluation: true});
+    /** Start replay returns the original run's scheduled state, as server resume does. */
+    const replay = await services.startRace(request);
+    expect(replay.run).toMatchObject({runId: first.run.runId, status: "scheduled", categoryId: "history"});
+    /** A deliberately new intent creates a separate prepared race. */
+    const fresh = await services.startRace({...request, requestId: "new-start-receipt"});
+    expect(fresh.run.runId).not.toBe(first.run.runId);
   });
 
   it("applies hints and skips idempotently with authoritative penalties", async () => {

@@ -85,6 +85,7 @@ export const projectInstantRaceHint = (run: RaceRunView): RaceRunView | null => 
   const answer = splitGraphemes(preloaded.evaluation.answer, preloaded.evaluation.locale);
   /** Positions already revealed in this riddle. */
   const revealed = new Set(run.currentRiddle.revealedLetters.map((letter) => letter.index));
+  if (revealed.size >= run.rules.maxHintsPerRiddle) return null;
   /** First still-hidden answer position. */
   const index = answer.findIndex((_, candidateIndex) => !revealed.has(candidateIndex));
   if (index < 0) return null;
@@ -96,16 +97,16 @@ export const projectInstantRaceHint = (run: RaceRunView): RaceRunView | null => 
     adjustedElapsedMs: run.adjustedElapsedMs + run.rules.hintPenaltyMs,
     currentRiddle: {
       ...run.currentRiddle,
-      hintAvailable: revealed.size + 1 < answer.length,
+      hintAvailable: revealed.size + 1 < Math.min(answer.length, run.rules.maxHintsPerRiddle),
       revealedLetters: [...run.currentRiddle.revealedLetters, hint],
     },
   };
 };
 
-/** Advances the latest server clock locally, capping only competitive challenger runs. */
+/** Advances active server clocks locally, preserving confirmed terminal clocks without clamping. */
 export const getAdjustedRaceTime = (run: RaceRunView | null, receivedAtMs: number, nowMs = Date.now()): number =>
   run
-    ? run.role === "challenger"
+    ? run.role === "challenger" && run.status === "active"
       ? Math.min(
           run.rules.maxAdjustedTimeMs,
           run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
@@ -133,10 +134,14 @@ export const projectRaceOutcome = (run: RaceRunView, adjustedNow: number): RaceO
         ? "ghost_win"
         : run.opponent && run.adjustedElapsedMs < run.opponent.adjustedFinishMs
           ? "player_win"
-          : "tie";
+          : run.opponent && run.adjustedElapsedMs > run.opponent.adjustedFinishMs
+            ? "ghost_win"
+            : "tie";
   /** Exact adjusted finish time fixed by the applicable terminal rule. */
-  const adjustedFinishMs = timedOut
-    ? run.rules.maxAdjustedTimeMs
+  const adjustedFinishMs = run.status === "timed_out"
+    ? run.adjustedElapsedMs
+    : timedOut
+      ? run.rules.maxAdjustedTimeMs
     : opponentFinished
       ? run.opponent!.adjustedFinishMs
       : run.adjustedElapsedMs;

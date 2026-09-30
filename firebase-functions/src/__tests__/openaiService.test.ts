@@ -291,7 +291,12 @@ describe("OpenAI Service", () => {
         mockApprovedRiddle("Seen after rain, I bend sunlight into a coloured arc.", "rainbow");
         await expect(generateUniqueRiddle("en", [], {mode})).resolves.not.toBeNull();
         for (const index of [0, 2]) {
-          const request = mockParse.mock.calls[index][0] as {instructions: string};
+          /** Provides request behavior. */
+          /** Parsed request sent to the model adapter. */
+          const request = mockParse.mock.calls[index][0] as {
+            /** Prompt instructions supplied to the model. */
+            instructions: string;
+          };
           expect(request.instructions).toContain(`Mode: ${mode}`);
           expect(request.instructions).toContain("ONLY easy or medium riddles and questions");
         }

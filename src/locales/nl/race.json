@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Gemengd",
-    "CATEGORY_MIXED_DESCRIPTION": "Een verrassing uit elke categorie"
+    "CATEGORY_MIXED_DESCRIPTION": "Een verrassing uit elke categorie",
+    "WAITING_PUBLICATION": "Wachten tot de maker de race voltooit en publiceert.",
+    "INVITATION_EXPIRED": "Deze uitnodiging is verlopen.",
+    "INVITATION_CANCELLED": "Deze uitnodiging is geannuleerd.",
+    "CANCEL_INVITATION": "Uitnodiging annuleren",
+    "MATCH_TEMPORARY": "Tegenstanders zoeken is tijdelijk niet beschikbaar. Probeer het zo nog eens.",
+    "MATCH_TRY_NEW": "Start een nieuwe zoekopdracht om een tegenstander te vinden.",
+    "MATCH_EXPIRED": "Deze zoekopdracht naar een tegenstander is verlopen. Probeer het opnieuw.",
+    "MATCH_CONSUMED": "Deze zoekopdracht is al gebruikt. Zoek een andere tegenstander.",
+    "MATCH_UNAVAILABLE": "Tegenstanders zoeken is niet beschikbaar voor dit account.",
+    "MATCH_EMPTY": "Er zijn nog geen geschikte tegenstanders beschikbaar. Probeer het later opnieuw."
   }
 }

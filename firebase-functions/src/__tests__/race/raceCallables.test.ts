@@ -18,6 +18,14 @@ const serviceMocks = {
 };
 /** Provides mock assert race access behavior. */
 const mockAssertRaceAccess = jest.fn();
+/** Authenticated identity is asserted at the generic selector seam. */
+const mockFindRecordedRaceMatch = jest.fn();
+/** Invitation authority adapters must receive only authenticated identities. */
+const mockGetRaceEntryForUser = jest.fn();
+/** Creator cancellation is a separate idempotent authority mutation. */
+const mockCancelRaceInviteForUser = jest.fn();
+jest.mock("../../race/raceInvitation", () => ({getRaceEntryForUser: mockGetRaceEntryForUser, cancelRaceInviteForUser: mockCancelRaceInviteForUser}));
+jest.mock("../../race/raceMatchmaking", () => ({findRecordedRaceMatch: mockFindRecordedRaceMatch}));
 /** Provides mock run with jest account operation lease behavior. */
 const mockRunWithJestAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
@@ -66,7 +74,10 @@ import type {CallableRequest} from "firebase-functions/v2/https";
 import {
   abandonRaceRun,
   getRaceAccess,
+  findRaceMatch,
   getRaceChallenge,
+  getRaceEntry,
+  cancelRaceInvite,
   getRaceOutcome,
   listRaceCategories,
   listRaceInbox,
@@ -125,8 +136,40 @@ describe("Race callable deployment options", () => {
 
 describe("Race callable methods", () => {
   beforeEach(() => {
+    mockFindRecordedRaceMatch.mockReset();
     mockAssertRaceAccess.mockResolvedValue(undefined);
     serviceMocks.claimRaceInviteForUser.mockResolvedValue(false);
+  });
+
+  it("binds recorded matchmaking to authenticated identity and validated preferences", async () => {
+    mockFindRecordedRaceMatch.mockResolvedValueOnce({status: "empty", locale: "en"});
+    /** Provides input behavior. */
+    const input = {locale: "en", categoryId: "history", requestId: "match-request"};
+    await expect(findRaceMatch(authenticatedRequest(input))).resolves.toEqual({status: "empty", locale: "en"});
+    expect(mockFindRecordedRaceMatch).toHaveBeenCalledWith(raceCallableUserId, input);
+    expect(mockAssertRaceAccess).toHaveBeenCalledWith(raceCallableUserId, "en");
+  });
+
+  it("authenticates and validates typed invitation reads and creator cancellation", async () => {
+    /** Waiting facts contain no private player identities. */
+    const waiting = {status: "waiting", serverNowMs: 10000, invitation: {claimState: "claimed", publicationState: "pending", role: "recipient", canCancel: false, expiresAtMs: 20000}};
+    mockGetRaceEntryForUser.mockResolvedValueOnce(waiting);
+    await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en"}))).resolves.toEqual(waiting);
+    expect(mockGetRaceEntryForUser).toHaveBeenCalledWith(raceCallableUserId, "opaque-seat", "en");
+    /** Stable cancellation receipt belongs to the authenticated creator. */
+    const cancellation = {challengeId: "opaque-seat", locale: "en", requestId: "cancel-seat-1"};
+    mockCancelRaceInviteForUser.mockResolvedValueOnce({status: "cancelled", serverNowMs: 10000});
+    await expect(cancelRaceInvite(authenticatedRequest(cancellation))).resolves.toMatchObject({status: "cancelled"});
+    expect(mockCancelRaceInviteForUser).toHaveBeenCalledWith(raceCallableUserId, cancellation);
+    await expect(cancelRaceInvite(authenticatedRequest({challengeId: "opaque-seat", locale: "en"}))).rejects.toMatchObject({code: "invalid-argument"});
+    await expect(getRaceEntry({auth: undefined, data: {challengeId: "opaque-seat", locale: "en"}} as CallableRequest<unknown>)).rejects.toMatchObject({code: "unauthenticated"});
+    await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", creatorId: "victim"}))).rejects.toMatchObject({code: "invalid-argument"});
+  });
+
+  it("rejects client-authored provider scope and player identity", async () => {
+    await expect(findRaceMatch(authenticatedRequest({locale: "en", provider: "facebook", userId: "victim"})))
+      .rejects.toMatchObject({code: "invalid-argument"});
+    expect(mockFindRecordedRaceMatch).not.toHaveBeenCalled();
   });
 
   it.each(callableCases)("$name rejects unauthenticated requests", async ({handler, input}) => {

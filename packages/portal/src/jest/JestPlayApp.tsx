@@ -50,6 +50,7 @@ import {useJestFunnelTracking, useJestPlatformActivity} from "./useJestPlatformO
 import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
+import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
   /** Counts confirmed guest Classic wins in this play session for the registration cadence. */
@@ -113,12 +114,13 @@ export function JestPlayApp() {
   /** Keeps host authority assembly stable while player progress and SDK activity update. */
   const platformCapabilities = useMemo(
     () => ({
+      ...(!authHarness && !mockRuntime ? {matchmaking: createFirebaseRaceMatchmaking()} : {}),
       accountUpgrade: {
         state: session?.player.registered ? ("complete" as const) : ("available" as const),
         begin: async () => ({status: "unavailable" as const, message: "Use the Jest registration controls."}),
       },
     }),
-    [session?.player.registered],
+    [authHarness, mockRuntime, session?.player.registered],
   );
   /** Provides [error, set error] behavior. */
   const [error, setError] = useState<string | null>(null);

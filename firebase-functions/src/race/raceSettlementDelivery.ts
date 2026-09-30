@@ -1,7 +1,9 @@
+import {withRaceDeliveryReceipt} from "./raceDeliveryFailures";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {creatorRaceResult} from "./raceSettlement";
 import {parseRunRecord, persistRaceAchievementEvent, requestDocumentId, type Firestore} from "./raceSetupService";
+import {parseRaceSettlementEvent} from "./raceDeliveryRecords";
 
 /**
  * Delivers one canonical settlement outbox event transactionally and idempotently.
@@ -13,14 +15,16 @@ export async function deliverRaceSettlement(
   db: Firestore = admin.firestore(),
   nowMs = Date.now(),
 ): Promise<boolean> {
+  /** Provides event ref behavior. */
   const eventRef = db.doc(`raceSettlementOutbox/${runId}`);
-  return db.runTransaction(async (transaction) => {
+  return withRaceDeliveryReceipt(db, eventRef, nowMs, () => db.runTransaction(async (transaction) => {
+    /** Provides event snapshot behavior. */
     const eventSnapshot = await transaction.get(eventRef);
     if (!eventSnapshot.exists || eventSnapshot.data()?.delivered === true) return false;
-    const event = eventSnapshot.data()!;
-    if (typeof event.userId !== "string" || typeof event.creatorId !== "string" || event.runId !== runId) {
-      throw new Error("invalid-race-settlement-event");
-    }
+    /** Provides event behavior. */
+    const event = parseRaceSettlementEvent(eventSnapshot.data(), runId);
+    if (event.nextAttemptAtMs !== undefined && event.nextAttemptAtMs > nowMs) return false;
+    /** Provides [run snapshot, challenger, creator, challenger deletion, creator deletion, outgoing block, incoming block] behavior. */
     const [runSnapshot, challenger, creator, challengerDeletion, creatorDeletion, outgoingBlock, incomingBlock] =
       await Promise.all([
         transaction.get(db.doc(`raceRuns/${runId}`)),
@@ -33,19 +37,27 @@ export async function deliverRaceSettlement(
       ]);
     if (!runSnapshot.exists || !creator.exists || !challenger.exists || challengerDeletion.exists ||
       creatorDeletion.exists || outgoingBlock.exists || incomingBlock.exists) {
-      transaction.update(eventRef, {delivered: true, deliveredAtMs: nowMs, suppressed: true});
+      transaction.update(eventRef, {delivered: true, deliveryState: "suppressed", deliveredAtMs: nowMs, suppressed: true});
       return false;
     }
-    const run = parseRunRecord(runSnapshot.data());
+    /** Provides run behavior. */
+    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
+    /** Provides outcome behavior. */
     const outcome = run.settledOutcome;
-    if (!outcome || !run.challengeId || run.settledAtMs === undefined || run.userId !== event.userId ||
+    if (run.runId !== runId || !outcome || !run.challengeId || run.settledAtMs === undefined || run.userId !== event.userId ||
       run.opponent?.subjectUserId !== event.creatorId || run.challengeId !== event.challengeId ||
-      creatorRaceResult(outcome.result) !== event.result) throw new Error("race-settlement-source-mismatch");
+      creatorRaceResult(outcome.result) !== event.result || event.categoryId !== run.categoryId ||
+      event.adjustedDeltaMs !== outcome.adjustedFinishMs - (run.opponent?.adjustedFinishMs ?? 0) || event.createdAtMs !== run.settledAtMs)
+      throw new Error("race-settlement-source-mismatch");
+    /** Provides item id behavior. */
     const itemId = requestDocumentId(run.challengeId, run.userId);
     // Legacy completion may already have delivered this challenge before migration.
+    /** Provides inbox ref behavior. */
     const inboxRef = db.doc(`users/${event.creatorId}/raceInbox/${itemId}`);
+    /** Provides existing inbox behavior. */
     const existingInbox = await transaction.get(inboxRef);
     if (!existingInbox.exists) {
+      /** Provides profile behavior. */
       const profile = challenger.data() ?? {};
       transaction.create(inboxRef, {
         itemId,
@@ -71,7 +83,7 @@ export async function deliverRaceSettlement(
       persistRaceAchievementEvent(transaction, db.doc(`users/${event.creatorId}`), creator.data() ?? {},
         {kind: "opponent_resolved", won: event.result === "win"}, event.createdAtMs);
     }
-    transaction.update(eventRef, {delivered: true, deliveredAtMs: nowMs});
+    transaction.update(eventRef, {delivered: true, deliveryState: "delivered", deliveredAtMs: nowMs});
     return !existingInbox.exists;
-  });
+  }));
 }

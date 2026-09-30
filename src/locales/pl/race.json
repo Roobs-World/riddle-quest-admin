@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Mieszane",
-    "CATEGORY_MIXED_DESCRIPTION": "Niespodzianka z każdej kategorii"
+    "CATEGORY_MIXED_DESCRIPTION": "Niespodzianka z każdej kategorii",
+    "WAITING_PUBLICATION": "Czekamy, aż twórca ukończy i opublikuje swój wyścig.",
+    "INVITATION_EXPIRED": "To zaproszenie wygasło.",
+    "INVITATION_CANCELLED": "To zaproszenie zostało anulowane.",
+    "CANCEL_INVITATION": "Anuluj zaproszenie",
+    "MATCH_TEMPORARY": "Wyszukiwanie przeciwników jest chwilowo niedostępne. Spróbuj ponownie za chwilę.",
+    "MATCH_TRY_NEW": "Rozpocznij nowe wyszukiwanie, aby znaleźć przeciwnika.",
+    "MATCH_EXPIRED": "To wyszukiwanie przeciwnika wygasło. Spróbuj ponownie.",
+    "MATCH_CONSUMED": "To wyszukiwanie zostało już użyte. Znajdź innego przeciwnika.",
+    "MATCH_UNAVAILABLE": "Wyszukiwanie przeciwników jest niedostępne dla tego konta.",
+    "MATCH_EMPTY": "Nie ma jeszcze odpowiednich przeciwników. Spróbuj ponownie później."
   }
 }

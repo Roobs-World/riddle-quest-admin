@@ -4,6 +4,8 @@ import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {mkdir, readFile} from "node:fs/promises";
 import path from "node:path";
+import type {GameToHostMessage} from "@qwordly/core/bridge";
+import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult} from "./raceRecovery.jest-playwright.support";
 
 import {
   advanceToRegistration,
@@ -483,6 +485,8 @@ const openHarness = async (
     raceSkipDelayMs?: number;
     /** Whether late ghost guesses reproduce the production rejection. */
     raceRejectLateGuess?: boolean;
+    /** Typed invitation adapter scenario injected before the game mounts. */
+    invitationRole?: "creator" | "recipient";
   } = {},
 ) => {
   /** Provides context behavior. */
@@ -499,6 +503,28 @@ const openHarness = async (
     await route.abort();
   });
   await installJestSdkHarness(page, options.scenario);
+  if (options.invitationRole) await page.addInitScript(role => {
+    /** Authority adapter emits readiness facts for an opaque invitation. */
+    const dispatch = window.dispatchEvent.bind(window);
+    /** Durable terminal state owned by this injected authority adapter. */
+    let cancelled = false;
+    /** Visible read count exposes browser visibility suspension. */
+    let reads = 0;
+    Object.defineProperty(window, "__INVITATION_READS__", {get: () => reads});
+    window.dispatchEvent = event => {
+      /** Untrusted bridge envelope is replaced before any consumer parses it. */
+      const detail = (event as CustomEvent).detail;
+      if (event.type === "riddle-quest:host-to-game" && ["raceEntry", "raceInviteCancel"].includes(detail?.payload?.operation)) {
+        if (detail.payload.operation === "raceEntry") reads++;
+        else cancelled = true;
+        detail.payload = {operation: detail.payload.operation, ok: true, data: {
+          status: cancelled ? "cancelled" : "waiting", serverNowMs: Date.now(),
+          invitation: {role, claimState: "claimed", publicationState: "pending", canCancel: role === "creator" && !cancelled, expiresAtMs: Date.now() + 60000},
+        }};
+      }
+      return dispatch(event);
+    };
+  }, options.invitationRole);
   /** Provides query behavior. */
   const query = new URLSearchParams({harness: options.harness ?? "jest-auth"});
   if (options.registered) query.set("registered", "1");
@@ -1437,6 +1463,220 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("renders typed invitation waiting and cancellation for an opaque creator entry", async () => {
+    /** Injected browser authority exposes recovery before publication. */
+    const {context, page, pageErrors} = await openHarness(browser, {
+      registered: true, harness: "race-auth", playerId: "invitation-creator", challengeId: "opaque-seat", invitationRole: "creator", inviteKind: "race", campaign: "race_to_10_v1",
+    });
+    await page.getByText(/waiting for the creator to finish and publish/i).waitFor({timeout: 15000});
+    await page.getByRole("button", {name: /^cancel invitation$/i}).click();
+    await page.getByText(/this invitation was cancelled/i).waitFor();
+    expect(await page.getByRole("button", {name: /^cancel invitation$/i}).count()).toBe(0);
+    expect(pageErrors).toEqual([]);
+    await captureMultiplayerEvidence(page, "invitation-cancelled.png");
+    await context.close();
+  });
+
+  it("recovers a waiting invitation from a local pointer after reloading without an incoming link", async () => {
+    /** Actual browser lifetime, transport and uncaught errors for invitation reload recovery. */
+    const {context, page, pageErrors} = await openHarness(browser, {
+      registered: true, harness: "race-auth", playerId: "invitation-reload-player", challengeId: "reload-seat", invitationRole: "creator", inviteKind: "race", campaign: "race_to_10_v1",
+    });
+    await page.getByText(/waiting for the creator to finish and publish/i).waitFor({timeout: 15000});
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem("riddleQuest:raceRecovery")!).intent)).toEqual({kind: "challenge", challengeId: "reload-seat"});
+    /** Reload URL deliberately removes incoming-link attribution while retaining the injected account. */
+    const url = new URL(page.url());
+    for (const key of ["challengeId", "inviteKind", "campaign"]) url.searchParams.delete(key);
+    await page.goto(url.toString());
+    await enterRegisteredGame(page);
+    await page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await page.getByText(/waiting for the creator to finish and publish/i).waitFor({timeout: 15000});
+    expect(await page.evaluate(() => Reflect.get(window, "__INVITATION_READS__"))).toBeGreaterThan(0);
+    await page.getByRole("button", {name: /^cancel invitation$/i}).click();
+    await page.getByText(/this invitation was cancelled/i).waitFor();
+    expect(await page.evaluate(() => localStorage.getItem("riddleQuest:raceRecovery"))).toBeNull();
+    expect(pageErrors).toEqual([]);
+    await context.close();
+  });
+
+  it("suspends typed invitation polling while hidden and refreshes on visible recovery", async () => {
+    /** Recipient waiting without any creator cancellation capability. */
+    const {context, page, pageErrors} = await openHarness(browser, {
+      registered: true, harness: "race-auth", playerId: "invitation-recipient", challengeId: "another-opaque-seat", invitationRole: "recipient", inviteKind: "race", campaign: "race_to_10_v1",
+    });
+    await page.getByText(/waiting for the creator to finish and publish/i).waitFor({timeout: 15000});
+    expect(await page.getByRole("button", {name: /^cancel invitation$/i}).count()).toBe(0);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "visibilityState", {configurable: true, value: "hidden"});
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    /** Read count after the browser signals background visibility. */
+    const before = await page.evaluate(() => Reflect.get(window, "__INVITATION_READS__"));
+    await page.waitForTimeout(1500);
+    expect(await page.evaluate(() => Reflect.get(window, "__INVITATION_READS__"))).toBe(before);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "visibilityState", {configurable: true, value: "visible"});
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await page.waitForFunction(previous => Reflect.get(window, "__INVITATION_READS__") > previous, before);
+    expect(pageErrors).toEqual([]);
+    await captureMultiplayerEvidence(page, "invitation-waiting.png");
+    await context.close();
+  });
+
+  it("recovers lost hint and skip confirmations by resuming the current race", async () => {
+    for (const action of ["Hint", "Skip"]) {
+      /** Independent authenticated player for each lost mutation confirmation. */
+      const {context, page, pageErrors} = await openHarness(browser, {
+        registered: true, harness: "race-auth", playerId: `race-recovery-${action.toLowerCase()}`,
+      });
+      try {
+        await enterRegisteredGame(page);
+        await page.getByRole("button", {name: /^multiplayer$/i}).click();
+        await page.getByRole("button", {name: /^History /}).click();
+        await page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10000});
+        await page.locator(".race-gameplay .guess-row .cell").first().click();
+        await page.keyboard.type("pi");
+        /** Original clue restored by the rejected local confirmation. */
+        const clue = await page.locator(".race-riddle-surface h2").innerText();
+        await page.evaluate(() => {
+          Object.assign(window, {__raceRecoveryRequests: []});
+          /** Records commands to distinguish read recovery from another paid mutation. */
+          window.addEventListener("riddle-quest:game-to-host", event => {
+            (Reflect.get(window, "__raceRecoveryRequests") as string[]).push((event as CustomEvent).detail.type);
+          });
+          /** The server applies the action, but transport loses its successful confirmation. */
+          const dispatch = window.dispatchEvent.bind(window);
+          window.dispatchEvent = event => {
+            /** Correlated response remains a valid failure envelope. */
+            const detail = (event as CustomEvent).detail;
+            if (event.type === "riddle-quest:host-to-game" && detail?.payload?.ok &&
+              ["raceHint", "raceSkip"].includes(detail.payload.operation)) {
+              detail.payload = {...detail.payload, ok: false, error: "RaceTo10.ERROR_GENERIC"};
+            }
+            return dispatch(event);
+          };
+        });
+        await page.locator(".race-actions").getByRole("button", {name: new RegExp(`^${action}`, "i")}).click();
+        await page.getByRole("alert").waitFor({state: "visible"});
+        expect(await page.locator(".race-riddle-surface h2").innerText()).toBe(clue);
+        await page.getByRole("button", {name: /^retry$/i}).click();
+        if (action === "Hint") {
+          await page.locator(".race-gameplay .guess-row .cell.green").first().waitFor();
+          expect(await page.locator(".race-gameplay .guess-row").first().locator(".cell").allTextContents()).toEqual(["p", "i", "", "", ""]);
+          expect(await page.locator(".race-header-clock small").innerText()).toContain("0:15.0");
+        } else {
+          await page.waitForFunction(previous => document.querySelector(".race-riddle-surface h2")?.textContent !== previous, clue);
+          expect(await page.locator(".race-gameplay .guess-row").first().locator(".cell").allTextContents()).toEqual(["", "", "", "", ""]);
+          expect(await page.locator(".race-header-clock small").innerText()).toContain("0:45.0");
+          expect(Number((await page.locator(".race-header-clock strong").innerText()).split(":")[1])).toBeGreaterThanOrEqual(45);
+        }
+        /** Recovery must not charge or apply the paid action again. */
+        const requests = await page.evaluate(() => Reflect.get(window, "__raceRecoveryRequests") as string[]);
+        expect(requests.filter(type => type === "game:resumeRace")).toHaveLength(1);
+        expect(requests.filter(type => type === (action === "Hint" ? "game:requestRaceHint" : "game:skipRaceRiddle"))).toHaveLength(1);
+        expect(await page.getByRole("alert").count()).toBe(0);
+        expect(pageErrors).toEqual([]);
+        await page.screenshot({path: `/tmp/race-resume-recovery-${action.toLowerCase()}.png`});
+      } finally {await context.close();}
+    }
+  });
+
+  it("confirms an automatic skip once after the fifth incorrect guess", async () => {
+    /** Injected authority exercises the same clearing count and event contract as production. */
+    const {context, page, pageErrors} = await openHarness(browser, {registered: true, harness: "race-auth", playerId: "automatic-skip-player"});
+    try {await enterRegisteredGame(page); await verifyAutomaticSkip(page); expect(pageErrors).toEqual([]);}
+    finally {await context.close();}
+  });
+
+  it("merges guess confirmation hints and recovers an invalid reveal without losing successor typing", async () => {
+    for (const invalid of [false, true]) {
+      /** Delayed authority leaves the projected successor editable before confirmation. */
+      const {context, page, pageErrors} = await openHarness(browser, {registered: true, harness: "race-auth", playerId: `guess-draft-${invalid}`, raceGuessDelayMs: 2500});
+      try {await enterRegisteredGame(page); await verifyGuessDraftConfirmation(page, invalid); expect(pageErrors).toEqual([]);}
+      finally {await context.close();}
+    }
+  });
+
+  it("confirms the result when a hint penalty or final skip ends the challenger race", async () => {
+    for (const action of ["hint", "skip"]) {
+      sharedRaceChallenges.clear();
+      /** Recording is slower than initial play but faster than the terminal penalty. */
+      const challengeId = `jest-invite-${"c".repeat(64)}-${"d".repeat(32)}`;
+      sharedRaceChallenges.set(challengeId, JSON.stringify({preview: {challengeId, creator: {displayName: "Nova"}, categoryId: "mixed", locale: "en",
+        targetCorrect: 10, adjustedTimeToBeatMs: action === "hint" ? 10000 : 30000, rulesVersion: "race10_v1", expiresAtMs: Date.now() + 60000, status: "active"}, runId: "hint-opponent", events: []}));
+      /** Injected authority supplies the unmodified terminal view before outcome reconciliation. */
+      const {context, page, pageErrors} = await openHarness(browser, {registered: true, harness: "race-auth", playerId: `terminal-penalty-${action}`,
+        challengeId, inviteKind: "race", campaign: "race_to_10_v1", sharedRace: true, raceOutcomeDelayMs: action === "skip" ? 2500 : 0});
+      try {if (action === "hint") await verifyTerminalHintResult(page); else await verifyFinalSkipResult(page); expect(pageErrors).toEqual([]);}
+      finally {await context.close();}
+    }
+  });
+
+  it("restores successor typing after a lost or malformed guess confirmation", async () => {
+    for (const malformed of [false, true]) {
+      /** Delayed authority gives the player time to type into the projected successor. */
+      const {context, page, pageErrors} = await openHarness(browser, {
+        registered: true, harness: "race-auth", playerId: `race-successor-recovery-${malformed}`, raceGuessDelayMs: 2500,
+      });
+      try {
+        await enterRegisteredGame(page);
+        await verifySuccessorDraftRecovery(page, malformed);
+        expect(pageErrors).toEqual([]);
+      } finally {await context.close();}
+    }
+  });
+
+  it("recovers a completely lost hint response after the delivery deadline", async () => {
+    /** Real delivery timeout is exercised through the injected authority and browser bridge. */
+    const {context, page, pageErrors} = await openHarness(browser, {
+      registered: true, harness: "race-auth", playerId: "race-lost-hint-delivery",
+    });
+    try {
+      await enterRegisteredGame(page);
+      await verifyLostHintDeliveryRecovery(page);
+      expect(pageErrors).toEqual([]);
+    } finally {await context.close();}
+  });
+
+  it("rejects inconsistent hint confirmations and recovers authoritative reveals", async () => {
+    for (const mismatch of ["letter", "question", "deck", "schedule"]) {
+      /** Independent authenticated player for each corrupted successful hint. */
+      const {context, page, pageErrors} = await openHarness(browser, {
+        registered: true, harness: "race-auth", playerId: `race-hint-confirmation-${mismatch}`,
+      });
+      try {
+        await enterRegisteredGame(page);
+        await verifyHintConfirmationRecovery(page, mismatch);
+        expect(pageErrors).toEqual([]);
+        await page.screenshot({path: `/tmp/race-hint-confirmation-recovery-${mismatch}.png`});
+      } finally {await context.close();}
+    }
+  });
+
+  it("preserves the player's draft through projected and confirmed hints", async () => {
+    /** Registered player exercises real input/rendering against the injected authority adapter. */
+    const {context, page, pageErrors} = await openHarness(browser, {
+      registered: true, harness: "race-auth", playerId: "race-hint-draft",
+    });
+    try {
+      await enterRegisteredGame(page);
+      await verifyHintDraftPreservation(page);
+      expect(pageErrors).toEqual([]);
+      await captureMultiplayerEvidence(page, "hint-draft-preserved.png");
+    } finally {await context.close();}
+  });
+
+  it("preserves solving time when hint and skip confirmations belong to another run", async () => {
+    /** Registered player using the injected authoritative race adapter. */
+    const {context, page} = await openHarness(browser, {
+      registered: true, harness: "race-auth", playerId: "race-paid-rollback",
+    });
+    await enterRegisteredGame(page);
+    await verifyWrongRunPaidRollback(page);
+    await context.close();
+  });
+
   it("publishes a completed score before reusable Jest invites reach recipients", async () => {
     sharedRaceChallenges.clear();
     /** Provides creator behavior. */
@@ -1450,6 +1690,7 @@ describeBrowser("Jest authentication integration", () => {
       scenario: "race-share-delay",
     });
     await enterRegisteredGame(creator.page);
+    await injectRaceAnalyticsFailure(creator.page, ["race_share_dialog_opened"]);
     /** Provides multiplayer button behavior. */
     const multiplayerButton = creator.page.getByRole("button", {name: /^multiplayer$/i});
     await multiplayerButton.waitFor({timeout: 5_000});
@@ -1496,40 +1737,7 @@ describeBrowser("Jest authentication integration", () => {
       scrollWidth: lobbyOverflow.clientWidth,
       clientWidth: lobbyOverflow.clientWidth,
     });
-    await creator.page.evaluate(() => {
-      /** Provides timing window behavior. */
-      const timingWindow = window as typeof window & {
-        /** Stores riddle quest race start timing. */
-        __RIDDLE_QUEST_RACE_START_TIMING__?: {
-          /** Stores go at. */
-          goAt?: number;
-          /** Stores gameplay at. */
-          gameplayAt?: number;
-        };
-      };
-      /** Provides timing behavior. */
-      const timing = {} as {
-        /** Stores go at. */
-        goAt?: number;
-        /** Stores gameplay at. */
-        gameplayAt?: number;
-      };
-      timingWindow.__RIDDLE_QUEST_RACE_START_TIMING__ = timing;
-      /** Provides observer behavior. */
-      const observer = new MutationObserver(() => {
-        if (
-          timing.goAt === undefined &&
-          document.querySelector(".race-countdown > span")?.textContent?.trim() === "GO!"
-        ) {
-          timing.goAt = performance.now();
-        }
-        if (timing.goAt !== undefined && document.querySelector(".race-gameplay")) {
-          timing.gameplayAt = performance.now();
-          observer.disconnect();
-        }
-      });
-      observer.observe(document.body, {subtree: true, childList: true, characterData: true});
-    });
+    await observeRaceCountdown(creator.page);
     expect(await creator.page.getByRole("button", {name: /challenge a player/i}).count()).toBe(0);
     expect((await getHarnessState(creator.page)).referralShares).toHaveLength(0);
     await creator.page.getByRole("button", {name: /^History /}).click();
@@ -1588,24 +1796,7 @@ describeBrowser("Jest authentication integration", () => {
       utilityWidth: multiplayerKeyboardStyle.letterWidth,
       letterWidth: multiplayerKeyboardStyle.letterWidth,
     });
-    /** Provides race start timing behavior. */
-    const raceStartTiming = await creator.page.evaluate(
-      () =>
-        (
-          window as typeof window & {
-            /** Stores riddle quest race start timing. */
-            __RIDDLE_QUEST_RACE_START_TIMING__?: {
-              /** Stores go at. */
-              goAt?: number;
-              /** Stores gameplay at. */
-              gameplayAt?: number;
-            };
-          }
-        ).__RIDDLE_QUEST_RACE_START_TIMING__,
-    );
-    expect(raceStartTiming?.goAt).toBeDefined();
-    expect(raceStartTiming?.gameplayAt).toBeDefined();
-    expect((raceStartTiming?.gameplayAt ?? Infinity) - (raceStartTiming?.goAt ?? 0)).toBeLessThan(600);
+    await verifyRaceCountdownTiming(creator.page);
     /** Gets multiplayer layout. */
     const getMultiplayerLayout = () =>
       creator.page.locator(".race-gameplay").evaluate((gameplay) => {
@@ -1658,13 +1849,7 @@ describeBrowser("Jest authentication integration", () => {
     });
     await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
     await creator.page.getByText("Run recorded!", {exact: true}).waitFor();
-    /** Completing gameplay must reset any horizontal offset created by the scaled answer surface. */
-    const completedLayout = await creator.page.locator(".race-screen").evaluate((screen) => ({
-      documentScrollLeft: document.scrollingElement?.scrollLeft ?? 0,
-      screenScrollLeft: screen.scrollLeft,
-      topbarLeft: screen.querySelector(".race-topbar")?.getBoundingClientRect().left ?? -1,
-    }));
-    expect(completedLayout).toEqual({documentScrollLeft: 0, screenScrollLeft: 0, topbarLeft: 18});
+    await verifyRecordedLayout(creator.page);
     expect((await getHarnessState(creator.page)).referralShares).toHaveLength(0);
     await captureMultiplayerEvidence(creator.page, "03-player-1-run-recorded.png");
     await creator.page.getByRole("button", {name: /send challenge/i}).click();
@@ -1708,6 +1893,7 @@ describeBrowser("Jest authentication integration", () => {
     );
     /** All repeated sends made from the same completed result. */
     const repeatedInvites = (await getHarnessState(creator.page)).referralShares;
+    expect(await creator.page.evaluate(() => Reflect.get(window, "__optionalAnalyticsFailures"))).toEqual(Array(3).fill("race_share_dialog_opened"));
     expect(repeatedInvites.map((invite) => invite.entryPayload?.challengeId)).toEqual([
       invitedChallengeId,
       invitedChallengeId,
@@ -1812,7 +1998,8 @@ describeBrowser("Jest authentication integration", () => {
     await recipient.page.getByRole("button", {name: /accept challenge/i}).waitFor({state: "visible"});
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-countdown").waitFor({state: "visible", timeout: 10_000});
-    await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 5_000});
+    // Preparation and the synchronized countdown precede the ghost's solving time.
+    await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 8_000});
     expect(
       await recipient.page.evaluate(
         () =>
@@ -1842,6 +2029,96 @@ describeBrowser("Jest authentication integration", () => {
     expect(await recipient.page.getByRole("heading", {name: /opponent wins/i}).count()).toBe(0);
     expect(await recipient.page.locator(".race-category-grid").isVisible()).toBe(true);
     await recipient.context.close();
+  });
+
+  it("replays an opponent skip milestone after the player's penalty clock advances", async () => {
+    sharedRaceChallenges.clear();
+    /** Reusable challenge containing an authoritative skip before the next correct answer. */
+    const challengeId = "ghost-skipped-milestone";
+    sharedRaceChallenges.set(challengeId, JSON.stringify({
+      preview: {challengeId, creator: {displayName: "Recorded Skipper"}, categoryId: "mixed", locale: "en",
+        targetCorrect: 10, adjustedTimeToBeatMs: 120_000, rulesVersion: "race10_v1",
+        expiresAtMs: Date.now() + 60_000, status: "active"},
+      runId: "skipped-milestone-recording",
+      events: [
+        {sequence: 0, type: "skip", riddlePosition: 0, wallElapsedMs: 1_000, penaltyAddedMs: 45_000,
+          totalPenaltyMs: 45_000, adjustedElapsedMs: 46_000, correctCount: 1},
+        {sequence: 1, type: "correct", riddlePosition: 1, wallElapsedMs: 45_000, penaltyAddedMs: 0,
+          totalPenaltyMs: 45_000, adjustedElapsedMs: 90_000, correctCount: 2},
+      ],
+    }));
+    /** Authenticated challenger sees a fixed ghost, independent of local actions. */
+    const {context, page} = await openHarness(browser, {
+      registered: true, harness: "race-auth", playerId: "ghost-skip-challenger", challengeId,
+      inviteKind: "race", campaign: "race_to_10_v1", sharedRace: true,
+    });
+    await page.getByRole("button", {name: /accept challenge/i}).click();
+    await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
+    expect(await page.locator(".race-progress progress").nth(1).getAttribute("value")).toBe("0");
+    await page.locator(".race-actions").getByRole("button", {name: /^hint/i}).click();
+    await page.locator(".race-actions").getByRole("button", {name: /^skip/i}).click();
+    await page.waitForFunction(() => document.querySelectorAll(".race-progress progress")[1]?.getAttribute("value") === "1");
+    expect(await page.locator(".race-progress progress").nth(0).getAttribute("value")).toBe("1");
+    expect(await page.locator(".race-header-clock small").innerText()).toContain("1:00.0");
+    expect(await page.getByRole("alert").count()).toBe(0);
+    await page.screenshot({path: "/tmp/race-ghost-skip-progress.png"});
+    await context.close();
+  });
+
+  it("recovers lost publication confirmations without creating another challenge", async () => {
+    for (const failure of ["lost", "malformed"]) {
+      sharedRaceChallenges.clear();
+      /** Registered creator with a server publication that survives a lost confirmation. */
+      const {context, page, pageErrors} = await openHarness(browser, {
+        registered: true, harness: "race-auth", playerId: `publication-retry-${failure}`, sharedRace: true,
+      });
+      try {
+        await enterRegisteredGame(page);
+        await page.getByRole("button", {name: /^multiplayer$/i}).click();
+        await page.getByRole("button", {name: /^History /}).click();
+        await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10000});
+        await solveFakeRace(page);
+        await page.evaluate(mode => {
+          Object.assign(window, {__publicationCommands: [], __publishedChallengeId: null});
+          window.addEventListener("riddle-quest:game-to-host", event => {
+            /** Real bridge command preserves envelope and payload receipts. */
+            const detail = (event as CustomEvent).detail;
+            if (detail?.type === "game:publishRace") (Reflect.get(window, "__publicationCommands") as unknown[]).push(detail);
+          });
+          /** Lose the first confirmation only after the authority persisted the challenge. */
+          const dispatch = window.dispatchEvent.bind(window);
+          window.dispatchEvent = event => {
+            /** Publication remains an otherwise correlated host response. */
+            const detail = (event as CustomEvent).detail;
+            if (event.type === "riddle-quest:host-to-game" && detail?.payload?.operation === "racePublish" &&
+              detail.payload.ok && !Reflect.get(window, "__publishedChallengeId")) {
+              Object.assign(window, {__publishedChallengeId: detail.payload.data.challengeId});
+              if (mode === "lost") detail.payload = {...detail.payload, ok: false, error: "RaceTo10.ERROR_GENERIC"};
+              else detail.payload.data = {...detail.payload.data, preview: {...detail.payload.data.preview, locale: "fr"}};
+            }
+            return dispatch(event);
+          };
+        }, failure);
+        await page.getByRole("button", {name: /send challenge/i}).click();
+        await page.getByRole("alert").waitFor();
+        expect((await getHarnessState(page)).referralShares).toHaveLength(0);
+        expect(sharedRaceChallenges.size).toBe(1);
+        await page.getByRole("button", {name: /^retry$/i}).click();
+        await page.waitForFunction(() => (Reflect.get(window, "__RIDDLE_QUEST_JEST_AUTH_TEST__") as AuthHarnessState).referralShares.length === 1);
+        /** Retried publication is exactly the original run, correlation and mutation receipt. */
+        const commands = await page.evaluate(() => Reflect.get(window, "__publicationCommands") as GameToHostMessage[]);
+        expect(commands).toHaveLength(2);
+        expect(commands[1]).toMatchObject({type: commands[0].type, requestId: commands[0].requestId, payload: commands[0].payload});
+        expect(sharedRaceChallenges.size).toBe(1);
+        expect((await getHarnessState(page)).referralShares[0].entryPayload?.challengeId).toBe(
+          await page.evaluate(() => Reflect.get(window, "__publishedChallengeId")),
+        );
+        expect(await page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
+        expect(await page.getByRole("alert").count()).toBe(0);
+        expect(pageErrors).toEqual([]);
+        await page.screenshot({path: `/tmp/race-publication-retry-${failure}.png`});
+      } finally {await context.close();}
+    }
   });
 
   it("shows a completed creator result while authoritative completion work continues in the background", async () => {
@@ -1986,6 +2263,7 @@ describeBrowser("Jest authentication integration", () => {
     await creator.page.getByRole("button", {name: /^retry$/i}).click();
     await creator.page.getByRole("alert").waitFor({state: "hidden", timeout: 5_000});
     expect(await creator.page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
+    expect(creator.pageErrors).toEqual([]);
     await creator.context.close();
   });
 
@@ -2013,6 +2291,181 @@ describeBrowser("Jest authentication integration", () => {
     await player.page.getByRole("button", {name: /^History /}).click();
     await player.page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
     await player.context.close();
+  });
+
+  it("preserves a newer same-account resume hint when an older race completes or is abandoned", async () => {
+    for (const action of ["complete", "abandon"]) {
+      /** Each terminal path uses an independent authenticated race. */
+      const {context, page, pageErrors} = await openHarness(browser, {
+        registered: true, harness: "race-auth", playerId: `race-newer-hint-${action}`,
+      });
+      try {
+        await enterRegisteredGame(page);
+        await page.getByRole("button", {name: /^multiplayer$/i}).click();
+        await page.getByRole("button", {name: /^History /}).click();
+        await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10000});
+        /** Simulates another tab saving a newer run before this tab's terminal receipt. */
+        const newerHint = await page.evaluate(action => {
+          /** Existing authenticated account binding copied into the newer hint. */
+          const saved = JSON.parse(localStorage.getItem("riddleQuest:activeRaceRun")!);
+          /** Newer run belongs to the same account but has its own opaque identity. */
+          const newer = {...saved, runId: `newer-${action}-run`};
+          /** Transport insertion occurs once, before cleanup consumes its response. */
+          let injected = false;
+          /** Original bridge transport kept intact for normal gameplay. */
+          const dispatch = window.dispatchEvent.bind(window);
+          window.dispatchEvent = event => {
+            /** Terminal authority response for the older race. */
+            const detail = (event as CustomEvent).detail;
+            if (!injected && event.type === "riddle-quest:host-to-game" && detail?.payload?.ok &&
+              ["raceGuess", "raceAbandon"].includes(detail.payload.operation) &&
+              ["completed", "abandoned"].includes(detail.payload.data?.run?.status)) {
+              injected = true;
+              localStorage.setItem("riddleQuest:activeRaceRun", JSON.stringify(newer));
+            }
+            return dispatch(event);
+          };
+          return newer;
+        }, action);
+        if (action === "complete") {
+          await solveFakeRace(page);
+          await page.getByRole("heading", {name: /run recorded/i}).waitFor();
+          await page.screenshot({path: "/tmp/race-newer-resume-hint.png"});
+        } else {
+          await page.getByRole("button", {name: /close race to 10/i}).click();
+          await page.getByRole("alertdialog", {name: /quit this race/i}).getByRole("button", {name: /quit race/i}).click();
+          await page.locator(".race-screen").waitFor({state: "detached", timeout: 10000});
+        }
+        expect(await page.evaluate(() => JSON.parse(localStorage.getItem("riddleQuest:activeRaceRun")!))).toEqual(newerHint);
+        expect(pageErrors).toEqual([]);
+      } finally {await context.close();}
+    }
+  });
+
+  it("recovers rejected race preparation without creating a second run", async () => {
+    for (const failure of ["lost", "wrong-category"]) {
+      /** Registered player whose first prepared-run confirmation is rejected. */
+      const {context, page, pageErrors} = await openHarness(browser, {
+        registered: true, harness: "race-auth", playerId: `start-recovery-${failure}`,
+      });
+      try {
+        await enterRegisteredGame(page);
+        await page.getByRole("button", {name: /^multiplayer$/i}).click();
+        await page.evaluate(mode => {
+          Object.assign(window, {__startCommands: [], __originalPreparedRun: null});
+          window.addEventListener("riddle-quest:game-to-host", event => {
+            (Reflect.get(window, "__startCommands") as unknown[]).push((event as CustomEvent).detail);
+          });
+          /** Corrupt delivery only after authority has created the requested run. */
+          const dispatch = window.dispatchEvent.bind(window);
+          window.dispatchEvent = event => {
+            /** Confirmation keeps the original receipt while losing its valid payload. */
+            const detail = (event as CustomEvent).detail;
+            if (event.type === "riddle-quest:host-to-game" && detail?.payload?.operation === "raceStart" &&
+              detail.payload.ok && !Reflect.get(window, "__originalPreparedRun")) {
+              Object.assign(window, {__originalPreparedRun: detail.payload.data.run.runId});
+              if (mode === "lost") detail.payload = {...detail.payload, ok: false, error: "RaceTo10.ERROR_GENERIC"};
+              else detail.payload.data = {...detail.payload.data, run: {...detail.payload.data.run, categoryId: "mixed"}};
+            }
+            return dispatch(event);
+          };
+        }, failure);
+        await page.getByRole("button", {name: /^History /}).click();
+        await page.locator(".race-error").waitFor();
+        expect(await page.locator(".race-gameplay").count()).toBe(0);
+        expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
+        await page.getByRole("button", {name: /^retry$/i}).click();
+        await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10000});
+        /** Recovery dispatches the exact original start and readies only that same run. */
+        const commands = await page.evaluate(() => Reflect.get(window, "__startCommands") as GameToHostMessage[]);
+        /** Start receipts retain their identity while transport timestamps change. */
+        const starts = commands.filter(command => command.type === "game:startRace");
+        expect(starts).toHaveLength(2);
+        expect(starts[1]).toMatchObject({type: starts[0].type, requestId: starts[0].requestId, payload: starts[0].payload});
+        /** Authority preparation recovered by the replayed receipt. */
+        const originalRunId = await page.evaluate(() => Reflect.get(window, "__originalPreparedRun") as string);
+        expect(commands.filter(command => command.type === "game:readyRace")).toMatchObject([{payload: {runId: originalRunId}}]);
+        expect(await page.evaluate(() => JSON.parse(localStorage.getItem("riddleQuest:activeRaceRun")!).runId)).toBe(originalRunId);
+        expect(commands.some(command => ["game:getRaceOutcome", "game:publishRace"].includes(command.type))).toBe(false);
+        expect(await page.locator(".race-error").count()).toBe(0);
+        expect(pageErrors).toEqual([]);
+        await page.screenshot({path: `/tmp/race-start-recovery-${failure}.png`});
+      } finally {await context.close();}
+    }
+  });
+
+  it("recovers lost quit confirmations during preparation and active play", async () => {
+    for (const scenario of ["prepared", "active", "keep-playing"]) {
+      /** Preparation closes without a quit dialog; Keep playing withdraws an active quit. */
+      const prepared = scenario === "prepared";
+      /** Registered player whose authority abandons before the first confirmation is lost. */
+      const {context, page, pageErrors} = await openHarness(browser, {
+        registered: true, harness: "race-auth", playerId: `quit-recovery-${scenario}`,
+        ...(prepared ? {raceStartDelayMs: 2000} : {}),
+      });
+      try {
+        await enterRegisteredGame(page);
+        await page.getByRole("button", {name: /^multiplayer$/i}).click();
+        await page.evaluate(withdrawQuit => {
+          Object.assign(window, {__quitCommands: [], __lostQuit: false, __lostQuitRead: false});
+          window.addEventListener("riddle-quest:game-to-host", event => {
+            (Reflect.get(window, "__quitCommands") as unknown[]).push((event as CustomEvent).detail);
+          });
+          /** Server persists abandonment, but transport loses its first confirmation. */
+          const dispatch = window.dispatchEvent.bind(window);
+          window.dispatchEvent = event => {
+            /** Preserve the original correlation while rejecting delivery. */
+            const detail = (event as CustomEvent).detail;
+            if (event.type === "riddle-quest:host-to-game" && detail?.payload?.operation === "raceAbandon" &&
+              detail.payload.ok && !Reflect.get(window, "__lostQuit")) {
+              Object.assign(window, {__lostQuit: true});
+              detail.payload = {...detail.payload, ok: false, error: "RaceTo10.ERROR_GENERIC"};
+            }
+            if (withdrawQuit && event.type === "riddle-quest:host-to-game" && detail?.payload?.operation === "raceResume" &&
+              detail.payload.ok && !Reflect.get(window, "__lostQuitRead")) {
+              Object.assign(window, {__lostQuitRead: true});
+              detail.payload = {...detail.payload, ok: false, error: "RaceTo10.ERROR_GENERIC"};
+            }
+            return dispatch(event);
+          };
+        }, scenario === "keep-playing");
+        await page.getByRole("button", {name: /^History /}).click();
+        if (prepared) await page.locator(".race-countdown-rail").waitFor();
+        else await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10000});
+        await page.getByRole("button", {name: /close race to 10/i}).click();
+        if (!prepared) await page.getByRole("alertdialog").getByRole("button", {name: /^quit race$/i}).click();
+        await page.locator(".race-error").waitFor();
+        expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).not.toBeNull();
+        await page.screenshot({path: `/tmp/race-quit-recovery-${scenario}.png`});
+        if (scenario === "keep-playing") {
+          await page.getByRole("alertdialog").getByRole("button", {name: /keep playing/i}).click();
+          await page.waitForFunction(() => Reflect.get(window, "__lostQuitRead") === true);
+          await page.getByRole("alertdialog").waitFor({state: "detached"});
+          await page.getByRole("button", {name: /^retry$/i}).click();
+          await page.getByRole("button", {name: /^History /}).waitFor();
+          expect(await page.locator(".race-gameplay").count()).toBe(0);
+        } else if (prepared) {
+          expect(await page.locator(".race-gameplay").count()).toBe(0);
+          await page.getByRole("button", {name: /^retry$/i}).click();
+        } else await page.getByRole("alertdialog").getByRole("button", {name: /^quit race$/i}).click();
+        if (scenario !== "keep-playing") await page.locator(".race-screen").waitFor({state: "detached", timeout: 10000});
+        /** Both attempts use the same abandonment mutation instead of readiness or resume. */
+        const commands = await page.evaluate(() => Reflect.get(window, "__quitCommands") as GameToHostMessage[]);
+        /** Mutation receipts must match even though transport timestamps advance. */
+        const quitCommands = commands.filter(command => command.type === "game:abandonRace");
+        expect(quitCommands).toHaveLength(scenario === "keep-playing" ? 1 : 2);
+        if (scenario !== "keep-playing") expect(quitCommands[1]).toMatchObject({type: quitCommands[0].type, requestId: quitCommands[0].requestId, payload: quitCommands[0].payload});
+        expect(commands.filter(command => command.type === "game:resumeRace")).toHaveLength(scenario === "keep-playing" ? 2 : 0);
+        expect(commands.some(command => ["game:getRaceOutcome", "game:publishRace"].includes(command.type))).toBe(false);
+        if (prepared) expect(commands.some(command => command.type === "game:readyRace")).toBe(false);
+        expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
+        expect((await getHarnessState(page)).referralShares).toHaveLength(0);
+        if (scenario !== "keep-playing") await page.getByRole("button", {name: /^multiplayer$/i}).click();
+        await page.getByRole("button", {name: /^History /}).waitFor();
+        expect(await page.locator(".race-gameplay").count()).toBe(0);
+        expect(pageErrors).toEqual([]);
+      } finally {await context.close();}
+    }
   });
 
   it("confirms quitting an active race and abandons it with no result", async () => {

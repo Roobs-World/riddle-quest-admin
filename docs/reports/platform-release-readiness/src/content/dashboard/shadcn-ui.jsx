@@ -8,8 +8,13 @@ export function Badge({children, variant = "outline", className, ...props}) {
   return <span className={classes("ui-badge", `ui-badge--${variant}`, className)} {...props}>{children}</span>;
 }
 
-export function Button({children, variant = "outline", size = "sm", className, ...props}) {
-  return <span className={classes("ui-button", `ui-button--${variant}`, `ui-button--${size}`, className)} {...props}>{children}</span>;
+export function Button({children, variant = "outline", size = "sm", className, asChild = false, ...props}) {
+  const buttonClass = classes("ui-button", `ui-button--${variant}`, `ui-button--${size}`, className);
+  if (asChild) {
+    const child = React.Children.only(children);
+    return React.cloneElement(child, {...props, className: classes(buttonClass, child.props.className)});
+  }
+  return <button type="button" className={buttonClass} {...props}>{children}</button>;
 }
 
 export function Card({children, className, ...props}) {

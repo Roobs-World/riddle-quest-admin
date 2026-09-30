@@ -1,0 +1,26 @@
+{
+  "taskId": "multiplayer:race-authority-recovery",
+  "targets": ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"],
+  "work": "Refresh the owned run when retrying a failed race action without repeating a paid mutation; preserve drafts and authoritative hint merges on the same question; reset input on authoritative advancement; retain the race and resume hint after temporary recovery failure.",
+  "remainingGates": [
+    "Remaining multiplayer architecture requirements have independent development checks.",
+    "Provider submission, approval and deployment require their own receipts."
+  ],
+  "nextAction": "Continue the remaining multiplayer architecture requirements and accepted-revision release verification.",
+  "checks": [
+    {"id": "race-transitions", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "test", "--runInBand", "--testPathPatterns=src/play/race/__tests__"]},
+    {"id": "portal-types", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "check:types"]},
+    {"id": "isolated-target-builds", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "build:all-targets"]},
+    {"id": "injected-recovery-flows", "executable": "env", "args": ["PORTAL_BROWSER_TESTS=1", "PORTAL_USE_EXISTING_BUILD=1", "pnpm", "--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/jest/__tests__/authentication.jest-playwright.test.ts", "--testNamePattern=recovers lost hint and skip confirmations|preserves solving time when hint|preserves the player.s draft|keeps the immediate result visible"]},
+    {"id": "artifact-dependency-evidence", "executable": "node", "args": ["scripts/release/verify-target-dependency-evidence.mjs"]}
+  ],
+  "artifacts": [
+    {"target": "jest", "file": "artifacts/target-dependencies/jest.json"},
+    {"target": "facebook", "file": "artifacts/target-dependencies/facebook.json"},
+    {"target": "reddit", "file": "artifacts/target-dependencies/reddit.json"},
+    {"target": "youtube", "file": "artifacts/target-dependencies/youtube.json"},
+    {"target": "netflix", "file": "artifacts/target-dependencies/netflix.json"},
+    {"target": "yahoo", "file": "artifacts/target-dependencies/yahoo.json"},
+    {"target": "gamesnacks", "file": "artifacts/target-dependencies/gamesnacks.json"}
+  ]
+}

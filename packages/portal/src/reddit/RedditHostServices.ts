@@ -1,3 +1,4 @@
+import {RaceEntryResponseSchema} from "@qwordly/core/race";
 import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "@qwordly/core/bridge";
 import {
   ClassicRiddleBufferResponseSchema,
@@ -289,6 +290,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     /** Starts race. */
     /** Keeps readiness traffic on the authenticated same-origin gateway. */
     async readyRace(input) { return RaceRunResponseSchema.parse(await post("race.ready", input)); },
+    /** Starts race. */
     async startRace(input) {
       return RaceRunResponseSchema.parse(await post("race.start", input));
     },
@@ -316,6 +318,8 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     async publishRace(input) {
       return PublishRaceChallengeResponseSchema.parse(await post("race.publish", input));
     },
+    /** Reads typed readiness only through the same-origin gateway. */
+    async getRaceEntry(challengeId, locale) {return RaceEntryResponseSchema.parse(await post("race.entry", {challengeId, locale}));},
     /** Gets race challenge. */
     async getRaceChallenge(challengeId, locale) {
       return RaceChallengePreviewSchema.parse(await post("race.challenge", {challengeId, locale}));

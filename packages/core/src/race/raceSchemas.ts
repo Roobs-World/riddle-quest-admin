@@ -245,6 +245,10 @@ export const StartRaceRunRequestSchema = z
     categoryId: RaceCategoryIdSchema.optional(),
     challengeId: OpaqueIdSchema.optional(),
     rivalryChallengeId: OpaqueIdSchema.optional(),
+    /** Optional server-issued matchmaking attribution; direct links remain supported. */
+    offerId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+    /** Owner-bound fallback offered only after an eligible pool search completes. */
+    fallbackOfferId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
     requestId: RequestIdSchema,
     includeEvaluation: z.boolean().optional(),
     /** Prepare content without starting the scored clock. */
@@ -256,7 +260,10 @@ export const StartRaceRunRequestSchema = z
   })
   .refine((input) => !(input.challengeId && input.rivalryChallengeId), {
     message: "A direct challenge cannot also be a counter-challenge",
-  });
+  })
+  .refine(input => !input.offerId || Boolean(input.challengeId), {message: "Match offers require a direct challenge"})
+  .refine(input => !input.fallbackOfferId || Boolean(input.categoryId) && !input.rivalryChallengeId && !input.offerId,
+    {message: "Fallback offers require a category without a challenge or rivalry"});
 
 /** Schema identifying a race run owned by the authenticated player. */
 export const RaceRunIdRequestSchema = z
@@ -363,6 +370,31 @@ export const RaceChallengeIdRequestSchema = z
   })
   .strict();
 
+/** Answer-free invitation facts; exclusive seat identity never crosses this seam. */
+export const RaceInvitationViewSchema = z.object({
+  claimState: z.enum(["unclaimed", "claimed"]),
+  publicationState: z.enum(["pending", "published"]),
+  role: z.enum(["creator", "recipient"]),
+  canCancel: z.boolean(),
+  expiresAtMs: MillisecondsSchema,
+}).strict();
+/** Typed challenge readiness shared by direct links and reserved invitations. */
+export const RaceEntryResponseSchema = z.discriminatedUnion("status", [
+  z.object({status: z.literal("ready"), challenge: RaceChallengePreviewSchema, invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
+  z.object({status: z.literal("waiting"), invitation: RaceInvitationViewSchema, serverNowMs: MillisecondsSchema}).strict(),
+  z.object({status: z.literal("expired"), invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
+  z.object({status: z.literal("cancelled"), invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
+  z.object({status: z.literal("unavailable"), reason: z.enum(["missing", "claimed", "blocked", "deleted", "locale", "inactive", "invalid"]), serverNowMs: MillisecondsSchema}).strict(),
+]);
+/** Idempotent creator cancellation affects a reserved invitation, never a reusable public share. */
+export const CancelRaceInviteRequestSchema = RaceChallengeIdRequestSchema.extend({requestId: RequestIdSchema}).strict();
+/** Privacy-safe facts for one Race Invitation. */
+export type RaceInvitationView = z.infer<typeof RaceInvitationViewSchema>;
+/** Lifecycle-aware challenge-read response. */
+export type RaceEntryResponse = z.infer<typeof RaceEntryResponseSchema>;
+/** Reserved-invitation cancellation command. */
+export type CancelRaceInviteRequest = z.infer<typeof CancelRaceInviteRequestSchema>;
+
 /** Requests a recorded opponent; provider scope is derived by the trusted adapter. */
 export const RaceMatchRequestSchema = z.object({
   locale: RaceLocaleSchema,
@@ -373,8 +405,11 @@ export const RaceMatchRequestSchema = z.object({
 export type RaceMatchRequest = z.infer<typeof RaceMatchRequestSchema>;
 /** Answer-safe recorded matchmaking result shared by supported provider adapters. */
 export const RaceMatchResponseSchema = z.discriminatedUnion("status", [
-  z.object({status: z.literal("matched"), challenge: RaceChallengePreviewSchema}).strict(),
-  z.object({status: z.literal("empty"), locale: RaceLocaleSchema}).strict(),
+  z.object({status: z.literal("matched"), challenge: RaceChallengePreviewSchema,
+    /** Optional only for compatibility with older provider adapters. */
+    offerId: z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict(),
+  z.object({status: z.literal("empty"), locale: RaceLocaleSchema,
+    fallback: z.object({offerId: z.string().regex(/^[a-f0-9]{64}$/), categoryId: RaceCategoryIdSchema}).strict().optional()}).strict(),
 ]);
 /** Provider-neutral recorded opponent result. */
 export type RaceMatchResponse = z.infer<typeof RaceMatchResponseSchema>;

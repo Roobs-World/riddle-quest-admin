@@ -3,14 +3,13 @@ const baseConfig = require("./jest.config.js");
 /** @type {import('jest').Config} */
 module.exports = {
   ...baseConfig,
+  // The coverage gate exercises real transactions in the Firestore emulator,
+  // alongside the pure engine, contracts and provider unit tests.
+  testMatch: ["**/__tests__/race/**/*.test.ts", "**/__tests__/redditMatchmaking*.test.ts"],
   collectCoverage: true,
   collectCoverageFrom: [
     "src/race/**/*.ts",
     "!src/race/**/__tests__/**",
-    // Firestore transactions and rollout persistence are covered by the
-    // emulator-backed raceService/raceRules integration suites.
-    "!src/race/raceService.ts",
-    "!src/race/raceRollout.ts",
   ],
   coverageDirectory: "coverage/race",
   coverageReporters: ["text-summary", "json-summary", "lcov"],

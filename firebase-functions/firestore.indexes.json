@@ -123,9 +123,123 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "racePerformanceOutbox",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "delivered",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAtMs",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "raceMatchCandidates",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "provider",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "locale",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "rulesVersion",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "performanceBucket",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "selectionKey",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expiresAtMs",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "raceMatchCandidates",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "provider",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "locale",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "rulesVersion",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "categoryId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "performanceBucket",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "selectionKey",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expiresAtMs",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "raceRuns",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "deadlineRecovery.originalDeadlineAtMs",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [
+    {
+      "collectionGroup": "raceDeadlineFailures",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
     {
       "collectionGroup": "facebookIdentityRateLimits",
       "fieldPath": "expiresAt",
@@ -208,6 +322,11 @@
       "collectionGroup": "raceChallenges",
       "fieldPath": "expiresAt",
       "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceChallenges",
+      "fieldPath": "riddles",
       "indexes": []
     },
     {
@@ -569,6 +688,38 @@
     },
     {
       "collectionGroup": "raceMatchOffers",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "racePerformanceOutbox",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceMatchCandidates",
+      "fieldPath": "canonicalRiddleIds",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceMatchProfiles",
+      "fieldPath": "exposedRiddleIds",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceMatchProfiles",
+      "fieldPath": "recentOpponents",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceMatchProfiles",
+      "fieldPath": "categories",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceBotOffers",
       "fieldPath": "expiresAt",
       "ttl": true,
       "indexes": []

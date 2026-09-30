@@ -15,15 +15,21 @@ export async function findRedditRaceMatch(
   } = {},
 ): Promise<RaceMatchResponse> {
   if (!isRedditFirebaseUid(userId)) throw new Error("reddit-matchmaking-identity-required");
+  /** Provides request behavior. */
   const request = typeof input === "string" ? {locale: input} : input;
+  /** Provides result behavior. */
   const result = await findRecordedRaceMatch(userId, request, options);
   if (result.status !== "matched") return result;
   // Canonical provider-neutral previews expose only game-owned presentation.
   // Provider identity hydration stays entirely inside the Reddit adapter.
+  /** Provides db behavior. */
   const db = options.db;
+  /** Provides creator snapshot behavior. */
   const creatorSnapshot = await (db ?? admin.firestore())
     .doc(`raceChallenges/${result.challenge.challengeId}`).get();
+  /** Provides creator id behavior. */
   const creatorId = creatorSnapshot.data()?.creatorId;
+  /** Provides profile behavior. */
   const profile = typeof creatorId === "string" ? await (options.socialProfile ?? readRedditSocialProfile)(creatorId, options) : undefined;
   return RaceMatchResponseSchema.parse({...result, challenge: {...result.challenge,
     creator: profile ?? {displayName: "Riddle Quest player"},

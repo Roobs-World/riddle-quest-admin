@@ -241,11 +241,59 @@ describe("Race play module", () => {
     expect(play.typingWhilePending).toBe(false);
     for (const operation of ["raceHint", "raceSkip"] as const) {
       expect(play.projectPaid(operation, original)).not.toBeNull();
-      expect(play.rejectProjection(operation)).toEqual({kind: "paid", run: original, guesses: null, letters: null});
+      expect(play.rejectProjection(operation)).toEqual({kind: "paid", run: original, receivedAt: 0, guesses: null, letters: null});
       play.projectPaid(operation, original);
       play.confirmPaid(operation);
       expect(play.rejectProjection(operation)).toBeNull();
     }
+  });
+  it("retains solving time and the original receipt anchor through paid projection and rejection", () => {
+    for (const operation of ["raceHint", "raceSkip"] as const) {
+      /** Independent run and monotonic clock for each paid action. */
+      const h = harness();
+      /** Authoritative view before any elapsed local solving time. */
+      const original = run();
+      h.advance(5_000);
+      /** Projection at the time of the player's action. */
+      const projected = h.play.projectPaid(operation, original, 0)!;
+      expect(projected.wallElapsedMs).toBe(5_100);
+      expect(projected.adjustedElapsedMs).toBe(5_100 + projected.totalPenaltyMs);
+      h.advance(400);
+      /** Authority rejection restores both the view and its clock anchor. */
+      const rollback = h.play.rejectProjection(operation)!;
+      expect(rollback.run).toBe(original);
+      expect(rollback.receivedAt).toBe(0);
+    }
+  });
+  it("rejects mismatched run confirmations while preserving the checkpoint for rollback", () => {
+    /** Projection owner and original authoritative view. */
+    const {play} = harness();
+    /** Authoritative checkpoint retained after rejecting another run's receipt. */
+    const original = run();
+    play.projectGuess(original, [..."test"], [], 0);
+    expect(() => play.confirmGuess(confirm({...original, runId: "other-run"}), original, [], []))
+      .toThrow("different race run");
+    expect(play.rejectProjection("raceGuess")?.run).toBe(original);
+    for (const operation of ["raceHint", "raceSkip"] as const) {
+      play.projectPaid(operation, original, 0);
+      expect(() => play.confirmPaid(operation, {...original, runId: "other-run"})).toThrow("different race run");
+      expect(play.rejectProjection(operation)?.run).toBe(original);
+    }
+  });
+  it("invalidates receipts, projections and loaders on teardown and permits a fresh mount", () => {
+    /** Delivery owner retaining a receipt from the closing race. */
+    const {play, commands, timers} = harness();
+    play.projectGuess(run(), [..."test"], [], 0);
+    play.send("raceGuess", "game:submitRaceGuess", {runId: "run-1"});
+    play.finish("raceGuess");
+    play.dispose();
+    expect(play.acceptResponse(commands[0].requestId, "raceGuess")).toBe(false);
+    expect(play.typingWhilePending).toBe(false);
+    expect(play.getSnapshot()).toEqual({pending: null, raceGuessLoading: false});
+    expect(timers.size).toBe(0);
+    expect(play.rejectProjection("raceGuess")).toBeNull();
+    play.send("raceInbox", "game:listRaceInbox", {limit: 20});
+    expect(play.acceptResponse(commands[1].requestId, "raceInbox")).toBe(true);
   });
   it("defers ghost/deadline results during mutation and publication until authoritative completion", () => {
     /** Provides {play} behavior. */

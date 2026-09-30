@@ -231,6 +231,14 @@ describe("Race to 10 contracts", () => {
     ).toBe(false);
   });
 
+  it("accepts an opaque offer only for a direct challenge and rejects client-selected attribution paths", () => {
+    /** Provides base behavior. */
+    const base = {locale: "en", challengeId: "challenge", requestId: "offer-start-1", offerId: "a".repeat(64)};
+    expect(StartRaceRunRequestSchema.safeParse(base).success).toBe(true);
+    expect(StartRaceRunRequestSchema.safeParse({...base, offerId: "other-user/offer"}).success).toBe(false);
+    expect(StartRaceRunRequestSchema.safeParse({...base, challengeId: undefined, categoryId: "history"}).success).toBe(false);
+  });
+
   it("accepts only player intent and rejects forged multiplayer mechanics", () => {
     /** Requests id. */
     const requestId = "request-0001";
@@ -396,4 +404,14 @@ describe("Race to 10 contracts", () => {
       }).success,
     ).toBe(false);
   });
+});
+import {RaceRecoverySchema} from "../raceRecoverySchemas";
+
+it("requires original request identity for persisted search recovery and rejects authority payloads", () => {
+  /** Persisted search selection contains a receipt, never an authoritative result. */
+  const hint = {version: 1, id: "revision-1", ownerId: "owner", locale: "en", savedAtMs: 1000, expiresAtMs: 2000,
+    intent: {kind: "search", request: {locale: "en", requestId: "original-request"}}};
+  expect(RaceRecoverySchema.parse(hint)).toEqual(hint);
+  expect(RaceRecoverySchema.safeParse({...hint, intent: {kind: "search", request: {locale: "en"}}}).success).toBe(false);
+  expect(RaceRecoverySchema.safeParse({...hint, outcome: {result: "player_win"}}).success).toBe(false);
 });

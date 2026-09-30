@@ -17,6 +17,7 @@ import {
 import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "@qwordly/core/pricing/redditCatalog";
 import {purchase} from "@devvit/payments/client";
 import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
+import {raceMatchmakingFailureResult} from "../platform/raceMatchmakingFailure";
 
 /** Defines the guest key value. */
 const GUEST_KEY = "riddleQuestRedditGuestV1";
@@ -81,7 +82,13 @@ export const postRedditGateway = async (path: string, body: unknown = {}): Promi
       });
       /** Provides payload behavior. */
       const payload: unknown = await response.json();
-      if (!response.ok || !isRecord(payload) || payload.ok !== true) throw new Error("reddit-gateway-request-failed");
+      if (!response.ok || !isRecord(payload) || payload.ok !== true) {
+        /** Stable HTTP categories remain available when older gateways omit typed details. */
+        const code = [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
+          response.status === 429 ? "resource-exhausted" : "unavailable";
+        throw Object.assign(new Error("reddit-gateway-request-failed"), {code,
+          details: {matchmaking: isRecord(payload) ? payload.matchmaking : undefined}});
+      }
       return payload;
     })();
     /** Provides deadline behavior. */
@@ -366,10 +373,7 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
                       const payload = await postRedditGateway("/api/game/race.match", typeof input === "string" ? {locale: input} : input);
                       return success(FindRedditRaceMatchResponseSchema.parse(payload.result));
                     } catch (error) {
-                      return {
-                        status: "retryable-failure" as const,
-                        message: error instanceof Error ? error.message : "reddit-matchmaking-failed",
-                      };
+                      return raceMatchmakingFailureResult(error);
                     }
                   },
                 },

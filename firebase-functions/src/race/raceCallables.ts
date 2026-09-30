@@ -1,3 +1,5 @@
+import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "@qwordly/core/race";
+import {getRaceEntryForUser, cancelRaceInviteForUser} from "./raceInvitation";
 import {
   AbandonRaceRunRequestSchema,
   AbandonRaceRunResponseSchema,
@@ -18,6 +20,8 @@ import {
   RaceOutcomeSchema,
   RaceRunIdRequestSchema,
   RaceRunResponseSchema,
+  RaceMatchRequestSchema,
+  RaceMatchResponseSchema,
   RequestRaceHintRequestSchema,
   RequestRaceHintResponseSchema,
   SkipRaceRiddleRequestSchema,
@@ -47,6 +51,7 @@ import {
 } from "./raceService";
 import {assertRaceAccess, getRaceAccessForUser, recordRaceAnalyticsForUser} from "./raceRollout";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {findRecordedRaceMatch} from "./raceMatchmaking";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 
 /** Provides jest web callable options behavior. */
@@ -103,6 +108,16 @@ export const getRaceAccess = onCallWithSentry(
   },
 );
 
+/** Uses authenticated identity to select recorded opponents inside the caller's provider scope. */
+export const findRaceMatch = onCallWithSentry("findRaceMatch", raceStartCallableOptions, async (request: CallableRequest<unknown>) => {
+  /** Provides input behavior. */
+  const input = validateCallableRequest(RaceMatchRequestSchema, request.data, "findRaceMatch");
+  /** Provides user id behavior. */
+  const userId = requireUserId(request);
+  await assertRaceAccess(userId, input.locale);
+  return validateCallableResponse(RaceMatchResponseSchema, await findRecordedRaceMatch(userId, input), "findRaceMatch");
+});
+
 /** Records a schema-validated multiplayer analytics event for the player. */
 export const recordRaceAnalytics = onCallWithSentry(
   "recordRaceAnalytics",
@@ -152,8 +167,11 @@ export const startRaceRun = onCallWithSentry(
 
 /** Schedules a prepared run after content delivery, without resetting an existing scheduled start. */
 export const readyRaceRun = onCallWithSentry("readyRaceRun", raceStartCallableOptions, async (request: CallableRequest<unknown>) => {
+  /** Provides input behavior. */
   const input = validateCallableRequest(ReadyRaceRunRequestSchema, request.data, "readyRaceRun");
+  /** Provides user id behavior. */
   const userId = requireUserId(request);
+  /** Provides run behavior. */
   const run = await resumeRaceRunForUser(userId, input.runId);
   await assertRaceAccess(userId, run.run.locale);
   return validateCallableResponse(RaceRunResponseSchema, await readyRaceRunForUser(userId, input), "readyRaceRun");
@@ -311,3 +329,24 @@ export const listRaceInbox = onCallWithSentry(
     return validateCallableResponse(ListRaceInboxResponseSchema, response, "listRaceInbox");
   },
 );
+
+/** Typed challenge lifecycle without provider-specific client interpretation. */
+export const getRaceEntry = onCallWithSentry("getRaceEntry", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+  /** Authenticated player opening or recovering an invitation. */
+  const userId = await requireRaceUser(request);
+  /** Answer-free direct-link intent. */
+  const input = validateCallableRequest(RaceChallengeIdRequestSchema, request.data, "getRaceEntry");
+  /** Independently validated claim and publication facts. */
+  const response = await getRaceEntryForUser(userId, input.challengeId, input.locale);
+  return validateCallableResponse(RaceEntryResponseSchema, response, "getRaceEntry");
+});
+/** Creator-only cancellation never acts on reusable public challenges. */
+export const cancelRaceInvite = onCallWithSentry("cancelRaceInvite", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+  /** Authenticated invitation owner. */
+  const userId = await requireRaceUser(request);
+  /** Idempotent cancellation intent. */
+  const input = validateCallableRequest(CancelRaceInviteRequestSchema, request.data, "cancelRaceInvite");
+  /** Terminal lifecycle view. */
+  const response = await cancelRaceInviteForUser(userId, input);
+  return validateCallableResponse(RaceEntryResponseSchema, response, "cancelRaceInvite");
+});

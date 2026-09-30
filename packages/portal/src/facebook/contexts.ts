@@ -67,6 +67,8 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
   private synchronizedLocale?: RaceLocale;
   /** Stores synchronization. */
   private synchronization: Promise<void> = Promise.resolve();
+  /** Concurrent board adapters share one current-context reconciliation. */
+  private reconciliation: Promise<PlatformResult<ContextValue>> | null = null;
   /** Stores requested revision. */
   private requestedRevision = 0;
   /** Stores sdk social. */
@@ -106,6 +108,21 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
   /** Provides synchronize current behavior. */
   async synchronizeCurrent(): Promise<PlatformResult<ContextValue>> {
     return this.synchronize(this.sdkSocial.currentContext());
+  }
+
+  /** Reconciles restored preferences or external context changes before a board adapter proceeds. */
+  async ensureCurrent(): Promise<PlatformResult<ContextValue>> {
+    /** Already synchronized identity and language require no backend write. */
+    const current = this.currentContext();
+    if (current.status === "success") return current;
+    /** Concurrent consumers retain one owned synchronization instead of superseding each other. */
+    const operation = this.reconciliation ?? this.synchronizeCurrent();
+    this.reconciliation = operation;
+    try {
+      /** Recheck mutable SDK context and language after asynchronous membership delivery. */
+      const result = await operation;
+      return result.status === "success" ? this.currentContext() : result;
+    } finally {if (this.reconciliation === operation) this.reconciliation = null;}
   }
 
   /** Provides choose context behavior. */

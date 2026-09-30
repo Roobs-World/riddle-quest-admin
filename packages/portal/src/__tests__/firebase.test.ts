@@ -65,6 +65,8 @@ describe("Firebase browser adapter", () => {
       "setPresenceConsent",
       "listRaceCategories",
       "startRaceRun",
+      "readyRaceRun",
+      "findRaceMatch",
       "submitRaceGuess",
       "requestRaceHint",
       "skipRaceRiddle",
@@ -79,6 +81,8 @@ describe("Firebase browser adapter", () => {
       "reportRival",
       "getRaceAccess",
       "recordRaceAnalytics",
+      "getRaceEntry",
+      "cancelRaceInvite",
     ]);
   });
 

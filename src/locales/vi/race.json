@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Tổng hợp",
-    "CATEGORY_MIXED_DESCRIPTION": "Bất ngờ từ mọi chủ đề"
+    "CATEGORY_MIXED_DESCRIPTION": "Bất ngờ từ mọi chủ đề",
+    "WAITING_PUBLICATION": "Đang chờ người tạo hoàn thành và công bố cuộc đua.",
+    "INVITATION_EXPIRED": "Lời mời này đã hết hạn.",
+    "INVITATION_CANCELLED": "Lời mời này đã bị hủy.",
+    "CANCEL_INVITATION": "Hủy lời mời",
+    "MATCH_TEMPORARY": "Tạm thời không thể tìm đối thủ. Hãy thử lại sau ít phút.",
+    "MATCH_TRY_NEW": "Bắt đầu lượt tìm kiếm mới để tìm đối thủ.",
+    "MATCH_EXPIRED": "Lượt tìm đối thủ này đã hết hạn. Hãy thử lại.",
+    "MATCH_CONSUMED": "Lượt tìm kiếm này đã được sử dụng. Hãy tìm đối thủ khác.",
+    "MATCH_UNAVAILABLE": "Tài khoản này không thể tìm đối thủ.",
+    "MATCH_EMPTY": "Hiện chưa có đối thủ phù hợp. Hãy thử lại sau."
   }
 }

@@ -48,6 +48,32 @@ const fixture = () => {
 };
 
 describe("FacebookContextCoordinator", () => {
+  test("reconciles changed preferences once for concurrent board consumers", async () => {
+    /** Initial membership may precede restored or changed game preferences. */
+    const value = fixture(); await value.coordinator.synchronizeCurrent(); value.setLocale("fr");
+    await expect(Promise.all([value.coordinator.ensureCurrent(), value.coordinator.ensureCurrent()])).resolves.toEqual([ok("context-a"), ok("context-a")]);
+    expect(value.backend.join).toHaveBeenCalledTimes(2);
+    expect(value.backend.join).toHaveBeenLastCalledWith({contextId: "context-a", contextType: "THREAD", locale: "fr"});
+    await value.coordinator.ensureCurrent(); expect(value.backend.join).toHaveBeenCalledTimes(2);
+    value.setCurrent(ok("context-b", "GROUP"));
+    await expect(value.coordinator.ensureCurrent()).resolves.toEqual(ok("context-b", "GROUP"));
+    expect(value.backend.leave).toHaveBeenCalledWith({contextId: "context-a"});
+  });
+  test("fails closed when locale changes during shared reconciliation, then permits fresh recovery", async () => {
+    /** A completed old-language membership cannot authorize the new-language board. */
+    const value = fixture();
+    /** Exact membership delivery is deliberately delayed. */
+    let release!: () => void;
+    (value.backend.join as jest.Mock).mockImplementationOnce(async () => new Promise<void>(resolve => {release = resolve;}));
+    /** Both consumers own the same membership operation. */
+    const first = value.coordinator.ensureCurrent(), second = value.coordinator.ensureCurrent();
+    await new Promise<void>(resolve => setTimeout(resolve, 0)); value.setLocale("fr"); release();
+    await expect(first).resolves.toMatchObject({status: "unavailable"});
+    await expect(second).resolves.toMatchObject({status: "unavailable"});
+    expect(value.backend.join).toHaveBeenCalledTimes(1);
+    await expect(value.coordinator.ensureCurrent()).resolves.toEqual(ok("context-a"));
+    expect(value.backend.join).toHaveBeenCalledTimes(2);
+  });
   test("joins the current SDK context with the exact active locale", async () => {
     /** Provides value behavior. */
     const value = fixture();

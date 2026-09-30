@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "متنوع",
-    "CATEGORY_MIXED_DESCRIPTION": "مفاجأة من كل فئة"
+    "CATEGORY_MIXED_DESCRIPTION": "مفاجأة من كل فئة",
+    "WAITING_PUBLICATION": "في انتظار أن ينهي المنشئ سباقه وينشره.",
+    "INVITATION_EXPIRED": "انتهت صلاحية هذه الدعوة.",
+    "INVITATION_CANCELLED": "تم إلغاء هذه الدعوة.",
+    "CANCEL_INVITATION": "إلغاء الدعوة",
+    "MATCH_TEMPORARY": "البحث عن منافس غير متاح مؤقتًا. حاول مجددًا بعد قليل.",
+    "MATCH_TRY_NEW": "ابدأ بحثًا جديدًا للعثور على منافس.",
+    "MATCH_EXPIRED": "انتهت صلاحية هذا البحث عن منافس. حاول مجددًا.",
+    "MATCH_CONSUMED": "تم استخدام هذا البحث بالفعل. ابحث عن منافس آخر.",
+    "MATCH_UNAVAILABLE": "البحث عن منافس غير متاح لهذا الحساب.",
+    "MATCH_EMPTY": "لا يوجد منافسون مناسبون حاليًا. حاول مجددًا لاحقًا."
   }
 }

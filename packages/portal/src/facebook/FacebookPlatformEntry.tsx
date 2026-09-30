@@ -238,13 +238,13 @@ export function FacebookPlatformEntry() {
             ? {
                 list: async (locale: import("@qwordly/core/race").RaceLocale) => {
                   /** Provides current behavior. */
-                  const current = contextCoordinator.currentContext();
+                  const current = await contextCoordinator.ensureCurrent();
                   if (current.status !== "success") throw new Error("facebook-context-board-unavailable");
                   return (await contextBoardApi!.list({contextId: current.value.contextId, locale})).data;
                 },
                 record: async (runId: string, locale: import("@qwordly/core/race").RaceLocale) => {
                   /** Provides current behavior. */
-                  const current = contextCoordinator.currentContext();
+                  const current = await contextCoordinator.ensureCurrent();
                   if (current.status !== "success") throw new Error("facebook-context-board-unavailable");
                   return (await contextBoardApi!.record({contextId: current.value.contextId, locale, runId})).data;
                 },

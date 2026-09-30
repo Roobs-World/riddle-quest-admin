@@ -1,3 +1,4 @@
+import {RaceEntryResponseSchema, type RaceInvitationView} from "@qwordly/core/race";
 import {
   RACE_CATEGORY_IDS,
   RACE_HINT_PENALTY_MS,
@@ -17,7 +18,6 @@ type RaceMethods = Pick<
   | "listRaceCategories"
   | "startRace"
   | "readyRace"
-  | "readyRace"
   | "submitRaceGuess"
   | "requestRaceHint"
   | "skipRaceRiddle"
@@ -25,6 +25,8 @@ type RaceMethods = Pick<
   | "abandonRace"
   | "publishRace"
   | "reserveRaceInvite"
+  | "getRaceEntry"
+  | "cancelRaceInvite"
   | "getRaceChallenge"
   | "getRaceOutcome"
   | "listRaceInbox"
@@ -107,7 +109,8 @@ const categoryPresentation: Record<
   RaceCategoryId,
   {
     /** Stores icon. */
-    icon: "history" | "geography" | "music" | "film" | "science" | "shuffle"; /** Stores color token. */
+    icon: "history" | "geography" | "music" | "film" | "science" | "shuffle";
+    /** Stores color token. */
     /** Stores color token. */
     colorToken: string;
   }
@@ -207,8 +210,25 @@ export const createFakeRaceServices = (): RaceMethods => {
   let raceOutcomeFailuresRemaining = getRaceOutcomeFailureCount();
   /** Mutable runs indexed by their opaque harness run identifier. */
   const runs = new Map<string, FakeRun>();
+  /** Concurrent and repeated starts resolve the same run, matching the authority's start receipts. */
+  const startRequests = new Map<string, Promise<string>>();
   /** Published challenges indexed by their opaque harness challenge identifier. */
   const challenges = new Map<string, FakeChallenge>();
+  /** Reservation identity remains separate from reusable challenge publication. */
+  const invitations = new Map<string, RaceInvitationView & {
+    /** Cancellation fact. */ cancelled: boolean}>();
+  /** Persisted harness invitations permit recipient waiting on another mounted surface. */
+  const invitationKey = (challengeId: string) => `riddleQuest:fakeRaceInvitation:${challengeId}`;
+  /** Loads reservation facts without interpreting a provider-specific ID. */
+  const loadInvitation = (challengeId: string) => {
+    if (invitations.has(challengeId)) return invitations.get(challengeId);
+    try {
+      /** Shared browser-harness record. */
+      const raw = readBrowserStorage("local", invitationKey(challengeId));
+      return raw ? {...JSON.parse(raw), role: "recipient", canCancel: false} as RaceInvitationView & {
+    /** Cancellation fact. */ cancelled: boolean} : undefined;
+    } catch {return undefined;}
+  };
   /** Monotonic identifier sequence for harness runs and challenges. */
   let sequence = 0;
 
@@ -217,6 +237,7 @@ export const createFakeRaceServices = (): RaceMethods => {
     /** Wall-clock duration captured or advanced for the run. */
     if (run.view.status === "scheduled" && Date.now() >= run.startedAtMs) run.view.status = "active";
     if (run.view.status === "prepared" && Date.now() >= (run.view.preparationExpiresAtMs ?? Infinity)) run.view.status = "abandoned";
+    /** Provides wall elapsed ms behavior. */
     const wallElapsedMs =
       run.view.status === "active" ? Math.max(0, Date.now() - run.startedAtMs) : run.view.wallElapsedMs;
     return {
@@ -258,6 +279,26 @@ export const createFakeRaceServices = (): RaceMethods => {
     const run = runs.get(runId);
     if (!run) throw new Error("Race run not found.");
     return run;
+  };
+  /** Enforces the same active-question precondition as production before a new mutation is charged. */
+  const requireActiveQuestion = (run: FakeRun, riddleId: string): void => {
+    /** Scheduled runs become editable only at their authority-owned start. */
+    const view = syncView(run);
+    if (view.status !== "active" || !view.currentRiddle) throw new Error("This Race to 10 run is no longer active.");
+    if (view.currentRiddle.riddleId !== riddleId) throw new Error("That riddle is no longer active.");
+  };
+  /** Intermediate paid actions can end competitive play without clearing all ten questions. */
+  const finalizePenalty = (run: FakeRun): void => {
+    /** Maximum-time expiry takes precedence over an opponent finish for an incomplete run. */
+    const view = syncView(run);
+    /** Creators remain uncapped while recording their challenge. */
+    const timedOut = view.role === "challenger" && view.adjustedElapsedMs >= view.rules.maxAdjustedTimeMs;
+    if (timedOut || view.opponent && view.adjustedElapsedMs > view.opponent.adjustedFinishMs) {
+      /** Terminal clocks retain the charge while freezing solving time. */
+      const finishMs = timedOut ? view.rules.maxAdjustedTimeMs : view.opponent!.adjustedFinishMs;
+      run.view = {...view, status: timedOut ? "timed_out" : "completed", currentRiddle: null,
+        wallElapsedMs: Math.max(0, finishMs - view.totalPenaltyMs)};
+    }
   };
 
   /** Advances a run to its next deterministic riddle. */
@@ -321,72 +362,81 @@ export const createFakeRaceServices = (): RaceMethods => {
     },
     /** Starts a creator or challenger harness run. */
     async startRace(input) {
-      /** Provides delay ms behavior. */
-      const delayMs = getRaceStartDelayMs();
-      if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
-      /** Provides challenge behavior. */
-      const challenge = input.challengeId
-        ? (challenges.get(input.challengeId) ?? (await loadPersistedChallenge(input.challengeId)))
-        : undefined;
-      if (input.challengeId && !challenge) throw new Error("Race challenge not found.");
-      /** Provides run id behavior. */
-      const runId = `fake-run-${++sequence}`;
-      /** Provides category id behavior. */
-      const categoryId = challenge?.preview.categoryId ?? input.categoryId ?? "mixed";
-      /** Starts ed at ms. */
-      const startedAtMs = Date.now();
-      /** Provides run behavior. */
-      const run: FakeRun = {
-        evaluationEnabled: input.includeEvaluation === true,
-        startedAtMs,
-        answers,
-        guessesUsed: 0,
-        hintPenaltyMs: 0,
-        skipPenaltyMs: 0,
-        responses: new Map(),
-        view: {
-          runId,
-          challengeId: input.challengeId,
-          rivalryChallengeId: input.rivalryChallengeId,
-          role: input.challengeId ? "challenger" : "creator",
-          status: input.prepare ? "prepared" : "active",
-          ...(input.prepare ? {preparationExpiresAtMs: Date.now() + 30_000} : {}),
-          categoryId,
-          locale: input.locale,
-          rules: RACE_RULES,
-          correctCount: 0,
-          wallElapsedMs: 0,
-          totalPenaltyMs: 0,
-          adjustedElapsedMs: 0,
-          currentRiddle: {
-            riddleId: "fake-race-1",
-            text: clues[0],
-            answerLength: answers[0].length,
-            position: 0,
-            guessesUsed: 0,
-            guessesRemaining: 5,
-            hintAvailable: true,
-            revealedLetters: [],
+      /** A replay reads the latest authoritative view rather than creating another run. */
+      const existing = startRequests.get(input.requestId);
+      if (existing) return {run: syncView(getRun(await existing))};
+      /** Register creation before its first asynchronous step to deduplicate concurrent starts. */
+      const pending = (async () => {
+        /** Provides delay ms behavior. */
+        const delayMs = getRaceStartDelayMs();
+        if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+        /** Provides challenge behavior. */
+        const challenge = input.challengeId
+          ? (challenges.get(input.challengeId) ?? (await loadPersistedChallenge(input.challengeId)))
+          : undefined;
+        if (input.challengeId && !challenge) throw new Error("Race challenge not found.");
+        /** Provides run id behavior. */
+        const runId = `fake-run-${++sequence}`;
+        /** Provides category id behavior. */
+        const categoryId = challenge?.preview.categoryId ?? input.categoryId ?? "mixed";
+        /** Starts ed at ms. */
+        const startedAtMs = Date.now();
+        /** Provides run behavior. */
+        const run: FakeRun = {
+          evaluationEnabled: input.includeEvaluation === true,
+          startedAtMs,
+          answers,
+          guessesUsed: 0,
+          hintPenaltyMs: 0,
+          skipPenaltyMs: 0,
+          responses: new Map(),
+          view: {
+            runId,
+            challengeId: input.challengeId,
+            rivalryChallengeId: input.rivalryChallengeId,
+            role: input.challengeId ? "challenger" : "creator",
+            status: input.prepare ? "prepared" : "active",
+            ...(input.prepare ? {preparationExpiresAtMs: Date.now() + 30_000} : {}),
+            categoryId,
+            locale: input.locale,
+            rules: RACE_RULES,
+            correctCount: 0,
+            wallElapsedMs: 0,
+            totalPenaltyMs: 0,
+            adjustedElapsedMs: 0,
+            currentRiddle: {
+              riddleId: "fake-race-1",
+              text: clues[0],
+              answerLength: answers[0].length,
+              position: 0,
+              guessesUsed: 0,
+              guessesRemaining: 5,
+              hintAvailable: true,
+              revealedLetters: [],
+            },
+            events: [],
+            opponent: challenge
+              ? {
+                  displayName: challenge.preview.creator.displayName,
+                  adjustedFinishMs: challenge.preview.adjustedTimeToBeatMs,
+                  events: challenge.events,
+                }
+              : undefined,
           },
-          events: [],
-          opponent: challenge
-            ? {
-                displayName: challenge.preview.creator.displayName,
-                adjustedFinishMs: challenge.preview.adjustedTimeToBeatMs,
-                events: challenge.events,
-              }
-            : undefined,
-        },
-      };
-      runs.set(runId, run);
-      return {run: syncView(run)};
-    },
-    /** Marks a prepared harness run ready without resetting its clock. */
-    async readyRace(input) {
-      return {run: syncView(getRun(input.runId))};
+        };
+        runs.set(runId, run);
+        return runId;
+      })();
+      startRequests.set(input.requestId, pending);
+      try {return {run: syncView(getRun(await pending))};}
+      catch (error) {
+        if (startRequests.get(input.requestId) === pending) startRequests.delete(input.requestId);
+        throw error;
+      }
     },
     /** Schedules one prepared harness run; retries preserve its first server start. */
     async readyRace(input) {
+      /** Provides run behavior. */
       const run = getRun(input.runId);
       syncView(run);
       if (run.view.status === "prepared") { run.startedAtMs = Date.now() + 3_000; run.view.status = "scheduled"; }
@@ -402,6 +452,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides delay ms behavior. */
       const delayMs = getRaceGuessDelayMs();
       if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+      requireActiveQuestion(run, input.riddleId);
       /** Current view after deliberate network latency. */
       const delayedView = syncView(run);
       if (
@@ -429,8 +480,10 @@ export const createFakeRaceServices = (): RaceMethods => {
         } else advance(run);
       } else if (run.guessesUsed === 5) {
         run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
+        run.view = {...run.view, correctCount: run.view.correctCount + 1};
         addEvent(run, "skip", RACE_SKIP_PENALTY_MS);
-        advance(run);
+        if (run.view.correctCount >= run.view.rules.targetCorrect) run.view = {...syncView(run), status: "completed", currentRiddle: null};
+        else {advance(run); finalizePenalty(run);}
         autoSkipped = true;
       }
       /** Provides response behavior. */
@@ -453,6 +506,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides cached behavior. */
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["requestRaceHint"]>>;
+      requireActiveQuestion(run, input.riddleId);
       if (!run.view.currentRiddle) throw new Error("No active race riddle is available.");
       /** Provides revealed behavior. */
       const revealed = new Set(run.view.currentRiddle.revealedLetters.map((letter) => letter.index));
@@ -472,6 +526,7 @@ export const createFakeRaceServices = (): RaceMethods => {
         },
       };
       addEvent(run, "hint", RACE_HINT_PENALTY_MS);
+      finalizePenalty(run);
       /** Provides response behavior. */
       const response = {run: syncView(run), revealedLetter, index};
       run.responses.set(input.requestId, response);
@@ -487,11 +542,12 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Artificial transport latency used to prove that the client transition is local. */
       const delayMs = getRaceSkipDelayMs();
       if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+      requireActiveQuestion(run, input.riddleId);
       run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
       run.view = {...run.view, correctCount: run.view.correctCount + 1};
       addEvent(run, "skip", RACE_SKIP_PENALTY_MS);
       if (run.view.correctCount >= 10) run.view = {...syncView(run), status: "completed", currentRiddle: null};
-      else advance(run);
+      else {advance(run); finalizePenalty(run);}
       /** Provides response behavior. */
       const response = {run: syncView(run), penaltyAddedMs: RACE_SKIP_PENALTY_MS as 45000};
       run.responses.set(input.requestId, response);
@@ -508,7 +564,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides cached behavior. */
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["abandonRace"]>>;
-      if (run.view.status !== "active" && run.view.status !== "abandoned") {
+      if (!["prepared", "scheduled", "active", "abandoned"].includes(run.view.status)) {
         throw new Error("This race already has a final result.");
       }
       run.view = {...syncView(run), status: "abandoned", currentRiddle: null};
@@ -519,12 +575,50 @@ export const createFakeRaceServices = (): RaceMethods => {
     },
     /** Reserves an expiring two-player invite lobby for browser-harness sharing. */
     async reserveRaceInvite() {
-      /** Deterministic unique component for the synthetic challenge identifier. */
+      /** Deterministic unique reservation identity. */
       const suffix = (++sequence).toString(16).padStart(32, "0");
-      return {
-        challengeId: `jest-invite-${"a".repeat(64)}-${suffix}`,
-        expiresAtMs: Date.now() + 7 * 24 * 60 * 60 * 1_000,
-      };
+      /** Private reservation expires even if no recording is published. */
+      const challengeId = `jest-invite-${"a".repeat(64)}-${suffix}`;
+      /** Independent invitation facts for this creator surface. */
+      const invitation = {claimState: "unclaimed" as const, publicationState: "pending" as const, role: "creator" as const, canCancel: true, expiresAtMs: Date.now() + 7 * 86400000, cancelled: false};
+      invitations.set(challengeId, invitation);
+      writeBrowserStorage("local", invitationKey(challengeId), JSON.stringify(invitation));
+      return {challengeId, expiresAtMs: invitation.expiresAtMs};
+    },
+    /** Reads typed readiness rather than encoding waiting in errors. */
+    async getRaceEntry(challengeId, locale) {
+      /** Independent persisted authority facts used by the injected browser harness. */
+      const invitation = loadInvitation(challengeId);
+      /** Recording becomes available only after successful publication. */
+      const challenge = challenges.get(challengeId) ?? await loadPersistedChallenge(challengeId);
+      /** Server clock included for waiting expiry. */
+      const serverNowMs = Date.now();
+      if (invitation?.cancelled) return RaceEntryResponseSchema.parse({status: "cancelled", invitation: {claimState: invitation.claimState, publicationState: invitation.publicationState, role: invitation.role, canCancel: false, expiresAtMs: invitation.expiresAtMs}, serverNowMs});
+      if (invitation && invitation.expiresAtMs <= serverNowMs) return {status: "expired", serverNowMs};
+      if (challenge && challenge.preview.locale !== locale) return {status: "unavailable", reason: "locale", serverNowMs};
+      if (challenge && challenge.preview.expiresAtMs <= serverNowMs) return {status: "expired", serverNowMs};
+      if (challenge && challenge.preview.status !== "active") return {status: "unavailable", reason: "inactive", serverNowMs};
+      if (challenge && !invitation) return RaceEntryResponseSchema.parse({status: "ready", challenge: challenge.preview, serverNowMs});
+      if (!invitation) return {status: "unavailable", reason: "missing", serverNowMs};
+      if (invitation.role === "recipient") invitation.claimState = "claimed";
+      if (challenge) invitation.publicationState = "published";
+      writeBrowserStorage("local", invitationKey(challengeId), JSON.stringify(invitation));
+      /** Recipient reads retain a claimed seat while waiting for publication. */
+      const {cancelled: _cancelled, ...view} = invitation;
+      if (challenge) return RaceEntryResponseSchema.parse({status: "ready", challenge: challenge.preview, invitation: view, serverNowMs});
+      return RaceEntryResponseSchema.parse({status: "waiting", invitation: view, serverNowMs});
+    },
+    /** Cancels a reservation without revoking any unrelated public score challenge. */
+    async cancelRaceInvite(input) {
+      /** Only the reservation owner may cancel. */
+      const invitation = loadInvitation(input.challengeId);
+      if (!invitation?.canCancel) throw new Error("Only the creator can cancel.");
+      invitation.cancelled = true;
+      invitations.set(input.challengeId, invitation);
+      writeBrowserStorage("local", invitationKey(input.challengeId), JSON.stringify(invitation));
+      /** Privacy-safe terminal lifecycle view. */
+      const {cancelled: _cancelled, ...view} = invitation;
+      return RaceEntryResponseSchema.parse({status: "cancelled", invitation: {...view, canCancel: false}, serverNowMs: Date.now()});
     },
     /** Publishes a completed creator run as a persisted harness challenge. */
     async publishRace(input) {
@@ -536,6 +630,14 @@ export const createFakeRaceServices = (): RaceMethods => {
       if (cached) return cached as Awaited<ReturnType<RaceMethods["publishRace"]>>;
       /** Provides challenge id behavior. */
       const challengeId = input.reservedChallengeId ?? `fake-challenge-${++sequence}`;
+      if (input.reservedChallengeId) {
+        /** Reserved publication cannot revive a cancelled or expired invitation. */
+        const invitation = loadInvitation(challengeId);
+        if (!invitation || invitation.cancelled || invitation.expiresAtMs <= Date.now()) throw new Error("Invitation is unavailable.");
+        invitation.publicationState = "published";
+        invitations.set(challengeId, invitation);
+        writeBrowserStorage("local", invitationKey(challengeId), JSON.stringify(invitation));
+      }
       /** Provides preview behavior. */
       const preview = {
         challengeId,
@@ -589,6 +691,8 @@ export const createFakeRaceServices = (): RaceMethods => {
           ? "timed_out"
           : view.role === "creator"
             ? "recorded"
+            : view.status === "completed" && view.correctCount < view.rules.targetCorrect && view.opponent
+              ? "ghost_win"
             : !view.opponent || view.adjustedElapsedMs < view.opponent.adjustedFinishMs
               ? "player_win"
               : view.adjustedElapsedMs > view.opponent.adjustedFinishMs
@@ -605,8 +709,8 @@ export const createFakeRaceServices = (): RaceMethods => {
         totalPenaltyMs: view.totalPenaltyMs,
         adjustedFinishMs: view.adjustedElapsedMs,
         opponentAdjustedFinishMs: view.opponent?.adjustedFinishMs,
-        publishable: view.role === "creator" && view.status === "completed",
-        rematchEligible: view.status === "completed",
+        publishable: view.role === "creator" && view.status === "completed" && view.correctCount === view.rules.targetCorrect,
+        rematchEligible: view.role === "challenger" && view.status === "completed",
         newlyUnlockedAchievementIds: [],
         achievementCoinsAwarded: 0,
       };

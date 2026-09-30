@@ -1,4 +1,5 @@
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
+import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
 
@@ -281,7 +282,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
               commerceEnabled: false,
               rewardedAdsEnabled: false,
               referralsEnabled: false,
-              matchmakingEnabled: false,
+              matchmakingEnabled: true,
               tournamentsEnabled: false,
               presenceEnabled: false,
               removeInterstitialAds: false,
@@ -391,6 +392,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           },
         };
       });
+      await installRaceContextDialogs(successPage);
       await successPage.goto("http://127.0.0.1:4181/?harness=race");
       try {
         await successPage.waitForFunction(
@@ -574,6 +576,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(
         await successPage.evaluate(() => window.__facebookEvents.filter((event) => event.endsWith(":destroy")).sort()),
       ).toEqual(["overlay:name:destroy", "overlay:picture:destroy"]);
+      await verifyRaceContextDialogs(successPage);
       /** Provides mobile hub box behavior. */
       const mobileHubBox = await successPage.locator(".race-hub-tabs").boundingBox();
       expect(mobileHubBox).not.toBeNull();

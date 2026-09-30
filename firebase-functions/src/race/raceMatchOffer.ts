@@ -1,0 +1,61 @@
+import {HttpsError} from "firebase-functions/v2/https";
+import {logger} from "firebase-functions";
+import type {StartRaceRunRequest} from "@qwordly/core/race";
+import type {RaceRunRecord} from "./raceEngine";
+import {parseRaceMatchOffer} from "./raceMatchOfferRecord";
+import {racePerformanceSample} from "./raceMatchPerformance";
+import type {Firestore} from "./raceSetupService";
+
+/** Attribution is accepted only from the server-issued owner/challenge/language receipt. */
+export function assertRaceMatchOfferForStart(offer: FirebaseFirestore.DocumentSnapshot | null, userId: string, input: StartRaceRunRequest): void {
+  if (!input.offerId) return;
+  if (!offer?.exists) throw new HttpsError("permission-denied", "The matchmaking offer does not belong to this challenge and player.");
+  /** Acceptance consumes only a validated server receipt. */
+  const data = parseRaceMatchOffer(offer.data(), offer.id);
+  if (data.userId !== userId || data.challengeId !== input.challengeId || data.locale !== input.locale) {
+    throw new HttpsError("permission-denied", "The matchmaking offer does not belong to this challenge and player.");
+  }
+  if (data.acceptedRunId !== undefined) throw new HttpsError("already-exists", "The matchmaking offer has already been accepted.");
+}
+
+/** Reads attribution before any transaction writes; missing/deleted receipts are never recreated. */
+export async function readRaceMatchOffer(transaction: FirebaseFirestore.Transaction, db: Firestore, run: RaceRunRecord): Promise<FirebaseFirestore.DocumentSnapshot | null> {
+  if (!run.matchOfferId) return null;
+  if (!/^[a-f0-9]{64}$/.test(run.matchOfferId)) throw new HttpsError("data-loss", "Stored matchmaking attribution is invalid.");
+  /** Provides offer behavior. */
+  const offer = await transaction.get(db.doc(`raceMatchOffers/${run.matchOfferId}`));
+  if (!offer.exists) return null;
+  try {
+    /** Derived attribution is checked independently of canonical scoring. */
+    const data = parseRaceMatchOffer(offer.data(), offer.id);
+    if (data.userId === run.userId && data.challengeId === run.challengeId && data.acceptedRunId === run.runId && data.locale === run.locale) return offer;
+  } catch (error) {
+    if (!(error instanceof HttpsError) || error.code !== "data-loss") throw error;
+  }
+  // Attribution is a downstream projection; corruption must never block scoring or rewards.
+  logger.write({severity: "ERROR", message: "Race matchmaking attribution requires repair", offerId: run.matchOfferId, runId: run.runId});
+  return null;
+}
+
+/** Terminal funnel facts are deterministic projections, independent of reward delivery and retries. */
+export function recordRaceMatchTerminal(transaction: FirebaseFirestore.Transaction, offer: FirebaseFirestore.DocumentSnapshot | null,
+  run: RaceRunRecord, nowMs: number): void {
+  if (!offer || ["prepared", "scheduled", "active"].includes(run.status)) return;
+  /** Complete observed finishes alone support prediction-error and opponent-gap calibration. */
+  const sample = racePerformanceSample(run);
+  /** A terminal ghost loss with fewer than ten answers remains censored, rather than a completed finish. */
+  const finishedTen = run.status !== "abandoned" && run.correctCount >= 10;
+  /** The original expected duration is pinned on the server-issued offer. */
+  const expected = offer.data()?.expectedPerformanceMs;
+  /** Actual normalized finish is absent for partial, idle and abandoned races. */
+  const actual = sample?.observation === "finish" ? sample.timeMs : null;
+  transaction.update(offer.ref, {finishedTen, actualPerformanceMs: actual,
+    predictionLogError: actual !== null && typeof expected === "number" && Number.isFinite(expected) && expected > 0 ? Math.log(actual / expected) : null,
+    opponentAdjustedFinishMs: run.opponent?.adjustedFinishMs ?? null,
+    finishTimeDeltaMs: finishedTen && run.opponent ? (run.settledOutcome?.adjustedFinishMs ?? (run.wallFinishMs ?? 0) + run.hintPenaltyMs + run.skipPenaltyMs) - run.opponent.adjustedFinishMs : null,
+    settlementDelayMs: run.settledAtMs !== undefined && run.finishedAtMs !== undefined ? Math.max(0, run.settledAtMs - run.finishedAtMs) : null,
+    terminalStatus: run.status, terminalAtMs: run.settledAtMs ?? run.finishedAtMs ?? nowMs,
+    result: run.settledOutcome?.result ?? run.result ?? null, correctCount: run.correctCount,
+    hintPenaltyMs: run.hintPenaltyMs, skipPenaltyMs: run.skipPenaltyMs,
+    adjustedFinishMs: run.settledOutcome?.adjustedFinishMs ?? (run.wallFinishMs ?? 0) + run.hintPenaltyMs + run.skipPenaltyMs});
+}

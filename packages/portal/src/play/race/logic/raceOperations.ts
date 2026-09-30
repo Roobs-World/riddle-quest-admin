@@ -10,6 +10,8 @@ export type RaceOperation =
   | "raceAbandon"
   | "racePublish"
   | "raceChallenge"
+  | "raceEntry"
+  | "raceInviteCancel"
   | "raceOutcome"
   | "raceInbox"
   | "raceBlock"
@@ -24,6 +26,7 @@ const RECEIPT_OPERATIONS: ReadonlySet<RaceOperation> = new Set([
   "raceSkip",
   "raceAbandon",
   "racePublish",
+  "raceInviteCancel",
 ]);
 
 /** Returns whether an operation must carry its request identifier in the payload. */

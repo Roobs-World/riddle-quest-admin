@@ -3,6 +3,7 @@ import type {
   ListRaceCategoriesResponse,
   RaceCategoryId,
   RaceChallengePreview,
+  RaceEntryResponse,
   RaceInboxItem,
   SocialReportCategory,
   ListFacebookTournamentResponse,
@@ -222,10 +223,19 @@ export function RaceInboxPanel({
 /** Displays an incoming challenge preview and its acceptance action. */
 export function RaceChallengePanel({
   challenge,
+  entryStatus,
+  busy = false,
+  onCancel,
   onAccept,
 }: {
   /** Stores challenge. */
   challenge: RaceChallengePreview | null;
+  /** Typed invitation/readiness facts from authority. */
+  entryStatus?: RaceEntryResponse | null;
+  /** Prevents duplicate cancellation commands. */
+  busy?: boolean;
+  /** Creator cancellation adapter, absent for public challenges. */
+  onCancel?: () => void;
   /** Stores on accept. */
   onAccept: (categoryId: RaceCategoryId) => void;
 }) {
@@ -236,16 +246,19 @@ export function RaceChallengePanel({
           <h2>{tr("RaceTo10.CHALLENGED_BY", {name: challenge.creator.displayName})}</h2>
           <p>{tr("RaceTo10.TIME_TO_BEAT", {time: formatRaceTime(challenge.adjustedTimeToBeatMs)})}</p>
           <p>{tr("RaceTo10.FIRST_TO_TEN")} · {tr("RaceTo10.HINT_BUTTON")} {tr("RaceTo10.HINT_PENALTY")} · {tr("RaceTo10.SKIP_BUTTON")} {tr("RaceTo10.SKIP_PENALTY")}</p>
-          {challenge.status === "active" ? (
+          {challenge.status === "active" && !(entryStatus?.status === "ready" && entryStatus.invitation?.role === "creator") ? (
             <button className="race-primary" onClick={() => onAccept(challenge.categoryId)}>
               {tr("RaceTo10.ACCEPT_CHALLENGE")}
             </button>
-          ) : (
+          ) : challenge.status !== "active" ? (
             <p role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>
-          )}
+          ) : null}
         </>
       ) : (
-        <p>{tr("RaceTo10.LOADING_CHALLENGE")}</p>
+        <p role="status">{tr(entryStatus?.status === "waiting" ? "RaceTo10.WAITING_PUBLICATION" : entryStatus?.status === "cancelled" ? "RaceTo10.INVITATION_CANCELLED" : entryStatus?.status === "expired" ? "RaceTo10.INVITATION_EXPIRED" : entryStatus?.status === "unavailable" ? "RaceTo10.ERROR_GENERIC" : "RaceTo10.LOADING_CHALLENGE")}</p>
+      )}
+      {entryStatus && (entryStatus.status === "waiting" || entryStatus.status === "ready") && entryStatus.invitation?.canCancel && onCancel && (
+        <button className="race-secondary" disabled={busy} onClick={onCancel}>{tr("RaceTo10.CANCEL_INVITATION")}</button>
       )}
     </div>
   );

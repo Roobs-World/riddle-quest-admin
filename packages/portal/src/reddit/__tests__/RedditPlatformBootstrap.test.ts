@@ -5,6 +5,7 @@ import {
   selectMigratableGuestPreferences,
 } from "../RedditPlatformBootstrap";
 import {purchase} from "@devvit/payments/client";
+import {raceMatchFailure} from "@qwordly/core/race";
 
 jest.mock("@devvit/payments/client", () => ({purchase: jest.fn()}));
 
@@ -51,6 +52,45 @@ beforeAll(() => {
 beforeEach(() => {
   window.localStorage.clear();
   jest.restoreAllMocks();
+});
+
+it.each([
+  [503, raceMatchFailure("temporarily-unavailable", 1500), "retryable-failure"],
+  [429, raceMatchFailure("search-budget-exceeded"), "retryable-failure"],
+  [409, raceMatchFailure("intent-expired"), "retryable-failure"],
+  [403, raceMatchFailure("access-denied"), "terminal-failure"],
+] as const)("preserves typed matchmaking failure through HTTP %s", async (status, failure, expectedStatus) => {
+  global.fetch = jest.fn(input => {
+    /** Same-origin route distinguishes session/storage bootstrapping from matchmaking delivery. */
+    const path = String(input);
+    if (path === "/api/session") return reply({ok: true, authenticated: true, accountGeneration: 1,
+      features: {...enabledFeatures, commerce: false, presence: false}});
+    if (path === "/api/storage/read") return reply({ok: true, preferences: {}, playerData: null});
+    return Promise.resolve({ok: false, status, json: async () => ({error: "raw server diagnostics", matchmaking: failure})}) as Promise<Response>;
+  }) as typeof fetch;
+  /** Authenticated adapter through which typed HTTP recovery crosses the public seam. */
+  const session = await new RedditPlatformBootstrap().initialize(() => undefined);
+  expect(session.status).toBe("success");
+  if (session.status !== "success") throw new Error("expected-authenticated-session");
+  /** Public failure result must retain recovery guidance without raw server diagnostics. */
+  const result = await session.value.capabilities.matchmaking!.find({locale: "en", requestId: "same-intent"});
+  expect(result).toMatchObject({status: expectedStatus, failure});
+  expect(JSON.stringify(result)).not.toContain("raw server diagnostics");
+  expect((global.fetch as jest.Mock).mock.calls.at(-1)).toMatchObject(["/api/game/race.match", {body: JSON.stringify({locale: "en", requestId: "same-intent"})}]);
+});
+
+it("classifies a legacy HTTP quota failure as same-intent backoff", async () => {
+  global.fetch = jest.fn(input => {
+    if (input === "/api/session") return reply({ok: true, authenticated: true, accountGeneration: 1,
+      features: {...enabledFeatures, commerce: false, presence: false}});
+    if (input === "/api/storage/read") return reply({ok: true, preferences: {}, playerData: null});
+    return Promise.resolve({ok: false, status: 429, json: async () => ({error: "rate-limited"})}) as Promise<Response>;
+  }) as typeof fetch;
+  /** Legacy quota response reaches the same authenticated web matchmaking adapter. */
+  const session = await new RedditPlatformBootstrap().initialize(() => undefined);
+  if (session.status !== "success") throw new Error("expected-authenticated-session");
+  await expect(session.value.capabilities.matchmaking!.find("en")).resolves.toMatchObject({status: "retryable-failure",
+    failure: raceMatchFailure("temporarily-unavailable", 1000)});
 });
 
 afterEach(() => {

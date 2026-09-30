@@ -179,6 +179,11 @@ describe("race presentation helpers", () => {
     }))).toBeNull();
     expect(projectInstantRaceHint(run())).toBeNull();
     expect(projectInstantRaceHint(run({preloadedRiddles: []}))).toBeNull();
+    /** Legacy one-hint rules still bound immediate projection and further paid requests. */
+    const legacy = projectInstantRaceHint(run({preloadedRiddles, rules: {...RACE_RULES, maxHintsPerRiddle: 1}}));
+    expect(legacy?.currentRiddle?.hintAvailable).toBe(false);
+    expect(projectInstantRaceHint(legacy!)).toBeNull();
+    expect(projectInstantRaceHint({...legacy!, currentRiddle: {...legacy!.currentRiddle!, hintAvailable: true}})).toBeNull();
   });
 
   it("projects an opponent win only after the server-issued ghost finish elapses", () => {
@@ -236,6 +241,21 @@ describe("race presentation helpers", () => {
     });
   });
 
+  it.each(["completed", "timed_out"] as const)("preserves a confirmed %s clock when paid penalties exceed the active challenger limit", status => {
+    /** Penalty crossings can leave a terminal canonical clock above the active-play deadline. */
+    const terminal = run({status, correctCount: status === "completed" ? 10 : 9, currentRiddle: null,
+      wallElapsedMs: 0, totalPenaltyMs: 330000, adjustedElapsedMs: 330000,
+      opponent: {displayName: "Ava", adjustedFinishMs: 310000, events: []}});
+    expect(getAdjustedRaceTime(terminal, 0, 60000)).toBe(330000);
+    expect(projectRaceOutcome(terminal, 330000)).toMatchObject({result: status === "completed" ? "ghost_win" : "timed_out",
+      adjustedFinishMs: 330000, totalPenaltyMs: 330000, wallFinishMs: 0});
+  });
+  it("projects an opponent win when the final clearing penalty makes a completed challenger slower", () => {
+    /** Completing all ten questions does not turn a slower finish into a tie. */
+    const terminal = run({status: "completed", correctCount: 10, currentRiddle: null, totalPenaltyMs: 45000,
+      wallElapsedMs: 2000, adjustedElapsedMs: 47000, opponent: {displayName: "Ava", adjustedFinishMs: 40000, events: []}});
+    expect(projectRaceOutcome(terminal, 47000)).toMatchObject({result: "ghost_win", correctCount: 10, adjustedFinishMs: 47000, rematchEligible: true});
+  });
   it("retains green keyboard feedback and ignores empty scoring cells", () => {
     expect(
       getRaceLetterStates([

@@ -1,3 +1,4 @@
+import {getRaceEntry, cancelRaceInvite} from "../firebase";
 import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {
@@ -359,6 +360,7 @@ export const createFirebaseHostServices = (): HostServices => {
     /** Starts race. */
     /** Schedules a prepared run after deck delivery. */
     async readyRace(input) { return (await readyRaceRun(input)).data; },
+    /** Starts race. */
     async startRace(input) {
       return (await startRaceRun(input)).data;
     },
@@ -391,6 +393,10 @@ export const createFirebaseHostServices = (): HostServices => {
       return (await publishRaceChallenge(input)).data;
     },
     /** Gets race challenge. */
+    async getRaceEntry(challengeId, locale) {return (await getRaceEntry({challengeId, locale})).data;},
+    /** Delivers creator cancellation through authenticated Firebase. */
+    async cancelRaceInvite(input) {return (await cancelRaceInvite(input)).data;},
+    /** Reads a legacy public preview. */
     async getRaceChallenge(challengeId, locale) {
       return (await getRaceChallenge({challengeId, locale})).data;
     },

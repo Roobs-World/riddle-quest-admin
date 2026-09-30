@@ -14,6 +14,7 @@ import {
   ListRaceInboxRequestSchema,
   PublishRaceChallengeRequestSchema,
   ReserveRaceInviteRequestSchema,
+  CancelRaceInviteRequestSchema,
   RaceChallengeIdRequestSchema,
   RaceAnalyticsEventRequestSchema,
   RaceRunIdRequestSchema,
@@ -62,6 +63,8 @@ const OperationSchema = z.enum([
   "raceAbandon",
   "racePublish",
   "raceInviteReserve",
+  "raceInviteCancel",
+  "raceEntry",
   "raceChallenge",
   "raceOutcome",
   "raceInbox",
@@ -359,7 +362,11 @@ export const GameAbandonRaceMessageSchema = envelope("game:abandonRace", Abandon
 export const GamePublishRaceMessageSchema = envelope("game:publishRace", PublishRaceChallengeRequestSchema);
 /** Validates the game reserve invite-lobby message data shape. */
 export const GameReserveRaceInviteMessageSchema = envelope("game:reserveRaceInvite", ReserveRaceInviteRequestSchema);
-/** Validates the game get race challenge message data shape. */
+/** Reads typed challenge readiness without provider-specific client interpretation. */
+export const GameGetRaceEntryMessageSchema = envelope("game:getRaceEntry", RaceChallengeIdRequestSchema);
+/** Cancels an authenticated creator-owned reservation. */
+export const GameCancelRaceInviteMessageSchema = envelope("game:cancelRaceInvite", CancelRaceInviteRequestSchema);
+/** Retains the legacy direct challenge-preview contract. */
 export const GameGetRaceChallengeMessageSchema = envelope("game:getRaceChallenge", RaceChallengeIdRequestSchema);
 /** Validates the game get race outcome message data shape. */
 export const GameGetRaceOutcomeMessageSchema = envelope("game:getRaceOutcome", RaceRunIdRequestSchema);
@@ -423,6 +430,8 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GamePublishRaceMessageSchema,
   GameReserveRaceInviteMessageSchema,
   GameGetRaceChallengeMessageSchema,
+  GameGetRaceEntryMessageSchema,
+  GameCancelRaceInviteMessageSchema,
   GameGetRaceOutcomeMessageSchema,
   GameListRaceInboxMessageSchema,
   GameBlockRivalMessageSchema,

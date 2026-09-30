@@ -21,6 +21,17 @@ const response = (result: unknown) =>
 
 beforeEach(() => jest.restoreAllMocks());
 
+it("reads typed invitation readiness through the same-origin gateway", async () => {
+  /** Privacy-safe waiting response from canonical server authority. */
+  const waiting = {status: "waiting", invitation: {role: "recipient", canCancel: false, claimState: "claimed", publicationState: "pending", expiresAtMs: 20000}, serverNowMs: 10000};
+  global.fetch = jest.fn(() => response(waiting)) as typeof fetch;
+  /** Target adapter never imports Firebase browser operations. */
+  const services = createRedditHostServices();
+  await expect(services.getRaceEntry!("opaque-seat", "en")).resolves.toEqual(waiting);
+  expect(global.fetch).toHaveBeenCalledWith("/api/game/race.entry", expect.objectContaining({body: JSON.stringify({challengeId: "opaque-seat", locale: "en"})}));
+  expect(services.cancelRaceInvite).toBeUndefined();
+});
+
 it.each([false, true])("loads canonical feedback through same-origin routes, available=%s", async (includeEvaluation) => {
   global.fetch = jest.fn((input) => {
     /** Provides path behavior. */

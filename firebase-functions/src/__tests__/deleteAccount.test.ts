@@ -438,6 +438,7 @@ describe("deleteAccount", () => {
     ).resolves.toEqual({success: true});
 
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceRuns/run-1"});
+    expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceDeadlineFailures/run-1"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceAttempts/attempt-1"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceChallenges/challenge-owned"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "users/other-user/raceInbox/new-item"});

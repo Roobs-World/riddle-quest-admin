@@ -229,7 +229,7 @@ describe("Facebook tournament authority", () => {
     expect(recoveredAfterRollover.entry.tournamentId).toBe("facebook-race10-ja-2026-08-19");
     expect(values.has(`facebookTournaments/facebook-race10-ja-2026-08-20/entries/${USER_ID}`)).toBe(false);
 
-    values.set(`raceRuns/${run.runId}`, completedRun({wallFinishMs: 31_000}));
+    values.set(`raceRuns/${run.runId}`, completedRun({wallFinishMs: 31_000, finishedAtMs: START + 32_000}));
     /** Provides slower behavior. */
     const slower = await recordFacebookTournamentRun(
       USER_ID,

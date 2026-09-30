@@ -42,7 +42,7 @@ export async function getRaceChallengePreview(
     const snapshot = await transaction.get(challengeRef);
     if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
     /** Provides challenge behavior. */
-    const challenge = parseChallengeRecord(snapshot.data());
+    const challenge = parseChallengeRecord(snapshot.data(), snapshot.id);
     if (challenge.locale !== locale) {
       throw new HttpsError("failed-precondition", "RaceTo10.ERROR_LOCALE_MISMATCH");
     }
@@ -72,10 +72,13 @@ export async function getRaceOutcomeForUser(
   const nowMs = options.nowMs ?? Date.now();
   /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(runId);
+  /** Provides outcome behavior. */
   const outcome = await db.runTransaction(async (transaction) => {
+    /** Provides run snapshot behavior. */
     const runSnapshot = await transaction.get(runRef);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
-    const run = parseRunRecord(runSnapshot.data());
+    /** Provides run behavior. */
+    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
     if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
     return readSettledRaceOutcome(transaction, db, run, nowMs);
   });

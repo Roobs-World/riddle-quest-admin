@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "ミックス",
-    "CATEGORY_MIXED_DESCRIPTION": "全カテゴリーから出題"
+    "CATEGORY_MIXED_DESCRIPTION": "全カテゴリーから出題",
+    "WAITING_PUBLICATION": "作成者がレースを完了して公開するのを待っています。",
+    "INVITATION_EXPIRED": "この招待は期限切れです。",
+    "INVITATION_CANCELLED": "この招待はキャンセルされました。",
+    "CANCEL_INVITATION": "招待をキャンセル",
+    "MATCH_TEMPORARY": "対戦相手の検索は一時的に利用できません。少し待ってから再試行してください。",
+    "MATCH_TRY_NEW": "新しい検索で対戦相手を探してください。",
+    "MATCH_EXPIRED": "この対戦相手の検索は期限切れです。再試行してください。",
+    "MATCH_CONSUMED": "この検索はすでに使用されています。別の対戦相手を探してください。",
+    "MATCH_UNAVAILABLE": "このアカウントでは対戦相手を検索できません。",
+    "MATCH_EMPTY": "現在、適切な対戦相手がいません。後でもう一度お試しください。"
   }
 }

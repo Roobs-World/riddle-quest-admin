@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Смешанное",
-    "CATEGORY_MIXED_DESCRIPTION": "Сюрприз из каждой категории"
+    "CATEGORY_MIXED_DESCRIPTION": "Сюрприз из каждой категории",
+    "WAITING_PUBLICATION": "Ожидаем, пока создатель завершит и опубликует свой забег.",
+    "INVITATION_EXPIRED": "Срок действия приглашения истёк.",
+    "INVITATION_CANCELLED": "Это приглашение отменено.",
+    "CANCEL_INVITATION": "Отменить приглашение",
+    "MATCH_TEMPORARY": "Поиск соперника временно недоступен. Попробуйте ещё раз немного позже.",
+    "MATCH_TRY_NEW": "Начните новый поиск, чтобы найти соперника.",
+    "MATCH_EXPIRED": "Срок действия этого поиска соперника истёк. Попробуйте ещё раз.",
+    "MATCH_CONSUMED": "Этот поиск уже использован. Найдите другого соперника.",
+    "MATCH_UNAVAILABLE": "Поиск соперника недоступен для этого аккаунта.",
+    "MATCH_EMPTY": "Подходящих соперников пока нет. Попробуйте позже."
   }
 }

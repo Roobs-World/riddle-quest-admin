@@ -1,5 +1,5 @@
 import React from "react";
-import {DataComponent, Filters, Section, SectionHeader, useDataApp, useSectionFilters} from "../../data-app-public.jsx";
+import {DataComponent, DataTable, Filters, Section, SectionHeader, useDataApp, useSectionFilters} from "../../data-app-public.jsx";
 import {measurement} from "./deployment-metrics.js";
 
 export function BackendMonitoring() {
@@ -24,12 +24,11 @@ export function BackendMonitoring() {
     <p className="monitoring-note" role="status">Refresh: {status?.status ?? "Snapshot"}{stale ? " · overdue or not yet verified" : ""}. Last successful collection: {status?.lastSuccessAt ?? "Unavailable"}.</p>
     <p className="monitoring-note">Observed backend traffic includes test probes and rejected requests. It is not a count of players or gameplay sessions. Server latency is separate from game launch time. Each row covers the 24 hours ending at its displayed window end; historical rows retain the last report for retired revisions. {!row && "No deployments match these filters."}</p>
     <DataComponent id="backend-deployment-metrics" queryId="backend_deployment_metrics" title="Requests and latency by deployed backend revision" kind="table" variant="card" {...props}>
-      <div className="integration-table-wrap backend-table-wrap"><table className="integration-table monitoring-table">
-        <thead><tr>{columns.map(([key, label, numeric]) => <th key={key} data-numeric={numeric}>{label}</th>)}</tr></thead>
-        <tbody>{props.displayRows.map((record) => <tr key={`${record.service}:${record.deployment}`}>
-          {columns.map(([key, , numeric]) => <td key={key} data-numeric={numeric}>{numeric ? measurement(record[key]) : record[key]}</td>)}
-        </tr>)}</tbody>
-      </table></div>
+      <div className="evidence-data-table" data-reviewed-rows>
+        <DataTable rows={props.displayRows} label="Requests and latency by deployed backend revision" columns={columns.map(([key, label, numeric]) => ({
+          key, label, renderCell: value => numeric ? measurement(value) : value,
+        }))} />
+      </div>
     </DataComponent>
   </Section>;
 }

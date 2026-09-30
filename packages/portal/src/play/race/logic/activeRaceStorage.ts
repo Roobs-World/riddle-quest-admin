@@ -27,7 +27,9 @@ export function saveActiveRace(ownerId: string | undefined, runId: string): void
   if (ownerId) safeBrowserStorageSet("local", ACTIVE_RACE_KEY, JSON.stringify({ownerId, runId}));
 }
 
-/** Clears only this account's hint, preserving another tab's account state. */
-export function clearActiveRace(ownerId: string | undefined): void {
-  if (readActiveRace(ownerId)) safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
+/** Clears this account's expected run, preserving a newer hint from another tab. */
+export function clearActiveRace(ownerId: string | undefined, runId?: string): void {
+  /** Storage may now point to a newer run belonging to the same account. */
+  const savedRunId = readActiveRace(ownerId);
+  if (savedRunId && (runId === undefined || savedRunId === runId)) safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
 }

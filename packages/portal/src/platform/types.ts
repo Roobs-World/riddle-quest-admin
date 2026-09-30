@@ -4,6 +4,7 @@ import type {
   ListFacebookTournamentResponse,
   RaceMatchResponse,
   RaceMatchRequest,
+  RaceMatchFailure,
   RaceLocale,
   RecordFacebookTournamentRunResponse,
   ListFacebookContextBoardResponse,
@@ -392,13 +393,19 @@ export type NativeSocialCapability = {
 };
 
 /** Provider-wide, server-authoritative offline opponent selection. */
+export type MatchmakingResult = PlatformResult<RaceMatchResponse> & {
+  /** Optional for legacy adapters; new adapters preserve the structured recovery policy. */
+  failure?: RaceMatchFailure;
+};
+
+/** Provider-wide, server-authoritative offline opponent selection. */
 export type MatchmakingCapability = {
   /**
    * Finds an identity-minimized offline opponent through the authoritative backend.
    *
    * @param input - Locale, category preference, and optional retry correlation.
    */
-  find(input: RaceMatchRequest | RaceLocale): Promise<PlatformResult<RaceMatchResponse>>;
+  find(input: RaceMatchRequest | RaceLocale): Promise<MatchmakingResult>;
 };
 
 /** Privacy-safe activity vocabulary shared by provider presence adapters. */

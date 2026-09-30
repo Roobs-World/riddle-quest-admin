@@ -1,0 +1,109 @@
+{
+  "taskId": "multiplayer:race-hint-confirmation-recovery",
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks"
+  ],
+  "work": "Validate hint confirmations against the owned question and complete reveal set before consuming projection rollback; merge all authoritative hints while preserving draft input and recover rejected confirmations with a read instead of a second paid mutation.",
+  "remainingGates": [
+    "Remaining multiplayer architecture requirements have independent development checks.",
+    "Provider submission, approval and deployment require their own receipts."
+  ],
+  "nextAction": "Continue the remaining multiplayer requirements and accepted-revision release verification.",
+  "checks": [
+    {
+      "id": "race-transitions",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/play/race/__tests__"
+      ]
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ]
+    },
+    {
+      "id": "isolated-target-builds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ]
+    },
+    {
+      "id": "injected-hint-confirmation-recovery",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--runTestsByPath",
+        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "--testNamePattern=rejects inconsistent hint confirmations|preserves the player.s draft through projected|preserves solving time when hint and skip|recovers lost hint and skip confirmations"
+      ]
+    },
+    {
+      "id": "artifact-dependency-evidence",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ]
+    },
+    {
+      "id": "maintainable-file-sizes",
+      "executable": "pnpm",
+      "args": [
+        "check:file-sizes"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json"
+    }
+  ]
+}

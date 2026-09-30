@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "Mixed",
-    "CATEGORY_MIXED_DESCRIPTION": "A surprise from every category"
+    "CATEGORY_MIXED_DESCRIPTION": "A surprise from every category",
+    "WAITING_PUBLICATION": "Waiting for the creator to finish and publish their race.",
+    "INVITATION_EXPIRED": "This invitation has expired.",
+    "INVITATION_CANCELLED": "This invitation was cancelled.",
+    "CANCEL_INVITATION": "Cancel invitation",
+    "MATCH_TEMPORARY": "Opponent search is temporarily unavailable. Try again shortly.",
+    "MATCH_TRY_NEW": "Try a new search to find an opponent.",
+    "MATCH_EXPIRED": "This opponent search has expired. Try again.",
+    "MATCH_CONSUMED": "This search was already used. Find another opponent.",
+    "MATCH_UNAVAILABLE": "Opponent search is unavailable for this account.",
+    "MATCH_EMPTY": "No suitable opponents are available yet. Try again later."
   }
 }

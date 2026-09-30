@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "混合",
-    "CATEGORY_MIXED_DESCRIPTION": "每个类别都有惊喜"
+    "CATEGORY_MIXED_DESCRIPTION": "每个类别都有惊喜",
+    "WAITING_PUBLICATION": "正在等待创建者完成并发布比赛。",
+    "INVITATION_EXPIRED": "此邀请已过期。",
+    "INVITATION_CANCELLED": "此邀请已取消。",
+    "CANCEL_INVITATION": "取消邀请",
+    "MATCH_TEMPORARY": "暂时无法搜索对手，请稍后重试。",
+    "MATCH_TRY_NEW": "请开始新的搜索以寻找对手。",
+    "MATCH_EXPIRED": "此次对手搜索已过期，请重试。",
+    "MATCH_CONSUMED": "此次搜索已被使用，请寻找其他对手。",
+    "MATCH_UNAVAILABLE": "此账号无法搜索对手。",
+    "MATCH_EMPTY": "目前没有合适的对手，请稍后重试。"
   }
 }

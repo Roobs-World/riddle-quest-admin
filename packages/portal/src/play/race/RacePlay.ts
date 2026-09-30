@@ -38,6 +38,12 @@ type GuessProjection = {
   /** Original authority receipt time retained during rollback. */
   receivedAt: number;
 };
+/** Paid-action rollback preserves the entire answer draft and question history. */
+type PaidDraft = {
+  /** Original unrevealed and hinted answer letters. */ letters: string[];
+  /** Previous guesses for the original question. */ guesses: ScoredGuess[];
+  /** Selected answer slot before the projected action. */ activeSlotIndex: number;
+};
 /** Owns Race Projection, receipt correlation, rollback and terminal-result eligibility. */
 export class RacePlay {
   /** Observable snapshot remains stable until a transition occurs. */
@@ -52,6 +58,9 @@ export class RacePlay {
     operation: RaceOperation;
   } | null = null;
   /** Loader transition retained for cancellation. */ private timer: number | undefined;
+  /** Delivery expiry belongs to the same receipt as its pending operation. */ private responseTimer: number | undefined;
+  /** Session recovery receives expiry as a correlated transport failure. */
+  private readonly onResponseTimeout?: (requestId: string, operation: RaceOperation) => void;
   /** Initial guess-loader receipt time. */ private loadingStarted = 0;
   /** Terminal guess hands its loader over to outcome reconciliation. */ private awaitingOutcome = false;
   /** Original input and history survive provisional successor typing. */ private guess: GuessProjection | null = null;
@@ -60,6 +69,9 @@ export class RacePlay {
     operation: "raceHint" | "raceSkip";
     /** Stores run. */
     run: RaceRunView;
+    /** Receipt clock restored when the projected action is rejected. */
+    receivedAt: number;
+    /** Original draft retained independently of hint/skip projection. */ draft?: PaidDraft;
   } | null = null;
   /** Host command delivery seam. */ private readonly post: (message: GameToHostMessage) => void;
   /** Deterministic receipt/time seams. */ private readonly clock: RacePlayClock;
@@ -73,14 +85,17 @@ export class RacePlay {
       cancel: (timer) => window.clearTimeout(timer),
     },
     requestId = createRequestId,
+    onResponseTimeout,
   }: {
     /** Host delivery adapter. */ postToHost: (message: GameToHostMessage) => void;
     /** Optional time adapter. */ clock?: RacePlayClock;
     /** Optional receipt adapter. */ requestId?: (operation: string) => string;
+    /** Optional delivery-failure adapter; expiry never automatically repeats a mutation. */ onResponseTimeout?: (requestId: string, operation: RaceOperation) => void;
   }) {
     this.post = postToHost;
     this.clock = clock;
     this.requestId = requestId;
+    this.onResponseTimeout = onResponseTimeout;
   }
   /** Subscribes rendering to immutable snapshots. */
   subscribe = (listener: () => void): (() => void) => {
@@ -97,10 +112,11 @@ export class RacePlay {
     this.state = state;
     for (const listener of this.listeners) listener();
   }
-  /** Sends a command with one correlation ID, also used as the mutation receipt. */
-  send = (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>): void => {
-    /** Provides id behavior. */
-    const id = this.requestId(operation);
+  /** Sends a command with one correlation/mutation receipt; recovery may replay an owned receipt. */
+  send = (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>, replayRequestId?: string): void => {
+    this.cancelResponseTimer();
+    /** Replaying the same authority mutation preserves its idempotency identity. */
+    const id = replayRequestId ?? this.requestId(operation);
     this.expected = {id, operation};
     if (operation === "raceGuess") {
       if (this.timer !== undefined) this.clock.cancel(this.timer);
@@ -109,6 +125,12 @@ export class RacePlay {
       this.awaitingOutcome = false;
     }
     this.update({pending: operation, raceGuessLoading: operation === "raceGuess" || this.state.raceGuessLoading});
+    if (this.onResponseTimeout) {
+      this.responseTimer = this.clock.schedule(() => {
+        this.responseTimer = undefined;
+        if (this.expected?.id === id && this.expected.operation === operation) this.onResponseTimeout?.(id, operation);
+      }, 30000);
+    }
     this.post({
       type,
       requestId: id,
@@ -118,8 +140,14 @@ export class RacePlay {
   /** Consumes exactly one matching response; stale and duplicate events are ignored. */
   acceptResponse(id: string | undefined, operation: RaceOperation): boolean {
     if (!id || this.expected?.id !== id || this.expected.operation !== operation) return false;
+    this.cancelResponseTimer();
     this.expected = null;
     return true;
+  }
+  /** Matching responses, replacement commands and lifetime disposal invalidate delivery expiry. */
+  private cancelResponseTimer(): void {
+    if (this.responseTimer !== undefined) this.clock.cancel(this.responseTimer);
+    this.responseTimer = undefined;
   }
   /** Keeps answer loading active until authoritative outcome reconciliation finishes. */
   setAwaitingOutcome = (awaiting: boolean): void => {
@@ -145,8 +173,14 @@ export class RacePlay {
   };
   /** Cancels pending UI work on unmount. */
   dispose = (): void => {
+    this.cancelResponseTimer();
     if (this.timer !== undefined) this.clock.cancel(this.timer);
     this.timer = undefined;
+    this.expected = null;
+    this.guess = null;
+    this.paid = null;
+    this.awaitingOutcome = false;
+    this.update({pending: null, raceGuessLoading: false});
   };
   /** Creates immediate feedback and retains the complete original question checkpoint. */
   projectGuess(run: RaceRunView, letters: string[], history: ScoredGuess[], receivedAt: number) {
@@ -191,33 +225,46 @@ export class RacePlay {
   ) {
     /** Provides projection behavior. */
     const projection = this.guess;
-    /** Provides previous behavior. */
-    const previous = projection?.run.currentRiddle?.riddleId ?? currentRun?.currentRiddle?.riddleId;
-    /** Provides changed behavior. */
-    const changed = previous !== result.run.currentRiddle?.riddleId;
-    /** Provides preserve draft behavior. */
-    const preserveDraft = Boolean(projection && projection.projectedRiddleId === result.run.currentRiddle?.riddleId);
+    if ((projection?.run ?? currentRun)?.runId !== result.run.runId && (projection || currentRun)) {
+      throw new Error("Guess confirmation belongs to a different race run");
+    }
+    /** Content can repeat at another deck position without sharing an answer attempt. */
+    const sameQuestion = (left: RaceRunView["currentRiddle"] | undefined, right: RaceRunView["currentRiddle"]): boolean =>
+      Boolean(left && right && left.riddleId === right.riddleId && left.position === right.position && left.answerLength === right.answerLength);
+    /** Guess history belongs to the submitted question, independently of the displayed draft. */
+    const changed = !sameQuestion(projection?.run.currentRiddle ?? currentRun?.currentRiddle, result.run.currentRiddle);
+    /** Preserve only input already displayed for this exact confirmed question and answer shape. */
+    const preserveDraft = Boolean(projection && sameQuestion(currentRun?.currentRiddle, result.run.currentRiddle) &&
+      letters.length === result.run.currentRiddle?.answerLength);
     this.guess = null;
     return {
-      resetAttempt: changed ? !preserveDraft : !projection,
+      resetAttempt: !preserveDraft,
       guesses: changed
         ? null
         : [
-            ...(projection ? history.slice(0, -1) : history),
+            ...(projection?.history ?? history),
             {guess: projection?.submitted ?? letters, feedback: result.feedback.map(({status}) => status)},
           ],
     };
   }
   /** Projects a paid action and privately retains its original authoritative view. */
-  projectPaid(operation: "raceHint" | "raceSkip", run: RaceRunView): RaceRunView | null {
+  projectPaid(operation: "raceHint" | "raceSkip", run: RaceRunView, receivedAt = this.clock.now(), draft?: PaidDraft): RaceRunView | null {
     /** Provides projected behavior. */
     const projected = operation === "raceHint" ? projectInstantRaceHint(run) : projectInstantRaceSkip(run);
-    if (projected) this.paid = {operation, run};
-    return projected;
+    if (!projected) return null;
+    this.paid = {operation, run, receivedAt, ...(draft ? {draft: {...draft, letters: [...draft.letters], guesses: [...draft.guesses]}} : {})};
+    /** Advance solving time before the rendering adapter anchors the projection. */
+    const elapsed = run.status === "active" ? Math.max(0, this.clock.now() - receivedAt) : 0;
+    return {...projected, wallElapsedMs: run.wallElapsedMs + elapsed,
+      adjustedElapsedMs: projected.adjustedElapsedMs + elapsed};
   }
   /** Removes a confirmed paid-action checkpoint. */
-  confirmPaid(operation: "raceHint" | "raceSkip"): void {
-    if (this.paid?.operation === operation) this.paid = null;
+  confirmPaid(operation: "raceHint" | "raceSkip", confirmedRun?: RaceRunView): void {
+    if (this.paid?.operation !== operation) return;
+    if (confirmedRun && confirmedRun.runId !== this.paid.run.runId) {
+      throw new Error("Paid action confirmation belongs to a different race run");
+    }
+    this.paid = null;
   }
   /** The same rollback applies to authority rejection and malformed receipts. */
   rejectProjection(operation: RaceOperation) {
@@ -235,9 +282,10 @@ export class RacePlay {
     }
     if (this.paid?.operation === operation) {
       /** Provides run behavior. */
-      const run = this.paid.run;
+      const {run, receivedAt, draft} = this.paid;
       this.paid = null;
-      return {kind: "paid" as const, run, guesses: null, letters: null};
+      return {kind: "paid" as const, run, receivedAt, guesses: draft?.guesses ?? null, letters: draft?.letters ?? null,
+        ...(draft ? {activeSlotIndex: draft.activeSlotIndex} : {})};
     }
     return null;
   }

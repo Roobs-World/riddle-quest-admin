@@ -94,6 +94,16 @@
     "CATEGORY_SCIENCE_NAME": "Science",
     "CATEGORY_SCIENCE_DESCRIPTION": "Discoveries, nature, space, and technology",
     "CATEGORY_MIXED_NAME": "मिश्रित",
-    "CATEGORY_MIXED_DESCRIPTION": "हर श्रेणी से एक आश्चर्य"
+    "CATEGORY_MIXED_DESCRIPTION": "हर श्रेणी से एक आश्चर्य",
+    "WAITING_PUBLICATION": "आयोजक के अपनी दौड़ पूरी करने और प्रकाशित करने की प्रतीक्षा है।",
+    "INVITATION_EXPIRED": "इस आमंत्रण की अवधि समाप्त हो गई है।",
+    "INVITATION_CANCELLED": "यह आमंत्रण रद्द कर दिया गया है।",
+    "CANCEL_INVITATION": "आमंत्रण रद्द करें",
+    "MATCH_TEMPORARY": "प्रतिद्वंद्वी की खोज अभी उपलब्ध नहीं है। थोड़ी देर में फिर कोशिश करें।",
+    "MATCH_TRY_NEW": "प्रतिद्वंद्वी खोजने के लिए नई खोज शुरू करें।",
+    "MATCH_EXPIRED": "इस प्रतिद्वंद्वी खोज की समय सीमा समाप्त हो गई है। फिर कोशिश करें।",
+    "MATCH_CONSUMED": "इस खोज का पहले ही उपयोग हो चुका है। दूसरा प्रतिद्वंद्वी खोजें।",
+    "MATCH_UNAVAILABLE": "इस खाते के लिए प्रतिद्वंद्वी की खोज उपलब्ध नहीं है।",
+    "MATCH_EMPTY": "अभी कोई उपयुक्त प्रतिद्वंद्वी उपलब्ध नहीं है। बाद में फिर कोशिश करें।"
   }
 }

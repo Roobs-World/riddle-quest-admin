@@ -155,7 +155,7 @@ describe("Reddit tournament authority", () => {
     );
     expect(first.entry.adjustedTimeMs).toBe(45_000);
     expect(Object.keys(first.entry)).not.toEqual(expect.arrayContaining(["coins", "reward", "grant"]));
-    values.set("raceRuns/run-1", run({wallFinishMs: 31_000}));
+    values.set("raceRuns/run-1", run({wallFinishMs: 31_000, finishedAtMs: START + 32_000}));
     await expect(
       recordRedditTournamentRun(USER_ID, {runId: "run-1", locale: "ja"}, {db, nowMs: START + 60_000}),
     ).resolves.toMatchObject({improved: false, entry: {adjustedTimeMs: 45_000}});

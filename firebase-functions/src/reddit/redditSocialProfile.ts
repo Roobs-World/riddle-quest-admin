@@ -1,3 +1,4 @@
+import {RaceEntryResponseSchema} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {
@@ -111,6 +112,14 @@ export async function hydrateRedditRaceSocialResult(
   const db = options.db ?? admin.firestore();
   /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  if (operation === "gameplay.race.entry") {
+    /** Typed lifecycle reads hydrate identity only when a challenge is ready. */
+    const entry = RaceEntryResponseSchema.parse(result);
+    if (entry.status !== "ready") return entry;
+    /** Preserve provider-owned identity on the established preview seam. */
+    const challenge = await hydrateRedditRaceSocialResult("gameplay.race.challenge", payload, entry.challenge, {db, nowMs});
+    return RaceEntryResponseSchema.parse({...entry, challenge});
+  }
   if (operation === "gameplay.race.challenge") {
     /** Provides preview behavior. */
     const preview = RaceChallengePreviewSchema.parse(result);

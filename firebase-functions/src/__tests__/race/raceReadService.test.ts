@@ -244,14 +244,14 @@ describe("getRaceChallengePreview", () => {
     /** Provides preview behavior. */
     const preview = {challengeId: "challenge-1", status: "active"};
     /** Provides {db, collection, doc} behavior. */
-    const {db, collection, doc} = createChallengeDb(documentSnapshot(true, stored));
+    const {db, collection, doc} = createChallengeDb({...documentSnapshot(true, stored), id: "challenge-1"});
     mockParseChallengeRecord.mockReturnValue(parsed);
     mockChallengePreview.mockReturnValue(preview);
 
     await expect(getRaceChallengePreview("challenge-1", "en", {db: db as never, nowMs: 123})).resolves.toBe(preview);
     expect(collection).toHaveBeenCalledWith("raceChallenges");
     expect(doc).toHaveBeenCalledWith("challenge-1");
-    expect(mockParseChallengeRecord).toHaveBeenCalledWith(stored);
+    expect(mockParseChallengeRecord).toHaveBeenCalledWith(stored, "challenge-1");
     expect(mockChallengePreview).toHaveBeenCalledWith(parsed, 123);
   });
 
@@ -335,6 +335,7 @@ describe("getRaceOutcomeForUser", () => {
   });
 
   it("validates the canonical settled outcome returned through the settlement module", async () => {
+    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {}));
     mockParseRunRecord.mockReturnValue({userId: "player-1"});
     mockReadSettledRaceOutcome.mockResolvedValue(baseOutcome);
@@ -343,8 +344,10 @@ describe("getRaceOutcomeForUser", () => {
   });
 
   it("uses the default database and current clock when outcome options are omitted", async () => {
+    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {}));
     mockDefaultDb = fixture.db;
+    /** Provides run behavior. */
     const run = {userId: "player-1"};
     mockParseRunRecord.mockReturnValue(run);
     mockReadSettledRaceOutcome.mockResolvedValue(baseOutcome);

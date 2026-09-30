@@ -34,6 +34,7 @@ export async function resolveRaceOpponentPrivacy(
   /** Provides subject user id behavior. */
   const subjectUserId = run.opponent?.subjectUserId;
   if (!run.opponent) return {run, scrubbed: false};
+  if (run.opponent.kind === "bot") return {run, scrubbed: false};
   if (typeof subjectUserId !== "string" || subjectUserId.length === 0) {
     return {run: scrubRaceOpponent(run), scrubbed: true};
   }

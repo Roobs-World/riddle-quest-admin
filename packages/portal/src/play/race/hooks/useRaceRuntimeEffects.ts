@@ -1,8 +1,5 @@
-import {useEffect, type Dispatch, type SetStateAction} from "react";
-import type {RaceRunView} from "@qwordly/core/race";
+import {useEffect} from "react";
 import {trackEvent, trackScreen} from "../../../analytics/events";
-import {clearActiveRace, saveActiveRace} from "../logic/activeRaceStorage";
-import {getRaceCountdownStep, estimatedRaceServerNow, scheduledRaceCountdown} from "../logic/raceCountdown";
 import type {RaceStage} from "../RaceTo10View";
 
 /** Local-storage key used to remember the currently active race run. */
@@ -14,81 +11,4 @@ export const useRaceEntryTracking = (stage: RaceStage, challengeId: string | und
   useEffect(() => {
     if (!challengeId) trackEvent("race_mode_viewed");
   }, [challengeId]);
-};
-
-/** Drives deterministic countdown transitions and the locally displayed race clock. */
-export const useRaceClockEffects = (
-  stage: RaceStage,
-  countdown: number,
-  run: RaceRunView | null,
-  setStage: Dispatch<SetStateAction<RaceStage>>,
-  setCountdown: Dispatch<SetStateAction<number>>,
-  setTick: Dispatch<SetStateAction<number>>,
-  receivedAtMs?: number,
-  onScheduledStart?: (serverNowMs: number) => void,
-): void => {
-  useEffect(() => {
-    if (stage !== "countdown") return;
-    if (run?.startsAtMs !== undefined && run.serverNowMs !== undefined && receivedAtMs !== undefined) {
-      const synchronize = () => {
-        const serverNowMs = estimatedRaceServerNow(run.serverNowMs!, receivedAtMs, performance.now());
-        setCountdown(scheduledRaceCountdown(run.startsAtMs!, serverNowMs));
-        if (serverNowMs >= run.startsAtMs!) {
-          onScheduledStart?.(serverNowMs);
-          setStage("racing");
-        }
-      };
-      synchronize();
-      const timer = window.setInterval(synchronize, 50);
-      const visible = () => { if (document.visibilityState === "visible") synchronize(); };
-      document.addEventListener("visibilitychange", visible);
-      return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", visible); };
-    }
-    /** Provides step behavior. */
-    const step = getRaceCountdownStep(countdown, Boolean(run));
-    if (step.kind === "wait") return;
-    /** Provides timer behavior. */
-    const timer = window.setTimeout(() => {
-      if (step.kind === "start") setStage("racing");
-      else setCountdown(step.nextValue);
-    }, step.delayMs);
-    return () => window.clearTimeout(timer);
-  }, [countdown, run, receivedAtMs, onScheduledStart, setCountdown, setStage, stage]);
-
-  useEffect(() => {
-    if (stage !== "racing") return;
-    /** Provides timer behavior. */
-    const timer = window.setInterval(() => setTick((value) => value + 1), 100);
-    return () => window.clearInterval(timer);
-  }, [setTick, stage]);
-};
-
-/** Expires transient race feedback after the shared presentation interval. */
-export const useRaceFeedbackTimers = (
-  penaltyFlash: string | null,
-  feedback: "correct" | "incorrect" | null,
-  setPenaltyFlash: Dispatch<SetStateAction<string | null>>,
-  setFeedback: Dispatch<SetStateAction<"correct" | "incorrect" | null>>,
-): void => {
-  useEffect(() => {
-    if (!penaltyFlash) return;
-    /** Provides timer behavior. */
-    const timer = window.setTimeout(() => setPenaltyFlash(null), 1_600);
-    return () => window.clearTimeout(timer);
-  }, [penaltyFlash, setPenaltyFlash]);
-  useEffect(() => {
-    if (!feedback) return;
-    /** Provides timer behavior. */
-    const timer = window.setTimeout(() => setFeedback(null), 1_600);
-    return () => window.clearTimeout(timer);
-  }, [feedback, setFeedback]);
-};
-
-/** Persists only the identifier of an active server-authoritative race run. */
-export const useActiveRacePersistence = (run: RaceRunView | null, ownerId?: string): void => {
-  useEffect(() => {
-    if (!run) return;
-    if (["prepared", "scheduled", "active"].includes(run.status)) saveActiveRace(ownerId, run.runId);
-    else clearActiveRace(ownerId);
-  }, [run, ownerId]);
 };
