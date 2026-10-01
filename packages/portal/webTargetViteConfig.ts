@@ -45,7 +45,7 @@ const youtubeFixtureContent = fileURLToPath(
 const youtubeForbiddenShopEntry = "virtual:youtube-forbidden-shop-entry";
 /** Provides youtube locales behavior. */
 const youtubeLocales = [
-  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh",
+  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ] as const;
 
 /** The four compile-time Web Targets shipped by the portal package. */

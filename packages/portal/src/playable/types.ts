@@ -2,7 +2,7 @@ import type {Feedback} from "@qwordly/core/game";
 import type {PlatformRuntimePolicy} from "../platform/types";
 /** Locale identifiers supported by the bundled YouTube content pack. */
 export type YouTubeLocale =
-  "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
+  "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
 /** The two self-contained game modes available in the Playable. */
 export type YouTubeGameMode = "classic" | "daily";
 /** Riddle data bundled into the artifact. Answers are never written to Cloud Save. */

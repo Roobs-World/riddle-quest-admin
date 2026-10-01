@@ -10,7 +10,7 @@ import {auditYouTubeArtifact} from "./audit-youtube-artifact.mjs";
 const execFileAsync = promisify(execFile);
 const defaultRepositoryDirectory = fileURLToPath(new URL("../../..", import.meta.url));
 const requiredTranslationLocales = [
-  "ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh",
+  "ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ];
 const sha256Pattern = /^[0-9a-f]{64}$/u;
 const gitCommitPattern = /^[0-9a-f]{40,64}$/u;
@@ -191,7 +191,7 @@ export function validateContentAudit(value, contentManifest) {
     value.releaseReady !== true ||
     value.contentVersion !== contentManifest.contentVersion ||
     value.runtime?.sha256 !== contentManifest.contentSha256 ||
-    value.runtime?.localeCount !== 17 ||
+    value.runtime?.localeCount !== 16 ||
     !Number.isInteger(value.runtime?.riddleCountPerLocale) ||
     value.runtime.riddleCountPerLocale < 180 ||
     value.runtime.riddleCountPerLocale !== contentManifest.classicRiddleCount ||

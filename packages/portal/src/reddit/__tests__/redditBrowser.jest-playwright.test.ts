@@ -158,7 +158,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
         "ru",
         "tr",
         "vi",
-        "zh",
+
       ]) {
         await localeSmoke.evaluate((value) => window.localStorage.setItem("appLanguage", value), locale);
         await localeSmoke.reload();
@@ -261,7 +261,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
         "ru",
         "tr",
         "vi",
-        "zh",
+
       ]) {
         savedLocale = locale;
         await authenticatedLocaleSmoke.goto("http://127.0.0.1:4182/");

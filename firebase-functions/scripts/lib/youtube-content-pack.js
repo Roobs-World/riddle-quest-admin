@@ -12,7 +12,7 @@ const YOUTUBE_ANSWER_MAX_GRAPHEMES = 12;
 const AUTOMATED_TRANSLATION_QUALITY_VERSION = "automated_translation_v1";
 const REVIEWED_QUALITY_VERSION_PATTERN = /^(?:reviewed|human_review|automated_review)_/iu;
 const SUPPORTED_LOCALES = [
-  "en", "es", "pt", "fr", "de", "ja", "ko", "zh", "hi", "ru", "tr", "ar", "id", "it", "nl", "pl", "vi",
+  "en", "es", "pt", "fr", "de", "ja", "ko", "hi", "ru", "tr", "ar", "id", "it", "nl", "pl", "vi",
 ];
 const CATEGORY_IDS = ["history", "geography", "music", "film", "science", "mixed"];
 const DIFFICULTY_BANDS = ["easy", "medium", "hard"];
@@ -22,7 +22,6 @@ const REQUIRED_CLUE_SCRIPTS = {
   ja: /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u,
   ko: /\p{Script=Hangul}/u,
   ru: /\p{Script=Cyrillic}/u,
-  zh: /\p{Script=Han}/u,
 };
 const SHA256_PATTERN = /^[0-9a-f]{64}$/u;
 const CANONICAL_ID_PATTERN = /^race:(?:history|geography|music|film|science|mixed):[0-9]{2,}$/u;

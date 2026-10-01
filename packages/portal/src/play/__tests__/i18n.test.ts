@@ -3,7 +3,7 @@ jest.mock("../../test/localeModulesMock", () => ({
 }));
 
 import {loadNonEnglishNamespace} from "../../test/localeModulesMock";
-import {setLocale, tr, type Locale, type NamespaceCatalog, type SharedNamespace} from "../i18n";
+import {detectDeviceLanguage, isSupportedLocale, LANGUAGE_OPTIONS, setLocale, tr, type Locale, type NamespaceCatalog, type SharedNamespace} from "../i18n";
 
 /** Describes deferred. */
 type Deferred = {
@@ -53,6 +53,14 @@ beforeEach(() => {
     value: {documentElement: {dir: "ltr", lang: "en"}},
   });
   setLocale("en");
+});
+
+it("falls back to English for Chinese device languages and omits Chinese from language choices", () => {
+  expect(isSupportedLocale("zh")).toBe(false);
+  expect(LANGUAGE_OPTIONS.some((option) => String(option.value) === "zh")).toBe(false);
+  for (const locale of ["zh", "zh-CN", "zh-TW", "zh-Hans", "zh-Hant"]) {
+    expect(detectDeviceLanguage(locale)).toBe("en");
+  }
 });
 
 afterAll(() => {

@@ -25,7 +25,7 @@ const expectedLocales = [
   "ru",
   "tr",
   "vi",
-  "zh",
+
 ];
 const expectedNamespaces = [
   "aboutLegal",

@@ -947,7 +947,7 @@ describe("riddleGeneration", () => {
         "ru",
         "tr",
         "vi",
-        "zh",
+
       ];
       /** Provides seeded locale behavior. */
       const seededLocale = "de";

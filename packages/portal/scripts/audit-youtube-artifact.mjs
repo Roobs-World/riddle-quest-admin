@@ -13,7 +13,7 @@ export const youtubeArtifactLimits = Object.freeze({
 });
 
 const releaseLocales = [
-  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh",
+  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ];
 const validPathComponent = /^[A-Za-z0-9_.-]+$/u;
 const benignReactExternalLiterals = new Set([
@@ -122,7 +122,7 @@ function validateContentManifest(value, allowIncompleteFixture) {
     value.classicRiddleCount < 180 ||
     value.dailyScheduleEntries < value.classicRiddleCount
   ) {
-    throw new Error("YouTube release artifact requires releaseReady content for all 17 locales and at least 180 riddles");
+    throw new Error("YouTube release artifact requires releaseReady content for all 16 locales and at least 180 riddles");
   }
   return value;
 }

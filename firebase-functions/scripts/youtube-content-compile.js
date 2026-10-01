@@ -58,7 +58,7 @@ void (async () => {
     throw new Error("fixture-output-must-contain-fixture");
   }
   if (!fixture && requestedLocales.join(",") !== SUPPORTED_LOCALES.join(",")) {
-    throw new Error("release-requires-all-17-locales");
+    throw new Error("release-requires-all-16-locales");
   }
   const [sourceInput, orderInput] = await Promise.all([readJson(sourcePath), readJson(orderPath)]);
   if (!sourceInput.value?.seed?.file) throw new Error("youtube-source-document-required");

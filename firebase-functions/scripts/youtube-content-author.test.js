@@ -88,7 +88,7 @@ const generated = {
   },
 };
 
-const scriptMarker = {ar: "ع", hi: "ह", ja: "日", ko: "한", ru: "Я", zh: "中"};
+const scriptMarker = {ar: "ع", hi: "ह", ja: "日", ko: "한", ru: "Я"};
 
 const fakePort = ({rejectTranslation = false, calls = []} = {}) => ({
   async generateEnglish({model, specs}) {
@@ -140,7 +140,7 @@ const fakePort = ({rejectTranslation = false, calls = []} = {}) => ({
   },
 });
 
-test("authors complete isolated bundles for all 16 non-English locales without changing the Race seed", async () => {
+test("authors complete isolated bundles for all 15 non-English locales without changing the Race seed", async () => {
   const {sourceDocument, seedRaw, seed, source, order} = await inputs();
   const calls = [];
   const result = await authorYouTubeContent({

@@ -5,7 +5,7 @@ import process from "node:process";
 const localeRoot = path.resolve("src/locales");
 const expectedLocales = [
   "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja",
-  "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh",
+  "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ];
 
 // This is the release contract for app-rendered Facebook copy. Meta-owned dialogs

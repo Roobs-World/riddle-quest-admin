@@ -24,7 +24,7 @@ import enRace from "../../../../src/locales/en/race.json";
 
 /** Describes locale. */
 export type Locale =
-  "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
+  "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
 
 /** Describes namespace. */
 export type SharedNamespace =
@@ -67,7 +67,6 @@ const SUPPORTED_LOCALES = [
   "de",
   "ja",
   "ko",
-  "zh",
   "hi",
   "ru",
   "tr",
@@ -88,7 +87,6 @@ const LANGUAGE_LABELS: Record<Locale, string> = {
   de: "Deutsch",
   ja: "日本語",
   ko: "한국어",
-  zh: "简体中文",
   hi: "हिन्दी",
   ru: "Русский",
   tr: "Türkçe",
@@ -209,7 +207,6 @@ const LOCALE_ALIASES: Record<string, Locale> = {
   de: "de",
   ja: "ja",
   ko: "ko",
-  zh: "zh",
   hi: "hi",
   ru: "ru",
   tr: "tr",

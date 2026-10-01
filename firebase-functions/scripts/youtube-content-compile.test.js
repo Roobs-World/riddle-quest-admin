@@ -47,7 +47,7 @@ const readInputs = async () => {
   return {sourceRaw: stableJson(source), source, orderRaw, order: JSON.parse(orderRaw)};
 };
 
-const SCRIPT_MARKERS = {ar: "ع", hi: "ह", ja: "日", ko: "한", ru: "Я", zh: "中"};
+const SCRIPT_MARKERS = {ar: "ع", hi: "ह", ja: "日", ko: "한", ru: "Я"};
 
 const translationBundle = (locale, source) => ({
   locale,
@@ -131,7 +131,7 @@ test("reproduces the committed non-release fixture from reviewed content", async
   assert.equal(committed.includes("translatorModel"), false);
 });
 
-test("compiles all 17 audited locales deterministically and keeps provenance out of runtime", async () => {
+test("compiles all 16 audited locales deterministically and keeps provenance out of runtime", async () => {
   const {source, sourceRaw, order, orderRaw} = await readInputs();
   const translationBundles = Object.fromEntries(SUPPORTED_LOCALES.filter((locale) => locale !== "en")
     .map((locale) => [locale, translationBundle(locale, source)]));
@@ -143,7 +143,7 @@ test("compiles all 17 audited locales deterministically and keeps provenance out
   assert.equal(first.fixture, false);
   assert.deepEqual(first.locales, SUPPORTED_LOCALES);
   assert.equal(first.classicOrder.length, 180);
-  assert.equal(Object.keys(first.packs).length, 17);
+  assert.equal(Object.keys(first.packs).length, 16);
   assert.equal(Object.values(first.packs).every((pack) => Object.keys(pack).length === 180), true);
   for (const canonical of source.riddles) {
     const fingerprints = SUPPORTED_LOCALES.map(
@@ -161,7 +161,7 @@ test("compiles all 17 audited locales deterministically and keeps provenance out
   }]));
   const audit = createYouTubeContentAudit({content: first, sourceRaw, orderRaw, bundleInputs, outputRaw});
   assert.equal(audit.releaseReady, true);
-  assert.equal(audit.runtime.localeCount, 17);
+  assert.equal(audit.runtime.localeCount, 16);
   assert.equal(audit.runtime.riddleCountPerLocale, 180);
   assert.deepEqual(Object.keys(audit.inputs.translationBundles), SUPPORTED_LOCALES.slice(1));
 });

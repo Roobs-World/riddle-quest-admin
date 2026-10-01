@@ -454,7 +454,6 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             ja: '"Hiragino Sans"',
             ko: '"Apple SD Gothic Neo"',
             ru: '"Noto Sans"',
-            zh: '"PingFang SC"',
           };
           /** Provides actual behavior. */
           const actual = Object.fromEntries(
@@ -473,7 +472,6 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           ja: '"Hiragino Sans"',
           ko: '"Apple SD Gothic Neo"',
           ru: '"Noto Sans"',
-          zh: '"PingFang SC"',
         },
         expectedFirstFaces: {
           ar: '"Noto Sans Arabic"',
@@ -481,7 +479,6 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           ja: '"Hiragino Sans"',
           ko: '"Apple SD Gothic Neo"',
           ru: '"Noto Sans"',
-          zh: '"PingFang SC"',
         },
       });
       await successPage.evaluate(() =>

@@ -17,7 +17,7 @@ import {
 import {runYouTubeReleaseVerification} from "./youtube-release-artifact-evidence.mjs";
 
 const releaseLocales = [
-  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh",
+  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ];
 const translatedLocales = releaseLocales.filter((locale) => locale !== "en");
 
@@ -99,7 +99,7 @@ async function createReleaseFixture(context) {
         criticModel: "gpt-5.5",
       }])),
     },
-    runtime: {sha256: contentSha256, localeCount: 17, riddleCountPerLocale: 180},
+    runtime: {sha256: contentSha256, localeCount: 16, riddleCountPerLocale: 180},
   })}\n`);
   const reportPath = path.join(repositoryDirectory, "build-youtube.test-report.json");
   const writeReport = (overrides = {}) => writeYouTubeVerificationReport({

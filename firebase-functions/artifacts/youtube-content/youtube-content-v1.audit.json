@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": "youtube-content-v1-70584787c0bcc8f6",
+  "contentVersion": "youtube-content-v1-c9d7fda289aaeb84",
   "releaseReady": true,
   "inputs": {
     "canonicalSourceSha256": "600bea2a5c06e8944119bbf4a95de48097b462d8090f005306330c45a6f54499",
@@ -33,11 +33,6 @@
       },
       "ko": {
         "sha256": "74840cd0fdd27341c257020308ccfdbbfbe17c7fa7194924c5f8f0c13e8eb3b2",
-        "translatorModel": "gpt-5.6-sol",
-        "criticModel": "gpt-5.5"
-      },
-      "zh": {
-        "sha256": "46d8a234cabb3fb8d0ed0bf85ff7aec42ed1cc4f1e8e551e96e7e42d1044982a",
         "translatorModel": "gpt-5.6-sol",
         "criticModel": "gpt-5.5"
       },
@@ -96,8 +91,8 @@
     }
   },
   "runtime": {
-    "sha256": "58c24e29caf1c8bd14892c51b489ab5a31083aa49bacdbd8235a668ffa27f9a2",
-    "localeCount": 17,
+    "sha256": "0c78fe40c02afe2ff4937632e658c701a4c1963bd9972d0f4d762dda33f4d020",
+    "localeCount": 16,
     "riddleCountPerLocale": 180
   }
 }

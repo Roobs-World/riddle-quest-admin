@@ -14,7 +14,7 @@ This repository contains only the web game, its Firebase backend, and the Reddit
 | `packages/reddit-app` | Devvit Web package, same-origin `/api/*` gateway, package validation, and immutable release receipts |
 | `packages/core` | Browser-safe game rules, validation schemas, bridge types, Race to 10 contracts, and pricing metadata |
 | `firebase-functions` | Authoritative gameplay, provider identity exchanges, player profiles/storage/deletion, payment grants, referrals, leaderboards, and multiplayer |
-| `src/locales` | All user-facing translations: 17 locales across target-specific namespaces |
+| `src/locales` | All user-facing translations: 16 locales across target-specific namespaces |
 | `assets` | Source images, audio, fonts, and 3D assets |
 | `docs` | Operations, architecture decisions, review evidence, assets, and runbooks |
 
@@ -333,11 +333,11 @@ Use repeated `--allow-player-id` and `--remove-player-id` arguments for controll
 
 English is the key source, but every visible string must exist in all supported locales:
 
-`ar`, `de`, `en`, `es`, `fr`, `hi`, `id`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `ru`, `tr`, `vi`, `zh`.
+`ar`, `de`, `en`, `es`, `fr`, `hi`, `id`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `ru`, `tr`, `vi`.
 
 When adding or removing copy:
 
-1. Update the same namespace file under all 17 locale directories.
+1. Update the same namespace file under all 16 locale directories.
 2. Preserve interpolation placeholders such as `{name}`, `{coins}`, and `{level}` exactly.
 3. Search for removed keys to ensure they are no longer referenced.
 4. Run the locale audit.
@@ -454,7 +454,7 @@ pnpm release:facebook
 
 The command rebuilds and audits Facebook, creates the source/hash-bound ZIP receipt, then snapshots those exact bytes to an owner-private, read-only, hash-named archive and opens that hash's retry barrier. It does not contact Meta. Upload only the printed archive path as a non-production Draft. Before beginning, inspect all retained barriers and never start another hash while an older attempt is transmitting or ambiguous; follow [`docs/facebook-instant-games-operations.md`](docs/facebook-instant-games-operations.md) for the current preflight, acceptance, ambiguity, and promotion constraints.
 
-Build and package a YouTube release candidate through the separate fail-closed path after all 17 audited content bundles exist:
+Build and package a YouTube release candidate through the separate fail-closed path after all 16 audited content bundles exist:
 
 ```bash
 pnpm --filter @qwordly/portal build:youtube

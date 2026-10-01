@@ -14,7 +14,7 @@ type RedditCopy = {
 };
 /** Provides catalogs behavior. */
 const catalogs = import.meta.glob<RedditCopy>(
-  "../../../../src/locales/{ar,de,en,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi,zh}/redditPlatform.json",
+  "../../../../src/locales/{ar,de,en,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi}/redditPlatform.json",
   {import: "default"},
 );
 /** Provides supported behavior. */
@@ -35,7 +35,7 @@ const supported = new Set([
   "ru",
   "tr",
   "vi",
-  "zh",
+
 ]);
 /** Requests ed. */
 const requested = (readBrowserStorage("local", "appLanguage") ?? navigator.languages?.[0] ?? navigator.language ?? "en")

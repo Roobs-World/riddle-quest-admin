@@ -11,7 +11,6 @@ export const YOUTUBE_LOCALES = [
   "de",
   "ja",
   "ko",
-  "zh",
   "hi",
   "ru",
   "tr",

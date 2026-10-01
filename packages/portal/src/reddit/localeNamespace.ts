@@ -3,7 +3,7 @@ import {registerTargetLocaleNamespace, type Locale, type NamespaceCatalog} from 
 
 /** Lazily loads the Reddit-owned namespace for each non-English locale. */
 const nonEnglishRedditPlatformModules = import.meta.glob<NamespaceCatalog>(
-  "../../../../src/locales/{ar,de,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi,zh}/redditPlatform.json",
+  "../../../../src/locales/{ar,de,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi}/redditPlatform.json",
   {import: "default"},
 );
 

@@ -41,7 +41,7 @@ if (["netflix", "yahoo"].includes(target)) {
   if (manifest.target !== `${target}-candidate` || manifest.fixture !== false || manifest.releaseReady !== true) {
     throw new Error(`${target} candidate content manifest is malformed`);
   }
-  if (!Array.isArray(manifest.locales) || manifest.locales.length !== 17 || manifest.classicRiddleCount !== 180) {
+  if (!Array.isArray(manifest.locales) || manifest.locales.length !== 16 || manifest.classicRiddleCount !== 180) {
     throw new Error(`${target} candidate must contain the complete audited release content`);
   }
 }
