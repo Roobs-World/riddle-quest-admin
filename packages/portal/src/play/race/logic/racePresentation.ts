@@ -109,7 +109,7 @@ export const getAdjustedRaceTime = (run: RaceRunView | null, receivedAtMs: numbe
     ? run.role === "challenger" && run.status === "active"
       ? Math.min(
           run.rules.maxAdjustedTimeMs,
-          run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
+          run.adjustedElapsedMs + nowMs - receivedAtMs,
         )
       : run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0)
     : 0;
