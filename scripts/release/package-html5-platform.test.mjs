@@ -9,4 +9,7 @@ test("distribution targets have distinct immutable artifact names and honest rel
   assert.ok(definitions.every(({artifact}) => artifact.endsWith(".zip")));
   assert.ok(definitions.every(({boundary}) => /manual|Butler/iu.test(boundary)));
   assert.throws(() => getHtml5DistributionDefinition("unknown"), /Unknown HTML5 distribution target/u);
+  for (const target of ["web", "pwa", "microsoft-pwa", "pwa-directory", "pwastore"]) {
+    assert.throws(() => getHtml5DistributionDefinition(target), /Unknown HTML5 distribution target/u);
+  }
 });

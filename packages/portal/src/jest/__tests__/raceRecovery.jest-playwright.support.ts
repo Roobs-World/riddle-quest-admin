@@ -1,5 +1,56 @@
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
+import {mkdir} from "node:fs/promises";
+import path from "node:path";
+import {solveFakeRace} from "./authentication.jest-playwright.support";
+
+/** Completes real gameplay, corrupts only the outcome transport, and recovers without replaying answers. */
+export async function verifyOutcomeConfirmationRecovery(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    Object.assign(window, {__outcomeConfirmationRequests: [], __outcomeConfirmationDeliveries: 0});
+    window.addEventListener("riddle-quest:game-to-host", event => {
+      (Reflect.get(window, "__outcomeConfirmationRequests") as string[]).push((event as CustomEvent).detail.type);
+    });
+    /** The injected authority retains its genuine terminal run and canonical outcome. */
+    const dispatch = window.dispatchEvent.bind(window);
+    window.dispatchEvent = event => {
+      /** A coherent five-second time replacement passes arithmetic validation but contradicts the confirmed run. */
+      const detail = (event as CustomEvent).detail;
+      if (event.type === "riddle-quest:host-to-game" && detail?.payload?.ok && detail.payload.operation === "raceOutcome") {
+        /** Independent outgoing data never rewrites the saved authority record. */
+        const data = structuredClone(detail.payload.data);
+        if (Reflect.get(window, "__outcomeConfirmationDeliveries") === 0) {data.wallFinishMs += 5000; data.adjustedFinishMs += 5000;}
+        Reflect.set(window, "__outcomeConfirmationDeliveries", Reflect.get(window, "__outcomeConfirmationDeliveries") + 1);
+        detail.payload = {...detail.payload, data};
+      }
+      return dispatch(event);
+    };
+  });
+  await solveFakeRace(page, {expectChainedSubmitLoader: true});
+  await page.getByRole("alert").waitFor({state: "visible"});
+  /** The projected result's exact visible timing stays stable across rejection and genuine read recovery. */
+  const result = await page.locator(".race-result-grid").innerText();
+  expect(await page.evaluate(() => (Reflect.get(window, "__outcomeConfirmationRequests") as string[]).filter(type => type === "game:publishRace"))).toEqual([]);
+  await page.getByRole("button", {name: /^retry$/i}).click();
+  await page.waitForFunction(() => Reflect.get(window, "__outcomeConfirmationDeliveries") === 2);
+  await page.getByRole("alert").waitFor({state: "detached"});
+  expect(await page.locator(".race-result-grid").innerText()).toBe(result);
+  /** Recovery reads the canonical result without resubmitting or publishing corrupted timing. */
+  const requests = await page.evaluate(() => Reflect.get(window, "__outcomeConfirmationRequests") as string[]);
+  expect(requests.filter(type => type === "game:submitRaceGuess")).toHaveLength(10);
+  expect(requests.filter(type => type === "game:getRaceOutcome")).toHaveLength(2);
+  expect(requests.filter(type => type === "game:publishRace")).toHaveLength(0);
+  await page.screenshot({path: "/tmp/race-outcome-confirmation-recovery.png"});
+}
+
+/** Captures optional durable evidence for the two-player race journey. */
+export const captureMultiplayerEvidence = async (page: Page, filename: string): Promise<void> => {
+  /** Directory selected only by an explicit evidence run. */
+  const directory = process.env.JEST_MULTIPLAYER_EVIDENCE_DIR;
+  if (!directory) return;
+  await mkdir(directory, {recursive: true});
+  await page.screenshot({path: path.join(directory, filename), fullPage: true});
+};
 
 /** Observes the rendered GO-to-gameplay handoff without reading session internals. */
 export async function observeRaceCountdown(page: Page): Promise<void> {
@@ -286,6 +337,11 @@ export async function verifyHintConfirmationRecovery(page: Page, mismatch: strin
   await page.getByRole("button", {name: /^multiplayer$/i}).click();
   await page.getByRole("button", {name: /^History /}).click();
   await page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10000});
+  if (mismatch === "score") {
+    await page.locator(".race-gameplay .guess-row .cell").first().click(); await page.keyboard.type("piano");
+    await page.getByRole("button", {name: /^Submit$/i}).click();
+    await page.locator(".race-riddle-surface").filter({hasText: /What has hands/i}).waitFor();
+  }
   await page.locator(".race-gameplay .guess-row .cell").first().click();
   await page.keyboard.type("zi");
   await page.evaluate(kind => {
@@ -304,6 +360,9 @@ export async function verifyHintConfirmationRecovery(page: Page, mismatch: strin
         if (kind === "letter") data.revealedLetter = "x";
         else if (kind === "deck") data.run.preloadedRiddles[1].text = "A changed deck clue";
         else if (kind === "schedule") data.run.startsAtMs += 1;
+        else if (kind === "phase") data.run.status = "scheduled";
+        else if (kind === "missing-prompt") data.run.currentRiddle = null;
+        else if (kind === "score") data.run.correctCount = 0;
         else data.run.currentRiddle.riddleId = "another-question";
         detail.payload = {...detail.payload, data};
       }
@@ -317,13 +376,49 @@ export async function verifyHintConfirmationRecovery(page: Page, mismatch: strin
   expect(await page.locator(".race-header-clock small").innerText()).toContain("0:00.0");
   await page.getByRole("button", {name: /^retry$/i}).click();
   await page.locator(".race-gameplay .guess-row .cell.green").first().waitFor();
-  expect(await page.locator(".race-gameplay .guess-row").first().locator(".cell").allTextContents()).toEqual(["p", "i", "", "", ""]);
+  expect(await page.locator(".race-gameplay .guess-row").first().locator(".cell").allTextContents()).toEqual([mismatch === "score" ? "c" : "p", "i", "", "", ""]);
   expect(await page.locator(".race-header-clock small").innerText()).toContain("0:15.0");
   /** One authority read recovers the original paid action without replaying it. */
   const requests = await page.evaluate(() => Reflect.get(window, "__hintConfirmationRequests") as string[]);
   expect(requests.filter(type => type === "game:requestRaceHint")).toHaveLength(1);
   expect(requests.filter(type => type === "game:resumeRace")).toHaveLength(1);
   expect(await page.getByRole("alert").count()).toBe(0);
+  expect(await page.evaluate(() => performance.getEntriesByType("resource").some(entry => /\/sentry-[^/]+\.js/.test(entry.name)))).toBe(false);
+}
+
+/** Captures accepted authority before the recipient starts its countdown. */
+export async function observeAcceptedRaceRecording(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    Object.assign(window, {__acceptedInviteRecording: null});
+    window.addEventListener("riddle-quest:host-to-game", event => {
+      /** Correlated start confirmation supplies the recording actually accepted. */
+      const detail = (event as CustomEvent).detail;
+      if (detail?.payload?.operation === "raceStart" && detail.payload.ok)
+        Object.assign(window, {__acceptedInviteRecording: detail.payload.data.run});
+    });
+  });
+}
+
+/** Confirms the recipient actually received the immutable creator recording selected by its shared link. */
+export async function verifyAcceptedRaceRecording(page: Page, challengeId: string, publicationJson: string): Promise<void> {
+  /** Accepted authority payload captured before the recipient's countdown. */
+  const accepted = await page.evaluate(() => Reflect.get(window, "__acceptedInviteRecording")) as {
+    /** Exact challenge selected by the recipient. */ challengeId: string;
+    /** Server-issued playback of the creator's recording. */ opponent: {
+      /** Immutable creator event timeline. */ events: unknown[];
+      /** Server-issued adjusted finish. */ adjustedFinishMs: number;
+    };
+  };
+  /** Published authority record must match the recipient's accepted opponent. */
+  const published = JSON.parse(publicationJson) as {
+    /** Immutable events persisted under the shared challenge ID. */ events: unknown[];
+    /** Time advertised before the recipient accepted the invite. */ preview: {
+      /** Immutable creator finish shown before acceptance. */ adjustedTimeToBeatMs: number;
+    };
+  };
+  expect(accepted.challengeId).toBe(challengeId);
+  expect(accepted.opponent.events).toEqual(published.events);
+  expect(accepted.opponent.adjustedFinishMs).toBe(published.preview.adjustedTimeToBeatMs);
 }
 
 /** Drops a successful bridge event entirely and exercises the production delivery deadline. */

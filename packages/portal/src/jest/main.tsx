@@ -8,7 +8,7 @@ import {JestPlayApp} from "./JestPlayApp";
 import "../styles.css";
 import "./styles.css";
 
-initializeBrowserSentryFromEnvironment();
+void initializeBrowserSentryFromEnvironment();
 
 if (import.meta.env.DEV) {
   resetDevelopmentFirstRunState();

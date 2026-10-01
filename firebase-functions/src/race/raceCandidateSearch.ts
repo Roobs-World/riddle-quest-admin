@@ -88,41 +88,49 @@ export async function searchRaceCandidates(db: Firestore, userId: string, provid
     /** Provides active behavior. */
     const active = cursors.filter(cursor => cursor.tier === tier);
     /** Reserve candidate capacity for comparable freshness alternatives in dense nearest pools. */
-    const tierBudget = pass === 0 && context.policy.algorithmVersion === 3 ? context.policy.freshness.nearCandidateBudget : candidateBudget;
+    const tierBudget = pass === 0 && context.policy.algorithmVersion === 3 ? Math.min(candidateBudget, context.policy.freshness.nearCandidateBudget) : candidateBudget;
     while (active.some(cursor => cursor.half < 2) && documents.length < tierBudget) {
-      /** Provides pending behavior. */
+      /** Comparable intervals share capacity before any dense interval consumes it. */
       const pending = active.filter(cursor => cursor.half < 2);
-      // Give each comparable interval a share before spending more reads on a
-      // dense interval. Empty intervals release their unused share immediately.
-      for (let index = 0; index < pending.length && documents.length < tierBudget; index++) {
-        /** Provides cursor behavior. */
-        const cursor = pending[index];
-        /** Provides allowance behavior. */
-        const allowance = Math.min(RACE_MATCH_PAGE_SIZE, Math.ceil((tierBudget - documents.length) / (pending.length - index)));
-        /** Provides received behavior. */
-        let received = 0;
-        while (received < allowance && cursor.half < 2) {
-          checkWorkBudget?.({candidateQueries: queries, candidateDocumentsRead: documents.length});
-          /** Provides query behavior. */
-          let query = db.collection("raceMatchCandidates").where("provider", "==", provider)
-            .where("locale", "==", input.locale).where("rulesVersion", "==", RACE_RULES_VERSION)
-            .where("status", "==", "active").where("performanceBucket", "==", cursor.bucket)
-            .where("selectionKey", cursor.half === 0 ? ">=" : "<", pivot).where("expiresAtMs", ">", nowMs)
-            .orderBy("selectionKey").orderBy("expiresAtMs").orderBy(admin.firestore.FieldPath.documentId()).limit(allowance - received);
-          if (cursor.categories) query = query.where("categoryId", cursor.categories.length === 1 ? "==" : "in",
-            cursor.categories.length === 1 ? cursor.categories[0] : cursor.categories);
-          if (cursor.after) query = query.startAfter(cursor.after);
-          /** Provides page behavior. */
-          const page = await query.get();
-          queries++;
-          documents.push(...page.docs);
-          checkWorkBudget?.({candidateQueries: queries, candidateDocumentsRead: documents.length});
-          /** Provides exhausted half behavior. */
-          const exhaustedHalf = page.size < allowance - received;
-          received += page.size;
-          cursor.after = page.docs.at(-1);
-          if (exhaustedHalf) {cursor.half++; cursor.after = undefined;}
-        }
+      for (let index = 0; index < pending.length && documents.length < tierBudget; index += 4) {
+        /** Reserve disjoint page capacity so concurrent RPCs cannot overrun the document budget. */
+        let reserved = 0, returned = 0;
+        /** Stable cursor order determines quotas and result ordering, independent of RPC completion. */
+        const wave = pending.slice(index, index + 4).map((cursor, offset) => {
+          /** Empty intervals release their unused share to the next bounded wave. */
+          const allowance = Math.min(RACE_MATCH_PAGE_SIZE, Math.ceil((tierBudget - documents.length - reserved) / (pending.length - index - offset)));
+          reserved += allowance;
+          return {cursor, allowance};
+        });
+        /** At most four indexed intervals execute concurrently, retaining circular sampling. */
+        const pages = await Promise.all(wave.map(async ({cursor, allowance}) => {
+          /** This cursor owns only its reserved capacity until the next wave. */
+          const received: FirebaseFirestore.QueryDocumentSnapshot[] = [];
+          while (received.length < allowance && cursor.half < 2) {
+            checkWorkBudget?.({candidateQueries: queries, candidateDocumentsRead: documents.length + returned});
+            /** Scope and ordering remain identical on both halves of the circular cursor. */
+            let query = db.collection("raceMatchCandidates").where("provider", "==", provider)
+              .where("locale", "==", input.locale).where("rulesVersion", "==", RACE_RULES_VERSION)
+              .where("status", "==", "active").where("performanceBucket", "==", cursor.bucket)
+              .where("selectionKey", cursor.half === 0 ? ">=" : "<", pivot).where("expiresAtMs", ">", nowMs)
+              .orderBy("selectionKey").orderBy("expiresAtMs").orderBy(admin.firestore.FieldPath.documentId()).limit(allowance - received.length);
+            if (cursor.categories) query = query.where("categoryId", cursor.categories.length === 1 ? "==" : "in",
+              cursor.categories.length === 1 ? cursor.categories[0] : cursor.categories);
+            if (cursor.after) query = query.startAfter(cursor.after);
+            queries++;
+            /** Issued RPCs are metered even when a query rejects. */
+            const page = await query.get();
+            /** Each cursor exhausts one half before wrapping, with no duplicate documents. */
+            const exhaustedHalf = page.size < allowance - received.length;
+            received.push(...page.docs);
+            returned += page.size;
+            checkWorkBudget?.({candidateQueries: queries, candidateDocumentsRead: documents.length + returned});
+            cursor.after = page.docs.at(-1);
+            if (exhaustedHalf) {cursor.half++; cursor.after = undefined;}
+          }
+          return received;
+        }));
+        documents.push(...pages.flat());
       }
     }
     if (onTier && await onTier(documents, tier)) break;

@@ -60,6 +60,8 @@ export type RaceRunRecord = {
   recordVersion?: 1;
   /** Expiring unscored preparation; absent on legacy immediately-active runs. */
   preparationExpiresAtMs?: number;
+  /** First accepted readiness clock, distinct from the future scored start. */
+  readinessAcceptedAtMs?: number;
   /** Stores run id. */
   runId: string;
   /** Stores user id. */
@@ -107,6 +109,8 @@ export type RaceRunRecord = {
   }>;
   /** Stores started at ms. */
   startedAtMs: number;
+  /** Latest accepted command clock, including wrong guesses that append no scoring event. */
+  lastActionAtMs?: number;
   /** Indexed unattended-settlement deadline for a challenger run. */
   deadlineAtMs?: number;
   /** Stores finished at ms. */
@@ -150,6 +154,28 @@ export type RaceClock = {
 /** Resolves immutable per-run rules; legacy runs retain their original supported version. */
 export const raceRules = (run: RaceRunRecord): RaceRules => run.rulesSnapshot ?? RACE_RULES;
 
+/** Prevents reordered commands and reads from preceding already accepted server progress. */
+export function raceOperationAtMs(run: RaceRunRecord, sampledAtMs: number): number {
+  /** Historical scoring events provide a floor for records predating the command marker. */
+  const eventWallMs = run.events.reduce((latest, event) => Math.max(latest, event.wallElapsedMs), 0);
+  /** Historical scheduled runs use the same fixed lead-in even before this marker existed. */
+  const readinessAtMs = run.readinessAcceptedAtMs ?? (run.status === "scheduled" ? Math.max(0, run.startedAtMs - RACE_START_LEAD_MS) : 0);
+  return Math.max(sampledAtMs, run.lastActionAtMs ?? 0, run.events.length ? run.startedAtMs + eventWallMs : 0,
+    readinessAtMs, run.status === "active" ? run.startedAtMs : 0, run.status === "abandoned" ? run.finishedAtMs ?? 0 : 0,
+    run.settledAtMs ?? 0, run.achievementProgressRecordedAtMs ?? 0, run.achievementOutcomePresentedAtMs ?? 0);
+}
+
+/** Recognizes old outcome grants which left active storage after an immutable deadline had already elapsed. */
+export function raceHasLegacyTerminalGrant(run: Pick<RaceRunRecord, "recordVersion" | "achievementProgressRecordedAtMs" | "status" |
+  "startedAtMs" | "hintPenaltyMs" | "skipPenaltyMs" | "rulesSnapshot" | "opponent">): boolean {
+  if (run.recordVersion !== undefined || run.achievementProgressRecordedAtMs === undefined ||
+    !["active", "completed", "timed_out"].includes(run.status) || run.achievementProgressRecordedAtMs < run.startedAtMs) return false;
+  /** Prior outcome code applied the maximum to both roles and used strict ghost expiry. */
+  const adjustedAtGrant = run.achievementProgressRecordedAtMs - run.startedAtMs + run.hintPenaltyMs + run.skipPenaltyMs;
+  return Number.isSafeInteger(adjustedAtGrant) && (adjustedAtGrant >= (run.rulesSnapshot ?? RACE_RULES).maxAdjustedTimeMs ||
+    run.opponent !== undefined && adjustedAtGrant > run.opponent.adjustedFinishMs);
+}
+
 /** Provides copy run behavior. */
 const copyRun = (run: RaceRunRecord): RaceRunRecord => ({
   ...run,
@@ -164,7 +190,7 @@ export function raceClock(run: RaceRunRecord, nowMs: number): RaceClock {
   /** Provides total penalty ms behavior. */
   const totalPenaltyMs = run.hintPenaltyMs + run.skipPenaltyMs;
   /** Provides wall elapsed ms behavior. */
-  const wallElapsedMs = run.wallFinishMs ?? (run.status === "prepared" ? 0 : Math.max(0, nowMs - run.startedAtMs));
+  const wallElapsedMs = run.wallFinishMs ?? (run.status === "prepared" ? 0 : Math.max(0, raceOperationAtMs(run, nowMs) - run.startedAtMs));
   return {wallElapsedMs, totalPenaltyMs, adjustedElapsedMs: wallElapsedMs + totalPenaltyMs};
 }
 
@@ -214,19 +240,21 @@ const finishCompletedRun = (run: RaceRunRecord, nowMs: number): RaceRunRecord =>
 
 /** Refreshes time-dependent run state, including timeout and ghost completion. */
 export function refreshRaceRun(input: RaceRunRecord, nowMs: number): RaceRunRecord {
+  /** Scheduling and deadlines share the same accepted-progress floor as scoring. */
+  const operationAtMs = raceOperationAtMs(input, nowMs);
   /** Provides run behavior. */
   const run = copyRun(input);
   if (run.status === "prepared") {
-    if (run.preparationExpiresAtMs !== undefined && nowMs >= run.preparationExpiresAtMs) {
-      return {...run, status: "abandoned", result: null, wallFinishMs: 0, finishedAtMs: nowMs};
+    if (run.preparationExpiresAtMs !== undefined && operationAtMs >= run.preparationExpiresAtMs) {
+      return {...run, status: "abandoned", result: null, wallFinishMs: 0, finishedAtMs: operationAtMs};
     }
     return run;
   }
-  if (run.status === "scheduled" && nowMs >= run.startedAtMs) run.status = "active";
+  if (run.status === "scheduled" && operationAtMs >= run.startedAtMs) run.status = "active";
   if (run.status !== "active") return run;
   /** Provides clock behavior. */
-  const clock = raceClock(run, nowMs);
-  if (run.role === "challenger" && clock.adjustedElapsedMs >= raceRules(run).maxAdjustedTimeMs) {
+  const clock = raceClock(run, run.status === "active" && raceHasLegacyTerminalGrant(run) ? run.achievementProgressRecordedAtMs! : nowMs);
+  if ((run.role === "challenger" || raceHasLegacyTerminalGrant(run)) && clock.adjustedElapsedMs >= raceRules(run).maxAdjustedTimeMs) {
     return finishRun(run, "timed_out", raceRules(run).maxAdjustedTimeMs);
   }
   if (run.opponent && clock.adjustedElapsedMs > run.opponent.adjustedFinishMs) {
@@ -327,7 +355,7 @@ export function applyRaceGuess(
   }
 
   /** Provides statuses behavior. */
-  const statuses = computeFeedback(inputData.guess, riddle.answer);
+  const statuses = computeFeedback(inputData.guess.trim(), riddle.answer, run.locale);
   /** Provides feedback behavior. */
   const feedback = guessLetters.map((letter, index) => ({letter, status: statuses[index]}));
   /** Indicates whether is correct. */
@@ -430,7 +458,7 @@ export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
     status: "abandoned",
     result: null,
     wallFinishMs: clock.wallElapsedMs,
-    finishedAtMs: nowMs,
+    finishedAtMs: raceOperationAtMs(run, nowMs),
   };
 }
 
@@ -452,7 +480,7 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvalua
     rivalryChallengeId: run.rivalryChallengeId,
     role: run.role,
     status: run.status,
-    serverNowMs: nowMs,
+    serverNowMs: raceOperationAtMs(run, nowMs),
     ...(run.status !== "prepared" ? {startsAtMs: run.startedAtMs} : {}),
     ...(run.preparationExpiresAtMs !== undefined ? {preparationExpiresAtMs: run.preparationExpiresAtMs} : {}),
     categoryId: run.categoryId,

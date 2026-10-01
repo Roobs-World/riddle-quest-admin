@@ -167,7 +167,7 @@ export const persistRaceAchievementEvent = (
   nowMs: number,
 ) => {
   /** Provides update behavior. */
-  const update = evaluateRaceAchievementEvent(userData, event, nowMs);
+  const update = prepareRaceAchievementEvent(userData, event, nowMs);
   transaction.set(
     userRef,
     {
@@ -181,6 +181,26 @@ export const persistRaceAchievementEvent = (
   );
   return update;
 };
+
+/** Plans a grant against canonical currency for both response projection and transactional persistence. */
+export function prepareRaceAchievementEvent(userData: FirebaseFirestore.DocumentData, event: RaceAchievementEvent, nowMs: number) {
+  // Account currency is authority: malformed values must never be normalized into lost funds.
+  readRaceCoinBalance(userData);
+  /** The same checked proposal supplies the public balance and persisted grant. */
+  const update = evaluateRaceAchievementEvent(userData, event, nowMs);
+  if (!Number.isSafeInteger(update.newCoins) || update.newCoins < 0)
+    throw new HttpsError("data-loss", "Stored race currency is invalid.");
+  return update;
+}
+
+/** Reads canonical currency without coercion; missing legacy balances retain their zero default. */
+export function readRaceCoinBalance(userData: FirebaseFirestore.DocumentData): number {
+  /** A present malformed value is distinct from an absent historical balance. */
+  const coins = userData.coins === undefined ? 0 : userData.coins;
+  if (typeof coins !== "number" || !Number.isSafeInteger(coins) || coins < 0)
+    throw new HttpsError("data-loss", "Stored race currency is invalid.");
+  return coins;
+}
 
 /** Provides stable hash behavior. */
 const stableHash = (value: string): string => createHash("sha256").update(value).digest("hex");

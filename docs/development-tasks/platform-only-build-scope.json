@@ -1,0 +1,17 @@
+{
+  "taskId": "release:platform-only-build-scope",
+  "targets": ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks", "itch"],
+  "work": "Exclude standalone web and all PWA build/release paths; retain named HTML5 platform handoffs and historical dashboard receipts with durable scope exclusions.",
+  "checks": [
+    {"id": "release-contracts", "executable": "node", "args": ["--test", "scripts/release/platform-releases.test.mjs", "scripts/release/package-html5-platform.test.mjs", "scripts/release/html5-handoff-preparation.test.mjs", "scripts/release/development-progress.test.mjs", "scripts/release/record-release-automation.test.mjs", "scripts/release/refresh-submission-dashboard.test.mjs"]},
+    {"id": "dashboard-content", "executable": "node", "args": ["--test", "docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs"]},
+    {"id": "isolated-target-builds", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "build:all-targets"]},
+    {"id": "target-dependency-evidence", "executable": "node", "args": ["scripts/release/verify-target-dependency-evidence.mjs"]},
+    {"id": "release-target-integrity", "executable": "node", "args": ["scripts/release/verify-release-target-e2e.mjs"]},
+    {"id": "file-sizes", "executable": "pnpm", "args": ["check:file-sizes"]},
+    {"id": "documentation", "executable": "pnpm", "args": ["check:tsdoc"]}
+  ],
+  "remainingGates": ["Provider publication and existing deployment/listing changes remain separate from build scope.", "The broader multiplayer reliability goal remains active."],
+  "nextAction": "Continue multiplayer reliability improvements for supported HTML5 platform targets.",
+  "artifacts": [{"target": "itch", "file": "docs/evidence/platform-only-build-scope.md"}]
+}

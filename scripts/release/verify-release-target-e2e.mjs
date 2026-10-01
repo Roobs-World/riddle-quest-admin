@@ -9,6 +9,7 @@ import {listHtml5DistributionDefinitions} from "./package-html5-platform.mjs";
 import {listPlatformReleasePlans} from "./platform-releases.mjs";
 
 import {expectedName} from "./release-target-names.mjs";
+import {excludedReleasePlatforms} from "./release-scope.mjs";
 
 const execute = promisify(execFile);
 const repository = fileURLToPath(new URL("../..", import.meta.url));
@@ -18,6 +19,7 @@ const gatedTargets = new Map([
   ["Discord", /not started|account|portal/iu],
   ["Poki", /on hold/iu],
   ["LINE MINI App", /blocked|eligibility/iu],
+  ...excludedReleasePlatforms.map(platform => [platform, /excluded from current/iu]),
 ]);
 const requireFile = async (relative) => access(path.join(repository, relative));
 const verifyZip = async (artifact, expectedPlatform) => {
@@ -44,7 +46,6 @@ const definitions = listHtml5DistributionDefinitions();
 for (const {target, artifact} of definitions) await verifyZip(artifact, target);
 await verifyYouTubeZip();
 await verifyZip("build-gamesnacks.zip", "gamesnacks");
-await verifyZip("build-microsoft-pwa.zip", "microsoft-pwa");
 for (const directory of ["dist-jest", "dist-facebook", "dist-netflix", "dist-yahoo"]) {
   await requireFile(`packages/portal/${directory}/index.html`);
 }
@@ -76,7 +77,7 @@ const monetizationNames = new Set(snapshot.queries.monetization_readiness.rows.m
 for (const [platform, expectedGate] of gatedTargets) {
   const status = statusByPlatform.get(platform);
   if (!status || !expectedGate.test(`${status.localValidation} ${status.releaseStatus}`)) {
-    throw new Error(`${platform} does not expose its truthful external release gate`);
+    throw new Error(`${platform} does not expose its truthful release gate or scope exclusion`);
   }
   if (!todoNames.has(platform) || !monetizationNames.has(platform)) {
     throw new Error(`${platform} is missing its dashboard TODO or monetization policy`);
@@ -87,4 +88,4 @@ if (coveredTargets !== snapshot.queries.platform_status.rows.length) {
   throw new Error(`Release coverage mismatch: ${coveredTargets} covered, ${snapshot.queries.platform_status.rows.length} tracked`);
 }
 
-console.log(`Release-target integrity passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths and ${gatedTargets.size} explicit external gates; ${definitions.length + 3} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, game/admin links, monetization, automation receipts, and TODOs are complete.`);
+console.log(`Release-target integrity passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths, ${gatedTargets.size - excludedReleasePlatforms.length} external gates and ${excludedReleasePlatforms.length} scope exclusions; ${definitions.length + 2} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, game/admin links, monetization, automation receipts, and TODOs are complete.`);

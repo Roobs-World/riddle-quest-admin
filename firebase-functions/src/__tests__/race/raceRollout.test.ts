@@ -35,9 +35,11 @@ describe("Race rollout cohort evaluation", () => {
   /** Creates db. */
   const createDb = ({rollout = {enabled: true, percentage: 100, allowlistHashes: []}, duplicate = false} = {}) => {
     /** Provides create behavior. */
-    const create = jest.fn();
+    const create = jest.fn(async () => {
+      if (duplicate) throw Object.assign(new Error("already exists"), {code: 6});
+    });
     /** Provides analytics reference behavior. */
-    const analyticsReference = {path: "raceAnalytics/event"};
+    const analyticsReference = {path: "raceAnalytics/event", create};
     /** Provides transaction behavior. */
     const transaction = {
       get: jest.fn(async () => ({exists: duplicate})),
@@ -51,6 +53,15 @@ describe("Race rollout cohort evaluation", () => {
     };
     return {db, create, transaction};
   };
+
+  it("persists analytics without a receipt-read transaction", async () => {
+    /** Atomic creation enforces uniqueness without reading the receipt first. */
+    const {db} = createDb();
+    await recordRaceAnalyticsForUser("player-1", {
+      eventId: "event-budget", eventName: "race_mode_viewed", params: {},
+    }, {db: db as never});
+    expect(db.runTransaction).not.toHaveBeenCalled();
+  });
 
   it("keeps non-English race disabled for Jest identities", async () => {
     /** Provides {db} behavior. */
@@ -117,7 +128,6 @@ describe("Race rollout cohort evaluation", () => {
     ).resolves.toEqual({accepted: true});
 
     expect(create).toHaveBeenCalledWith(
-      expect.anything(),
       expect.objectContaining({
         eventName: "race_category_selected",
         params: {categoryId: "history"},
@@ -142,7 +152,18 @@ describe("Race rollout cohort evaluation", () => {
       ),
     ).resolves.toEqual({accepted: true});
 
-    expect(create).not.toHaveBeenCalled();
+    expect(create).toHaveBeenCalledTimes(1);
+  });
+
+  it("propagates non-duplicate persistence failures", async () => {
+    /** Storage failures must not acknowledge events that were never persisted. */
+    const {db, create} = createDb();
+    /** Representative unavailable RPC retains its original failure. */
+    const failure = Object.assign(new Error("unavailable"), {code: 14});
+    create.mockRejectedValueOnce(failure);
+    await expect(recordRaceAnalyticsForUser("player-1", {
+      eventId: "event-failure", eventName: "race_mode_viewed", params: {},
+    }, {db: db as never})).rejects.toBe(failure);
   });
 
   it("uses Firebase and clock defaults when adapters are omitted", async () => {
@@ -162,7 +183,7 @@ describe("Race rollout cohort evaluation", () => {
       }),
     ).resolves.toEqual({accepted: true});
 
-    expect(create).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({createdAtMs: expect.any(Number)}));
+    expect(create).toHaveBeenCalledWith(expect.objectContaining({createdAtMs: expect.any(Number)}));
     firestore.mockRestore();
   });
 });

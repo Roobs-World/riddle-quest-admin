@@ -1,4 +1,4 @@
-name: Deploy Jest production
+name: Upload and activate Jest build
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Verify and deploy Jest
+    name: Verify, upload and activate Jest build
     if: github.ref == 'refs/heads/jest'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -34,7 +34,7 @@ jobs:
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
       - name: Install the release sandbox
         run: sudo apt-get update && sudo apt-get install --yes bubblewrap
-      - name: Run the immutable production release
+      - name: Run the immutable build release without game publication
         run: pnpm release:jest
         env:
           JEST_GAME_UPLOAD_TOKEN: ${{ secrets.JEST_GAME_UPLOAD_TOKEN }}

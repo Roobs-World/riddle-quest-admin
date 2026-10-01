@@ -51,7 +51,8 @@ export function targetDependencyEvidencePath(target: string, outputDirectory: st
   const facts = webBuildFacts[target];
   if (!facts) throw new Error(`Unknown dependency target: ${target}`);
   /** Shared evidence root; inventories never enter shipped files. */
-  const directory = evidenceDirectory ?? path.join(repository, "artifacts", "target-dependencies");
+  const directory = evidenceDirectory ?? process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR ?? path.join(repository, "artifacts", "target-dependencies");
+  if (!path.isAbsolute(directory)) throw new Error("Dependency evidence directory must be absolute");
   /** Absolute output identity used by both naming and inventory validation. */
   const output = path.resolve(outputDirectory);
   if (output === path.join(repository, "packages", "portal", facts.outputDirectory)) {

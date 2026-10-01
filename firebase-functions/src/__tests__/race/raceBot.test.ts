@@ -72,3 +72,9 @@ it("rejects forged ownership, preferences and nonfinite pacing", () => {
   expect(() => parseRaceBotOffer(offer(), "owner", {locale: "es", categoryId: "history"})).toThrow("preferences changed");
   expect(() => parseRaceBotOffer({...offer(), performanceMs: NaN}, "owner", {locale: "en", categoryId: "history"})).toThrow("invalid");
 });
+
+it("rejects an explicit category contradiction while permitting unrestricted category selection", () => {
+  expect(() => parseRaceBotOffer({...offer(), categoryId: "science"}, "owner", {locale: "en", categoryId: "science"})).toThrow("invalid");
+  expect(parseRaceBotOffer({...offer(), categoryId: "science", requestedCategoryId: null}, "owner", {locale: "en", categoryId: "science"}))
+    .toMatchObject({categoryId: "science", requestedCategoryId: null});
+});

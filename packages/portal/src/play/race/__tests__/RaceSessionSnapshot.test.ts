@@ -159,8 +159,10 @@ describe("Race Session immutable snapshot ownership", () => {
     /** Exhausted availability must suppress duplicate paid commands even without instant evaluation. */
     const run = await fixture(); run.rules = {...run.rules, maxHintsPerRiddle: 1};
     run.currentRiddle!.revealedLetters = [{index: 0, letter: "p"}];
+    run.currentRiddle!.hintAvailable = false;
     if (answerFree) {Reflect.deleteProperty(run, "preloadedRiddles"); Reflect.deleteProperty(run.currentRiddle!, "evaluation");}
     h.respond("raceStart", {run}); h.advance(3480); h.session.hint();
+    expect(h.session.getSnapshot()).toMatchObject({error: null, stage: "racing", run: {rules: {maxHintsPerRiddle: 1}}});
     expect(h.commands.filter(command => command.type === "game:requestRaceHint")).toHaveLength(0);
     expect(h.session.getSnapshot().pending).toBeNull();
   });

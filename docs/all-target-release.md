@@ -6,6 +6,10 @@ Run every release target from the repository root:
 pnpm release:all
 ```
 
+Current scope is platform-specific HTML5 delivery only. Standalone web hosting and
+all PWA builds are excluded from this command, packaging, verification and future
+submission work. Historical receipts remain in the dashboard with excluded status.
+
 The command first runs `pnpm verify:all-targets`. No target release adapter starts unless that shared gate succeeds. It then runs all configured provider and distribution adapters in a deterministic order and stops at the first failure.
 
 Review the complete plan without building, uploading, packaging, or publishing:
@@ -16,7 +20,7 @@ pnpm release:all --dry-run
 
 Each adapter preserves the provider's current delivery boundary. Jest uploads and activates automatically. Facebook, YouTube, and Reddit produce their existing immutable portal handoffs. Netflix and Yahoo produce validated isolated artifact directories until their private partner upload tools are available. Every supported HTML5 distributor receives a distinct ZIP and SHA-256 manifest. The configured itch.io Butler stage can publish after the initial project exists; the other public portals retain manual account, contract, upload, or review steps unless their release plan explicitly says otherwise.
 
-The `Release all platforms` GitHub Actions workflow runs on version tags and by manual dispatch. It executes `pnpm release:all`, including Jest's configured automatic activation and every current target's validated handoff, packages the audited provider-neutral and distribution-specific builds, builds the release dashboard, and retains the complete handoff as one immutable Actions artifact. It uses the existing `jest-production` environment so the established Jest release credentials and any environment protection rules remain authoritative.
+The `Release all platforms` GitHub Actions workflow runs on version tags and by manual dispatch. It executes `pnpm release:all`, including Jest's build upload and activation without game publication and every current target's validated handoff, packages the audited provider-neutral and distribution-specific builds, builds the release dashboard, and retains the complete handoff as one immutable Actions artifact. It uses the existing `jest-production` environment so the established Jest release credentials and any environment protection rules remain authoritative.
 
 After the initial itch.io project page exists, configure repository secret `ITCH_BUTLER_API_KEY` and repository variable `ITCH_GAME_TARGET` (for example `roobsworld/riddle-quest`). The same workflow then publishes the verified neutral archive through itch.io's official Butler transport. Missing itch.io configuration is reported as a tracked skip and does not misrepresent the other portal handoffs as published.
 
@@ -34,7 +38,7 @@ AirConsole, World App Mini Apps, and Farcaster Mini Apps extend coverage to cont
 
 Pi Apps Platform and MiniPay Mini Apps are hosted-web candidates with manual account and terms gates. Pi advertising remains disabled because repository policy reserves rewarded and interstitial formats for Facebook. Both targets start commerce-disabled; cryptocurrency payments require a separate legal and commercial decision plus server-authoritative fulfillment. See `docs/research/additional-release-targets-round-6-2026-09-21.md`.
 
-Zoom App Marketplace and PWA Directory add an embedded collaboration surface and a curated installable-web discovery surface. Zoom stays commerce-disabled until Marketplace eligibility and entitlement verification are reviewed. PWA Directory introduces no SDK; its free submission follows an installability audit and points to the canonical hosted PWA. See `docs/research/additional-release-targets-round-7-2026-09-21.md`.
+Zoom App Marketplace adds an embedded collaboration surface and stays commerce-disabled until Marketplace eligibility and entitlement verification are reviewed. The previously researched PWA Directory destination is excluded from current scope. See `docs/research/additional-release-targets-round-7-2026-09-21.md` for historical research.
 
 Miro Marketplace is included as a gated team-building integration candidate. Its artifact must remain ad-free, add meaningful facilitator and board-result behavior, and complete a controlled beta above Miro's published adoption thresholds before Marketplace review. See `docs/research/additional-release-targets-round-8-2026-09-21.md`.
 
@@ -44,4 +48,4 @@ NoAdsGames accepts an ad-free hosted HTTPS game or HTML5 ZIP without exclusivity
 
 YalGames accepts non-exclusive HTML5/WebGL games through a manual hosted-URL submission. The workflow creates `build-yalgames-review.zip` and its digest manifest with ads and commerce disabled; editorial contact, review and publication remain manual. See `docs/research/additional-release-targets-round-11-2026-09-21.md`.
 
-Rando.gg accepts a non-exclusive developer-hosted HTML5 iframe URL, while PWAStore.io accepts the canonical installable PWA URL. Their workflow handoffs stay ad-free and commerce-disabled pending written monetization terms; submission and review remain manual. See `docs/research/additional-release-targets-round-12-2026-09-21.md`.
+Rando.gg accepts a non-exclusive developer-hosted HTML5 iframe URL. Its workflow handoff stays ad-free and commerce-disabled pending written monetization terms; submission and review remain manual. The previously researched PWAStore.io destination is excluded from current scope. See `docs/research/additional-release-targets-round-12-2026-09-21.md` for historical research.

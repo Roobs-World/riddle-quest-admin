@@ -33,7 +33,7 @@ webhooks can start a repair sooner.
    request against jest. It waits for all three Production readiness jobs. Any
    missing, timed-out, cancelled, or failed job stops the release.
 6. After every required check succeeds, the worker squash-merges the exact
-   checked commit and dispatches Deploy Jest production. That workflow runs its
+   checked commit and dispatches Upload and activate Jest build. That workflow runs its
    own immutable production gate again before uploading and activating the exact
    build. Facebook, Reddit, and YouTube remain on their required manual handoff
    paths. The worker never marks a Sentry issue resolved.

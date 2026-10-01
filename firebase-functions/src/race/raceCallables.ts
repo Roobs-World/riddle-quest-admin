@@ -54,8 +54,19 @@ import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {findRecordedRaceMatch} from "./raceMatchmaking";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 
-/** Provides jest web callable options behavior. */
-const jestWebCallableOptions = browserCallableSecurityOptions;
+/** Keeps browser multiplayer beside eur3 while retaining existing regional clients. */
+const jestWebCallableOptions = {...browserCallableSecurityOptions, region: ["us-central1", "europe-west1"]};
+
+/** Keeps discovery, race input and recovery responsive for the first player after idle. */
+export const raceInteractiveCallableOptions = {
+  ...jestWebCallableOptions,
+  minInstances: 1,
+};
+
+/** Discovery and analytics inherit the shared regions and retain their warm instances. */
+export const raceDiscoveryCallableOptions = {
+  ...raceInteractiveCallableOptions,
+};
 
 /** Deployment options that keep the latency-sensitive hint callable warm. */
 export const raceHintCallableOptions = {
@@ -109,7 +120,7 @@ export const getRaceAccess = onCallWithSentry(
 );
 
 /** Uses authenticated identity to select recorded opponents inside the caller's provider scope. */
-export const findRaceMatch = onCallWithSentry("findRaceMatch", raceStartCallableOptions, async (request: CallableRequest<unknown>) => {
+export const findRaceMatch = onCallWithSentry("findRaceMatch", raceDiscoveryCallableOptions, async (request: CallableRequest<unknown>) => {
   /** Provides input behavior. */
   const input = validateCallableRequest(RaceMatchRequestSchema, request.data, "findRaceMatch");
   /** Provides user id behavior. */
@@ -121,7 +132,7 @@ export const findRaceMatch = onCallWithSentry("findRaceMatch", raceStartCallable
 /** Records a schema-validated multiplayer analytics event for the player. */
 export const recordRaceAnalytics = onCallWithSentry(
   "recordRaceAnalytics",
-  jestWebCallableOptions,
+  raceDiscoveryCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = requireUserId(request);
@@ -136,7 +147,7 @@ export const recordRaceAnalytics = onCallWithSentry(
 /** Lists server-approved race categories for the requested locale. */
 export const listRaceCategories = onCallWithSentry(
   "listRaceCategories",
-  jestWebCallableOptions,
+  raceInteractiveCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides input behavior. */
     const input = validateCallableRequest(ListRaceCategoriesRequestSchema, request.data, "listRaceCategories");
@@ -180,7 +191,7 @@ export const readyRaceRun = onCallWithSentry("readyRaceRun", raceStartCallableOp
 /** Applies a guess to the authenticated player's authoritative active run. */
 export const submitRaceGuess = onCallWithSentry(
   "submitRaceGuess",
-  jestWebCallableOptions,
+  raceInteractiveCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = await requireRaceUser(request);
@@ -210,7 +221,7 @@ export const requestRaceHint = onCallWithSentry(
 /** Skips the active race riddle and applies the authoritative skip penalty. */
 export const skipRaceRiddle = onCallWithSentry(
   "skipRaceRiddle",
-  jestWebCallableOptions,
+  raceInteractiveCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = await requireRaceUser(request);
@@ -225,7 +236,7 @@ export const skipRaceRiddle = onCallWithSentry(
 /** Restores the authenticated player's current view of an existing run. */
 export const resumeRaceRun = onCallWithSentry(
   "resumeRaceRun",
-  jestWebCallableOptions,
+  raceInteractiveCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = await requireRaceUser(request);
@@ -303,7 +314,7 @@ export const getRaceChallenge = onCallWithSentry(
 /** Returns the final outcome for a run owned by the authenticated player. */
 export const getRaceOutcome = onCallWithSentry(
   "getRaceOutcome",
-  jestWebCallableOptions,
+  raceInteractiveCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = await requireRaceUser(request);
@@ -318,7 +329,7 @@ export const getRaceOutcome = onCallWithSentry(
 /** Lists paginated challenge inbox items for the authenticated player. */
 export const listRaceInbox = onCallWithSentry(
   "listRaceInbox",
-  jestWebCallableOptions,
+  raceInteractiveCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = await requireRaceUser(request);

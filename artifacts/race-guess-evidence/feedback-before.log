@@ -1,0 +1,372 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionGuessFeedback
+FAIL src/play/race/__tests__/RaceSessionGuessFeedback.test.ts
+  ● Race Session submitted feedback ownership › rejects mismatched submitted feedback: empty
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    +     "c",
+    +     "l",
+          "o",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+          "currentRiddle": Object {
+    -       "position": 0,
+    +       "position": 1,
+          },
+        },
+      }
+
+      20 |     if (corruption === "wrong-yellow") response.feedback[0].status = "yellow";
+      21 |     h.respond("raceGuess", response);
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
+         |                                     ^
+      23 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      24 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+      25 |     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:22:37
+
+  ● Race Session submitted feedback ownership › rejects mismatched submitted feedback: short
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    +     "c",
+    +     "l",
+          "o",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+          "currentRiddle": Object {
+    -       "position": 0,
+    +       "position": 1,
+          },
+        },
+      }
+
+      20 |     if (corruption === "wrong-yellow") response.feedback[0].status = "yellow";
+      21 |     h.respond("raceGuess", response);
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
+         |                                     ^
+      23 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      24 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+      25 |     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:22:37
+
+  ● Race Session submitted feedback ownership › rejects mismatched submitted feedback: letter
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    +     "c",
+    +     "l",
+          "o",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+          "currentRiddle": Object {
+    -       "position": 0,
+    +       "position": 1,
+          },
+        },
+      }
+
+      20 |     if (corruption === "wrong-yellow") response.feedback[0].status = "yellow";
+      21 |     h.respond("raceGuess", response);
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
+         |                                     ^
+      23 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      24 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+      25 |     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:22:37
+
+  ● Race Session submitted feedback ownership › rejects mismatched submitted feedback: multiple-graphemes
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    +     "c",
+    +     "l",
+          "o",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+          "currentRiddle": Object {
+    -       "position": 0,
+    +       "position": 1,
+          },
+        },
+      }
+
+      20 |     if (corruption === "wrong-yellow") response.feedback[0].status = "yellow";
+      21 |     h.respond("raceGuess", response);
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
+         |                                     ^
+      23 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      24 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+      25 |     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:22:37
+
+  ● Race Session submitted feedback ownership › rejects mismatched submitted feedback: status
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    +     "c",
+    +     "l",
+          "o",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+          "currentRiddle": Object {
+    -       "position": 0,
+    +       "position": 1,
+          },
+        },
+      }
+
+      20 |     if (corruption === "wrong-yellow") response.feedback[0].status = "yellow";
+      21 |     h.respond("raceGuess", response);
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
+         |                                     ^
+      23 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      24 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+      25 |     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:22:37
+
+  ● Race Session submitted feedback ownership › rejects mismatched submitted feedback: correctness
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    +     "c",
+    +     "l",
+          "o",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+          "currentRiddle": Object {
+    -       "position": 0,
+    +       "position": 1,
+          },
+        },
+      }
+
+      20 |     if (corruption === "wrong-yellow") response.feedback[0].status = "yellow";
+      21 |     h.respond("raceGuess", response);
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
+         |                                     ^
+      23 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      24 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+      25 |     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:22:37
+
+  ● Race Session submitted feedback ownership › rejects mismatched submitted feedback: wrong-yellow
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 6
+    + Received  + 6
+
+    @@ -1,14 +1,14 @@
+      Object {
+        "currentLetters": Array [
+    -     "z",
+    -     "z",
+    -     "z",
+    -     "z",
+    -     "z",
+    +     "c",
+    +     "l",
+    +     "o",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+          "correctCount": 0,
+          "currentRiddle": Object {
+            "position": 0,
+          },
+
+      20 |     if (corruption === "wrong-yellow") response.feedback[0].status = "yellow";
+      21 |     h.respond("raceGuess", response);
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
+         |                                     ^
+      23 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      24 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+      25 |     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:22:37
+
+  ● Race Session submitted feedback ownership › validates answer-free legacy feedback without requiring a local answer: short
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    -     "o",
+    +     "",
+    +     "",
+    +     "",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+        },
+      }
+
+      40 |     if (corruption === "valid") expect(h.session.getSnapshot()).toMatchObject({error: null, run: {correctCount: 1, currentRiddle: {position: 1}}});
+      41 |     else {
+    > 42 |       expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [..."piano"], run: {correctCount: 0}});
+         |                                       ^
+      43 |       h.session.retry();h.respond("raceResume", await authority.resumeRace(run.runId));
+      44 |       expect(h.session.getSnapshot()).toMatchObject({error: null, run: {correctCount: 1, currentRiddle: {position: 1}}});
+      45 |     }
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:42:39
+
+  ● Race Session submitted feedback ownership › validates answer-free legacy feedback without requiring a local answer: letter
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 7
+    + Received  + 7
+
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "a",
+    -     "n",
+    -     "o",
+    +     "",
+    +     "",
+    +     "",
+    +     "",
+    +     "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+        },
+      }
+
+      40 |     if (corruption === "valid") expect(h.session.getSnapshot()).toMatchObject({error: null, run: {correctCount: 1, currentRiddle: {position: 1}}});
+      41 |     else {
+    > 42 |       expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [..."piano"], run: {correctCount: 0}});
+         |                                       ^
+      43 |       h.session.retry();h.respond("raceResume", await authority.resumeRace(run.runId));
+      44 |       expect(h.session.getSnapshot()).toMatchObject({error: null, run: {correctCount: 1, currentRiddle: {position: 1}}});
+      45 |     }
+
+      at src/play/race/__tests__/RaceSessionGuessFeedback.test.ts:42:39
+
+Test Suites: 1 failed, 1 total
+Tests:       9 failed, 3 passed, 12 total
+Snapshots:   0 total
+Time:        0.258 s, estimated 1 s
+Ran all test suites matching RaceSessionGuessFeedback.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionGuessFeedback`
+Exit status 1

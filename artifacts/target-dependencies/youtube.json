@@ -9,7 +9,6 @@
   ],
   "modules": [
     "packages/portal/\u0000rolldown/runtime.js",
-    "firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",
     "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.production.js",
     "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom.production.js",
     "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/client.js",
@@ -32,6 +31,7 @@
     "packages/portal/src/playable/achievements.ts",
     "packages/portal/src/playable/content.ts",
     "packages/portal/src/playable/economy.ts",
+    "packages/portal/src/playable/generated/youtube-content-v1.json",
     "packages/portal/src/playable/i18n.ts",
     "packages/portal/src/playable/input.ts",
     "packages/portal/src/playable/localSoloGameRules.ts",
@@ -45,7 +45,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-CmV3P9L2.js",
+      "file": "assets/index-CaTj5DbZ.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -54,7 +54,7 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "cbf61a7bb728e2c8e093d7f9ba267160400cf4731ce681244d13635ec0301ce3"
+      "sha256": "b4e9541567168c1acd630ced9ffdc466a1aed70649a0315181e62cec8463c31b"
     },
     {
       "file": "assets/core-game-CbSzCw0b.js",
@@ -91,8 +91,8 @@
       "sha256": "7c28b1a52eabdefbff7197a7fea69623b0952e4a7e0796343e22e7707bfbbd45"
     },
     {
-      "file": "assets/index-CmV3P9L2.js",
-      "sha256": "cbf61a7bb728e2c8e093d7f9ba267160400cf4731ce681244d13635ec0301ce3"
+      "file": "assets/index-CaTj5DbZ.js",
+      "sha256": "b4e9541567168c1acd630ced9ffdc466a1aed70649a0315181e62cec8463c31b"
     },
     {
       "file": "assets/index-DhsmAOC4.css",
@@ -108,7 +108,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "776f48ef968c8b829bc3b04c6bd733f284b0bad7e83f8df2004356db37a6d30e"
+      "sha256": "d93deb3d4bcb24b315731aea8483206b2cfe181344e5e039ee5ca1a62530217e"
     },
     {
       "file": "third-party-licenses.txt",
@@ -116,7 +116,7 @@
     },
     {
       "file": "youtube-content-manifest.json",
-      "sha256": "8a19fd1b5c587d059dc57e21e1df6be2bf6865325309da0661757c8f280267ca"
+      "sha256": "dd42f7474b22ddb7187cf05148aa1bc024d6f0d3f72c16436f0fb845ecc81251"
     }
   ]
 }

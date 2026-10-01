@@ -1,5 +1,6 @@
 import {readFile, writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
+import {applyReleaseScope} from './release-scope.mjs';
 
 /** Keep provider receipt evidence separate from local packaging and frontend messages. */
 export function applySubmissions(snapshot, ledger) {
@@ -36,7 +37,7 @@ export function applySubmissions(snapshot, ledger) {
       action.destination = row.listingUrl || row.submissionUrl;
     }
   }
-  return {...snapshot, generatedAt: ledger.verifiedAt, queries};
+  return applyReleaseScope({...snapshot, generatedAt: ledger.verifiedAt, queries});
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const file = new URL('../../docs/reports/platform-release-readiness/src/data.json', import.meta.url);

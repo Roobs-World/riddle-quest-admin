@@ -21,6 +21,7 @@ it("normalizes supported legacy challenge fields while retaining storage extensi
 
 it.each([
   {categoryId: "unknown"}, {locale: "unknown"}, {status: "unknown"}, {startedAtMs: NaN}, {hintPenaltyMs: -1},
+  {lastActionAtMs: -1}, {lastActionAtMs: NaN}, {lastActionAtMs: Number.MAX_SAFE_INTEGER + 1},
   {skipPenaltyMs: Infinity}, {correctCount: 11}, {currentPosition: -1}, {guessesUsed: 6}, {recordVersion: 2},
   {userId: "other/account"}, {revealedLetters: [{index: -1, letter: "a"}]},
   {opponent: {displayName: "Rival", adjustedFinishMs: -1, events: []}}, {evaluationPolicy: "client-selected"}, {recordingFingerprint: "not-a-digest"},

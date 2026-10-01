@@ -679,6 +679,56 @@ it("normalizes non-Error startup failures", async () => {
   ).resolves.toEqual({status: "retryable-failure", message: "network unavailable"});
 });
 
+it("keeps a change-sensitive host watchdog alive during slow identity and final rendering", async () => {
+  jest.useFakeTimers();
+  try {
+    /** Provides platform behavior. */
+    const platform = new MockJestPlatform();
+    /** Provides original progress behavior. */
+    const originalProgress = platform.setLoadingProgress.bind(platform);
+    /** Provides last progress behavior. */
+    let lastProgress = -1;
+    /** Provides exited behavior. */
+    let exited = false;
+    /** Provides watchdog behavior. */
+    let watchdog: ReturnType<typeof setTimeout> | undefined;
+    // The current Jest host reruns its 15-second watchdog effect only when progress changes.
+    platform.setLoadingProgress = (progress) => {
+      originalProgress(progress);
+      if (progress === lastProgress) return;
+      lastProgress = progress;
+      clearTimeout(watchdog);
+      if (progress < 100) watchdog = setTimeout(() => { exited = true; }, 15_000);
+    };
+    /** Resolves signed. */
+    let resolveSigned!: (value: Awaited<ReturnType<typeof platform.getPlayerSigned>>) => void;
+    platform.getPlayerSigned = () => new Promise((resolve) => { resolveSigned = resolve; });
+    /** Provides pending behavior. */
+    const pending = startJestSession(
+      platform,
+      {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})} as never,
+      {reconcile: async () => ({status: "success", value: 0})} as never,
+      async () => {},
+    );
+    await jest.advanceTimersByTimeAsync(195_000);
+    expect(exited).toBe(false);
+    resolveSigned({player: platform.player, playerSigned: "signed"});
+    expect((await pending).status).toBe("success");
+    await jest.advanceTimersByTimeAsync(35_000);
+    expect(exited).toBe(false);
+    expect(platform.loaded).toBe(false);
+    expect(platform.progress.every((progress) => progress < 100)).toBe(true);
+    expect(platform.progress.every((progress, index) => index === 0 || progress >= platform.progress[index - 1])).toBe(true);
+    markJestPlayable(platform);
+    await jest.advanceTimersByTimeAsync(20_000);
+    expect(exited).toBe(false);
+    expect(platform.loaded).toBe(true);
+    expect(jest.getTimerCount()).toBe(0);
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
 it("keeps the platform loading heartbeat alive while player identity is pending", async () => {
   jest.useFakeTimers();
   try {
@@ -701,7 +751,7 @@ it("keeps the platform loading heartbeat alive while player identity is pending"
     await jest.advanceTimersByTimeAsync(10_000);
     resolveSigned({player: platform.player, playerSigned: "signed"});
     await pending;
-    expect(platform.progress.filter((progress) => progress === 15)).toHaveLength(2);
+    expect(platform.progress.slice(0, 3)).toEqual([5, 15, 16]);
     markJestPlayable(platform);
   } finally {
     jest.useRealTimers();
@@ -723,13 +773,35 @@ it("keeps the latest progress alive after session startup until playable", async
     expect(result.status).toBe("success");
 
     await jest.advanceTimersByTimeAsync(20_000);
-    expect(platform.progress.slice(-2)).toEqual([72, 72]);
+    expect(platform.progress.slice(-2)).toEqual([73, 74]);
 
     markJestPlayable(platform);
     /** Provides progress after playable behavior. */
     const progressAfterPlayable = [...platform.progress];
     await jest.advanceTimersByTimeAsync(20_000);
     expect(platform.progress).toEqual(progressAfterPlayable);
+    expect(jest.getTimerCount()).toBe(0);
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
+it("reserves loading completion for actual readiness even when startup stalls", async () => {
+  jest.useFakeTimers();
+  try {
+    /** Provides platform behavior. */
+    const platform = new MockJestPlatform();
+    await startJestSession(
+      platform,
+      {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})} as never,
+      {reconcile: async () => ({status: "success", value: 0})} as never,
+      async () => {},
+    );
+    await jest.advanceTimersByTimeAsync(600_000);
+    expect(platform.loaded).toBe(false);
+    expect(platform.progress.at(-1)).toBe(99);
+    expect(platform.progress).not.toContain(100);
+    stopJestLoadingHeartbeat(platform);
     expect(jest.getTimerCount()).toBe(0);
   } finally {
     jest.useRealTimers();

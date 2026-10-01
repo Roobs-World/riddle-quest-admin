@@ -1,0 +1,157 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-guess-progression-evidence",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Require correct-answer acknowledgements to preserve the original question scoring event and advanced cleared count; require automatic skips to prove their charge and transition before consuming the submitted-answer checkpoint; retain cross-tab and terminal recovery.",
+    "revision": "84d840e73b6344080a2392f4227479fc04663fe1",
+    "sourceDigest": "d6c8a3d5fdbbbeda6505d55c057cb7bd4370f79982fc4309736cbee2cc9dec51",
+    "completedAt": "2026-09-30T23:53:55.837Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "node22-backend-build-and-operator-safeguards",
+      "node22-isolated-backend-race-coverage",
+      "backend-types",
+      "client-race-recovery",
+      "backend-lint",
+      "isolated-platform-builds",
+      "target-dependency-evidence",
+      "security",
+      "scalability",
+      "file-size-limits",
+      "documented-declarations",
+      "full-core-tests",
+      "portal-types",
+      "injected-guess-evidence-browser",
+      "client-firebase-target-routing"
+    ],
+    "checks": [
+      {
+        "id": "node22-backend-build-and-operator-safeguards",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions run pretest:race:coverage; output SHA-256 5390a99fd6780c22f8a89ebfc8521018eda3949c917ec028d949563f6e16f481"
+      },
+      {
+        "id": "node22-isolated-backend-race-coverage",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --config firebase.race-verification.json --only firestore --project demo-riddle-quest-multiplayer pnpm exec jest --config jest.race-coverage.config.js --runInBand; output SHA-256 f4036666af3839ce3fd366619506cc53b953351d3cad33a29967d150ed08c1d9"
+      },
+      {
+        "id": "backend-types",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions check:types; output SHA-256 396b14e62b3ae35179d128f45418261470457ececb966673ca8d74c8e96e768f"
+      },
+      {
+        "id": "client-race-recovery",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; output SHA-256 989aee75123d1ec3c9cb053dbecd5dfba9e801091613d9716f7c3148ab0955bb"
+      },
+      {
+        "id": "backend-lint",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint; output SHA-256 b69f3b63959664c97a052421eed92154eb08ee963aa65d419feea19d599300d4"
+      },
+      {
+        "id": "isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; output SHA-256 482865aed0f8fb960d38abc706988881feaa25ce2d090d5cafc1105520d66ee7"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; output SHA-256 8deb60d1b572d05f2586622dd228f419dd2d9d3ce0eb06523e714cc9a73199d4"
+      },
+      {
+        "id": "security",
+        "status": "passed",
+        "evidence": "pnpm check:security; output SHA-256 60c3a2059d233b0df378522fbaab3313947c25c8c0a3a98f12b6fde07083ac86"
+      },
+      {
+        "id": "scalability",
+        "status": "passed",
+        "evidence": "pnpm check:scalability; output SHA-256 e94fd2f2e127da064f200e19e3d30cc423cf59468e41cc74cdc77b32dfb0bf35"
+      },
+      {
+        "id": "file-size-limits",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; output SHA-256 8230f8e92886322eff4e674f26ca36f7863137d6a9e623196c8f08e462bfbe2f"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; output SHA-256 d04f5398e498f45ef0b8e8f9393d408700e76899c3a7a804958e94c3e89cf059"
+      },
+      {
+        "id": "full-core-tests",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/core test --runInBand; output SHA-256 8b9517c3b7228848db9c7267be7613c36d4fd20beb91205311ccd7b2adeb52f8"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; output SHA-256 ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+      },
+      {
+        "id": "injected-guess-evidence-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-guess-evidence-browser.mjs; output SHA-256 34c374bfa7b9068b1dd315047b0fca575f0b9a73d0e3f4cc3b884e05d8800d9d"
+      },
+      {
+        "id": "client-firebase-target-routing",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/__tests__/firebase.test.ts; output SHA-256 4998ef10c643665bda96312d783fa18f996db46c0bb47224de88ddcb3228dac4"
+      }
+    ],
+    "remainingGates": [
+      "The ongoing multiplayer edge-case and reliability audit remains active.",
+      "Jest build activation is authorized; game publication, review submission and listing visibility remain on hold. Firebase Functions deployment is authorized but this verification does not deploy."
+    ],
+    "nextAction": "Continue the multiplayer reliability audit; preserve Jest game publication hold and deployment verification requirements.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "sha256": "414043dcd3e6bf90a63491012854b28a4ae2cacbf41b44f8724ac94c71af3b5b"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "sha256": "d63d9e19aaf5345702d1af58b94d023df3aeabc81f73d86fce2286288d48b868"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "sha256": "a1dfe4103f1473e7f9cf47d016382dac5b6ca8414f92ac6481e5a7c9aa570c3e"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "sha256": "f23e07c8344a2376ba0250bfb5a00ab2a8cddd6e85df9046e5a3750e820da749"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "sha256": "c03a3171e6094d9d10e2d7aa950641e663be7f2ef9d91853e68c5cff87cbd572"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "sha256": "508989dcf106c5194cf5ad878cb792eefe8e15300f8784df15147eb44df14a0d"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "sha256": "ab5d8d02997a78cdde88e745bd7df2614683ef3fa5aa7d3f596d12c136c639e0"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

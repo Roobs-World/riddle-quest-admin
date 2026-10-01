@@ -52,6 +52,13 @@ export type RaceAchievementUpdate = {
 const nonnegativeInteger = (value: unknown): number =>
   typeof value === "number" && Number.isInteger(value) && value >= 0 ? value : 0;
 
+/** Validates a retained one-time award against supported unique unlocks and their fixed grant amount. */
+export function raceRewardAwardsAgree(ids: readonly string[], coins: number): boolean {
+  return ids.length <= RACE_ACHIEVEMENT_IDS.length && new Set(ids).size === ids.length &&
+    ids.every(id => RACE_ACHIEVEMENT_IDS.some(supported => supported === id)) &&
+    coins === ids.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+}
+
 /** Records or empty. */
 const recordOrEmpty = (value: unknown): Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : {};

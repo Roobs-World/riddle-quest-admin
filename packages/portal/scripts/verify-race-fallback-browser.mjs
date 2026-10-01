@@ -14,6 +14,7 @@ const output = path.resolve(root, "../../artifacts/race-fallback");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
+import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
 import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};
@@ -47,7 +48,7 @@ await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;background:#142234"><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 let browser, server;
 try {
-  await build({root: scratch, configFile: false, logLevel: "error", build: {outDir: "dist"}});
+  await build({root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});
   server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, "http://localhost");

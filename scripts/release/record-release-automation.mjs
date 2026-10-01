@@ -7,6 +7,7 @@ import path from 'node:path';
 import {listPlatformReleasePlans} from './platform-releases.mjs';
 import {releaseRegistry} from "./release-registry.mjs";
 import {expectedName} from './release-target-names.mjs';
+import {applyReleaseScope, excludedReleasePlatforms} from './release-scope.mjs';
 
 const repository = fileURLToPath(new URL('../..', import.meta.url));
 
@@ -46,6 +47,7 @@ export async function recordReleaseAutomation(root = repository) {
     rows.push({platform, trigger: process.env.GITHUB_EVENT_NAME || 'local', revision, ...evidence});
   }
   snapshot.generatedAt = new Date().toISOString();
+  rows.push(...(snapshot.queries.release_automation?.rows ?? []).filter(row => excludedReleasePlatforms.includes(row.platform)));
   snapshot.queries.release_automation = {rows, source: {
     label: 'Artifact digests, packaged browser checks and separately reviewed provider receipts',
     retrievedAt: snapshot.generatedAt,
@@ -54,8 +56,8 @@ export async function recordReleaseAutomation(root = repository) {
     metricDefinitions: [{label: 'Automation status', definition: 'Current archive digest matched to a successful browser test, or a separately reviewed provider record. Revision identifies this audit, not necessarily the provider artifact source.', componentIds: ['release-automation']}],
   }};
   const temporary = `${snapshotPath}.${process.pid}.tmp`;
-  await writeFile(temporary, `${JSON.stringify(snapshot, null, 2)}\n`, {flag: 'wx'});
+  await writeFile(temporary, `${JSON.stringify(applyReleaseScope(snapshot), null, 2)}\n`, {flag: 'wx'});
   await rename(temporary, snapshotPath);
-  console.log(`Recorded evidence for ${rows.length} executable targets.`);
+  console.log(`Recorded evidence for ${listPlatformReleasePlans().length} executable targets; excluded receipts retained.`);
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await recordReleaseAutomation();

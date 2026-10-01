@@ -111,15 +111,18 @@ export async function recordRaceAnalyticsForUser(
   const documentId = createHash("sha256").update(`${userId}\u0000${input.eventId}`).digest("hex");
   /** Provides reference behavior. */
   const reference = db.collection("raceAnalytics").doc(documentId);
-  await db.runTransaction(async (transaction) => {
-    if ((await transaction.get(reference)).exists) return;
-    transaction.create(reference, {
+  try {
+    await reference.create({
       eventName: input.eventName,
       params,
       cohortUserHash: hashRaceCohortUser(userId),
       createdAtMs: nowMs,
       expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + ANALYTICS_RETENTION_MS),
     });
-  });
+  } catch (error) {
+    // Firestore's atomic create keeps concurrent/replayed receipts idempotent.
+    // All other failures must remain visible to the caller for retry.
+    if (!(typeof error === "object" && error !== null && "code" in error && error.code === 6)) throw error;
+  }
   return RaceAnalyticsEventResponseSchema.parse({accepted: true});
 }

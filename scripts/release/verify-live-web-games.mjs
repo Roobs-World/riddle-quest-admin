@@ -6,8 +6,6 @@ import {chromium, verifySoloArtifact} from "./browser-artifact-support.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const targets = [
-  {target: "web", url: "https://riddle-quest-web.vercel.app/"},
-  {target: "pwa", url: "https://riddle-quest-pwa.vercel.app/", offline: true},
   {target: "yahoo", url: "https://yahoo.roobsworld.com/"},
 ];
 const browser = await chromium.launch({headless: true});

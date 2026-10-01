@@ -248,7 +248,7 @@ const resolveSignedJestPlayer = (playerSigned: string) => {
 /** Provides exchange jest identity behavior. */
 export const exchangeJestIdentity = onRequestWithSentry(
   "exchangeJestIdentity",
-  jestHttpOptions,
+  {...jestHttpOptions, minInstances: 1},
   async (request, response) => {
     if (!acceptJestRequest(request, response)) return;
     try {

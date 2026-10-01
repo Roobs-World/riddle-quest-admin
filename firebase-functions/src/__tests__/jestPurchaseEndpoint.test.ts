@@ -205,7 +205,7 @@ describe("grantJestPurchase receipt idempotency", () => {
 
   it("deploys every signed browser endpoint with deterministic public ingress", () => {
     expect([...deployedOptions.entries()]).toEqual([
-      ["exchangeJestIdentity", expect.objectContaining({invoker: "public"})],
+      ["exchangeJestIdentity", expect.objectContaining({invoker: "public", minInstances: 1})],
       ["retryJestAccountDeletion", expect.objectContaining({invoker: "public", timeoutSeconds: 540})],
       ["grantJestPurchase", expect.objectContaining({invoker: "public"})],
       ["syncJestSubscriptions", expect.objectContaining({invoker: "public"})],

@@ -1,0 +1,27 @@
+{
+  "taskId": "multiplayer:race-outcome-confirmation",
+  "targets": ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"],
+  "work": "Preserve confirmed terminal scoring and immutable ghost recordings; reject contradictory outcomes and deadline results while supporting other-tab completion, repeat reads and privacy anonymization.",
+  "checks": [
+    {"id": "race-outcome-and-recovery", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "test", "--runInBand", "--testPathPatterns=src/play/race/__tests__"]},
+    {"id": "portal-types", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "check:types"]},
+    {"id": "isolated-platform-builds", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "build:all-targets"]},
+    {"id": "injected-jest-outcome-recovery-publication-and-recipient", "executable": "env", "args": ["PORTAL_BROWSER_TESTS=1", "PORTAL_USE_EXISTING_BUILD=1", "pnpm", "--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/jest/__tests__/authentication.jest-playwright.test.ts", "--testNamePattern=publishes a completed score before reusable Jest invites"]},
+    {"id": "injected-facebook", "executable": "env", "args": ["PORTAL_BROWSER_TESTS=1", "PORTAL_USE_EXISTING_BUILD=1", "pnpm", "--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts"]},
+    {"id": "injected-reddit", "executable": "env", "args": ["PORTAL_BROWSER_TESTS=1", "PORTAL_USE_EXISTING_BUILD=1", "pnpm", "--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts"]},
+    {"id": "target-dependency-evidence", "executable": "node", "args": ["scripts/release/verify-target-dependency-evidence.mjs"]},
+    {"id": "file-size-limits", "executable": "pnpm", "args": ["check:file-sizes"]},
+    {"id": "documented-declarations", "executable": "pnpm", "args": ["check:tsdoc"]}
+  ],
+  "artifacts": [
+    {"target": "jest", "file": "artifacts/target-dependencies/jest.json"},
+    {"target": "facebook", "file": "artifacts/target-dependencies/facebook.json"},
+    {"target": "reddit", "file": "artifacts/target-dependencies/reddit.json"},
+    {"target": "youtube", "file": "artifacts/target-dependencies/youtube.json"},
+    {"target": "netflix", "file": "artifacts/target-dependencies/netflix.json"},
+    {"target": "yahoo", "file": "artifacts/target-dependencies/yahoo.json"},
+    {"target": "gamesnacks", "file": "artifacts/target-dependencies/gamesnacks.json"}
+  ],
+  "remainingGates": ["The comprehensive multiplayer reliability goal remains active, including stored-result semantics and remaining backend/provider audits.", "Provider submission, approval, publication and production deployment require separate evidence."],
+  "nextAction": "Audit stored canonical winner and deadline invariants against server-authoritative awards and supported legacy records."
+}

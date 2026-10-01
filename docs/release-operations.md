@@ -25,7 +25,7 @@ pnpm release:reddit --dry-run
 
 | Command | Repository work | External effect | Successful handoff |
 | --- | --- | --- | --- |
-| `pnpm release:jest` | Clean committed snapshot, full extended production verification, isolated build, exact-byte browser checks, receipt barriers | Uploads one Jest build with automatic activation | Version ID, ZIP hash, and accepted-pending receipts; authoritative completion and active-version verification remain required |
+| `pnpm release:jest` | Clean committed snapshot, full extended production verification, isolated build, exact-byte browser checks, receipt barriers | Uploads and activates one Jest build without game publication | Version ID, ZIP hash, and accepted-pending receipts; authoritative processing/activation and exact-version testing remain required |
 | `pnpm release:facebook` | Clean-source Facebook build and artifact audits, root-content ZIP, source/hash receipt, read-only hash-named archive, hash-scoped retry barrier | None | Printed immutable archive path for manual upload as a non-production Meta Draft |
 | `pnpm release:youtube` | Content audit, all isolated target builds and browser gates, deterministic package and evidence | None | `build-youtube.zip`, manifest, and test report for manual Portal ingestion and certification |
 | `pnpm release:reddit` | Contract validation, fresh isolated Devvit package build, commit/hash-bound receipt and read-only candidate handoff | None | Immutable package under `packages/reddit-app/.reddit-release-receipts`; remote ingestion remains blocked pending exact-byte proof |
@@ -71,9 +71,9 @@ pnpm build:reddit
 
 ### Jest
 
-`release:jest` delegates intact to the timestamped release module. It refuses a dirty tree, preserves Bubblewrap and credential isolation, binds automatic activation to the exact gated artifact, and leaves accepted-pending or ambiguous barriers in place. Jest activates that exact version only after processing succeeds. The command does not make a private game public or submit it for review.
+`release:jest` delegates intact to the timestamped release module. It refuses a dirty tree, preserves Bubblewrap and credential isolation, binds build activation intent to the exact gated artifact, and leaves accepted-pending or ambiguous barriers in place. Processing activates that exact version. `JEST_RELEASE_INACTIVE=true` retains an inactive build. The command does not make a private game public or submit it for review.
 
-For an explicitly requested Jest-only release without test execution, run `JEST_RELEASE_SKIP_TESTS=true pnpm release:jest`. This skips the extended production test gate and packaged browser tests. The clean-source requirement, isolated Jest build, type and locale checks, artifact and W3C audits, exact-byte receipt barriers, and automatic activation still apply. The release output states when this mode is active.
+For an explicitly requested Jest-only release without test execution, run `JEST_RELEASE_SKIP_TESTS=true pnpm release:jest`. This skips the extended production test gate and packaged browser tests. The clean-source requirement, isolated Jest build, type and locale checks, artifact and W3C audits, exact-byte receipt barriers, and the selected build activation intent still apply. The release output states when this mode is active.
 
 ### Facebook
 
@@ -92,3 +92,5 @@ The barrier is exclusive only within one archive hash. Before beginning, operato
 Remote Reddit release is blocked until an exact-byte Devvit adapter or equivalent authoritative proof is available. After such a path ingests and reviews one retained candidate, `pnpm --filter @qwordly/reddit-app release:promotion` verifies that hosted evidence matches its receipt, commit, SHA-256, and read-only handoff before the human promotes that existing version. Never rebuild between evidence and promotion.
 
 The legacy `pnpm jest:build-upload` and `pnpm youtube:preflight` aliases remain for one migration cycle and delegate to the canonical commands. `pnpm facebook:preflight` remains a lower-level local check and does not create the immutable handoff; use `pnpm release:facebook` for that boundary.
+
+Current authorization: Jest build activation and Firebase Functions deployment are allowed. Jest game publication, review submission and listing visibility changes remain held. Build activation and game publication are separate actions.

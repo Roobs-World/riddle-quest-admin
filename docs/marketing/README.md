@@ -37,5 +37,5 @@ First 90 days assumes a monthly budget of USD 1,000-5,000:
 - Stage: pre-launch.
 - Platform: Jest HTML5.
 - Initial market posture: multilingual, with English assets finished first.
-- Priority language groups: English, Spanish, Portuguese, French, German, Japanese, Korean, Chinese, Hindi, Russian, Turkish.
+- Priority language groups: English, Spanish, Portuguese, French, German, Japanese, Korean, Hindi, Russian, Turkish.
 - Main campaign theme: **7-Day Riddle Quest Challenge**.

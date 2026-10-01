@@ -10,8 +10,9 @@ import {lowerCaseGraphemes} from "./graphemes";
  * 3. Everything else stays red.
  *
  * @param guess - Submitted guess. It is NFC-normalized and lowercased with the
- * default `en` locale before comparison.
+ * selected locale before comparison.
  * @param answer - Correct answer, normalized in the same way as `guess`.
+ * @param locale - Locale used for grapheme segmentation and casing; defaults to `en`.
  * @returns One feedback value for each grapheme in `guess`, in input order.
  *
  * @remarks
@@ -19,11 +20,11 @@ import {lowerCaseGraphemes} from "./graphemes";
  * lengths differ, the function still returns one value per guess grapheme and
  * applies the same finite duplicate-letter counts from the supplied answer.
  */
-export function computeFeedback(guess: string, answer: string): Feedback[] {
+export function computeFeedback(guess: string, answer: string, locale = "en"): Feedback[] {
   /** Provides guess chars behavior. */
-  const guessChars = lowerCaseGraphemes(guess);
+  const guessChars = lowerCaseGraphemes(guess, locale);
   /** Provides answer chars behavior. */
-  const answerChars = lowerCaseGraphemes(answer);
+  const answerChars = lowerCaseGraphemes(answer, locale);
 
   /** Provides char counts behavior. */
   const charCounts: Record<string, number> = {};

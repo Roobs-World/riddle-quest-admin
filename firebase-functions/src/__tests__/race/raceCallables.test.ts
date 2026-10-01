@@ -44,7 +44,7 @@ jest.mock("firebase-functions/v2/https", () => {
   };
   return {
     HttpsError: actual.HttpsError,
-    onCall: jest.fn((_options: unknown, handler: unknown) => handler),
+    onCall: jest.fn((options: unknown, handler: object) => Object.assign(handler, {deploymentOptions: options})),
   };
 });
 
@@ -91,6 +91,7 @@ import {
   resumeRaceRun,
   skipRaceRiddle,
   startRaceRun,
+  readyRaceRun,
   submitRaceGuess,
 } from "../../race/raceCallables";
 import {createRaceCallableCases, type RaceCallableHandlers} from "./callableCases";
@@ -121,6 +122,52 @@ const authenticatedRequest = (data: unknown): CallableRequest<unknown> =>
   ({auth: {uid: raceCallableUserId}, data}) as CallableRequest<unknown>;
 
 describe("Race callable deployment options", () => {
+  it.each([
+    ["listRaceCategories", listRaceCategories], ["submitRaceGuess", submitRaceGuess],
+    ["skipRaceRiddle", skipRaceRiddle], ["resumeRaceRun", resumeRaceRun],
+    ["getRaceOutcome", getRaceOutcome], ["listRaceInbox", listRaceInbox],
+    ["recordRaceAnalytics", recordRaceAnalytics],
+  ])("keeps interactive %s available without a cold start", (_name, handler) => {
+    expect((handler as unknown as {
+      /** Captured callable provisioning options. */
+      deploymentOptions: unknown;
+    }).deploymentOptions)
+      .toMatchObject({minInstances: 1, invoker: "public", enforceAppCheck: true});
+  });
+
+  it.each([["findRaceMatch", findRaceMatch], ["recordRaceAnalytics", recordRaceAnalytics]])(
+    "deploys %s beside eur3 while retaining the existing endpoint", (_name, handler) => {
+      expect((handler as unknown as {
+        /** Captured callable provisioning options for both supported backend regions. */
+        deploymentOptions: unknown;
+      }).deploymentOptions)
+        .toMatchObject({region: ["us-central1", "europe-west1"], minInstances: 1, invoker: "public", enforceAppCheck: true});
+    });
+
+  it.each([
+    ["getRaceAccess", getRaceAccess],
+    ["listRaceCategories", listRaceCategories],
+    ["startRaceRun", startRaceRun],
+    ["readyRaceRun", readyRaceRun],
+    ["submitRaceGuess", submitRaceGuess],
+    ["requestRaceHint", requestRaceHint],
+    ["skipRaceRiddle", skipRaceRiddle],
+    ["resumeRaceRun", resumeRaceRun],
+    ["abandonRaceRun", abandonRaceRun],
+    ["publishRaceChallenge", publishRaceChallenge],
+    ["reserveRaceInvite", reserveRaceInvite],
+    ["getRaceChallenge", getRaceChallenge],
+    ["getRaceOutcome", getRaceOutcome],
+    ["listRaceInbox", listRaceInbox],
+    ["getRaceEntry", getRaceEntry],
+    ["cancelRaceInvite", cancelRaceInvite],
+  ])("colocates multiplayer %s without dropping the existing endpoint", (_name, handler) => {
+    expect((handler as unknown as {
+      /** Captured deployment boundary for all multiplayer operations. */
+      deploymentOptions: unknown;
+    }).deploymentOptions).toMatchObject({region: ["us-central1", "europe-west1"], invoker: "public", enforceAppCheck: true});
+  });
+
   it("keeps the latency-sensitive abandon callable warm", () => {
     expect(raceAbandonCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
   });

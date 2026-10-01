@@ -12,7 +12,7 @@ Use consistent campaign parameters on every public link.
 | medium    | organic, paid, creator, pr, community      | Channel type                |
 | campaign  | prelaunch, beta, seven_day_challenge       | Campaign name               |
 | content   | riddle_hook_01, screenshot_test_a          | Creative or post identifier |
-| language  | en, es, pt, fr, de, ja, ko, zh, hi, ru, tr | Language intent             |
+| language  | en, es, pt, fr, de, ja, ko, hi, ru, tr | Language intent             |
 
 Example:
 

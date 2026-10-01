@@ -27,7 +27,11 @@ export function assertRaceMatchReadBudget(meter: RaceMatchReadMeter, startingTra
 
 /** Measures canonical eligibility/offer reads through the same transaction interface used by their implementations. */
 export function withMeteredRaceTransaction<T>(db: Firestore, meter: RaceMatchReadMeter,
-  operation: (transaction: FirebaseFirestore.Transaction) => Promise<T>): Promise<T> {
+  operation: (transaction: FirebaseFirestore.Transaction) => Promise<T>,
+  options?: {
+    /** Discovery snapshots never acquire write locks or issue empty commits. */
+    readOnly: true;
+  }): Promise<T> {
   return db.runTransaction(async transaction => {
     assertRaceMatchReadBudget(meter, true);
     meter.transactionAttempts++;
@@ -35,6 +39,35 @@ export function withMeteredRaceTransaction<T>(db: Firestore, meter: RaceMatchRea
     const reads: Promise<unknown>[] = [];
     /** One transaction snapshot owns this cache; automatic retries create a new one. */
     const cache = new Map<string, Promise<FirebaseFirestore.DocumentSnapshot>>();
+    /** Parallel eligibility callers share one RPC when their reads become ready together. */
+    let pendingBatch: {
+      /** Ordered references dispatched together from this transaction snapshot. */
+      references: FirebaseFirestore.DocumentReference[];
+      /** Shared ordered snapshots sliced for each admitted caller. */
+      result: Promise<FirebaseFirestore.DocumentSnapshot[]>;
+    } | undefined;
+    /** Admission reserves document capacity; dispatch rechecks only the elapsed deadline. */
+    const beforeDispatch = () => {
+      if (meter.deadlineAtMs !== undefined && Date.now() >= meter.deadlineAtMs)
+        throw new HttpsError("deadline-exceeded", "Match search exceeded its lookup time budget. Please retry.");
+      if (meter.documentReadBatches !== undefined) meter.documentReadBatches++;
+    };
+    /** SDK getAll preserves reference ordering; each caller receives only its own slice. */
+    const readBatch = (references: FirebaseFirestore.DocumentReference[]) => {
+      if (!pendingBatch) {
+        /** This array is filled synchronously before the next microtask dispatches it. */
+        const combined: FirebaseFirestore.DocumentReference[] = [];
+        pendingBatch = {references: combined, result: Promise.resolve().then(() => {
+          pendingBatch = undefined;
+          beforeDispatch();
+          return transaction.getAll(...combined);
+        })};
+      }
+      /** Original caller order remains stable even when other groups complete first. */
+      const batch = pendingBatch, offset = batch.references.length;
+      batch.references.push(...references);
+      return batch.result.then(snapshots => snapshots.slice(offset, offset + references.length));
+    };
     /** Reads each unique path once and preserves input ordering across grouped RPCs. */
     const readDocuments = (references: FirebaseFirestore.DocumentReference[], batch: boolean): Promise<FirebaseFirestore.DocumentSnapshot[]> => {
       /** Pending shared reads are installed before another caller can inspect the cache. */
@@ -47,16 +80,12 @@ export function withMeteredRaceTransaction<T>(db: Firestore, meter: RaceMatchRea
         if (meter.documentReadAttempts + missing.length > RACE_MATCH_DOCUMENT_READ_BUDGET)
           return Promise.reject(new HttpsError("resource-exhausted", "Match search reached its storage work budget. Please retry."));
         meter.documentReadAttempts += missing.length;
-        if (meter.documentReadBatches !== undefined) meter.documentReadBatches++;
         /** Deferral installs all promises before even a synchronously throwing adapter runs. */
-        const issued = Promise.resolve().then(async () => {
-          // The budget is already reserved; the final permitted read remains valid.
-          // Recheck only elapsed time at actual dispatch, after promise installation.
-          if (meter.deadlineAtMs !== undefined && Date.now() >= meter.deadlineAtMs)
-            throw new HttpsError("deadline-exceeded", "Match search exceeded its lookup time budget. Please retry.");
-          return batch && typeof transaction.getAll === "function" ? transaction.getAll(...missing)
-            : Promise.all(missing.map(reference => transaction.get(reference)));
-        });
+        const issued = batch && typeof transaction.getAll === "function" ? readBatch(missing)
+          : Promise.resolve().then(() => {
+            beforeDispatch();
+            return Promise.all(missing.map(reference => transaction.get(reference)));
+          });
         reads.push(issued);
         for (const [index, reference] of missing.entries()) {
           /** Firestore snapshots carry their physical path; narrow mocks may use ordered results. */
@@ -80,5 +109,5 @@ export function withMeteredRaceTransaction<T>(db: Firestore, meter: RaceMatchRea
     }});
     try {return await operation(measured);}
     finally {await Promise.allSettled(reads);}
-  });
+  }, options);
 }

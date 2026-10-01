@@ -132,7 +132,7 @@ export async function runPlatformRelease(
     (environment.JEST_UPLOAD_IS_ACTIVE !== undefined || environment.JEST_CONFIRM_ACTIVATION !== undefined)
   ) {
     throw new Error(
-      "release:jest has a fixed automatic-activation contract; remove JEST_UPLOAD_IS_ACTIVE and " +
+      "release:jest has an activation-without-publication contract; remove JEST_UPLOAD_IS_ACTIVE and " +
       "JEST_CONFIRM_ACTIVATION instead of overriding the committed release policy",
     );
   }
@@ -159,7 +159,7 @@ export async function runAllPlatformReleases({
   let sourcePrepared = false;
   for (const {target, delivery} of releasePlans) {
     if (delivery.startsWith("neutral-") && !sourcePrepared) {
-      await commandRunner({executable: "pnpm", args: ["release:html5"], cwd: repositoryDirectory, environment});
+      await commandRunner({executable: "pnpm", args: ["prepare:html5-handoffs"], cwd: repositoryDirectory, environment});
       sourcePrepared = true;
     }
     const releaseEnvironment = sourcePrepared ? {...environment, HTML5_SOURCE_PREPARED: "1"} : environment;

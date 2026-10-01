@@ -15,11 +15,13 @@ import {classifyRaceMatchFailure, raceMatchFailure} from "@qwordly/core/race";
 import {parseRaceMatchOffer} from "./raceMatchOfferRecord";
 import {raceCandidateNeedsFreshness, selectRaceFreshCandidate} from "./raceMatchFreshness";
 import {raceRecordingFingerprint} from "./raceDeckSnapshot";
-import {offerRaceBot} from "./raceBot";
+import {offerRaceBot, replayRaceBotOffer} from "./raceBot";
 
 export {RACE_MATCH_PAGE_SIZE, RACE_MATCH_READ_BUDGET} from "./raceCandidateSearch";
 /** Short offer lifetime; a ghost remains reusable by other players. */
 export const RACE_MATCH_OFFER_MS = 60_000;
+/** A complete small scope avoids empty-bucket RPCs; full probes retain indexed sampling. */
+const RACE_MATCH_SCOPE_PROBE_SIZE = 12;
 
 /** Inspection results remain hints until offer creation revalidates canonical eligibility. */
 type CandidateInspection = {
@@ -52,7 +54,7 @@ async function readEligibleChallenges(db: Firestore, userId: string, challengeId
       return inspection.reason ? {reason: inspection.reason} : {challenge, recordingFingerprint: raceRecordingFingerprint(challenge, inspection.riddles!)};
     }));
     return new Map(challengeIds.map((id, index) => [id, results[index]]));
-  });
+  }, {readOnly: true});
 }
 /** Healthy dense pools inspect one record; replay also preserves its minimal read path. */
 async function readEligibleChallenge(db: Firestore, userId: string, challengeId: string, input: RaceMatchRequest, nowMs: number, meter: RaceMatchReadMeter) {
@@ -89,7 +91,7 @@ export async function findRecordedRaceMatch(
   /** Provides fingerprint behavior. */
   const fingerprint = JSON.stringify({locale: input.locale, categoryId: input.categoryId ?? null});
   /** Provides meter behavior. */
-  const meter: RaceMatchReadMeter = {documentReadAttempts: 1, transactionAttempts: 0, documentReadBatches: 0, documentReadCacheHits: 0, deadlineAtMs: started + RACE_MATCH_LOOKUP_MS};
+  const meter: RaceMatchReadMeter = {documentReadAttempts: 2, transactionAttempts: 0, documentReadBatches: 0, documentReadCacheHits: 0, deadlineAtMs: started + RACE_MATCH_LOOKUP_MS};
   /** Progress survives a budget/storage failure before the search can return its final page report. */
   const retrieval = {candidateQueries: 0, candidateDocumentsRead: 0};
   /** Validated attribution survives later failures without exposing configuration or identity. */
@@ -100,7 +102,18 @@ export async function findRecordedRaceMatch(
   } = {};
   try {
   /** Provides previous behavior. */
-  const previous = await receipt.get();
+  const [previous, previousBot] = await db.getAll(receipt, db.doc(`raceBotOffers/${receipt.id}`));
+  assertRaceMatchReadBudget(meter);
+  if (previous.exists && previousBot.exists) throw new HttpsError("data-loss", "Conflicting opponent receipts exist for this search.");
+  if (previousBot.exists) {
+    /** An issued fallback stays selected even when the human pool changes. */
+    const fallback = replayRaceBotOffer(previousBot.data(), userId, input, requestId, nowMs);
+    /** Validate the original fallback response before success telemetry. */
+    const response = RaceMatchResponseSchema.parse({status: "empty", locale: input.locale, fallback});
+    logger.info("Race matchmaking lookup", {telemetryVersion: 1, disposition: "replayed", provider, locale: input.locale,
+      matched: false, replayed: true, candidateDocumentsRead: 0, candidateQueries: 0, ...meter, durationMs: Date.now() - started});
+    return response;
+  }
   /** Replay reads validate identity and clocks before routing. */
   const previousOffer = previous.exists ? parseRaceMatchOffer(previous.data(), previous.id, userId) : undefined;
   if (previousOffer) policyAttribution = {policyHash: previousOffer.matchPolicyHash,
@@ -133,14 +146,29 @@ export async function findRecordedRaceMatch(
   const previousPolicy = previousOffer?.matchPolicySnapshot;
   assertRaceMatchReadBudget(meter);
   meter.documentReadAttempts += previousPolicy === undefined ? 2 : 1;
-  /** Independent history/configuration reads share the bounded request lifetime. */
-  const [historyResult, snapshotResult] = await Promise.allSettled([db.doc(`users/${userId}/raceMatchProfiles/${input.locale}`).get(),
+  /** Scope-only probe shares the existing expiry index with candidate retrieval. */
+  let availabilityQuery = db.collection("raceMatchCandidates").where("provider", "==", provider)
+    .where("locale", "==", input.locale).where("rulesVersion", "==", RACE_RULES.version)
+    .where("status", "==", "active").where("expiresAtMs", ">", nowMs).orderBy("expiresAtMs").limit(RACE_MATCH_SCOPE_PROBE_SIZE);
+  if (input.categoryId) availabilityQuery = availabilityQuery.where("categoryId", "==", input.categoryId);
+  /** Every probe document is included in the fixed physical candidate budget. */
+  retrieval.candidateQueries = 1;
+  /** Bounded scope query begins alongside independent history and policy reads. */
+  const scopeRead = availabilityQuery.get().then(availability => {
+    retrieval.candidateDocumentsRead = availability.size;
+    return availability;
+  });
+  /** Independent scope/history/configuration reads share the bounded request lifetime. */
+  const [historyResult, snapshotResult, scopeResult] = await Promise.allSettled([db.doc(`users/${userId}/raceMatchProfiles/${input.locale}`).get(),
     (async () => previousPolicy === undefined ? loadRaceMatchPolicy(db, {userId, provider, locale: input.locale}) : {...raceMatchPolicySnapshot(previousPolicy), ...(previousOffer?.matchExperiment ? {experiment: previousOffer.matchExperiment} : {})})().then(selected => {
       policyAttribution = {policyHash: selected.hash, policyRevision: selected.policy.revision, matchExperiment: selected.experiment};
       return selected;
-    })]);
+    }), scopeRead]);
   if (snapshotResult.status === "rejected") throw snapshotResult.reason;
   if (historyResult.status === "rejected") throw historyResult.reason;
+  if (scopeResult.status === "rejected") throw scopeResult.reason;
+  /** Settled bounded scope snapshot determines empty or sparse retrieval. */
+  const availability = scopeResult.value;
   /** Issued independent reads finish before failure reporting, preserving known assignment. */
   const history = historyResult.value;
   /** Validated immutable policy also remains available if profile validation fails below. */
@@ -149,17 +177,7 @@ export async function findRecordedRaceMatch(
   const context = raceMatchContext(snapshot, input.locale);
   /** Provides profile behavior. */
   const profile = history.exists ? RaceMatchProfileSchema.parse(history.data()) : emptyRaceMatchProfile();
-  /** One existing scope index proves an absent pool without scanning every performance bucket. */
-  assertRaceMatchReadBudget(meter);
-  /** Scope-only probe shares the existing expiry index with candidate retrieval. */
-  let availabilityQuery = db.collection("raceMatchCandidates").where("provider", "==", provider)
-    .where("locale", "==", input.locale).where("rulesVersion", "==", RACE_RULES.version)
-    .where("status", "==", "active").where("expiresAtMs", ">", nowMs).orderBy("expiresAtMs").limit(1);
-  if (input.categoryId) availabilityQuery = availabilityQuery.where("categoryId", "==", input.categoryId);
-  /** One probe document is included in the fixed physical candidate budget. */
-  const availability = await availabilityQuery.get();
-  retrieval.candidateQueries = 1;
-  retrieval.candidateDocumentsRead = availability.size;
+  /** One bounded scope index proves an empty or complete sparse pool. */
   assertRaceMatchReadBudget(meter);
   /** Bounded indexed retrieval precedes scored selection and canonical revalidation. */
   const rejectedProjections = new Set<string>();
@@ -217,41 +235,53 @@ export async function findRecordedRaceMatch(
   const inspect = async (id: string) => {await inspectMany([id]); return inspected.get(id)!;};
   /** Optional freshness work cannot consume the canonical reads needed to commit a fallback offer. */
   const freshnessChecks = [0, 0];
-  /** Provides {documents: pool, exhausted, queries: candidate queries} behavior. */
-  const {documents: pool, exhausted, queries: bucketQueries} = availability.empty ? {documents: [], exhausted: true, queries: 0} : await searchRaceCandidates(db, userId, provider, input, profile, requestId, nowMs,
-    async (documents, tier) => {
-      /** Eligibility is checked before a fresh projection can stop or widen discovery. */
-      let baseline: ReturnType<typeof rank>[number] | undefined;
-      /** Canonical prefetch begins only after a rejection, preserving the dense-pool fast path. */
-      const ordered = rank(documents);
-      /** A rejection indicates that a small grouped validation can amortize common dependencies. */
-      let previousRejected = false;
-      for (const [index, candidate] of ordered.entries()) {
-        if (!baseline && previousRejected && !inspected.has(candidate.document.id)) {
-          /** Limit speculative work to the same band and the available freshness allowance. */
-          const size = Math.min(8, context.policy.algorithmVersion === 3 ? context.policy.freshness.maxAdditionalChecks + 1 : 8);
-          /** Same-band grouping cannot pull far performances ahead of nearer recordings. */
-          const group = ordered.slice(index, index + size).filter(item => item.band === candidate.band && !inspected.has(item.document.id));
-          await inspectMany(group.map(item => item.document.id));
-          /** Reads after the first eligible baseline count against optional freshness work. */
-          const firstEligible = group.findIndex(item => inspected.get(item.document.id)?.challenge);
-          if (firstEligible >= 0 && candidate.band <= 1) freshnessChecks[candidate.band] += group.length - firstEligible - 1;
-        }
-        if (baseline && candidate.band > 1) break;
-        if (baseline && !inspected.has(candidate.document.id) && context.policy.algorithmVersion === 3) {
-          if (meter.documentReadAttempts >= RACE_MATCH_DOCUMENT_READ_BUDGET - 30) return true;
-          if (freshnessChecks[candidate.band] >= context.policy.freshness.maxAdditionalChecks) continue;
-          freshnessChecks[candidate.band]++;
-        }
-        if (!(await inspect(candidate.document.id)).challenge) {previousRejected = true; continue;}
-        baseline ??= candidate;
-        if (!raceCandidateNeedsFreshness(candidate, context.policy) || candidate.band > 1) return true;
+  /** Exact ranking and canonical checks are shared by sparse and indexed retrieval. */
+  const inspectTier = async (documents: FirebaseFirestore.QueryDocumentSnapshot[], tier: number) => {
+    /** Eligibility is checked before a fresh projection can stop or widen discovery. */
+    let baseline: ReturnType<typeof rank>[number] | undefined;
+    /** Canonical prefetch begins only after a rejection, preserving the dense-pool fast path. */
+    const ordered = rank(documents);
+    /** A rejection indicates that a small grouped validation can amortize common dependencies. */
+    let previousRejected = false;
+    for (const [index, candidate] of ordered.entries()) {
+      if (!baseline && previousRejected && !inspected.has(candidate.document.id)) {
+        /** Limit speculative work to the same band and the available freshness allowance. */
+        const size = Math.min(8, context.policy.algorithmVersion === 3 ? context.policy.freshness.maxAdditionalChecks + 1 : 8);
+        /** Same-band grouping cannot pull far performances ahead of nearer recordings. */
+        const group = ordered.slice(index, index + size).filter(item => item.band === candidate.band && !inspected.has(item.document.id));
+        await inspectMany(group.map(item => item.document.id));
+        /** Reads after the first eligible baseline count against optional freshness work. */
+        const firstEligible = group.findIndex(item => inspected.get(item.document.id)?.challenge);
+        if (firstEligible >= 0 && candidate.band <= 1) freshnessChecks[candidate.band] += group.length - firstEligible - 1;
       }
-      // One wider comparable tier is enough; retain the nearest eligible fallback.
-      return baseline !== undefined && tier >= 1;
-    }, progress => {Object.assign(retrieval, {candidateQueries: progress.candidateQueries + 1,
-      candidateDocumentsRead: progress.candidateDocumentsRead + availability.size}); assertRaceMatchReadBudget(meter);},
-    context, RACE_MATCH_READ_BUDGET - availability.size);
+      if (baseline && candidate.band > 1) break;
+      if (baseline && !inspected.has(candidate.document.id) && context.policy.algorithmVersion === 3) {
+        if (meter.documentReadAttempts >= RACE_MATCH_DOCUMENT_READ_BUDGET - 30) return true;
+        if (freshnessChecks[candidate.band] >= context.policy.freshness.maxAdditionalChecks) continue;
+        freshnessChecks[candidate.band]++;
+      }
+      if (!(await inspect(candidate.document.id)).challenge) {previousRejected = true; continue;}
+      baseline ??= candidate;
+      if (!raceCandidateNeedsFreshness(candidate, context.policy) || candidate.band > 1) return true;
+    }
+    // One wider comparable tier is enough; retain the nearest eligible fallback.
+    return baseline !== undefined && tier >= 1;
+  };
+  /** A short probe contains the whole scope, so no indexed circular sampling is needed. */
+  let search;
+  if (availability.size < RACE_MATCH_SCOPE_PROBE_SIZE) {
+    await inspectTier(availability.docs, 2);
+    search = {documents: availability.docs, exhausted: true, queries: 0};
+  } else {
+    search = await searchRaceCandidates(db, userId, provider, input, profile, requestId, nowMs,
+      inspectTier, progress => {
+        Object.assign(retrieval, {candidateQueries: progress.candidateQueries + 1,
+          candidateDocumentsRead: progress.candidateDocumentsRead + availability.size});
+        assertRaceMatchReadBudget(meter);
+      }, context, RACE_MATCH_READ_BUDGET - availability.size);
+  }
+  /** Candidate scope queries and indexed pages share the same physical read budget. */
+  const {documents: pool, exhausted, queries: bucketQueries} = search;
   /** Includes the scope probe in operational lookup cost. */
   const candidateQueries = bucketQueries + 1;
   if (!availability.empty && exhausted && pool.length === 0) throw new HttpsError("unavailable", "Match projections require reconciliation.",
@@ -265,6 +295,8 @@ export async function findRecordedRaceMatch(
   /** Attribute only an actual cross-band substitution, preserving the nearest fallback. */
   const relaxedId = fresh && eligible[0] && fresh.band > eligible[0].band ? fresh.document.id : undefined;
   if (fresh) ranked.splice(0, ranked.length, fresh, ...ranked.filter(candidate => candidate !== fresh));
+  /** A lost authoritative commit is a changing pool, never a stable empty fallback decision. */
+  let commitEligibilityChanged = false;
   for (const rankedCandidate of ranked) {
     /** Provides candidate behavior. */
     const candidate = rankedCandidate.document;
@@ -276,12 +308,17 @@ export async function findRecordedRaceMatch(
       }
       /** Provides offered behavior. */
       const offered = await withMeteredRaceTransaction(db, meter, async (transaction) => {
-        /** Provides existing behavior. */
-        const existing = await transaction.get(receipt);
+        /** Independent receipt and selected recording reads share the committing snapshot. */
+        const [existing, selectedSnapshot, existingBot] = await readRaceEligibilityDocuments(transaction,
+          [receipt, db.doc(`raceChallenges/${candidate.id}`), db.doc(`raceBotOffers/${receipt.id}`)]);
+        if (existing.exists && existingBot.exists) throw new HttpsError("data-loss", "Conflicting opponent receipts exist for this search.");
+        if (existingBot.exists) return {fallback: replayRaceBotOffer(existingBot.data(), userId, input, requestId, nowMs)};
         /** Concurrent winners pass the same receipt contract as direct replays. */
         const existingOffer = existing.exists ? parseRaceMatchOffer(existing.data(), existing.id, userId) : undefined;
         if (existingOffer?.acceptedRunId) throw new HttpsError("already-exists", "This matchmaking request was already accepted.");
         if (existing.exists && existingOffer?.fingerprint !== fingerprint) throw new HttpsError("invalid-argument", "Match preferences changed.");
+        if (existingOffer !== undefined && existingOffer.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "This matchmaking request has expired; begin a new search.",
+          {matchmaking: raceMatchFailure("intent-expired")});
         /** Provides challenge id behavior. */
         const challengeId = candidate.id;
         /** Provides previous id behavior. */
@@ -312,7 +349,7 @@ export async function findRecordedRaceMatch(
           }
         }
         /** Provides snapshot behavior. */
-        const snapshot = await transaction.get(db.doc(`raceChallenges/${challengeId}`));
+        const snapshot = selectedSnapshot;
         if (!snapshot.exists) return null;
         /** Provides challenge behavior. */
         const challenge = parseChallengeRecord(snapshot.data(), snapshot.id);
@@ -323,8 +360,8 @@ export async function findRecordedRaceMatch(
         /** Commit only the immutable recording actually inspected and ranked by this lookup. */
         const recordingFingerprint = raceRecordingFingerprint(challenge, inspection.riddles!);
         if (result.recordingFingerprint !== recordingFingerprint) return null;
-        /** Provides expires at ms behavior. */
-        const expiresAtMs = challengeId === previousId ? existingOffer!.expiresAtMs : Math.min(nowMs + RACE_MATCH_OFFER_MS, challenge.expiresAtMs);
+        /** Re-selection may shorten the original intent window, but never renew it. */
+        const expiresAtMs = Math.min(existingOffer?.expiresAtMs ?? nowMs + RACE_MATCH_OFFER_MS, challenge.expiresAtMs);
         /** Provides performance ms behavior. */
         const performanceMs = challenge.recordingPerformanceMs ?? raceDifficultyAdjustedMs(challenge.creatorAdjustedFinishMs, challenge.riddles ?? []);
         /** Provides quality behavior. */
@@ -349,7 +386,14 @@ export async function findRecordedRaceMatch(
         return {challenge: challengePreview(challenge, nowMs), quality, policyHash: context.hash, policyRevision: context.policy.revision, matchExperiment: context.experiment,
           freshnessRelaxed: candidate.id === relaxedId};
       });
-      if (!offered) continue;
+      if (!offered) {commitEligibilityChanged = true; continue;}
+      if ("fallback" in offered) {
+        /** The transaction winner determines the response kind after a stale initial read. */
+        const response = RaceMatchResponseSchema.parse({status: "empty", locale: input.locale, fallback: offered.fallback});
+        logger.info("Race matchmaking lookup", {telemetryVersion: 1, disposition: "replayed", provider, locale: input.locale,
+          matched: false, replayed: true, ...retrieval, ...meter, durationMs: Date.now() - started});
+        return response;
+      }
     /** One final event follows response validation and the committed offer. */
     const response = RaceMatchResponseSchema.parse({status: "matched", offerId: receipt.id, challenge: offered.challenge});
     logger.info("Race matchmaking lookup", {telemetryVersion: 1, disposition: "matched", provider, locale: input.locale, examined, rejected, matched: true,
@@ -358,11 +402,14 @@ export async function findRecordedRaceMatch(
       ...meter, searchCapped: !exhausted && pool.length + availability.size >= RACE_MATCH_READ_BUDGET, durationMs: Date.now() - started});
     return response;
   }
+  if (commitEligibilityChanged) throw new HttpsError("aborted", "Match eligibility changed during selection. Please retry.");
   if (exhausted && rejectedProjections.size) throw new HttpsError("unavailable", "Match projections require reconciliation. Please retry later.",
     {matchmaking: raceMatchFailure("projection-unavailable", 15000)});
   if (exhausted) {
     /** Empty means a completed eligible-pool search, never a capped or corrupt search. */
-    const fallback = await offerRaceBot(db, userId, input, requestId, nowMs, profile, context);
+    if (previousOffer !== undefined) throw new HttpsError("aborted", "The recorded offer is no longer eligible; begin a new search.");
+    /** Transactional fallback creation rechecks both competing receipt kinds. */
+    const fallback = await offerRaceBot(db, userId, input, requestId, nowMs, profile, context, meter);
     /** Typed empty-pool response can carry one server-selected fallback receipt. */
     const response = RaceMatchResponseSchema.parse({status: "empty", locale: input.locale, ...(fallback ? {fallback} : {})});
     logger.info("Race matchmaking lookup", {telemetryVersion: 1, disposition: "empty", provider, locale: input.locale, examined, rejected, matched: false,

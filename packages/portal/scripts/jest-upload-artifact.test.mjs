@@ -900,6 +900,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   );
   assert.match(releaseSource, /const releaseChildEnvironment = createReleaseChildEnvironment\(process\.env,\s*\{/);
   assert.match(gateEnvironment, /\.\.\.releaseChildEnvironment/);
+  assert.match(gateEnvironment, /RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: join\(gatePreflightDirectory, "target-dependencies"\)/);
   assert.doesNotMatch(releaseSource, /withoutPrivateBuildCredentials/);
   for (const credential of [
     "JEST_GAME_UPLOAD_TOKEN",
@@ -973,6 +974,9 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   );
   assert.match(releaseSource, /RIDDLE_QUEST_LICENSE_STORE_DIR:\s*isolatedPnpmLicenseStoreDirectory/);
   assert.match(releaseSource, /delete gateEnvironment\.RIDDLE_QUEST_LICENSE_STORE_DIR/);
+  assert.match(releaseSource, /gateEnvironment\.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = frozenLicenseInventoryPath/);
+  assert.match(releaseSource, /source: frozenLicenseInventoryPath, destination: frozenLicenseInventoryPath/);
+  assert.ok(releaseSource.indexOf('const frozenLicenseInventoryPath =') < releaseSource.indexOf('const credentials = loadReleaseCredentials()'));
   const licenseGeneratorSource = await readFile(
     new URL("./generate-third-party-licenses.mjs", import.meta.url),
     "utf8",

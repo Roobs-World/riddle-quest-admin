@@ -25,4 +25,10 @@ describe("computeFeedback", () => {
   it("treats composed characters as a single grapheme", () => {
     expect(computeFeedback("e\u0301", "é")).toEqual(["green"]);
   });
+
+  it("uses Turkish casing and duplicate counts without changing the default English comparison", () => {
+    expect(computeFeedback("IİI", "ıiı", "tr")).toEqual(["green", "green", "green"]);
+    expect(computeFeedback("IİI", "iıi", "tr")).toEqual(["yellow", "yellow", "red"]);
+    expect(computeFeedback("I", "ı")).toEqual(["red"]);
+  });
 });

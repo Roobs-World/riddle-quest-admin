@@ -234,15 +234,18 @@ export const createFakeRaceServices = (): RaceMethods => {
 
   /** Produces the current externally visible run view from mutable harness state. */
   const syncView = (run: FakeRun): RaceRunView => {
-    /** Wall-clock duration captured or advanced for the run. */
-    if (run.view.status === "scheduled" && Date.now() >= run.startedAtMs) run.view.status = "active";
-    if (run.view.status === "prepared" && Date.now() >= (run.view.preparationExpiresAtMs ?? Infinity)) run.view.status = "abandoned";
+    /** One authority sample determines both lifecycle and elapsed duration. */
+    const nowMs = Date.now();
+    if (run.view.status === "scheduled" && nowMs >= run.startedAtMs) run.view.status = "active";
+    if (run.view.status === "prepared" && nowMs >= (run.view.preparationExpiresAtMs ?? Infinity)) {
+      run.view.status = "abandoned"; run.view.currentRiddle = null;
+    }
     /** Provides wall elapsed ms behavior. */
     const wallElapsedMs =
-      run.view.status === "active" ? Math.max(0, Date.now() - run.startedAtMs) : run.view.wallElapsedMs;
+      run.view.status === "active" ? Math.max(0, nowMs - run.startedAtMs) : run.view.wallElapsedMs;
     return {
       ...run.view,
-      serverNowMs: Date.now(),
+      serverNowMs: nowMs,
       ...(run.view.status !== "prepared" ? {startsAtMs: run.startedAtMs} : {}),
       wallElapsedMs,
       totalPenaltyMs: run.hintPenaltyMs + run.skipPenaltyMs,
@@ -684,6 +687,8 @@ export const createFakeRaceServices = (): RaceMethods => {
       }
       /** Provides run behavior. */
       const run = getRun(runId);
+      // Mirror authority deadline settlement before returning a terminal outcome.
+      if (run.view.correctCount < run.view.rules.targetCorrect) finalizePenalty(run);
       /** Provides view behavior. */
       const view = syncView(run);
       /** Provides result behavior. */

@@ -2,14 +2,19 @@ import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
-import {mkdir, readFile} from "node:fs/promises";
+import {readFile} from "node:fs/promises";
 import path from "node:path";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult} from "./raceRecovery.jest-playwright.support";
+import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support";
 
 import {
+  type AuthHarnessState,
   advanceToRegistration,
   enterRegisteredGame,
+  installJestSdkRequestRoute,
+  verifyShortJestPreview,
+  verifySlowStartupWatchdog,
+  verifyGuestStartupIdentity,
   openProfileAfterGuidance,
   solveFakeRace,
 } from "./authentication.jest-playwright.support";
@@ -20,92 +25,6 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 let baseUrl: string;
 /** Provides shared race challenges behavior. */
 const sharedRaceChallenges = new Map<string, string>();
-/** Captures optional durable evidence for the two-player race journey. */
-const captureMultiplayerEvidence = async (page: Page, filename: string) => {
-  /** Directory selected only by an explicit evidence run. */
-  const directory = process.env.JEST_MULTIPLAYER_EVIDENCE_DIR;
-  if (!directory) return;
-  await mkdir(directory, {recursive: true});
-  await page.screenshot({path: path.join(directory, filename), fullPage: true});
-};
-/** Describes auth harness state. */
-type AuthHarnessState = {
-  /** Stores scenario. */
-  scenario: string;
-  /** Stores calls. */
-  calls: string[];
-  /** Stores backend exchanges. */
-  backendExchanges: string[];
-  /** Stores backend deletion retries. */
-  backendDeletionRetries: string[];
-  /** Stores firebase tokens. */
-  firebaseTokens: string[];
-  /** Stores login payloads. */
-  loginPayloads: Array<Record<string, string>>;
-  /** Stores overlay options. */
-  overlayOptions: Array<{
-    /** Stores theme. */
-    theme?: string;
-    /** Stores registration message. */
-    message?: string;
-    /** Stores source. */
-    source?: string;
-    /** Stores campaign. */
-    campaign?: string;
-    /** Stores reference. */
-    reference?: string;
-    /** Stores acquisition reference. */
-    acquisitionReference?: string;
-    /** Stores invite kind. */
-    inviteKind?: string;
-    /** Stores inviter name. */
-    inviterName?: string;
-    /** Stores custom name. */
-    customName?: string;
-  }>;
-  /** Stores player data reads. */
-  playerDataReads: number;
-  /** Stores preference writes. */
-  preferenceWrites: Array<Record<string, unknown>>;
-  /** Stores profile reads. */
-  profileReads: number;
-  /** Stores notification schedules. */
-  notificationSchedules: Array<{
-    /** Stores identifier. */
-    identifier?: string;
-    /** Stores scheduled in days. */
-    scheduledInDays?: number;
-    /** Stores priority. */
-    priority?: string;
-    /** Stores body. */
-    body?: string;
-    /** Stores cta text. */
-    ctaText?: string;
-    /** Stores asset reference. */
-    assetReference?: string;
-    /** Stores entry payload. */
-    entryPayload?: Record<string, string>;
-  }>;
-  /** Stores notification removals. */
-  notificationRemovals: string[];
-  /** Stores referral shares. */
-  referralShares: Array<{
-    /** Stores reference. */
-    reference?: string;
-    /** Stores share title. */
-    shareTitle?: string;
-    /** Stores share text. */
-    shareText?: string;
-    /** Stores share image. */
-    shareImage?: string;
-    /** Stores onboarding slug. */
-    onboardingSlug?: string;
-    /** Stores entry payload. */
-    entryPayload?: Record<string, string>;
-  }>;
-  /** Records whether each referral request began synchronously in the profile click. */
-  referralSharesStartedFromProfileClick: boolean[];
-};
 /** Provides install jest sdk harness behavior. */
 const installJestSdkHarness = async (page: Page, scenario = "success") => {
   await page.addInitScript((selectedScenario) => {
@@ -156,6 +75,10 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
     window.addEventListener("test:subscription-state", (event) => {
       subscriptionActive = Boolean((event as CustomEvent).detail);
     });
+    /** Mirrors the hosted loading overlay's effect, which rearms only for changed progress. */
+    let lastLoadingProgress = -1;
+    /** Provides loading watchdog behavior. */
+    let loadingWatchdog: ReturnType<typeof setTimeout> | undefined;
     /** Provides sdk behavior. */
     const sdk = {
       init: async () => {
@@ -173,6 +96,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       },
       getPlayerSigned: async () => {
         state.calls.push("sdk.getPlayerSigned");
+        if (selectedScenario === "loading-watchdog") {
+          await new Promise<void>((resolve) => setTimeout(resolve, 25_000));
+        }
         if (selectedScenario === "signed-player-failure") {
           throw new Error("Mock signed player request failed");
         }
@@ -421,7 +347,13 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         state.calls.push("sdk.markFirstMilestone");
         if (selectedScenario === "milestone-failure") throw new Error("Milestone unavailable");
       },
-      setLoadingProgress: (progress: number) => state.calls.push(`sdk.progress:${progress}`),
+      setLoadingProgress: (progress: number) => {
+        state.calls.push(`sdk.progress:${progress}`);
+        if (selectedScenario !== "loading-watchdog" || progress === lastLoadingProgress) return;
+        lastLoadingProgress = progress;
+        clearTimeout(loadingWatchdog);
+        if (progress < 100) loadingWatchdog = setTimeout(() => state.calls.push("host.loadingTimeout"), 15_000);
+      },
       markGameLoaded: () => state.calls.push("sdk.markGameLoaded"),
     };
     Object.assign(window, {
@@ -496,12 +428,7 @@ const openHarness = async (
   /** Captures uncaught startup failures, including asynchronous translation errors. */
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  await page.route("https://cdn.jest.com/**", async (route) => {
-    if (options.scenario === "sdk-request-delay") {
-      await new Promise((resolve) => setTimeout(resolve, 5_000));
-    }
-    await route.abort();
-  });
+  await installJestSdkRequestRoute(page, options.scenario);
   await installJestSdkHarness(page, options.scenario);
   if (options.invitationRole) await page.addInitScript(role => {
     /** Authority adapter emits readiness facts for an opaque invitation. */
@@ -645,6 +572,16 @@ describeBrowser("Jest authentication integration", () => {
     await new Promise<void>((resolve, reject) => server?.close((error) => (error ? reject(error) : resolve())));
   });
 
+  it("survives the hosted loading watchdog while signed identity takes 25 seconds", async () => {
+    /** Provides {page, page errors} behavior. */
+    const {page, pageErrors} = await openHarness(browser, {scenario: "loading-watchdog"});
+    await verifySlowStartupWatchdog(page, pageErrors);
+  }, 60_000);
+
+  it("keeps the riddle and controls usable in the short Jest phone preview", async () => {
+    await verifyShortJestPreview((await openHarness(browser, {registered: true})).page);
+  });
+
   it("refreshes Config-panel subscription changes and cancels renewal from the shop", async () => {
     /** Starts a registered wallet in the injected SDK harness. */
     const {page} = await openHarness(browser, {registered: true});
@@ -703,23 +640,12 @@ describeBrowser("Jest authentication integration", () => {
   }, 30_000);
 
   it("starts a guest through signed identity exchange and reads stable-player progress", async () => {
-    /** Provides {context, page} behavior. */
-    const {context, page} = await openHarness(browser);
+    /** Starts an isolated guest browser context. */
+    const {page} = await openHarness(browser);
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     /** Provides state behavior. */
     const state = await getHarnessState(page);
-    expect(state.calls).toContain("sdk.init");
-    expect(state.calls).toContain("sdk.getPlayer");
-    expect(state.calls).toContain("sdk.getPlayerSigned");
-    expect(state.calls.indexOf("sdk.init")).toBeLessThan(state.calls.indexOf("sdk.getPlayer"));
-    expect(state.calls.indexOf("sdk.getPlayer")).toBeLessThan(state.calls.indexOf("sdk.getPlayerSigned"));
-    expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
-    expect(state.firebaseTokens).toEqual(["mock"]);
-    expect(state.profileReads).toBe(0);
-    expect(state.calls).not.toContain("sdk.social.getProfile");
-    expect(state.calls.filter((call) => call === "sdk.data.getAll")).toHaveLength(2);
-    expect(state.notificationSchedules).toEqual([]);
-    await context.close();
+    verifyGuestStartupIdentity(state);
   });
 
   it("renders startup while the external Jest SDK request is still pending", async () => {
@@ -1640,7 +1566,7 @@ describeBrowser("Jest authentication integration", () => {
   });
 
   it("rejects inconsistent hint confirmations and recovers authoritative reveals", async () => {
-    for (const mismatch of ["letter", "question", "deck", "schedule"]) {
+    for (const mismatch of ["letter", "question", "deck", "schedule", "phase", "missing-prompt", "score"]) {
       /** Independent authenticated player for each corrupted successful hint. */
       const {context, page, pageErrors} = await openHarness(browser, {
         registered: true, harness: "race-auth", playerId: `race-hint-confirmation-${mismatch}`,
@@ -1847,7 +1773,7 @@ describeBrowser("Jest authentication integration", () => {
       const screen = document.querySelector(".race-screen");
       return Boolean(screen && screen.scrollHeight <= screen.clientHeight + 1);
     });
-    await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
+    await verifyOutcomeConfirmationRecovery(creator.page);
     await creator.page.getByText("Run recorded!", {exact: true}).waitFor();
     await verifyRecordedLayout(creator.page);
     expect((await getHarnessState(creator.page)).referralShares).toHaveLength(0);
@@ -1913,27 +1839,10 @@ describeBrowser("Jest authentication integration", () => {
 
     await recipient.page.getByRole("heading", {name: /Guest Solver challenged you/i}).waitFor({timeout: 20_000});
     await captureMultiplayerEvidence(recipient.page, "05-player-2-invite-ready.png");
-    await recipient.page.evaluate(() => {
-      Object.assign(window, {__acceptedInviteRecording: null});
-      window.addEventListener("riddle-quest:host-to-game", event => {
-        const detail = (event as CustomEvent).detail;
-        if (detail?.payload?.operation === "raceStart" && detail.payload.ok)
-          Object.assign(window, {__acceptedInviteRecording: detail.payload.data.run});
-      });
-    });
+    await observeAcceptedRaceRecording(recipient.page);
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
-    const acceptedRun = await recipient.page.evaluate(() => Reflect.get(window, "__acceptedInviteRecording")) as {
-      /** Exact challenge selected by the recipient. */ challengeId: string;
-      /** Server-issued playback of the creator's recording. */ opponent: {events: unknown[]; adjustedFinishMs: number};
-    };
-    const publishedRecording = JSON.parse(sharedRaceChallenges.get(invitedChallengeId!)!) as {
-      /** Immutable events persisted under the shared challenge ID. */ events: unknown[];
-      /** Time advertised before the recipient accepted the invite. */ preview: {adjustedTimeToBeatMs: number};
-    };
-    expect(acceptedRun.challengeId).toBe(invitedChallengeId);
-    expect(acceptedRun.opponent.events).toEqual(publishedRecording.events);
-    expect(acceptedRun.opponent.adjustedFinishMs).toBe(publishedRecording.preview.adjustedTimeToBeatMs);
+    await verifyAcceptedRaceRecording(recipient.page, invitedChallengeId!, sharedRaceChallenges.get(invitedChallengeId!)!);
     /** Progress can race with the creator's first server-confirmed automatic clear. */
     const initialProgress = await recipient.page.locator(".race-progress strong").allInnerTexts();
     expect(initialProgress[0]).toBe("Riddles solved: 0 / 10");

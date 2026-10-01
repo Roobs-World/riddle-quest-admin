@@ -1,10 +1,12 @@
 import {RACE_CHALLENGE_TTL_MS} from "@qwordly/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {settleRaceRun} from "./raceSettlement";
-import {raceDeadlineAtMs, type RaceRunRecord} from "./raceEngine";
+import {withRaceTransactionReads} from "./raceTransactionReads";
+import {raceDeadlineAtMs, raceOperationAtMs, type RaceRunRecord} from "./raceEngine";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
 import {hydrateRaceReceiptResponse, minimizeRaceReceiptResponse, raceReceiptExpiresAt} from "./raceReceiptPrivacy";
 import {evaluateRaceRollout} from "./raceRollout";
+import {bindRaceRequest, assertRaceRequestReplay, assertRaceMutationReceipt, type RaceMutationCommand} from "./raceRequestBinding";
 import {
   applyActionRateLimit,
   parseRunRecord,
@@ -34,11 +36,10 @@ export async function assertRaceInteractionAllowed(
 /** Applies one idempotent race mutation with rollout, privacy, and interaction enforcement. */
 export async function mutateRaceRun<T>(
   userId: string,
-  runId: string,
-  requestId: string,
+  command: RaceMutationCommand,
   nowMs: number,
   db: Firestore,
-  mutate: (run: RaceRunRecord) => {
+  mutate: (run: RaceRunRecord, acceptedAtMs: number) => {
     /** Stores run. */
     run: RaceRunRecord; /** Stores response. */
     /** Stores response. */
@@ -49,11 +50,17 @@ export async function mutateRaceRun<T>(
     enforceRaceAccess?: boolean;
   } = {},
 ): Promise<T> {
+  /** Command ownership and its receipt address come from one typed intent. */
+  const {runId, requestId} = command.input;
+  /** Persisted intent is a digest; guesses are never copied into receipt metadata. */
+  const commandBinding = bindRaceRequest(command);
   /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(runId);
   /** Requests ref. */
   const requestRef = runRef.collection("requests").doc(requestDocumentId(userId, requestId));
-  return db.runTransaction(async (transaction) => {
+  return db.runTransaction(async (attempt) => {
+    /** Repeated privacy and settlement reads share only this attempt's locked snapshots. */
+    const transaction = withRaceTransactionReads(attempt);
     /** Provides [request snapshot, run snapshot, rollout snapshot] behavior. */
     const [requestSnapshot, runSnapshot, rolloutSnapshot] = await Promise.all([
       transaction.get(requestRef),
@@ -71,8 +78,13 @@ export async function mutateRaceRun<T>(
     const run = privacy.run;
     await assertRaceInteractionAllowed(transaction, db, userId, run.opponent?.subjectUserId);
     if (requestSnapshot.exists) {
+      /** Legacy receipts prove only their recoverable original operation/input. */
+      const bound = assertRaceRequestReplay(requestSnapshot.data(), userId, commandBinding);
+      assertRaceMutationReceipt(requestSnapshot.data()?.response, command, run, bound);
       /** Provides response behavior. */
       const response = hydrateRaceReceiptResponse(requestSnapshot.data()?.response as T, run);
+      // Current privacy-safe identity must also yield a deliverable public response.
+      assertRaceMutationReceipt(response, command, run, bound);
       if (privacy.scrubbed) {
         transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
         transaction.update(requestRef, {response: stripUndefined(minimizeRaceReceiptResponse(response))});
@@ -85,18 +97,23 @@ export async function mutateRaceRun<T>(
     ) {
       throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
     }
-    /** Provides mutation behavior. */
-    const mutation = mutate(applyActionRateLimit(run, userId, nowMs));
+    /** A transaction retry may observe a command committed after this request sampled its clock. */
+    const acceptedAtMs = raceOperationAtMs(run, nowMs);
+    /** Wrong guesses also retain the clock floor; scoring events alone cannot represent every accepted action. */
+    const mutation = mutate({...applyActionRateLimit(run, userId, acceptedAtMs), lastActionAtMs: acceptedAtMs}, acceptedAtMs);
     /** Provides settled behavior. */
-    const settled = await settleRaceRun(transaction, db, mutation.run, nowMs);
+    const settled = await settleRaceRun(transaction, db, mutation.run, acceptedAtMs);
     /** Provides response behavior. */
     const response = hydrateRaceReceiptResponse(mutation.response, settled);
+    // An undeliverable response must abort the whole transaction, including staged rewards and penalties.
+    assertRaceMutationReceipt(response, command, settled, true);
     transaction.set(runRef, raceRunPrivacyWrite({...settled, deadlineAtMs: raceDeadlineAtMs(settled)}, privacy.scrubbed), {merge: true});
     transaction.create(requestRef, {
       userId,
-      createdAtMs: nowMs,
+      commandBinding,
+      createdAtMs: acceptedAtMs,
       response: stripUndefined(minimizeRaceReceiptResponse(response)),
-      expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, nowMs + RACE_CHALLENGE_TTL_MS),
+      expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, acceptedAtMs + RACE_CHALLENGE_TTL_MS),
     });
     return response;
   });

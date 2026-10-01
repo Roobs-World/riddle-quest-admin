@@ -1,0 +1,2 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-guess-progression-evidence.json
+Recorded multiplayer:race-guess-progression-evidence for jest, facebook, reddit, youtube, netflix, yahoo, gamesnacks in the local dashboard.

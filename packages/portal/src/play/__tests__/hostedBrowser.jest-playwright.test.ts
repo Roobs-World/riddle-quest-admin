@@ -2,6 +2,7 @@ import {describe, expect, it} from "@jest/globals";
 import {completeMockOnboarding, prepareProvisionalNextLevel} from "./mockOnboarding.jest-playwright.support";
 import AxeBuilder from "@axe-core/playwright";
 import {chromium, type Page} from "@playwright/test";
+import {version as reactVersion} from "react";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 /** Provides hosted browser port behavior. */
@@ -910,7 +911,7 @@ describeBrowser("standalone Jest browser game", () => {
         new URL((await licensesLink.getAttribute("href")) ?? "", compactPage.url()).toString(),
       );
       expect(licensesResponse.status()).toBe(200);
-      expect(await licensesResponse.text()).toContain("react@19.2.8");
+      expect(await licensesResponse.text()).toContain(`react@${reactVersion}`);
       await compactPage.getByRole("button", {name: /account deletion/i}).click();
       await compactPage.locator(".modal-profile").waitFor();
       await compactPage.keyboard.press("Escape");
@@ -1313,6 +1314,9 @@ describeBrowser("standalone Jest browser game", () => {
         await page.getByRole("button", {name: /^next$/i}).click();
       }
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
+      // The completion notice belongs to this riddle and may clear as the next one loads.
+      expect(await page.locator(".game-content > .game-notice").innerText()).toMatch(/coins earned/i);
+      expect(await page.locator(".riddle-surface .game-notice").count()).toBe(0);
       expect(await page.locator("#game-modal-title").evaluate((heading) => getComputedStyle(heading).textAlign)).toBe(
         "center",
       );
@@ -1366,8 +1370,6 @@ describeBrowser("standalone Jest browser game", () => {
         if (await victoryChest.isVisible() && await victoryChest.isEnabled()) await victoryChest.click();
         await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
       }
-      expect(await page.locator(".game-content > .game-notice").innerText()).toMatch(/coins earned/i);
-      expect(await page.locator(".riddle-surface .game-notice").count()).toBe(0);
       await page.waitForFunction(
         () =>
           (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <=

@@ -120,6 +120,13 @@ test("the Web Target config resolves one isolated build profile for every releas
     const config = createWebTargetViteConfig({command: "build", mode, environment: {}});
     assert.equal(config.base, "./");
     assert.equal(config.define["import.meta.env.VITE_PLATFORM_TARGET"], JSON.stringify(mode));
+    if (["jest", "facebook"].includes(mode)) {
+      assert.equal(config.define.__SENTRY_DEBUG__, "false");
+      assert.equal(config.define.__SENTRY_TRACING__, "false");
+    } else {
+      assert.equal(Object.hasOwn(config.define, "__SENTRY_DEBUG__"), false);
+      assert.equal(Object.hasOwn(config.define, "__SENTRY_TRACING__"), false);
+    }
     assert.equal(config.build.outDir, expected.outDir);
     assert.equal(Object.hasOwn(config.resolve.alias, "#platform-entry"), false);
     if (expected.htmlEntry) {

@@ -1,5 +1,8 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
+import {offerRaceBot} from "../../race/raceBot";
+import {emptyRaceMatchProfile} from "../../race/raceMatchPerformance";
+import {DEFAULT_RACE_MATCH_CONTEXT} from "../../race/raceMatchPolicy";
 import {logger} from "firebase-functions";
 import {findRecordedRaceMatch} from "../../race/raceMatchmaking";
 import {startRaceRunForUser, readyRaceRunForUser, resumeRaceRunForUser, submitRaceGuessForUser,
@@ -155,4 +158,109 @@ it("does not conceal corrupt matchmaking projections with a fallback", async () 
     await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "corrupt-search-0001"}, {db, nowMs: NOW})).rejects.toMatchObject({code: "unavailable"});
     expect((await db.collection("raceBotOffers").get()).empty).toBe(true);
   } finally {logging.mockRestore();}
+});
+
+it.each(["foreign-request-0001", "        "])("rejects a fallback receipt whose request no longer matches its physical key: %s", async requestId => {
+  /** A genuine empty lookup creates the canonical owner/request receipt. */
+  const offered = await find("identity-search-0001");
+  /** Shape-valid corruption must fail before another fallback is advertised. */
+  const ref = db.doc(`raceBotOffers/${offered.offerId}`);
+  await ref.update({requestId});
+  await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "identity-search-0001"}, {db, nowMs: NOW}))
+    .rejects.toMatchObject({code: "data-loss"});
+  expect((await ref.get()).data()?.requestId).toBe(requestId);
+  expect((await db.collection("raceRuns").get()).empty).toBe(true);
+});
+
+it.each([false, true])("retains an issued fallback when a human becomes available, accepted=%s", async accepted => {
+  /** The original empty pool fixes the fallback for this search identity. */
+  const requestId = "cross-kind-search-0001", offered = await find(requestId);
+  if (accepted) await startRaceRunForUser(PLAYER, {locale: "en", categoryId: offered.categoryId,
+    fallbackOfferId: offered.offerId, requestId: "cross-kind-accept-0001", prepare: true}, {db, nowMs: NOW});
+  /** A real creator recording arrives after the fallback was issued. */
+  let run = (await startRaceRunForUser(CREATOR, {locale: "en", categoryId: "history", requestId: "cross-kind-create-0001", includeEvaluation: true}, {db, nowMs: NOW})).run;
+  for (let index = 0; index < 10; index++) {
+    /** Authority-provided current question for the recording. */
+    const riddle = run.currentRiddle!;
+    run = (await submitRaceGuessForUser(CREATOR, {runId: run.runId, riddleId: riddle.riddleId,
+      guess: riddle.evaluation!.answer, requestId: `cross-kind-answer-${index}`, includeEvaluation: true}, {db, nowMs: NOW + (index + 1) * 1000})).run;
+  }
+  await publishRaceChallengeForUser(CREATOR, {runId: run.runId, requestId: "cross-kind-publish-0001"}, {db, nowMs: NOW + 11000});
+  if (accepted) await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId}, {db, nowMs: NOW + 12000}))
+    .rejects.toMatchObject({code: "already-exists", details: {matchmaking: {reason: "intent-consumed"}}});
+  else await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId}, {db, nowMs: NOW + 12000}))
+    .resolves.toMatchObject({status: "empty", fallback: offered});
+  expect((await db.collection("raceMatchOffers").get()).empty).toBe(true);
+});
+
+/** Publish a real completed recording to create a healthy human discovery pool. */
+async function publishHuman(prefix: string) {
+  /** Creator authority snapshot advances only through real server mutations. */
+  let run = (await startRaceRunForUser(CREATOR, {locale: "en", categoryId: "history", requestId: `${prefix}-create`, includeEvaluation: true}, {db, nowMs: NOW})).run;
+  for (let index = 0; index < 10; index++) {
+    /** Server-selected question for this recording. */
+    const riddle = run.currentRiddle!;
+    run = (await submitRaceGuessForUser(CREATOR, {runId: run.runId, riddleId: riddle.riddleId, guess: riddle.evaluation!.answer,
+      requestId: `${prefix}-answer-${index}`, includeEvaluation: true}, {db, nowMs: NOW + (index + 1) * 1000})).run;
+  }
+  return publishRaceChallengeForUser(CREATOR, {runId: run.runId, requestId: `${prefix}-publish`}, {db, nowMs: NOW + 11000});
+}
+
+it("replays a fallback that wins after recorded lookup's initial receipt read", async () => {
+  /** Original fallback content is a valid receipt created by the real service. */
+  const requestId = "concurrent-kind-search", offered = await find(requestId);
+  /** Temporarily absent receipt models the stale ingress snapshot. */
+  const ref = db.doc(`raceBotOffers/${offered.offerId}`), stored = (await ref.get()).data()!;
+  await ref.delete();await publishHuman("concurrent-kind-human");
+  /** Keep actual Firestore transactions while installing a concurrent fallback winner. */
+  const original = db.runTransaction.bind(db);
+  /** Inject exactly before canonical inspection begins. */
+  let installed = false;
+  /** Both commit paths see the canonical fallback winner. */
+  const transactions = jest.spyOn(db, "runTransaction").mockImplementation(async (operation, options) => {
+    if (!installed) {installed = true;await ref.set(stored);}
+    return original(operation, options);
+  });
+  try {
+    await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId}, {db, nowMs: NOW + 12000}))
+      .resolves.toMatchObject({status: "empty", fallback: offered});
+    expect((await db.collection("raceMatchOffers").get()).empty).toBe(true);
+    expect((await ref.get()).data()).toEqual(stored);
+  } finally {transactions.mockRestore();}
+});
+
+it("does not issue a fallback over a recorded transaction winner", async () => {
+  await publishHuman("recorded-kind-human");
+  /** A recorded lookup commits the original search receipt. */
+  const requestId = "recorded-kind-search", input = {locale: "en" as const, categoryId: "history" as const, requestId};
+  expect((await findRecordedRaceMatch(PLAYER, input, {db, nowMs: NOW + 12000})).status).toBe("matched");
+  await expect(offerRaceBot(db, PLAYER, input, requestId, NOW + 12000, emptyRaceMatchProfile(), DEFAULT_RACE_MATCH_CONTEXT))
+    .rejects.toMatchObject({code: "aborted"});
+  expect((await db.collection("raceBotOffers").get()).empty).toBe(true);
+});
+
+it("returns new-intent recovery for an expired fallback even when a human is now available", async () => {
+  /** Expiry belongs to the original fallback, independent of changing discovery availability. */
+  const requestId = "expired-kind-search";
+  await find(requestId);await publishHuman("expired-kind-human");
+  await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId}, {db, nowMs: NOW + 60000}))
+    .rejects.toMatchObject({code: "failed-precondition", details: {matchmaking: {reason: "intent-expired", recovery: "new-intent"}}});
+  expect((await db.collection("raceMatchOffers").get()).empty).toBe(true);
+});
+
+it("rejects fallback category corruption that contradicts its explicit search preference", async () => {
+  /** Explicit category discovery must pin both the requested and selected category. */
+  const requestId = "category-integrity-search";
+  /** Canonical fallback created from an authenticated category search. */
+  const response = await findRecordedRaceMatch(PLAYER, {locale: "en", categoryId: "history", requestId}, {db, nowMs: NOW});
+  if (response.status !== "empty" || !response.fallback) throw new Error("Expected category fallback");
+  /** Shape-valid category replacement contradicts the original search selection. */
+  const ref = db.doc(`raceBotOffers/${response.fallback.offerId}`);
+  await ref.update({categoryId: "science"});
+  await expect(findRecordedRaceMatch(PLAYER, {locale: "en", categoryId: "history", requestId}, {db, nowMs: NOW}))
+    .rejects.toMatchObject({code: "data-loss"});
+  await expect(startRaceRunForUser(PLAYER, {locale: "en", categoryId: "science", fallbackOfferId: response.fallback.offerId,
+    requestId: "category-corruption-accept"}, {db, nowMs: NOW})).rejects.toMatchObject({code: "data-loss"});
+  expect((await db.collection("raceRuns").get()).empty).toBe(true);
+  expect((await ref.get()).data()).toMatchObject({categoryId: "science", requestedCategoryId: "history"});
 });

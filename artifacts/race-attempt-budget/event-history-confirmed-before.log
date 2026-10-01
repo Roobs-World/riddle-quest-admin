@@ -1,0 +1,368 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionEventHistory
+FAIL src/play/race/__tests__/RaceSessionEventHistory.test.ts
+  ● Race Session confirmed event history › rejects resumed history that changes a confirmed event: drop
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 16
+    + Received  +  5
+
+    @@ -4,13 +4,13 @@
+          "p",
+          "i",
+          "",
+          "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "adjustedElapsedMs": 15007,
+    +     "adjustedElapsedMs": 15009,
+          "categoryId": "mixed",
+          "challengeId": undefined,
+          "correctCount": 0,
+          "currentRiddle": Object {
+            "answerLength": 5,
+    @@ -29,22 +29,11 @@
+              },
+            ],
+            "riddleId": "fake-race-1",
+            "text": "What has keys but cannot open a door?",
+          },
+    -     "events": Array [
+    -       Object {
+    -         "adjustedElapsedMs": 15007,
+    -         "correctCount": 0,
+    -         "penaltyAddedMs": 15000,
+    -         "riddlePosition": 0,
+    -         "sequence": 0,
+    -         "totalPenaltyMs": 15000,
+    -         "type": "hint",
+    -         "wallElapsedMs": 7,
+    -       },
+    -     ],
+    +     "events": Array [],
+          "locale": "en",
+          "opponent": undefined,
+          "preloadedRiddles": Array [
+            Object {
+              "answerLength": 5,
+    @@ -268,12 +257,12 @@
+            "skipPenaltyMs": 45000,
+            "targetCorrect": 10,
+            "version": "race10_v1",
+          },
+          "runId": "fake-run-1",
+    -     "serverNowMs": 1790810472926,
+    +     "serverNowMs": 1790810472928,
+          "startsAtMs": 1790810472919,
+          "status": "active",
+          "totalPenaltyMs": 15000,
+    -     "wallElapsedMs": 7,
+    +     "wallElapsedMs": 9,
+        },
+      }
+
+      16 |     else {response.run.events[0].wallElapsedMs += 1;response.run.events[0].adjustedElapsedMs += 1;}
+      17 |     h.respond("raceResume", response);
+    > 18 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", run: before.run, currentLetters: before.currentLetters});
+         |                                     ^
+      19 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      20 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: before.currentLetters, run: {events: before.run!.events}});
+      21 |   });
+
+      at src/play/race/__tests__/RaceSessionEventHistory.test.ts:18:37
+
+  ● Race Session confirmed event history › rejects resumed history that changes a confirmed event: clock
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+    @@ -4,11 +4,11 @@
+          "p",
+          "i",
+          "",
+          "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+          "adjustedElapsedMs": 15001,
+          "categoryId": "mixed",
+          "challengeId": undefined,
+          "correctCount": 0,
+    @@ -31,18 +31,18 @@
+            "riddleId": "fake-race-1",
+            "text": "What has keys but cannot open a door?",
+          },
+          "events": Array [
+            Object {
+    -         "adjustedElapsedMs": 15001,
+    +         "adjustedElapsedMs": 15002,
+              "correctCount": 0,
+              "penaltyAddedMs": 15000,
+              "riddlePosition": 0,
+              "sequence": 0,
+              "totalPenaltyMs": 15000,
+              "type": "hint",
+    -         "wallElapsedMs": 1,
+    +         "wallElapsedMs": 2,
+            },
+          ],
+          "locale": "en",
+          "opponent": undefined,
+          "preloadedRiddles": Array [
+
+      16 |     else {response.run.events[0].wallElapsedMs += 1;response.run.events[0].adjustedElapsedMs += 1;}
+      17 |     h.respond("raceResume", response);
+    > 18 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", run: before.run, currentLetters: before.currentLetters});
+         |                                     ^
+      19 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      20 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: before.currentLetters, run: {events: before.run!.events}});
+      21 |   });
+
+      at src/play/race/__tests__/RaceSessionEventHistory.test.ts:18:37
+
+  ● Race Session confirmed event history › rejects resumed history that changes a confirmed event: question
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 5
+    + Received  + 5
+
+    @@ -4,13 +4,13 @@
+          "p",
+          "i",
+          "",
+          "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "adjustedElapsedMs": 15000,
+    +     "adjustedElapsedMs": 15001,
+          "categoryId": "mixed",
+          "challengeId": undefined,
+          "correctCount": 0,
+          "currentRiddle": Object {
+            "answerLength": 5,
+    @@ -34,11 +34,11 @@
+          "events": Array [
+            Object {
+              "adjustedElapsedMs": 15000,
+              "correctCount": 0,
+              "penaltyAddedMs": 15000,
+    -         "riddlePosition": 0,
+    +         "riddlePosition": 1,
+              "sequence": 0,
+              "totalPenaltyMs": 15000,
+              "type": "hint",
+              "wallElapsedMs": 0,
+            },
+    @@ -268,12 +268,12 @@
+            "skipPenaltyMs": 45000,
+            "targetCorrect": 10,
+            "version": "race10_v1",
+          },
+          "runId": "fake-run-1",
+    -     "serverNowMs": 1790810472941,
+    +     "serverNowMs": 1790810472942,
+          "startsAtMs": 1790810472941,
+          "status": "active",
+          "totalPenaltyMs": 15000,
+    -     "wallElapsedMs": 0,
+    +     "wallElapsedMs": 1,
+        },
+      }
+
+      16 |     else {response.run.events[0].wallElapsedMs += 1;response.run.events[0].adjustedElapsedMs += 1;}
+      17 |     h.respond("raceResume", response);
+    > 18 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", run: before.run, currentLetters: before.currentLetters});
+         |                                     ^
+      19 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      20 |     expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: before.currentLetters, run: {events: before.run!.events}});
+      21 |   });
+
+      at src/play/race/__tests__/RaceSessionEventHistory.test.ts:18:37
+
+  ● Race Session confirmed event history › rejects a charged hint reply that rewrites an earlier paid event
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  -  4
+    + Received  + 18
+
+    @@ -1,9 +1,9 @@
+      Object {
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "adjustedElapsedMs": 15001,
+    +     "adjustedElapsedMs": 30001,
+          "categoryId": "mixed",
+          "challengeId": undefined,
+          "correctCount": 0,
+          "currentRiddle": Object {
+            "answerLength": 5,
+    @@ -18,22 +18,36 @@
+            "revealedLetters": Array [
+              Object {
+                "index": 0,
+                "letter": "p",
+              },
+    +         Object {
+    +           "index": 1,
+    +           "letter": "i",
+    +         },
+            ],
+            "riddleId": "fake-race-1",
+            "text": "What has keys but cannot open a door?",
+          },
+          "events": Array [
+            Object {
+              "adjustedElapsedMs": 15001,
+              "correctCount": 0,
+              "penaltyAddedMs": 15000,
+    -         "riddlePosition": 0,
+    +         "riddlePosition": 1,
+              "sequence": 0,
+              "totalPenaltyMs": 15000,
+    +         "type": "hint",
+    +         "wallElapsedMs": 1,
+    +       },
+    +       Object {
+    +         "adjustedElapsedMs": 30001,
+    +         "correctCount": 0,
+    +         "penaltyAddedMs": 15000,
+    +         "riddlePosition": 0,
+    +         "sequence": 1,
+    +         "totalPenaltyMs": 30000,
+              "type": "hint",
+              "wallElapsedMs": 1,
+            },
+          ],
+          "locale": "en",
+    @@ -264,9 +278,9 @@
+          },
+          "runId": "fake-run-1",
+          "serverNowMs": 1790810472946,
+          "startsAtMs": 1790810472945,
+          "status": "active",
+    -     "totalPenaltyMs": 15000,
+    +     "totalPenaltyMs": 30000,
+          "wallElapsedMs": 1,
+        },
+      }
+
+      32 |     response.run.events[0].riddlePosition = 1;
+      33 |     h.respond(operation === "hint" ? "raceHint" : "raceSkip", response);
+    > 34 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", run: before.run});
+         |                                     ^
+      35 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      36 |     expect(h.session.getSnapshot()).toMatchObject({error: null, run: {events: [before.run!.events[0], expect.any(Object)]}});
+      37 |     expect(h.commands.filter(command => command.type === (operation === "hint" ? "game:requestRaceHint" : "game:skipRaceRiddle"))).toHaveLength(operation === "hint" ? 2 : 1);
+
+      at src/play/race/__tests__/RaceSessionEventHistory.test.ts:34:37
+
+  ● Race Session confirmed event history › rejects a charged skip reply that rewrites an earlier paid event
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 15
+    + Received  + 20
+
+    @@ -1,42 +1,47 @@
+      Object {
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "run": Object {
+    -     "adjustedElapsedMs": 15000,
+    +     "adjustedElapsedMs": 60000,
+          "categoryId": "mixed",
+          "challengeId": undefined,
+    -     "correctCount": 0,
+    +     "correctCount": 1,
+          "currentRiddle": Object {
+            "answerLength": 5,
+            "evaluation": Object {
+    -         "answer": "piano",
+    +         "answer": "clock",
+              "locale": "en",
+            },
+            "guessesRemaining": 5,
+            "guessesUsed": 0,
+            "hintAvailable": true,
+    -       "position": 0,
+    -       "revealedLetters": Array [
+    -         Object {
+    -           "index": 0,
+    -           "letter": "p",
+    +       "position": 1,
+    +       "revealedLetters": Array [],
+    +       "riddleId": "fake-race-2",
+    +       "text": "What has hands and a face but no arms?",
+          },
+    -       ],
+    -       "riddleId": "fake-race-1",
+    -       "text": "What has keys but cannot open a door?",
+    -     },
+          "events": Array [
+            Object {
+              "adjustedElapsedMs": 15000,
+              "correctCount": 0,
+              "penaltyAddedMs": 15000,
+    -         "riddlePosition": 0,
+    +         "riddlePosition": 1,
+              "sequence": 0,
+              "totalPenaltyMs": 15000,
+              "type": "hint",
+              "wallElapsedMs": 0,
+            },
+    +       Object {
+    +         "adjustedElapsedMs": 60000,
+    +         "correctCount": 1,
+    +         "penaltyAddedMs": 45000,
+    +         "riddlePosition": 0,
+    +         "sequence": 1,
+    +         "totalPenaltyMs": 60000,
+    +         "type": "skip",
+    +         "wallElapsedMs": 0,
+    +       },
+          ],
+          "locale": "en",
+          "opponent": undefined,
+          "preloadedRiddles": Array [
+            Object {
+    @@ -264,9 +269,9 @@
+          },
+          "runId": "fake-run-1",
+          "serverNowMs": 1790810472950,
+          "startsAtMs": 1790810472950,
+          "status": "active",
+    -     "totalPenaltyMs": 15000,
+    +     "totalPenaltyMs": 60000,
+          "wallElapsedMs": 0,
+        },
+      }
+
+      32 |     response.run.events[0].riddlePosition = 1;
+      33 |     h.respond(operation === "hint" ? "raceHint" : "raceSkip", response);
+    > 34 |     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", run: before.run});
+         |                                     ^
+      35 |     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
+      36 |     expect(h.session.getSnapshot()).toMatchObject({error: null, run: {events: [before.run!.events[0], expect.any(Object)]}});
+      37 |     expect(h.commands.filter(command => command.type === (operation === "hint" ? "game:requestRaceHint" : "game:skipRaceRiddle"))).toHaveLength(operation === "hint" ? 2 : 1);
+
+      at src/play/race/__tests__/RaceSessionEventHistory.test.ts:34:37
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 1 passed, 6 total
+Snapshots:   0 total
+Time:        0.233 s, estimated 1 s
+Ran all test suites matching RaceSessionEventHistory.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionEventHistory`
+Exit status 1

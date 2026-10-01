@@ -45,7 +45,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-rJHgvFjn.js",
+      "file": "assets/index-bFwB5w8G.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -54,7 +54,7 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "9579ed413e02c7f1e7d27b55a393c214e0fbbba0d3e14ca398cae018634ddae2"
+      "sha256": "af6dd4ffd335add70ab77032f6165d9b74ca9f57423dde840e4935c42dc5feb9"
     },
     {
       "file": "assets/core-game-CbSzCw0b.js",
@@ -95,8 +95,8 @@
       "sha256": "838a7feff2b201fe61bd0afd5e7a216ca355ba0b7386d1adc94780b097dc1be0"
     },
     {
-      "file": "assets/index-rJHgvFjn.js",
-      "sha256": "9579ed413e02c7f1e7d27b55a393c214e0fbbba0d3e14ca398cae018634ddae2"
+      "file": "assets/index-bFwB5w8G.js",
+      "sha256": "af6dd4ffd335add70ab77032f6165d9b74ca9f57423dde840e4935c42dc5feb9"
     },
     {
       "file": "assets/rolldown-runtime-Czjbc987.js",
@@ -108,7 +108,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "ef70b6ef072b270c331f62ca81e788728e7a2e4c22ec399f7a1e3a29a205fa02"
+      "sha256": "bbf65bd2b599a8f16fa10996cfb2640ba765fd18762aeb9277bdaea5df7f4f1a"
     },
     {
       "file": "third-party-licenses.txt",
@@ -116,7 +116,7 @@
     },
     {
       "file": "youtube-content-manifest.json",
-      "sha256": "a2792b576dd7a5542459fbff5187391ab4bc99a940940b25dbaa8e25ef1d215e"
+      "sha256": "7dd966988185f4c2063e78cd6503c5f8f695a4900a5d70382eabad147b7dfab2"
     }
   ]
 }

@@ -115,6 +115,16 @@ describe("Race to 10 contracts", () => {
     ).toBe(false);
   });
 
+  it("accepts an owned fallback category intent and rejects mixed entry authority", () => {
+    /** A server-issued receipt can only select an ordinary category challenger run. */
+    const fallback = {locale: "en", requestId: "fallback-request", categoryId: "history", fallbackOfferId: "a".repeat(64)};
+    expect(StartRaceRunRequestSchema.parse(fallback)).toEqual(fallback);
+    expect(StartRaceRunRequestSchema.safeParse({...fallback, categoryId: undefined, challengeId: "human-recording"}).success).toBe(false);
+    expect(StartRaceRunRequestSchema.safeParse({...fallback, rivalryChallengeId: "previous-recording"}).success).toBe(false);
+    expect(StartRaceRunRequestSchema.safeParse({...fallback, offerId: "b".repeat(64)}).success).toBe(false);
+    expect(StartRaceRunRequestSchema.safeParse({...fallback, fallbackOfferId: "forged-receipt"}).success).toBe(false);
+  });
+
   it("parses a localized category response", () => {
     /** Provides response behavior. */
     const response = {

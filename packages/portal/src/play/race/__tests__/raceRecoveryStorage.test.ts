@@ -4,8 +4,15 @@ import {raceMatchFailure} from "@qwordly/core/race";
 let mockKey: string | null = null;
 /** Serialized recovery hint shared across simulated tab lifetimes. */
 let mockSaved: string | null = null;
+/** A different tab replaces the value immediately after one storage read. */
+let mockAfterRead: string | undefined;
 jest.mock("../../playerPreferences", () => ({
-  safeBrowserStorageGet: () => mockSaved,
+  safeBrowserStorageGet: () => {
+    /** Exact snapshot returned to this caller before another tab writes. */
+    const snapshot = mockSaved;
+    if (mockAfterRead !== undefined) {mockSaved = mockAfterRead; mockAfterRead = undefined;}
+    return snapshot;
+  },
   safeBrowserStorageSet: (_area: string, key: string, value: string) => {mockKey = key; mockSaved = value;},
   safeBrowserStorageRemove: () => {mockSaved = null;},
 }));
@@ -14,7 +21,7 @@ import {browserRaceRecovery, parseRaceRecovery, RACE_RECOVERY_KEY, RACE_RECOVERY
 const record: RaceRecovery = {version: 1, id: "revision-1", ownerId: "alice", locale: "en", savedAtMs: 1000,
   expiresAtMs: 1000 + RACE_RECOVERY_TTL_MS, intent: {kind: "search", request: {locale: "en", requestId: "request-1", categoryId: "history"},
     failure: raceMatchFailure("temporarily-unavailable", 5000), retryAtMs: 6000}};
-beforeEach(() => {mockSaved = null;});
+beforeEach(() => {mockSaved = null; mockAfterRead = undefined;});
 it("binds hints to account, language and bounded retention", () => {
   browserRaceRecovery.save(record);
   expect(mockKey).toBe(RACE_RECOVERY_KEY);
@@ -51,4 +58,10 @@ it("tolerates unavailable, malformed and oversized browser storage", () => {
   mockSaved = "x".repeat(4097);
   expect(browserRaceRecovery.read("alice", "en", 2000)).toBeNull();
   browserRaceRecovery.clear("alice", "revision-1");
+});
+
+it.each(["alice", "bob"])("preserves a revision replaced after the cleanup read, new owner=%s", ownerId => {
+  browserRaceRecovery.save(record); mockAfterRead = JSON.stringify({...record, ownerId, id: "revision-2"});
+  browserRaceRecovery.clear("alice", record.id);
+  expect(browserRaceRecovery.read(ownerId, "en", 2000)?.id).toBe("revision-2");
 });

@@ -43,6 +43,7 @@ beforeAll(async () => {
       setDoc(doc(db, "raceMaintenance/projectionReconciliation"), {phase: "challenges", afterId: null}),
       setDoc(doc(db, "raceMatchCandidates/challenge-1"), {challengeId: "challenge-1"}),
       setDoc(doc(db, "raceMatchOffers/offer-1"), {userId: "player-1"}),
+      setDoc(doc(db, "raceBotOffers/player-1_request-1"), {userId: "player-1"}),
       setDoc(doc(db, "raceSettlementOutbox/run-1"), {userId: "player-1"}),
       setDoc(doc(db, "racePerformanceOutbox/run-1"), {userId: "player-1"}),
       setDoc(doc(db, "raceDeadlineFailures/run-1"), {runId: "run-1"}),
@@ -85,6 +86,7 @@ describe("Race to 10 Firestore trust boundary", () => {
       "raceMaintenance/projectionReconciliation",
       "raceMatchCandidates/challenge-1",
       "raceMatchOffers/offer-1",
+      "raceBotOffers/player-1_request-1",
       "raceSettlementOutbox/run-1",
       "racePerformanceOutbox/run-1",
       "raceDeadlineFailures/run-1",
@@ -107,6 +109,8 @@ describe("Race to 10 Firestore trust boundary", () => {
     await assertFails(setDoc(doc(db, "raceConfig/maintenance"), {projectionReconciliationEnabled: true}));
     await assertFails(getDoc(doc(db, "raceConfig/matchPolicy")));
     await assertFails(setDoc(doc(db, "raceConfig/matchPolicy"), {revision: 999}));
+    await assertFails(getDoc(doc(db, "raceBotOffers/player-1_request-1")));
+    await assertFails(setDoc(doc(db, "raceBotOffers/player-1_request-1"), {userId: "attacker"}));
   });
 
   it("allows a player to read but never directly mutate their authoritative profile", async () => {

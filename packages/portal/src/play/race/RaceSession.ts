@@ -8,6 +8,7 @@ import {applyRaceAuthority, raceAttemptState, type RaceResumeDraft} from "./Race
 import type {RaceSessionEffect, RaceSessionEntry, RaceSessionOptions, RaceSessionState, RaceStage} from "./RaceSession.types";
 import {browserRaceRecovery, RACE_RECOVERY_TTL_MS, type RaceRecoveryIntent, type RaceRecoveryPersistence} from "./logic/raceRecoveryStorage";
 import {clearActiveRace, readActiveRace, saveActiveRace} from "./logic/activeRaceStorage";
+import {isolateRaceRecovery, isolateRaceResume} from "./logic/raceOptionalStorage";
 import {advanceRaceLoadingProgress, estimatedRaceServerNow, scheduledRaceCountdown, RACE_GO_DISPLAY_MS} from "./logic/raceCountdown";
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
@@ -85,11 +86,11 @@ export class RaceSession {
     this.entry = entry;
     this.options = options;
     this.clock = options.clock ?? {now: () => performance.now(), schedule: (callback, delay) => window.setTimeout(callback, delay), cancel: timer => window.clearTimeout(timer)};
-    this.persistence = options.persistence ?? {read: readActiveRace, save: saveActiveRace, clear: clearActiveRace};
-    this.recovery = options.recovery ?? browserRaceRecovery;
+    this.persistence = isolateRaceResume(options.persistence ?? {read: readActiveRace, save: saveActiveRace, clear: clearActiveRace});
+    this.recovery = isolateRaceRecovery(options.recovery ?? browserRaceRecovery);
     this.state = this.initial(entry);
     this.play = new RacePlay({postToHost: options.postToHost, clock: this.clock, requestId: options.requestId,
-      onResponseTimeout: (requestId, operation) => this.receive({type: "host:operationResult", requestId,
+      onDeliveryFailure: (requestId, operation) => this.receive({type: "host:operationResult", requestId,
         payload: {operation, ok: false, error: "RaceTo10.ERROR_GENERIC"}})});
     this.play.subscribe(() => this.update({...this.play.getSnapshot(), allowTypingWhilePending: this.play.typingWhilePending}));
   }
@@ -113,6 +114,12 @@ export class RaceSession {
     this.state = {...this.state, ...patch};
     for (const listener of this.listeners) listener();
   }
+  /** Captures outbound ownership across synchronous observers and optional adapters. */
+  private captureLifetime(): () => boolean {
+    /** Only the originating authenticated journey may continue this action. */
+    const generation = this.generation;
+    return () => this.active && generation === this.generation;
+  }
   /** Emits only session-owned, validated side effects. */
   private analytics(event: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}): void {
     this.emit({kind: "analytics", event, params});
@@ -129,9 +136,14 @@ export class RaceSession {
   }
   /** Replaces entry ownership and invalidates all receipts before issuing the new entry command. */
   enter = (entry: RaceSessionEntry = this.entry): void => {
+    /** Reentrant entry during disposal supersedes this requested entry as well. */
+    const generation = this.generation + 1;
     this.dispose();
+    if (this.generation !== generation) return;
     this.entry = entry;
     this.active = true;
+    /** All entry reads and notifications retain this account lifetime. */
+    const current = this.captureLifetime();
     this.rivalryId = undefined;
     this.inboxLoadedAt = -Infinity;
     this.notifiedRuns.clear();
@@ -141,18 +153,22 @@ export class RaceSession {
     this.pollAt = Infinity;
     this.pollAttempt = 0;
     this.update(this.initial(entry));
+    if (!current()) return;
     if (entry.openInbox) this.send("raceInbox", "game:listRaceInbox", {limit: 20});
     else if (entry.challengeId) this.send("raceEntry", "game:getRaceEntry", {challengeId: entry.challengeId, locale: entry.locale});
     else {
       /** Resume hints belong to the newly entered account. */
       const saved = this.recovery.read(entry.ownerId, entry.locale, this.wallNow());
+      if (!current()) return;
       this.recoveryId = saved?.id ?? null;
       /** Confirmed run hints take precedence over earlier transport intentions. */
       const runId = this.persistence.read(entry.ownerId);
+      if (!current()) return;
       if (!runId && saved) {
         if (saved.intent.kind === "challenge") {
           this.matchOffer = saved.intent.offerId ? {id: saved.intent.offerId, challengeId: saved.intent.challengeId} : null;
           this.update({stage: "challenge", activeChallengeId: saved.intent.challengeId});
+          if (!current()) return;
           this.send("raceEntry", "game:getRaceEntry", {challengeId: saved.intent.challengeId, locale: entry.locale});
           return;
         }
@@ -160,12 +176,14 @@ export class RaceSession {
           /** Reuse the original server mutation identity after a lost confirmation. */
           const {requestId, ...payload} = saved.intent.request;
           this.update({stage: "countdown", activeChallengeId: saved.intent.request.challengeId});
+          if (!current()) return;
           this.preparationAt = this.clock.now();
           this.send("raceStart", "game:startRace", payload, requestId);
           return;
         }
         /** Resolve capabilities from the current authenticated provider lifetime. */
         const adapter = this.options.getMatchmaking?.();
+        if (!current()) return;
         if (adapter) {
           this.matchIntent = {adapter, request: saved.intent.request, retryAtMs: this.clock.now()};
           if (saved.intent.failure) {
@@ -183,8 +201,10 @@ export class RaceSession {
     this.lastMatchmaking = undefined;
     this.ownedSnapshot = null;
     this.active = false;
-    this.generation++;
-    this.cancelMatchWait?.();
+    /** Cleanup notifications may install a new live journey before this frame returns. */
+    const generation = ++this.generation;
+    /** Detach the original cancellation before invoking any adapter. */
+    const cancelMatchWait = this.cancelMatchWait;
     this.cancelMatchWait = null;
     this.recoveryId = null;
     this.matchOffer = null;
@@ -194,15 +214,21 @@ export class RaceSession {
     this.startRetry = null;
     this.resumeDraft = null;
     this.pollAt = Infinity;
+    cancelMatchWait?.();
+    if (this.generation !== generation) return;
     this.play?.dispose();
+    if (this.generation !== generation) return;
     this.update({findingOpponent: false, matchSearchStatus: "idle", matchFailure: null, matchRetryReady: true});
   };
   /** Correlation and mutation receipts are issued by the private gameplay module. */
   private send(operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>, replayRequestId?: string): void {
     if (!this.active) return;
+    /** Reserve pending before notification so observers cannot dispatch a second mutation. */
+    const current = this.captureLifetime();
     if (["raceStart", "raceGuess", "raceHint", "raceSkip", "raceAbandon", "raceOutcome"].includes(operation)) this.resumeDraft = null;
     this.command = {operation, payload: {...payload}, ...(typeof payload.runId === "string" ? {runId: payload.runId} : {})};
-    this.update({error: null});
+    this.update({error: null, pending: operation});
+    if (!current()) return;
     if (operation === "raceStart") {
       replayRequestId ??= (this.options.requestId ?? createRequestId)(operation);
       /** Store only the validated selection and original idempotency identity. */
@@ -212,7 +238,7 @@ export class RaceSession {
       this.saveRecovery({kind: "challenge", challengeId: payload.challengeId,
         ...(this.matchOffer?.challengeId === payload.challengeId ? {offerId: this.matchOffer.id} : {})});
     }
-    this.play.send(operation, type, payload, replayRequestId);
+    if (current()) this.play.send(operation, type, payload, replayRequestId);
   }
   /** Wall time is used only for local hint retention, never scoring. */
   private wallNow(): number {return (this.options.wallNow ?? Date.now)();}
@@ -227,8 +253,10 @@ export class RaceSession {
   }
   /** Cleanup is scoped to this lifetime's last observed revision. */
   private clearRecovery(): void {
-    if (this.recoveryId) this.recovery.clear(this.entry.ownerId, this.recoveryId);
-    this.recoveryId = null;
+    /** Adapter notification may install a newer account-bound recovery revision. */
+    const id = this.recoveryId;
+    if (id) this.recovery.clear(this.entry.ownerId, id);
+    if (this.recoveryId === id) this.recoveryId = null;
   }
   /** Safe adapter error reporting for optional provider effects. */
   reportError = (error: string | null): void => {if (this.active) this.update({error: raceErrorKey(error)});};
@@ -245,8 +273,11 @@ export class RaceSession {
   navigate = (stage: "categories" | "inbox" | "tournaments"): void => {
     if (!this.active || this.state.run && ["prepared", "scheduled", "active"].includes(this.state.run.status) && ["countdown", "racing"].includes(this.state.stage)) return;
     if (stage === "categories") {this.rematch(); return;}
-    this.clearRecovery();
     this.generation++;
+    /** Navigation notifications cannot overwrite a replacement journey's delivery. */
+    const current = this.captureLifetime();
+    this.clearRecovery();
+    if (!current()) return;
     this.cancelMatchWait?.();
     this.cancelMatchWait = null;
     this.command = null;
@@ -254,8 +285,10 @@ export class RaceSession {
     this.startRetry = null;
     this.resumeDraft = null;
     this.play.dispose();
+    if (!current()) return;
     this.matchIntent = null;
     this.update({stage, findingOpponent: false, error: null, matchSearchStatus: "idle", matchFailure: null, matchRetryReady: true});
+    if (!current()) return;
     this.matchOffer = null;
     if (stage === "inbox" && this.clock.now() - this.inboxLoadedAt >= 30_000) this.send("raceInbox", "game:listRaceInbox", {limit: 20});
   };
@@ -264,8 +297,11 @@ export class RaceSession {
     if (!this.active || this.state.pending || this.state.findingOpponent) return;
     this.ownedSnapshot = null;
     this.generation++;
+    /** Preparation notifications and selection effects cannot migrate this start. */
+    const current = this.captureLifetime();
     this.matchIntent = null;
     this.play.dispose();
+    if (!current()) return;
     this.outcomeRequested = false;
     this.shareAfterPublish = false;
     this.mutationRetry = null;
@@ -277,8 +313,11 @@ export class RaceSession {
     this.update({run: null, outcome: null, published: null, publishRequested: false, stage: "countdown", activeChallengeId: challengeId,
       loadingProgress: 0, countdown: 3, countdownReady: false, closeAfterStart: false, feedback: null, penaltyFlash: null, currentLetters: [], raceGuesses: [],
       matchSearchStatus: "idle", matchFailure: null, matchRetryReady: true});
+    if (!current()) return;
     this.analytics("race_category_selected", {categoryId});
+    if (!current()) return;
     if (this.rivalryId) this.analytics("race_counter_challenge_started", {categoryId});
+    if (!current()) return;
     this.send("raceStart", "game:startRace", {locale: this.entry.locale, includeEvaluation: true, prepare: true,
       ...(challengeId ? {challengeId, ...(this.matchOffer?.challengeId === challengeId ? {offerId: this.matchOffer.id} : {})}
         : {categoryId, ...(fallbackOfferId ? {fallbackOfferId} : this.rivalryId ? {rivalryChallengeId: this.rivalryId} : {})})});
@@ -286,18 +325,24 @@ export class RaceSession {
   /** Clears the complete attempt atomically before starting a rematch or returning to catalog. */
   rematch = (categoryId?: RaceCategoryId, rivalryId?: string): void => {
     if (!this.active) return;
+    this.generation++;
+    /** Recovery cleanup and reset notifications retain the original rematch owner. */
+    const current = this.captureLifetime();
     /** Fallback rematches discover a fresh opponent instead of replaying a recorded challenge. */
     const fallbackRematch = Boolean(categoryId && !rivalryId && this.state.run?.role === "challenger" &&
       !this.state.run.challengeId && this.state.run.opponent);
     this.ownedSnapshot = null;
     this.clearRecovery();
+    if (!current()) return;
+    if (this.state.run) this.persistence.clear(this.entry.ownerId, this.state.run.runId);
+    if (!current()) return;
     this.rivalryId = rivalryId ?? this.state.run?.challengeId ?? this.state.run?.rivalryChallengeId ?? this.state.challenge?.challengeId;
-    this.generation++;
     this.cancelMatchWait?.();
     this.cancelMatchWait = null;
     this.matchOffer = null;
     this.matchIntent = null;
     this.play.dispose();
+    if (!current()) return;
     this.command = null;
     this.outcomeRequested = false;
     this.shareAfterPublish = false;
@@ -306,34 +351,50 @@ export class RaceSession {
     this.resumeDraft = null;
     this.loadedAt = null;
     this.update({...this.initial({...this.entry, challengeId: undefined, openInbox: false}), categories: this.state.categories, inboxItems: this.state.inboxItems});
+    if (!current()) return;
     if (fallbackRematch) {
       /** Current provider adapter retains the accepted scope for the replacement search. */
       const adapter = this.options.getMatchmaking?.() ?? this.lastMatchmaking;
-      if (adapter) void this.findOpponent(adapter, categoryId);
+      if (adapter && current()) void this.findOpponent(adapter, categoryId);
     } else if (categoryId) this.begin(categoryId, undefined);
     else if (!this.state.categories.length) this.send("raceCategories", "game:listRaceCategories", {locale: this.entry.locale});
   };
   /** Retains close intent until the server-owned preparation can be safely abandoned. */
   requestClose = (): void => {
     if (!this.active) return;
+    /** A close-intent observer may replace the account before abandonment is dispatched. */
+    const current = this.captureLifetime();
     if (this.state.stage === "countdown" && ["raceStart", "raceReady"].includes(this.state.pending ?? "")) {this.update({closeAfterStart: true}); return;}
     if (this.state.run && ["prepared", "scheduled", "active"].includes(this.state.run.status)) {
-      if (this.state.stage === "countdown") {this.update({closeAfterStart: true}); this.abandon();}
+      if (this.state.stage === "countdown") {this.update({closeAfterStart: true}); if (current()) this.abandon();}
       else this.update({quitConfirmationOpen: true});
       return;
     }
     this.close();
   };
   /** Drops local lifetime before notifying the rendering adapter to close. */
-  private close(): void {this.clearRecovery(); this.dispose(); this.emit({kind: "close"});}
+  private close(): void {
+    /** A close may dispose only the account which initiated its cleanup. */
+    const current = this.captureLifetime(), generation = this.generation;
+    this.clearRecovery();
+    if (!current()) return;
+    // A confirmed result stays recoverable until the player acknowledges it.
+    if (this.state.run && this.notifiedRuns.has(this.state.run.runId))
+      this.persistence.clear(this.entry.ownerId, this.state.run.runId);
+    if (!current()) return;
+    this.dispose();
+    if (this.generation === generation + 1 && !this.active) this.emit({kind: "close"});
+  }
   /** Cancels failed quit intent while leaving an in-flight abandonment owned until confirmation. */
   dismissQuit = (): void => {
     if (this.state.pending === "raceAbandon") return;
+    /** Resume after dismissal must retain the same owned quit attempt. */
+    const current = this.captureLifetime();
     /** An already-applied quit cannot be undone by dismissing its error dialog. */
     const recoverRunId = this.mutationRetry?.operation === "raceAbandon" && this.mutationRetry.runId === this.state.run?.runId ? this.mutationRetry.runId : null;
     if (recoverRunId && this.mutationRetry) this.mutationRetry = {...this.mutationRetry, recoverOnly: true};
     this.update({quitConfirmationOpen: false, closeAfterStart: false, error: null});
-    if (recoverRunId && !this.state.pending) this.send("raceResume", "game:resumeRace", {runId: recoverRunId, includeEvaluation: true});
+    if (current() && recoverRunId && !this.state.pending) this.send("raceResume", "game:resumeRace", {runId: recoverRunId, includeEvaluation: true});
   };
   /** Sends one abandonment mutation for the owned run. */
   abandon = (): void => {
@@ -354,10 +415,15 @@ export class RaceSession {
     const command = this.command;
     if (!command || message.payload.operation !== command.operation || !this.play.acceptResponse(message.requestId, command.operation)) return;
     this.command = null;
+    /** A synchronous observer or adapter may replace ownership while this response is applied. */
+    const generation = this.generation;
+    /** Only this accepted response lifetime may issue effects or cleanup. */
+    const current = () => this.active && generation === this.generation;
     try {
       if (!message.payload.ok) {this.reject(command.operation, message.payload.error ?? "RaceTo10.ERROR_GENERIC", command.runId); return;}
       /** Parses and checks ownership before committing any authority state. */
-      const patch = applyRaceAuthority(this.state, command.operation, message.payload.data, this.play, this.clock.now(), this.entry.locale, this.resumeDraft, this.ownedSnapshot);
+      const patch = applyRaceAuthority(this.state, command.operation, message.payload.data, this.play, this.clock.now(), this.entry.locale, this.resumeDraft, this.ownedSnapshot,
+        this.state.run && this.notifiedRuns.has(this.state.run.runId) ? this.state.outcome : null);
       if (command.runId && patch.run && patch.run.runId !== command.runId) throw new Error("Wrong requested run");
       if (command.operation === "raceStart" && patch.run &&
         (patch.run.role !== (command.payload.challengeId || command.payload.fallbackOfferId ? "challenger" : "creator") ||
@@ -365,35 +431,43 @@ export class RaceSession {
       if (patch.run) {
         /** Optional deck and schedule fields remain privately pinned across compatible legacy deliveries. */
         const previous = this.ownedSnapshot?.runId === patch.run.runId ? this.ownedSnapshot : null;
-        this.ownedSnapshot = {...patch.run,
+        // Public rendering/projection references cannot mutate privately confirmed nested facts.
+        this.ownedSnapshot = structuredClone({...patch.run,
           preloadedRiddles: patch.run.preloadedRiddles?.map((riddle, position) => ({...riddle,
             hint: riddle.hint ?? previous?.preloadedRiddles?.[position].hint})) ?? previous?.preloadedRiddles,
           currentRiddle: patch.run.currentRiddle && {...patch.run.currentRiddle,
             evaluation: patch.run.currentRiddle.evaluation ?? (patch.run.currentRiddle.position === previous?.currentRiddle?.position ? previous.currentRiddle.evaluation : undefined)},
           startsAtMs: patch.run.startsAtMs ?? previous?.startsAtMs,
-          preparationExpiresAtMs: patch.run.preparationExpiresAtMs ?? previous?.preparationExpiresAtMs};
+          preparationExpiresAtMs: patch.run.preparationExpiresAtMs ?? previous?.preparationExpiresAtMs});
       }
       this.update({...patch, allowTypingWhilePending: this.play.typingWhilePending});
+      if (!current()) return;
       this.feedbackUntil = this.clock.now() + 1600;
       this.penaltyUntil = this.clock.now() + 1600;
       this.persist();
-      this.afterAuthority(command.operation);
-    } catch {this.reject(command.operation, "RaceTo10.ERROR_INVALID_RESPONSE", command.runId);}
+      if (current()) this.afterAuthority(command.operation);
+    } catch {if (current()) this.reject(command.operation, "RaceTo10.ERROR_INVALID_RESPONSE", command.runId);}
     finally {
-      if (this.active && command.operation === "raceStart" && !this.state.run && message.requestId) {
-        this.startRetry = {payload: command.payload, requestId: message.requestId};
+      if (current()) {
+        if (this.active && command.operation === "raceStart" && !this.state.run && message.requestId) {
+          this.startRetry = {payload: command.payload, requestId: message.requestId};
+        }
+        if (this.active && command.runId === this.state.run?.runId && command.runId && message.requestId &&
+          (command.operation === "racePublish" && !this.state.published || command.operation === "raceAbandon" && this.state.run?.status !== "abandoned")) {
+          this.mutationRetry = {operation: command.operation, runId: command.runId, requestId: message.requestId};
+        }
+        this.play.finish(command.operation);
+        if (current()) this.reconcileTerminal();
+        if (current()) this.flushPublication();
       }
-      if (this.active && command.runId === this.state.run?.runId && command.runId && message.requestId &&
-        (command.operation === "racePublish" && !this.state.published || command.operation === "raceAbandon" && this.state.run?.status !== "abandoned")) {
-        this.mutationRetry = {operation: command.operation, runId: command.runId, requestId: message.requestId};
-      }
-      this.play.finish(command.operation);
-      this.reconcileTerminal();
-      this.flushPublication();
     }
   };
   /** Restores provisional input and clocks on both malformed and rejected receipts. */
   private reject(operation: RaceOperation, error: string, requestedRunId?: string): void {
+    /** Rollback notifications may replace the account before the error transition. */
+    const generation = this.generation;
+    /** Rejection cleanup belongs to the original journey. */
+    const current = () => this.active && generation === this.generation;
     /** Full rollback checkpoint retained by RacePlay. */
     const rollback = this.play.rejectProjection(operation);
     if (rollback?.kind === "guess" && rollback.run && this.state.run?.currentRiddle &&
@@ -406,34 +480,58 @@ export class RaceSession {
     else if (rollback) this.update({run: rollback.run, receivedAtMs: rollback.receivedAt, ...raceAttemptState(rollback.run),
       ...(rollback.letters ? {currentLetters: rollback.letters} : {}), ...(rollback.guesses ? {raceGuesses: rollback.guesses} : {}),
       ...(rollback.activeSlotIndex !== undefined ? {activeSlotIndex: rollback.activeSlotIndex} : {}), penaltyFlash: null});
+    if (!current()) return;
     this.update({error: raceErrorKey(error), allowTypingWhilePending: this.play.typingWhilePending});
+    if (!current()) return;
     if (operation === "raceEntry" && this.state.entryStatus?.status === "waiting") this.scheduleEntryPoll();
     if (operation === "racePublish") {this.shareAfterPublish = false; this.update({publishRequested: false});}
     if (operation === "raceBlock" || operation === "raceReport") this.update({safetyTargetUserId: null});
     if (operation === "raceStart") {
       this.update({run: null, stage: this.state.activeChallengeId ? "challenge" : "categories"});
-      if (this.state.closeAfterStart) this.close();
+      if (current() && this.state.closeAfterStart) this.close();
     } else if (operation === "raceResume" && !this.state.run) {
       this.persistence.clear(this.entry.ownerId, requestedRunId);
+      if (!current()) return;
       this.update({run: null, stage: "categories"});
+      if (!current()) return;
       if (!this.state.categories.length) this.send("raceCategories", "game:listRaceCategories", {locale: this.entry.locale});
     }
   }
   /** All authority follow-up commands and one-time completion effects stay behind the session seam. */
   private afterAuthority(operation: RaceOperation): void {
+    /** Optional effects and observers may synchronously navigate or replace the account. */
+    const generation = this.generation;
+    /** Follow-up work stops as soon as its original journey is replaced. */
+    const current = () => this.active && generation === this.generation;
     /** Latest validated state for chained transitions. */
     const {run, outcome, published} = this.state;
+    if (run?.status === "abandoned" && ["raceGuess", "raceHint", "raceSkip"].includes(operation)) {
+      /** Another tab can abandon after this mutation commits but before its delivery arrives. */
+      const shouldClose = this.state.closeAfterStart;
+      this.ownedSnapshot = null;
+      this.resumeDraft = null;
+      this.matchOffer = null;
+      this.rivalryId = undefined;
+      this.update({run: null, outcome: null, stage: "categories", activeChallengeId: undefined, challenge: null,
+        entryStatus: null, closeAfterStart: false, quitConfirmationOpen: false, penaltyFlash: null, ...raceAttemptState(run)});
+      if (!current()) return;
+      if (shouldClose) this.close();
+      else if (!this.state.categories.length) this.send("raceCategories", "game:listRaceCategories", {locale: this.entry.locale});
+      return;
+    }
     if (["raceStart", "raceResume", "raceReady"].includes(operation) && run) {
       if (operation === "raceResume") this.resumeDraft = null;
       if (operation === "raceStart") this.startRetry = null;
       if (operation === "raceResume" && this.mutationRetry?.operation === "raceAbandon" && this.mutationRetry.recoverOnly && this.mutationRetry.runId === run.runId) this.mutationRetry = null;
-      if (run.status === "abandoned") {this.persistence.clear(this.entry.ownerId, run.runId); this.update({run: null, stage: "categories"}); if (this.state.closeAfterStart) this.close(); return;}
+      if (run.status === "abandoned") {this.persistence.clear(this.entry.ownerId, run.runId); if (!current()) return; this.update({run: null, stage: "categories"}); if (current() && this.state.closeAfterStart) this.close(); return;}
       if (this.state.closeAfterStart) this.send("raceAbandon", "game:abandonRace", {runId: run.runId});
       else {
         this.update({stage: ["prepared", "scheduled"].includes(run.status) || operation === "raceStart" ? "countdown" : "racing"});
+        if (!current()) return;
         if (run.status === "prepared") this.send("raceReady", "game:readyRace", {runId: run.runId, includeEvaluation: true});
         else if (this.loadedAt === null) this.loadedAt = this.clock.now();
-        if (operation === "raceStart") {this.analytics("race_started", {kind: this.state.activeChallengeId ? "challenge" : "creator"}); this.analytics("race_attempt_started", {categoryId: run.categoryId});}
+        if (!current()) return;
+        if (operation === "raceStart") {this.analytics("race_started", {kind: this.state.activeChallengeId ? "challenge" : "creator"}); if (current()) this.analytics("race_attempt_started", {categoryId: run.categoryId});}
       }
     } else if (operation === "raceAbandon") this.close();
     else if (operation === "raceEntry" || operation === "raceInviteCancel") {
@@ -449,26 +547,37 @@ export class RaceSession {
     else if (operation === "raceOutcome" && outcome && !this.notifiedRuns.has(outcome.runId)) {
       this.notifiedRuns.add(outcome.runId);
       this.analytics("race_completed", {result: outcome.result, correctCount: outcome.correctCount, hintPenaltyMs: outcome.hintPenaltyMs, skipPenaltyMs: outcome.skipPenaltyMs, adjustedFinishMs: outcome.adjustedFinishMs});
+      if (!current()) return;
       this.analytics("race_attempt_completed", {result: outcome.result, adjustedFinishMs: outcome.adjustedFinishMs});
+      if (!current()) return;
       this.analytics("race_result_viewed", {result: outcome.result});
-      this.emit({kind: "outcome", outcome});
+      if (current()) this.emit({kind: "outcome", outcome});
     } else if (operation === "racePublish" && published) {
       this.mutationRetry = null;
       this.analytics("race_challenge_published", {categoryId: published.preview.categoryId});
+      if (!current()) return;
       this.emit({kind: "publication", publication: published, share: this.shareAfterPublish});
-      this.shareAfterPublish = false;
+      if (current()) this.shareAfterPublish = false;
     }
   }
   /** Persists authority-issued ownership, never projected scores or player input. */
   private persist(): void {
     if (!this.state.run) return;
+    /** Adapter callbacks cannot retarget an old accepted response's persistence work. */
+    const current = this.captureLifetime(), run = this.state.run, ownerId = this.entry.ownerId;
     this.clearRecovery();
-    if (["prepared", "scheduled", "active"].includes(this.state.run.status)) this.persistence.save(this.entry.ownerId, this.state.run.runId);
-    else this.persistence.clear(this.entry.ownerId, this.state.run.runId);
+    if (!current()) return;
+    /** A terminal receipt from an older tab cannot replace a newer run hint. */
+    const savedRunId = this.persistence.read(ownerId);
+    if (!current() || run.status === "completed" && savedRunId && savedRunId !== run.runId) return;
+    if (["prepared", "scheduled", "active", "completed"].includes(run.status)) this.persistence.save(ownerId, run.runId);
+    else this.persistence.clear(ownerId, run.runId);
   }
   /** Browser clocks drive one module-owned transition, including background recovery. */
   tick = (): void => {
     if (!this.active) return;
+    /** Clock notifications and expiry cleanup can replace this authenticated visit. */
+    const current = this.captureLifetime();
     /** Monotonic time shared by countdown, display and rollback. */
     const now = this.clock.now();
     /** Clock/presentation updates are published atomically. */
@@ -500,13 +609,16 @@ export class RaceSession {
     }
     if (this.state.stage === "racing" || patch.stage === "racing") patch.adjustedNow = getAdjustedRaceTime(patch.run ?? this.state.run, patch.receivedAtMs ?? this.state.receivedAtMs, now);
     if (Object.entries(patch).some(([key, value]) => Reflect.get(this.state, key) !== value)) this.update(patch);
+    if (!current()) return;
     this.reconcileTerminal();
+    if (!current()) return;
     if (this.state.stage === "challenge" && this.state.entryStatus?.status === "waiting") {
       /** Deadline comes from authority time anchored to this response receipt. */
       const entry = this.state.entryStatus;
       if (estimatedRaceServerNow(entry.serverNowMs, this.entryReceivedAt, now) >= entry.invitation.expiresAtMs) {
         this.pollAt = Infinity;
         this.clearRecovery();
+        if (!current()) return;
         this.update({entryStatus: {...entry, status: "expired"}, error: null});
       } else if (this.visible && !this.state.pending && now >= this.pollAt && this.state.activeChallengeId) {
         this.pollAt = Infinity;
@@ -549,10 +661,13 @@ export class RaceSession {
     /** Submission uses original authority riddle even when a successor is projected immediately. */
     const {run, currentLetters, raceGuesses, receivedAtMs} = this.state;
     if (!this.active || run?.status !== "active" || !run.currentRiddle || this.state.pending || currentLetters.length !== run.currentRiddle.answerLength || currentLetters.some(letter => !letter)) return;
+    /** Projection is observable but its command still belongs to this originating journey. */
+    const current = this.captureLifetime();
     /** Private checkpoint preserves input and receipt time on rejection. */
     const projection = this.play.projectGuess(run, currentLetters, raceGuesses, receivedAtMs);
-    if (projection) this.update({currentLetters: projection.letters, activeSlotIndex: projection.slot, raceGuesses: projection.guesses, feedback: projection.feedback,
+    if (projection) this.update({pending: "raceGuess", currentLetters: projection.letters, activeSlotIndex: projection.slot, raceGuesses: projection.guesses, feedback: projection.feedback,
       ...(projection.run ? {run: projection.run, receivedAtMs: this.clock.now()} : {})});
+    if (!current()) return;
     this.feedbackUntil = this.clock.now() + 1600;
     this.send("raceGuess", "game:submitRaceGuess", {runId: run.runId, riddleId: run.currentRiddle.riddleId, guess: currentLetters.join(""), includeEvaluation: true});
   };
@@ -562,18 +677,21 @@ export class RaceSession {
     const {run, receivedAtMs, currentLetters, raceGuesses, activeSlotIndex} = this.state;
     if (!this.active || run?.status !== "active" || !run.currentRiddle || this.state.pending) return;
     if (operation === "raceHint" && (!run.currentRiddle.hintAvailable || run.currentRiddle.revealedLetters.length >= run.rules.maxHintsPerRiddle)) return;
+    /** Paid projection and delivery must retain one account and checkpoint. */
+    const current = this.captureLifetime();
     /** Immediate projection from the complete immutable deck. */
     const projected = this.play.projectPaid(operation, run, receivedAtMs, {letters: currentLetters, guesses: raceGuesses, activeSlotIndex});
     if (projected) {
       /** A hint changes revealed positions on this question while retaining the player's remaining draft. */
       const hintedLetters = [...currentLetters];
       for (const revealed of projected.currentRiddle?.revealedLetters ?? []) hintedLetters[revealed.index] = revealed.letter;
-      this.update({run: projected, receivedAtMs: this.clock.now(), ...raceAttemptState(projected),
+      this.update({pending: operation, run: projected, receivedAtMs: this.clock.now(), ...raceAttemptState(projected),
         ...(operation === "raceHint" ? {currentLetters: hintedLetters, raceGuesses,
           activeSlotIndex: projected.currentRiddle && isRaceSlotEditable(projected.currentRiddle, activeSlotIndex)
             ? activeSlotIndex : raceAttemptState(projected).activeSlotIndex} : {}),
         penaltyFlash: operation === "raceHint" ? "RaceTo10.HINT_PENALTY" : "RaceTo10.SKIP_PENALTY"});
     }
+    if (!current()) return;
     this.penaltyUntil = this.clock.now() + 1600;
     this.send(operation, operation === "raceHint" ? "game:requestRaceHint" : "game:skipRaceRiddle", {runId: run.runId, riddleId: run.currentRiddle.riddleId, includeEvaluation: true});
   }
@@ -593,7 +711,9 @@ export class RaceSession {
     this.update({currentLetters: next.letters, activeSlotIndex: next.activeSlotIndex});
   };
   /** Records publication intent while authoritative outcome reconciliation is pending. */
-  publish = (): void => {if (!this.active || !this.state.run || this.state.published || this.state.publishRequested) return; this.shareAfterPublish = true; this.update({publishRequested: true}); this.flushPublication();};
+  publish = (): void => {if (!this.active || !this.state.run || this.state.published || this.state.publishRequested) return;
+    /** Publication intent remains bound across its state notification. */
+    const current = this.captureLifetime(); this.shareAfterPublish = true; this.update({publishRequested: true}); if (current()) this.flushPublication();};
   /** Publication cannot escape unresolved projection or authority completion. */
   private flushPublication(): void {
     if (this.state.publishRequested && !this.state.published && this.state.run && this.play.canPublish(this.state.run) && this.notifiedRuns.has(this.state.run.runId)) {
@@ -604,16 +724,22 @@ export class RaceSession {
   /** Safety mutations retain their target alongside the correlated command. */
   safety = (kind: "block" | "report", item: RaceInboxItem, category?: SocialReportCategory): void => {
     if (!this.active || !item.opponentUserId || this.state.pending) return;
+    /** Reporting or blocking another player belongs to the initiating account. */
+    const current = this.captureLifetime();
     this.update({safetyTargetUserId: item.opponentUserId, safetyNotice: null});
+    if (!current()) return;
     if (kind === "block") this.send("raceBlock", "game:blockRival", {targetUserId: item.opponentUserId});
     else if (category) this.send("raceReport", "game:reportRival", {targetUserId: item.opponentUserId, category});
   };
   /** Retries the currently owned operation without restoring an earlier screen. */
   retry = (): void => {
     if (this.state.pending || this.state.findingOpponent || !this.active) return;
+    /** Retry notifications may invalidate the privately retained original receipt. */
+    const current = this.captureLifetime();
     if (this.startRetry && !this.state.run) {
       this.preparationAt = this.clock.now(); this.loadedAt = null;
       this.update({stage: "countdown", loadingProgress: 0, countdown: 3, countdownReady: false, closeAfterStart: false});
+      if (!current()) return;
       this.send("raceStart", "game:startRace", this.startRetry.payload, this.startRetry.requestId);
       return;
     }
@@ -650,9 +776,12 @@ export class RaceSession {
   /** Applies bounded retry guidance without exposing provider messages to the player. */
   private matchFailed(failure: RaceMatchFailure): void {
     if (!this.matchIntent) return;
+    /** Optional persistence can replace the authenticated discovery lifetime. */
+    const current = this.captureLifetime();
     this.matchIntent.retryAtMs = this.clock.now() + failure.retryAfterMs;
     if (failure.recovery === "none") this.clearRecovery();
     else this.saveRecovery({kind: "search", request: this.matchIntent.request, failure, retryAtMs: this.wallNow() + failure.retryAfterMs});
+    if (!current()) return;
     /** Player-facing language describes recovery, never storage or implementation budgets. */
     const error = failure.reason === "invalid-response" ? "RaceTo10.ERROR_INVALID_RESPONSE" :
       failure.reason === "temporarily-unavailable" || failure.reason === "projection-unavailable" ? "RaceTo10.MATCH_TEMPORARY" :
@@ -676,9 +805,11 @@ export class RaceSession {
       cancelWait = () => {this.clock.cancel(timer); resolve({status: "cancelled"});};
     });
     this.cancelMatchWait = cancelWait;
-    this.saveRecovery({kind: "search", request: intent.request});
-    this.update({findingOpponent: true, error: null, matchSearchStatus: "searching", matchFailure: null, matchRetryReady: false});
     try {
+      this.saveRecovery({kind: "search", request: intent.request});
+      if (!this.active || generation !== this.generation) return;
+      this.update({findingOpponent: true, error: null, matchSearchStatus: "searching", matchFailure: null, matchRetryReady: false});
+      if (!this.active || generation !== this.generation) return;
       /** Authenticated provider adapter supplies the recorded opponent. */
       const result = await Promise.race([intent.adapter.find({...intent.request}), deadline]);
       if (!this.active || generation !== this.generation) return;
@@ -695,19 +826,23 @@ export class RaceSession {
           this.matchOffer = parsed.data.offerId ? {id: parsed.data.offerId, challengeId: parsed.data.challenge.challengeId} : null;
           this.saveRecovery({kind: "challenge", challengeId: parsed.data.challenge.challengeId,
             ...(parsed.data.offerId ? {offerId: parsed.data.offerId} : {})});
+          if (!this.active || generation !== this.generation) return;
           this.matchIntent = null;
           this.play.dispose();
+          if (!this.active || generation !== this.generation) return;
           this.update({activeChallengeId: parsed.data.challenge.challengeId, challenge: parsed.data.challenge, entryStatus: null,
             stage: "challenge", run: null, outcome: null, matchSearchStatus: "matched", matchFailure: null, matchRetryReady: true});
         } else if (parsed.data.fallback) {
           this.update({findingOpponent: false, activeChallengeId: undefined, challenge: null, entryStatus: null});
-          this.begin(parsed.data.fallback.categoryId, undefined, parsed.data.fallback.offerId);
+          if (this.active && generation === this.generation) this.begin(parsed.data.fallback.categoryId, undefined, parsed.data.fallback.offerId);
         } else {
           this.saveRecovery({kind: "search", request: intent.request, failure: raceMatchFailure("eligibility-changed")});
+          if (!this.active || generation !== this.generation) return;
           this.update({error: "RaceTo10.MATCH_EMPTY", matchSearchStatus: "empty", matchRetryReady: true});
         }
       } else if (result.status === "cancelled") {
         this.clearRecovery();
+        if (!this.active || generation !== this.generation) return;
         this.matchIntent = null;
         this.update({matchSearchStatus: "idle", matchRetryReady: true});
       } else {

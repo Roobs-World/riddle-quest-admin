@@ -180,24 +180,23 @@ it("does not issue configuration or history reads after the initial receipt read
   const started = Date.now();
   /** Clock adapter is advanced only after the initial asynchronous read. */
   let clock: jest.SpyInstance | undefined;
-  /** Canonical database access stays real until the specified read completes. */
-  const originalDoc = db.doc.bind(db);
+  /** The initial two-receipt batch completes before the elapsed work deadline is checked. */
+  const originalGetAll = db.getAll.bind(db);
   /** Fixed-path observer proves the lookup issues no further storage work. */
-  const reads = jest.spyOn(db, "doc").mockImplementation(path => {
-    /** Only the receipt reference wraps its read timing. */
-    const ref = originalDoc(path);
-    return path.startsWith("raceMatchOffers/") ? new Proxy(ref, {get: (target, key) => key === "get" ? async () => {
-      /** Completion preserves the actual emulator's receipt result. */
-      const receipt = await target.get();
-      clock = jest.spyOn(Date, "now").mockReturnValue(started + RACE_MATCH_LOOKUP_MS + 1000);
-      return receipt;
-    } : Reflect.get(target, key, target)}) : ref;
+  const reads = jest.spyOn(db, "doc");
+  /** Advance real time only after the actual emulator batch resolves. */
+  const ingress = jest.spyOn(db, "getAll").mockImplementation(async (...references) => {
+    /** Preserve canonical emulator reads before advancing the lookup deadline. */
+    const snapshots = await originalGetAll(...references);
+    clock = jest.spyOn(Date, "now").mockReturnValue(started + RACE_MATCH_LOOKUP_MS + 1000);
+    return snapshots;
   });
   try {
     await expect(findRedditRaceMatch(uid("a"), {locale: "en", requestId: "slow-receipt"}, {db, nowMs: NOW}))
       .rejects.toMatchObject({code: "deadline-exceeded"});
-    expect(reads.mock.calls.map(([path]) => path)).toHaveLength(1);
-  } finally {clock?.mockRestore(); reads.mockRestore();}
+    expect(reads.mock.calls.map(([path]) => path)).toHaveLength(2);
+    expect(ingress).toHaveBeenCalledTimes(1);
+  } finally {clock?.mockRestore(); reads.mockRestore(); ingress.mockRestore();}
 });
 
 /** Projects the canonical fixtures using the same publication projection as production. */
@@ -285,7 +284,7 @@ it("matches concurrent global Reddit callers only to other players in the exact 
   expect(JSON.stringify(english)).not.toContain("foreign-provider");
 });
 
-it("returns empty when only self, cross-locale, expired, or revoked candidates exist", async () => {
+it("never offers an ineligible human when only self, cross-locale, expired, or revoked candidates exist", async () => {
   /** Provides player behavior. */
   const player = uid("a");
   await Promise.all([
@@ -307,7 +306,10 @@ it("returns empty when only self, cross-locale, expired, or revoked candidates e
       .set({...challenge("revoked", uid("d"), "en"), status: "revoked"}),
   ]);
   await projectCandidates();
-  await expect(findRedditRaceMatch(player, "en", {db, nowMs: NOW})).resolves.toEqual({status: "empty", locale: "en"});
+  /** A bot receipt may accompany an empty human pool when other suites seed playable content. */
+  const result = await findRedditRaceMatch(player, "en", {db, nowMs: NOW});
+  expect(result).toMatchObject({status: "empty", locale: "en"});
+  expect(result).not.toHaveProperty("challenge");
 });
 
 
@@ -418,8 +420,9 @@ it("retrieves a comparable recording beyond 200 earlier-expiring mismatched perf
   if (result.status !== "matched" || !result.offerId) throw new Error("expected-issued-offer");
   /** Provides receipt behavior. */
   const receipt = (await db.doc(`raceMatchOffers/${result.offerId}`).get()).data()!;
-  // Count the availability probe and the one comparable bucket document.
-  expect(receipt.lookupCandidateDocumentsRead).toBe(2);
+  // The sparse-scope optimization probes twelve records before indexed retrieval;
+  // the one comparable bucket document brings the total physical reads to thirteen.
+  expect(receipt.lookupCandidateDocumentsRead).toBe(13);
   expect(receipt.lookupCandidateQueries).toBeLessThanOrEqual(7);
   expect(receipt.lookupDocumentReadAttempts).toBeGreaterThanOrEqual(17);
   expect(receipt.lookupTransactionAttempts).toBeGreaterThanOrEqual(2);
@@ -708,4 +711,52 @@ it("pins stable experiment assignment across new intents, concurrent winners and
   await db.doc("raceConfig/matchPolicy").delete();
   await findRedditRaceMatch(uid("a"), {locale: "en", requestId: "experiment-intent"}, {db, nowMs: NOW + 2});
   expect((await ref.get()).data()).toEqual(before);
+});
+
+it.each([-1, 0])("does not resurrect an expired offer installed after the initial receipt read: %i", async expiryOffset => {
+  /** Healthy canonical recording remains available independently of the expired selection. */
+  await db.doc("raceChallenges/concurrent-expiry").set(challenge("concurrent-expiry", uid("b"), "en"));
+  await projectCandidates();
+  /** Exact request identity is shared by the initial read and committing transaction. */
+  const requestId = "concurrent-expired-intent";
+  /** An expired legacy receipt remains a valid stored record but cannot authorize a new offer. */
+  const expired = {userId: uid("a"), challengeId: "concurrent-expiry", fingerprint: JSON.stringify({locale: "en", categoryId: null}),
+    createdAtMs: NOW - 60000, expiresAtMs: NOW + expiryOffset};
+  /** A concurrent writer wins after lookup observes a missing initial receipt. */
+  const receipt = db.doc(`raceMatchOffers/${requestDocumentId(uid("a"), requestId)}`);
+  /** Retain real emulator transaction execution after inserting the competing receipt. */
+  const original = db.runTransaction.bind(db);
+  /** Injection happens before canonical inspection and is visible to the offer commit. */
+  let installed = false;
+  /** Storage concurrency is exercised without replacing transaction internals. */
+  const transactions = jest.spyOn(db, "runTransaction").mockImplementation(async (operation, options) => {
+    if (!installed) {installed = true; await receipt.set(expired);}
+    return original(operation, options);
+  });
+  try {
+    await expect(findRedditRaceMatch(uid("a"), {locale: "en", requestId}, {db, nowMs: NOW}))
+      .rejects.toMatchObject({code: "failed-precondition", details: {matchmaking: {reason: "intent-expired", recovery: "new-intent"}}});
+    expect((await receipt.get()).data()).toEqual(expired);
+  } finally {transactions.mockRestore();}
+});
+
+it.each([600000, 40000, 20000])("keeps the original intent deadline when replacing an ineligible recording: %i", async replacementLifetime => {
+  /** The first recording establishes a short selection lifetime. */
+  await db.doc("raceChallenges/original-deadline").set({...challenge("original-deadline", uid("b"), "en"), expiresAtMs: NOW + 30000});
+  await projectCandidates();
+  /** Retries preserve the original search identity independently of selected recording. */
+  const input = {locale: "en" as const, requestId: "replacement-deadline-intent"};
+  /** The original response fixes the stored offer deadline. */
+  const first = await findRedditRaceMatch(uid("a"), input, {db, nowMs: NOW});
+  if (first.status !== "matched" || !first.offerId) throw new Error("expected first offer");
+  /** Blocking makes the original recording ineligible while a new recording remains healthy. */
+  await db.doc(`users/${uid("a")}/blockedRivals/${uid("b")}`).set({blocked: true});
+  await db.doc("raceChallenges/replacement-deadline").set({...challenge("replacement-deadline", uid("c"), "en"), expiresAtMs: NOW + replacementLifetime});
+  await projectCandidates();
+  /** Re-selection under the same request cannot purchase another full selection window. */
+  const replacement = await findRedditRaceMatch(uid("a"), input, {db, nowMs: NOW + 10000});
+  expect(replacement).toMatchObject({status: "matched", offerId: first.offerId, challenge: {challengeId: "replacement-deadline"}});
+  expect((await db.doc(`raceMatchOffers/${first.offerId}`).get()).data()).toMatchObject({createdAtMs: NOW, expiresAtMs: NOW + Math.min(30000, replacementLifetime)});
+  await expect(findRedditRaceMatch(uid("a"), input, {db, nowMs: NOW + Math.min(30000, replacementLifetime)}))
+    .rejects.toMatchObject({code: "failed-precondition", details: {matchmaking: {reason: "intent-expired"}}});
 });

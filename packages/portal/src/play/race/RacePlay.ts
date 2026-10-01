@@ -1,5 +1,5 @@
 import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {computeFeedback, type ScoredGuess} from "@qwordly/core/game";
+import {computeFeedback, lowerCaseGraphemes, type ScoredGuess} from "@qwordly/core/game";
 import type {RaceRunView, SubmitRaceGuessResponse} from "@qwordly/core/race";
 import {createRequestId} from "../requestIds";
 import {raceOperationRequiresReceipt, type RaceOperation} from "./logic/raceOperations";
@@ -58,9 +58,10 @@ export class RacePlay {
     operation: RaceOperation;
   } | null = null;
   /** Loader transition retained for cancellation. */ private timer: number | undefined;
+  /** Queued loader tails belong to one submitted attempt, independent of timer cancellation. */ private loaderGeneration = 0;
   /** Delivery expiry belongs to the same receipt as its pending operation. */ private responseTimer: number | undefined;
-  /** Session recovery receives expiry as a correlated transport failure. */
-  private readonly onResponseTimeout?: (requestId: string, operation: RaceOperation) => void;
+  /** Session recovery receives expiry or a throwing adapter as a correlated transport failure. */
+  private readonly onDeliveryFailure?: (requestId: string, operation: RaceOperation) => void;
   /** Initial guess-loader receipt time. */ private loadingStarted = 0;
   /** Terminal guess hands its loader over to outcome reconciliation. */ private awaitingOutcome = false;
   /** Original input and history survive provisional successor typing. */ private guess: GuessProjection | null = null;
@@ -85,17 +86,17 @@ export class RacePlay {
       cancel: (timer) => window.clearTimeout(timer),
     },
     requestId = createRequestId,
-    onResponseTimeout,
+    onDeliveryFailure,
   }: {
     /** Host delivery adapter. */ postToHost: (message: GameToHostMessage) => void;
     /** Optional time adapter. */ clock?: RacePlayClock;
     /** Optional receipt adapter. */ requestId?: (operation: string) => string;
-    /** Optional delivery-failure adapter; expiry never automatically repeats a mutation. */ onResponseTimeout?: (requestId: string, operation: RaceOperation) => void;
+    /** Optional delivery-failure adapter; expiry never automatically repeats a mutation. */ onDeliveryFailure?: (requestId: string, operation: RaceOperation) => void;
   }) {
     this.post = postToHost;
     this.clock = clock;
     this.requestId = requestId;
-    this.onResponseTimeout = onResponseTimeout;
+    this.onDeliveryFailure = onDeliveryFailure;
   }
   /** Subscribes rendering to immutable snapshots. */
   subscribe = (listener: () => void): (() => void) => {
@@ -117,25 +118,38 @@ export class RacePlay {
     this.cancelResponseTimer();
     /** Replaying the same authority mutation preserves its idempotency identity. */
     const id = replayRequestId ?? this.requestId(operation);
-    this.expected = {id, operation};
+    /** Delivery ownership is distinct even when an explicit retry reuses the mutation receipt. */
+    const delivery = {id, operation};
+    this.expected = delivery;
     if (operation === "raceGuess") {
+      this.loaderGeneration++;
       if (this.timer !== undefined) this.clock.cancel(this.timer);
       this.timer = undefined;
       this.loadingStarted = this.clock.now();
       this.awaitingOutcome = false;
     }
     this.update({pending: operation, raceGuessLoading: operation === "raceGuess" || this.state.raceGuessLoading});
-    if (this.onResponseTimeout) {
+    // A pending-state observer can dispose or replace delivery before the host is called.
+    if (this.expected !== delivery) return;
+    if (this.onDeliveryFailure) {
       this.responseTimer = this.clock.schedule(() => {
+        if (this.expected !== delivery) return;
         this.responseTimer = undefined;
-        if (this.expected?.id === id && this.expected.operation === operation) this.onResponseTimeout?.(id, operation);
+        this.onDeliveryFailure?.(id, operation);
       }, 30000);
     }
-    this.post({
-      type,
-      requestId: id,
-      payload: raceOperationRequiresReceipt(operation) ? {...payload, requestId: id} : payload,
-    } as GameToHostMessage);
+    try {
+      this.post({
+        type,
+        requestId: id,
+        payload: raceOperationRequiresReceipt(operation) ? {...payload, requestId: id} : payload,
+      } as GameToHostMessage);
+    } catch (error) {
+      // A synchronous confirmation can already have consumed this receipt and issued its successor.
+      if (this.expected !== delivery) return;
+      if (!this.onDeliveryFailure) throw error;
+      this.onDeliveryFailure(id, operation);
+    }
   };
   /** Consumes exactly one matching response; stale and duplicate events are ignored. */
   acceptResponse(id: string | undefined, operation: RaceOperation): boolean {
@@ -155,14 +169,20 @@ export class RacePlay {
   };
   /** Completes this operation without clearing a newer command started by its handler. */
   finish = (operation: RaceOperation): void => {
+    /** An observer may submit another guess or dispose while pending state is released. */
+    const generation = this.loaderGeneration;
     if (this.state.pending === operation) this.update({...this.state, pending: null});
+    if (generation !== this.loaderGeneration) return;
     if (
       (operation === "raceGuess" && !this.awaitingOutcome) ||
       (operation === "raceOutcome" && this.state.raceGuessLoading)
     ) {
       if (this.timer !== undefined) this.clock.cancel(this.timer);
+      /** A replacement loader tail also invalidates any cancelled callback already queued. */
+      const tailGeneration = ++this.loaderGeneration;
       this.timer = this.clock.schedule(
         () => {
+          if (tailGeneration !== this.loaderGeneration) return;
           this.timer = undefined;
           this.awaitingOutcome = false;
           this.update({...this.state, raceGuessLoading: false});
@@ -173,6 +193,7 @@ export class RacePlay {
   };
   /** Cancels pending UI work on unmount. */
   dispose = (): void => {
+    this.loaderGeneration++;
     this.cancelResponseTimer();
     if (this.timer !== undefined) this.clock.cancel(this.timer);
     this.timer = undefined;
@@ -186,18 +207,18 @@ export class RacePlay {
   projectGuess(run: RaceRunView, letters: string[], history: ScoredGuess[], receivedAt: number) {
     if (!run.currentRiddle?.evaluation) return null;
     /** Provides feedback behavior. */
-    const feedback = computeFeedback(letters.join(""), run.currentRiddle.evaluation.answer);
+    const feedback = computeFeedback(letters.join(""), run.currentRiddle.evaluation.answer, run.locale);
     /** Provides correct behavior. */
     const correct = feedback.every((status) => status === "green");
     /** Provides next behavior. */
     const next = correct ? projectInstantCorrectGuess(run) : null;
-    this.guess = {
+    this.guess = structuredClone({
       run,
       history: [...history],
       submitted: [...letters],
       projectedRiddleId: next?.currentRiddle?.riddleId ?? null,
       receivedAt,
-    };
+    });
     /** Provides projected behavior. */
     const projected = next
       ? {
@@ -228,6 +249,27 @@ export class RacePlay {
     if ((projection?.run ?? currentRun)?.runId !== result.run.runId && (projection || currentRun)) {
       throw new Error("Guess confirmation belongs to a different race run");
     }
+    /** Feedback belongs to the submitted attempt, never input already typed into its successor. */
+    const original = projection?.run ?? currentRun;
+    if (!original?.currentRiddle) throw new Error("Missing submitted question");
+    /** Answer-free legacy callers still retain their exact pending input. */
+    const submitted = projection?.submitted ?? letters;
+    /** Canonical graphemes allow equivalent composition and casing in server echoes. */
+    const expectedLetters = lowerCaseGraphemes(submitted.join(""), original.locale);
+    if (result.feedback.length !== submitted.length || expectedLetters.length !== submitted.length ||
+      result.feedback.some((entry, index) => {
+        /** A feedback field must echo exactly one submitted answer slot. */
+        const echoed = lowerCaseGraphemes(entry.letter, original.locale);
+        return echoed.length !== 1 || echoed[0] !== expectedLetters[index];
+      }) || result.isCorrect !== result.feedback.every(entry => entry.status === "green"))
+      throw new Error("Invalid submitted feedback");
+    /** Optional evaluation can be omitted while the immutable preload still owns the answer. */
+    const evaluation = original.currentRiddle.evaluation ?? original.preloadedRiddles?.[original.currentRiddle.position]?.evaluation;
+    if (evaluation) {
+      /** The existing grapheme scorer fixes every positional color before checkpoint consumption. */
+      const expected = computeFeedback(submitted.join(""), evaluation.answer, original.locale);
+      if (result.feedback.some((entry, index) => entry.status !== expected[index])) throw new Error("Changed submitted scoring");
+    }
     /** Content can repeat at another deck position without sharing an answer attempt. */
     const sameQuestion = (left: RaceRunView["currentRiddle"] | undefined, right: RaceRunView["currentRiddle"]): boolean =>
       Boolean(left && right && left.riddleId === right.riddleId && left.position === right.position && left.answerLength === right.answerLength);
@@ -252,7 +294,7 @@ export class RacePlay {
     /** Provides projected behavior. */
     const projected = operation === "raceHint" ? projectInstantRaceHint(run) : projectInstantRaceSkip(run);
     if (!projected) return null;
-    this.paid = {operation, run, receivedAt, ...(draft ? {draft: {...draft, letters: [...draft.letters], guesses: [...draft.guesses]}} : {})};
+    this.paid = structuredClone({operation, run, receivedAt, ...(draft ? {draft} : {})});
     /** Advance solving time before the rendering adapter anchors the projection. */
     const elapsed = run.status === "active" ? Math.max(0, this.clock.now() - receivedAt) : 0;
     return {...projected, wallElapsedMs: run.wallElapsedMs + elapsed,

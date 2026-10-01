@@ -73,16 +73,17 @@ export async function getRaceOutcomeForUser(
   /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(runId);
   /** Provides outcome behavior. */
-  const outcome = await db.runTransaction(async (transaction) => {
+  return db.runTransaction(async (transaction) => {
     /** Provides run snapshot behavior. */
     const runSnapshot = await transaction.get(runRef);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
     /** Provides run behavior. */
     const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
     if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
-    return readSettledRaceOutcome(transaction, db, run, nowMs);
+    /** Transport sanitization shares acceptance with settlement and reward presentation. */
+    const outcome = await readSettledRaceOutcome(transaction, db, run, nowMs);
+    return validateCallableResponse(RaceOutcomeSchema, outcome, "getRaceOutcome");
   });
-  return validateCallableResponse(RaceOutcomeSchema, outcome, "getRaceOutcome");
 }
 
 /** Provides encode inbox cursor behavior. */

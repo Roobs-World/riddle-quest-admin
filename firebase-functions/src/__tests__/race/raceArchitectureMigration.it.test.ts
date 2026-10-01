@@ -1,3 +1,4 @@
+import {logger} from "firebase-functions";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {RACE_RULES} from "@qwordly/core/race";
@@ -570,4 +571,160 @@ it.each(["acceptance", "replay"])("rejects a changed recording after discovery a
   expect((await receipt.get()).data()).toEqual(before);
   expect((await db.collection("raceAttempts").get()).empty).toBe(true);
   expect((await db.collection("raceStartRequests").get()).empty).toBe(true);
+});
+
+it("rejects drift between candidate inspection and offer commitment, then permits a fresh indexed search", async () => {
+  /** A single healthy indexed recording isolates the inspection-to-commit race. */
+  const ref = db.doc("raceChallenges/commit-drift");
+  await ref.set({...challenge(ref.id), riddles: RIDDLES, snapshotVersion: 1, contentVersion: raceDeckContentVersion(RIDDLES)});
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** First transaction inspects content; second would issue its receipt. */
+  const original = db.runTransaction.bind(db);
+  /** Alter scoring authority immediately before the committing transaction. */
+  let calls = 0;
+  /** Real Firestore transactions retain every authorization and read-before-write check. */
+  const interleave = jest.spyOn(db, "runTransaction").mockImplementation(async (operation, options) => {
+    if (++calls === 2) await ref.update({creatorWallFinishMs: 21000, creatorAdjustedFinishMs: 21000});
+    return original(operation, options);
+  });
+  try {await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "commit-drift-search"}, {db, nowMs: NOW}))
+    .rejects.toMatchObject({code: "aborted"});}
+  finally {interleave.mockRestore();}
+  expect((await db.collection("raceMatchOffers").get()).empty).toBe(true);
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW + 1);
+  await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "commit-drift-new-intent"}, {db, nowMs: NOW + 1}))
+    .resolves.toMatchObject({status: "matched", challenge: {challengeId: ref.id, adjustedTimeToBeatMs: 21000}});
+});
+
+it("uses a read-only discovery snapshot and a writable final offer transaction", async () => {
+  await db.doc("raceChallenges/read-only-discovery").set(challenge("read-only-discovery"));
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** Original SDK transaction preserves real read-only and writable semantics. */
+  const original = db.runTransaction.bind(db);
+  /** Discovery and acceptance must use their respective transaction modes. */
+  const modes: Array<boolean | undefined> = [];
+  /** Observe transaction options without replacing emulator authority. */
+  const transactions = jest.spyOn(db, "runTransaction").mockImplementation((operation, options) => {
+    modes.push(options?.readOnly);
+    return original(operation, options);
+  });
+  try {
+    await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "read-only-discovery"}, {db, nowMs: NOW}))
+      .resolves.toMatchObject({status: "matched"});
+    expect(modes).toEqual([true, undefined]);
+  } finally {transactions.mockRestore();}
+});
+
+it("reads the committing receipt and selected challenge in one SDK batch", async () => {
+  await db.doc("raceChallenges/batched-offer").set(challenge("batched-offer"));
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** Real emulator transaction implementation retained beneath instrumentation. */
+  const original = db.runTransaction.bind(db);
+  /** Transaction count identifies the final offer-acceptance attempt. */
+  let calls = 0;
+  /** Ordered document paths observed during offer acceptance. */
+  const commitBatches: string[][] = [];
+  /** Instrumentation retains real transaction retry and commit behavior. */
+  const transactions = jest.spyOn(db, "runTransaction").mockImplementation(async (operation, options) => {
+    /** Only the final acceptance transaction contributes recorded batches. */
+    const committing = ++calls === 2;
+    return original(async transaction => {
+      /** Original ordered SDK batch implementation. */
+      const getAll = transaction.getAll.bind(transaction);
+      /** Read instrumentation observes paths without replacing storage authority. */
+      const batches = jest.spyOn(transaction, "getAll").mockImplementation((...references) => {
+        if (committing) commitBatches.push(references.map(reference => reference.path));
+        return getAll(...references);
+      });
+      try {return await operation(transaction);}
+      finally {batches.mockRestore();}
+    }, options);
+  });
+  try {
+    /** Public matchmaking response identifies the accepted offer. */
+    const result = await findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "batched-offer"}, {db, nowMs: NOW});
+    expect(result.status).toBe("matched");
+    expect(commitBatches).toContainEqual([`raceMatchOffers/${result.status === "matched" ? result.offerId : ""}`, "raceChallenges/batched-offer",
+      `raceBotOffers/${result.status === "matched" ? result.offerId : ""}`]);
+  } finally {transactions.mockRestore();}
+});
+
+it("starts the bounded scope query while independent history is pending", async () => {
+  await db.doc("raceChallenges/parallel-ingress").set(challenge("parallel-ingress"));
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** Releases the deliberately held independent history read. */
+  let releaseHistory!: () => void;
+  /** Deterministic barrier keeps history pending during the scope query. */
+  const heldHistory = new Promise<void>(resolve => {releaseHistory = resolve;});
+  /** Signals that the held history read has begun. */
+  let historyStarted!: () => void;
+  /** Observation barrier prevents timing-dependent assertions. */
+  const startedHistory = new Promise<void>(resolve => {historyStarted = resolve;});
+  /** Original reference factory retains canonical emulator paths. */
+  const originalDoc = db.doc.bind(db);
+  /** Reference instrumentation delays only the owned history document. */
+  const documents = jest.spyOn(db, "doc").mockImplementation(path => {
+    /** Real document reference beneath the history barrier. */
+    const reference = originalDoc(path);
+    if (path === `users/${PLAYER}/raceMatchProfiles/en`) {
+      /** Original document read resumes after the barrier is released. */
+      const originalGet = reference.get.bind(reference);
+      jest.spyOn(reference, "get").mockImplementation(async () => {
+        historyStarted();
+        await heldHistory;
+        return originalGet();
+      });
+    }
+    return reference;
+  });
+  /** Actual query implementation used by the scope index. */
+  const queryPrototype = Object.getPrototypeOf(db.collection("raceMatchCandidates").where("locale", "==", "en"));
+  /** Original SDK query read retained beneath observation. */
+  const originalQueryGet = queryPrototype.get;
+  /** Records whether the independent scope query has begun. */
+  let scopeStarted = false;
+  /** Query instrumentation retains actual emulator results. */
+  const queries = jest.spyOn(queryPrototype, "get").mockImplementation(function(this: FirebaseFirestore.Query) {
+    scopeStarted = true;
+    return originalQueryGet.call(this);
+  });
+  /** Public matchmaking operation owns every issued read until completion. */
+  const pending = findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "parallel-ingress"}, {db, nowMs: NOW});
+  try {
+    await startedHistory;
+    await Promise.resolve();
+    expect(scopeStarted).toBe(true);
+  } finally {
+    releaseHistory();
+    await pending;
+    documents.mockRestore();
+    queries.mockRestore();
+  }
+});
+
+it("retrieves a complete sparse scope once instead of querying every empty bucket", async () => {
+  for (let index = 0; index < 9; index++) await db.doc(`raceChallenges/sparse-${index}`).set(challenge(`sparse-${index}`));
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** Actual public-service telemetry counts every candidate query, including empty buckets. */
+  const logged = jest.spyOn(logger, "info");
+  try {
+    await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "sparse-scope-lookup"}, {db, nowMs: NOW}))
+      .resolves.toMatchObject({status: "matched"});
+    expect(logged).toHaveBeenCalledWith("Race matchmaking lookup", expect.objectContaining({candidateQueries: 1, candidateDocumentsRead: 9}));
+  } finally {logged.mockRestore();}
+});
+
+it.each([12, 13])("retains indexed sampling when a scope probe is full (%i records)", async size => {
+  for (let index = 0; index < size; index++) await db.doc(`raceChallenges/dense-${index}`).set(challenge(`dense-${index}`));
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** A full probe cannot prove that the provider/category scope is exhausted. */
+  const logged = jest.spyOn(logger, "info");
+  try {
+    await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "dense-scope-lookup"}, {db, nowMs: NOW}))
+      .resolves.toMatchObject({status: "matched"});
+    /** Physical reads include the probe and any overlapping indexed pages. */
+    const payload = logged.mock.calls.find(([message]) => message === "Race matchmaking lookup")?.[1];
+    expect(payload.candidateQueries).toBeGreaterThan(1);
+    expect(payload.candidateDocumentsRead).toBeLessThanOrEqual(200);
+  } finally {logged.mockRestore();}
 });

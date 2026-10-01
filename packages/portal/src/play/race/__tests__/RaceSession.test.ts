@@ -9,7 +9,14 @@ import {parseRaceRecovery, type RaceRecovery, type RaceRecoveryPersistence} from
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 import {projectInstantRaceSkip, projectRaceOutcome} from "../logic/racePresentation";
 
-import {harness, catalog, fixture, racing, recorded, preview, settleMatch} from "./raceSession.support";
+import {harness, catalog, fixture, racing, recorded, preview, settleMatch, withCorrectHistory} from "./raceSession.support";
+
+/** Authors an authority sample for a deliberately advanced local projection fixture. */
+const authorityClock = (view: RaceRunView): RaceRunView => ({
+  ...view,
+  ...(view.status === "active" && view.startsAtMs !== undefined
+    ? {serverNowMs: view.startsAtMs + view.wallElapsedMs} : {}),
+});
 
 describe("Race Session ownership and authority orchestration", () => {
   it.each(["navigation", "rematch", "entry", "dispose", "begin"])("invalidates optional dialog ownership after %s even on the same screen", async transition => {
@@ -35,8 +42,8 @@ describe("Race Session ownership and authority orchestration", () => {
     h.advance(100); h.session.input("text", "piano"); expect(current()).toBe(true);
     h.session.submit();
     /** Terminal authority changes the screen without a fresh navigation generation. */
-    const run = {...h.run, status: "completed" as const, correctCount: 10, currentRiddle: null};
-    h.respond("raceGuess", {run, isCorrect: true, autoSkipped: false, feedback: []});
+    const run = withCorrectHistory({...h.run, status: "completed", correctCount: 10, currentRiddle: null});
+    h.respond("raceGuess", {run, isCorrect: true, autoSkipped: false, feedback: [..."piano"].map(letter => ({letter, status: "green"}))});
     expect(current()).toBe(false);
   });
   it.each(["sync", "async"])("keeps accepted completion and publication when optional effects fail %s", async failure => {
@@ -93,7 +100,7 @@ describe("Race Session ownership and authority orchestration", () => {
       else h.session[operation]();
       if (operation === "resume") {h.reject("raceGuess", "Lost confirmation."); h.session.retry();}
       /** Schema-valid metadata for a different competitive context must not consume a checkpoint. */
-      const invalid = structuredClone(h.session.getSnapshot().run!);
+      const invalid = authorityClock(structuredClone(h.session.getSnapshot().run!));
       if (invalid.currentRiddle) Reflect.deleteProperty(invalid.currentRiddle, "hint");
       Object.assign(invalid, mismatch);
       h.respond(operation === "guess" ? "raceGuess" : operation === "hint" ? "raceHint" : operation === "skip" ? "raceSkip" : "raceResume",
@@ -124,13 +131,14 @@ describe("Race Session ownership and authority orchestration", () => {
     /** Terminal authority response initiates its own outcome read. */
     const h = await racing(); h.session.input("text", "piano"); h.session.submit();
     /** Valid canonical result stays available after malformed delivery. */
-    const run = {...h.run, status: "completed" as const, correctCount: 10, currentRiddle: null};
-    h.respond("raceGuess", {run, isCorrect: true, autoSkipped: false, feedback: []});
+    const run = withCorrectHistory({...h.run, status: "completed", correctCount: 10, currentRiddle: null});
+    h.respond("raceGuess", {run, isCorrect: true, autoSkipped: false, feedback: [..."piano"].map(letter => ({letter, status: "green"}))});
     /** Projected presentation is retained until a coherent scoring result arrives. */
     const before = h.session.getSnapshot();
     /** Consistent canonical score for the run's original context. */
     const outcome = projectRaceOutcome(run, run.adjustedElapsedMs)!;
-    h.respond("raceOutcome", {...outcome, ...mismatch});
+    h.respond("raceOutcome", {...outcome, ...mismatch,
+      ...("adjustedFinishMs" in mismatch ? {adjustedFinishMs: outcome.adjustedFinishMs + 1} : {})});
     expect(h.session.getSnapshot()).toMatchObject({run: before.run, outcome: before.outcome, error: "RaceTo10.ERROR_INVALID_RESPONSE"});
     expect(h.effects.some(effect => effect.kind === "outcome")).toBe(false);
     h.session.retry(); h.respond("raceOutcome", outcome);
@@ -461,12 +469,14 @@ describe("Race Session ownership and authority orchestration", () => {
     abandoned.session.abandon();
     abandoned.respond("raceAbandon", {run: {...abandoned.run, status: "abandoned", currentRiddle: null}, result: null});
     expect(abandoned.clearCalls).toEqual([{ownerId: "owner-1", runId: abandoned.run.runId}]);
-    /** Completed authority view has the same storage-ownership requirement. */
+    /** Completed authority view remains recoverable until explicitly dismissed. */
     const completed = await racing();
     completed.session.input("text", "piano");
     completed.session.submit();
-    completed.respond("raceGuess", {run: {...completed.run, status: "completed", correctCount: 10, currentRiddle: null},
+    completed.respond("raceGuess", {run: withCorrectHistory({...completed.run, status: "completed", correctCount: 10, currentRiddle: null}),
       isCorrect: true, autoSkipped: false, feedback: [..."piano"].map(letter => ({letter, status: "green"}))});
+    expect(completed.clearCalls).toEqual([]);
+    completed.session.rematch();
     expect(completed.clearCalls).toEqual([{ownerId: "owner-1", runId: completed.run.runId}]);
   });
   it("retries a rejected paid action by refreshing the owned run and merging authoritative hints into the draft", async () => {
@@ -478,7 +488,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const original = h.session.getSnapshot();
     h.session.hint();
     /** Server-applied hint returned by the subsequent recovery read. */
-    const applied = structuredClone(h.session.getSnapshot().run!);
+    const applied = authorityClock(structuredClone(h.session.getSnapshot().run!));
     h.reject("raceHint", "Temporary service failure.");
     h.session.retry();
     expect(h.last()).toMatchObject({type: "game:resumeRace", payload: {runId: h.run.runId, includeEvaluation: true}});
@@ -512,7 +522,7 @@ describe("Race Session ownership and authority orchestration", () => {
     h.session.input("text", "zzzzz");
     h.session.skip();
     /** Complete successor view provided by recovery. */
-    const advanced = structuredClone(h.session.getSnapshot().run!);
+    const advanced = authorityClock(structuredClone(h.session.getSnapshot().run!));
     // Authority prompts omit the preloaded deck's local-only hint metadata.
     Reflect.deleteProperty(advanced.currentRiddle!, "hint");
     h.reject("raceSkip", "Temporary service failure.");
@@ -806,7 +816,7 @@ describe("Race Session ownership and authority orchestration", () => {
     h.respond("raceCategories", await catalog()); h.session.begin("mixed", "ghost-challenge");
     /** Challenger whose original quit may already have succeeded. */
     const run = {...await fixture(), challengeId: "ghost-challenge", role: "challenger" as const, opponent: {displayName: "Nova", adjustedFinishMs: 5000, events: []}};
-    h.respond("raceStart", {run}); h.advance(3480);
+    h.respond("raceStart", {run: authorityClock(run)}); h.advance(3480);
     h.session.requestClose(); h.session.abandon();
     h.reject("raceAbandon", "Temporary service failure.");
     h.session.dismissQuit();
@@ -840,7 +850,7 @@ describe("Race Session ownership and authority orchestration", () => {
     h.respond("raceCategories", await catalog()); h.session.begin("mixed", "ghost-challenge");
     /** Authority-issued challenger snapshot whose ghost finishes after five seconds. */
     const run = {...await fixture(), challengeId: "ghost-challenge", role: "challenger" as const, opponent: {displayName: "Nova", adjustedFinishMs: 5000, events: []}};
-    h.respond("raceStart", {run}); h.advance(3480);
+    h.respond("raceStart", {run: authorityClock(run)}); h.advance(3480);
     h.session.requestClose(); h.session.abandon();
     /** Abandonment may already be applied despite this lost confirmation. */
     const original = h.last();
@@ -900,10 +910,10 @@ describe("Race Session ownership and authority orchestration", () => {
     /** Full deck intentionally reuses an identity at the next position. */
     const run = await fixture();
     run.preloadedRiddles![1].riddleId = run.currentRiddle!.riddleId;
-    h.respond("raceStart", {run}); h.advance(3480);
+    h.respond("raceStart", {run: authorityClock(run)}); h.advance(3480);
     h.session.input("text", "piano"); h.session.submit(); h.session.input("text", "clo");
     /** Server confirms the projected position without relying on content identity alone. */
-    const successor = structuredClone(h.session.getSnapshot().run!);
+    const successor = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(successor.currentRiddle!, "hint");
     h.reject("raceGuess", "Temporary service failure."); h.session.retry(); h.respond("raceResume", {run: successor});
     expect(h.session.getSnapshot()).toMatchObject({currentLetters: ["c", "l", "o", "", ""], run: {currentRiddle: {position: 1}}});
@@ -913,7 +923,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit(); h.session.input("text", "clo");
     /** Complete projected view, with local-only hint metadata removed for authority transport. */
-    const successor = structuredClone(h.session.getSnapshot().run!);
+    const successor = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(successor.currentRiddle!, "hint");
     h.reject("raceGuess", "Temporary service failure."); h.session.retry();
     if (mismatch === "riddle") successor.currentRiddle!.riddleId = "different-question";
@@ -927,7 +937,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit(); h.session.input("text", "clo");
     /** Genuine successor context will be available on a later valid authority read. */
-    const confirmed = structuredClone(h.session.getSnapshot().run!);
+    const confirmed = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(confirmed.currentRiddle!, "hint");
     h.reject("raceGuess", "Response lost."); h.session.retry();
     /** Structurally valid but incoherent reveals cannot extend or overwrite the draft. */
@@ -945,7 +955,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const before = h.session.getSnapshot();
     h.session.skip();
     /** Authority advancement is independent of corrupt transport metadata. */
-    const confirmed = structuredClone(h.session.getSnapshot().run!);
+    const confirmed = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(confirmed.currentRiddle!, "hint");
     /** Schema-valid reveal set that must be rejected contextually. */
     const invalid = structuredClone(confirmed);
@@ -979,7 +989,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit(); h.session.input("text", "clo");
     /** Later authority view must not resurrect a draft from an earlier recovery lifetime. */
-    const successor = structuredClone(h.session.getSnapshot().run!);
+    const successor = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(successor.currentRiddle!, "hint");
     h.reject("raceGuess", "Temporary service failure."); h.session.retry(); h.respond("raceResume", {run: h.run});
     expect(h.session.getSnapshot().currentLetters).toEqual([..."piano"]);
@@ -991,7 +1001,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit(); h.session.input("text", "clo");
     /** Owned successor returned after the player supersedes the old recovery intent. */
-    const successor = structuredClone(h.session.getSnapshot().run!);
+    const successor = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(successor.currentRiddle!, "hint");
     h.reject("raceGuess", "Temporary service failure.");
     if (intent === "input") h.session.input("letter", "z");
@@ -1024,7 +1034,9 @@ describe("Race Session ownership and authority orchestration", () => {
     h.session.input("text", question === "successor" ? "piano" : "zzzzz"); h.session.submit();
     h.session.input("text", "zlo"); h.session.input("slot", 0);
     /** Complete server reveal set overrides only the slots fixed by authoritative hints. */
-    const confirmed = structuredClone(h.session.getSnapshot().run!);
+    const confirmed = authorityClock(structuredClone(h.session.getSnapshot().run!));
+    if (question === "successor") confirmed.events = withCorrectHistory(confirmed).events;
+    else Object.assign(confirmed.currentRiddle!, {guessesUsed: 1, guessesRemaining: 4});
     Reflect.deleteProperty(confirmed.currentRiddle!, "hint");
     confirmed.currentRiddle!.revealedLetters = [{index: 0, letter: question === "successor" ? "c" : "p"}, {index: 3, letter: question === "successor" ? "c" : "n"}];
     h.respond("raceGuess", {run: confirmed, isCorrect: question === "successor", autoSkipped: false,
@@ -1041,10 +1053,12 @@ describe("Race Session ownership and authority orchestration", () => {
     const run = await fixture();
     run.preloadedRiddles![1].riddleId = run.currentRiddle!.riddleId;
     run.currentRiddle!.guessesUsed = 4; run.currentRiddle!.guessesRemaining = 1;
-    h.respond("raceStart", {run}); h.advance(3480);
+    h.respond("raceStart", {run: authorityClock(run)}); h.advance(3480);
     h.session.input("text", "zzzzz"); h.session.submit(); h.session.input("text", "abc");
     /** Authority confirms a different attempt even though its content ID is unchanged. */
     const confirmed = projectInstantRaceSkip(run)!;
+    confirmed.events = [{sequence: 0, type: "skip", riddlePosition: 0, wallElapsedMs: confirmed.wallElapsedMs,
+      penaltyAddedMs: 45000, totalPenaltyMs: 45000, adjustedElapsedMs: confirmed.adjustedElapsedMs, correctCount: 1}];
     Reflect.deleteProperty(confirmed.currentRiddle!, "hint");
     h.respond("raceGuess", {run: confirmed, isCorrect: false, autoSkipped: true, feedback: [..."zzzzz"].map(letter => ({letter, status: "red"}))});
     expect(h.session.getSnapshot()).toMatchObject({currentLetters: ["", "", "", "", ""], activeSlotIndex: 0, raceGuesses: [],
@@ -1055,7 +1069,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit(); h.session.input("text", "clo");
     /** Confirmed authority question supersedes the local deck prediction. */
-    const confirmed = structuredClone(h.session.getSnapshot().run!);
+    const confirmed = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(confirmed.currentRiddle!, "hint");
     if (mismatch === "position") confirmed.currentRiddle!.position += 1;
     if (mismatch === "length") confirmed.currentRiddle!.answerLength += 1;
@@ -1068,7 +1082,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit(); h.session.input("text", "clo");
     /** Original valid successor survives transport corruption independently. */
-    const confirmed = structuredClone(h.session.getSnapshot().run!);
+    const confirmed = authorityClock(structuredClone(h.session.getSnapshot().run!));
     Reflect.deleteProperty(confirmed.currentRiddle!, "hint");
     /** Corrupt reveal metadata remains schema-valid but cannot define an editable answer. */
     const invalid = structuredClone(confirmed);
@@ -1086,7 +1100,7 @@ describe("Race Session ownership and authority orchestration", () => {
     /** Original receipt retained for duplicate and late-response checks. */
     const command = h.last();
     /** Provisional successor used to construct an authority confirmation. */
-    const projected = structuredClone(h.session.getSnapshot().run!);
+    const projected = withCorrectHistory(authorityClock(structuredClone(h.session.getSnapshot().run!)));
     // Authority responses omit preloaded-only metadata from the current prompt.
     Reflect.deleteProperty(projected.currentRiddle!, "hint");
     h.session.input("text", "clock");
@@ -1126,11 +1140,11 @@ describe("Race Session ownership and authority orchestration", () => {
       run.wallElapsedMs = run.rules.maxAdjustedTimeMs - 10000; run.adjustedElapsedMs = run.wallElapsedMs;
       run.opponent.adjustedFinishMs = run.rules.maxAdjustedTimeMs + 60000;
     }
-    h.respond("raceStart", {run}); h.advance(3480); h.session.hint();
+    h.respond("raceStart", {run: authorityClock(run)}); h.advance(3480); h.session.hint();
     /** Correlation remains owned even after a chained outcome command is sent. */
     const hintCommand = h.last();
     /** Terminal views omit the active prompt after the paid event is recorded. */
-    const terminal = structuredClone(h.session.getSnapshot().run!);
+    const terminal = authorityClock(structuredClone(h.session.getSnapshot().run!));
     terminal.events.push({sequence: terminal.events.length, type: "hint", riddlePosition: run.currentRiddle!.position,
       wallElapsedMs: terminal.wallElapsedMs, adjustedElapsedMs: terminal.adjustedElapsedMs, totalPenaltyMs: terminal.totalPenaltyMs,
       correctCount: terminal.correctCount, penaltyAddedMs: 15000});
@@ -1154,12 +1168,12 @@ describe("Race Session ownership and authority orchestration", () => {
     /** Owned challenger remains safely before its opponent finish until the hint. */
     const run = {...await fixture(), role: "challenger" as const, challengeId: "ghost-challenge",
       opponent: {displayName: "Nova", adjustedFinishMs: 10000, events: []}};
-    h.respond("raceStart", {run}); h.advance(3480); h.session.input("text", "zi");
+    h.respond("raceStart", {run: authorityClock(run)}); h.advance(3480); h.session.input("text", "zi");
     /** Original authoritative clock and draft must remain recoverable after rejection. */
     const before = h.session.getSnapshot();
     h.session.hint();
     /** Structurally valid receipt that will be corrupted in one contextual invariant. */
-    const terminal = structuredClone(h.session.getSnapshot().run!);
+    const terminal = authorityClock(structuredClone(h.session.getSnapshot().run!));
     terminal.status = "completed"; terminal.currentRiddle = null;
     terminal.events.push({sequence: 0, type: "hint", riddlePosition: 0, wallElapsedMs: terminal.wallElapsedMs,
       adjustedElapsedMs: terminal.adjustedElapsedMs, totalPenaltyMs: terminal.totalPenaltyMs, correctCount: 0, penaltyAddedMs: 15000});
@@ -1275,7 +1289,7 @@ describe("Race Session ownership and authority orchestration", () => {
     /** Public session harness for this player journey. */
     const h = await racing();
     /** Complete authority-issued run fixture. */
-    const run = {...h.run, status: "completed" as const, correctCount: 10, currentRiddle: null};
+    const run = withCorrectHistory({...h.run, status: "completed", correctCount: 10, currentRiddle: null});
     h.session.input("text", "piano"); h.session.submit();
     h.respond("raceGuess", {run, isCorrect: true, autoSkipped: false, feedback: [..."piano"].map(letter => ({letter, status: "green"}))});
     expect(h.last().type).toBe("game:getRaceOutcome");
@@ -1294,7 +1308,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit();
     /** Complete authority-issued run fixture. */
-    const run = {...h.run, status: "completed" as const, correctCount: 10, currentRiddle: null};
+    const run = withCorrectHistory({...h.run, status: "completed", correctCount: 10, currentRiddle: null});
     h.respond("raceGuess", {run, isCorrect: true, autoSkipped: false, feedback: [..."piano"].map(letter => ({letter, status: "green"}))});
     h.session.publish();
     expect(h.last().type).toBe("game:getRaceOutcome");
@@ -1361,7 +1375,7 @@ describe("Race Session ownership and authority orchestration", () => {
     const h = await racing();
     h.session.input("text", "piano"); h.session.submit();
     /** Completed creator fixture before outcome reconciliation. */
-    const completed = {...h.run, status: "completed" as const, correctCount: 10, currentRiddle: null};
+    const completed = withCorrectHistory({...h.run, status: "completed", correctCount: 10, currentRiddle: null});
     h.respond("raceGuess", {run: completed, isCorrect: true, autoSkipped: false, feedback: [..."piano"].map(letter => ({letter, status: "green"}))});
     /** Receipt belonging to the run before rematch. */
     const prior = h.session.getSnapshot().outcome;

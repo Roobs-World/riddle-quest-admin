@@ -175,6 +175,8 @@ if (dsn) {
     sampleRate: 1,
     // Keep operational reporting errors-only; performance traces are
     // nonessential and require a separate, owner-approved telemetry decision.
+    // Preserve the transaction redaction hook with Sentry v11.
+    traceLifecycle: "static",
     tracesSampleRate: 0,
     beforeSend: (event) => redactSentryEvent(event),
     beforeSendTransaction: (event) => redactSentryEvent(event),

@@ -4,8 +4,8 @@
     "title": "Jest",
     "boundary": "remote-active-on-ready",
     "publicCommand": "pnpm release:jest",
-    "summary": "Run the hardened production gate and upload one immutable build for automatic activation.",
-    "externalEffect": "Uploads to Jest and activates the exact build automatically after processing succeeds; it never submits the game for review or makes a private game public.",
+    "summary": "Run the hardened production gate and upload one immutable build for activation after processing.",
+    "externalEffect": "Uploads to Jest and activates the exact build after processing succeeds. It never submits the game for review, publishes it, or changes listing visibility.",
     "command": {
       "executable": "pnpm",
       "args": [
@@ -14,7 +14,7 @@
         "release:jest:timestamped"
       ]
     },
-    "handoff": "Wait for authoritative completion, verify the exact version is active, then run the deployed sandbox smoke.",
+    "handoff": "Confirm authoritative completion and exact build activation, then run the Simulator and sandbox checks. Game publication remains held.",
     "runbook": "docs/jest-html5-operations.md",
     "dashboardName": "Jest",
     "delivery": "web-target"
@@ -471,26 +471,6 @@
     "releaseGate": "BotFather bot/game creation, signed identity, Telegram Stars fulfillment and launch-link configuration remain manual."
   },
   {
-    "target": "microsoft-pwa",
-    "title": "Microsoft Store PWA review",
-    "boundary": "local-manual-handoff",
-    "publicCommand": "pnpm release:microsoft-pwa",
-    "summary": "Build an installable PWA archive for PWABuilder and Partner Center review.",
-    "externalEffect": "None; Partner Center enrollment, product reservation, identity-bound package generation and certification remain manual.",
-    "command": {
-      "executable": "node",
-      "args": [
-        "scripts/release/package-microsoft-pwa.mjs"
-      ]
-    },
-    "handoff": "Reserve the product name, copy its identity values into PWABuilder and generate the signed Store package from build-microsoft-pwa.zip.",
-    "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Microsoft Store PWA",
-    "delivery": "neutral-pwa",
-    "artifact": "build-microsoft-pwa.zip",
-    "releaseGate": "Partner Center enrollment, product reservation, identity-bound MSIX packaging, commerce and certification remain manual."
-  },
-  {
     "target": "y8",
     "title": "Y8 review",
     "boundary": "local-manual-handoff",
@@ -890,27 +870,6 @@
     "releaseGate": "Zoom app creation, agreement review, SDK integration, security evidence, Marketplace review and publication remain manual."
   },
   {
-    "target": "pwa-directory",
-    "title": "PWA Directory review",
-    "boundary": "local-manual-handoff",
-    "publicCommand": "pnpm release:pwa-directory",
-    "summary": "Create a neutral web archive for PWA installability and free directory review.",
-    "externalEffect": "None; installability audit, metadata submission, review and listing approval remain manual.",
-    "command": {
-      "executable": "node",
-      "args": [
-        "scripts/release/package-html5-platform.mjs",
-        "pwa-directory"
-      ]
-    },
-    "handoff": "Use the free review path after validating manifest, service worker, icons and installed launch behavior.",
-    "runbook": "docs/research/additional-release-targets-round-7-2026-09-21.md",
-    "dashboardName": "PWA Directory",
-    "delivery": "neutral-html5",
-    "artifact": "build-pwa-directory-review.zip",
-    "releaseGate": "PWA installability review, metadata submission, directory review and listing approval remain manual."
-  },
-  {
     "target": "miro",
     "title": "Miro Marketplace review",
     "boundary": "local-manual-handoff",
@@ -1056,26 +1015,5 @@
     "delivery": "neutral-html5",
     "artifact": "build-rando-review.zip",
     "releaseGate": "Rando.gg hosted-URL submission and listing review remain manual; ads and commerce stay disabled."
-  },
-  {
-    "target": "pwastore",
-    "title": "PWAStore.io review",
-    "boundary": "local-manual-handoff",
-    "publicCommand": "pnpm release:pwastore",
-    "summary": "Create a neutral HTML5 handoff for PWAStore.io installability and listing review.",
-    "externalEffect": "None; URL submission, PWA validation and listing approval remain manual.",
-    "command": {
-      "executable": "node",
-      "args": [
-        "scripts/release/package-html5-platform.mjs",
-        "pwastore"
-      ]
-    },
-    "handoff": "Submit the canonical PWA URL only after manifest, service-worker and installability checks pass.",
-    "runbook": "docs/research/additional-release-targets-round-12-2026-09-21.md",
-    "dashboardName": "PWAStore.io",
-    "delivery": "neutral-html5",
-    "artifact": "build-pwastore-review.zip",
-    "releaseGate": "PWAStore.io URL submission, PWA validation and listing review remain manual."
   }
 ]

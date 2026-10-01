@@ -60,15 +60,13 @@ describe("browser Sentry lifecycle", () => {
         environment: "production-eu",
         release: "release-1",
         sampleRate: 1,
-        // v11's broader defaults must not expand the existing errors-only policy.
-    dataCollection: {
-      userInfo: false, cookies: false, httpHeaders: false, httpBodies: [], urlQueryParams: false,
-      genAI: {inputs: false, outputs: false}, databaseQueryData: false, queues: false,
-      graphQL: {document: false, variables: false}, stackFrameVariables: false, frameContextLines: 0,
-    },
-    // Preserve the transaction redaction hook with Sentry v11.
-    traceLifecycle: "static",
+        dataCollection: {
+          userInfo: false, cookies: false, httpHeaders: false, httpBodies: [], urlQueryParams: false,
+          genAI: {inputs: false, outputs: false}, databaseQueryData: false, queues: false,
+          graphQL: {document: false, variables: false}, stackFrameVariables: false, frameContextLines: 0,
+        },
         tracesSampleRate: 0,
+        traceLifecycle: "static",
       }),
     );
     expect(setTag).toHaveBeenCalledWith("runtime", "facebook-html5");
@@ -78,6 +76,7 @@ describe("browser Sentry lifecycle", () => {
     /** Provides defaults behavior. */
     const defaults = [
       {name: "GlobalHandlers"},
+      {name: "Console"},
       {name: "Breadcrumbs"},
       {name: "BrowserSession"},
       {name: "ConversationId"},

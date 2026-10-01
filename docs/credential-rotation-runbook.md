@@ -61,7 +61,7 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
      documented in `docs/jest-html5-operations.md`; require mode `0600`.
    - Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that
      persistent file. The canonical release interface rejects both variables
-     because automatic activation is fixed in reviewed release code and bound
+     because build activation intent is fixed in reviewed release code and bound
      to the exact gated artifact.
 
 4. Sentry and sandbox credentials
@@ -85,7 +85,7 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
 6. Provider dashboards
    - OpenAI: create a new API key, deploy it as a Functions secret, then revoke the old key.
    - Jest: rotate the shared secret and upload token independently, then verify
-     signed identity/purchase/referral payloads and the exact automatically activated upload.
+     signed identity/purchase/referral payloads and the exact activated build upload.
    - Meta: create a new app secret, keep it server-only, verify signed identity
      and deletion fixtures, then revoke the superseded app-secret version. Do not
      rotate the independent UID HMAC key in place; use the disabled-identity

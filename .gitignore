@@ -144,3 +144,6 @@ build-pwastore-review.zip.manifest.json
 # Local source receipts and short-lived CI credentials
 build-html5.zip.source.json
 gha-creds-*.json
+
+# Local recovery snapshots from production content regeneration
+artifacts/content-reset-backup-*.json

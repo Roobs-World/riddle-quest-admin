@@ -1,5 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
+import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 
 /** Provides describe soak behavior. */
 const describeSoak = process.env.PORTAL_SOAK_TESTS === "1" ? describe : describe.skip;
@@ -76,6 +77,8 @@ describeSoak("low-end mobile stability", () => {
       });
       /** Provides page behavior. */
       const page = await context.newPage();
+      // The injected SDK owns this harness; avoid an unrelated external startup request.
+      await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       /** Provides runtime errors behavior. */
       const runtimeErrors: string[] = [];
       page.on("console", (message) => {
@@ -93,6 +96,8 @@ describeSoak("low-end mobile stability", () => {
 
       try {
         await page.goto("http://127.0.0.1:4180/?harness=jest");
+        // Platform preferences own onboarding, so local browser flags cannot complete it.
+        await completeMockOnboarding(page);
         await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
         /** Provides letter a behavior. */
         const letterA = page.locator(".keyboard").getByRole("button", {name: /^A$/});

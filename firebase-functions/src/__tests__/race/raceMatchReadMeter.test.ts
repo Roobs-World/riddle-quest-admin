@@ -152,3 +152,23 @@ it("refuses actual batch dispatch if elapsed time expires after admission", asyn
     expect(getAll).not.toHaveBeenCalled();
   } finally {clock.mockRestore();}
 });
+
+it("coalesces concurrent eligibility batches without losing ordering or shared snapshots", async () => {
+  /** Distinct attempts from parallel candidate checks share one physical RPC. */
+  const refs = ["a", "b", "c"].map(id => ({path: `records/${id}`} as FirebaseFirestore.DocumentReference));
+  /** Transport records the actual RPC boundary and requested document order. */
+  const getAll = jest.fn(async (...references: FirebaseFirestore.DocumentReference[]) => references.map(ref => ({ref, exists: true})));
+  /** One transaction callback isolates cache and batching from every subsequent retry. */
+  const db = {runTransaction: (operation: (tx: unknown) => Promise<unknown>) => operation({getAll})} as unknown as FirebaseFirestore.Firestore;
+  /** Meter must report physical batches rather than concurrent logical callers. */
+  const meter = {documentReadAttempts: 0, transactionAttempts: 0, documentReadBatches: 0};
+  await withMeteredRaceTransaction(db, meter, async tx => {
+    /** Reversed second group exercises caller ordering and cross-group duplicates. */
+    const [first, second] = await Promise.all([tx.getAll(refs[0], refs[1]), tx.getAll(refs[2], refs[1])]);
+    expect(first.map(snapshot => snapshot.ref.path)).toEqual(["records/a", "records/b"]);
+    expect(second.map(snapshot => snapshot.ref.path)).toEqual(["records/c", "records/b"]);
+    expect(first[1]).toBe(second[1]);
+  });
+  expect(getAll).toHaveBeenCalledTimes(1);
+  expect(meter).toEqual({documentReadAttempts: 3, transactionAttempts: 1, documentReadBatches: 1});
+});

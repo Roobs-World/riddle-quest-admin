@@ -20,6 +20,7 @@ let initialized = false;
 
 /** Sentry defaults that collect product/session context beyond an error itself. */
 const nonEssentialBrowserIntegrations = new Set([
+  "Console",
   "Breadcrumbs",
   "BrowserSession",
   "ConversationId",

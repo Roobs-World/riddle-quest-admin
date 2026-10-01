@@ -1,9 +1,11 @@
-import {RaceRunResponseSchema, type ReadyRaceRunRequest, type RaceRunResponse} from "@qwordly/core/race";
+import {type ReadyRaceRunRequest, type RaceRunResponse} from "@qwordly/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
-import {raceDeadlineAtMs, RACE_START_LEAD_MS, toRaceRunView, type RaceRunRecord} from "./raceEngine";
+import {raceDeadlineAtMs, RACE_START_LEAD_MS, type RaceRunRecord} from "./raceEngine";
+import {projectRaceRunResponse} from "./raceRunResponse";
 import {assertRaceInteractionAllowed} from "./raceRunMutation";
+import {withRaceTransactionReads} from "./raceTransactionReads";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
 import {assertRacePreparedRecording} from "./raceDeckSnapshot";
 import {assertRaceChallengeEligible, inspectRaceChallengeEligibility} from "./raceEligibility";
@@ -22,7 +24,9 @@ export async function readyRaceRunForUser(userId: string, input: ReadyRaceRunReq
   /** Provides ref behavior. */
   const ref = db.doc(`raceRuns/${input.runId}`);
   /** Provides run behavior. */
-  const run = await db.runTransaction(async (transaction) => {
+  return db.runTransaction(async (attempt) => {
+    /** Eligibility repeats guard reads within this same locked snapshot. */
+    const transaction = withRaceTransactionReads(attempt);
     /** Provides snapshot behavior. */
     const snapshot = await transaction.get(ref);
     if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
@@ -33,9 +37,28 @@ export async function readyRaceRunForUser(userId: string, input: ReadyRaceRunReq
     /** Provides privacy behavior. */
     const privacy = await resolveRaceOpponentPrivacy(transaction, db, stored);
     await assertRaceInteractionAllowed(transaction, db, userId, privacy.run.opponent?.subjectUserId);
-    if (stored.status !== "prepared") return privacy.run;
+    if (stored.status !== "prepared") {
+      /** Replay projects fresh clocks without changing the first accepted readiness. */
+      const response = projectRaceRunResponse(privacy.run, options.nowMs ?? Date.now(), input.includeEvaluation);
+      if (privacy.scrubbed) transaction.set(ref, raceRunPrivacyWrite(privacy.run, true), {merge: true});
+      return response;
+    }
     /** Provides offer behavior. */
     const offer = await readRaceMatchOffer(transaction, db, stored);
+    /** Owned expiry cleanup does not depend on the continued availability of its publication source. */
+    const abandonExpired = (nowMs: number): RaceRunResponse => {
+      /** No countdown or scored action was accepted during preparation. */
+      const expired: RaceRunRecord = {...privacy.run, status: "abandoned", result: null, wallFinishMs: 0, finishedAtMs: nowMs};
+      /** Validate the terminal response before releasing the offer in this transaction. */
+      const response = projectRaceRunResponse(expired, nowMs, input.includeEvaluation);
+      transaction.set(ref, raceRunPrivacyWrite(expired, privacy.scrubbed), {merge: true});
+      recordRaceMatchTerminal(transaction, offer, expired, nowMs);
+      return response;
+    };
+    /** Expired preparation cannot start, so mutable archive eligibility is no longer required. */
+    const preflightAtMs = options.nowMs ?? Date.now();
+    if (!Number.isFinite(stored.preparationExpiresAtMs) || preflightAtMs >= stored.preparationExpiresAtMs!)
+      return abandonExpired(preflightAtMs);
     if (stored.challengeId) {
       /** Provides challenge snapshot behavior. */
       const challengeSnapshot = await transaction.get(db.doc(`raceChallenges/${stored.challengeId}`));
@@ -51,20 +74,16 @@ export async function readyRaceRunForUser(userId: string, input: ReadyRaceRunReq
     // Sample after reads so database preparation does not consume the lead-in.
     /** Provides now ms behavior. */
     const nowMs = options.nowMs ?? Date.now();
-    if (!Number.isFinite(stored.preparationExpiresAtMs) || nowMs >= stored.preparationExpiresAtMs!) {
-      /** Provides expired behavior. */
-      const expired: RaceRunRecord = {...privacy.run, status: "abandoned", result: null, wallFinishMs: 0, finishedAtMs: nowMs};
-      transaction.set(ref, raceRunPrivacyWrite(expired, privacy.scrubbed), {merge: true});
-      recordRaceMatchTerminal(transaction, offer, expired, nowMs);
-      return expired;
-    }
+    if (nowMs >= stored.preparationExpiresAtMs!) return abandonExpired(nowMs);
     /** Provides scheduled behavior. */
-    const scheduled: RaceRunRecord = {...privacy.run, status: "scheduled", startedAtMs: nowMs + RACE_START_LEAD_MS};
+    const scheduled: RaceRunRecord = {...privacy.run, status: "scheduled", readinessAcceptedAtMs: nowMs,
+      startedAtMs: nowMs + RACE_START_LEAD_MS};
     scheduled.deadlineAtMs = raceDeadlineAtMs(scheduled);
+    /** The countdown and its response share one accepted clock and commit. */
+    const response = projectRaceRunResponse(scheduled, nowMs, input.includeEvaluation);
     transaction.set(ref, {...raceRunPrivacyWrite(scheduled, privacy.scrubbed),
       deadlineAtMs: scheduled.deadlineAtMs ?? admin.firestore.FieldValue.delete()}, {merge: true});
     if (offer) transaction.update(offer.ref, {startsAtMs: scheduled.startedAtMs, readinessAcceptedAtMs: nowMs});
-    return scheduled;
+    return response;
   });
-  return RaceRunResponseSchema.parse({run: toRaceRunView(run, options.nowMs ?? Date.now(), input.includeEvaluation)});
 }

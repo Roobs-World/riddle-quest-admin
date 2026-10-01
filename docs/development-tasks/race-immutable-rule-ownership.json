@@ -1,0 +1,196 @@
+{
+  "taskId": "multiplayer:race-immutable-rule-ownership",
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks"
+  ],
+  "work": "Pin every recorded rule field across owned race snapshots before consuming action checkpoints; preserve first-owned legacy and current rule versions, readiness schedules, paid recovery and exhausted-hint suppression.",
+  "checks": [
+    {
+      "id": "node22-backend-build-and-operator-safeguards",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "run",
+        "pretest:race:coverage"
+      ]
+    },
+    {
+      "id": "node22-isolated-backend-race-coverage",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "firebase",
+        "emulators:exec",
+        "--config",
+        "firebase.race-verification.json",
+        "--only",
+        "firestore",
+        "--project",
+        "demo-riddle-quest-multiplayer",
+        "pnpm exec jest --config jest.race-coverage.config.js --runInBand"
+      ]
+    },
+    {
+      "id": "backend-types",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "check:types"
+      ]
+    },
+    {
+      "id": "client-race-recovery",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/play/race/__tests__"
+      ]
+    },
+    {
+      "id": "backend-lint",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "lint"
+      ]
+    },
+    {
+      "id": "isolated-platform-builds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ]
+    },
+    {
+      "id": "target-dependency-evidence",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ]
+    },
+    {
+      "id": "security",
+      "executable": "pnpm",
+      "args": [
+        "check:security"
+      ]
+    },
+    {
+      "id": "scalability",
+      "executable": "pnpm",
+      "args": [
+        "check:scalability"
+      ]
+    },
+    {
+      "id": "file-size-limits",
+      "executable": "pnpm",
+      "args": [
+        "check:file-sizes"
+      ]
+    },
+    {
+      "id": "documented-declarations",
+      "executable": "pnpm",
+      "args": [
+        "check:tsdoc"
+      ]
+    },
+    {
+      "id": "full-core-tests",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/core",
+        "test",
+        "--runInBand"
+      ]
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ]
+    },
+    {
+      "id": "injected-rule-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-rule-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "client-firebase-target-routing",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/__tests__/firebase.test.ts"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json"
+    }
+  ],
+  "remainingGates": [
+    "The ongoing multiplayer edge-case and reliability audit remains active.",
+    "Jest build activation is authorized; game publication, review submission and listing visibility remain on hold. Firebase Functions deployment is authorized but this verification does not deploy."
+  ],
+  "nextAction": "Continue the multiplayer reliability audit; preserve Jest game publication hold and deployment verification requirements."
+}

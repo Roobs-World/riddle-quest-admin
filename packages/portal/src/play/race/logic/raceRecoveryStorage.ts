@@ -44,7 +44,8 @@ export const browserRaceRecovery: RaceRecoveryPersistence = {
     try {
       /** Cleanup requires both owner identity and exact replacement revision. */
       const parsed = RaceRecoverySchema.safeParse(JSON.parse(raw));
-      if (parsed.success && parsed.data.ownerId === ownerId && parsed.data.id === expectedId) safeBrowserStorageRemove("local", RACE_RECOVERY_KEY);
+      if (parsed.success && parsed.data.ownerId === ownerId && parsed.data.id === expectedId &&
+        safeBrowserStorageGet("local", RACE_RECOVERY_KEY) === raw) safeBrowserStorageRemove("local", RACE_RECOVERY_KEY);
     } catch { /* Invalid hints never authorize cleanup of another lifetime. */ }
   },
 };

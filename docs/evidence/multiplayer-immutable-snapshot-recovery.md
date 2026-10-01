@@ -29,15 +29,21 @@ now confirms an accepted run before checking the next search. Documentation-only
 changes cover declarations in concurrent multiplayer backend and test work; their
 behavioural rollout remains separate.
 
-Focused public-interface verification passed 313 race tests in 19 suites. The
+Focused public-interface verification passed 328 race tests in 20 suites. The
 injected Jest browser flow corrupts a real paid hint's outgoing deck or schedule,
 verifies rollback and read-only recovery, and asserts exactly one hint charge and
 one resume read. The full creator/publication/reusable-recipient journey passed.
 Browser evidence includes `/tmp/race-hint-confirmation-recovery-deck.png` and
-`/tmp/race-hint-confirmation-recovery-schedule.png`.
+`/tmp/race-hint-confirmation-recovery-schedule.png`, plus phase, missing-prompt and
+score-regression variants. Lifecycle guards require a question in live phases and
+none in terminal phases. Owned authority cannot move phases, score, penalty totals,
+question position, attempts or confirmed reveals backwards. Validation compares
+the last confirmed authority rather than provisional gameplay projections, so
+genuine other-tab advancement remains valid. Injected preparation expiry now
+matches production's answer-free terminal view.
 
-Only platform-specific HTML5 artifacts are verified: Jest, Facebook, Reddit,
-YouTube, Netflix, Yahoo and GameSnacks. No standalone web/PWA release, provider
+Build scope includes only platform-specific HTML5 artifacts: Jest, Facebook,
+Reddit, YouTube, Netflix, Yahoo and GameSnacks. No standalone web/PWA release, provider
 SDK, locale change or deployment is introduced. Dependency evidence verifies
 target isolation, including the self-contained candidate artifacts.
 
@@ -53,6 +59,28 @@ A stable-source recorder receipt is required before claiming dashboard completio
 
 The first recorder attempt failed a start-recovery test while the shared checkout
 and dependency state were changing. Its isolated retry and subsequent complete
-race-suite run passed. The current repository-wide TSDoc gate still reports
-undocumented declarations in concurrent backend integration and test additions;
-these remain a completion gate until resolved against the final source.
+race-suite run passed. Concurrent upgrades exposed stale third-party notices and
+additional Sentry runtime dependencies; regenerated notices and the updated
+registry resolved those gates, but eager optional telemetry increased initial
+Jest resources above the existing 0.55 MB budget.
+
+Optional browser error reporting now loads its SDK only for an allowed, configured
+production target. Entry rendering continues immediately. One delivery buffers up
+to twenty early caught errors, uncaught errors and rejected promises, then flushes
+through the existing privacy-safe adapter. Failed initialization/capture cannot
+reject game startup. Concurrent callers share delivery; thirty-second expiry
+permits an explicit retry, and cancelled or disallowed deliveries cannot install
+a late adapter. Every terminal path removes temporary listeners and references.
+Thirty-six observability tests verify these paths and the existing privacy gates.
+
+All seven rebuilt artifacts and dependency audits passed with the unchanged
+budgets: Jest has 0.47 MB initial resources, Facebook 0.43 MB and Reddit 0.55 MB.
+YouTube, Netflix, Yahoo and GameSnacks remain self-contained. Injected Jest recovery
+and complete recipient publication, plus Facebook startup/context flows, passed.
+Repository-wide TSDoc and file-size checks passed. Dashboard completion still
+requires a stable-source recorder receipt; the earlier failed attempts issued none.
+
+The expanded recorder passed all nine declared checks, including the updated
+browser helper extraction, but withheld completion because concurrent working-tree
+edits changed the source digest during verification. The commit remained unchanged;
+the next recording verifies the updated working source independently.

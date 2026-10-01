@@ -44,7 +44,7 @@ Validate Jest SDK loading, player identity payloads, registration dismissal/comp
 
 ### 3. Uploaded build with sandbox users
 
-Create a sandbox user in **Developer Console → Sandbox Users**, deploy the automatically activating build, generate a
+Create a sandbox user in **Developer Console → Sandbox Users**, upload the build for activation, generate a
 login URL, then run with the exact build version from its accepted receipt:
 
 ```bash
@@ -68,7 +68,7 @@ Use two sandbox users for referral attribution. Reset the invitee's player state
 
 Use the `pnpm jest:hosted` local URL in the Simulator for SDK embedding and lifecycle checks only. Open the uploaded version for the complete quality checklist and record a self-review that covers onboarding, guest play, registration, one complete riddle, the shop, a canceled checkout, a successful sandbox checkout, subscription state, notifications, sharing, portrait/landscape layout, audio, and background/foreground recovery. Attach the recording to the exact version being submitted for moderation.
 
-After automatic activation, open that exact version in the Simulator and run the sandbox acceptance gate immediately. A
+After build processing and activation succeed, open that exact version in the Simulator and run the sandbox acceptance gate. A
 Simulator run is not a substitute for sandbox payment, notification, persistence, or referral validation.
 
 ## Local release verification
@@ -183,7 +183,7 @@ While logged into the developer account, open `https://jest.com/g/riddle-q?host=
 
 ### Uploaded build and sandbox users
 
-Deploy the audited automatically activating build, generate a login link under **Developer Console → Sandbox Users**, then
+Upload the audited build for activation, generate a login link under **Developer Console → Sandbox Users**, then
 run `test:jest-deployed:playwright` with its exact receipt build version using the command above. Manually exercise
 notifications, purchase success/cancel/error/recovery, subscriptions, persistence, and two-player referrals. Sandbox
 checkout shows the real checkout UI but charges zero.
@@ -192,7 +192,7 @@ checkout shows the real checkout UI but charges zero.
 
 Before review, select the exact active version in the Developer Console Simulator, complete its quality checklist, and
 record a self-review covering onboarding, guest play, registration, the first solved riddle, shop entry, and multiplayer
-entry. The canonical production command activates after processing, so perform this check and the sandbox gate immediately
+entry. The canonical release command activates the processed build, so perform this check and the sandbox gate on that exact version
 after the Console or completion email confirms the version.
 
 These environments are complementary: local mocks prove application branches, the hosted emulator proves the live SDK boundary, sandbox users prove platform-backed state, and the Simulator produces moderator evidence.
@@ -252,11 +252,11 @@ pnpm release:jest
 
 Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that persistent file; the credential parser rejects
 both so a stale file cannot change release behavior. The canonical `release:jest` interface also rejects either variable
-in its process environment. Automatic activation is a fixed, reviewed property of the canonical release code.
+in its process environment. Build activation is allowed. Game publication, review submission and listing visibility changes remain held. Set `JEST_RELEASE_INACTIVE=true` for an explicitly inactive build.
 
 For GitHub Actions CD, create a protected `jest-production` environment, require the desired reviewers, restrict it to
 the `jest` branch, and add `JEST_GAME_UPLOAD_TOKEN` plus `JEST_NOTIFICATION_EMAIL` as environment secrets. Dispatch
-`Deploy Jest production` from the `jest` branch. The workflow uses the same canonical release command and a
+`Upload and activate Jest build` from the `jest` branch. The workflow uses the same canonical release command and a
 non-cancellable production concurrency lock; it does not provide a shorter CI-only upload path. Facebook, Reddit, and
 YouTube retain their separately documented manual handoff boundaries.
 
@@ -276,8 +276,7 @@ requires the same fingerprint immediately before upload. It materializes the com
 archive, extracts it into a fresh read-only directory, and reruns the artifact, W3C, and both browser gates against those
 extracted bytes. Parent-held pre/post fingerprints and the trusted uploader independently bind the Git commit and clean
 state, ZIP size, SHA-256, version, game, receipt, and activation intent before the unchanged ZIP is uploaded with
-`isActive=true`. Jest activates that exact version only after background processing succeeds. This does not make a private
-game public or submit it for review.
+`isActive=true` by default. Processing activates that exact build. `JEST_RELEASE_INACTIVE=true` retains an inactive build. Neither mode submits the game for review, publishes it, or changes listing visibility.
 
 The sandbox prevents release children from opening the configured credential path or inspecting the parent through the
 host PID namespace. It does not isolate the release from other same-user or privileged host processes, a compromised
@@ -317,8 +316,7 @@ or command-line argument.
 
 Before sending bytes, the uploader stores atomic mode-`0600` barriers for both the exact game/build version and the
 game/source commit. The documented upload API returns HTTP `202` with a `versionId` and `buildStatus: "processing"`; that
-means the upload and automatic-activation request were accepted for background processing, not that the build is already
-ready or active. A timeout, termination, or crash leaves the source barrier
+means the upload was accepted for background processing, not that the build is ready or active. A timeout, termination, or crash leaves the source barrier
 blocked as transmitting/ambiguous, so generating a new timestamped build version from the same source cannot bypass the
 uncertain attempt. Reconcile it through the [Developer Console build status and build-completion email](https://docs.jest.com/dev-console/builds).
 After a documented `202`, both receipts transition to accepted-pending and record the version ID and exact ZIP checksum;
@@ -328,20 +326,21 @@ status may an owner manually remove the corresponding `<game-id>.<source-commit>
 before ever retrying that exact version. Do not delete either barrier and retry blindly: Jest may already have accepted
 the first request. Jest does not currently document an authoritative build-status polling endpoint, so the tooling
 deliberately does not infer readiness from elapsed time or poll an unofficial URL. Use the Developer Console or completion
-email to confirm that the receipt's exact version became active, then run the deployed sandbox smoke.
+email to confirm that the receipt's exact build finished processing and became active, then run the sandbox smoke.
 
-### Automatic activation compatibility
+### Build activation and game publication
 
-The canonical command is a production promotion, not a preview workflow. Run it only when the client is rolling-compatible
-with the deployed backend and rules. Do not infer backend compatibility from the previously active client alone. Before
-automatic activation, verify that `getCurrentClassicRiddle`, `getCurrentDailyChallenge`, `submitSinglePlayerGuess`,
-`completeGame`, `getHint`, `spendCoins`, and `skipRiddle` are all `ACTIVE` and belong to one reviewed Firebase deployment
-cohort. If a future release introduces an incompatible client/server protocol, migration, or maintenance-window
-requirement, stop before running `pnpm release:jest` and add a separately reviewed inactive-Draft workflow. Do not attempt
-to override the canonical policy with ambient or persistent activation variables.
+The user permits Jest build activation and Firebase Functions deployment. The
+canonical command activates the processed build, while game publication remains
+held. Verify the exact build in the Simulator and sandbox against its intended
+backend/rules cohort. Before activation, verify that
+`getCurrentClassicRiddle`, `getCurrentDailyChallenge`, `submitSinglePlayerGuess`,
+`completeGame`, `getHint`, `spendCoins`, and `skipRiddle` belong to one reviewed
+Firebase deployment cohort. Use `JEST_RELEASE_INACTIVE=true` when an inactive
+build is wanted instead.
 
-Automatic build activation is separate from publication. The upload token cannot approve the game, complete Simulator or
-moderation requirements, or change a private listing to Public; those remain owner actions in the Developer Console.
+Build activation does not authorize game approval, moderation submission,
+publication or listing visibility changes. Those remain separate owner actions.
 
 ## Developer Console setup
 
@@ -368,7 +367,7 @@ Owner access to `https://jest.com/developers` is required:
    subscription entitlement before the shop renders, and an active subscription must never be offered again.
 5. Keep the approved notification image reference aligned with `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`.
 6. Create at least two sandbox players. The manifest currently lists no separate onboarding games; referral links enter Riddle Quest directly.
-7. Verify that the automatically activated build matches the receipt's exact version ID and build version, then run the
+7. Verify that the activated build matches the receipt's exact version ID and build version, then run the
    acceptance matrix below.
 
 ## Sandbox acceptance matrix

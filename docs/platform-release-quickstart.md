@@ -17,8 +17,12 @@ pnpm release:youtube
 pnpm release:reddit
 ```
 
-The commands deliberately remain separate because their external effects differ. Jest uploads an automatically activating build. Facebook, YouTube, and Reddit create local, immutable handoffs for their documented manual processes. Run `pnpm release:plan` at any time to review those effects without building or changing external state.
+The commands deliberately remain separate because their external effects differ. Jest uploads and activates the processed build. Game publication, review submission and listing visibility changes remain held. Firebase Functions deployment is allowed. Facebook, YouTube, and Reddit create local, immutable handoffs for their documented manual processes. Run `pnpm release:plan` at any time to review those effects without building or changing external state.
 
 The existing `release:all` command crosses different provider boundaries, including automatic Jest activation. Use target-specific commands when preparing candidates or reconciling an existing upload.
 
-For the independently hosted web game and offline PWA, use `pnpm deploy:web` or `pnpm deploy:pwa`. Both run local and deployed browser gates. See [standalone web deployments](standalone-web-deployments.md) for destinations, exact-byte verification and the full E2E commands.
+Build and release only named HTML5 platform targets. Standalone web hosting and
+PWA builds are excluded. `build:web` aggregates Jest, Facebook and Reddit;
+`prepare:html5-handoffs` prepares a shared audited input for named distributors
+such as itch.io. It does not publish a standalone game. Historical PWA dashboard
+receipts remain visible with an excluded status.

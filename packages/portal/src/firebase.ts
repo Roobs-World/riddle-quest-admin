@@ -73,6 +73,9 @@ export const auth = getAuth(firebaseApp);
 export const firebaseFirestore = getFirestore(firebaseApp);
 /** Provides functions behavior. */
 const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion || "us-central1");
+/** Jest multiplayer runs beside eur3; other capabilities retain their configured region. */
+const raceFunctions = firebaseEnvironment.platformTarget === "jest"
+  ? getFunctions(firebaseApp, "europe-west1") : functions;
 /** Shared Functions instance used by target-specific lazy adapters. */
 export const firebaseFunctions = functions;
 
@@ -274,27 +277,27 @@ export const setPresenceConsent = httpsCallable<
 
 /** Lists race categories. */
 export const listRaceCategories = httpsCallable<ListRaceCategoriesRequest, ListRaceCategoriesResponse>(
-  functions,
+  raceFunctions,
   "listRaceCategories",
 );
 /** Starts race run. */
-export const startRaceRun = httpsCallable<StartRaceRunRequest, RaceRunResponse>(functions, "startRaceRun");
+export const startRaceRun = httpsCallable<StartRaceRunRequest, RaceRunResponse>(raceFunctions, "startRaceRun");
 /** Schedules an owned prepared run with a server-controlled countdown. */
-export const readyRaceRun = httpsCallable<ReadyRaceRunRequest, RaceRunResponse>(functions, "readyRaceRun");
+export const readyRaceRun = httpsCallable<ReadyRaceRunRequest, RaceRunResponse>(raceFunctions, "readyRaceRun");
 /** Provider scope comes from authenticated Firebase identity, never from matchmaking preferences. */
-export const findRaceMatch = httpsCallable<RaceMatchRequest, RaceMatchResponse>(functions, "findRaceMatch");
+export const findRaceMatch = httpsCallable<RaceMatchRequest, RaceMatchResponse>(raceFunctions, "findRaceMatch");
 /** Submits race guess. */
 export const submitRaceGuess = httpsCallable<SubmitRaceGuessRequest, SubmitRaceGuessResponse>(
-  functions,
+  raceFunctions,
   "submitRaceGuess",
 );
 /** Requests race hint. */
 export const requestRaceHint = httpsCallable<RequestRaceHintRequest, RequestRaceHintResponse>(
-  functions,
+  raceFunctions,
   "requestRaceHint",
 );
 /** Provides skip race riddle behavior. */
-export const skipRaceRiddle = httpsCallable<SkipRaceRiddleRequest, SkipRaceRiddleResponse>(functions, "skipRaceRiddle");
+export const skipRaceRiddle = httpsCallable<SkipRaceRiddleRequest, SkipRaceRiddleResponse>(raceFunctions, "skipRaceRiddle");
 /** Provides resume race run behavior. */
 export const resumeRaceRun = httpsCallable<
   {
@@ -304,17 +307,17 @@ export const resumeRaceRun = httpsCallable<
     includeEvaluation?: boolean;
   },
   RaceRunResponse
->(functions, "resumeRaceRun");
+>(raceFunctions, "resumeRaceRun");
 /** Provides abandon race run behavior. */
-export const abandonRaceRun = httpsCallable<AbandonRaceRunRequest, AbandonRaceRunResponse>(functions, "abandonRaceRun");
+export const abandonRaceRun = httpsCallable<AbandonRaceRunRequest, AbandonRaceRunResponse>(raceFunctions, "abandonRaceRun");
 /** Publishes race challenge. */
 export const publishRaceChallenge = httpsCallable<PublishRaceChallengeRequest, PublishRaceChallengeResponse>(
-  functions,
+  raceFunctions,
   "publishRaceChallenge",
 );
 /** Reserves a server-owned two-player lobby before opening a Jest invite. */
 export const reserveRaceInvite = httpsCallable<ReserveRaceInviteRequest, ReserveRaceInviteResponse>(
-  functions,
+  raceFunctions,
   "reserveRaceInvite",
 );
 /** Gets race challenge. */
@@ -326,7 +329,7 @@ export const getRaceChallenge = httpsCallable<
     locale: import("@qwordly/core/race").RaceLocale;
   },
   RaceChallengePreview
->(functions, "getRaceChallenge");
+>(raceFunctions, "getRaceChallenge");
 /** Gets race outcome. */
 export const getRaceOutcome = httpsCallable<
   {
@@ -334,10 +337,10 @@ export const getRaceOutcome = httpsCallable<
     runId: string;
   },
   RaceOutcome
->(functions, "getRaceOutcome");
+>(raceFunctions, "getRaceOutcome");
 /** Lists race inbox. */
 export const listRaceInbox = httpsCallable<ListRaceInboxRequest | undefined, ListRaceInboxResponse>(
-  functions,
+  raceFunctions,
   "listRaceInbox",
 );
 /** Immediately blocks an established social rival. */
@@ -373,12 +376,12 @@ export const reportRival = httpsCallable<
 >(functions, "reportRival");
 /** Gets race access. */
 export const getRaceAccess = httpsCallable<RaceAccessRequest | undefined, RaceAccessResponse>(
-  functions,
+  raceFunctions,
   "getRaceAccess",
 );
 /** Records race analytics. */
 export const recordRaceAnalytics = httpsCallable<RaceAnalyticsEventRequest, RaceAnalyticsEventResponse>(
-  functions,
+  raceFunctions,
   "recordRaceAnalytics",
 );
 
@@ -471,6 +474,6 @@ type GetHintOutput = {
 /** Reads lifecycle-aware readiness for public recordings and private reservations. */
 export const getRaceEntry = httpsCallable<{
     /** Incoming challenge. */ challengeId: string;
-    /** Content language. */ locale: RaceLocale}, RaceEntryResponse>(functions, "getRaceEntry");
+    /** Content language. */ locale: RaceLocale}, RaceEntryResponse>(raceFunctions, "getRaceEntry");
 /** Cancels only a creator-owned reservation, preserving reusable public challenges. */
-export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntryResponse>(functions, "cancelRaceInvite");
+export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntryResponse>(raceFunctions, "cancelRaceInvite");

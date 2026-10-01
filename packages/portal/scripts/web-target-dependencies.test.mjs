@@ -149,3 +149,57 @@ test('published inventory reflects final chunk bytes after private map cleanup',
     assert.equal(inventory.files.find(row => row.file === chunk.file).sha256, chunk.sha256);
   }
 });
+
+ test('release evidence root is shared by builds and verification without changing canonical source inventories', async t => {
+  const path = await import('node:path');
+  const {fileURLToPath} = await import('node:url');
+  const repository = fileURLToPath(new URL('../../..', import.meta.url));
+  const output = path.join(repository, 'packages/portal/dist-facebook');
+  const original = process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
+  t.after(() => {
+    if (original === undefined) delete process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
+    else process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR = original;
+  });
+  delete process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
+  const canonical = targetDependencyEvidencePath('facebook', output);
+  const isolated = path.join(repository, 'temporary-release-evidence');
+  process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR = isolated;
+  assert.equal(targetDependencyEvidencePath('facebook', output), path.join(isolated, 'facebook.json'));
+  assert.notEqual(targetDependencyEvidencePath('facebook', output), canonical);
+  assert.equal(targetDependencyEvidencePath('facebook', output, path.join(repository, 'explicit')), path.join(repository, 'explicit/facebook.json'));
+  assert.notEqual(targetDependencyEvidencePath('facebook', output), targetDependencyEvidencePath('facebook', path.join(repository, 'custom-output')));
+  process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR = 'relative-path';
+  assert.throws(() => targetDependencyEvidencePath('facebook', output), /must be absolute/u);
+});
+
+ test('frozen license inventory preserves exact notices and fails closed without requerying the package store', async t => {
+  const {execFileSync} = await import('node:child_process');
+  const {mkdtemp,writeFile,rm} = await import('node:fs/promises');
+  const {tmpdir} = await import('node:os');
+  const path = await import('node:path');
+  const {fileURLToPath} = await import('node:url');
+  const {createNotice} = await import('./generate-third-party-licenses.mjs');
+  const repository = fileURLToPath(new URL('../../..', import.meta.url));
+  const directory = await mkdtemp(path.join(tmpdir(), 'frozen-license-test-'));
+  t.after(() => rm(directory,{recursive:true,force:true}));
+  const original = process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+  const originalPath = process.env.PATH;
+  t.after(() => {
+    process.env.PATH = originalPath;
+    if(original === undefined) delete process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+    else process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = original;
+  });
+  delete process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+  const expected = createNotice(new Set(['react']));
+  const inventory = execFileSync('pnpm',['--filter','@qwordly/portal','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024});
+  const file = path.join(directory,'inventory.json');
+  await writeFile(file,inventory,{mode:0o400});
+  process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = file;
+  process.env.PATH = directory;
+  assert.equal(createNotice(new Set(['react'])),expected);
+  assert.throws(() => createNotice(new Set(['missing-runtime-package'])),/Emitted package has no notice/u);
+  process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = path.join(directory,'missing.json');
+  assert.throws(() => createNotice(new Set(['react'])),/ENOENT/u);
+  process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = 'relative.json';
+  assert.throws(() => createNotice(new Set(['react'])),/must be absolute/u);
+});

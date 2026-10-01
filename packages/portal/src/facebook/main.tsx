@@ -7,7 +7,7 @@ import {initializeBrowserSentryFromEnvironment} from "../observability/sentryEnv
 import {FacebookPlatformEntry} from "./FacebookPlatformEntry";
 import "../styles.css";
 
-initializeBrowserSentryFromEnvironment();
+void initializeBrowserSentryFromEnvironment();
 
 if (import.meta.env.DEV) {
   resetDevelopmentFirstRunState();

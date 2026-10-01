@@ -55,7 +55,12 @@ const startJestLoadingHeartbeat = (platform: JestPlatformPort, progress: number)
   stopJestLoadingHeartbeat(platform);
   /** Provides heartbeat behavior. */
   const heartbeat = {progress, timer: undefined as unknown as ReturnType<typeof setInterval>};
-  heartbeat.timer = setInterval(() => platform.setLoadingProgress(heartbeat.progress), JEST_LOADING_HEARTBEAT_MS);
+  heartbeat.timer = setInterval(() => {
+    // Jest's host watchdog observes changed percentages, not repeated SDK messages.
+    // Reserve 100 for actual readiness; stalled startup eventually retains the host timeout at 99.
+    heartbeat.progress = Math.min(99, heartbeat.progress + 1);
+    platform.setLoadingProgress(heartbeat.progress);
+  }, JEST_LOADING_HEARTBEAT_MS);
   // Node test processes should not be kept alive by the browser lifecycle timer.
   /* istanbul ignore else -- browser interval handles are numeric; Node handles expose unref. */
   if (typeof heartbeat.timer === "object" && "unref" in heartbeat.timer) heartbeat.timer.unref();
@@ -65,8 +70,10 @@ const startJestLoadingHeartbeat = (platform: JestPlatformPort, progress: number)
 
 /** Reports progress while retaining the latest value for non-regressing heartbeat updates. */
 const reportJestLoadingProgress = (platform: JestPlatformPort, progress: number): void => {
-  platform.setLoadingProgress(progress);
-  loadingHeartbeats.get(platform)!.progress = progress;
+  /** Retains estimated progress across delayed startup stages. */
+  const heartbeat = loadingHeartbeats.get(platform)!;
+  heartbeat.progress = Math.max(heartbeat.progress, progress);
+  platform.setLoadingProgress(heartbeat.progress);
 };
 
 /** Dismisses Jest's manual-loading overlay so an in-game retry screen remains interactive. */

@@ -45,7 +45,7 @@ test("dashboard integration metrics match reviewed rows", () => {
   const services = data.queries.service_status.rows;
 
   assert.equal(platforms.filter(({integration}) => integration.startsWith("Implemented")).length, 4);
-  assert.equal(platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length, 52);
+  assert.equal(platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length, 49);
   assert.equal(services.filter(({status}) => status === "Integrated").length, 3);
 });
 

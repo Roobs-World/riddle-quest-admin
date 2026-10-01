@@ -7,6 +7,7 @@ import {assertRaceInteractionAllowed} from "./raceRunMutation";
 import {challengePreview, dbOrDefault, parseChallengeRecord, requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
 import {parseRaceInvitation, assertRaceInvitationOpen, type RaceInvitationRecord} from "./raceInvitationRecord";
 import {raceProviderScope} from "./raceEligibility";
+import {bindRaceRequest, assertRaceRequestReplay, rejectRaceRequestReuse} from "./raceRequestBinding";
 
 /** Storage and clock adapters shared by invitation behaviour tests. */
 type InvitationOptions = {
@@ -37,6 +38,8 @@ export async function reserveRaceInviteForUser(
   const nowMs = options.nowMs ?? Date.now();
   /** Idempotency receipt for this user-scoped reservation request. */
   const requestRef = db.collection("raceInviteRequests").doc(requestDocumentId(userId, input.requestId));
+  /** Reservation language is immutable for an accepted request identity. */
+  const commandBinding = bindRaceRequest({kind: "reserve", input});
   /** Non-reversible creator component used to namespace the opaque challenge ID. */
   const ownerHash = createHash("sha256").update(userId).digest("hex");
   /** Opaque challenge identifier sent through the Jest referral entry payload. */
@@ -53,7 +56,19 @@ export async function reserveRaceInviteForUser(
     /** Deletion is checked even when replaying an earlier reservation receipt. */
     const deletion = await transaction.get(getJestAccountDeletionRef(db, userId));
     if (deletion.exists) throw new HttpsError("permission-denied", "Race invitation account is deleted.");
-    if (existing.exists) return ReserveRaceInviteResponseSchema.parse(existing.data()?.response);
+    if (existing.exists) {
+      /** Historical receipts prove their retained language through the original canonical lobby. */
+      const bound = assertRaceRequestReplay(existing.data(), userId, commandBinding);
+      /** Response schema validation precedes any privacy or lifecycle writes. */
+      const cached = ReserveRaceInviteResponseSchema.parse(existing.data()?.response);
+      if (!bound) {
+        /** The original reservation remains the authority for legacy language and ownership. */
+        const original = await transaction.get(db.doc(`raceInviteLobbies/${cached.challengeId}`));
+        if (!original.exists || original.data()?.creatorId !== userId) throw new HttpsError("data-loss", "Stored race request is invalid.");
+        if (original.data()?.locale !== input.locale) rejectRaceRequestReuse();
+      }
+      return cached;
+    }
     /** Firestore TTL timestamp shared by both reservation documents. */
     const expiresAt = admin.firestore.Timestamp.fromMillis(expiresAtMs);
     transaction.create(lobbyRef, {
@@ -67,7 +82,7 @@ export async function reserveRaceInviteForUser(
       expiresAtMs,
       expiresAt,
     });
-    transaction.create(requestRef, {userId, createdAtMs: nowMs, response, expiresAt});
+    transaction.create(requestRef, {userId, commandBinding, createdAtMs: nowMs, response, expiresAt});
     return response;
   });
 }
@@ -172,6 +187,7 @@ export async function cancelRaceInviteForUser(userId: string, input: CancelRaceI
     if (invitation.locale !== input.locale) throw new HttpsError("failed-precondition", "RaceTo10.ERROR_LOCALE_MISMATCH");
     if (receipt.exists) {
       if (receipt.data()?.challengeId !== input.challengeId) throw new HttpsError("already-exists", "Cancellation receipt belongs to another invitation.");
+      assertRaceRequestReplay(receipt.data(), userId, bindRaceRequest({kind: "cancel", input}));
       return RaceEntryResponseSchema.parse(receipt.data()?.response);
     }
     /** Cancelled state remains terminal even when storage TTL cleanup runs later. */
@@ -180,7 +196,8 @@ export async function cancelRaceInviteForUser(userId: string, input: CancelRaceI
     const response = RaceEntryResponseSchema.parse({status: "cancelled", invitation: invitationView(cancelled, userId), serverNowMs});
     transaction.update(reservation.ref, {cancelledAtMs: cancelled.cancelledAtMs, claimState: invitation.claimState, publicationState: invitation.publicationState});
     if (recording.exists) transaction.update(recording.ref, {status: "revoked"});
-    transaction.create(receiptRef, {userId, challengeId: input.challengeId, response, createdAtMs: serverNowMs, expiresAt: admin.firestore.Timestamp.fromMillis(Math.max(serverNowMs + 86400000, invitation.expiresAtMs))});
+    transaction.create(receiptRef, {userId, challengeId: input.challengeId, commandBinding: bindRaceRequest({kind: "cancel", input}),
+      response, createdAtMs: serverNowMs, expiresAt: admin.firestore.Timestamp.fromMillis(Math.max(serverNowMs + 86400000, invitation.expiresAtMs))});
     return response;
   });
 }

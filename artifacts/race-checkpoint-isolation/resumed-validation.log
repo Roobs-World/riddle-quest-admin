@@ -1,0 +1,1 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-pending-checkpoint-isolation.json

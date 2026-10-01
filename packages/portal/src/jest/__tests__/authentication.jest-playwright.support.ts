@@ -1,6 +1,85 @@
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
 
+/** Describes auth harness state. */
+export type AuthHarnessState = {
+  /** Stores scenario. */
+  scenario: string;
+  /** Stores calls. */
+  calls: string[];
+  /** Stores backend exchanges. */
+  backendExchanges: string[];
+  /** Stores backend deletion retries. */
+  backendDeletionRetries: string[];
+  /** Stores firebase tokens. */
+  firebaseTokens: string[];
+  /** Stores login payloads. */
+  loginPayloads: Array<Record<string, string>>;
+  /** Stores overlay options. */
+  overlayOptions: Array<{
+    /** Stores theme. */
+    theme?: string;
+    /** Stores registration message. */
+    message?: string;
+    /** Stores source. */
+    source?: string;
+    /** Stores campaign. */
+    campaign?: string;
+    /** Stores reference. */
+    reference?: string;
+    /** Stores acquisition reference. */
+    acquisitionReference?: string;
+    /** Stores invite kind. */
+    inviteKind?: string;
+    /** Stores inviter name. */
+    inviterName?: string;
+    /** Stores custom name. */
+    customName?: string;
+  }>;
+  /** Stores player data reads. */
+  playerDataReads: number;
+  /** Stores preference writes. */
+  preferenceWrites: Array<Record<string, unknown>>;
+  /** Stores profile reads. */
+  profileReads: number;
+  /** Stores notification schedules. */
+  notificationSchedules: Array<{
+    /** Stores identifier. */
+    identifier?: string;
+    /** Stores scheduled in days. */
+    scheduledInDays?: number;
+    /** Stores priority. */
+    priority?: string;
+    /** Stores body. */
+    body?: string;
+    /** Stores cta text. */
+    ctaText?: string;
+    /** Stores asset reference. */
+    assetReference?: string;
+    /** Stores entry payload. */
+    entryPayload?: Record<string, string>;
+  }>;
+  /** Stores notification removals. */
+  notificationRemovals: string[];
+  /** Stores referral shares. */
+  referralShares: Array<{
+    /** Stores reference. */
+    reference?: string;
+    /** Stores share title. */
+    shareTitle?: string;
+    /** Stores share text. */
+    shareText?: string;
+    /** Stores share image. */
+    shareImage?: string;
+    /** Stores onboarding slug. */
+    onboardingSlug?: string;
+    /** Stores entry payload. */
+    entryPayload?: Record<string, string>;
+  }>;
+  /** Records whether each referral request began synchronously in the profile click. */
+  referralSharesStartedFromProfileClick: boolean[];
+};
+
 /** Provides advance to registration behavior. */
 export const advanceToRegistration = async (page: Page) => {
   await enterRegisteredGame(page);
@@ -145,4 +224,69 @@ export const solveFakeRace = async (
   }
   await page.getByRole("heading", {name: /run recorded|you win|opponent wins|tie/i}).waitFor({timeout: 15_000});
   await page.locator(".race-operation-loader").waitFor({state: "detached"});
+};
+
+/** Verifies readable content and reachable controls in the short Jest phone preview. */
+export const verifyShortJestPreview = async (page: Page) => {
+    await enterRegisteredGame(page);
+    await page.setViewportSize({width: 424, height: 365});
+    await page.waitForTimeout(100);
+    expect(await page.locator(".riddle-card h1").evaluate(heading => heading.getBoundingClientRect().width)).toBeGreaterThanOrEqual(220);
+    for (const selector of [".riddle-card", ".guess-board", ".keyboard", ".game-bottom-navigation"]) {
+      /** Visible control extents must fit the platform frame. */
+      const bounds = await page.locator(selector).boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(366);
+      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(425);
+    }
+    await page.getByRole("button", {name: "Multiplayer", exact: true}).click();
+    await page.getByRole("heading", {name: "Race to 10", exact: true}).waitFor();
+};
+
+/** Mocks the external SDK request, including the delayed-startup scenario. */
+export const installJestSdkRequestRoute = async (page: Page, scenario?: string) => {
+  await page.route("https://cdn.jest.com/**", async (route) => {
+    if (scenario === "sdk-request-delay") {
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+    }
+    await route.abort();
+  });
+};
+
+/** Checks a delayed full-app startup against the current host's progress-sensitive watchdog. */
+export const verifySlowStartupWatchdog = async (page: Page, pageErrors: string[]) => {
+  await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 40_000});
+  /** Reads only the injected fixture's public observations. */
+  const calls = await page.evaluate<string[]>(() => Reflect.get(window, "__RIDDLE_QUEST_JEST_AUTH_TEST__").calls);
+  expect(calls).not.toContain("host.loadingTimeout");
+  expect(calls).toContain("sdk.progress:16");
+  expect(calls).toContain("sdk.progress:17");
+  expect(calls).toContain("sdk.markGameLoaded");
+  expect(pageErrors).toEqual([]);
+};
+
+/** Checks the established guest identity sequence without expanding the integration suite. */
+export const verifyGuestStartupIdentity = (state: {
+  /** Observed SDK calls. */
+  calls: string[];
+  /** Observed signed identity exchanges. */
+  backendExchanges: string[];
+  /** Observed test authentication tokens. */
+  firebaseTokens: string[];
+  /** Observed registered-profile reads. */
+  profileReads: number;
+  /** Observed notification schedules. */
+  notificationSchedules: unknown[];
+}) => {
+    expect(state.calls).toContain("sdk.init");
+    expect(state.calls).toContain("sdk.getPlayer");
+    expect(state.calls).toContain("sdk.getPlayerSigned");
+    expect(state.calls.indexOf("sdk.init")).toBeLessThan(state.calls.indexOf("sdk.getPlayer"));
+    expect(state.calls.indexOf("sdk.getPlayer")).toBeLessThan(state.calls.indexOf("sdk.getPlayerSigned"));
+    expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
+    expect(state.firebaseTokens).toEqual(["mock"]);
+    expect(state.profileReads).toBe(0);
+    expect(state.calls).not.toContain("sdk.social.getProfile");
+    expect(state.calls.filter((call) => call === "sdk.data.getAll")).toHaveLength(2);
+    expect(state.notificationSchedules).toEqual([]);
 };

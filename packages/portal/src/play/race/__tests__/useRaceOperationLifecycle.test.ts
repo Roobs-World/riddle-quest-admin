@@ -84,6 +84,22 @@ const harness = () => {
     },
   };
 };
+
+it("projects Turkish dotted and dotless guesses using the same locale as authoritative scoring", () => {
+  /** Authored Turkish deck keeps casing semantics fixed throughout the projected transition. */
+  const original = run();
+  original.locale = "tr";
+  original.preloadedRiddles = original.preloadedRiddles!.map(prompt => ({...prompt, answerLength: 1,
+    evaluation: {answer: "ı", locale: "tr"}}));
+  original.currentRiddle = {...original.currentRiddle!, answerLength: 1, evaluation: {answer: "ı", locale: "tr"}};
+  /** The real private gameplay module must advance immediately for locale-equivalent input. */
+  const correct = harness().play.projectGuess(original, ["I"], [], 0)!;
+  expect(correct.run).toMatchObject({correctCount: 1, currentRiddle: {position: 1}});
+  /** A distinct dotted letter remains wrong under the same immutable locale. */
+  const wrong = harness().play.projectGuess(original, ["İ"], [], 0)!;
+  expect(wrong.run).toBeNull();
+  expect(wrong.guesses).toEqual([{guess: ["İ"], feedback: ["red"]}]);
+});
 /** Provides confirm behavior. */
 const confirm = (next: RaceRunView): SubmitRaceGuessResponse => ({
   run: next,
@@ -108,7 +124,8 @@ describe("Race play module", () => {
       resetAttempt: true,
       guesses: [{guess: [..."test"], feedback: ["green", "green", "green", "green"]}],
     });
-    expect(play.confirmGuess(confirm(original), null, [], [..."test"])).toEqual({resetAttempt: true, guesses: null});
+    // Without a checkpoint or current run, there is no submitted question to acknowledge.
+    expect(() => play.confirmGuess(confirm(original), null, [], [..."test"])).toThrow("Missing submitted question");
     expect(play.canPublish(null)).toBe(false);
     play.dispose();
   });
@@ -261,7 +278,8 @@ describe("Race play module", () => {
       h.advance(400);
       /** Authority rejection restores both the view and its clock anchor. */
       const rollback = h.play.rejectProjection(operation)!;
-      expect(rollback.run).toBe(original);
+      expect(rollback.run).toEqual(original);
+      expect(rollback.run).not.toBe(original);
       expect(rollback.receivedAt).toBe(0);
     }
   });
@@ -273,11 +291,11 @@ describe("Race play module", () => {
     play.projectGuess(original, [..."test"], [], 0);
     expect(() => play.confirmGuess(confirm({...original, runId: "other-run"}), original, [], []))
       .toThrow("different race run");
-    expect(play.rejectProjection("raceGuess")?.run).toBe(original);
+    expect(play.rejectProjection("raceGuess")?.run).toEqual(original);
     for (const operation of ["raceHint", "raceSkip"] as const) {
       play.projectPaid(operation, original, 0);
       expect(() => play.confirmPaid(operation, {...original, runId: "other-run"})).toThrow("different race run");
-      expect(play.rejectProjection(operation)?.run).toBe(original);
+      expect(play.rejectProjection(operation)?.run).toEqual(original);
     }
   });
   it("invalidates receipts, projections and loaders on teardown and permits a fresh mount", () => {

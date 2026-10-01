@@ -9,18 +9,18 @@
   ],
   "modules": [
     "packages/portal/\u0000rolldown/runtime.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-client.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/client.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-compiler-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-jsx-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/compiler-runtime.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/jsx-runtime.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/cjs/scheduler.production.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/index.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/client.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-compiler-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-jsx-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/compiler-runtime.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
     "packages/core/src/game/graphemes.ts",
     "packages/portal/src/gamesnacks/GameSnacksSdkPort.ts",
     "packages/portal/src/gamesnacks/main.tsx",
@@ -54,7 +54,7 @@
         "assets/rolldown-runtime.js"
       ],
       "dynamicImports": [],
-      "sha256": "df5b64a26874919d4d16bcecdc77a8433b23f97366d0cc61324a76a53ec6556c"
+      "sha256": "48fd39e1c24b96373b0b291561ddc9677923f9899739333a58607f34c94a132e"
     },
     {
       "file": "assets/core-game.js",
@@ -82,7 +82,7 @@
         "assets/rolldown-runtime.js"
       ],
       "dynamicImports": [],
-      "sha256": "94b5f12597debb69eab09ed9222f25e2005394048ec3aeaf271ee5932f98e98e"
+      "sha256": "5458640a413fcb7f20afa750be788698cfa256b519d437774c5b86b753daca4b"
     }
   ],
   "files": [
@@ -96,7 +96,7 @@
     },
     {
       "file": "assets/index.js",
-      "sha256": "df5b64a26874919d4d16bcecdc77a8433b23f97366d0cc61324a76a53ec6556c"
+      "sha256": "48fd39e1c24b96373b0b291561ddc9677923f9899739333a58607f34c94a132e"
     },
     {
       "file": "assets/rolldown-runtime.js",
@@ -104,7 +104,7 @@
     },
     {
       "file": "assets/vendor-react.js",
-      "sha256": "94b5f12597debb69eab09ed9222f25e2005394048ec3aeaf271ee5932f98e98e"
+      "sha256": "5458640a413fcb7f20afa750be788698cfa256b519d437774c5b86b753daca4b"
     },
     {
       "file": "game.json",
@@ -128,11 +128,11 @@
     },
     {
       "file": "third-party-licenses.txt",
-      "sha256": "fa24de5e41ed08068c63f4b6a349f9afe2cd026168eaff86c876f3f61b3641f7"
+      "sha256": "879df39161840b5e3cc2ea3f14771d8bba7ad61cb5579410573d78a18327e1f3"
     },
     {
       "file": "youtube-content-manifest.json",
-      "sha256": "2e7de5f49d614b1b52859f9891fcb0d6a524e62ede9980c1014fa8b2a66f425c"
+      "sha256": "ef5a8a39398a1ac47ca86935885e9249ebae59dfafad8f9eb5ac1e4d3a4abdd4"
     }
   ]
 }

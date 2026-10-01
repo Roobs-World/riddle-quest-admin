@@ -14,7 +14,6 @@ const execute = promisify(execFile);
 const browser = await chromium.launch({headless: true});
 const results = [];
 const targets = [...listHtml5DistributionDefinitions(),
-  {target: "microsoft-pwa", artifact: "build-microsoft-pwa.zip", offline: true},
   {target: "gamesnacks", artifact: "build-gamesnacks.zip", gamesnacks: true},
   {target: "netflix", directory: "packages/portal/dist-netflix"},
   {target: "yahoo", directory: "packages/portal/dist-yahoo"}];

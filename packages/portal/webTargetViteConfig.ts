@@ -612,6 +612,8 @@ export function createWebTargetViteConfig({
     devtools: command === "serve",
     define: {
       "import.meta.env.VITE_PLATFORM_TARGET": JSON.stringify(profile.id),
+      // Error-only targets do not ship tracing or SDK debug instrumentation.
+      ...(["jest", "facebook"].includes(profile.id) ? {__SENTRY_DEBUG__: "false", __SENTRY_TRACING__: "false"} : {}),
     },
     envDir: portalEnvironmentDirectory,
     envPrefix: "VITE_",

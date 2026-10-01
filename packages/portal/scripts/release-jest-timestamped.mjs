@@ -490,9 +490,9 @@ const attemptId = randomUUID().replaceAll("-", "").slice(0, 8);
 const packageVersion = JSON.parse(readFileSync(join(packageDirectory, "package.json"), "utf8")).version;
 const buildVersion = `${packageVersion}-dev.${stamp}.${sourceCommit.slice(0, 12)}.${attemptId}`;
 const sentryRelease = `riddle-quest@${buildVersion}`;
-// An explicit operator-selected inactive upload retains the complete release
-// gate while leaving promotion to the Jest Developer Console. Credentials
-// cannot select activation intent; the uploader binds it to the gated archive.
+// Build activation is allowed and remains distinct from game publication.
+// An explicitly inactive release retains the complete gate. Credentials cannot
+// select activation intent; the uploader binds it to the gated archive.
 if (process.env.JEST_RELEASE_INACTIVE !== undefined && process.env.JEST_RELEASE_INACTIVE !== "true") {
   throw new Error("JEST_RELEASE_INACTIVE accepts only true when specified");
 }
@@ -566,6 +566,7 @@ const gateEnvironment = {
 const gatePreflightDirectory = join(releaseSandboxDirectory, "gate-preflight");
 mkdirSync(gatePreflightDirectory, {mode: 0o700});
 Object.assign(gateEnvironment, {
+  RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: join(gatePreflightDirectory, "target-dependencies"),
   JEST_ARCHIVE_PATH: join(gatePreflightDirectory, "build.zip"),
   JEST_BUILD_DIRECTORY: join(packageDirectory, "dist-jest"),
   JEST_GATE_RECEIPT_PATH: join(gatePreflightDirectory, "gated-artifact.json"),
@@ -683,7 +684,7 @@ const makeReadOnly = (directory) => {
 
 for (const key of ["JEST_UPLOAD_IS_ACTIVE", "JEST_CONFIRM_ACTIVATION"]) {
   if (process.env[key] !== undefined) {
-    throw new Error(`${key} is unsupported; timestamped Jest releases always request automatic activation`);
+    throw new Error(`${key} is unsupported; timestamped Jest releases bind build activation without publishing the game`);
   }
 }
 console.log(`Gating immutable Jest build ${buildVersion} from ${sourceCommit} for ${activationRequested ? "automatic activation" : "inactive upload"}`);
@@ -713,6 +714,15 @@ try {
   // are read only after it passes.
   if (!skipTests) runPnpm(["verify:production:extended"], gateEnvironment);
   assertSourceClean();
+  // Capture the installed graph while the read-only package store is available.
+  // The credential-bearing rebuild consumes this frozen input without querying pnpm.
+  const frozenLicenseInventoryPath = join(gatePreflightDirectory, "license-inventory.json");
+  const licenseInventory = JSON.parse(run("pnpm", ["--filter", "@qwordly/portal", "licenses", "list", "--json"], {
+    captureOutput: true,
+    env: {...gateEnvironment, pnpm_config_store_dir: isolatedPnpmLicenseStoreDirectory},
+  }).stdout);
+  writeFileSync(frozenLicenseInventoryPath, JSON.stringify(licenseInventory), {mode: 0o400, flag: "wx"});
+  gateEnvironment.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = frozenLicenseInventoryPath;
   // The remaining credential-bearing phase never invokes Firebase emulators.
   // Remove disposable gate logs before credentials are loaded; prior logs stay
   // quarantined until every sandboxed release child has exited.
@@ -725,6 +735,9 @@ try {
   // private credential contents enter this process.
   materializeCommittedSource();
   snapshotTrustedReleaseScripts();
+  releaseSandboxConfiguration.protectedReadOnlyBinds.push(
+    {source: frozenLicenseInventoryPath, destination: frozenLicenseInventoryPath},
+  );
 
   const credentials = loadReleaseCredentials();
   const uploadToken = credentials.JEST_GAME_UPLOAD_TOKEN;

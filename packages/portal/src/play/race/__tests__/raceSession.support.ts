@@ -7,7 +7,7 @@ import {createFakeRaceServices} from "../testing/fakeRaceServices";
 import {projectRaceOutcome} from "../logic/racePresentation";
 
 /** Deterministic transport, persistence and time adapters exercise the public session seam. */
-export const harness = (entry: Partial<RaceSessionEntry> = {}, resumeId: string | null = null, options: Pick<RaceSessionOptions, "recovery" | "wallNow" | "getMatchmaking" | "effect"> = {}) => {
+export const harness = (entry: Partial<RaceSessionEntry> = {}, resumeId: string | null = null, options: Pick<RaceSessionOptions, "recovery" | "persistence" | "wallNow" | "getMatchmaking" | "effect" | "postToHost"> = {}) => {
   /** Monotonic time and unique receipts. */
   let now = 0, sequence = 0;
   /** Issued bridge commands. */
@@ -33,13 +33,13 @@ export const harness = (entry: Partial<RaceSessionEntry> = {}, resumeId: string 
   }>();
   /** Owned player journey. */
   const session = new RaceSession({locale: "en", ownerId: "owner-1", ...entry}, {
-    ...options, postToHost: message => commands.push(message), effect: effect => {effects.push(effect); return options.effect?.(effect);},
+    ...options, postToHost: message => {commands.push(message); options.postToHost?.(message);}, effect: effect => {effects.push(effect); return options.effect?.(effect);},
     requestId: operation => `${operation}-${++sequence}`,
     random: () => 0.5,
     clock: {now: () => now, schedule: (callback, delay) => {
       /** Unique scheduled loader handle. */
       const id = ++sequence; timers.set(id, {at: now + delay, callback}); return id;}, cancel: id => {timers.delete(id);}},
-    persistence: {read: () => resumeId, save: (ownerId, runId) => saved.push({ownerId, runId}), clear: (ownerId, runId) => {cleared.push(ownerId); clearCalls.push({ownerId, runId});}},
+    persistence: options.persistence ?? {read: () => resumeId, save: (ownerId, runId) => saved.push({ownerId, runId}), clear: (ownerId, runId) => {cleared.push(ownerId); clearCalls.push({ownerId, runId});}},
   });
   session.enter();
   return {session, commands, effects, saved, cleared, clearCalls, timers,
@@ -78,15 +78,22 @@ export const settleMatch = (session: RaceSession): Promise<void> => {
 };
 /** Privacy-safe direct challenge preview. */
 export const preview = (challengeId = "challenge-1"): RaceChallengePreview => ({challengeId, categoryId: "mixed", locale: "en", rulesVersion: "race10_v1", targetCorrect: 10, adjustedTimeToBeatMs: 60000, creator: {displayName: "Nova"}, status: "active", expiresAtMs: Date.now() + 60000});
+/** Authors a clean all-correct recording for fixtures focused on terminal delivery and effects. */
+export const withCorrectHistory = (run: RaceRunView): RaceRunView => {
+  if (run.totalPenaltyMs !== 0) throw new Error("Clean recording fixture cannot contain paid time");
+  return {...run, events: Array.from({length: run.correctCount}, (_, position) => ({sequence: position,
+    type: "correct" as const, riddlePosition: position, wallElapsedMs: run.wallElapsedMs, penaltyAddedMs: 0 as const,
+    totalPenaltyMs: 0, adjustedElapsedMs: run.wallElapsedMs, correctCount: position + 1}))};
+};
 /** Confirmed creator result awaiting an explicit publication request. */
 export const recorded = async (effect?: RaceSessionOptions["effect"]) => {
   /** Public session completing its owned run. */
   const h = await racing(effect);
   h.session.input("text", "piano"); h.session.submit();
   /** Terminal authority view with a stable recorded score. */
-  const run = {...h.run, status: "completed" as const, correctCount: 10, currentRiddle: null, wallElapsedMs: 60000, adjustedElapsedMs: 60000};
+  const run = withCorrectHistory({...h.run, status: "completed", correctCount: 10, currentRiddle: null, wallElapsedMs: 60000, adjustedElapsedMs: 60000});
   h.respond("raceGuess", {run, isCorrect: true, autoSkipped: false, feedback: [..."piano"].map(letter => ({letter, status: "green"}))});
+  expect(h.session.getSnapshot()).toMatchObject({error: null, stage: "result", pending: "raceOutcome"});
   h.respond("raceOutcome", projectRaceOutcome(run, run.adjustedElapsedMs)!);
   return h;
 };
-

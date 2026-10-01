@@ -1,11 +1,13 @@
-import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, type RaceOutcome} from "@qwordly/core/race";
+import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RaceOutcomeSchema, type RaceOutcome} from "@qwordly/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
+import {raceRewardAwardsAgree} from "./raceAchievements";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
-import {raceClock, raceOutcome, refreshRaceRun, type RaceRunRecord} from "./raceEngine";
+import {raceClock, raceOutcome, raceOperationAtMs, refreshRaceRun, type RaceRunRecord} from "./raceEngine";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
-import {persistRaceAchievementEvent, stripUndefined, type Firestore} from "./raceSetupService";
+import {persistRaceAchievementEvent, readRaceCoinBalance, stripUndefined, type Firestore} from "./raceSetupService";
 import {readRaceMatchOffer, recordRaceMatchTerminal} from "./raceMatchOffer";
+import {assertRaceStoredRecord} from "./raceStoredRecords";
 
 /** Maps a canonical challenger outcome into the recording creator's result. */
 export function creatorRaceResult(result: RaceOutcome["result"]): "win" | "loss" | "tie" {
@@ -24,8 +26,12 @@ export async function settleRaceRun(
   transaction: FirebaseFirestore.Transaction,
   db: Firestore,
   input: RaceRunRecord,
-  nowMs: number,
+  sampledAtMs: number,
 ): Promise<RaceRunRecord> {
+  // Enforce canonical scoring even for internal callers passing a typed record directly.
+  assertRaceStoredRecord(input, "run");
+  /** Receipt, achievement and outbox clocks cannot precede accepted command progress. */
+  const nowMs = raceOperationAtMs(input, sampledAtMs);
   /** Provides privacy behavior. */
   const privacy = await resolveRaceOpponentPrivacy(transaction, db, input);
   /** Provides offer behavior. */
@@ -56,6 +62,8 @@ export async function settleRaceRun(
   }
   /** Provides outcome behavior. */
   const outcome = raceOutcome(run, nowMs);
+  // Check the complete receipt before granting rewards, including a finish after the settlement clock.
+  assertRaceStoredRecord({...run, settledAtMs: nowMs, settledOutcome: outcome}, "run");
   /** Provides owner ref behavior. */
   const ownerRef = db.doc(`users/${run.userId}`);
   /** Provides [owner, deletion] behavior. */
@@ -118,8 +126,10 @@ export async function readSettledRaceOutcome(
   transaction: FirebaseFirestore.Transaction,
   db: Firestore,
   run: RaceRunRecord,
-  nowMs: number,
+  sampledAtMs: number,
 ): Promise<RaceOutcome> {
+  /** Reward presentation follows the same canonical clock floor as settlement. */
+  const nowMs = raceOperationAtMs(run, sampledAtMs);
   // Fetch before settlement can write; the transaction retries if the balance changes.
   /** Provides owner behavior. */
   const owner = await transaction.get(db.doc(`users/${run.userId}`));
@@ -128,14 +138,25 @@ export async function readSettledRaceOutcome(
   const settled = await settleRaceRun(transaction, db, run, nowMs);
   /** Provides outcome behavior. */
   const outcome = settled.settledOutcome ?? raceOutcome(settled, nowMs);
-  if (!settled.settlementAwards || settled.achievementOutcomePresentedAtMs !== undefined) return outcome;
-  transaction.set(db.doc(`raceRuns/${run.runId}`), {achievementOutcomePresentedAtMs: nowMs}, {merge: true});
+  if (!settled.settlementAwards || settled.achievementOutcomePresentedAtMs !== undefined) return acceptedRaceOutcome(outcome);
   /** Provides coins behavior. */
-  const coins = Number(owner.data()?.coins ?? 0);
-  return {
+  const coins = readRaceCoinBalance(owner.data() ?? {});
+  /** The exact public reward response must succeed before consuming its presentation receipt. */
+  const response = acceptedRaceOutcome({
     ...outcome,
     ...settled.settlementAwards,
     newCoins: coins + (run.achievementProgressRecordedAtMs === undefined ? settled.settlementAwards.achievementCoinsAwarded : 0),
-  };
+  });
+  transaction.set(db.doc(`raceRuns/${run.runId}`), {achievementOutcomePresentedAtMs: nowMs}, {merge: true});
+  return response;
+}
+
+/** Rejects an undeliverable public outcome inside the caller's transaction without exposing stored diagnostics. */
+function acceptedRaceOutcome(outcome: RaceOutcome): RaceOutcome {
+  /** Public reward identifiers and safe currency values are stricter than optional storage metadata. */
+  const accepted = RaceOutcomeSchema.safeParse(outcome);
+  if (!accepted.success || !raceRewardAwardsAgree(accepted.data.newlyUnlockedAchievementIds, accepted.data.achievementCoinsAwarded))
+    throw new HttpsError("data-loss", "Stored race outcome is invalid.");
+  return accepted.data;
 }
 import {pendingRaceDelivery} from "./raceDeliveryFailures";

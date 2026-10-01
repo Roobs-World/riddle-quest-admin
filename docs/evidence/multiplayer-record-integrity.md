@@ -10,7 +10,7 @@ Local development evidence, 30 September 2026. No production records, configurat
 - Recordings validate penalty sums, adjusted duration and archived deck identity/order relationships. The immutable deck validator rejects duplicates even when directly called outside canonical record parsing.
 - Legacy archive acceptance, resolution and reconciliation use a shared complete creator-record link check. Matching owner/language alone is insufficient. The original physical run identity, completed creator state, category/deck/rules, recording timing and timeline must agree. Publication follows finish. Fully archived recordings retain their independent lifetime.
 
-## Verification
+## Foundation verification
 
 The final Node 22 backend race gate passed 611 tests across 44 suites: 96.73% lines, 94.57% statements, 88.57% branches and 97.13% functions. Ten operator command safeguards and the production module-cycle audit passed through its build prehook.
 
@@ -28,6 +28,18 @@ Eligibility inspection now returns the authorized archive resolved in that same 
 
 Equivalent legacy-to-archived backfills and changed display metadata remain supported. New private digests do not enter client run/offer projections. Historical receipts without a digest remain supported without inventing historical source evidence; historical prepared runs compare their retained deck/category/language/rules/evaluation/opponent facts. They cannot retroactively prove source identities or separate timing components they never stored. Once scheduled, source challenge/creator-record removal does not invalidate resume or reset a ready retry.
 
-## Remaining audit
+## Recording-provenance verification
 
-The recording-provenance changes close the identified preparation/acceptance/readiness gap for newly issued records, with explicit historical limits above. Broad cross-record completion remains unproven. Session ownership and the original MP1–MP9/VERIFY audit still require current-state verification. This evidence does not close those requirements.
+The final compiled Node 22 backend build and production module-cycle audit passed (153 modules). The isolated loopback Firestore gate passed 657 tests across 46 suites: 96.85% lines, 94.59% statements, 88.69% branches and 97.56% functions. Ten operator command safeguards passed during the build-backed prehook. Scoped lint and documentation verification passed for thirteen selected files (595 declarations); security/CI-security, scalability and whitespace checks passed.
+
+The new regressions cover creator/source-run/source-deck/category/rules/evaluation/content/fixed-duration/timeline drift between outside preparation and transactional acceptance, and between preparation and readiness. They verify absent attempt/exposure/deck/run/start writes after rejected acceptance; preserved prepared state after rejected readiness; unchanged conversion clocks on genuine issued offers; discovery-to-acceptance and replay drift; equivalent legacy snapshot backfill/presentation/property order; historical runs without provenance; and no digest leakage through client run views. Legacy source answer changes are rejected even when their catalog token remains unchanged.
+
+A final inspection-to-offer-commit regression exposed and fixed a changing-pool classification bug: a failed canonical commit must produce `eligibility-changed`, even when retrieval exhausted the pool, rather than returning `empty` and possibly selecting a bot. After projection refresh, a new lookup can issue the updated recording. This regression is included in the final 657-test gate.
+
+Initial full runs revealed that current lookup telemetry counts the concurrent availability probe as well as bucket retrieval. The regression now explicitly expects the probe plus one comparable recording and allows its extra query; it still proves that more than 200 earlier-expiring mismatches do not consume the candidate window. Two earlier emulator startup attempts collided with another live local test process; the final gate used an isolated local port without interrupting it. No failed intermediate run is counted as verification.
+
+All six guarded benchmark scenarios and successful replay phases passed on the final compiled backend with five observations per phase. The [saved report](race-match-benchmark-recording-integrity-2026-09-30.json) verifies terminal event/policy attribution and read/callback/fixture latency guards. It is local warm-process regression evidence, not production latency, billing or SLO proof.
+
+## Final audit
+
+The recording-provenance changes close the identified preparation/acceptance/readiness gap for newly issued records, with explicit historical limits above. The subsequent [final architecture audit](multiplayer-architecture-final-audit.md) traces supported ownership/storage checks across resume, readiness, settlement, deadlines and derived delivery, and verifies the client session integration. It closes the finite original MP1–MP9/VERIFY requirements; production rollout and historical evidence limits remain separate.

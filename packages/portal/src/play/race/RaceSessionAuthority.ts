@@ -1,9 +1,9 @@
-import {RaceEntryResponseSchema, AbandonRaceRunResponseSchema, ListRaceCategoriesResponseSchema, ListRaceInboxResponseSchema, PublishRaceChallengeResponseSchema, RaceChallengePreviewSchema, RaceOutcomeSchema, RaceRunResponseSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema, SubmitRaceGuessResponseSchema, type RaceRunView} from "@qwordly/core/race";
+import {RaceEntryResponseSchema, AbandonRaceRunResponseSchema, ListRaceCategoriesResponseSchema, ListRaceInboxResponseSchema, PublishRaceChallengeResponseSchema, RaceChallengePreviewSchema, RaceOutcomeSchema, RaceRunResponseSchema, RaceRunViewSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema, SubmitRaceGuessResponseSchema, type RaceRunView, type RaceOutcome} from "@qwordly/core/race";
 import {RacePlay} from "./RacePlay";
 import type {RaceSessionState} from "./RaceSession.types";
 import type {RaceOperation} from "./logic/raceOperations";
 import type {RaceLocale} from "@qwordly/core/race";
-import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot} from "./logic/racePresentation";
+import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, projectRaceOutcome} from "./logic/racePresentation";
 import {splitGraphemes} from "@qwordly/core/game";
 
 /** Recreates input only when the authority actually changes the displayed question. */
@@ -24,6 +24,43 @@ const raceReveals = (prompt: RaceRunView["currentRiddle"]): Map<number, string> 
 };
 /** Checks immutable content and editable prompt coherence before any rollback checkpoint is consumed. */
 const raceSnapshot = (run: RaceRunView, previous?: RaceRunView | null): RaceRunView => {
+  // A compatible response can omit a known start, but cannot evade its clock relationship.
+  if (run.startsAtMs === undefined && previous?.startsAtMs !== undefined)
+    RaceRunViewSchema.parse({...run, startsAtMs: previous.startsAtMs});
+  if (run.adjustedElapsedMs !== run.wallElapsedMs + run.totalPenaltyMs) throw new Error("Invalid race clock");
+  /** Only live preparation, scheduling and gameplay expose an editable question. */
+  const phases = ["prepared", "scheduled", "active"];
+  if (phases.includes(run.status) !== Boolean(run.currentRiddle)) throw new Error("Invalid race phase prompt");
+  if (previous) {
+    /** Compatible rule versions can start new runs but cannot rewrite an owned attempt. */
+    if (Object.entries(previous.rules).some(([field, value]) => Reflect.get(run.rules, field) !== value))
+      throw new Error("Changed race rules");
+    /** Confirmed scoring and charge events are immutable; concurrent actions may only append. */
+    if (run.events.length < previous.events.length || previous.events.some((event, index) =>
+      Object.entries(event).some(([field, value]) => Reflect.get(run.events[index], field) !== value)))
+      throw new Error("Changed race event history");
+    /** Confirmed authority phases advance independently of provisional rendering. */
+    const before = phases.indexOf(previous.status), after = phases.indexOf(run.status);
+    if (after >= 0 && (before < 0 || after < before) || before < 0 && run.status !== previous.status ||
+      run.correctCount < previous.correctCount || run.totalPenaltyMs < previous.totalPenaltyMs) throw new Error("Regressed race progress");
+    if (before < 0 && (run.correctCount !== previous.correctCount || run.totalPenaltyMs !== previous.totalPenaltyMs ||
+      run.wallElapsedMs !== previous.wallElapsedMs || run.adjustedElapsedMs !== previous.adjustedElapsedMs)) throw new Error("Changed final race facts");
+    if (previous.opponent && (!run.opponent || run.opponent.adjustedFinishMs !== previous.opponent.adjustedFinishMs ||
+      run.opponent.events.length !== previous.opponent.events.length || previous.opponent.events.some((event, index) => {
+        /** Identity may anonymize after deletion, but the recorded rival's timing is immutable. */
+        const next = run.opponent!.events[index];
+        return Object.entries(event).some(([field, value]) => Reflect.get(next, field) !== value);
+      }))) throw new Error("Changed race opponent recording");
+    if (run.currentRiddle && previous.currentRiddle) {
+      if (run.currentRiddle.position < previous.currentRiddle.position) throw new Error("Regressed race question");
+      if (run.currentRiddle.position === previous.currentRiddle.position) {
+        /** Already-confirmed attempts and hints cannot disappear from a later owned read. */
+        const revealed = raceReveals(run.currentRiddle);
+        if (run.currentRiddle.guessesUsed < previous.currentRiddle.guessesUsed ||
+          previous.currentRiddle.revealedLetters.some(({index, letter}) => revealed.get(index)?.normalize("NFC") !== letter.normalize("NFC"))) throw new Error("Regressed race attempt");
+      }
+    }
+  }
   if (previous?.startsAtMs !== undefined && run.startsAtMs !== undefined && previous.startsAtMs !== run.startsAtMs ||
     previous?.preparationExpiresAtMs !== undefined && run.preparationExpiresAtMs !== undefined && previous.preparationExpiresAtMs !== run.preparationExpiresAtMs) throw new Error("Changed race schedule");
   for (const [position, riddle] of (run.preloadedRiddles ?? []).entries()) {
@@ -63,13 +100,28 @@ const raceSnapshot = (run: RaceRunView, previous?: RaceRunView | null): RaceRunV
   return run;
 };
 /** Internal response application; only RaceSession crosses this implementation seam. */
-export function applyRaceAuthority(state: RaceSessionState, operation: RaceOperation, data: unknown, play: RacePlay, now: number, locale: RaceLocale, resumeDraft?: RaceResumeDraft | null, ownedSnapshot?: RaceRunView | null): Partial<RaceSessionState> {
+export function applyRaceAuthority(state: RaceSessionState, operation: RaceOperation, data: unknown, play: RacePlay, now: number, locale: RaceLocale, resumeDraft?: RaceResumeDraft | null, ownedSnapshot?: RaceRunView | null, confirmedOutcome?: RaceOutcome | null): Partial<RaceSessionState> {
   /** Rejects validly shaped payloads for a different owned attempt before checkpoint consumption. */
   const owned = (run: RaceRunView): RaceRunView => {
     if (!state.run || run.runId !== state.run.runId || run.locale !== locale ||
       run.role !== state.run.role || run.categoryId !== state.run.categoryId ||
       run.challengeId !== state.run.challengeId || run.rivalryChallengeId !== state.run.rivalryChallengeId) throw new Error("Wrong race run");
     return raceSnapshot(run, ownedSnapshot ?? state.run);
+  };
+  /** Paid confirmations must include the original action's charge before consuming its checkpoint. */
+  const paid = (run: RaceRunView, type: "hint" | "skip"): void => {
+    /** Private authority history excludes the immediately rendered local projection. */
+    const original = ownedSnapshot ?? state.run;
+    if (!original?.currentRiddle) throw new Error("Missing paid question");
+    /** The action's rule fixes the minimum new charge independently of concurrent later actions. */
+    const penalty = type === "hint" ? original.rules.hintPenaltyMs : original.rules.skipPenaltyMs;
+    if (run.totalPenaltyMs < original.totalPenaltyMs + penalty ||
+      !run.events.slice(original.events.length).some(event => event.type === type &&
+        event.riddlePosition === original.currentRiddle!.position && event.penaltyAddedMs === penalty &&
+        (type !== "skip" || event.correctCount > original.correctCount))) throw new Error("Missing paid confirmation charge");
+    if (type === "skip" && run.correctCount <= original.correctCount) throw new Error("Unacknowledged skip score");
+    if (type === "skip" && run.status === "active" &&
+      (!run.currentRiddle || run.currentRiddle.position <= original.currentRiddle.position)) throw new Error("Unacknowledged skip transition");
   };
   switch (operation) {
     case "raceCategories": return {categories: ListRaceCategoriesResponseSchema.parse(data).categories};
@@ -93,6 +145,8 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
     case "raceStart": case "raceResume": case "raceReady": {
       /** Prepared, scheduled, active or terminal authority snapshot. */
       const run = raceSnapshot(RaceRunResponseSchema.parse(data).run);
+      // Readiness must schedule or recover this run; a preparation echo cannot acknowledge it.
+      if (operation === "raceReady" && run.status === "prepared") throw new Error("Unacknowledged race readiness");
       if (run.locale !== locale) throw new Error("Wrong race locale");
       /** Every editable authority snapshot must have a coherent reveal set before recovery can consume input. */
       const revealed = raceReveals(run.currentRiddle);
@@ -131,6 +185,23 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       /** Confirmation preserves any draft already typed into the projected successor. */
       const result = SubmitRaceGuessResponseSchema.parse(data);
       owned(result.run);
+      if (result.isCorrect && result.autoSkipped) throw new Error("Contradictory guess progression");
+      if (result.autoSkipped) paid(result.run, "skip");
+      if (result.isCorrect) {
+        /** A successful submission must retain its original question's scoring event. */
+        const original = ownedSnapshot ?? state.run;
+        if (!original?.currentRiddle || result.run.correctCount <= original.correctCount ||
+          !result.run.events.slice(original.events.length).some(event => event.type === "correct" &&
+            event.riddlePosition === original.currentRiddle!.position && event.correctCount > original.correctCount) ||
+          result.run.status === "active" && result.run.currentRiddle!.position <= original.currentRiddle.position)
+          throw new Error("Missing correct guess progression");
+      }
+      /** An accepted wrong guess on the same live question consumes at least one attempt. */
+      const original = ownedSnapshot ?? state.run;
+      if (!result.isCorrect && !result.autoSkipped && result.run.status === "active" &&
+        original?.currentRiddle && result.run.currentRiddle?.position === original.currentRiddle.position &&
+        result.run.currentRiddle.guessesUsed <= original.currentRiddle.guessesUsed)
+        throw new Error("Missing incorrect guess attempt");
       /** Invalid hint metadata must leave the original submission recoverable. */
       const revealed = raceReveals(result.run.currentRiddle);
       /** RacePlay retains the original submission even when successor input changes. */
@@ -151,6 +222,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       /** Paid confirmation must match both run ownership and the pending checkpoint. */
       const result = RequestRaceHintResponseSchema.parse(data);
       owned(result.run);
+      paid(result.run, "hint");
       /** A hint confirms the same question even when its authority view contains additional hints. */
       const prompt = result.run.currentRiddle;
       if (!prompt) {
@@ -187,6 +259,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       /** A confirmed skip replaces the entire attempt. */
       const result = SkipRaceRiddleResponseSchema.parse(data);
       owned(result.run);
+      paid(result.run, "skip");
       raceReveals(result.run.currentRiddle);
       play.confirmPaid("raceSkip", result.run);
       return {run: result.run, receivedAtMs: now, ...raceAttemptState(result.run), penaltyFlash: "RaceTo10.SKIP_PENALTY"};
@@ -195,8 +268,31 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       /** Wrong-run results cannot restore an earlier attempt or trigger provider effects. */
       const outcome = RaceOutcomeSchema.parse(data);
       if (!state.run || outcome.runId !== state.run.runId || outcome.challengeId !== state.run.challengeId) throw new Error("Wrong outcome run");
+      /** A projected deadline may be superseded by another tab; confirmed terminal facts cannot be. */
+      const confirmed = ownedSnapshot ?? state.run;
+      /** Repeated outcome reads may change reward presentation without changing the settled race. */
+      const expected = confirmedOutcome ?? (["completed", "timed_out"].includes(confirmed.status)
+        ? projectRaceOutcome(confirmed, confirmed.adjustedElapsedMs) : null);
+      /** Minimum paid progress is known even when another tab completed unseen actions. */
+      const hintPenaltyMs = confirmed.events.filter(event => event.type === "hint").reduce((total, event) => total + event.penaltyAddedMs, 0);
+      /** Confirmed skips cannot disappear or be reassigned to hint charges. */
+      const skipPenaltyMs = confirmed.events.filter(event => event.type === "skip").reduce((total, event) => total + event.penaltyAddedMs, 0);
+      /** The immutable ghost and final adjusted clock determine every competitive winner. */
+      const opponentFinishMs = confirmed.opponent?.adjustedFinishMs;
+      /** Incomplete players lose to the ghost; a full score uses the exact recorded times. */
+      const competitiveResult = outcome.correctCount < confirmed.rules.targetCorrect || opponentFinishMs !== undefined && outcome.adjustedFinishMs > opponentFinishMs
+        ? "ghost_win" : outcome.adjustedFinishMs === opponentFinishMs ? "tie" : "player_win";
       if (outcome.totalPenaltyMs !== outcome.hintPenaltyMs + outcome.skipPenaltyMs ||
         outcome.adjustedFinishMs !== outcome.wallFinishMs + outcome.totalPenaltyMs ||
+        outcome.opponentAdjustedFinishMs !== opponentFinishMs || outcome.correctCount < confirmed.correctCount ||
+        outcome.totalPenaltyMs < confirmed.totalPenaltyMs || outcome.hintPenaltyMs < hintPenaltyMs || outcome.skipPenaltyMs < skipPenaltyMs ||
+        ["player_win", "ghost_win", "tie"].includes(outcome.result) && (opponentFinishMs === undefined || outcome.result !== competitiveResult) ||
+        outcome.result === "ghost_win" && outcome.correctCount < confirmed.rules.targetCorrect &&
+          (outcome.adjustedFinishMs !== Math.max(opponentFinishMs!, outcome.totalPenaltyMs) ||
+            opponentFinishMs! >= confirmed.rules.maxAdjustedTimeMs || outcome.totalPenaltyMs >= confirmed.rules.maxAdjustedTimeMs) ||
+        outcome.result === "timed_out" && outcome.correctCount === confirmed.rules.targetCorrect ||
+        expected && ["result", "correctCount", "wallFinishMs", "hintPenaltyMs", "skipPenaltyMs", "totalPenaltyMs", "adjustedFinishMs", "opponentAdjustedFinishMs"]
+          .some(field => Reflect.get(outcome, field) !== Reflect.get(expected, field)) ||
         (state.run.role === "creator" ? !["recorded", "timed_out"].includes(outcome.result) : outcome.result === "recorded") ||
         ["recorded", "player_win", "tie"].includes(outcome.result) && outcome.correctCount !== state.run.rules.targetCorrect ||
         outcome.publishable && (outcome.result !== "recorded" || outcome.correctCount !== state.run.rules.targetCorrect) ||

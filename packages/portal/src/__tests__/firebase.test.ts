@@ -13,7 +13,7 @@ const mockGetAuth = jest.fn(() => ({name: "auth"}));
 /** Provides mock get firestore behavior. */
 const mockGetFirestore = jest.fn(() => ({name: "firestore"}));
 /** Provides mock get functions behavior. */
-const mockGetFunctions = jest.fn(() => ({name: "functions"}));
+const mockGetFunctions = jest.fn((_app?: unknown, region?: string) => ({name: "functions", region}));
 
 jest.mock("firebase/app", () => ({initializeApp: (...args: unknown[]) => mockInitializeApp(...args)}));
 jest.mock("firebase/auth", () => ({getAuth: (...args: unknown[]) => mockGetAuth(...args)}));
@@ -122,6 +122,37 @@ describe("Firebase environment variants", () => {
 
   afterEach(() => {
     jest.dontMock("../test/firebaseEnvironmentMock");
+  });
+
+  it("routes all Jest multiplayer calls beside Firestore without rerouting other capabilities", async () => {
+    mockGetFunctions.mockClear();
+    mockHttpsCallable.mockClear();
+    await loadWithEnvironment({...completeEnvironment, platformTarget: "jest"});
+    /** Multiplayer calls must share the database region, without moving account/economy calls. */
+    const multiplayerCalls = [
+      "getRaceAccess",
+      "findRaceMatch",
+      "recordRaceAnalytics",
+      "listRaceCategories",
+      "startRaceRun",
+      "readyRaceRun",
+      "submitRaceGuess",
+      "requestRaceHint",
+      "skipRaceRiddle",
+      "resumeRaceRun",
+      "abandonRaceRun",
+      "publishRaceChallenge",
+      "reserveRaceInvite",
+      "getRaceChallenge",
+      "getRaceOutcome",
+      "listRaceInbox",
+      "getRaceEntry",
+      "cancelRaceInvite",
+    ];
+    for (const [instance, name] of mockHttpsCallable.mock.calls) {
+      expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
+    }
+    expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
   });
 
   it("uses provided configuration and region values", async () => {

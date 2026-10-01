@@ -2,19 +2,22 @@ import {createHash} from "node:crypto";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
 import {RaceCategoryIdSchema, RaceLocaleSchema, RACE_CHALLENGE_TTL_MS, RACE_RULES,
-  type RaceMatchRequest, type StartRaceRunRequest} from "@qwordly/core/race";
+  raceMatchFailure, type RaceMatchRequest, type StartRaceRunRequest} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {requestDocumentId, listRaceCategoriesForLocale, type Firestore} from "./raceSetupService";
 import {racePerformanceExpectation, type RaceMatchProfile} from "./raceMatchPerformance";
 import type {RaceMatchContext} from "./raceMatchPolicy";
-import type {RaceOpponentRecord, RaceRiddleSnapshot} from "./raceEngine";
+import type {RaceOpponentRecord, RaceRiddleSnapshot, RaceRunRecord} from "./raceEngine";
+import {assertRaceMatchReadBudget, withMeteredRaceTransaction, type RaceMatchReadMeter} from "./raceMatchReadMeter";
 
 /** Internal receipts keep retry pacing and ownership immutable without creating fake accounts. */
 const BotOffer = z.object({version: z.literal(1), userId: z.string().min(1), requestId: z.string().min(8),
   locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema, requestedCategoryId: RaceCategoryIdSchema.nullable(),
   performanceMs: z.number().finite().min(1000).max(300000), createdAtMs: z.number().int().nonnegative(),
   expiresAtMs: z.number().int().nonnegative(), acceptedRunId: z.string().min(1).max(160).refine(value => !value.includes("/")).optional()})
-  .refine(offer => offer.expiresAtMs === offer.createdAtMs + 60_000, {message: "Invalid fallback lifetime"});
+  .refine(offer => offer.expiresAtMs === offer.createdAtMs + 60_000, {message: "Invalid fallback lifetime"})
+  .refine(offer => offer.requestedCategoryId === null || offer.categoryId === offer.requestedCategoryId,
+    {message: "Invalid fallback category preference"});
 /** Server-selected fallback receipt; timing never comes from the player. */
 export type RaceBotOffer = z.infer<typeof BotOffer>;
 /** Short selection window; accepted runs retain their own lifecycle and countdown. */
@@ -37,25 +40,42 @@ export function parseRaceBotOffer(value: unknown, userId: string, input: Pick<St
   return offer;
 }
 
+/** Accepted offer aliases must resume their original owned synthetic run before a request receipt is written. */
+export function assertRaceAcceptedBotRun(run: RaceRunRecord, offer: RaceBotOffer, offerId: string): void {
+  if (offer.acceptedRunId !== run.runId || offer.userId !== run.userId || offer.locale !== run.locale || offer.categoryId !== run.categoryId ||
+    run.role !== "challenger" || run.fallbackOfferId !== offerId || run.challengeId !== undefined || run.opponent?.kind !== "bot")
+    throw new HttpsError("data-loss", "Stored fallback run does not match its accepted offer.");
+}
+
+/** Replays only the original owner/request fallback, preserving consumption and expiry recovery. */
+export function replayRaceBotOffer(value: unknown, userId: string, input: RaceMatchRequest, requestId: string, nowMs: number) {
+  /** Shape validation precedes interpretation of private receipt fields. */
+  const result = BotOffer.safeParse(value);
+  if (!result.success) throw new HttpsError("data-loss", "Fallback opponent receipt is invalid.");
+  /** Physical identity must agree with the caller's original search. */
+  const stored = result.data;
+  /** Both offer kinds share this deterministic request key. */
+  const offerId = requestDocumentId(userId, requestId);
+  if (requestDocumentId(stored.userId, stored.requestId) !== offerId)
+    throw new HttpsError("data-loss", "Fallback opponent receipt identity is invalid.");
+  if (stored.userId !== userId || stored.locale !== input.locale || stored.requestedCategoryId !== (input.categoryId ?? null))
+    throw new HttpsError("invalid-argument", "Opponent search preferences changed.");
+  if (stored.acceptedRunId) throw new HttpsError("already-exists", "Opponent offer was already accepted.");
+  if (stored.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Opponent offer expired.",
+    {matchmaking: raceMatchFailure("intent-expired")});
+  return {offerId, categoryId: stored.categoryId};
+}
+
 /** Issues one stable fallback only after a successful empty recorded-pool search. */
 export async function offerRaceBot(db: Firestore, userId: string, input: RaceMatchRequest, requestId: string,
-  nowMs: number, profile: RaceMatchProfile, context: RaceMatchContext) {
+  nowMs: number, profile: RaceMatchProfile, context: RaceMatchContext, meter?: RaceMatchReadMeter) {
   /** Deterministic account/request key coalesces concurrent discovery retries. */
   const ref = db.doc(`raceBotOffers/${requestDocumentId(userId, requestId)}`);
   /** Existing receipt fixes category and pace for the selection lifetime. */
+  if (meter) {assertRaceMatchReadBudget(meter); meter.documentReadAttempts++;}
+  /** This optional replay read is included in the lookup work budget. */
   const previous = await ref.get();
-  if (previous.exists) {
-    /** Corrupt stored selections fail closed rather than receiving new timing. */
-    const result = BotOffer.safeParse(previous.data());
-    if (!result.success) throw new HttpsError("data-loss", "Fallback opponent receipt is invalid.");
-    /** Owned receipt replayed after preference and expiry validation. */
-    const stored = result.data;
-    if (stored.userId !== userId || stored.locale !== input.locale || stored.requestedCategoryId !== (input.categoryId ?? null))
-      throw new HttpsError("invalid-argument", "Opponent search preferences changed.");
-    if (stored.acceptedRunId) throw new HttpsError("already-exists", "Opponent offer was already accepted.");
-    if (stored.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Opponent offer expired.");
-    return {offerId: ref.id, categoryId: stored.categoryId};
-  }
+  if (previous.exists) return replayRaceBotOffer(previous.data(), userId, input, requestId, nowMs);
   /** Unfiltered discovery chooses only a validated available category. */
   const categoryId = input.categoryId ?? (await listRaceCategoriesForLocale(input.locale, db)).categories[0]?.categoryId;
   if (!categoryId) return undefined;
@@ -65,16 +85,16 @@ export async function offerRaceBot(db: Firestore, userId: string, input: RaceMat
   /** Immutable timing and preference snapshot retained for acceptance. */
   const offer: RaceBotOffer = {version: 1, userId, requestId, locale: input.locale, categoryId,
     requestedCategoryId: input.categoryId ?? null, performanceMs, createdAtMs: nowMs, expiresAtMs: nowMs + OFFER_MS};
-  // Create-only receipt: a concurrent search must replay the winner's immutable timing.
-  try {await ref.create({...offer, expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + RACE_CHALLENGE_TTL_MS)});}
-  catch (error) {
-    if ((error as {
-      /** Firestore create conflict identifies a concurrent receipt winner. */
-      code?: unknown;
-    })?.code !== 6) throw error;
-    return offerRaceBot(db, userId, input, requestId, nowMs, profile, context);
-  }
-  return {offerId: ref.id, categoryId};
+  /** Reading both receipt kinds makes concurrent issuance mutually exclusive. */
+  const commit = async (transaction: FirebaseFirestore.Transaction) => {
+    /** The winner is re-read after every automatic transaction retry. */
+    const [fallback, recorded] = await transaction.getAll(ref, db.doc(`raceMatchOffers/${ref.id}`));
+    if (recorded.exists) throw new HttpsError("aborted", "A recorded offer already owns this search; retry with a new intent.");
+    if (fallback.exists) return replayRaceBotOffer(fallback.data(), userId, input, requestId, nowMs);
+    transaction.create(ref, {...offer, expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + RACE_CHALLENGE_TTL_MS)});
+    return {offerId: ref.id, categoryId};
+  };
+  return meter ? withMeteredRaceTransaction(db, meter, commit) : db.runTransaction(commit);
 }
 
 /** Builds bounded, deterministic ghost playback once, with no per-tick server work. */

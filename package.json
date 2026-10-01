@@ -75,7 +75,6 @@
     "release:gamemonetize": "node scripts/release/run-platform-release.mjs gamemonetize",
     "release:yandex": "node scripts/release/run-platform-release.mjs yandex",
     "release:telegram": "node scripts/release/run-platform-release.mjs telegram",
-    "release:microsoft-pwa": "node scripts/release/run-platform-release.mjs microsoft-pwa",
     "release:y8": "node scripts/release/run-platform-release.mjs y8",
     "release:playgama": "node scripts/release/run-platform-release.mjs playgama",
     "release:amazon": "node scripts/release/run-platform-release.mjs amazon",
@@ -95,7 +94,6 @@
     "release:pi": "node scripts/release/run-platform-release.mjs pi",
     "release:minipay": "node scripts/release/run-platform-release.mjs minipay",
     "release:zoom": "node scripts/release/run-platform-release.mjs zoom",
-    "release:pwa-directory": "node scripts/release/run-platform-release.mjs pwa-directory",
     "release:miro": "node scripts/release/run-platform-release.mjs miro",
     "release:greenhouse": "node scripts/release/run-platform-release.mjs greenhouse",
     "release:ozogames": "node scripts/release/run-platform-release.mjs ozogames",
@@ -103,8 +101,6 @@
     "release:noadsgames": "node scripts/release/run-platform-release.mjs noadsgames",
     "release:yalgames": "node scripts/release/run-platform-release.mjs yalgames",
     "release:rando": "node scripts/release/run-platform-release.mjs rando",
-    "release:pwastore": "node scripts/release/run-platform-release.mjs pwastore",
-    "release:html5": "node scripts/release/package-html5-release.mjs",
     "release:all": "node scripts/release/run-platform-release.mjs all",
     "jest:build-upload": "pnpm release:jest",
     "jest:hosted": "pnpm --filter @qwordly/portal dev:jest-hosted",
@@ -119,11 +115,10 @@
     "preflight:all-platforms": "pnpm verify:all-targets && pnpm release:plan",
     "check:monetization": "node scripts/audit-platform-monetization.mjs",
     "test:release-artifacts:browser": "node scripts/release/verify-packaged-games.mjs",
-    "deploy:web": "node scripts/release/deploy-standalone.mjs web",
-    "deploy:pwa": "node scripts/release/deploy-standalone.mjs pwa",
     "test:deployments:live": "node scripts/release/verify-live-web-games.mjs",
     "development:complete": "node scripts/release/complete-development-task.mjs",
-    "test:architecture": "node --test scripts/release/*.test.mjs packages/portal/scripts/web-target-dependencies.test.mjs scripts/monitoring/publish-release-status.test.mjs"
+    "test:architecture": "node --test scripts/release/*.test.mjs packages/portal/scripts/web-target-dependencies.test.mjs scripts/monitoring/publish-release-status.test.mjs",
+    "prepare:html5-handoffs": "node scripts/release/package-html5-release.mjs"
   },
   "engines": {
     "node": ">=24.17.0"

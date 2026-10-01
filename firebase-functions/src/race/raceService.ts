@@ -7,7 +7,6 @@ import {
   RACE_CHALLENGE_TTL_MS,
   RACE_RULES,
   RACE_TARGET_CORRECT,
-  RaceRunResponseSchema,
   RequestRaceHintResponseSchema,
   SkipRaceRiddleResponseSchema,
   SubmitRaceGuessResponseSchema,
@@ -41,7 +40,6 @@ import {
   type RaceRiddleSnapshot,
   type RaceRunRecord,
 } from "./raceEngine";
-import {evaluateRaceAchievementEvent} from "./raceAchievements";
 import {raceReceiptExpiresAt} from "./raceReceiptPrivacy";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
 import {
@@ -53,6 +51,7 @@ import {
   parseChallengeRecord,
   parseRunRecord,
   persistRaceAchievementEvent,
+  prepareRaceAchievementEvent,
   requestDocumentId,
   resolveChallengeRiddles,
   stripUndefined,
@@ -61,6 +60,7 @@ import {
   type RaceDeckRecord,
 } from "./raceSetupService";
 import {mutateRaceRun} from "./raceRunMutation";
+import {bindRaceRequest, assertRaceRequestReplay, assertLegacyRaceStart, rejectRaceRequestReuse} from "./raceRequestBinding";
 import {assertRaceChallengeEligible, inspectRaceChallengeEligibility, raceProviderScope} from "./raceEligibility";
 import {projectRaceMatchCandidate} from "./raceMatchCandidates";
 import {raceDeckContentVersion, raceRecordingFingerprint, assertRacePreparedRecording} from "./raceDeckSnapshot";
@@ -68,8 +68,9 @@ import {emptyRaceMatchProfile, RaceMatchProfileSchema, raceDifficultyAdjustedMs,
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 export {readyRaceRunForUser} from "./raceRunLifecycle";
 import {settleRaceRun} from "./raceSettlement";
+import {projectRaceRunResponse} from "./raceRunResponse";
 import {parseRaceInvitation, assertRaceInvitationOpen} from "./raceInvitationRecord";
-import {buildRaceBotOpponent, parseRaceBotOffer} from "./raceBot";
+import {buildRaceBotOpponent, parseRaceBotOffer, assertRaceAcceptedBotRun} from "./raceBot";
 export {reserveRaceInviteForUser, claimRaceInviteForUser} from "./raceInvitation";
 export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSetupService";
 
@@ -115,14 +116,25 @@ async function prepareRaceRunForUser(
   const nowMs = options.nowMs ?? Date.now();
   /** Starts request ref. */
   const startRequestRef = db.collection("raceStartRequests").doc(requestDocumentId(userId, input.requestId));
+  /** Start intent excludes presentation because replay projects the currently owned run afresh. */
+  const commandBinding = bindRaceRequest({kind: "start", input});
   /** Provides existing start behavior. */
   const existingStart = await startRequestRef.get();
   if (existingStart.exists) {
-    if (existingStart.data()?.fallbackOfferId !== input.fallbackOfferId)
-      throw new HttpsError("invalid-argument", "Race start request was reused for another opponent.");
+    /** Unbound history must prove its retained canonical run context. */
+    const bound = assertRaceRequestReplay(existingStart.data(), userId, commandBinding);
     /** Provides run id behavior. */
     const runId = existingStart.data()?.runId;
     if (typeof runId !== "string") throw new HttpsError("internal", "Stored race start request is invalid.");
+    if (!bound) {
+      /** Legacy context is read from the original physical owned run, never a mutable content catalog. */
+      const source = await db.doc(`raceRuns/${runId}`).get();
+      if (!source.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+      /** Validated source is required before a legacy receipt can authorize recovery. */
+      const original = parseRunRecord(source.data(), source.id);
+      if (original.userId !== userId) throw new HttpsError("data-loss", "Stored race request is invalid.");
+      assertLegacyRaceStart(input, original);
+    }
     return resumeRaceRunForUser(userId, runId, {db, nowMs, includeEvaluation: input.includeEvaluation});
   }
 
@@ -148,7 +160,30 @@ async function prepareRaceRunForUser(
     if (!snapshot.exists) throw new HttpsError("not-found", "Opponent offer is unavailable.");
     /** Previously accepted offers resume their existing run. */
     const offer = parseRaceBotOffer(snapshot.data(), userId, input, botOfferRef.id);
-    if (offer.acceptedRunId) return resumeRaceRunForUser(userId, offer.acceptedRunId, {db, nowMs, includeEvaluation: input.includeEvaluation});
+    if (offer.acceptedRunId) {
+      /** Aliases of an already accepted fallback still need an owner-bound receipt for this command ID. */
+      return db.runTransaction(async transaction => {
+        /** Recheck the receipt, consumed offer, original run and account together before creating an alias. */
+        const [receipt, currentOffer, source, deletion] = await Promise.all([transaction.get(startRequestRef), transaction.get(botOfferRef),
+          transaction.get(db.doc(`raceRuns/${offer.acceptedRunId}`)), transaction.get(getJestAccountDeletionRef(db, userId))]);
+        assertJestAccountActive(deletion);
+        if (!source.exists || !currentOffer.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+        /** The offer may resume only its original immutable owner-bound run. */
+        const original = parseRunRecord(source.data(), source.id);
+        assertRaceAcceptedBotRun(original, parseRaceBotOffer(currentOffer.data(), userId, input, botOfferRef.id), botOfferRef.id);
+        if (receipt.exists) {
+          if (!assertRaceRequestReplay(receipt.data(), userId, commandBinding)) assertLegacyRaceStart(input, original);
+          if (receipt.data()?.runId !== original.runId) throw new HttpsError("data-loss", "Stored race request is invalid.");
+        }
+        /** Settlement and public decoding must succeed together before accepting a new alias. */
+        const refreshed = await settleRaceRun(transaction, db, original, nowMs);
+        /** Return this exact accepted projection rather than validating after alias commit. */
+        const response = projectRaceRunResponse(refreshed, nowMs, input.includeEvaluation);
+        if (!receipt.exists) transaction.create(startRequestRef, {userId, runId: original.runId, fallbackOfferId: input.fallbackOfferId,
+          commandBinding, createdAtMs: nowMs, expiresAt: raceReceiptExpiresAt(source.data()?.expiresAt, nowMs + RACE_CHALLENGE_TTL_MS)});
+        return response;
+      });
+    }
     if (offer.createdAtMs > nowMs || offer.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Opponent offer expired.");
   }
 
@@ -248,7 +283,8 @@ async function prepareRaceRunForUser(
     expiresAt,
   };
 
-  await db.runTransaction(async (transaction) => {
+  /** A newly accepted run or alias returns the same projection validated before its writes. */
+  const acceptedResponse = await db.runTransaction(async (transaction) => {
     /** Provides [duplicate start, committed challenge snapshot] behavior. */
     const matchProfileRef = db.doc(`users/${userId}/raceMatchProfiles/${input.locale}`);
     /** Provides [duplicate start, committed challenge snapshot, match profile, deletion, match offer] behavior. */
@@ -262,8 +298,15 @@ async function prepareRaceRunForUser(
     ]);
     assertJestAccountActive(deletion);
     if (duplicateStart.exists) {
-      if (duplicateStart.data()?.fallbackOfferId !== input.fallbackOfferId)
-        throw new HttpsError("invalid-argument", "Race start request was reused for another opponent.");
+      if (!assertRaceRequestReplay(duplicateStart.data(), userId, commandBinding)) {
+        /** A concurrent historical receipt must be checked against its actual original run. */
+        const source = await transaction.get(db.doc(`raceRuns/${duplicateStart.data()?.runId}`));
+        if (!source.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+        /** Supported old receipts remain replayable only for their retained original context. */
+        const original = parseRunRecord(source.data(), source.id);
+        if (original.userId !== userId) throw new HttpsError("data-loss", "Stored race request is invalid.");
+        assertLegacyRaceStart(input, original);
+      }
       return;
     }
     if (botOfferRef) {
@@ -271,8 +314,19 @@ async function prepareRaceRunForUser(
       /** Transactional acceptance revalidates ownership and expiry before creating a run. */
       const committedOffer = parseRaceBotOffer(botOffer.data(), userId, input, botOfferRef.id);
       if (committedOffer.acceptedRunId) {
-        transaction.create(startRequestRef, {runId: committedOffer.acceptedRunId, userId, fallbackOfferId: input.fallbackOfferId, createdAtMs: nowMs, expiresAt});
-        return;
+        /** Concurrent acceptance cannot write an alias before its original owned source is validated. */
+        const original = await transaction.get(db.doc(`raceRuns/${committedOffer.acceptedRunId}`));
+        if (!original.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+        /** Validate the actual concurrent winner, including pending settlement, inside alias acceptance. */
+        const owned = parseRunRecord(original.data(), original.id);
+        assertRaceAcceptedBotRun(owned, committedOffer, botOfferRef.id);
+        /** Pending rewards roll back if this accepted response cannot be delivered. */
+        const refreshed = await settleRaceRun(transaction, db, owned, nowMs);
+        /** The alias inherits the original source's retention cap. */
+        const response = projectRaceRunResponse(refreshed, nowMs, input.includeEvaluation);
+        transaction.create(startRequestRef, {runId: committedOffer.acceptedRunId, userId, fallbackOfferId: input.fallbackOfferId,
+          commandBinding, createdAtMs: nowMs, expiresAt: raceReceiptExpiresAt(original.data()?.expiresAt, nowMs + RACE_CHALLENGE_TTL_MS)});
+        return response;
       }
       /** Provides acceptance now behavior. */
       const acceptanceNow = options.nowMs ?? Date.now();
@@ -291,12 +345,14 @@ async function prepareRaceRunForUser(
       assertRaceChallengeEligible(inspection.reason);
       assertRacePreparedRecording(run, committedChallenge, inspection.riddles!);
     }
+    /** Invalid public content cannot consume an exclusive attempt or create a half-accepted start. */
+    const response = projectRaceRunResponse(run, nowMs, input.includeEvaluation);
     /** Provides profile behavior. */
     const profile = matchProfile.exists ? RaceMatchProfileSchema.parse(matchProfile.data()) : emptyRaceMatchProfile();
     transaction.set(matchProfileRef, recordRaceExposure(profile, userId, riddles, challenge?.creatorId));
     transaction.create(deckRef, stripUndefined(deck));
     transaction.create(runRef, {...stripUndefined({...run, deadlineAtMs: raceDeadlineAtMs(run)}), expiresAt});
-    transaction.create(startRequestRef, {runId: runRef.id, userId, ...(input.fallbackOfferId ? {fallbackOfferId: input.fallbackOfferId} : {}), createdAtMs: nowMs, expiresAt});
+    transaction.create(startRequestRef, {runId: runRef.id, userId, commandBinding, ...(input.fallbackOfferId ? {fallbackOfferId: input.fallbackOfferId} : {}), createdAtMs: nowMs, expiresAt});
     if (botOfferRef) transaction.update(botOfferRef, {acceptedRunId: runRef.id});
     if (matchOffer) transaction.update(matchOffer.ref, {acceptedRunId: runRef.id, acceptedAtMs: nowMs,
       preparationRequested: Boolean(input.prepare), offerExpiredAtAcceptance: matchOffer.data()!.expiresAtMs <= nowMs,
@@ -310,10 +366,13 @@ async function prepareRaceRunForUser(
         expiresAt,
       });
     }
+    return response;
   });
+  if (acceptedResponse) return acceptedResponse;
 
   /** Provides committed start behavior. */
   const committedStart = await startRequestRef.get();
+  assertRaceRequestReplay(committedStart.data(), userId, commandBinding);
   /** Provides committed run id behavior. */
   const committedRunId = committedStart.data()?.runId;
   if (typeof committedRunId !== "string") throw new HttpsError("internal", "Race start was not committed.");
@@ -335,13 +394,13 @@ export async function abandonRaceRunForUser(
   /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
   /** Provides response behavior. */
-  const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
+  const response = await mutateRaceRun(userId, {kind: "abandon", input}, nowMs, db, (run, acceptedAtMs) => {
     /** Provides abandoned behavior. */
-    const abandoned = abandonRaceRun(run, nowMs);
+    const abandoned = abandonRaceRun(run, acceptedAtMs);
     return {
       run: abandoned,
       response: {
-        run: toRaceRunView(abandoned, nowMs),
+        run: toRaceRunView(abandoned, acceptedAtMs),
         result: null,
       },
     };
@@ -365,13 +424,13 @@ export async function submitRaceGuessForUser(
   /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
   /** Provides response behavior. */
-  const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
+  const response = await mutateRaceRun(userId, {kind: "guess", input}, nowMs, db, (run, acceptedAtMs) => {
     /** Provides result behavior. */
-    const result = applyRaceGuess(run, input, nowMs);
+    const result = applyRaceGuess(run, input, acceptedAtMs);
     return {
       run: result.run,
       response: {
-        run: toRaceRunView(result.run, nowMs, input.includeEvaluation),
+        run: toRaceRunView(result.run, acceptedAtMs, input.includeEvaluation),
         feedback: result.feedback,
         isCorrect: result.isCorrect,
         autoSkipped: result.autoSkipped,
@@ -401,17 +460,16 @@ export async function requestRaceHintForUser(
   /** Provides response behavior. */
   const response = await mutateRaceRun(
     userId,
-    input.runId,
-    input.requestId,
+    {kind: "hint", input},
     nowMs,
     db,
-    (run) => {
+    (run, acceptedAtMs) => {
       /** Provides result behavior. */
-      const result = applyRaceHint(run, input, nowMs);
+      const result = applyRaceHint(run, input, acceptedAtMs);
       return {
         run: result.run,
         response: {
-          run: toRaceRunView(result.run, nowMs, input.includeEvaluation),
+          run: toRaceRunView(result.run, acceptedAtMs, input.includeEvaluation),
           revealedLetter: result.revealedLetter,
           index: result.index,
         },
@@ -438,13 +496,13 @@ export async function skipRaceRiddleForUser(
   /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
   /** Provides response behavior. */
-  const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
+  const response = await mutateRaceRun(userId, {kind: "skip", input}, nowMs, db, (run, acceptedAtMs) => {
     /** Updates d. */
-    const updated = applyRaceSkip(run, input, nowMs);
+    const updated = applyRaceSkip(run, input, acceptedAtMs);
     return {
       run: updated,
       response: {
-        run: toRaceRunView(updated, nowMs, input.includeEvaluation),
+        run: toRaceRunView(updated, acceptedAtMs, input.includeEvaluation),
         penaltyAddedMs: RACE_RULES.skipPenaltyMs,
       },
     };
@@ -472,7 +530,7 @@ export async function resumeRaceRunForUser(
   /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(runId);
   /** Provides run behavior. */
-  const run = await db.runTransaction(async (transaction) => {
+  return db.runTransaction(async (transaction) => {
     /** Provides snapshot behavior. */
     const snapshot = await transaction.get(runRef);
     if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
@@ -483,12 +541,13 @@ export async function resumeRaceRunForUser(
     const privacy = await resolveRaceOpponentPrivacy(transaction, db, stored);
     /** Provides refreshed behavior. */
     const refreshed = await settleRaceRun(transaction, db, privacy.run, nowMs);
+    /** A decoding failure aborts staged rewards, outboxes and terminal transitions. */
+    const response = projectRaceRunResponse(refreshed, nowMs, options.includeEvaluation);
     if (JSON.stringify(refreshed) !== JSON.stringify(stored)) {
       transaction.set(runRef, raceRunPrivacyWrite(refreshed, privacy.scrubbed), {merge: true});
     }
-    return refreshed;
+    return response;
   });
-  return RaceRunResponseSchema.parse({run: toRaceRunView(run, nowMs, options.includeEvaluation)});
 }
 
 /** Publishes race challenge for user. */
@@ -517,6 +576,8 @@ export async function publishRaceChallengeForUser(
   const runRef = db.collection("raceRuns").doc(input.runId);
   /** Requests ref. */
   const requestRef = runRef.collection("requests").doc(requestDocumentId(userId, input.requestId));
+  /** Publication shares the run's receipt namespace with scoring, so the operation is part of its binding. */
+  const commandBinding = bindRaceRequest({kind: "publish", input});
   /** Provides challenge ref behavior. */
   const challengeRef = input.reservedChallengeId
     ? db.collection("raceChallenges").doc(input.reservedChallengeId)
@@ -544,8 +605,20 @@ export async function publishRaceChallengeForUser(
     /** Provides run behavior. */
     const run = privacy.run;
     if (requestSnapshot.exists) {
+      /** Original invitation scope can also be recovered from historical publication IDs. */
+      const bound = assertRaceRequestReplay(requestSnapshot.data(), userId, commandBinding);
+      /** Cached publication must still refer to this run's committed challenge. */
+      const cached = PublishRaceChallengeResponseSchema.safeParse(requestSnapshot.data()?.response);
+      if (!cached.success) {
+        if (bound) throw new HttpsError("data-loss", "Stored race request is invalid.");
+        rejectRaceRequestReuse();
+      }
+      if (!bound && Boolean(input.reservedChallengeId) !== cached.data.challengeId.startsWith("jest-invite-")) rejectRaceRequestReuse();
+      if (input.reservedChallengeId && input.reservedChallengeId !== cached.data.challengeId) rejectRaceRequestReuse();
+      if (runSnapshot.data()?.publishedChallengeId !== cached.data.challengeId)
+        throw new HttpsError("data-loss", "Stored race request is invalid.");
       if (privacy.scrubbed) transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
-      return requestSnapshot.data()?.response as PublishRaceChallengeResponse;
+      return cached.data;
     }
     if (inviteLobbySnapshot?.exists) {
       /** Validated lobby state authorizing publication by its creator. */
@@ -565,10 +638,14 @@ export async function publishRaceChallengeForUser(
       if (!existingSnapshot.exists) throw new HttpsError("internal", "The published challenge is missing.");
       /** Validated existing challenge record. */
       const existingChallenge = parseChallengeRecord(existingSnapshot.data(), existingSnapshot.id);
-      return PublishRaceChallengeResponseSchema.parse({
+      /** A new request alias retains the first returned preview without repeating publication grants. */
+      const replay = PublishRaceChallengeResponseSchema.parse({
         challengeId: publishedChallengeId,
         preview: challengePreview(existingChallenge, nowMs),
       });
+      transaction.create(requestRef, {userId, commandBinding, createdAtMs: nowMs, response: stripUndefined(replay),
+        expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, existingChallenge.expiresAtMs)});
+      return replay;
     }
     /** Provides outcome behavior. */
     if (inviteLobbyRef && !inviteLobbySnapshot?.exists) {
@@ -633,7 +710,7 @@ export async function publishRaceChallengeForUser(
       ...(() => {
         if (!userSnapshot.exists) return {};
         /** Provides update behavior. */
-        const update = evaluateRaceAchievementEvent(userSnapshot.data() ?? {}, {kind: "challenge_published"}, nowMs);
+        const update = prepareRaceAchievementEvent(userSnapshot.data() ?? {}, {kind: "challenge_published"}, nowMs);
         return {
           newlyUnlockedAchievementIds: update.newlyUnlockedAchievementIds,
           achievementCoinsAwarded: update.achievementCoinsAwarded,
@@ -667,6 +744,7 @@ export async function publishRaceChallengeForUser(
     }
     transaction.create(requestRef, {
       userId,
+      commandBinding,
       createdAtMs: nowMs,
       response: stripUndefined(result),
       expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, expiresAtMs),

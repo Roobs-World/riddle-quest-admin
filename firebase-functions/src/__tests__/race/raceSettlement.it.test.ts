@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
-import {raceDeadlineAtMs, applyRaceSkip, type RaceRunRecord} from "../../race/raceEngine";
+import {raceDeadlineAtMs, applyRaceSkip, raceOutcome, type RaceRunRecord} from "../../race/raceEngine";
 import {getRaceOutcomeForUser} from "../../race/raceReadService";
 import {resumeRaceRunForUser} from "../../race/raceService";
 import {settleRaceRun} from "../../race/raceSettlement";
@@ -17,7 +17,8 @@ let db: FirebaseFirestore.Firestore;
 const fixture = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
   runId: "run-1", userId: "player-1", challengeId: "challenge-1", role: "challenger", status: "active",
   categoryId: "history", locale: "en", rulesVersion: "race10_v1", deckId: "deck-1",
-  riddles: [{riddleId: "q-1", canonicalRiddleId: "q:1", text: "A test clue", answer: "test", position: 0}],
+  riddles: Array.from({length: 15}, (_, position) => ({riddleId: `q-${position + 1}`, canonicalRiddleId: `q:${position + 1}`,
+    text: "A test clue", answer: "test", position})),
   currentPosition: 0, correctCount: 0, guessesUsed: 0, hintUsed: false, revealedLetters: [],
   startedAtMs: 1_000, hintPenaltyMs: 0, skipPenaltyMs: 0, events: [],
   opponent: {subjectUserId: "creator-1", displayName: "Creator", adjustedFinishMs: 10_000, events: []},
@@ -41,7 +42,7 @@ beforeEach(async () => {
 });
 
 it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("backs off transient %s failures and delivers exactly once when due", async collection => {
-  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10, currentPosition: 9,
     wallFinishMs: 9000, finishedAtMs: 10000});
   await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10001});
   /** Provides deliver behavior. */
@@ -62,7 +63,7 @@ it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("backs off t
 });
 
 it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("validates repair before replaying %s and survives concurrent retries", async collection => {
-  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10, currentPosition: 9,
     wallFinishMs: 9000, finishedAtMs: 10000});
   await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10001});
   /** Provides ref behavior. */
@@ -125,7 +126,7 @@ it("quarantines creator delivery when canonical run identity differs from the so
 });
 
 it("requires a repaired performance profile before dry-run can approve quarantined delivery", async () => {
-  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10, currentPosition: 9,
     wallFinishMs: 9000, finishedAtMs: 10000});
   await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10001});
   await db.doc("users/player-1/raceMatchProfiles/en").set({version: 999});
@@ -140,7 +141,7 @@ it("requires a repaired performance profile before dry-run can approve quarantin
 });
 
 it("records the challenger's performance once without changing the fixed ghost creator's estimate", async () => {
-  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10, currentPosition: 9,
     wallFinishMs: 9_000, finishedAtMs: 10_000});
   await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10_001});
   /** Provides delivered behavior. */
@@ -153,7 +154,7 @@ it("records the challenger's performance once without changing the fixed ghost c
 });
 
 it.each([0, 5])("records completion once for a ghost loss with %i correct answers without extrapolating speed", async correctCount => {
-  await db.doc("raceRuns/run-1").update({correctCount});
+  await db.doc("raceRuns/run-1").update({correctCount, currentPosition: correctCount});
   await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
   /** Concurrent and delayed delivery folds exactly one actual opportunity. */
   const delivered = await Promise.all(Array.from({length: 6}, () => deliverRacePerformance("run-1", db, 20000)));
@@ -218,7 +219,7 @@ it("settles rewards despite corrupt derived attribution and never writes another
 });
 
 it("suppresses pending performance projection after owner deletion", async () => {
-  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10,
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10, currentPosition: 9,
     wallFinishMs: 9_000, finishedAtMs: 10_000});
   await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10_001});
   await db.doc("jestAccountDeletionTombstones/player-1").set({deleted: true});
@@ -334,10 +335,12 @@ it("settles maximum-time expiry independently of ghost completion", async () => 
 });
 
 it("derives a loss when the tenth clearing action pushes adjusted time past the ghost", async () => {
-  /** Provides run behavior. */
-  const run = fixture({correctCount: 9});
+  /** Nine previously cleared questions place the final scoring event on the tenth owned question. */
+  const run = fixture({correctCount: 9, currentPosition: 9,
+    riddles: Array.from({length: 10}, (_, position) => ({riddleId: `q-${position + 1}`, canonicalRiddleId: `q:${position + 1}`,
+      text: "A test clue", answer: "test", position}))});
   /** Provides completed behavior. */
-  const completed = applyRaceSkip(run, {riddleId: "q-1"}, 2_000);
+  const completed = applyRaceSkip(run, {riddleId: "q-10"}, 2_000);
   expect(completed.result).toBe("ghost_win");
   await db.runTransaction(async (transaction) => {await settleRaceRun(transaction, db, completed, 2_000);});
   await deliverRaceSettlement("run-1", db, 2_001);
@@ -355,10 +358,12 @@ it("never recreates a deleted owner or grants its delayed reward", async () => {
 it.each([10, 5, 0])("projects complete-only calibration evidence idempotently for %i solved answers", async correctCount => {
   /** Server-issued receipt ownership links attribution to exactly this accepted run. */
   const offerId = "a".repeat(64);
+  /** Partial losses are clamped to the ghost's ten-second finish. */
+  const finishMs = correctCount === 10 ? 9000 : 10000;
   await db.doc(`raceMatchOffers/${offerId}`).set({userId: "player-1", challengeId: "challenge-1", acceptedRunId: "run-1", acceptedAtMs: 1000, createdAtMs: 0, expiresAtMs: 60000, fingerprint: JSON.stringify({locale: "en", categoryId: null}), expectedPerformanceMs: 12000});
   await db.doc("raceRuns/run-1").update({matchOfferId: offerId, status: "completed", result: correctCount === 10 ? "player_win" : "ghost_win",
-    correctCount, wallFinishMs: 9000, finishedAtMs: 10000});
-  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 10010});
+    correctCount, currentPosition: correctCount === 10 ? 9 : correctCount, wallFinishMs: finishMs, finishedAtMs: 1000 + finishMs});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 1010 + finishMs});
   /** Partial and idle runs never supply an extrapolated finish gap or prediction error. */
   const receipt = (await db.doc(`raceMatchOffers/${offerId}`).get()).data()!;
   expect(receipt).toMatchObject({finishedTen: correctCount === 10, actualPerformanceMs: correctCount === 10 ? 9000 : null,
@@ -366,6 +371,67 @@ it.each([10, 5, 0])("projects complete-only calibration evidence idempotently fo
   expect(receipt.predictionLogError).toBe(correctCount === 10 ? Math.log(9000 / 12000) : null);
   await Promise.all(Array.from({length: 4}, () => getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 20000})));
   expect((await db.doc(`raceMatchOffers/${offerId}`).get()).data()).toEqual(receipt);
+});
+
+it.each(["ghost_win", "tie", "timed_out"] as const)("rejects false %s before internal settlement or public reads can reward it", async result => {
+  /** Stored result is false despite coherent individual fields and terminal clocks. */
+  const corrupt = fixture({status: result === "timed_out" ? "timed_out" : "completed", result,
+    correctCount: 10, currentPosition: 9, wallFinishMs: 5000, finishedAtMs: 6000});
+  /** Original accounts are compared in full so stats, achievements and currency cannot change. */
+  const users = (await db.collection("users").get()).docs.map(document => document.data());
+  for (const hasSettlement of [false, true]) {
+    /** Matching forged receipts must never bypass validation of the underlying winner. */
+    const stored = hasSettlement ? {...corrupt, settledAtMs: 12000, settledOutcome: raceOutcome(corrupt, 12000)} : corrupt;
+    await db.doc("raceRuns/run-1").set(stored);
+    await expect(db.runTransaction(transaction => settleRaceRun(transaction, db, stored, 12000)))
+      .rejects.toMatchObject({code: "data-loss"});
+    await expect(getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000})).rejects.toMatchObject({code: "data-loss"});
+    await expect(resumeRaceRunForUser("player-1", "run-1", {db, nowMs: 12000})).rejects.toMatchObject({code: "data-loss"});
+    await processRaceDeadline(db, db.doc("raceRuns/run-1"), 12000);
+    expect((await db.doc("raceRuns/run-1").get()).data()).toEqual(stored);
+    expect((await db.collection("users").get()).docs.map(document => document.data())).toEqual(users);
+    expect((await db.collection("raceSettlementOutbox").get()).empty).toBe(true);
+    expect((await db.collection("racePerformanceOutbox").get()).empty).toBe(true);
+    expect((await db.collection("users/creator-1/raceInbox").get()).empty).toBe(true);
+  }
+});
+
+it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("quarantines %s when a matching settled source carries a false winner", async collection => {
+  await db.doc("raceRuns/run-1").update({status: "completed", result: "player_win", correctCount: 10, currentPosition: 9,
+    wallFinishMs: 5000, finishedAtMs: 6000});
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 12000});
+  /** Valid settlement creates the delivery receipt before the canonical source is corrupted. */
+  const source = (await db.doc("raceRuns/run-1").get()).data()!;
+  /** Original owner reward cannot be repeated or altered by deferred delivery. */
+  const users = (await db.collection("users").get()).docs.map(document => document.data());
+  await db.doc("raceRuns/run-1").update({result: "ghost_win", "settledOutcome.result": "ghost_win"});
+  /** Both delivery paths validate the canonical winner before creator or performance writes. */
+  const deliver = collection === "raceSettlementOutbox" ? deliverRaceSettlement : deliverRacePerformance;
+  expect(await deliver("run-1", db, 12001)).toBe(false);
+  expect((await db.doc(`${collection}/run-1`).get()).data()).toMatchObject({deliveryState: "quarantined", failureCode: "data-loss"});
+  await expect(replayRaceDelivery(db, collection, "run-1", 12002)).rejects.toMatchObject({code: "data-loss"});
+  expect((await db.collection("users").get()).docs.map(document => document.data())).toEqual(users);
+  expect((await db.collection("users/creator-1/raceInbox").get()).empty).toBe(true);
+  expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).exists).toBe(false);
+  await db.doc("raceRuns/run-1").update({result: source.result, "settledOutcome.result": source.settledOutcome.result});
+  expect(await replayRaceDelivery(db, collection, "run-1", 12003)).toBe(true);
+  expect(await deliver("run-1", db, 12004)).toBe(false);
+});
+
+it("rejects a future terminal finish before writing a settlement receipt or rewards", async () => {
+  /** A valid winner whose persisted finish lies after the current settlement clock. */
+  const future = fixture({status: "completed", result: "player_win", correctCount: 10, currentPosition: 9, wallFinishMs: 5000, finishedAtMs: 6000});
+  await db.doc("raceRuns/run-1").set(future);
+  /** Full account snapshots catch any achievement, counter or balance mutation. */
+  const users = (await db.collection("users").get()).docs.map(document => document.data());
+  await expect(getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 5000})).rejects.toMatchObject({code: "data-loss"});
+  expect((await db.doc("raceRuns/run-1").get()).data()).toEqual(future);
+  expect((await db.collection("users").get()).docs.map(document => document.data())).toEqual(users);
+  expect((await db.collection("raceSettlementOutbox").get()).empty).toBe(true);
+  expect((await db.collection("racePerformanceOutbox").get()).empty).toBe(true);
+  /** A later valid read settles once; the early rejection does not poison the run. */
+  expect((await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 6000})).result).toBe("player_win");
+  expect((await db.doc("users/player-1").get()).data()?.stats.multiplayerGamesPlayed).toBe(1);
 });
 
 it("rejects a mismatched canonical run identity before settling or overwriting another document", async () => {

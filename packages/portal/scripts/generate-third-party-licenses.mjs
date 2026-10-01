@@ -58,6 +58,11 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 /** Runs the active pnpm installation without depending on a global shim. */
 function readLicenseInventory(packageNames) {
+  const frozenInventoryPath = process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+  if (frozenInventoryPath) {
+    if (!isAbsolute(frozenInventoryPath)) throw new Error("Frozen license inventory path must be absolute");
+    return JSON.parse(readFileSync(frozenInventoryPath, "utf8"));
+  }
   const npmExecutable = process.env.npm_execpath;
   // Vercel sets npm_execpath to npm even when the install was performed by
   // pnpm. Only invoke it when it is actually a pnpm entrypoint; npm does not

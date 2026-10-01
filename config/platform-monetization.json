@@ -155,7 +155,7 @@
       "platform": "Microsoft Store PWA",
       "iap": "Provider-gated; Microsoft Store commerce required for game digital purchases unless Partner Center confirms an exception",
       "ads": "Policy-gated; no ad SDK is required for listing",
-      "gate": "Complete Partner Center enrollment, PWA readiness and product-name reservation"
+      "gate": "Excluded from current scope: platform-specific HTML5 builds only; no standalone web/PWA builds."
     },
     {
       "platform": "LINE MINI App",
@@ -281,7 +281,7 @@
       "platform": "PWA Directory",
       "iap": "Not applicable at directory level; canonical website commerce retains existing server verification",
       "ads": "Not applicable \u2014 the directory links to the hosted PWA and provides no ad SDK",
-      "gate": "Pass manifest, service-worker, installability and installed-launch review before free submission"
+      "gate": "Excluded from current scope: platform-specific HTML5 builds only; no standalone web/PWA builds."
     },
     {
       "platform": "Miro Marketplace",
@@ -329,7 +329,7 @@
       "platform": "PWAStore.io",
       "iap": "Not applicable at directory level; canonical website commerce remains disabled pending embedded-flow verification",
       "ads": "Not applicable \u2014 directory listing provides no game advertising SDK",
-      "gate": "Pass manifest, service-worker, HTTPS and installability validation before URL submission"
+      "gate": "Excluded from current scope: platform-specific HTML5 builds only; no standalone web/PWA builds."
     }
   ]
 }
