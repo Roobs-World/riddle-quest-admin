@@ -88,7 +88,6 @@ const REQUIRED_CLUE_SCRIPTS: Partial<Record<(typeof RACE_SUPPORTED_LOCALES)[numb
   ja: /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u,
   ko: /\p{Script=Hangul}/u,
   ru: /\p{Script=Cyrillic}/u,
-  zh: /\p{Script=Han}/u,
 };
 
 /** Describes playable translated answer issue. */

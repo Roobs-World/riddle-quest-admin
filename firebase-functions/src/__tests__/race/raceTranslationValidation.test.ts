@@ -154,7 +154,6 @@ describe("machine-only race translation validation", () => {
     ["ja", "日"],
     ["ko", "한"],
     ["ru", "Я"],
-    ["zh", "中"],
   ] as const)("enforces the expected native script for %s clues", (locale, marker) => {
     /** Provides bundle behavior. */
     const bundle = createBundle();
@@ -171,7 +170,7 @@ describe("machine-only race translation validation", () => {
     );
   });
 
-  it("proves one complete bundle per non-English locale and exactly 2,880 records", () => {
+  it("proves one complete bundle per non-English locale and exactly 2,700 records", () => {
     /** Provides script markers behavior. */
     const scriptMarkers: Record<string, string> = {
       ar: "ع",
@@ -179,7 +178,6 @@ describe("machine-only race translation validation", () => {
       ja: "日",
       ko: "한",
       ru: "Я",
-      zh: "中",
     };
     /** Provides bundles behavior. */
     const bundles = RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en").map((locale) => {
@@ -194,7 +192,7 @@ describe("machine-only race translation validation", () => {
     expect(createRaceTranslationMatrixPlan(bundles, reviewedEnglish)).toEqual({
       valid: true,
       locales: RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en"),
-      totalRiddles: 2_880,
+      totalRiddles: 2_700,
       issues: [],
     });
 
@@ -202,14 +200,14 @@ describe("machine-only race translation validation", () => {
     const missing = createRaceTranslationMatrixPlan(bundles.slice(1), reviewedEnglish);
     expect(missing.valid).toBe(false);
     expect(missing.issues).toEqual(
-      expect.arrayContaining([`${bundles[0].locale}:missing-bundle`, "corpus-count:2700:expected-2880"]),
+      expect.arrayContaining([`${bundles[0].locale}:missing-bundle`, "corpus-count:2520:expected-2700"]),
     );
 
     /** Provides duplicate behavior. */
     const duplicate = createRaceTranslationMatrixPlan([...bundles, bundles[0]], reviewedEnglish);
     expect(duplicate.valid).toBe(false);
     expect(duplicate.issues).toEqual(
-      expect.arrayContaining([`${bundles[0].locale}:duplicate-bundle:2`, "corpus-count:3060:expected-2880"]),
+      expect.arrayContaining([`${bundles[0].locale}:duplicate-bundle:2`, "corpus-count:2880:expected-2700"]),
     );
   });
 
@@ -221,7 +219,7 @@ describe("machine-only race translation validation", () => {
     const matrix = createRaceTranslationMatrixPlan([bundle], reviewedEnglish);
     expect(matrix.valid).toBe(false);
     expect(matrix.issues).toEqual(
-      expect.arrayContaining([expect.stringMatching(/^ja:pool_invalid:/u), "corpus-count:180:expected-2880"]),
+      expect.arrayContaining([expect.stringMatching(/^ja:pool_invalid:/u), "corpus-count:180:expected-2700"]),
     );
   });
 });
