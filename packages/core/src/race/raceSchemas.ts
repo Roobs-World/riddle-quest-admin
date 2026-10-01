@@ -129,37 +129,38 @@ export const RaceRunViewSchema = z
     opponent: RaceOpponentSchema.optional(),
   })
   .strict()
-  .superRefine((run, context) => {
+  .check((context) => {
+    const run = context.value;
     /** Editable questions retain the fixed attempt budget and exact remaining hint capacity. */
     const prompt = run.currentRiddle;
     if (prompt) {
       if (prompt.guessesUsed >= run.rules.maxGuessesPerRiddle ||
         prompt.guessesUsed + prompt.guessesRemaining !== run.rules.maxGuessesPerRiddle)
-        context.addIssue({code: "custom", message: "Editable race attempts must retain their remaining guess budget."});
+        context.issues.push({code: "custom", input: run, message: "Editable race attempts must retain their remaining guess budget."});
       /** Older one-hint runs use their recorded rule, rather than the current hint maximum. */
       const hintLimit = Math.min(run.rules.maxHintsPerRiddle, prompt.answerLength);
       if (prompt.revealedLetters.length > hintLimit || prompt.hintAvailable !== (prompt.revealedLetters.length < hintLimit))
-        context.addIssue({code: "custom", message: "Race hint availability must agree with the remaining hint budget."});
+        context.issues.push({code: "custom", input: run, message: "Race hint availability must agree with the remaining hint budget."});
     }
     if (run.status === "active" && (run.correctCount >= run.rules.targetCorrect ||
       run.currentRiddle && run.correctCount > run.currentRiddle.position))
-      context.addIssue({code: "custom", message: "Active score cannot exceed owned question progress or reach the target."});
+      context.issues.push({code: "custom", input: run, message: "Active score cannot exceed owned question progress or reach the target."});
     /** Preparation and countdown expose the untouched first question, never accepted scoring. */
     const unscored = run.status === "prepared" || run.status === "scheduled";
     if (unscored && (run.correctCount !== 0 || run.totalPenaltyMs !== 0 || run.adjustedElapsedMs !== 0 ||
       run.events.length !== 0 || !run.currentRiddle || run.currentRiddle.position !== 0 ||
       run.currentRiddle.guessesUsed !== 0 || run.currentRiddle.guessesRemaining !== run.rules.maxGuessesPerRiddle ||
       run.currentRiddle.revealedLetters.length !== 0 || !run.currentRiddle.hintAvailable))
-      context.addIssue({code: "custom", message: "Unscored races must retain an untouched first question."});
+      context.issues.push({code: "custom", input: run, message: "Unscored races must retain an untouched first question."});
     if (run.status === "prepared" && run.serverNowMs !== undefined && run.preparationExpiresAtMs !== undefined &&
       run.serverNowMs >= run.preparationExpiresAtMs)
-      context.addIssue({code: "custom", message: "Expired preparation must be abandoned before projection."});
+      context.issues.push({code: "custom", input: run, message: "Expired preparation must be abandoned before projection."});
     // Preparation/countdown are unscored; terminal durations remain fixed independently of later reads.
     if ((run.status === "prepared" || run.status === "scheduled") && run.wallElapsedMs !== 0 ||
       run.startsAtMs !== undefined && run.serverNowMs !== undefined &&
       (run.status === "active" && (run.serverNowMs < run.startsAtMs || run.wallElapsedMs !== run.serverNowMs - run.startsAtMs) ||
         run.status === "scheduled" && run.serverNowMs >= run.startsAtMs))
-      context.addIssue({code: "custom", message: "Live race clocks must agree with the fixed start."});
+      context.issues.push({code: "custom", input: run, message: "Live race clocks must agree with the fixed start."});
   });
 /** Client projection of an authoritative race run. */
 export type RaceRunView = z.infer<typeof RaceRunViewSchema>;
