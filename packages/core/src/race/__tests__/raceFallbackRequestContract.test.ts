@@ -1,13 +1,15 @@
 import {StartRaceRunRequestSchema} from "../raceSchemas";
 
 describe("fallback offer request contract", () => {
+  /** Server-issued fallback identifier used across request combinations. */
   const fallbackOfferId = "a".repeat(64);
-  const categoryRequest = {categoryId: "mixed", requestId: "fallback-request", fallbackOfferId};
+  /** Valid category request with an explicit supported locale. */
+  const categoryRequest = {locale: "en", categoryId: "mixed", requestId: "fallback-request", fallbackOfferId};
 
   it("accepts a fallback only for a category request", () => {
     expect(StartRaceRunRequestSchema.safeParse(categoryRequest).success).toBe(true);
     expect(StartRaceRunRequestSchema.safeParse({
-      challengeId: "challenge-1", requestId: "fallback-request", fallbackOfferId,
+      locale: "en", challengeId: "challenge-1", requestId: "fallback-request", fallbackOfferId,
     }).success).toBe(false);
   });
 
