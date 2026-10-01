@@ -49,7 +49,14 @@ export function initializeBrowserSentry(configuration: BrowserSentryConfiguratio
     environment: configuration.environment?.trim() || "production",
     release: configuration.release?.trim() || undefined,
     sampleRate: 1,
-    sendDefaultPii: false,
+    // v11's broader defaults must not expand the existing errors-only policy.
+    dataCollection: {
+      userInfo: false, cookies: false, httpHeaders: false, httpBodies: [], urlQueryParams: false,
+      genAI: {inputs: false, outputs: false}, databaseQueryData: false, queues: false,
+      graphQL: {document: false, variables: false}, stackFrameVariables: false, frameContextLines: 0,
+    },
+    // Preserve the transaction redaction hook with Sentry v11.
+    traceLifecycle: "static",
     tracesSampleRate: 0,
     integrations: (defaults) => defaults.filter(({name}) => !nonEssentialBrowserIntegrations.has(name)),
     beforeSend: (event) => redactBrowserSentryEvent(event),

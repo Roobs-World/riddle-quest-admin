@@ -60,7 +60,14 @@ describe("browser Sentry lifecycle", () => {
         environment: "production-eu",
         release: "release-1",
         sampleRate: 1,
-        sendDefaultPii: false,
+        // v11's broader defaults must not expand the existing errors-only policy.
+    dataCollection: {
+      userInfo: false, cookies: false, httpHeaders: false, httpBodies: [], urlQueryParams: false,
+      genAI: {inputs: false, outputs: false}, databaseQueryData: false, queues: false,
+      graphQL: {document: false, variables: false}, stackFrameVariables: false, frameContextLines: 0,
+    },
+    // Preserve the transaction redaction hook with Sentry v11.
+    traceLifecycle: "static",
         tracesSampleRate: 0,
       }),
     );
