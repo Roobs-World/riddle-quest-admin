@@ -455,11 +455,12 @@ describe("Race to 10 authoritative engine", () => {
 
 describe("legacy terminal race grants", () => {
   it("uses the original rules for legacy records without a rules snapshot", () => {
+    /** Historical grant marker fixes the terminal deadline recovered by this legacy fixture. */
     const granted = createRun({achievementProgressRecordedAtMs: STARTED_AT + RACE_RULES.maxAdjustedTimeMs});
     expect(raceHasLegacyTerminalGrant(granted)).toBe(true);
     expect(raceHasLegacyTerminalGrant({...granted, achievementProgressRecordedAtMs: STARTED_AT + RACE_RULES.maxAdjustedTimeMs - 1})).toBe(false);
     expect(refreshRaceRun(granted, STARTED_AT + RACE_RULES.maxAdjustedTimeMs + 10000)).toMatchObject({
-      status: "timed_out", adjustedFinishMs: RACE_RULES.maxAdjustedTimeMs,
+      status: "timed_out", wallFinishMs: RACE_RULES.maxAdjustedTimeMs, finishedAtMs: STARTED_AT + RACE_RULES.maxAdjustedTimeMs,
     });
   });
 });
