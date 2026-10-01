@@ -5,6 +5,7 @@ import {
   applyRaceHint,
   applyRaceSkip,
   raceClock,
+  raceDeadlineAtMs,
   raceOutcome,
   refreshRaceRun,
   toRaceRunView,
@@ -44,6 +45,52 @@ const createRun = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
 });
 
 describe("Race to 10 authoritative engine", () => {
+  it("keeps preparation unscored and expires it without a competitive result", () => {
+    /** Unscored preparation whose expiry is independent of solving time. */
+    const prepared = createRun({status: "prepared", startedAtMs: 0, preparationExpiresAtMs: STARTED_AT + 30000});
+    expect(raceClock(prepared, STARTED_AT + 20000).wallElapsedMs).toBe(0);
+    expect(refreshRaceRun(prepared, STARTED_AT + 29999).status).toBe("prepared");
+    expect(refreshRaceRun(prepared, STARTED_AT + 30000)).toMatchObject({status: "abandoned", result: null, wallFinishMs: 0});
+    expect(refreshRaceRun({...prepared, preparationExpiresAtMs: undefined}, STARTED_AT + 30000).status).toBe("prepared");
+    expect(toRaceRunView(prepared, STARTED_AT)).not.toHaveProperty("startsAtMs");
+    expect(toRaceRunView(prepared, STARTED_AT).preparationExpiresAtMs).toBe(STARTED_AT + 30000);
+  });
+
+  it("activates a schedule only at its fixed start and rejects early scoring", () => {
+    /** Server start remains fixed across pre-start reads and commands. */
+    const scheduled = createRun({status: "scheduled"});
+    expect(refreshRaceRun(scheduled, STARTED_AT - 1).status).toBe("scheduled");
+    expect(() => applyRaceGuess(scheduled, {riddleId: "riddle-1", guess: "piano"}, STARTED_AT - 1)).toThrow(/no longer active/i);
+    expect(refreshRaceRun(scheduled, STARTED_AT).status).toBe("active");
+    expect(applyRaceGuess(scheduled, {riddleId: "riddle-1", guess: "piano"}, STARTED_AT).run.correctCount).toBe(1);
+  });
+
+  it("derives unattended deadlines from preparation, fixed starts, penalties and opponent limits", () => {
+    expect(raceDeadlineAtMs(createRun({status: "prepared", preparationExpiresAtMs: STARTED_AT + 30000}))).toBe(STARTED_AT + 30000);
+    expect(raceDeadlineAtMs(createRun({status: "completed"}))).toBeUndefined();
+    expect(raceDeadlineAtMs(createRun())).toBeUndefined();
+    /** Challenger wake-up deadline incorporates its immutable schedule. */
+    const scheduled = createRun({role: "challenger", status: "scheduled"});
+    expect(raceDeadlineAtMs(scheduled)).toBe(STARTED_AT + toRaceRunView(scheduled, STARTED_AT - 1).rules.maxAdjustedTimeMs);
+    expect(raceDeadlineAtMs({...scheduled, opponent: {displayName: "Ava", adjustedFinishMs: 20000, events: []}, hintPenaltyMs: 15000})).toBe(STARTED_AT + 5001);
+    expect(raceDeadlineAtMs({...scheduled, opponent: {displayName: "Ava", adjustedFinishMs: 20000, events: []}, skipPenaltyMs: 45000})).toBe(STARTED_AT);
+  });
+
+  it("records an exact full-score tie and enforces server-only evaluation despite a preload request", () => {
+    /** Exact equality on the last clearing action produces a tie. */
+    const tied = applyRaceGuess(createRun({role: "challenger", correctCount: 9, opponent: {displayName: "Ava", adjustedFinishMs: 20000, events: []}}),
+      {riddleId: "riddle-1", guess: "piano"}, STARTED_AT + 20000).run;
+    expect(raceOutcome(tied, STARTED_AT + 20001).result).toBe("tie");
+    /** Last-action penalty can complete ten questions after the ghost. */
+    const slower = applyRaceSkip(createRun({role: "challenger", correctCount: 9, opponent: {displayName: "Ava", adjustedFinishMs: 20000, events: []}}),
+      {riddleId: "riddle-1"}, STARTED_AT + 1000);
+    expect(raceOutcome(slower, STARTED_AT + 1001)).toMatchObject({result: "ghost_win", correctCount: 10, adjustedFinishMs: 46000});
+    /** Evaluation requests cannot override a server-only run policy. */
+    const view = toRaceRunView(createRun({evaluationPolicy: "server-only"}), STARTED_AT, true);
+    expect(view.preloadedRiddles).toBeUndefined();
+    expect(view.currentRiddle?.evaluation).toBeUndefined();
+  });
+
   it("uses fixed finish time and clamps a pre-start live clock", () => {
     expect(raceClock(createRun({wallFinishMs: 9_000}), STARTED_AT + 50_000).wallElapsedMs).toBe(9_000);
     expect(raceClock(createRun(), STARTED_AT - 1).wallElapsedMs).toBe(0);
