@@ -456,6 +456,7 @@ describe("Race to 10 authoritative engine", () => {
 describe("legacy terminal race grants", () => {
   it("uses the original rules for legacy records without a rules snapshot", () => {
     /** Historical grant marker fixes the terminal deadline recovered by this legacy fixture. */
+    /** Legacy maximum-time award without a rules snapshot. */
     const granted = createRun({achievementProgressRecordedAtMs: STARTED_AT + RACE_RULES.maxAdjustedTimeMs});
     expect(raceHasLegacyTerminalGrant(granted)).toBe(true);
     expect(raceHasLegacyTerminalGrant({...granted, achievementProgressRecordedAtMs: STARTED_AT + RACE_RULES.maxAdjustedTimeMs - 1})).toBe(false);
@@ -468,6 +469,7 @@ describe("legacy terminal race grants", () => {
 
 describe("legacy ghost deadline grants", () => {
   it("retains ghost expiry when the earlier opponent deadline was already rewarded", () => {
+    /** Legacy opponent-deadline award which preceded the maximum duration. */
     const granted = createRun({
       achievementProgressRecordedAtMs: STARTED_AT + 20001,
       opponent: {displayName: "Ava", adjustedFinishMs: 20000, events: []},

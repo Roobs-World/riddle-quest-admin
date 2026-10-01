@@ -130,6 +130,7 @@ export const RaceRunViewSchema = z
   })
   .strict()
   .check((context) => {
+    /** Validated authoritative projection whose cross-field invariants are checked below. */
     const run = context.value;
     /** Editable questions retain the fixed attempt budget and exact remaining hint capacity. */
     const prompt = run.currentRiddle;
