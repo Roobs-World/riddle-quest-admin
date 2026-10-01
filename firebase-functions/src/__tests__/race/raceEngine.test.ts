@@ -464,3 +464,16 @@ describe("legacy terminal race grants", () => {
     });
   });
 });
+
+
+describe("legacy ghost deadline grants", () => {
+  it("retains ghost expiry when the earlier opponent deadline was already rewarded", () => {
+    const granted = createRun({
+      achievementProgressRecordedAtMs: STARTED_AT + 20001,
+      opponent: {displayName: "Ava", adjustedFinishMs: 20000, events: []},
+    });
+    expect(raceHasLegacyTerminalGrant(granted)).toBe(true);
+    expect(raceHasLegacyTerminalGrant({...granted, achievementProgressRecordedAtMs: STARTED_AT + 20000})).toBe(false);
+    expect(refreshRaceRun(granted, STARTED_AT + 25000)).toMatchObject({status: "completed", result: "ghost_win", wallFinishMs: 20000});
+  });
+});
