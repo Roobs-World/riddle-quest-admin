@@ -253,7 +253,7 @@ export function refreshRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
   if (run.status === "scheduled" && operationAtMs >= run.startedAtMs) run.status = "active";
   if (run.status !== "active") return run;
   /** Provides clock behavior. */
-  const clock = raceClock(run, run.status === "active" && raceHasLegacyTerminalGrant(run) ? run.achievementProgressRecordedAtMs! : nowMs);
+  const clock = raceClock(run, raceHasLegacyTerminalGrant(run) ? run.achievementProgressRecordedAtMs! : nowMs);
   if ((run.role === "challenger" || raceHasLegacyTerminalGrant(run)) && clock.adjustedElapsedMs >= raceRules(run).maxAdjustedTimeMs) {
     return finishRun(run, "timed_out", raceRules(run).maxAdjustedTimeMs);
   }

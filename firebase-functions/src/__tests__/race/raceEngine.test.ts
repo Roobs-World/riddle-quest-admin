@@ -1,10 +1,11 @@
-import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS} from "@qwordly/core/race";
+import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RACE_RULES} from "@qwordly/core/race";
 import {
   abandonRaceRun,
   applyRaceGuess,
   applyRaceHint,
   applyRaceSkip,
   raceClock,
+  raceHasLegacyTerminalGrant,
   raceDeadlineAtMs,
   raceOutcome,
   refreshRaceRun,
@@ -448,5 +449,17 @@ describe("Race to 10 authoritative engine", () => {
     expect(() => raceOutcome(createRun({result: "recorded"}), STARTED_AT + 1_000)).toThrow(
       "does not have a final outcome",
     );
+  });
+});
+
+
+describe("legacy terminal race grants", () => {
+  it("uses the original rules for legacy records without a rules snapshot", () => {
+    const granted = createRun({achievementProgressRecordedAtMs: STARTED_AT + RACE_RULES.maxAdjustedTimeMs});
+    expect(raceHasLegacyTerminalGrant(granted)).toBe(true);
+    expect(raceHasLegacyTerminalGrant({...granted, achievementProgressRecordedAtMs: STARTED_AT + RACE_RULES.maxAdjustedTimeMs - 1})).toBe(false);
+    expect(refreshRaceRun(granted, STARTED_AT + RACE_RULES.maxAdjustedTimeMs + 10000)).toMatchObject({
+      status: "timed_out", adjustedFinishMs: RACE_RULES.maxAdjustedTimeMs,
+    });
   });
 });

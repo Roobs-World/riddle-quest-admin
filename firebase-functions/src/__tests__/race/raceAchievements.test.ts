@@ -1,5 +1,6 @@
+import {RACE_ACHIEVEMENT_IDS} from "@qwordly/core/race";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../shared/constants";
-import {evaluateRaceAchievementEvent} from "../../race/raceAchievements";
+import {evaluateRaceAchievementEvent, raceRewardAwardsAgree} from "../../race/raceAchievements";
 
 describe("multiplayer achievements", () => {
   it("unlocks the debut and clean-run achievements on a first clean completion", () => {
@@ -115,5 +116,18 @@ describe("multiplayer achievements", () => {
       7_001,
     );
     expect(noList.stats.multiplayerChallengesCreated).toBe(1);
+  });
+});
+
+
+describe("retained race reward integrity", () => {
+  it("accepts supported unique unlocks only with their exact fixed award", () => {
+    expect(raceRewardAwardsAgree([], 0)).toBe(true);
+    expect(raceRewardAwardsAgree(RACE_ACHIEVEMENT_IDS, RACE_ACHIEVEMENT_IDS.length * ACHIEVEMENT_UNLOCK_COIN_REWARD)).toBe(true);
+    expect(raceRewardAwardsAgree(["race_debut"], ACHIEVEMENT_UNLOCK_COIN_REWARD)).toBe(true);
+    expect(raceRewardAwardsAgree(["race_debut"], 0)).toBe(false);
+    expect(raceRewardAwardsAgree(["race_debut", "race_debut"], 2 * ACHIEVEMENT_UNLOCK_COIN_REWARD)).toBe(false);
+    expect(raceRewardAwardsAgree(["unknown"], ACHIEVEMENT_UNLOCK_COIN_REWARD)).toBe(false);
+    expect(raceRewardAwardsAgree([...RACE_ACHIEVEMENT_IDS, "unknown"], (RACE_ACHIEVEMENT_IDS.length + 1) * ACHIEVEMENT_UNLOCK_COIN_REWARD)).toBe(false);
   });
 });
