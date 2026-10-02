@@ -99,9 +99,12 @@ it("converges concurrent official submissions on the fastest score without econo
 const LIVE_A = `facebook_${"a".repeat(40)}`, LIVE_B = `facebook_${"b".repeat(40)}`;
 /** Independent live matches keep real concurrent receipts separate. */
 let liveSequence = 0;
+/** Provides live pair behavior. */
 async function livePair() {
   for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "facebookTournaments"]) await db.recursiveDelete(db.collection(collection));
+  /** Provides sequence behavior. */
   const sequence = ++liveSequence;
+  /** Provides batch behavior. */
   const batch = db.batch();
   for (let i = 0; i < 30; i++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${i}`), {
     riddleId: `history-${i}`, canonicalRiddleId: `history:${i}`, categoryId: "history",
@@ -110,26 +113,37 @@ async function livePair() {
   });
   for (const user of [LIVE_A, LIVE_B]) batch.set(db.doc(`users/${user}`), {username: user === LIVE_A ? "Alice" : "Bob", coins: 100});
   await batch.commit();
+  /** Provides a behavior. */
   const a = await joinLiveRaceForUser(LIVE_A, {locale: "en", categoryId: "history", requestId: `tournament-live-a-${sequence}`}, {db, nowMs: START});
+  /** Provides b behavior. */
   const b = await joinLiveRaceForUser(LIVE_B, {locale: "en", categoryId: "history", requestId: `tournament-live-b-${sequence}`}, {db, nowMs: START + 1000});
   return {a: await updateLiveRaceForUser(LIVE_A, {ticketId: a.ticketId, action: "poll", requestId: `tournament-live-poll-${sequence}`}, {db, nowMs: START + 1000}), b};
 }
+/** Provides live solve behavior. */
 async function liveSolve(userId: string, ticketId: string, nowMs: number, action: "guess" | "skip" | "hint" = "guess") {
+  /** Provides ticket behavior. */
   const ticket = (await db.doc(`liveRaceTickets/${ticketId}`).get()).data()!;
+  /** Provides match behavior. */
   const match = (await db.doc(`liveRaceMatches/${ticket.matchId}`).get()).data()!;
+  /** Provides seat behavior. */
   const seat = match.tickets.indexOf(ticketId), run = match.runs[seat] as RaceRunRecord;
+  /** Provides riddle behavior. */
   const riddle = run.riddles[run.currentPosition];
   return updateLiveRaceForUser(userId, {ticketId, action, requestId: `tournament-${action}-${nowMs}`, riddleId: riddle.riddleId,
     ...(action === "guess" ? {guess: riddle.answer} : {})}, {db, nowMs});
 }
+/** Provides finish live behavior. */
 async function finishLive(userId: string, ticketId: string) {
   for (let i = 0; i < 10; i++) await liveSolve(userId, ticketId, START + 6000 + i * 1000);
 }
 
 it.each([0, 1])("records a real live winner in seat %i without another economy grant", async seat => {
+  /** Provides {a, b} behavior. */
   const {a, b} = await livePair(), winner = seat ? b : a, userId = seat ? LIVE_B : LIVE_A;
   await finishLive(userId, winner.ticketId);
+  /** Provides before behavior. */
   const before = (await db.doc(`users/${userId}`).get()).data();
+  /** Provides submissions behavior. */
   const submissions = await Promise.all(Array.from({length: 4}, () => recordFacebookTournamentRun(userId,
     {runId: winner.ticketId, locale: "en"}, {db, nowMs: START + 86400000 + 1000})));
   expect(submissions.filter(value => value.improved)).toHaveLength(1);
@@ -143,22 +157,28 @@ it.each([0, 1])("records a real live winner in seat %i without another economy g
 });
 
 it("records ten completed riddles with hint and skip penalties only after the live winner settles", async () => {
+  /** Provides {b} behavior. */
   const {b} = await livePair();
   await liveSolve(LIVE_B, b.ticketId, START + 6000, "skip");
+  /** Provides hinted at behavior. */
   const hintedAt = START + 6000 + RACE_RULES.skipPenaltyMs;
   await liveSolve(LIVE_B, b.ticketId, hintedAt, "hint");
+  /** Provides solved at behavior. */
   const solvedAt = hintedAt + RACE_RULES.hintPenaltyMs;
   for (let i = 0; i < 9; i++) await liveSolve(LIVE_B, b.ticketId, solvedAt + i * 1000);
+  /** Provides adjusted time ms behavior. */
   const adjustedTimeMs = 8000 + 2 * (RACE_RULES.skipPenaltyMs + RACE_RULES.hintPenaltyMs);
   await expect(recordFacebookTournamentRun(LIVE_B, {runId: b.ticketId, locale: "en"}, {db, nowMs: solvedAt + 8000}))
     .rejects.toMatchObject({code: "failed-precondition"});
   await updateLiveRaceForUser(LIVE_B, {ticketId: b.ticketId, action: "poll", requestId: "tournament-penalty-settlement"},
     {db, nowMs: START + 6000 + adjustedTimeMs});
+  /** Provides record behavior. */
   const record = await recordFacebookTournamentRun(LIVE_B, {runId: b.ticketId, locale: "en"}, {db, nowMs: START + 6000 + adjustedTimeMs});
   expect(record.entry.adjustedTimeMs).toBe(adjustedTimeMs);
 });
 
 it("rejects unfinished players and forfeit victories without writing a board", async () => {
+  /** Provides {a, b} behavior. */
   const {a, b} = await livePair();
   await expect(recordFacebookTournamentRun(LIVE_A, {runId: a.ticketId, locale: "en"}, {db, nowMs: START + 7000}))
     .rejects.toMatchObject({code: "failed-precondition"});
@@ -169,13 +189,16 @@ it("rejects unfinished players and forfeit victories without writing a board", a
 });
 
 it.each(["deck", "match", "finish"])("rejects corrupted live %s bindings", async field => {
+  /** Provides {a, b} behavior. */
   const {a, b} = await livePair();
   await finishLive(LIVE_B, b.ticketId);
   if (field === "deck") {
+    /** Provides ref behavior. */
     const ref = db.doc(`liveRaceTickets/${a.ticketId}`), value = (await ref.get()).data()!;
     value.run.riddles[0].answer = "different"; await ref.set(value);
   } else if (field === "match") await db.doc(`liveRaceTickets/${b.ticketId}`).update({matchId: "f".repeat(64)});
   else {
+    /** Provides ref behavior. */
     const ref = db.doc(`liveRaceMatches/${a.ticketId}`), value = (await ref.get()).data()!;
     value.runs[1].finishedAtMs += 1; await ref.set(value);
   }

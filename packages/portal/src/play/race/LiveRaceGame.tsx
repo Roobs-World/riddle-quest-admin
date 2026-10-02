@@ -1,7 +1,11 @@
-import {RankedAvatar} from "../RankedAvatar";
+import {useLiveRaceSignals} from "./hooks/useLiveRaceSignals";
+import {LiveRaceSafety} from "./components/LiveRaceSafety";
+import {LiveRaceIdentity} from "./components/LiveRaceIdentity";
+import {LIVE_RACE_POLL_TICK_MS} from "./logic/liveRacePolling";
 import {LiveRaceInviteShare} from "./components/LiveRaceInviteShare";
 import {estimatedRaceServerNow} from "./logic/raceCountdown";
 import {liveRaceDeliveryDeadline, liveRaceCommandRejected} from "./logic/liveRaceDeliveryDeadline";
+import {liveRacePollInterval} from "./logic/liveRacePolling";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {LiveRaceViewSchema, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@qwordly/core/race";
 import {tr} from "../i18n";
@@ -29,6 +33,8 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
 }) {
   /** Viewer-specific snapshot from the authoritative match. */
   const [view, setView] = useState<LiveRaceView | null>(null);
+  /** Confirmed blocks immediately mask the retired rival on every visible surface. */
+  const [blocked, setBlocked] = useState(false);
   /** Latest accepted snapshot available to asynchronous transport callbacks. */
   const viewRef = useRef<LiveRaceView | null>(null);
   /** Editable answer draft, preserved across rival progress polls. */
@@ -61,6 +67,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   } | null>(null);
   /** A timed-out receipt may recover only while no newer delivery has taken ownership. */
   const latestDelivery = useRef<object | null>(null);
+  /** Last admitted read or action anchors reconciliation without delaying pushed changes. */
+  const lastDeliveryAt = useRef(0);
+  /** Coalesces notifications received while a command or observation owns delivery. */
+  const refreshQueued = useRef(false);
   /** Consecutive delivery failures determine a bounded reconnect delay. */
   const deliveryFailures = useRef(0);
   /** Monotonic deadline prevents repeated requests during an outage. */
@@ -116,6 +126,8 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     const delivery = {poll: Boolean(viewRef.current && !command)};
     /** Definitively rejected commands reconcile against the current authoritative question. */
     let reconcile = false;
+    lastDeliveryAt.current = performance.now();
+    refreshQueued.current = false;
     inFlight.current = delivery;
     latestDelivery.current = delivery;
     if (command || !viewRef.current) setBusy(true);
@@ -159,18 +171,30 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         inFlight.current = null;
         if (active.current) {
           setBusy(false);
-          if ((reconcile || pending.current && pending.current !== command) && !closed.current) queueMicrotask(() => void deliver());
+          if ((reconcile || pending.current && pending.current !== command || refreshQueued.current && performance.now() >= nextDeliveryAt.current) && !closed.current) queueMicrotask(() => void deliver());
         }
       }
     }
   }, [transport, locale, categoryId, createChallenge, challengeId, apply]);
+  /** Signals never bypass delivery ownership or outage backoff. */
+  const refresh = useCallback(() => {refreshQueued.current = true; if (performance.now() >= nextDeliveryAt.current) void deliver();}, [deliver]);
+  /** The platform owns the private authenticated listener. */
+  const pushConnected = useLiveRaceSignals(transport, view, refresh);
   useEffect(() => {
     active.current = true;
     void deliver();
     /** Periodic server observations also retry retained commands after their backoff. */
-    const timer = window.setInterval(() => {
-      if (performance.now() >= nextDeliveryAt.current && !["result", "cancelled"].includes(viewRef.current?.phase ?? "")) void deliver();
-    }, 1000);
+    let timer: number;
+    /** One timer adapts to accepted state; the delivery lock prevents overlapping observations. */
+    const schedulePoll = () => {
+      if (["result", "cancelled"].includes(viewRef.current?.phase ?? "")) return;
+      timer = window.setTimeout(() => {
+        if (performance.now() >= nextDeliveryAt.current && performance.now() - lastDeliveryAt.current >=
+          liveRacePollInterval(viewRef.current, document.visibilityState !== "hidden", pushConnected.current)) void deliver();
+        schedulePoll();
+      }, LIVE_RACE_POLL_TICK_MS);
+    };
+    schedulePoll();
     /** Reconnect and foreground transitions promptly reconcile the original owned command. */
     const resume = () => {
       if (document.visibilityState !== "hidden") {nextDeliveryAt.current = 0; void deliver();}
@@ -180,7 +204,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     dialogRef.current?.focus();
     return () => {
       active.current = false;
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
       window.removeEventListener("online", resume);
       document.removeEventListener("visibilitychange", resume);
       // Strict Mode reactivates this lifetime synchronously; only a real unmount retires its seat.
@@ -245,43 +269,43 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const guesses = view?.run?.currentRiddle?.confirmedGuesses ?? [];
   /** Whole seconds remaining until the authoritative shared start. */
   const countdown = Math.max(0, Math.ceil(((view?.startsAtMs ?? now) - now) / 1000));
-  /** Centered avatar and username displayed in the lobby. */
-  const identity = (player: LiveRaceView["player"]) => {
-    return <div className="live-race-player">
-      <RankedAvatar avatarUrl={player.avatarUrl} level={player.level} size={100}
-        fallback={player.bot ? "🤖" : "👤"} fallbackClassName="live-race-avatar" />
-      <strong>{player.bot ? tr("RaceTo10.LIVE_BOT") : player.displayName}</strong>
-    </div>;
-  };
-  return <section ref={dialogRef} className={`race-screen${phase === "racing" ? " race-screen-gameplay" : !view || phase === "searching" || phase === "countdown" ? " race-screen-live-lobby" : ""}`}
+  /** Local privacy masking cannot change private scoring or the server winner. */
+  const shownView = blocked && view ? {...view, opponent: view.opponent ? {...view.opponent,
+    displayName: tr("RaceTo10.BLOCK_SUCCESS"), avatarUrl: null, level: 1} : null,
+    run: view.run ? {...view.run, opponent: undefined} : null} : view;
+  /** Only adapters with both safety operations expose human-opponent controls. */
+  const hasSafety = shownView?.opponent?.bot === false && Boolean(transport.blockOpponent && transport.reportOpponent);
+  return <section ref={dialogRef} className={`race-screen${hasSafety ? " race-screen-live-safety" : ""}${phase === "racing" ? " race-screen-gameplay" : !view || phase === "searching" || phase === "countdown" ? " race-screen-live-lobby" : ""}`}
     role="dialog" aria-modal="true" aria-labelledby="race-title" tabIndex={-1} data-analytics-screen={`multiplayer_live_${phase ?? "searching"}`}>
-    {phase !== "racing" && <RaceTopbar live coins={view?.newCoins ?? coins} onClose={close} />}
+    {phase !== "racing" && <RaceTopbar live coins={shownView?.newCoins ?? coins} onClose={close} />}
     {error && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")} <button disabled={busy} onClick={() => void deliver()}>{tr("RaceTo10.RETRY")}</button></div>}
     {(!view || phase === "searching" || phase === "countdown") && <div className="live-race-lobby">
-      <div className="live-race-self">{view ? identity(view.player) : <p role="status">{tr("Accessibility.LOADING")}</p>}</div>
+      <div className="live-race-self">{shownView ? <LiveRaceIdentity player={shownView.player} /> : <p role="status">{tr("Accessibility.LOADING")}</p>}</div>
       <div className="live-race-status" role="status" aria-live="polite">
-        <h2>{tr(view?.phase === "countdown" ? "RaceTo10.LIVE_STARTING" : view?.challengeId ? "RaceTo10.CHALLENGE_FRIEND" : "RaceTo10.LIVE_FINDING")}</h2>
-        {view?.phase === "countdown" ? <strong className="live-race-countdown">{countdown}</strong> : <p>{tr(view?.challengeId ? "RaceTo10.LIVE_FRIEND_WAIT" : "RaceTo10.LIVE_WAIT")}</p>}
-      {view?.phase === "searching" && view.challengeId && <LiveRaceInviteShare challengeId={view.challengeId} transport={transport} />}
+        <h2>{tr(shownView?.phase === "countdown" ? "RaceTo10.LIVE_STARTING" : shownView?.challengeId ? "RaceTo10.CHALLENGE_FRIEND" : "RaceTo10.LIVE_FINDING")}</h2>
+        {shownView?.phase === "countdown" ? <strong className="live-race-countdown">{countdown}</strong> : <p>{tr(shownView?.challengeId ? "RaceTo10.LIVE_FRIEND_WAIT" : "RaceTo10.LIVE_WAIT")}</p>}
+      {shownView?.phase === "searching" && shownView.challengeId && <LiveRaceInviteShare challengeId={shownView.challengeId} transport={transport} />}
       </div>
-      <div className="live-race-rival">{view?.opponent && identity(view.opponent)}</div>
+      <div className="live-race-rival">{shownView?.opponent && <LiveRaceIdentity player={shownView.opponent} />}</div>
     </div>}
-    {phase === "racing" && view?.run && <RaceGameplay live viewportRef={viewportRef} gameplayRef={gameplayRef}
-      run={view.opponent?.bot && view.run.opponent ? {...view.run, opponent: {...view.run.opponent, displayName: tr("RaceTo10.LIVE_BOT")}} : view.run} adjustedNow={Math.max(0, now - (view.startsAtMs ?? now)) + view.run.totalPenaltyMs}
-      liveClock={{...clockAnchor.current, startsAtMs: view.startsAtMs ?? now}}
-      opponentCorrect={view.opponent?.correctCount ?? 0} feedback={null} coins={coins} currentLetters={draft.letters}
+    {phase === "racing" && shownView?.run && <RaceGameplay live viewportRef={viewportRef} gameplayRef={gameplayRef}
+      run={shownView.opponent?.bot && shownView.run.opponent ? {...shownView.run, opponent: {...shownView.run.opponent, displayName: tr("RaceTo10.LIVE_OPPONENT")}} : shownView.run} adjustedNow={Math.max(0, now - (shownView.startsAtMs ?? now)) + shownView.run.totalPenaltyMs}
+      liveClock={{...clockAnchor.current, startsAtMs: shownView.startsAtMs ?? now}}
+      opponentCorrect={shownView.opponent?.correctCount ?? 0} feedback={null} coins={coins} currentLetters={draft.letters}
       activeSlotIndex={draft.activeSlotIndex} guesses={guesses} letterStates={getRaceLetterStates(guesses)}
       pending={busy || Boolean(pending.current)} requiresRunRefresh={Boolean(pending.current) || refreshRequired.current} allowTypingWhilePending={false}
       onClose={close} onSelectSlot={index => input("slot", index)} onLetter={letter => input("letter", letter)}
       onText={text => input("text", text)} onBackspace={() => input("backspace")} onSubmit={() => command("guess")}
       onHint={() => command("hint")} onSkip={() => command("skip")} />}
-    {view?.phase === "result" && <div className="race-panel race-result live-race-victory" role="status">
-      <h2>{tr(view.result === "win" ? "RaceTo10.RESULT_PLAYER_WIN" : view.result === "loss" ? "RaceTo10.RESULT_OPPONENT_WIN" : "RaceTo10.RESULT_TIE")}</h2>
-      <div className="race-result-score"><span>{view.player.displayName}<strong>{view.player.correctCount}/10</strong></span>
-        <span>{view.opponent?.bot ? tr("RaceTo10.LIVE_BOT") : view.opponent?.displayName}<strong>{view.opponent?.correctCount ?? 0}/10</strong></span></div>
-      {view.rewardCoins === 50 && <p className="live-race-reward">{tr("RaceTo10.LIVE_REWARD", {coins: view.rewardCoins})}</p>}
+    {shownView?.phase === "result" && <div className="race-panel race-result live-race-victory" role="status">
+      <h2>{tr(shownView.result === "win" ? "RaceTo10.RESULT_PLAYER_WIN" : shownView.result === "loss" ? "RaceTo10.RESULT_OPPONENT_WIN" : "RaceTo10.RESULT_TIE")}</h2>
+      <div className="race-result-score"><span>{shownView.player.displayName}<strong>{shownView.player.correctCount}/10</strong></span>
+        <span>{shownView.opponent?.bot ? tr("RaceTo10.LIVE_OPPONENT") : shownView.opponent?.displayName}<strong>{shownView.opponent?.correctCount ?? 0}/10</strong></span></div>
+      {shownView.rewardCoins === 50 && <p className="live-race-reward">{tr("RaceTo10.LIVE_REWARD", {coins: shownView.rewardCoins})}</p>}
       <button className="race-primary" onClick={close}>{tr("RaceTo10.CLOSE")}</button>
     </div>}
-    {view?.phase === "cancelled" && <button onClick={close}>{tr("RaceTo10.CLOSE")}</button>}
+    {hasSafety && shownView &&
+      <LiveRaceSafety key={shownView.ticketId} transport={transport} ticketId={shownView.ticketId} onBlocked={() => setBlocked(true)} />}
+    {shownView?.phase === "cancelled" && <button onClick={close}>{tr("RaceTo10.CLOSE")}</button>}
   </section>;
 }

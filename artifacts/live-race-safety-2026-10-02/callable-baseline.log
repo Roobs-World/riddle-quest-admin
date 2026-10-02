@@ -1,0 +1,40 @@
+  console.error
+    ◇ injected env (12) from .env
+
+      2 | /** Keeps real local demo-emulator runs independent of deployment credentials and project overrides. */
+      3 | const isDemoEmulatorTest = /^demo-/.test(process.env.GCLOUD_PROJECT || "") && /^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST || "");
+    > 4 | if (!isDemoEmulatorTest) require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                                            ^
+      5 |
+      6 | // Ensure Jest environment is properly detected by iapConfig
+      7 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:4:44)
+
+FAIL src/__tests__/socialSafetyCallables.test.ts
+  ● social safety callables › accepts an owned opaque live seat instead of exposing a rival identity
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Invalid request payload for blockRival: targetUserId: Invalid input: expected string, received undefined; root: Unrecognized key: "liveTicketId"]
+
+      48 |     /** The server resolves the rival; the client supplies only its own seat. */
+      49 |     const liveTicketId = "a".repeat(64);
+    > 50 |     await expect(blockHandler(request({liveTicketId}))).resolves.toEqual({blocked: true});
+         |           ^
+      51 |     expect(mockBlock).toHaveBeenCalledWith(uid, {liveTicketId});
+      52 |     await expect(reportHandler(request({liveTicketId, category: "spam", requestId: "live-report-0001"})))
+      53 |       .resolves.toEqual({reportId: "opaque", queued: true});
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at Object.<anonymous> (src/__tests__/socialSafetyCallables.test.ts:50:11)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        0.252 s, estimated 1 s
+Ran all test suites within paths "src/__tests__/socialSafetyCallables.test.ts".

@@ -28,6 +28,7 @@ import {
   RecordFacebookTournamentRunRequestSchema,
   RecordFacebookTournamentRunResponseSchema,
   classifyRaceMatchFailure,
+  UpdateLiveRaceSchema,
 } from "@qwordly/core/race";
 import {joinLiveRace, updateLiveRace} from "../race/raceLiveCallables";
 import {liveRaceGatewayFailure} from "../race/raceLiveFailures";
@@ -57,7 +58,7 @@ import {
 import {hydrateRedditLiveRaceProfile} from "./redditLiveRaceProfile";
 import {hydrateRedditRaceSocialResult} from "./redditSocialProfile";
 import {disconnectRedditPresence, pollRedditPresence} from "./redditPresence";
-import {blockKnownRival, reportKnownRival, SOCIAL_REPORT_CATEGORIES} from "../social/socialSafety";
+import {blockRival, reportRival} from "../social/socialSafetyCallables";
 import {grantVerifiedRedditOrder, refundVerifiedRedditOrder} from "./redditCommerceLedger";
 import {bindRedditReferralToken, issueRedditReferralToken} from "./redditReferrals";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
@@ -261,9 +262,14 @@ const dispatch = async (
       const input = RecordFacebookTournamentRunRequestSchema.parse(payload);
       await assertRaceAccess(uid, input.locale);
       /** Provides {entry, improved} behavior. */
-      const {entry, improved} = await recordRedditTournamentRun(uid, input);
+      const {entry, improved} = await runWithJestAccountOperationLease(uid, options.timeoutSeconds,
+        () => recordRedditTournamentRun(uid, input));
       return RecordFacebookTournamentRunResponseSchema.parse({
-        ...entry,
+        tournamentId: entry.tournamentId,
+        locale: entry.locale,
+        runId: entry.runId,
+        adjustedTimeMs: entry.adjustedTimeMs,
+        completedAtMs: entry.completedAtMs,
         improved,
         sortOrder: REDDIT_TOURNAMENT_SORT_ORDER,
         rewardsEnabled: false,
@@ -292,35 +298,10 @@ const dispatch = async (
       await disconnectRedditPresence(uid, payload.sessionId);
       return {success: true};
     }
-    case "gameplay.safety.block": {
-      if (!isRecord(payload) || Object.keys(payload).length !== 1 || typeof payload.targetUserId !== "string") {
-        throw new Error("invalid-reddit-safety-payload");
-      }
-      return blockKnownRival(uid, payload.targetUserId);
-    }
-    case "gameplay.safety.report": {
-      if (
-        !isRecord(payload) ||
-        Object.keys(payload).some((key) => !["targetUserId", "category", "requestId"].includes(key)) ||
-        typeof payload.targetUserId !== "string" ||
-        typeof payload.category !== "string" ||
-        !(SOCIAL_REPORT_CATEGORIES as readonly string[]).includes(payload.category) ||
-        typeof payload.requestId !== "string"
-      ) {
-        throw new Error("invalid-reddit-safety-payload");
-      }
-      return reportKnownRival(
-        uid,
-        payload as {
-          /** Stores target user id. */
-          targetUserId: string; /** Stores category. */
-          /** Stores category. */
-          category: (typeof SOCIAL_REPORT_CATEGORIES)[number]; /** Stores request id. */
-          /** Stores request id. */
-          requestId: string;
-        },
-      );
-    }
+    case "gameplay.safety.block":
+      return blockRival.run(callableRequest(uid, payload) as never);
+    case "gameplay.safety.report":
+      return reportRival.run(callableRequest(uid, payload) as never);
     case "gameplay.commerce.fulfill": {
       if (
         !isRecord(payload) ||
@@ -460,9 +441,13 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
     );
     verifiedGuess = operation === "gameplay.guess.submit";
     verifiedMatch = operation === "gameplay.race.match";
+    /** Malformed inputs stay in the existing quota so rejection cannot bypass request accounting. */
+    const liveUpdate = operation === "gameplay.race.live.update" ? UpdateLiveRaceSchema.safeParse(envelope.payload) : undefined;
+    /** Only a schema-valid signed player command receives its separate bounded budget. */
+    const quotaOperation = liveUpdate?.success && liveUpdate.data.action !== "poll" ? `${operation}.command` : assertion.operation;
     if (
       !(await consumeRedditRequestQuota(
-        `${assertion.appName}\0${assertion.userId}\0${assertion.operation}`,
+        `${assertion.appName}\0${assertion.userId}\0${quotaOperation}`,
         gatewaySecret.value(),
       ))
     ) {

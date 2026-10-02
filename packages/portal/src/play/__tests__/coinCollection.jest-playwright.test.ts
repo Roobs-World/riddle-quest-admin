@@ -9,8 +9,8 @@ import {chromium} from "@playwright/test";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 
-describeBrowser("classic coin collection", () => {
-  it("enables Next Level when coin meter animation fails", async () => {
+describeBrowser("solo coin collection and successor routing", () => {
+  it.each(["classic", "challenge"])("enables Next Level and loads a playable successor after %s coin collection", async (mode) => {
     /** Provides dist dir behavior. */
     const distDir = process.env.PORTAL_JEST_BUILD_DIR
       ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
@@ -61,6 +61,15 @@ describeBrowser("classic coin collection", () => {
       await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        /** Observe correlated content failures without changing bridge delivery. */
+        const failures: string[] = [];
+        Object.assign(window, {__NEXT_LOAD_FAILURES__: failures});
+        window.addEventListener("riddle-quest:host-to-game", event => {
+          /** Correlated host operation result observed by this browser fixture. */
+          const message = (event as CustomEvent).detail;
+          if (message?.type === "host:operationResult" && message.payload?.operation === "loadRiddle" &&
+            message.payload.ok === false && message.requestId) failures.push(message.requestId);
+        });
         Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 4});
         Object.defineProperty(navigator, "deviceMemory", {configurable: true, value: 4});
         Object.defineProperty(navigator, "connection", {
@@ -71,11 +80,11 @@ describeBrowser("classic coin collection", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      // Seed the supported post-Daily Classic fallback for this Classic-only scenario.
-      await page.goto(`http://127.0.0.1:${address.port}/?harness=jest&dailyCompleted=1`);
+      // Select either Daily completion or the supported post-Daily Classic launch.
+      await page.goto(`http://127.0.0.1:${address.port}/?harness=jest${mode === "classic" ? "&dailyCompleted=1" : ""}`);
       await completeMockOnboarding(page);
-      await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
-      for (const letter of "PIANO") {
+      await page.getByText(mode === "classic" ? /what has keys/i : /speak without a mouth/i).waitFor({timeout: 15_000});
+      for (const letter of mode === "classic" ? "PIANO" : "ECHO") {
         await page
           .locator(".keyboard")
           .getByRole("button", {name: new RegExp(`^${letter}$`)})
@@ -124,6 +133,10 @@ describeBrowser("classic coin collection", () => {
       expect(await nextLevel.isEnabled()).toBe(true);
       await nextLevel.click();
       await page.locator(".modal-victory").waitFor({state: "detached"});
+      await page.getByText(mode === "classic" ? /face and hands/i : /what has keys/i).waitFor();
+      expect(await page.locator(".game-mode-label").textContent()).toMatch(/classic/i);
+      expect(await page.locator(".keyboard button").first().isEnabled()).toBe(true);
+      expect(await page.evaluate(() => Reflect.get(window, "__NEXT_LOAD_FAILURES__"))).toEqual([]);
     } finally {
       await browser.close();
       await new Promise<void>((resolve) => server.close(() => resolve()));

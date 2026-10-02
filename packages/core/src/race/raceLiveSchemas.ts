@@ -1,6 +1,7 @@
 import {z} from "zod";
 import {RaceCategoryIdSchema, RaceLocaleSchema} from "./raceDefinitionSchemas";
-import {RaceRunViewSchema} from "./raceSchemas";
+import {RaceRunViewSchema, type SocialReportCategory} from "./raceSchemas";
+import type {ListLiveRaceHistoryResponse} from "./raceLiveHistorySchemas";
 
 /** Server-owned lobby, countdown and victory constants. */
 export const LIVE_RACE_WAIT_MS = 60_000;
@@ -61,6 +62,30 @@ export type UpdateLiveRace = z.infer<typeof UpdateLiveRaceSchema>;
 export type LiveRaceView = z.infer<typeof LiveRaceViewSchema>;
 /** Platform adapter owns the authenticated transport. */
 export type LiveRaceCapability = {
+  /** Reads only the authenticated account's retained terminal seats in the selected language. */
+  history?(locale: z.infer<typeof RaceLocaleSchema>): Promise<ListLiveRaceHistoryResponse>;
+  /** Blocks the private opponent resolved from the caller's own live seat. */
+  blockOpponent?(input: {
+    /** Owned opaque seat; no rival identity. */
+    liveTicketId: string;
+  }): Promise<{
+    /** Confirmed server block. */
+    blocked: true;
+  }>;
+  /** Queues an idempotent categorized report for that private human opponent. */
+  reportOpponent?(input: {
+    /** Owned opaque seat. */
+    liveTicketId: string;
+    /** Fixed reason vocabulary. */
+    category: SocialReportCategory;
+    /** Stable retry identity. */
+    requestId: string;
+  }): Promise<{
+    /** Private queue acknowledgement. */
+    reportId: string;
+    /** Queue status. */
+    queued: true;
+  }>;
   /** Opens the target's native friend invitation for an existing private lobby. */
   shareChallenge?(input: {
     /** Opaque existing server lobby. */
@@ -74,6 +99,8 @@ export type LiveRaceCapability = {
   sendChallenge?(input: z.infer<typeof SendLiveRaceChallengeSchema>): Promise<z.infer<typeof SendLiveRaceChallengeResponseSchema>>;
   /** Reads pending direct invitations without accepting a seat. */
   inbox?(): Promise<LiveRaceChallenge[]>;
+  /** Observes private wake-up notifications; authoritative state still comes from update. */
+  observe?(ticketId: string, onChange: () => void, onStatus: (connected: boolean) => void): () => void;
   /** Reads live progress or submits an idempotent action. */
   update(input: UpdateLiveRace): Promise<LiveRaceView>;
 };

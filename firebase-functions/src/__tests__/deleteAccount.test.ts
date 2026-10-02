@@ -25,6 +25,7 @@ const mockTransactionGet = jest.fn(
     /** Stores path. */
     path: string;
   }) => {
+    if (ref.path.startsWith("jestAccountDeletionTombstones/")) return {exists: mockJestDeletionSet.mock.calls.length > 0, data: () => ({recreationBlocked: true})};
     if (ref.path === "users/user-1") {
       return {exists: true, data: () => ({username: "Player One"})};
     }
@@ -162,6 +163,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
     firestore: Object.assign(
       () => ({
         collection: (collection: string) => ({
+          orderBy: () => mockCreateQuery(collection, "__name__", "*"),
           doc: (id = "user-1") =>
             collection === "jestReferralVerifications"
               ? {delete: mockReferralVerificationDelete, path: `${collection}/${id}`}

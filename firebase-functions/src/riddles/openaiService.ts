@@ -84,6 +84,12 @@ export function resetOpenAIClient(): void {
   openaiClient = null;
 }
 
+/** Keeps authoring and blind solving on the same keyboard-compatible native spelling. */
+const getLocaleAnswerPrompt = (locale: SupportedLocale): string => locale === "en" ? "" :
+  "Return the answer as the intended native word's standard unaccented lowercase Latin transliteration, using only letters a-z. " +
+  "Use the native spelling and pronunciation, not its English translation or the original foreign spelling of a loanword. " +
+  "The expected romanized spelling must be unambiguous. ";
+
 /** Gets locale specific prompt. */
 const getLocaleSpecificPrompt = (locale: SupportedLocale): string => {
   if (locale === "en") {
@@ -95,7 +101,7 @@ const getLocaleSpecificPrompt = (locale: SupportedLocale): string => {
     "Adapt the clue, imagery, and references so they feel native to the locale rather than translated from English. " +
     "Prefer widely understood local concepts, idioms, foods, places, customs, and everyday objects that a native speaker would recognize immediately. " +
     "Avoid culture-specific references that only make sense in English or in a different country, and avoid obscure local trivia that would be unfair to a broad audience. " +
-    "Return the answer as its standard unaccented lowercase Latin transliteration, using only letters a-z, and make the expected romanized spelling unambiguous."
+    getLocaleAnswerPrompt(locale)
   );
 };
 
@@ -291,8 +297,9 @@ async function blindSolveGeneratedRiddle(
             "Solve the supplied mobile-game riddle exactly as a casual player would. You have not been given the author's answer. " +
             "Return the single lowercase a-z answer you would enter, your honest confidence, and up to three other genuinely plausible answers. " +
             "Use high confidence only when the clue clearly converges on one familiar answer and its expected romanized spelling is unambiguous. " +
-            "Do not invent extra facts or explain away ambiguity.",
-          input: JSON.stringify({targetLocale: locale, question}),
+            "Do not invent extra facts or explain away ambiguity. " + getLocaleAnswerPrompt(locale),
+          // Players can use the board's fixed letter count to distinguish otherwise plausible answers.
+          input: JSON.stringify({targetLocale: locale, question, answerLength: answer.length}),
           prompt_cache_key: "riddlequest-riddle-blind-solve-v1",
           store: false,
           text: {format: zodTextFormat(OpenAIBlindSolveSchema, "riddle_blind_solve"), verbosity: "low"},

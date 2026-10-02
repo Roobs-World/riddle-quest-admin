@@ -1,4 +1,6 @@
 import {createHash} from "node:crypto";
+import type {ReportSocialRivalRequest} from "@qwordly/core/race";
+import {resolveLiveRaceSafetyTarget} from "./liveRaceSafetyTarget";
 import type {Database} from "firebase-admin/database";
 import {HttpsError} from "firebase-functions/v2/https";
 import {refreshBlockedRivalPresenceVisibility} from "../presence/presenceVisibility";
@@ -58,7 +60,10 @@ const utcDay = (nowMs: number): string => new Date(nowMs).toISOString().slice(0,
 /** Creates or refreshes a bilateral block after confirming an established rivalry. */
 export async function blockKnownRival(
   reporterId: string,
-  targetUserId: string,
+  target: string | {
+    /** Caller-owned opaque live seat. */
+    liveTicketId: string;
+  },
   options: {
     /** Stores db. */
     db?: FirebaseFirestore.Firestore; /** Stores database. */
@@ -71,21 +76,20 @@ export async function blockKnownRival(
   /** Stores blocked. */
   blocked: true;
 }> {
-  validateIdentityPair(reporterId, targetUserId);
+  if (typeof target === "string") validateIdentityPair(reporterId, target);
   /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
   /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
   requireSafeTime(nowMs);
-  /** Provides known ref behavior. */
-  const knownRef = db.doc(`users/${reporterId}/knownRivals/${targetUserId}`);
-  /** Provides block ref behavior. */
-  const blockRef = db.doc(`users/${reporterId}/blockedRivals/${targetUserId}`);
-  await db.runTransaction(async (transaction) => {
-    /** Provides known behavior. */
-    const known = await transaction.get(knownRef);
-    requireKnownRival(known, targetUserId);
-    transaction.set(blockRef, {targetUserId, blockedAtMs: nowMs}, {merge: false});
+  /** The resolved private identity leaves the transaction only for presence revocation. */
+  const targetUserId = await db.runTransaction(async (transaction) => {
+    /** Live bindings and recorded relationships are authorized in the same write transaction. */
+    const resolved = typeof target === "string" ? target : await resolveLiveRaceSafetyTarget(transaction, db, reporterId, target.liveTicketId, nowMs);
+    validateIdentityPair(reporterId, resolved);
+    if (typeof target === "string") requireKnownRival(await transaction.get(db.doc(`users/${reporterId}/knownRivals/${resolved}`)), resolved);
+    transaction.set(db.doc(`users/${reporterId}/blockedRivals/${resolved}`), {targetUserId: resolved, blockedAtMs: nowMs}, {merge: false});
+    return resolved;
   });
   // Do not report a successful block while an existing RTDB ACL can still
   // expose either player's presence. The Firestore trigger repeats this work
@@ -97,14 +101,7 @@ export async function blockKnownRival(
 /** Queues one idempotent categorized report, capped per reporter and UTC day. */
 export async function reportKnownRival(
   reporterId: string,
-  input: {
-    /** Stores target user id. */
-    targetUserId: string; /** Stores category. */
-    /** Stores category. */
-    category: SocialReportCategory; /** Stores request id. */
-    /** Stores request id. */
-    requestId: string;
-  },
+  input: ReportSocialRivalRequest,
   options: {
     /** Stores db. */
     db?: FirebaseFirestore.Firestore; /** Stores now ms. */
@@ -117,7 +114,7 @@ export async function reportKnownRival(
   /** Stores queued. */
   queued: true;
 }> {
-  validateIdentityPair(reporterId, input.targetUserId);
+  if ("targetUserId" in input) validateIdentityPair(reporterId, input.targetUserId);
   if (!(SOCIAL_REPORT_CATEGORIES as readonly string[]).includes(input.category)) {
     throw new HttpsError("invalid-argument", "Social report category is invalid.");
   }
@@ -133,28 +130,26 @@ export async function reportKnownRival(
   const day = utcDay(nowMs);
   /** Provides report id behavior. */
   const reportId = opaqueId("social-report-v1", reporterId, input.requestId);
-  /** Provides known ref behavior. */
-  const knownRef = db.doc(`users/${reporterId}/knownRivals/${input.targetUserId}`);
   /** Provides report ref behavior. */
   const reportRef = db.collection("socialModerationQueue").doc(reportId);
   /** Provides limit ref behavior. */
   const limitRef = db.collection("socialReportRateLimits").doc(opaqueId(reporterId, day));
   await db.runTransaction(async (transaction) => {
-    /** Provides [known, existing, limit] behavior. */
-    const [known, existing, limit] = await Promise.all([
-      transaction.get(knownRef),
-      transaction.get(reportRef),
-      transaction.get(limitRef),
-    ]);
-    requireKnownRival(known, input.targetUserId);
+    /** Resolve a private live peer under the report transaction, or require an established recorded rival. */
+    const targetUserId = "targetUserId" in input ? input.targetUserId : await resolveLiveRaceSafetyTarget(transaction, db, reporterId, input.liveTicketId, nowMs);
+    validateIdentityPair(reporterId, targetUserId);
+    if ("targetUserId" in input) requireKnownRival(await transaction.get(db.doc(`users/${reporterId}/knownRivals/${targetUserId}`)), targetUserId);
+    /** Replay and quota are read before every write. */
+    const [existing, limit] = await Promise.all([transaction.get(reportRef), transaction.get(limitRef)]);
     if (existing.exists) {
       /** Provides value behavior. */
       const value = existing.data();
       if (
         value?.reportId !== reportId ||
         value.reporterId !== reporterId ||
-        value.targetUserId !== input.targetUserId ||
+        value.targetUserId !== targetUserId ||
         value.category !== input.category ||
+        value.liveTicketBinding !== ("liveTicketId" in input ? opaqueId("live-safety-v1", reporterId, input.liveTicketId) : undefined) ||
         value.status !== "queued" ||
         !Number.isSafeInteger(value.createdAtMs) ||
         value.createdAtMs < 0 ||
@@ -187,9 +182,10 @@ export async function reportKnownRival(
     transaction.create(reportRef, {
       reportId,
       reporterId,
-      targetUserId: input.targetUserId,
+      targetUserId,
       category: input.category,
       status: "queued",
+      ...("liveTicketId" in input ? {liveTicketBinding: opaqueId("live-safety-v1", reporterId, input.liveTicketId)} : {}),
       createdAtMs: nowMs,
     });
     transaction.set(limitRef, {reporterId, day, count: count + 1, updatedAtMs: nowMs}, {merge: false});

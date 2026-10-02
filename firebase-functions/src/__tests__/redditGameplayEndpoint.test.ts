@@ -13,6 +13,7 @@ describe("Reddit gameplay operation allowlist", () => {
     {operation: ""},
     {operation: "gameplay.profile.avatar"},
     {operation: "gameplay.purchase.grant"},
+    {operation: "gameplay.race.live.update.command"},
     {operation: "gameplay.riddle.classic.extra"},
     {operation: ["gameplay.profile.load"]},
   ])("rejects unsupported or malformed operations: %p", (assertion) => {

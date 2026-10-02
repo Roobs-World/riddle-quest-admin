@@ -68,6 +68,17 @@ describe("Sentry Firebase handler wrappers", () => {
     expect(runWithJestAccountOperationLease).toHaveBeenCalledWith("owner", 60, expect.any(Function));
   });
 
+  it("skips the mutation lease only for an explicitly declared read-only stream", async () => {
+    /** Provides callable behavior. */
+    const callable = onCallWithSentry("observer", {}, async () => "done", {
+      skipJestAccountOperationLease: request => request.acceptsStreaming === true,
+    });
+    await callable.run({auth: {uid: "owner"}, data: {}, acceptsStreaming: true} as never);
+    expect(runWithJestAccountOperationLease).not.toHaveBeenCalled();
+    await callable.run({auth: {uid: "owner"}, data: {}, acceptsStreaming: false} as never);
+    expect(runWithJestAccountOperationLease).toHaveBeenCalledTimes(1);
+  });
+
   it("serializes an authenticated legacy Firebase callable by UID", async () => {
     /** Provides callable behavior. */
     const callable = onCallWithSentry("callable", {}, async () => "done");

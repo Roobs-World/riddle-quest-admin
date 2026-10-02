@@ -1,0 +1,42 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-live-score", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts src/__tests__/race/facebookLiveReferrals.it.test.ts src/__tests__/race/raceLiveAccountDeletion.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookTournament.it.test.ts src/__tests__/race/raceLive.it.test.ts src/__tests__/race/raceSettlement.it.test.ts
+FAIL src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts (6.403 s)
+  ● holds an account lease until the official write drains and deletion removes the row
+
+    JestAccountDeletedError: account-deleted
+
+      101 | /** Throws when a transaction observed a permanent deletion guard. */
+      102 | export function assertJestAccountActive(snapshot: Pick<DocumentSnapshot, "exists">): void {
+    > 103 |   if (snapshot.exists) throw new JestAccountDeletedError();
+          |                              ^
+      104 | }
+      105 |
+      106 | /** Identifies the expected deleted-account error without exposing other failures. */
+
+      at assertJestAccountActive (src/jest/jestAccountDeletion.ts:103:30)
+      at src/facebook/facebookReferrals.ts:378:28
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at finishFacebookRaceReferralDelivery (src/facebook/facebookRaceReferralDelivery.ts:17:3)
+      at finishFacebookLiveRaceDelivery (src/facebook/facebookLiveRaceDelivery.ts:48:5)
+      at src/race/racePerformanceDelivery.ts:96:29
+      at withRaceDeliveryReceipt (src/race/raceDeliveryFailures.ts:24:16)
+      at Object.<anonymous> (src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts:194:3)
+
+
+Test Suites: 1 failed, 6 passed, 7 total
+Tests:       1 failed, 184 passed, 185 total
+Snapshots:   0 total
+Time:        159.217 s
+Ran all test suites within paths "src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts", "src/__tests__/race/facebookLiveReferrals.it.test.ts", "src/__tests__/race/raceLiveAccountDeletion.it.test.ts", "src/__tests__/race/redditLiveReferrals.it.test.ts", "src/__tests__/race/facebookTournament.it.test.ts", "src/__tests__/race/raceLive.it.test.ts", "src/__tests__/race/raceSettlement.it.test.ts".
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts src/__tests__/race/facebookLiveReferrals.it.test.ts src/__tests__/race/raceLiveAccountDeletion.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookTournament.it.test.ts src/__tests__/race/raceLive.it.test.ts src/__tests__/race/raceSettlement.it.test.ts" exited with code 1

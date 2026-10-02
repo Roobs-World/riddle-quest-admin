@@ -12,6 +12,7 @@ import {LiveRaceInbox} from "./components/LiveRaceInbox";
 import {LiveRacePushConsent} from "./components/LiveRacePushConsent";
 import {LiveRaceGame} from "./LiveRaceGame";
 import {RaceTopbar} from "./components/RaceHeader";
+import {RaceCategoryIcon} from "./components/RaceCategoryIcon";
 import {useRaceDialogFocus} from "./hooks";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
 
@@ -111,13 +112,14 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
       <LiveRaceInvitationCard key={challengeId} challengeId={challengeId} transport={matchmaking.live} onAccept={onStart} />}
     {matchmaking?.live?.inbox && matchmaking.live.challenge &&
       <LiveRaceInbox transport={matchmaking.live} excludeId={challengeId} onAccept={onStart} />}
-    <div className="race-panel">
+    <div className="race-panel race-category-panel">
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
       <p>{tr("RaceTo10.FIRST_TO_TEN")}</p>
       <div className="race-category-grid">
         {categories.map(category => <button key={category.categoryId} aria-pressed={selected === category.categoryId}
           disabled={loading || !matchmaking?.live} style={{"--race-color": category.colorToken} as CSSProperties}
           onClick={() => setSelection(category.categoryId)}>
+          <RaceCategoryIcon categoryId={category.categoryId} />
           <strong>{tr(category.nameKey)}</strong><span>{tr(category.descriptionKey)}</span>
         </button>)}
       </div>

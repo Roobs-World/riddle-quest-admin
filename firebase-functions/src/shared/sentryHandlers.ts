@@ -17,8 +17,8 @@ import {captureException, flushSentry} from "./sentry";
 
 /** Internal controls that are never forwarded to the Firebase runtime. */
 interface CallableBoundaryOptions {
-  /** Deletion itself writes the guard and must not acquire a shared lease. */
-  skipJestAccountOperationLease?: boolean;
+  /** Deletion and explicitly declared pure observers do not acquire the mutation lease. */
+  skipJestAccountOperationLease?: boolean | ((request: CallableRequest<unknown>) => boolean);
 }
 
 /**
@@ -69,7 +69,10 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
       // Transport wrapping happens after handler validation and never changes authoritative state.
       return negotiation.protected ? await protectContent(result) as Result : result;
     };
-    if (boundaryOptions.skipJestAccountOperationLease || !request.auth) {
+    /** Only a caller-declared pure observer may skip the mutation lease for a streaming request. */
+    const skipLease = typeof boundaryOptions.skipJestAccountOperationLease === "function"
+      ? boundaryOptions.skipJestAccountOperationLease(request) : boundaryOptions.skipJestAccountOperationLease;
+    if (skipLease || !request.auth) {
       return invoke();
     }
     /** Provides timeout seconds behavior. */

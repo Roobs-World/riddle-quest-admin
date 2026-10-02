@@ -24,6 +24,8 @@ const RATE_LIMIT_RETENTION_MS = 24 * 60 * 60 * 1_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 /** Defines the rate limit max value. */
 const RATE_LIMIT_MAX = 20;
+/** Serialize only in-flight writes to one hashed quota row within this runtime; Firestore remains authoritative across runtimes. */
+const quotaOperations = new Map<string, Promise<void>>();
 /** Allows thirty two-second race polls plus bounded state/consent transitions per minute. */
 const PRESENCE_POLL_RATE_LIMIT_MAX = 60;
 /** Defines the max body bytes value. */
@@ -331,48 +333,61 @@ export async function consumeRedditRequestQuota(
   }
   /** Callers construct this key from the verified app, user and signed operation. */
   const keyParts = key.split("\0");
-  /** Only the exact authenticated polling operation receives the larger server-owned budget. */
+  /** Live polling and schema-validated commands have independent bounded budgets. */
   const maxRequests = keyParts.length === 3 && keyParts[0] === REDDIT_APP_NAME && keyParts[1]
-    ? keyParts[2] === "gameplay.race.live.update" ? 120
+    ? keyParts[2] === "gameplay.race.live.update" || keyParts[2] === "gameplay.race.live.update.command" ? 120
       : keyParts[2] === "gameplay.presence.poll" ? PRESENCE_POLL_RATE_LIMIT_MAX : RATE_LIMIT_MAX
     : RATE_LIMIT_MAX;
   /** Provides id behavior. */
   const id = createHmac("sha256", secret).update("riddle-quest-reddit-rate-v1\0").update(key).digest("hex");
   /** Provides ref behavior. */
   const ref = db.collection("redditGatewayRateLimits").doc(id);
-  return db.runTransaction(async (transaction) => {
-    /** Provides snapshot behavior. */
-    const snapshot = await transaction.get(ref);
-    /** Provides value behavior. */
-    const value = snapshot.data();
-    /** Provides count behavior. */
-    const count = value?.count;
-    /** Resets at ms. */
-    const resetAtMs = value?.resetAtMs;
-    if (
-      snapshot.exists &&
-      (!Number.isSafeInteger(count) ||
-        (count as number) < 1 ||
-        (count as number) > maxRequests ||
-        !Number.isSafeInteger(resetAtMs) ||
-        (resetAtMs as number) < 1 ||
-        timestampMs(value?.expiresAt) !== (resetAtMs as number) + RATE_LIMIT_RETENTION_MS)
-    )
-      throw new Error("invalid-reddit-rate-limit-record");
-    if (snapshot.exists && (resetAtMs as number) > nowMs) {
-      if ((count as number) >= maxRequests) return false;
-      transaction.update(ref, {count: (count as number) + 1});
+  /** Previous local requests release their turn on both success and failure. */
+  const previous = quotaOperations.get(id) ?? Promise.resolve();
+  /** This request's turn is never rejected, preventing a failed write from poisoning its successors. */
+  let release!: () => void;
+  /** Pending work contains no raw key or stored quota balance. */
+  const turn = new Promise<void>(resolve => {release = resolve;});
+  quotaOperations.set(id, turn);
+  await previous;
+  try {
+    return await db.runTransaction(async (transaction) => {
+      /** Provides snapshot behavior. */
+      const snapshot = await transaction.get(ref);
+      /** Provides value behavior. */
+      const value = snapshot.data();
+      /** Provides count behavior. */
+      const count = value?.count;
+      /** Resets at ms. */
+      const resetAtMs = value?.resetAtMs;
+      if (
+        snapshot.exists &&
+        (!Number.isSafeInteger(count) ||
+          (count as number) < 1 ||
+          (count as number) > maxRequests ||
+          !Number.isSafeInteger(resetAtMs) ||
+          (resetAtMs as number) < 1 ||
+          timestampMs(value?.expiresAt) !== (resetAtMs as number) + RATE_LIMIT_RETENTION_MS)
+      )
+        throw new Error("invalid-reddit-rate-limit-record");
+      if (snapshot.exists && (resetAtMs as number) > nowMs) {
+        if ((count as number) >= maxRequests) return false;
+        transaction.update(ref, {count: (count as number) + 1});
+        return true;
+      }
+      /** Provides next reset at ms behavior. */
+      const nextResetAtMs = nowMs - (nowMs % RATE_LIMIT_WINDOW_MS) + RATE_LIMIT_WINDOW_MS;
+      transaction.set(ref, {
+        count: 1,
+        resetAtMs: nextResetAtMs,
+        expiresAt: admin.firestore.Timestamp.fromMillis(nextResetAtMs + RATE_LIMIT_RETENTION_MS),
+      });
       return true;
-    }
-    /** Provides next reset at ms behavior. */
-    const nextResetAtMs = nowMs - (nowMs % RATE_LIMIT_WINDOW_MS) + RATE_LIMIT_WINDOW_MS;
-    transaction.set(ref, {
-      count: 1,
-      resetAtMs: nextResetAtMs,
-      expiresAt: admin.firestore.Timestamp.fromMillis(nextResetAtMs + RATE_LIMIT_RETENTION_MS),
     });
-    return true;
-  });
+  } finally {
+    release();
+    if (quotaOperations.get(id) === turn) quotaOperations.delete(id);
+  }
 }
 
 /** Provides consume reddit gateway nonce behavior. */

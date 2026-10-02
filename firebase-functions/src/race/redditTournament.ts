@@ -4,6 +4,7 @@ import {admin} from "../shared/firebaseAdmin";
 import {isRedditFirebaseUid} from "../reddit/redditSecurity";
 import {raceClock, type RaceRunRecord} from "./raceEngine";
 import {parseRunRecord} from "./raceSetupService";
+import {readRedditLiveTournamentRun} from "./redditLiveTournament";
 
 /** Defines the reddit tournament duration ms value. */
 export const REDDIT_TOURNAMENT_DURATION_MS = 24 * 60 * 60 * 1_000;
@@ -185,9 +186,10 @@ export async function recordRedditTournamentRun(
   return db.runTransaction(async (transaction) => {
     /** Provides run snapshot behavior. */
     const runSnapshot = await transaction.get(db.collection("raceRuns").doc(input.runId));
-    if (!runSnapshot.exists) throw new HttpsError("not-found", "Tournament race run was not found.");
+    /** Live PvP uses private matches and the independent creator frozen deck. */
+    const live = runSnapshot.exists ? undefined : await readRedditLiveTournamentRun(transaction, db, userId, input.runId);
     /** Provides run behavior. */
-    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
+    const run = live?.run ?? parseRunRecord(runSnapshot.data(), runSnapshot.id);
     if (run.finishedAtMs === undefined)
       throw new HttpsError("failed-precondition", "Only completed authoritative Race to 10 runs qualify.");
     if (nowMs < run.finishedAtMs)
@@ -200,11 +202,11 @@ export async function recordRedditTournamentRun(
     const tournamentRef = db.collection("redditTournaments").doc(window.tournamentId);
     /** Provides [deck snapshot, existing snapshot] behavior. */
     const [deckSnapshot, existingSnapshot] = await Promise.all([
-      transaction.get(db.collection("raceDecks").doc(run.deckId)),
+      live ? Promise.resolve(undefined) : transaction.get(db.collection("raceDecks").doc(run.deckId)),
       transaction.get(entryRef),
     ]);
-    if (!deckSnapshot.exists) throw new HttpsError("data-loss", "Tournament race deck was not found.");
-    assertRedditTournamentDeck(run, deckSnapshot.data() as RedditTournamentDeckBinding);
+    if (!live && !deckSnapshot?.exists) throw new HttpsError("data-loss", "Tournament race deck was not found.");
+    assertRedditTournamentDeck(run, live?.deck ?? deckSnapshot!.data() as RedditTournamentDeckBinding);
     /** Provides candidate behavior. */
     const candidate = deriveRedditTournamentEntry(userId, input.locale, run, run.finishedAtMs);
     /** Provides existing behavior. */

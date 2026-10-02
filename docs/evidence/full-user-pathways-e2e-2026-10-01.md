@@ -60,6 +60,13 @@ For each family, derive concrete cases from actual source branches. Passing one 
 2. Expanded baseline failed because demo-only integration suites were launched with the configured project, and deployment `.env` can override project identity. Changed the emulator command to `--project demo-riddle-quest-e2e`; real local demo-emulator setup skips deployment dotenv. Three boundary regression checks passed without weakening the integration safety guards.
 3. The now-stopped demo run exposed `10 ABORTED: Transaction lock timeout` in `redditGatewayReplay.it.test.ts`, case “bounds concurrent presence polling at 60 while other operations retain 20.” This is deferred outside the current Jest-only E2E scope; no diagnosis or production fix is claimed.
 
+A separate [2 October Reddit review follow-up](reddit-live-action-quota-2026-10-02.md)
+reproduces and fixes that quota contention locally with per-runtime same-row
+serialization and unchanged Firestore authority. The original concurrency case,
+the 48-case gateway/presence/referral/score run and a two-process cap diagnostic
+pass. This later result does not complete the Jest-only hosted E2E objective or
+prove deployment of the Reddit fix.
+
 ## Execution handles
 
 - Baseline session 17636 was deliberately stopped after confirmed environment failures; it did not pass.
@@ -971,3 +978,90 @@ Uploaded active unpublished Jest version `01a0fe18-6f8b-7628-bb67-dd66d2c6ff1a`,
 Actual Jest iframe serves the exact integrated build. The previous private Science ticket was created 1790968673762, expired 1790969573762, and was canonically cancelled by the server. The hosted UI displayed “This invitation has expired.” Closing the retired lobby returned to categories without changing 13,770 coins. Hosted expiry explanation and Close pathway PASS on this version. Evidence `work/jest-integrated-expired-lobby-20261002.jpg`, masked authority `work/integrated-hosted-seat-observation-20261002.json`.
 
 Another Chrome-testing chat completed its turn; no coordination message was sent. The retired seat was preserved through expiry. A new owned Science test invitation was created 1790969682395 (expiry 1790970582395), natively sent to protected Firefox test player `Jest e32db29d991a68e9f83`; actual hosted UI confirms “Invitation saved. Push delivery depends on the player’s notification settings.” No actual push-delivery claim. Waiting for Firefox to open this exact preview and accept; ten-solve human win/loss/reward remains pending. Full E2E goal remains active and incomplete. Detailed progress `work/integrated-challenge-recovery-progress-20261002.json`.
+
+
+## Reported 10–0 finish wait — 2 October, 19:55 UTC
+
+The previous integrated draft's human Science match settled a Firefox win after its 95,176 ms wall finish plus 150,000 ms penalties. The canonical grant increased coins 11,190 → 11,240 and multiplayer wins 2 → 3; Chrome was an idle test opponent and showed the corresponding loss. “Loading results…” was a misleading penalty-window presentation and the displayed clock incorrectly continued after the finish.
+
+Corrected source `b5cdf6122825` is now ready and active as unpublished Jest preview `01a0fe2d-c70b-70eb-b2af-ff37fc9e6820`. The finished clock freezes, unusable controls disappear, and a translated explanation/remaining-time bound continues while polling the authority. Four regression cases, eight cancellation cases, types, 16-locale audit and all seven target builds pass. These harness checks are supplementary; actual corrected Jest race verification is in progress. No Firebase deployment or direct match mutation occurred. Broader release gates and full pathway coverage remain open.
+
+
+## Corrected finish wait verified on Jest — 2 October, 20:08 UTC
+
+Exact unpublished preview `01a0fe2d-c70b-70eb-b2af-ff37fc9e6820` / source `b5cdf6122825`: the real Chrome Sandbox player entered public Science matchmaking and the bot fallback. Ordinary native answer controls solved ten visible riddles; the first answer draft remained intact through a hint and submitted immediately after the receipt. The confirmed finish was 69,276 ms wall time plus a 15,000 ms hint penalty. The hosted screen showed “Waiting for your opponent to finish…”, explained hint/skip penalties, showed up to 15 seconds remaining, froze the header at 1:24.3, and removed unusable answer actions.
+
+The same hosted race automatically became a 10–7 win. Canonical settlement at 84,992 ms awarded one 50-coin grant and increased multiplayerWins 0 → 1; balance 13,770 → 13,820 remained 13,820 after parent reload. No local clock decided the result and no direct match mutation was used. Screenshot: `work/jest-finish-wait-fixed-hosted-20261002.jpg`; win: `work/jest-finish-wait-win-hosted-20261002.jpg`; authority: `work/finish-wait-hosted-finish-authority-20261002.json`. Browser reconnection interrupted an earlier attempt, which was not counted as a penalty-window pass.
+
+A separate coverage observation remains open: multiplayerGamesPlayed, gamesPlayed and totalHintsUsed did not change after this live win/hint, while multiplayerWins did. Determine the intended scope of those displayed statistics before reporting a defect or a pass. This targeted correction is verified; the full Jest pathway goal and broader release gates remain incomplete.
+
+
+## Actual Jest network recovery — 2 October, 20:26 UTC
+
+Exact active unpublished b5 preview01a0fe2d remains confirmed by official Jest details (no published/in-review revision). DevTools connection recovered. Two native paid Skips each returned HTTP200 before Offline, charged100 each (13820→13720→13620) and advancedClassic15→17; these are ordinary Skip/offline/re-entry passes, not lost primary-response coverage. The first parent reload returned to the Jest home; reopening the same version recovered ANCHOR/index16/13720, and final reload recovered KIWI/index17/13620.
+
+Live Science search went offline for approximately61seconds. Failed updateLiveRace requests were observed. Reconnection retained the original owned reservation created1790972459651 and entered the bot fallback without another Start or deadline reset; shared start1790972535258. Live HEART draftHE and clock0:09.0 survived another offline interval; physicalA under the focused offline guard did not alter the draft. Reconnection showedHE, clock1:01.2 and bot5/10, reflecting elapsed wall time. NativeART/Submit accepted exactlyone answer. A further offline interval across the bot finish recovered the authoritative1–10 loss, with no award; canonical coins13620 and MPwins1 remained unchanged after parent reload. Terminal journal cleared normally, reopening Multiplayer showed categories. All network overrides restored.
+
+A profile read showed paid Premiumactive/Cancel despite official developer subscription statusending. Official SDK documentation explicitly returns active through the paid period and exposes no ending field, so this alone does not establish an entitlement defect. Cancellation display persistence and intended live games/hints statistics scope remain observations requiring further work. No source edits, upload, Firebase deployment or publication. Full E2E remains active/incomplete. Evidencework/jest-offline-live-recovery-hosted-20261002.json; draft/recovered-result/final-balance screenshots and masked authority readbacks.
+
+
+## Integrated scoring verified on actual Jest — 2 October, 21:07 UTC
+
+Exact active unpublished preview `01a0fe60-314e-7009-a268-146cf230f1c3` / build `1.0.0-dev.20261002204814.b18983a10844.4df25bf6` / source `b18983a1084474655f67cbd3805483292c69e08a` integrates deployed c34 scoring with b5 recovery/finish presentation. Source checkout remains clean; no primary WIP overwritten. Supplementary types, focused scoring/recovery/presentation/server transactions/browser checks, all seven target builds, security/artifact/W3C audits passed. Broader production/packaged gates skipped for QA upload; no full-release pass claim.
+
+Actual hosted Science bot race: ordinary Skip advanced completed score to1/10 with45seconds penalty and preserved available Hint/keyboard/Submit. Hint on the next complete answer added15seconds and allowed immediate Submit. Nine correct events plus one Skip finished10/10 in94,202ms wall time,154,202ms adjusted. UI froze at2:34.2, explained the60-second opponent opportunity and removed unusable inputs. Authority settled the bot's lower-time10–10 win; no owned reward,13620coins. Parent reload restored ClassicKIWI13620; Multiplayer reopened categories with retired match cleared.
+
+Second hosted Science bot race: ten native correct answers, zero help penalties,68,195ms finish. Actual UI displayed10–5 You win! and50coins. Independent canonical coins13620→13670 and multiplayerWins1→2. Parent reload retained13670/2, proving no repeat reward on this reload. Screenshots work/jest-integrated-terminal-loss-20261002.jpg, work/jest-integrated-terminal-win-20261002.jpg, work/jest-integrated-win-reload-balance-20261002.jpg. Detailed scope/authority/native observations in work/jest-scoring-integration-hosted-20261002.json.
+
+Official Jest final read confirms exact draft active, game unpublished, publishedRevision/inReviewRevision null. No Firebase deployment or publication. Live games/hints statistics scope remains unresolved. DevTools read-only page discovery did not resolve within a bounded wait and was terminated; no network emulation applied, all overrides remain cleared, CUA Chrome remains connected. Full E2E remains active and incomplete; historical passes retain original version scope.
+
+
+## Live race exceptional actions on actual Jest — 2 October, 21:21 UTC
+
+Unchanged exact active unpublished b189 preview01a0fe60. Native wrong ZZZZ guesses on ATOM persisted four attempts/letter feedback, no completion/penalty; bot then finished and displayed0–10loss. Fifth attempt was not sent after terminal outcome. A fresh Science run used five confirmed native ZZZZZZ guesses on PLASMA; fifth automatically advanced to OXYGEN,completed1/10,+45seconds. Immediate native OXYGEN Submit reached2/10; canonical one correct event and one Skip event,45,000ms skip penalty. No injected clock/SDK/engine or backend mutation. Closing active race returned categories and authority settled rival win/no reward. Active raw run may remain active after match termination; viewer projection is terminal, so this is not treated as an engine defect.
+
+Public Music search cancelled by native Escape before pairing; same owner-bound ticket became cancelled=true/no match. Geography private challenge stayed waiting beyond public60secondfallback, empty/ab usernames disableSend. Self-target refused with recovered editable username/Send, no recipient binding or push outbox. Generic “The race could not continue.” copy is a nonspecific invitation-error UX observation. Closing private challenge canonically cancelled same ticket. Parent reload first returned Jest home; exact version reentry restored ClassicKIWI13670 and normal Multiplayer categories. Coins13670/MPwins2/Classicindex17 unchanged; stats scope remains unresolved. Screenshots/native/canonical evidence in work/jest-live-edge-cases-hosted-20261002.json.
+
+No game source edit, upload, Firebase deploy or publication. Corrected evidence-reader derived finish field to null for runs without a finish, retaining canonical values. Phone availability question pending; notification-control preparation has not changed preferences or accepted permissions. Full every-pathway goal stays active/incomplete; remaining network/SDK faults, native/referral/push/expiry/midnight and other original gaps are not waived.
+
+
+## Countdown cancellation, network recovery and regional Daily failure — 2 October, 21:56 UTC
+
+Exact active unpublished b189 preview01a0fe60. Native Film countdown showed Starting match5; Close3835ms before canonical startsAt retired the run with completed0/no winner/no reward. Reload returned the same exact version and normal categories. Evidence: work/jest-countdown-before-close-20261002.jpg, work/jest-countdown-cancel-authority-20261002.json.
+
+Chrome DevTools reconnected. Slow3G category loading interrupted by Offline displayed the global offline guard; restoring normal network recovered all categories/Start. Science join succeeded HTTP200 before the subsequent outage; reconnect preserved owner-bound seatCreated1790977740326 and bot fallback. Skip request142 also succeeded HTTP200 before the fault; failed146–148 were polls. After reconnect one canonical Skip/+45000ms, normal keyboard/Hint/Skip, next native SUN correct2/10. Closing settled rival/no owned reward. Final13670coins/2MPwins/Classic17 unchanged. This does NOT close true pending/lost-successful-response gates. All network overrides cleared. Evidence work/jest-countdown-and-network-recovery-hosted-20261002.json.
+
+Fresh Arabic launch reproduced Daily unavailable on real Jest, with English error text duplicated and only Settings visible. Regional2026-10-03 daily document absent; midnight21:00UTC and00:30repair exhausted3candidates each. Latest logs: two quality rejections (both fairness failures, one clue-support failure) and one blind-solve medium-confidence/two-alternatives rejection. No credential/request/keyboard-validation error supported. Existing-generator read-only diagnostic, no catalog exclusions, accepted2/3 Arabic candidates and rejected one ambiguous blind solve. This establishes stochastic acceptance, not the exact cause of earlier rejected content or a midnight-reliability pass. Existing production scheduler manually triggered21:55UTC to repair only missing dated content with unchanged validation; outcome being checked. No source changes, uploads, Firebase deploy, review submission or Jest publication.
+
+Full every-pathway E2E remains active/incomplete. Specific notification approval and optional phone availability are still pending; those actions were not performed.
+
+
+## Arabic Daily generation corrections — 2 October, 22:13 UTC
+
+Two concrete diagnostic findings: independent solving lacked the board's public letter count, and author/solver could choose an English loanword spelling that the unchanged native-word quality review rejects. A controlled same-clue five-letter probe removed four/six-letter alternatives by adding only answerLength; same-length ambiguity remained rejected. With actual24production exclusions, native spelling contract+board length produced3/3 accepted candidates through independent solve and full quality review (read-only diagnostic, no Firestore writes).
+
+Corrected only openaiService.ts and its request-contract regressions in isolated source commits3e4f4c2c and2585bece885bf9d0d32d0c9cccb4456546a7bd29. Two regression checks failed before their corresponding fixes; final46focused tests/3suites, types, changed-files lint, Functions build/cycle audit/deployment validation passed. Scoped primary patch also passed46tests and preserved unrelated test-comment WIP without staging/committing the primary checkout. No UI/SDK/quality guard bypass.
+
+First deployed scheduler00044-wem compiled bytes matched; first real repair still failed on remaining valid quality/ambiguity rejections. Second native-contract scheduler deployment completed22:13UTC. Manual invocation of existing bounded scheduler started for missing dated content; real hosted/readiness outcome pending. Jest client stays exact b189 version01a0fe60, never uploaded/published/review-submitted in this turn. This is not yet a full-midnight or full-E2E pass. Evidence: work/jest-arabic-letter-count-fix-20261002.json and native-contract diagnostic.
+
+
+## Arabic Daily recovered and completed on actual Jest — 2 October, 22:20 UTC
+
+Final scheduler00045-luq ACTIVE22:12:14.975Z, source2585bece885bf9d0d32d0c9cccb4456546a7bd29; downloaded generation-pinned compiled service SHA25640970a2b1e271c4bd571c87257bac8831dccc6cf0e56411ac79f937d7382191c matches local bytes and contains both contracts. Existing bounded repair generated Arabic2026-10-03 on first attempt22:13:55.928UTC; scheduler completed22:13:56.628. Original readiness loop nowexit0; actual open unchanged b189 Jest preview automatically recovered from Daily-unavailable to native Arabic five-letter Daily without reload or injected state.
+
+Native QWERTY controls entered the visible answer and Submit won. Normal reward collection and four celebration panels (win, DailyBullseye, level11, localized rank) completed; independent user lastCompletedDailyChallengeKey2026-10-03, coins13670→13840(+170), gamesPlayed18→19, totalWins15→16, XP1530, Classicindex17 unchanged. Real exact-version reload opened Arabic Classic and retained13840, proving this player's completion-based launch route and no duplicate reward on that reload. English restoration underway. Native screenshots work/jest-arabic-daily-recovered-hosted-20261002.jpg, work/jest-arabic-daily-reward-hosted-20261002.jpg, work/jest-arabic-daily-completed-relaunch-hosted-20261002.jpg.
+
+Scoped observations remain: final Daily Nextlevel button dismisses to solved Daily board rather than immediately advancing to Classic; DailyBullseye title/description stays English in Arabic. This repair invocation occurred after midnight and does not prove future midnight timing, every locale's linguistic quality, all faults, or fullE2E. Original broad goal remains active/incomplete. Jest official read still exactactive01a0fe60/isPublishedfalse/publishedRevisionnull/inReviewRevisionnull. No client build upload/publish/review. Only scheduler Firebase deployment authorized and performed; primary WIP preserved.
+
+
+### 2026-10-02 22:49 UTC — Daily successor request fix and new unpublished draft
+
+Source `501ab8fffaf78f2282577538694082da818533b8`, active ready Jest draft `01a0feca-61e4-7279-8f63-39eaa3bafa46` / `1.0.0-dev.20261002224419.501ab8fffaf7.02915952`. Archive SHA256 `2b6108f3671d5dc986f8089d348ac695ab5bde94014c1c46a7c3c15a5fefbae7`. Jest confirms unpublished, published/in-review revisions null. No Firebase deployment this turn.
+
+Previous real hosted Arabic Daily completion's final Next showed the solved Daily board. Tight hook regression reproduced correlated completion returning false; supplementary actual renderer browser regression against original host caught a failed Next load followed by timer recovery. Host now routes server-confirmed completion directly to Classic for correlated requests, preserves correlation, and retains retry on unavailable Classic. Daily outages still do not bypass Daily. Fake authority fixture now mirrors completed Daily behavior. 18 focused tests pass in isolated and primary checkouts; two supplementary browser celebration/successor tests pass; all seven target artifacts built. Portal ESLint unavailable (no config); build type checks pass. Scoped four-file patch applied to primary without staging/committing its concurrent WIP. QA upload skipped broader production/packaged gates, so full-release readiness remains unproved.
+
+Actual new Jest draft startup retains Classic KIWI hinted K and13815coins/index17; no repeated reward. Native Science public search falls back to bot, Skip then Hint and Submit remain usable with45s/15s penalties. Opponent-win result reached at8/10 versus10/10; canonical winner opponent, zero owned reward, balance unchanged. Player run remains unfinished/active, so this does not close human10vs0 finish evidence. Result dismissal returned categories, then parent reload.
+
+Previous draft current-turn offline Profile action blocked by reconnect overlay; restore cleared it and native Leaderboard retry populated XP ranks. Hint fault applied after getHint HTTP200: exactly one25coin deduction, hints27to28 retained; do not count as lost-success-response proof. Notifications unchanged; no resets/deletions. Hosted post-Daily Next awaits an eligible player/day; full E2E goal remains active. Evidence: `work/jest-daily-next-draft-verification-20261002.json`.
+
+Hosted reload follow-up: exact new draft retained Classic KIWI hinted K and13815balance; normal Multiplayer reopened all six categories, without automatic finished-race resume. Proof `work/jest-daily-next-draft-reload-lobby-20261002.jpg`.

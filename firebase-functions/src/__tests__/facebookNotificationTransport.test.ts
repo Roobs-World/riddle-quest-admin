@@ -3,6 +3,7 @@ import {
   type FacebookNotificationSend,
   type FacebookNotificationTransportOptions,
 } from "../facebook/facebookNotificationTransport";
+import {createHash} from "node:crypto";
 
 /** Test-only credential; no real provider token is read. */
 const TOKEN = "synthetic-app-token|test&scope=keep-private";
@@ -30,7 +31,23 @@ function harness(overrides: Partial<FacebookNotificationTransportOptions> = {}) 
 }
 
 describe("Facebook server notification transport (synthetic HTTP fixtures only)", () => {
+  it("binds authorization to the exact serialized provider body before transmitting", async () => {
+    /** Independently composed expected bytes include translated copy and the original scheduled payload. */
+    const expected = JSON.stringify({player_id: request.playerId, message: request.message, label: request.label,
+      payload: request.payload, schedule_interval: request.scheduleInterval});
+    /** Receipt commitment is compared with bytes produced by the actual transport. */
+    const requestDigest = createHash("sha256").update(expected).digest("hex");
+    /** Authorization admits only the exact work item, rather than the same recipient and label. */
+    const test = harness({authorizeAttempt: async scope => Reflect.get(scope, "requestDigest") === requestDigest});
+    await expect(test.transport.send(request)).resolves.toMatchObject({outcome: "confirmed"});
+    expect(String(test.fetchMock.mock.calls[0][1]?.body)).toBe(expected);
+    expect(test.confirmResponse.mock.calls[0][0]).toMatchObject({requestDigest});
+    await expect(test.transport.send({...request, message: {...request.message, body: "Different copy"}}))
+      .resolves.toEqual({outcome: "not-sent", reason: "unauthorized"});
+    expect(test.fetchMock).toHaveBeenCalledTimes(1);
+  });
   it("can make one explicitly unconfirmed send without inventing a provider acknowledgement contract", async () => {
+    /** Provides test behavior. */
     const test = harness({confirmResponse: undefined, allowUnconfirmedResponse: true});
     await expect(test.transport.send(request)).resolves.toEqual({outcome: "unconfirmed", httpStatus: 200});
     expect(test.fetchMock).toHaveBeenCalledTimes(1);
@@ -64,6 +81,7 @@ describe("Facebook server notification transport (synthetic HTTP fixtures only)"
     });
     expect(test.authorizeAttempt).toHaveBeenCalledWith({
       operation: "send", playerId: request.playerId, label: request.label, scheduleInterval: 86_400,
+      requestDigest: createHash("sha256").update(String(init?.body), "utf8").digest("hex"),
     });
     expect(test.confirmResponse.mock.calls[0][0]).toEqual(test.authorizeAttempt.mock.calls[0][0]);
     expect(Object.isFrozen(test.confirmResponse.mock.calls[0][0])).toBe(true);
@@ -79,7 +97,8 @@ describe("Facebook server notification transport (synthetic HTTP fixtures only)"
     const [url, init] = test.fetchMock.mock.calls[0];
     expect(new URL(String(url)).pathname).toBe("/1748953042991569/notifications_cancel_all");
     expect(JSON.parse(String(init?.body))).toEqual({player_id: request.playerId, label: request.label});
-    expect(test.authorizeAttempt).toHaveBeenCalledWith({operation: "cancel", playerId: request.playerId, label: request.label});
+    expect(test.authorizeAttempt).toHaveBeenCalledWith({operation: "cancel", playerId: request.playerId, label: request.label,
+      requestDigest: createHash("sha256").update(String(init?.body), "utf8").digest("hex")});
   });
 
   it.each([undefined, 300, 2_592_000])("accepts documented immediate/delay boundary %s", async scheduleInterval => {
@@ -143,6 +162,8 @@ describe("Facebook server notification transport (synthetic HTTP fixtures only)"
     const [url, init] = test.fetchMock.mock.calls[0];
     expect(new URL(String(url)).pathname).toBe("/1748953042991569/notifications");
     expect(JSON.parse(String(init?.body))).toMatchObject({player_id: request.playerId, message: request.message});
+    expect(test.confirmResponse.mock.calls[0][0].requestDigest)
+      .toBe(createHash("sha256").update(String(init?.body), "utf8").digest("hex"));
   });
 
   it("rejects unsafe identities, labels, copy and oversized multibyte bodies without fetching", async () => {

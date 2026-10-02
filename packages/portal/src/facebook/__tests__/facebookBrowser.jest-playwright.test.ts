@@ -1,6 +1,7 @@
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support";
-import {installRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
+import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support";
+import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
 import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support";
 import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
@@ -621,6 +622,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await verifyMultiplayer("fr");
       await successPage.locator(".multiplayer-navigation-action").click();
       await verifyTournamentPresentation(successPage);
+      await verifyRaceContextDialogs(successPage);
       await successPage.locator(".race-close").click();
       await verifyImmediateSoloFeedback(successPage, "Facebook");
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:button_press:")))).toBe(true);
@@ -701,14 +703,17 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
       await verifyRewardedContinue(successPage, origin);
       await verifyTournamentEntry(successPage, origin);
+      await verifyTournamentScoreRecovery(successPage, origin);
       // Independent flags must permit native live-win consent with and without the tournament surface.
       for (const tournaments of [true, false]) {
         notificationAccepted = false;
+        /** Provides prior live claims behavior. */
         const priorLiveClaims = notificationClaims;
         await installTournamentPresentation(successPage);
         await successPage.goto(`${origin}/?harness=race&live-consent=on&tournaments=${tournaments ? "on" : "off"}`);
         await successPage.locator(".game-bottom-navigation").waitFor();
         expect(notificationClaims).toBe(priorLiveClaims);
+        /** Provides fresh onboarding behavior. */
         const freshOnboarding = successPage.locator(".onboarding-card .play-primary");
         if (await freshOnboarding.count()) {
           await freshOnboarding.click();
@@ -717,6 +722,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           await freshOnboarding.waitFor({state: "detached"});
         }
         for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
+          /** Provides tooltip behavior. */
           const tooltip = successPage.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
           if (await tooltip.count()) await tooltip.locator("button").click();
         }
@@ -725,6 +731,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           await verifyTournamentPresentation(successPage);
           await successPage.locator(".race-close").click();
         }
+        /** Provides live acceptance behavior. */
         const liveAcceptance = successPage.waitForResponse("**/acceptFacebookNotificationPermissionPrompt", {timeout: 5000});
         void liveAcceptance.catch(() => undefined);
         await verifyTournamentLiveResult(successPage, tournaments);

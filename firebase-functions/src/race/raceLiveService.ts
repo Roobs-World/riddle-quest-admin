@@ -1,3 +1,4 @@
+import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
@@ -82,6 +83,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
         if (privateExpired && receipt.exists) {
           ticket.cancelled = true;
           transaction.update(old.ref, {cancelled: true});
+          publishLiveRaceSignals(db, transaction, [id], old.data()!.expiresAt);
           return liveView(id, ticket, undefined, options.nowMs ?? Date.now());
         }
         if (!privateExpired && (receipt.exists || !ticket.cancelled && (!match || match.winner === undefined))) {
@@ -115,6 +117,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
       transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
       transaction.set(pointer, {ticketId, expiresAt});
+      publishLiveRaceSignals(db, transaction, [ticketId], expiresAt);
       return liveView(ticketId, ticket, undefined, nowMs);
     }
     /** Shared queue is locked only after the new deck is ready; reconnects never read it. */
@@ -148,10 +151,10 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       /** Provides starts at ms behavior. */
       const startsAtMs = Math.max(options.nowMs ?? Date.now(), other.seenAtMs, ticket.seenAtMs) + LIVE_RACE_COUNTDOWN_MS;
       ticket.matchId = opponent.id;
-      match = {tickets: [opponent.id, ticketId], startsAtMs, observedAtMs: startsAtMs - LIVE_RACE_COUNTDOWN_MS, players: [other.player, player], runs: [
+      match = {tickets: [opponent.id, ticketId], participantIds: [other.userId, userId], startsAtMs, observedAtMs: startsAtMs - LIVE_RACE_COUNTDOWN_MS, players: [other.player, player], runs: [
         liveRun(other.run, other.userId, opponent.id, startsAtMs), liveRun(other.run, userId, ticketId, startsAtMs)]};
       transaction.update(opponent.ref, {matchId: opponent.id});
-      transaction.create(db.doc(`liveRaceMatches/${opponent.id}`), stripUndefined(match));
+      transaction.create(db.doc(`liveRaceMatches/${opponent.id}`), {...stripUndefined(match), expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000)});
     }
     /** Provides expires at behavior. */
     const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
@@ -160,6 +163,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
     transaction.set(pointer, {ticketId, expiresAt});
     transaction.set(queueRef, {tickets: [...eligible.filter(item => item !== opponent).map(item => item.id), ...(!opponent ? [ticketId] : [])].slice(-40), expiresAt});
+    publishLiveRaceSignals(db, transaction, match?.tickets ?? [ticketId], expiresAt);
     return response;
   });
 }
@@ -194,18 +198,20 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
     if (!match && input.action === "leave") {
       ticket.cancelled = true;
       transaction.update(ticketRef, {cancelled: true, seenAtMs: nowMs});
+      publishLiveRaceSignals(db, transaction, [input.ticketId], snapshot.data()!.expiresAt);
       return liveView(input.ticketId, ticket, undefined, nowMs);
     }
     if (!match && ticket.privateChallenge && nowMs >= ticket.createdAtMs + LIVE_RACE_INVITE_MS) {
       ticket.cancelled = true;
       transaction.update(ticketRef, {cancelled: true, seenAtMs: nowMs});
+      publishLiveRaceSignals(db, transaction, [input.ticketId], snapshot.data()!.expiresAt);
       return liveView(input.ticketId, ticket, undefined, nowMs);
     }
     if (!match && !ticket.privateChallenge && nowMs >= ticket.createdAtMs + LIVE_RACE_WAIT_MS) {
       ticket.matchId = input.ticketId;
       /** Provides starts at ms behavior. */
       const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
-      match = {tickets: [input.ticketId, null], startsAtMs, observedAtMs: nowMs,
+      match = {tickets: [input.ticketId, null], participantIds: [userId], startsAtMs, observedAtMs: nowMs,
         players: [ticket.player, {displayName: "Riddle Bot", avatarUrl: null, bot: true, correctCount: 0}],
         runs: [liveRun(ticket.run, userId, input.ticketId, startsAtMs), liveRun(ticket.run, "bot", `${input.ticketId}-bot`, startsAtMs)]};
       matchChanged = true;
@@ -230,7 +236,7 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
     /** Receipt and privacy checks depend only on the accepted match, so share one read round trip. */
     const [receipt, checks] = await Promise.all([
       input.action === "poll" ? null : transaction.get(requestRef),
-      rivalId ? Promise.all([transaction.get(db.doc(`users/${userId}/blockedRivals/${rivalUser}`)),
+      rivalId && !match.deletedSeats?.[1 - seat] ? Promise.all([transaction.get(db.doc(`users/${userId}/blockedRivals/${rivalUser}`)),
         transaction.get(db.doc(`users/${rivalUser}/blockedRivals/${userId}`)), transaction.get(getJestAccountDeletionRef(db, rivalUser))]) : [],
     ]);
     /** Read-only polls have no command binding or receipt to persist. */
@@ -287,7 +293,9 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
         transaction.update(owner.ref, {coins, "stats.multiplayerWins": multiplayerWins + 1});
         if (winner && winnerTicket && (isFacebookFirebaseUid(winner.userId) || isRedditFirebaseUid(winner.userId))) {
           // Namespace this receipt separately from legacy recorded runs using the same request ID.
+          /** Provides facebook behavior. */
           const facebook = isFacebookFirebaseUid(winner.userId);
+          /** Provides event id behavior. */
           const eventId = facebook ? facebookLiveRaceReferralEventId(winner.userId, winnerTicket) : redditLiveRaceReferralEventId(winner.userId, winnerTicket);
           match[facebook ? "facebookReferral" : "redditReferral"] = {eventId, ticketId: winnerTicket, userId: winner.userId, createdAtMs: nowMs};
           transaction.create(db.doc(`racePerformanceOutbox/${eventId}`), {runId: eventId, userId: winner.userId,
@@ -301,9 +309,12 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
     const response = liveView(input.ticketId, ticket, match, nowMs);
     /** Provides expires at behavior. */
     const expiresAt = snapshot.data()!.expiresAt;
-    if (matchChanged) transaction.set(db.doc(`liveRaceMatches/${ticket.matchId}`), {...stripUndefined(match), expiresAt});
+    if (matchChanged) {
+      transaction.set(db.doc(`liveRaceMatches/${ticket.matchId}`), {...stripUndefined(match), expiresAt});
+      publishLiveRaceSignals(db, transaction, match.tickets.filter((_, seat) => !match!.deletedSeats?.[seat]), expiresAt);
+    }
     if (previousMatchId !== ticket.matchId) transaction.update(ticketRef, {matchId: ticket.matchId, seenAtMs: nowMs});
-    if (input.action !== "poll" && !receipt?.exists) transaction.create(requestRef, {binding, expiresAt});
+    if (input.action !== "poll" && !receipt?.exists) transaction.create(requestRef, {userId, binding, expiresAt});
     return response;
   });
 }

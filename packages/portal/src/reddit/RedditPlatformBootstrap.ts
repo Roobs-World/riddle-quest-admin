@@ -384,6 +384,18 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
             ? {
                 matchmaking: {
                   live: {
+                    /** Existing same-origin safety endpoint resolves the private human opponent. */
+                    async blockOpponent(input) {
+                      /** Lazy strict acknowledgement adds no provider SDK. */
+                      const {BlockSocialRivalResponseSchema} = await import("@qwordly/core/race");
+                      return BlockSocialRivalResponseSchema.parse((await postRedditGateway("/api/game/safety.block", input)).result);
+                    },
+                    /** Categorized reports retain their opaque seat and retry identity through Devvit. */
+                    async reportOpponent(input) {
+                      /** Only the exact bounded queue acknowledgement is accepted. */
+                      const {ReportSocialRivalResponseSchema} = await import("@qwordly/core/race");
+                      return ReportSocialRivalResponseSchema.parse((await postRedditGateway("/api/game/safety.report", input)).result);
+                    },
                     /** Enters live matchmaking through the same-origin Devvit gateway. */
                     async join(input) {
                       /** Answer-free response contract loaded with multiplayer. */

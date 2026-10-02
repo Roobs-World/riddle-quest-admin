@@ -43,10 +43,43 @@ describe("useCompletionDelivery", () => {
     Object.defineProperty(globalThis, "window", {
       configurable: true,
       value: {
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
         clearTimeout: jest.fn(),
         setTimeout: jest.fn(() => ++timerId),
       },
     });
+  });
+
+  it("resumes retries when React replays the mounted effects", () => {
+    /** The same idempotent outcome survives React development effect replay. */
+    const postToHost = jest.fn<(message: GameToHostMessage) => void>();
+    useCompletionDelivery({outcome: {
+      id: "replayed-win", kind: "win", riddleId: "classic-1", gameMode: "classic",
+      sessionToken: "00000000-0000-4000-8000-000000000001", attempts: 1, isCorrect: true,
+    }, dispatch: jest.fn(), postToHost});
+    mockEffects[0]();
+    /** StrictMode cleans up and restarts the same effects with retained ref cells. */
+    const cleanup = mockEffects[1]();
+    if (cleanup) cleanup();
+    mockEffects[0]();
+    expect(postToHost).toHaveBeenCalledTimes(2);
+    expect(window.setTimeout).toHaveBeenCalledTimes(2);
+  });
+
+  it("cancels its retry even when the local bridge acknowledges synchronously", () => {
+    /** Receipt callback becomes available before the effects deliver the local message. */
+    let acknowledge: (ok: boolean, requestId?: string) => boolean;
+    /** A synchronous bridge listener represents an already-completed idempotent operation. */
+    const postToHost = jest.fn<(message: GameToHostMessage) => void>(message => {
+      acknowledge(true, message.requestId);
+    });
+    acknowledge = useCompletionDelivery({outcome: {
+      id: "immediate-win", kind: "win", riddleId: "classic-1", gameMode: "classic",
+      sessionToken: "00000000-0000-4000-8000-000000000001", attempts: 1, isCorrect: true,
+    }, dispatch: jest.fn(), postToHost});
+    mockEffects[0]();
+    expect(window.clearTimeout).toHaveBeenCalledWith(1);
   });
 
   it("retries a failed completion with the same receipt and clears only after acknowledgement", () => {

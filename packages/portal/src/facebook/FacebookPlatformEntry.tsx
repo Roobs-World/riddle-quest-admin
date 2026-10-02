@@ -216,8 +216,12 @@ export function FacebookPlatformEntry() {
               list: async locale => (await listFacebookTournament({locale})).data,
               reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
             tournaments = {
-              list: async (locale: import("@qwordly/core/race").RaceLocale) =>
-                (await listFacebookTournament({locale})).data,
+              list: async (locale: import("@qwordly/core/race").RaceLocale) => {
+                /** Validated official standings for the exact player locale and UTC window. */
+                const board = (await listFacebookTournament({locale})).data;
+                if (presentation) void presentation.projectBoard(board);
+                return board;
+              },
               record: async (runId: string, locale: import("@qwordly/core/race").RaceLocale) => {
                 /** Official success is returned independently of provider score delivery. */
                 const result = (await recordFacebookTournament({runId, locale})).data;

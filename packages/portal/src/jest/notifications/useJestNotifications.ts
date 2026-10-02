@@ -8,6 +8,7 @@ import {
   replaceEngagementReminders,
 } from "./engagement";
 import {captureBrowserException} from "../../observability/browserErrorReporter";
+import {notificationAsset} from "./inlineAsset";
 
 /** Describes with platform activity. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
@@ -173,7 +174,7 @@ export function useJestNotifications({
           body: copy.raceBody,
           ctaText: copy.raceCta,
           priority: "high",
-          ...(assetReference ? {assetReference} : {}),
+          ...notificationAsset({title: `${gameTitle}: ${copy.raceTitle}`, body: copy.raceBody, ctaText: copy.raceCta}, assetReference),
           entryPayload: {
             campaign: "race_to_10_results_v1",
             reference: "race_to_10_results_d1_v1",

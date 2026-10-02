@@ -1,0 +1,13 @@
+$ node scripts/prepare-deploy.js
+.                                        | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.2","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/.codex/worktrees/live-race-push/riddle-quest/firebase-functions/packages/core
+$ cross-env NODE_OPTIONS="--experimental-vm-modules" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js --runInBand
+(node:78911) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Test Suites: 128 passed, 128 total
+Tests:       1574 passed, 1574 total
+Snapshots:   0 total
+Time:        23.216 s, estimated 33 s
+Ran all test suites.

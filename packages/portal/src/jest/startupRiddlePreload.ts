@@ -32,6 +32,7 @@ export function createJestStartupRiddlePreload<Services extends Pick<HostService
     /** Preserves every target operation while reusing at most one initial Classic load. */
     services: {
       ...services,
+      /** Consumes a matching unexpired Classic preload, otherwise calls the target authority. */
       async loadRiddle(input: Parameters<HostServices["loadRiddle"]>[0]) {
         if (input.gameMode !== "classic") return services.loadRiddle(input);
         /** Consuming any Classic request retires the speculative startup snapshot. */

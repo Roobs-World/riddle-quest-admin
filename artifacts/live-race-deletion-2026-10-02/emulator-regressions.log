@@ -1,0 +1,17 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-live-deletion", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/raceLiveAccountDeletion.it.test.ts src/__tests__/race/facebookTournament.it.test.ts src/__tests__/race/facebookLiveReferrals.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/raceLive.it.test.ts src/__tests__/race/raceSettlement.it.test.ts
+
+Test Suites: 6 passed, 6 total
+Tests:       172 passed, 172 total
+Snapshots:   0 total
+Time:        113.879 s, estimated 122 s
+Ran all test suites within paths "src/__tests__/race/raceLiveAccountDeletion.it.test.ts", "src/__tests__/race/facebookTournament.it.test.ts", "src/__tests__/race/facebookLiveReferrals.it.test.ts", "src/__tests__/race/redditLiveReferrals.it.test.ts", "src/__tests__/race/raceLive.it.test.ts", "src/__tests__/race/raceSettlement.it.test.ts".
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

@@ -1,0 +1,20 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-notification-bytes", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: pnpm exec jest --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/raceLivePush.it.test.ts --testNamePattern "refuses changed"
+No tests found, exiting with code 1
+Run with `--passWithNoTests` to exit with code 0
+No files found in /home/craig-beswetherick/Documents/riddle-quest/firebase-functions.
+Make sure Jest's configuration does not exclude this directory.
+To set up Jest, make sure a package.json file exists.
+Jest Documentation: https://jestjs.io/docs/configuration
+Files: "src/__tests__/race/raceLivePush.it.test.ts"
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/raceLivePush.it.test.ts --testNamePattern "refuses changed"" exited with code 1

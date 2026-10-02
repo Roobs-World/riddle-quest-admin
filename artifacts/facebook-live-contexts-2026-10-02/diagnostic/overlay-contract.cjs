@@ -1,0 +1,12 @@
+const path = require('node:path');
+const root = path.resolve(__dirname, '../../..');
+const ts = require(path.join(root, 'packages/portal/node_modules/typescript'));
+const portal = path.join(root, 'packages/portal');
+const config = ts.readConfigFile(path.join(portal, 'tsconfig.json'), ts.sys.readFile);
+const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, portal);
+const file = path.join(__dirname, 'overlay-shape.ts');
+const program = ts.createProgram([...parsed.fileNames, file], {...parsed.options, noEmit: true});
+const diagnostics = ts.getPreEmitDiagnostics(program).filter(d => d.file?.fileName === file);
+for (const diagnostic of diagnostics) console.log(ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'));
+if (!diagnostics.length) console.log('Documented overlay lifecycle contract type-check passed');
+process.exit(diagnostics.length ? 1 : 0);

@@ -105,7 +105,12 @@ export async function sendFacebookLiveChallengePush(db: Firestore, delivery: Liv
   /** One fixed-host provider attempt with conservative acknowledgement handling. */
   const transport = createFacebookNotificationTransport({appId: options.appId, getAppAccessToken: async () => options.appAccessToken,
     isProviderReady: () => options.enabled, allowUnconfirmedResponse: true, fetch: options.fetch,
-    authorizeAttempt: async () => {claimed = await ledger.claim(request); return claimed;}});
+    authorizeAttempt: async scope => {
+      // The transport snapshots and hashes its actual body before awaiting this
+      // callback. Content or recipient drift must not consume the original work.
+      if (scope.operation !== request.operation || scope.requestDigest !== request.requestDigest) return false;
+      claimed = await ledger.claim(request); return claimed;
+    }});
   /** The public Meta docs do not specify an acknowledgement body; preserve uncertainty instead of guessing success. */
   const result = await transport.send({playerId: identity.providerPlayerId, message: body.message, label, payload});
   if (claimed) await ledger.finish(request, result);

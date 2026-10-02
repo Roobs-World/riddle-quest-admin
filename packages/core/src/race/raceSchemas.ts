@@ -503,6 +503,27 @@ export const SocialReportCategorySchema = z.enum(["harassment", "cheating", "ina
 /** One categorized social-safety report reason. */
 export type SocialReportCategory = z.infer<typeof SocialReportCategorySchema>;
 
+/** Exact social target is either an established rival or the caller's opaque live seat. */
+export const BlockSocialRivalRequestSchema = z.union([
+  z.object({targetUserId: z.string().trim().min(1).max(128)}).strict(),
+  z.object({liveTicketId: z.string().regex(/^[a-f0-9]{64}$/)}).strict(),
+]);
+/** Categorized reporting never accepts narrative text or competing target selectors. */
+export const ReportSocialRivalRequestSchema = z.union([
+  z.object({targetUserId: z.string().trim().min(1).max(128), category: SocialReportCategorySchema,
+    requestId: z.string().regex(/^[A-Za-z0-9_-]{8,160}$/)}).strict(),
+  z.object({liveTicketId: z.string().regex(/^[a-f0-9]{64}$/), category: SocialReportCategorySchema,
+    requestId: z.string().regex(/^[A-Za-z0-9_-]{8,160}$/)}).strict(),
+]);
+/** Identity-free acknowledgement of an authoritative block. */
+export const BlockSocialRivalResponseSchema = z.object({blocked: z.literal(true)}).strict();
+/** A queue acknowledgement never promises moderation disposition. */
+export const ReportSocialRivalResponseSchema = z.object({reportId: z.string().min(1).max(160), queued: z.literal(true)}).strict();
+/** Shared strict social block input. */
+export type BlockSocialRivalRequest = z.infer<typeof BlockSocialRivalRequestSchema>;
+/** Shared strict categorized social report input. */
+export type ReportSocialRivalRequest = z.infer<typeof ReportSocialRivalRequestSchema>;
+
 /** Schema for a bounded, cursor-paginated race inbox request. */
 export const ListRaceInboxRequestSchema = z
   .object({

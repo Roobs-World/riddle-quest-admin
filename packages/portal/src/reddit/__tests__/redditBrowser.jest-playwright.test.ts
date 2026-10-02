@@ -2,6 +2,7 @@ import {protectContent} from "@qwordly/core/contentProtection";
 import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {verifyRedditBrowserRedirects} from "./redditRedirect.jest-playwright.support";
+import {verifyRedditTournamentBoard, verifyRedditTournamentLiveResult} from "./redditTournament.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium, type Page} from "@playwright/test";
 
@@ -536,6 +537,8 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
         await expanded.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       }
       await verifyMultiplayer("ar");
+      await verifyRedditTournamentBoard(expanded);
+      await verifyRedditTournamentLiveResult(expanded);
       expect(apiRequests.every(request => request.startsWith("/api/"))).toBe(true);
       await verifyImmediateSoloFeedback(expanded, "Reddit");
       /** Sets tings button. */

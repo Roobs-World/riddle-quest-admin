@@ -61,7 +61,7 @@ export function RaceScoreboard({
         <div className="race-progress">
           <div style={{"--race-progress": progressPercent(run.correctCount)} as CSSProperties}>
             <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>
-            <strong>{formatScore(run.correctCount)}</strong>
+            <strong aria-label={formatScore(run.correctCount)}><span className="sr-only">{tr("RaceTo10.PROGRESS_LABEL")}: </span>{run.correctCount} / {run.rules.targetCorrect}</strong>
             <div className="race-progress-track" aria-hidden="true">
               <i />
             </div>
@@ -72,7 +72,7 @@ export function RaceScoreboard({
           {run.opponent && (
             <div style={{"--race-progress": progressPercent(opponentCorrect)} as CSSProperties}>
               <span title={run.opponent.displayName}>{run.opponent.displayName}</span>
-              <strong>{formatScore(opponentCorrect)}</strong>
+              <strong aria-label={formatScore(opponentCorrect)}><span className="sr-only">{tr("RaceTo10.PROGRESS_LABEL")}: </span>{opponentCorrect} / {run.rules.targetCorrect}</strong>
               <div className="race-progress-track" aria-hidden="true">
                 <i />
               </div>

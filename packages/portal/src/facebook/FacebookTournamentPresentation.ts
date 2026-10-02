@@ -69,6 +69,39 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
       throw error;
     }
   };
+  /** Serialize native updates so an older board cannot overwrite a newer best. */
+  let projectionTail = Promise.resolve();
+  /** Successful presentation is deduplicated per exact native and official context. */
+  const posted = new Map<string, number>();
+  /** Only fixed diagnostics leave the optional provider boundary. */
+  const projectionFailure = () => {
+    try {reportFailure(new Error("facebook-tournament-score-projection-failed"));} catch {
+      // Optional telemetry cannot reject an already-authoritative game operation.
+    }
+  };
+  /** Recovered server standings authorize presentation without any client score receipt. */
+  const projectBoard = (value: ListFacebookTournamentResponse): Promise<void> => {
+    /** Validated official standings for the exact player locale and UTC window. */
+    let board: ListFacebookTournamentResponse;
+    try {board = parseFacebookTournamentResponse(value);} catch {projectionFailure(); return Promise.resolve();}
+    /** Serialized native update preserves ordering between recovered score snapshots. */
+    const operation = projectionTail.then(async () => {
+      if (!live(board, board.locale) || !board.currentPlayer) return;
+      /** Current Meta tournament must match the authoritative board and live context. */
+      const native = await current();
+      if (!live(board, board.locale) || !native || !matches(native, board)) return;
+      /** Exact native/official scope owns its successful-post cache. */
+      const key = JSON.stringify([native.getID(), native.getContextID(), board.tournamentId]);
+      /** Only the current official best supplies a native score. */
+      const score = board.currentPlayer.adjustedTimeMs, previous = posted.get(key);
+      if (previous !== undefined && previous <= score) return;
+      await sdk.tournament!.postScoreAsync(score);
+      posted.set(key, score);
+      if (posted.size > 8) posted.delete(posted.keys().next().value!);
+    }).catch(projectionFailure);
+    projectionTail = operation;
+    return operation;
+  };
   return {
     /** Opens one explicitly requested native share/create dialog using a fresh official best score. */
     async share(locale: RaceLocale): Promise<PlatformResult<void>> {
@@ -113,26 +146,20 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
         }
       });
     },
-    /** Projects an authoritative recorded run into the matching current native context only. */
+    /** Projects a fresh official board when a completed activity is recovered or reopened. */
+    projectBoard,
+    /** Idempotent official receipts can recover a native projection after a lost browser reply. */
     async projectRecord(value: RecordFacebookTournamentRunResponse): Promise<void> {
       try {
-        /** This server receipt cannot be replaced by native entry data. */
+        /** Validated official receipt may represent an idempotent server replay. */
         const record = parseFacebookTournamentRecordResponse(value);
-        if (!active(record.locale) || !record.improved) return;
-        /** A newer concurrent run may already have improved the official best. */
+        if (!active(record.locale)) return;
+        /** Validated official standings for the exact player locale and UTC window. */
         const board = parseFacebookTournamentResponse(await list(record.locale));
         if (!live(board, record.locale) || board.tournamentId !== record.tournamentId || !board.currentPlayer ||
           board.currentPlayer.adjustedTimeMs > record.adjustedTimeMs) return;
-        /** Native context scope is revalidated after the provider lookup completes. */
-        const native = await current();
-        if (!live(board, record.locale) || !native || !matches(native, board)) return;
-        await sdk.tournament!.postScoreAsync(board.currentPlayer.adjustedTimeMs);
-      } catch {
-        /** Provider failure cannot undo or fail an already-authoritative game submission. */
-        try {reportFailure(new Error("facebook-tournament-score-projection-failed"));} catch {
-          // Optional diagnostics cannot reject the detached presentation promise.
-        }
-      }
+        await projectBoard(board);
+      } catch {projectionFailure();}
     },
   };
 }

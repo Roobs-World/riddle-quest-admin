@@ -201,7 +201,7 @@ describe("OpenAI Service", () => {
       expect(reviewRequest.store).toBe(false);
     });
 
-    test("blind-solves the clue without leaking the proposed answer", async () => {
+    test("blind-solves with the visible board length without leaking the proposed answer", async () => {
       mockApprovedRiddle("Seen after rain, I bend sunlight into a coloured arc.", "rainbow");
 
       await generateUniqueRiddle();
@@ -214,6 +214,11 @@ describe("OpenAI Service", () => {
         instructions: string;
       };
       expect(request.input).toContain('"question"');
+      expect(JSON.parse(request.input)).toEqual({
+        targetLocale: "en",
+        question: "Seen after rain, I bend sunlight into a coloured arc.",
+        answerLength: 7,
+      });
       expect(request.input).not.toContain("rainbow");
       expect(request.instructions).toContain("not been given the author's answer");
     });
@@ -278,6 +283,16 @@ describe("OpenAI Service", () => {
         instructions: expect.stringContaining("do not reject a correct transliteration merely"),
         input: expect.stringContaining('"targetLocale":"ko"'),
       }));
+    });
+
+    test("uses the same native-word spelling contract when authoring and blind-solving Arabic", async () => {
+      mockApprovedRiddle("حيوان أسود وأبيض يعيش في الصين ويأكل الخيزران، ما هو؟", "banda");
+      await expect(generateUniqueRiddle("ar", [], {mode: "daily"})).resolves.not.toBeNull();
+      for (const requestIndex of [0, 1]) {
+        expect(mockParse.mock.calls[requestIndex][0]).toEqual(expect.objectContaining({
+          instructions: expect.stringContaining("not its English translation or the original foreign spelling of a loanword"),
+        }));
+      }
     });
 
     test("still rejects unnatural native clues when their romanized answers are playable", async () => {
@@ -371,7 +386,10 @@ describe("OpenAI Service", () => {
       const excluded = ["rainbow", ...Array.from({length: 100}, (_, index) =>
         `old${String.fromCharCode(97 + Math.floor(index / 26))}${String.fromCharCode(97 + index % 26)}`)];
       // The author honors the exclusion list it receives, rather than guessing hidden catalog entries.
-      mockParse.mockImplementationOnce((request: {input: string}) => request.input.includes('"rainbow"')
+      mockParse.mockImplementationOnce((request: {
+        /** Prompt text containing the catalog answer exclusions. */
+        input: string;
+      }) => request.input.includes('"rainbow"')
         ? parsedRiddleResponse("Which musical instrument has keys, strings and pedals?", "piano")
         : parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"));
       mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("piano"))

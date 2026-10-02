@@ -90,3 +90,11 @@ reported as a globally green release. Source-size verification passes. No visibl
 game text, SDK composition, purchase authority, Jest notification implementation
 or deployment switch is changed by this ledger work. It performs no deployment,
 upload, real notification, purchase or reward.
+
+
+The [actual-byte follow-up](facebook-notification-byte-binding-2026-10-02.md)
+now binds the existing live challenge caller’s original commitment to the actual
+transport JSON before ledger admission. Five real-composition mismatch tests
+reject without a reservation or HTTP; unchanged work remains one-use and unknown
+responses retain capacity. D1/D3/D7 and external acceptance requirements above
+remain incomplete.

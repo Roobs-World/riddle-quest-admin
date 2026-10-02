@@ -60,8 +60,8 @@ export interface FacebookOverlayView {
   showAsync(): Promise<void>;
   /** Provides dismiss async behavior. */
   dismissAsync?(): Promise<void>;
-  /** Destroys the Meta v8 overlay and removes its provider iframe. */
-  destroyAsync(): Promise<void>;
+  /** Optional runtime extension; documented v8 views need only show/dismiss lifecycle APIs. */
+  destroyAsync?(): Promise<void>;
 }
 
 /** Defines the contract for facebook overlay views. */

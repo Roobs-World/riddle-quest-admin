@@ -1,0 +1,267 @@
+{
+  "capturedAt": "2026-10-02T20:11:50.343115+00:00",
+  "headAtCapture": "30f19e7340ce79f1958b1bf3eda5cedcfaf61a07",
+  "uploadEligible": false,
+  "cleanImmutableRelease": false,
+  "liveProviderEffects": false,
+  "validation": {
+    "emulatorSuitesPassed": 6,
+    "emulatorTestsPassed": 173,
+    "focusedAuthoritySuitesPassed": 2,
+    "focusedAuthorityTestsPassed": 29,
+    "liveDeletionCasesPassed": 21,
+    "extraSourceTamperingCases": 3,
+    "uniqueIntegrationCasesPassed": 176,
+    "fullDeletionPipelineUnitsPassed": 13,
+    "jestAdapterUnitSuitesPassed": 32,
+    "jestAdapterUnitTestsPassed": 348,
+    "functionsTypes": true,
+    "productionModuleCycles": true,
+    "changedFileLint": true,
+    "privateFunctionsEmit": true,
+    "compiledRuntime": "22.23.1",
+    "sixTargetBuildsAndExplicitAudits": true,
+    "platformBrowserSuitesPassed": [
+      "facebook",
+      "reddit"
+    ],
+    "progressTrackers": true,
+    "diffCheck": true
+  },
+  "facebookMcp": {
+    "appId": "1748953042991569",
+    "callerPermissions": [
+      "read"
+    ],
+    "writeAuthorization": false
+  },
+  "sourceFiles": [
+    {
+      "path": "firebase-functions/src/profile/accountDeletion/liveRaceAccountDeletion.ts",
+      "sha256": "0748ad39c5e59a29efd1404ddd500d06983a9f60bc1384a8881f99483d59ef0d"
+    },
+    {
+      "path": "firebase-functions/src/profile/accountDeletion/raceAccountDeletion.ts",
+      "sha256": "30be24f97eb96019bdf15100fd2b4a8a86b3cbf99db1e82b5c85b3558e9981a7"
+    },
+    {
+      "path": "firebase-functions/src/race/raceLivePrivacy.ts",
+      "sha256": "66aea9094dd0edb43ba053228da579310a982b287d5cb222107aa41669221089"
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveState.ts",
+      "sha256": "50e4e13511e3b7b115840f538594b500b4dc52a8fc317203a40b1243e388f637"
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveService.ts",
+      "sha256": "8443fd3dd92a0ea0dbb249f3391eff50b5ad26475f2211c65ac8c501a9d73a5a"
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveInvitation.ts",
+      "sha256": "8fcafad7416948ae6b4c641fa49ebcb44f1f82a280857e97b4d68b77c07679fc"
+    },
+    {
+      "path": "firebase-functions/src/race/facebookLiveTournament.ts",
+      "sha256": "0cca9488f182274b297ad867c91d774f4289456f3e15cb71a95fac0f5a003a4a"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/raceLiveAccountDeletion.it.test.ts",
+      "sha256": "8da15cd9259bc78d539e1602a258e032f4afb90c5c0a79febbc66ea7a0c57080"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/facebookTournament.it.test.ts",
+      "sha256": "e2d6df040f10e3beded358290d692667a7b1a4710e39c94d732aaad2f69519c0"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/deleteAccount.test.ts",
+      "sha256": "2c66519c997e5059124aeddc99742437289835a8390cc77da87194af16a5b5a9"
+    },
+    {
+      "path": "firebase-functions/firestore.indexes.json",
+      "sha256": "ae5c75af5bd5bc5b7f2e6645bdd4b528c7e074d943ef813ef6b65ab86dc11454"
+    },
+    {
+      "path": "firebase-functions/jest.rules.config.js",
+      "sha256": "86be45c601ea7eaa2cd85243242db71e46ebfe847d228d01fe8ca9d4960695c3"
+    },
+    {
+      "path": "docs/evidence/live-race-deletion-2026-10-02.md",
+      "sha256": "eada3306041866086e974e8fa856cacb9a60f3a7410dbe39e61618fed037b59f"
+    },
+    {
+      "path": "docs/privacy-data-inventory.md",
+      "sha256": "c997ae68741277da03495b2e1414579f219fead70363f0c84c2ad2557eadefa5"
+    },
+    {
+      "path": "docs/facebook-instant-games-operations.md",
+      "sha256": "da4ea398ebd6f8ed6566e5742eae8e27203677119273ad573a5c61dffd15e4ed"
+    },
+    {
+      "path": "docs/reddit-games-operations.md",
+      "sha256": "9a35124177d82c97daf5f16eb6ff6e4daa2078214aac30999999c5d74e4280e8"
+    },
+    {
+      "path": "docs/facebook-instant-games-progress.html",
+      "sha256": "70612610e25bb5457a4744f83655373f32ec60d4f3a289b86702c5955fbcf416"
+    },
+    {
+      "path": "docs/reddit-games-progress.html",
+      "sha256": "6752ef2e1464179b8bb56392d8dc10f11bcb9e10526494141525803b239ede57"
+    }
+  ],
+  "logs": [
+    {
+      "path": "audit-facebook.log",
+      "sha256": "df19c04fff81f3c877a1b5dbcb1a92d91fab441cbb20ff78c1a718a0d9a996f1"
+    },
+    {
+      "path": "audit-jest.log",
+      "sha256": "6bf7b9e7fa22c6737cb7806517b5743d2c9b43aa1a2ead4f583b090b30534458"
+    },
+    {
+      "path": "audit-netflix.log",
+      "sha256": "65bad85041ec92748abdfc1190838aaa296aca6d652451ac9a7d87131519cd81"
+    },
+    {
+      "path": "audit-reddit.log",
+      "sha256": "6e2ab260353174909fc6daa8f5812ca15cd746a5036c21a5e2bfcd88b6eb9b4b"
+    },
+    {
+      "path": "audit-yahoo.log",
+      "sha256": "fb778a39418371b1870d5760c6bafe8500c75356a80248fa15738fbb02d6dbb5"
+    },
+    {
+      "path": "audit-youtube.log",
+      "sha256": "4903c08bceadbfd2591d6d978457a9bfe396b0bb216f977fbb76e81ae333e973"
+    },
+    {
+      "path": "build-facebook.log",
+      "sha256": "918374209903a6a8355b4c5f8b9744798efbedd7a3d93a9556f0340fa6e6a551"
+    },
+    {
+      "path": "build-jest.log",
+      "sha256": "7656c05de323843609fd90d79f95c2dcd1ae2681378a7dec29811a4722226032"
+    },
+    {
+      "path": "build-netflix.log",
+      "sha256": "7d0d62655af70c7bd49b39c7c8b5d44c87fad822ded62eba3ad4e2850ecb01e0"
+    },
+    {
+      "path": "build-reddit.log",
+      "sha256": "89d39740b63f317dd3928bb7a0477fc3af27a5decec6216a97dcebe47de579eb"
+    },
+    {
+      "path": "build-yahoo.log",
+      "sha256": "9cc511032fec3e1a8e0c8708b41f34feaf98361f1d3e748361639765a3ae08c0"
+    },
+    {
+      "path": "build-youtube.log",
+      "sha256": "5db2046d678ba1fd5261d70b9e4e03e9bf870c00040adf0c21198f335aa92a17"
+    },
+    {
+      "path": "deletion-test-lint-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "deletion-units-final.log",
+      "sha256": "d3b4176e51716556af99234c86defe0849b42eae00036bd3d26f5a154f05b96b"
+    },
+    {
+      "path": "deletion-units.log",
+      "sha256": "d48947fe5fedf2fa84bce5e22a2eaeca871d5919ef2e6f59e1c36ab5ddcf776b"
+    },
+    {
+      "path": "diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "emulator-baseline.log",
+      "sha256": "078987f310ebb7032c0ab798ed06ff25f0ad59f680a2dcd21b96024a6e49f844"
+    },
+    {
+      "path": "emulator-boundaries.log",
+      "sha256": "dcb50ced4d113e7833491b4b73e052b765b533c5629ab2386e2006f47f9a89df"
+    },
+    {
+      "path": "emulator-final.log",
+      "sha256": "761c8c6b1fbaab1c9ae1432fdaa57cf87cdc0974db1b6e027cf5ce1c1187b75d"
+    },
+    {
+      "path": "emulator-first-fix.log",
+      "sha256": "eddae5b7e924b177175ab0c040bc78968518cea09136a4905e1587791960cc90"
+    },
+    {
+      "path": "emulator-legacy-expiry-baseline.log",
+      "sha256": "8ef9e167cf5655989b8fe9a474957a8a7de0188f4bb30e0445374813186349ba"
+    },
+    {
+      "path": "emulator-pagination.log",
+      "sha256": "68bde4f6a1abac3b52eeb61886198c317683d78ac71962261ecc7522b58d20e3"
+    },
+    {
+      "path": "emulator-regressions.log",
+      "sha256": "b3ca44558df42de7c2334596931c0fd5ea37d45ee3567e0aaaa8234c4cc1a47f"
+    },
+    {
+      "path": "emulator-score-authority.log",
+      "sha256": "563d654a8794430d70f46145a457511a8dafe6dd15d292406b698c5876640f2c"
+    },
+    {
+      "path": "facebook-progress.log",
+      "sha256": "e5aeead5a9291a761ab6020c713e91ae7fd6f730885cbcf5218d4153c572be4b"
+    },
+    {
+      "path": "functions-emit.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "functions-lint-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "functions-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "functions-runtime.log",
+      "sha256": "fc5e81a485e402f9b2577b58436ab8ca4c992a99d7bac10e71cfddfbfebd6906"
+    },
+    {
+      "path": "functions-types-boundaries.log",
+      "sha256": "c5bad54c70654d564df980eaf025246d325cddea7b7d23d65e95e24fdd0f25fa"
+    },
+    {
+      "path": "functions-types-final.log",
+      "sha256": "c41c3aff64357b84a73571314eab6a76dfa211e4928b9464516e6af6c9d09172"
+    },
+    {
+      "path": "functions-types.log",
+      "sha256": "f991b9fdfbf65d8a1245c90dfdd470031eba5159d52de3f9926c0388441fcf01"
+    },
+    {
+      "path": "jest-adapter-units.log",
+      "sha256": "9a0a0b537cb5caa5b1aa8e4bb20b35d717bc2e73f279aec3f81cd09fcb872472"
+    },
+    {
+      "path": "platform-browsers.log",
+      "sha256": "7fe9a2bc4ffb5ccce513fb5b1a208c14f579338bd926d4e90bf556eec6b3a9cc"
+    },
+    {
+      "path": "reddit-progress.log",
+      "sha256": "7123d2a01fd07f8c0f49aa96bff29743b29f8f439798e063cbb4a70c9b32c060"
+    }
+  ],
+  "artifactHashManifest": {
+    "path": "artifact-hashes.json",
+    "sha256": "2b1c42de80210d0d9e414e3d7b171abba5554fd278d3ee65ef96233090d3d399"
+  },
+  "limitations": [
+    "Diagnostic hashes captured after verification in a shared changing working tree; no immutable candidate or deployed-byte binding.",
+    "Production Firestore index and TTL readiness and physical expiry unverified; historical unindexed scans may require retry.",
+    "Hosted provider account deletion, device acceptance and provider message/native score retraction unverified.",
+    "31 retired recorded-race Jest browser cases remain unresolved; the full authentication browser suite was not run by this work.",
+    "External commerce, rewarded ads and notification delivery contracts remain separate release gates.",
+    "Baseline failures, an early dynamic-import loader failure and a previous 17-case pagination invocation are retained diagnostics; final six-suite run and focused 29-case run pass.",
+    "No deployment, provider setting change, real purchase/reward grant or notification send by this work."
+  ]
+}

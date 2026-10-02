@@ -1,0 +1,24 @@
+FAIL src/facebook/__tests__/FacebookTournamentPresentation.test.ts
+  ● projects an already-recorded official win after browser recovery
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 9000
+
+    Number of calls: 0
+
+      38 |   const {options, sdk, record} = fixture();
+      39 |   await createFacebookTournamentPresentation(options)!.projectRecord({...record, improved: false});
+    > 40 |   expect(sdk.tournament!.postScoreAsync).toHaveBeenCalledWith(9000);
+         |                                          ^
+      41 | });
+      42 |
+      43 | it("creates one native dialog with the official current best, lower-time order and exact UTC deadline", async () => {
+
+      at Object.<anonymous> (src/facebook/__tests__/FacebookTournamentPresentation.test.ts:40:42)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 10 passed, 11 total
+Snapshots:   0 total
+Time:        0.252 s, estimated 1 s
+Ran all test suites within paths "src/facebook/__tests__/FacebookTournamentPresentation.test.ts".

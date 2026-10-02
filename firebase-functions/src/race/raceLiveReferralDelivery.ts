@@ -19,23 +19,30 @@ export const liveRaceReferralEventId = (provider: Provider, userId: string, tick
 /** A public terminal projection never establishes identity, victory, or referral authority. */
 export async function validateLiveRaceReferralSource(transaction: FirebaseFirestore.Transaction, db: Firestore,
   receipt: ReturnType<typeof parseRacePerformanceEvent>, nowMs: number, provider: Provider): Promise<boolean> {
+  /** Provider-specific UID validation prevents cross-target referral attribution. */
   const validOwner = provider === "facebook" ? isFacebookFirebaseUid(receipt.userId) : isRedditFirebaseUid(receipt.userId);
   if (receipt.source !== `${provider}_live` || !validOwner || !receipt.liveTicketId || !receipt.liveMatchId ||
     receipt.runId !== liveRaceReferralEventId(provider, receipt.userId, receipt.liveTicketId))
     throw new HttpsError("data-loss", "Stored live referral receipt is invalid.");
+  /** Private source records and account-deletion state are read in the same transaction. */
   const [ticketSnapshot, matchSnapshot, owner, deletion] = await Promise.all([
     transaction.get(db.doc(`liveRaceTickets/${receipt.liveTicketId}`)),
     transaction.get(db.doc(`liveRaceMatches/${receipt.liveMatchId}`)),
     transaction.get(db.doc(`users/${receipt.userId}`)), transaction.get(getJestAccountDeletionRef(db, receipt.userId)),
   ]);
   if (!ticketSnapshot.exists || !matchSnapshot.exists || !owner.exists || deletion.exists) return false;
+  /** Both source records must retain an unexpired server timestamp. */
   const ticketExpiry = ticketSnapshot.data()!.expiresAt, matchExpiry = matchSnapshot.data()!.expiresAt;
   if (!(ticketExpiry instanceof admin.firestore.Timestamp) || !(matchExpiry instanceof admin.firestore.Timestamp))
     throw new HttpsError("data-loss", "Stored live referral retention is invalid.");
   if (ticketExpiry.toMillis() <= nowMs || matchExpiry.toMillis() <= nowMs) return false;
+  /** Private ticket and match records establish the receipt source. */
   const ticket = ticketSnapshot.data() as LiveTicket, match = matchSnapshot.data() as LiveMatch;
+  /** Settled winner seat identifies the only qualifying run. */
   const seat = match.winner;
+  /** Provider-specific immutable receipt binding committed with the reward. */
   const binding = provider === "facebook" ? match.facebookReferral : match.redditReferral;
+  /** Server-recorded multiplayer wins corroborate the qualifying settlement. */
   const wins = owner.data()?.stats?.multiplayerWins;
   if (seat !== 0 && seat !== 1 || !Array.isArray(match.tickets) || !Array.isArray(match.runs) || !Array.isArray(match.players) ||
     ticket.userId !== receipt.userId || ticket.matchId !== receipt.liveMatchId || match.tickets[seat] !== receipt.liveTicketId ||

@@ -1,0 +1,98 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-live-quota", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/redditGatewayReplay.it.test.ts src/__tests__/redditPresence.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts
+FAIL src/__tests__/redditPresence.it.test.ts (60.215 s)
+  ● converges tabs, reconnects, blocks, opt-out and deletion without exposing strangers
+
+    thrown: "Exceeded timeout of 30000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at _getError (../node_modules/.pnpm/jest-circus@30.5.2_supports-color@8.1.1/node_modules/jest-circus/build/jestAdapterInit.js:1985:12)
+          at Array.map (<anonymous>)
+
+    Cause:
+        thrown: "Exceeded timeout of 30000 ms for a hook.
+        Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+          16 | let database: ReturnType<typeof getDatabase>;
+          17 |
+        > 18 | beforeAll(async () => {
+             | ^
+          19 |   if (getApps().length === 0)
+          20 |     initializeApp({
+          21 |       projectId: PROJECT_ID,
+
+          at Object.<anonymous> (src/__tests__/redditPresence.it.test.ts:18:1)
+
+
+  ● Test suite failed to run
+
+    thrown: "Exceeded timeout of 30000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at _getError (../node_modules/.pnpm/jest-circus@30.5.2_supports-color@8.1.1/node_modules/jest-circus/build/jestAdapterInit.js:1985:12)
+          at Array.map (<anonymous>)
+
+    Cause:
+     
+
+          26 |   await Promise.all([firestore.recursiveDelete(firestore.collection("users")), database.ref().remove()]);
+          27 | });
+        > 28 | afterAll(async () => {
+             | ^
+          29 |   await Promise.all([firestore.recursiveDelete(firestore.collection("users")), database.ref().remove()]);
+          30 |   await Promise.all(getApps().map((app) => deleteApp(app)));
+          31 | });
+
+          at Object.<anonymous> (src/__tests__/redditPresence.it.test.ts:28:1)
+
+FAIL src/__tests__/redditGatewayReplay.it.test.ts (25.468 s)
+  ● enforces the 20-request quota transactionally without storing the raw key
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 15
+
+      156 |   /** Provides value behavior. */
+      157 |   const value = (await db.collection("redditGatewayNonces").doc(id).get()).data();
+    > 158 |   expect(value).toMatchObject({
+          |                        ^
+      159 |     issuedAtMs: NOW,
+      160 |     userIdHash: createHash("sha256").update(assertion.userId).digest("hex"),
+      161 |   });
+
+      at Object.<anonymous> (src/__tests__/redditGatewayReplay.it.test.ts:158:24)
+
+Test Suites: 2 failed, 2 passed, 4 total
+Tests:       2 failed, 46 passed, 48 total
+Snapshots:   0 total
+Time:        106.9 s
+Ran all test suites within paths "src/__tests__/redditGatewayReplay.it.test.ts", "src/__tests__/redditPresence.it.test.ts", "src/__tests__/race/redditLiveReferrals.it.test.ts", "src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts".
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.
+ 
+i  emulators: Received SIGTERM for the first time. Starting a clean shutdown.
+i  emulators: Please wait for a clean shutdown or send the SIGTERM signal again to stop right now.
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+[ERROR] Command was killed with SIGTERM (Termination): node /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/redditGatewayReplay.it.test.ts src/__tests__/redditPresence.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts
+
+pnpm: Command was killed with SIGTERM (Termination): node /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/redditGatewayReplay.it.test.ts src/__tests__/redditPresence.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts
+    at getFinalError (file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:89024:14)
+    at makeError (file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:91331:21)
+    at getAsyncResult (file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:95504:159)
+    at handlePromise (file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:95489:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Object.handler38 [as dlx] (file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:270373:5)
+    at async file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:315634:19
+    at async main4 (file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:315602:30)
+    at async runPnpm (file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:315898:5)
+    at async file:///home/craig-beswetherick/.cache/node/corepack/v1/pnpm/11.21.0/dist/pnpm.mjs:315891:3
+⚠  Script exited unsuccessfully (code 1)
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

@@ -1,5 +1,5 @@
 import {getWebViewMode, requestExpandedMode, showLoginPrompt} from "@devvit/client";
-import {useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent} from "react";
+import {lazy, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent} from "react";
 import type {
   CommerceProduct,
   PlatformPreferences,
@@ -19,6 +19,9 @@ import {RedditPollingPresence} from "./RedditPollingPresence";
 import {readBrowserStorage} from "../platform/browserStorage";
 import {PlayerProjectionPersistence} from "../platform/PlayerProjectionPersistence";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
+
+/** Load the provider-owned board only when multiplayer is opened. */
+const RedditRaceEntry = lazy(() => import("./RedditRaceEntry").then(module => ({default: module.RedditRaceEntry})));
 
 /** Describes startup state. */
 type StartupState =
@@ -233,6 +236,7 @@ export function RedditPlatformEntry() {
     if (startup.session.playerId !== "reddit-guest") {
       return (
         <PlayHostApp
+          raceSurface={RedditRaceEntry}
           session={createHostedPlaySession({
             hostServices,
             platformProducts: commerceProducts,

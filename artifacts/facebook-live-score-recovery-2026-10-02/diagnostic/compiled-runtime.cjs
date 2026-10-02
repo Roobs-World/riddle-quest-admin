@@ -1,0 +1,17 @@
+const assert = require('node:assert/strict');
+const path = require('node:path');
+const root = '/home/craig-beswetherick/.cache/riddle-quest-review/live-score-recovery-20261002/functions';
+const load = name => require(path.join(root, name));
+const delivery = load('facebook/facebookLiveRaceDelivery.js');
+assert.equal(typeof delivery.readFacebookLiveTournamentDeliveryInput, 'function');
+assert.equal(typeof delivery.finishFacebookLiveRaceDelivery, 'function');
+assert.equal(typeof load('race/racePerformanceDelivery.js').deliverRacePerformance, 'function');
+assert.equal(typeof load('race/raceDeliveryRecovery.js').replayRaceDelivery, 'function');
+const facebook = load('facebook/facebookLiveRaceReferralDelivery.js');
+const reddit = load('reddit/redditLiveRaceReferralDelivery.js');
+const fbId = facebook.facebookLiveRaceReferralEventId('owner', 'ticket');
+const redditId = reddit.redditLiveRaceReferralEventId('owner', 'ticket');
+assert.match(fbId, /^[a-f0-9]{64}$/);
+assert.match(redditId, /^[a-f0-9]{64}$/);
+assert.notEqual(fbId, redditId);
+console.log(JSON.stringify({node: process.version, moduleLoad: 'passed', separateProviderDomains: true, networkRequests: 0}));

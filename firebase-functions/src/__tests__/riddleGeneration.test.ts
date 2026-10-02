@@ -989,7 +989,9 @@ describe("riddleGeneration", () => {
 
   describe("durable supply deadline", () => {
     test("stores a quality-approved partial batch before returning at the worker deadline", async () => {
+      /** Provides clock behavior. */
       let clock = 1000;
+      /** Provides date behavior. */
       const date = jest.spyOn(Date, "now").mockImplementation(() => clock);
       mockGenerateUniqueRiddle.mockImplementation(async () => {
         clock = 2000;
@@ -1004,7 +1006,9 @@ describe("riddleGeneration", () => {
       } finally { date.mockRestore(); }
     });
     test("rejects an empty batch at the deadline so the durable job stays retryable", async () => {
+      /** Provides clock behavior. */
       let clock = 1000;
+      /** Provides date behavior. */
       const date = jest.spyOn(Date, "now").mockImplementation(() => clock);
       mockGenerateUniqueRiddle.mockImplementation(async () => {clock = 2000; return null;});
       try {

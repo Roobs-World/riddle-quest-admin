@@ -34,7 +34,9 @@ class TestElement {
   });
   /** Models a mounted node and disabled-control selector matching. */
   public isConnected = true;
+  /** Stores disabled. */
   public disabled = false;
+  /** Provides matches behavior. */
   public matches(): boolean {return this.disabled;}
   /** Stores focusable. */
   public focusable: TestElement[] = [];
@@ -160,7 +162,9 @@ describe("useRaceDialogFocus", () => {
     /** Requests close. */
     const requestClose = jest.fn();
     testDocument.activeElement = previous;
+    /** Provides dialog ref behavior. */
     const dialogRef = {current: dialog as TestElement | null};
+    /** Provides quit dialog ref behavior. */
     const quitDialogRef = {current: quitDialog as TestElement | null};
     useRaceDialogFocus({
       dialogRef,
@@ -285,12 +289,15 @@ describe("useRaceDialogFocus", () => {
     expect(tabBeforeConfirmationMount.preventDefault).not.toHaveBeenCalled();
   });
   it("recaptures escaped focus in both directions and preserves owned key events", () => {
+    /** Provides harness behavior. */
     const harness = install();
+    /** Provides first behavior. */
     const first = new TestElement(), last = new TestElement();
     harness.dialog.focusable = [first, last];
     effects[0]();
     for (const reverse of [false, true]) {
       testDocument.activeElement = harness.previous;
+      /** Provides event behavior. */
       const event = keyboardEvent("Tab", reverse);
       keydownHandler?.(event);
       expect(testDocument.activeElement).toBe(reverse ? last : first);
@@ -302,13 +309,16 @@ describe("useRaceDialogFocus", () => {
   });
 
   it.each(["valid", "disabled", "disconnected", "outside", "missing"])("restores appropriate focus after confirmation for %s controls", state => {
+    /** Provides harness behavior. */
     const harness = install(true);
+    /** Provides control behavior. */
     const control = new TestElement();
     harness.dialog.focusable = state === "outside" ? [] : [control];
     control.disabled = state === "disabled";
     control.isConnected = state !== "disconnected";
     effects[0]();
     testDocument.activeElement = state === "missing" ? null : control;
+    /** Provides cleanup behavior. */
     const cleanup = effects[1]() as () => void;
     runLatestFrame();
     harness.quitDialogRef.current = null;
@@ -318,8 +328,10 @@ describe("useRaceDialogFocus", () => {
   });
 
   it("leaves outer focus restoration in charge after the race dialog unmounts", () => {
+    /** Provides harness behavior. */
     const harness = install(true);
     effects[0]();
+    /** Provides cleanup behavior. */
     const cleanup = effects[1]() as () => void;
     harness.dialogRef.current = null;
     harness.quitDialogRef.current = null;

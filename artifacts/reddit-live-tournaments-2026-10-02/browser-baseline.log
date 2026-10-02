@@ -1,0 +1,23 @@
+FAIL src/reddit/__tests__/redditBrowser.jest-playwright.test.ts (14.269 s)
+  ● Reddit artifact with injected Devvit context › requires a trusted click to expand and starts authenticated play through same-origin APIs
+
+    locator.click: Timeout 5000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.race-hub-tabs [role="tab"]').nth(1)[22m
+
+      26 |     await page.locator(".multiplayer-navigation-action").click();
+      27 |     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
+    > 28 |     await page.locator('.race-hub-tabs [role="tab"]').nth(1).click({timeout: 5000});
+         |                                                              ^
+      29 |     await page.locator('[data-analytics-screen="reddit_tournament"]').waitFor();
+      30 |     await page.locator(".race-error").waitFor();
+      31 |     await page.locator(".race-error button").click();
+
+      at verifyRedditTournamentBoard (src/reddit/__tests__/redditTournament.jest-playwright.support.ts:28:62)
+      at Object.<anonymous> (src/reddit/__tests__/redditBrowser.jest-playwright.test.ts:540:7)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        14.37 s
+Ran all test suites within paths "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts".

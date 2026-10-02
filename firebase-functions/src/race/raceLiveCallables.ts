@@ -1,7 +1,9 @@
+import {streamLiveRaceChanges} from "./raceLiveStream";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {JoinLiveRaceSchema, UpdateLiveRaceSchema, LiveRaceViewSchema, GetLiveRaceChallengeSchema, LiveRaceChallengeSchema,
-  SendLiveRaceChallengeSchema, SendLiveRaceChallengeResponseSchema} from "@qwordly/core/race";
+  SendLiveRaceChallengeSchema, SendLiveRaceChallengeResponseSchema, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema} from "@qwordly/core/race";
+import {listLiveRaceHistoryForUser} from "./raceLiveHistory";
 import {admin} from "../shared/firebaseAdmin";
 import {listLiveRaceChallengesForUser, sendLiveRaceChallengeForUser} from "./raceLiveChallengeNotifications";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
@@ -15,6 +17,16 @@ import {joinLiveRaceForUser, updateLiveRaceForUser} from "./raceLiveService";
 const options = {...browserCallableSecurityOptions, region: ["us-central1", "europe-west1"]};
 /** Repeated input and matchmaking use the existing interactive race warm-instance policy. */
 const interactiveOptions = {...options, minInstances: 1};
+/** Retained results are private, language-bound observations and never settle a match. */
+export const listLiveRaceHistory = onCallWithSentry("listLiveRaceHistory", options, async request => {
+  /** Strict bounded input carries no account or opponent identifier. */
+  const input = validateCallableRequest(ListLiveRaceHistoryRequestSchema, request.data, "listLiveRaceHistory");
+  /** Verified caller owns every projected ticket. */
+  const userId = owner(request);
+  await assertRaceAccess(userId, input.locale);
+  return validateCallableResponse(ListLiveRaceHistoryResponseSchema,
+    await listLiveRaceHistoryForUser(userId, input), "listLiveRaceHistory");
+});
 /** No identity supplied by the browser is accepted. */
 function owner(request: CallableRequest<unknown>): string {
   if (!request.auth) throw new HttpsError("unauthenticated", "Authentication required.");
@@ -30,14 +42,20 @@ export const joinLiveRace = onCallWithSentry("joinLiveRace", interactiveOptions,
   return validateCallableResponse(LiveRaceViewSchema, await joinLiveRaceForUser(userId, input), "joinLiveRace");
 });
 /** Reads progress or accepts one idempotent live action. */
-export const updateLiveRace = onCallWithSentry("updateLiveRace", interactiveOptions, async request => {
+export const updateLiveRace = onCallWithSentry("updateLiveRace", interactiveOptions, async (request, response) => {
   /** Provides input behavior. */
   const input = validateCallableRequest(UpdateLiveRaceSchema, request.data, "updateLiveRace");
   /** Provides user id behavior. */
   const userId = owner(request);
+  if (request.acceptsStreaming) {
+    if (input.action !== "poll" || !response) throw new HttpsError("invalid-argument", "Streaming requires a read-only observation.");
+    await assertRaceAccess(userId);
+    await streamLiveRaceChanges(admin.firestore(), userId, input.ticketId, response);
+    return null;
+  }
   return validateCallableResponse(LiveRaceViewSchema,
     await updateLiveRaceForUser(userId, input, {authorize: () => assertRaceAccess(userId)}), "updateLiveRace");
-});
+}, {skipJestAccountOperationLease: request => request.acceptsStreaming === true});
 
 /** Validates incoming SDK entry data without reserving the recipient seat. */
 export const getLiveRaceChallenge = onCallWithSentry("getLiveRaceChallenge", options, async request => {

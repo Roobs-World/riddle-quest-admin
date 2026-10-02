@@ -1,0 +1,5 @@
+Test Suites: 1 passed, 1 total
+Tests:       14 passed, 14 total
+Snapshots:   0 total
+Time:        0.36 s
+Ran all test suites within paths "src/facebook/__tests__/FacebookTournamentPresentation.test.ts".

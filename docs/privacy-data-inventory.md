@@ -281,6 +281,34 @@ corepack pnpm --dir firebase-functions leaderboard:privacy:purge-orphans -- --pr
 
 Source availability is not proof that this production purge ran. Record its aggregate output and confirm the deployed leaderboard-deny rule before release ([operator tool](../firebase-functions/scripts/purge-orphan-leaderboard-rows.js)).
 
+
+Live account deletion also covers `liveRaceTickets`, hashed active-player pointers,
+shared queue references, private `liveRaceMatches`, cross-user invitation copies,
+challenge push metadata and game-owned tournament entries. After the permanent
+account-deletion guard and account-lease drain, the server removes copied UID,
+name/avatar and the deleting player's guesses/events. Unfinished matches close
+as ties with no new grant; a surviving player's committed result and pending
+provider referral remain valid. Both deleted human seats, and a lone human versus
+the server bot, leave no private match or frozen deck. New matches include an
+indexed participant list; deletion pages historical unindexed matches, including
+missing-ticket records, and clears nested command receipts in bounded pages.
+Large historical collections can require a long scan; interrupted cleanup is
+idempotent and must be retried rather than reported successful.
+
+When a creator deletes while another human survives, an anonymous, cancelled
+creator ticket retains only the independently frozen content/rules and original
+clock/deadline needed to validate a surviving Facebook winner's official score.
+The deleted player's match run retains no answers or activity, and the neutral
+server marker is not a provider identity. Existing match deadlines are preserved;
+a historical missing deadline uses its creator ticket's deadline, or the accepted
+match start plus seven days if that ticket is missing, never deletion time.
+The committed TTL policies cover live tickets, matches, queues and active pointers;
+collection-group indexes support invitation and tournament-entry cleanup. Deploy
+these policies/indexes with the reviewed backend and verify readiness/physical
+removal in production. Local emulator tests do not establish deployed TTL state,
+Meta/Reddit record removal or retraction of already delivered messages/scores.
+See [live account-deletion evidence](evidence/live-race-deletion-2026-10-02.md).
+
 ## Data export reality
 
 The About screen's Data Export row displays **grindheadgames@gmail.com** as non-interactive text ([support value](../packages/portal/src/play/modalPages/information/InformationModalPages.tsx#L16-L17), [rendered contact row](../packages/portal/src/play/modalPages/information/InformationModalPages.tsx#L66-L69)). It does not start an export, open a mail client, or send a request. A player would have to contact the mailbox independently outside the game. If they do, the sender address, message metadata, and user-written content enter the sender's mail provider and the Gmail mailbox; no minimization, authentication, or retention rule for that email exists in game code.
@@ -370,7 +398,7 @@ Before counsel uses this inventory, compare it with a production console/data sa
 - Optional experiments retain ID/revision/arm/allocation hash in offers and aggregate reports; their allocation salt remains in admin-only configuration. Deterministic assignment uses the existing authenticated identity without creating another player registry. Experiment metadata contains no player identity, answers or salt, and requester-owned offers retain existing deletion/TTL handling. Reports explicitly use offer observations rather than independent-player significance or causal-lift estimates.
 - `raceSettlementOutbox` stores run/participant references, canonical result, presentation time difference and delivery state for bounded retention. Delivery rechecks deletion and blocks transactionally, uses current permitted game-owned presentation, and has an exact-once reward/inbox receipt. Account deletion removes participant-linked outbox events and creator-linked candidates, and requester-owned offers. Delayed jobs never recreate deleted accounts.
 - Race run settlement fields retain the canonical outcome and reward/presentation markers for the same bounded run lifetime. No new browser analytics are enabled; matchmaking diagnostics contain aggregate counts, pool language/provider, rejection categories and request duration, without player IDs, guesses, or answers.
-- `raceMatchProfiles` is a private owner/language projection of overall/category log-duration estimates, separate censored lower-bound evidence, role/category completion counts, confidence evidence/timestamps, bounded viewer-specific opponent hashes and canonical riddle exposure IDs. Version 2 profiles distinguish observed finishes from partial races; legacy mixed confidence is limited during lazy migration without inventing completion counts. Acceptance records preloaded exposure, including abandoned attempts; settlement updates only the attempt owner. Observation clocks use canonical finish time, with settlement-time fallback for legacy records. Account deletion removes the owner's subcollections. `racePerformanceOutbox` retains the owner/run linkage and processing receipt for the bounded settlement delivery period and is removed on owner deletion.
+- `raceMatchProfiles` is a private owner/language projection of overall/category log-duration estimates, separate censored lower-bound evidence, role/category completion counts, confidence evidence/timestamps, bounded viewer-specific opponent hashes and canonical riddle exposure IDs. Version 2 profiles distinguish observed finishes from partial races; legacy mixed confidence is limited during lazy migration without inventing completion counts. Acceptance records preloaded exposure, including abandoned attempts; settlement updates only the attempt owner. Observation clocks use canonical finish time, with settlement-time fallback for legacy records. Account deletion removes the owner's subcollections. `racePerformanceOutbox` retains the owner/run linkage and processing receipt for the bounded settlement delivery period and is removed on owner deletion. Eligible Facebook and Reddit live winner receipts now recover their provider-owned official game boards before referral settlement/acknowledgement. Reddit signed HTTP recording returns only public score fields, omitting its internal account ID, and holds the same operation lease ([Reddit live tournament evidence](evidence/reddit-live-tournaments-2026-10-02.md)). Private-source validation, original expiry and account-operation leases remain required; deletion drains leases before sweeping entries. Board reload can project the confirmed current-player best through the Facebook SDK, with per-session context/score deduplication. This adds no collection, retained client journal, currency authority or new retention window ([score recovery evidence](evidence/facebook-live-score-recovery-2026-10-02.md)).
 - `raceDeadlineFailures` stores an opaque run reference, processing state, original indexed deadline, quarantine/replay times and a generic failure code. It carries no names, avatars, answers or provider identity payloads. Diagnostic receipts expire after 90 days and are removed alongside account-owned runs. Operator logs identify the opaque run/event requiring repair; they do not include its answer-bearing validation details.
 - `raceMaintenance/projectionReconciliation` is a server-only operational checkpoint containing a collection phase, last document-ID cursor, random worker lease, timestamps, bounded count report and generic failure code. It contains no account IDs, profile payloads, questions or answers. The cursor may reference a challenge document; repeated passes overwrite it. `raceConfig/maintenance` provides the explicit projection-reconciliation opt-in. Neither collection is exposed directly to clients.
 - `raceMaintenance/raceSettlementOutboxRecovery` and `raceMaintenance/racePerformanceOutboxRecovery` hold server-only enqueue-time/opaque-event-ID cursors, random leases, processing timestamps, bounded count reports and generic failure codes. Recovery overwrites these global checkpoints; they contain no copied account/profile/question/answer payloads. Explicit outbox state, attempt, next-retry, quarantine and replay metadata retain the original receipt TTL. Validated administrator replay never recreates missing source/account data or extends retention.

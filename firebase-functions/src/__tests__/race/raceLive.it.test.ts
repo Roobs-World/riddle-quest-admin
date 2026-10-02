@@ -260,9 +260,12 @@ it("cancels a countdown without paying a win and rewards an in-game forfeit only
 });
 
 it("counts skips toward race progress and restores the same question on reload", async () => {
+  /** Provides {a, b} behavior. */
   const {a, b} = await pair();
+  /** Provides current behavior. */
   let current = await update(A, a, NOW + 6000);
   for (let i = 0; i < 7; i++) {
+    /** Provides command behavior. */
     const command = {ticketId: current.ticketId, action: "skip" as const,
       riddleId: current.run!.currentRiddle!.riddleId, requestId: `skip-answer-${i}`};
     current = await updateLiveRaceForUser(A, command, {db, nowMs: NOW + 6000 + i * 1000});
@@ -272,6 +275,7 @@ it("counts skips toward race progress and restores the same question on reload",
   expect(current).toMatchObject({phase: "racing", player: {correctCount: 7},
     run: {correctCount: 7, totalPenaltyMs: 7 * RACE_RULES.skipPenaltyMs, currentRiddle: {position: 7}}});
   expect((await update(B, b, NOW + 13000)).opponent?.correctCount).toBe(7);
+  /** Provides restored behavior. */
   const restored = await join(A, "reload-after-skips", NOW + 14000);
   expect(restored.ticketId).toBe(a.ticketId);
   expect(restored.run!.currentRiddle!.riddleId).toBe(current.run!.currentRiddle!.riddleId);
@@ -280,11 +284,15 @@ it("counts skips toward race progress and restores the same question on reload",
 });
 
 it.each(["skip", "exhaust"] as const)("resets question state after %s and settles the tenth completed riddle once", async action => {
+  /** Provides {a, b} behavior. */
   const {a, b} = await pair();
+  /** Provides current behavior. */
   let current = a;
   for (let index = 0; index < 8; index++) current = await answer(A, current, NOW + 6000 + index * 1000, `eight-solves-${index}`);
+  /** Provides old riddle id behavior. */
   const oldRiddleId = current.run!.currentRiddle!.riddleId;
   current = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "old-question-hint", riddleId: oldRiddleId}, {db, nowMs: NOW + 15000});
+  /** Provides guess at ms behavior. */
   const guessAtMs = NOW + 16000;
   for (let index = 0; index < (action === "skip" ? 1 : 5); index++) current = await updateLiveRaceForUser(A, {
     ticketId: a.ticketId, action: "guess", requestId: `old-question-wrong-${index}`, riddleId: oldRiddleId,
@@ -296,6 +304,7 @@ it.each(["skip", "exhaust"] as const)("resets question state after %s and settle
   expect(current).toMatchObject({phase: "racing", player: {correctCount: 9}, rewardCoins: 0});
   expect(current.run!.currentRiddle).toMatchObject({position: 9, guessesUsed: 0, guessesRemaining: 5, revealedLetters: [], confirmedGuesses: []});
   expect(current.run!.currentRiddle!.riddleId).not.toBe(oldRiddleId);
+  /** Provides command behavior. */
   const command = {ticketId: a.ticketId, action: "skip" as const,
     requestId: "skip-tenth-question", riddleId: current.run!.currentRiddle!.riddleId};
   current = await updateLiveRaceForUser(A, command, {db, nowMs: guessAtMs + 6000});
@@ -351,17 +360,23 @@ it("lets a later unassisted finish beat an earlier hinted finish", async () => {
 });
 
 it("adds hint time without blocking the next live action", async () => {
+  /** Provides {a} behavior. */
   const {a} = await pair();
+  /** Provides started behavior. */
   const started = await update(A, a, NOW + 7000);
+  /** Provides hinted behavior. */
   const hinted = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "time-only-hint", riddleId: started.run!.currentRiddle!.riddleId}, {db, nowMs: NOW + 7000});
   expect(hinted).toMatchObject({player: {correctCount: 0}, rewardCoins: 0, run: {totalPenaltyMs: RACE_RULES.hintPenaltyMs}});
+  /** Provides solved behavior. */
   const solved = await answer(A, hinted, NOW + 8000, "immediate-hinted-guess");
   expect(solved).toMatchObject({player: {correctCount: 1}, run: {totalPenaltyMs: RACE_RULES.hintPenaltyMs}});
   expect(solved.run!.adjustedElapsedMs).toBe(solved.run!.wallElapsedMs + RACE_RULES.hintPenaltyMs);
 });
 
 it.each(["skip", "exhaust"] as const)("adds skip time after %s while immediately allowing hint, submit and skip", async action => {
+  /** Provides {a} behavior. */
   const {a} = await pair();
+  /** Provides current behavior. */
   let current = await update(A, a, NOW + 7000);
   if (action === "skip") current = await updateLiveRaceForUser(A, {
     ticketId: a.ticketId, action: "skip", requestId: "time-only-skip", riddleId: current.run!.currentRiddle!.riddleId,
@@ -370,11 +385,13 @@ it.each(["skip", "exhaust"] as const)("adds skip time after %s while immediately
     ticketId: a.ticketId, action: "guess", requestId: `time-only-exhaust-${index}`, riddleId: current.run!.currentRiddle!.riddleId,
     guess: "x".repeat(current.run!.currentRiddle!.answerLength),
   }, {db, nowMs: NOW + 7000 + index * 1000});
+  /** Provides next at ms behavior. */
   const nextAtMs = NOW + (action === "skip" ? 8000 : 12000);
   expect(current).toMatchObject({player: {correctCount: 1}, rewardCoins: 0, run: {totalPenaltyMs: RACE_RULES.skipPenaltyMs}});
   current = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "hint-immediately-after-skip", riddleId: current.run!.currentRiddle!.riddleId}, {db, nowMs: nextAtMs});
   current = await answer(A, current, nextAtMs + 1000, "submit-immediately-after-skip");
   current = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "skip", requestId: "skip-again-without-waiting", riddleId: current.run!.currentRiddle!.riddleId}, {db, nowMs: nextAtMs + 2000});
+  /** Provides penalties behavior. */
   const penalties = 2 * RACE_RULES.skipPenaltyMs + RACE_RULES.hintPenaltyMs;
   expect(current).toMatchObject({player: {correctCount: 3}, rewardCoins: 0, run: {totalPenaltyMs: penalties}});
   expect(current.run!.adjustedElapsedMs).toBe(current.run!.wallElapsedMs + penalties);

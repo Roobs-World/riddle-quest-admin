@@ -1,4 +1,13 @@
 import {createFirebaseRaceMatchmaking} from "../firebaseRaceMatchmaking";
+
+it("exposes retained live history through the explicitly enabled Facebook live surface", () => {
+  /** The owning target opts into live social features; the default adapter stays unchanged. */
+  const options = {liveSafety: true};
+  Reflect.set(options, "liveHistory", true);
+  const target = createFirebaseRaceMatchmaking(undefined, options);
+  expect(typeof Reflect.get(target.live!, "history")).toBe("function");
+  expect(Reflect.get(createFirebaseRaceMatchmaking().live!, "history")).toBeUndefined();
+});
 import {raceMatchFailure} from "@qwordly/core/race";
 
 it.each(["permission-denied", "unauthenticated", "invalid-argument"])("retains terminal recovery for %s", async code => {
@@ -44,4 +53,15 @@ it("rejects malformed successful payloads at the shared contract seam", async ()
   const adapter = createFirebaseRaceMatchmaking(async () => ({status: "matched"}) as never);
   await expect(adapter.find("en")).resolves.toMatchObject({status: "retryable-failure",
     failure: {reason: "invalid-response", recovery: "same-intent", retryAfterMs: 1000}});
+});
+
+it("preserves default platform behavior while explicitly enabling live safety on the owning target", () => {
+  /** Jest's existing adapter remains unchanged by default. */
+  const ordinary = createFirebaseRaceMatchmaking();
+  expect(ordinary.live?.blockOpponent).toBeUndefined();
+  expect(ordinary.live?.reportOpponent).toBeUndefined();
+  /** Facebook explicitly opts into the server-resolved live safety capability. */
+  const enabled = createFirebaseRaceMatchmaking(undefined, {liveSafety: true});
+  expect(typeof enabled.live?.blockOpponent).toBe("function");
+  expect(typeof enabled.live?.reportOpponent).toBe("function");
 });

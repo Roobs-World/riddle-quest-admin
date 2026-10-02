@@ -94,6 +94,9 @@ export function useHostRiddleLifecycle({
   const loadInFlightRef = useRef<Promise<boolean> | null>(null);
   /** Generation that rejects stale async load results. */
   const contextVersionRef = useRef(0);
+  /** Profile changes during content delivery must not rewind confirmed balances or progression. */
+  const profileRef = useRef(profile);
+  profileRef.current = profile;
   /** Latest recovery scheduler used by failed load attempts. */
   const scheduleRecoveryRef = useRef<() => void>(() => undefined);
   /** Latest accepted mode used by recovery. */
@@ -138,7 +141,7 @@ export function useHostRiddleLifecycle({
           postToGame({
             type: "host:riddleLoaded",
             requestId,
-            payload: {riddle, profile},
+            payload: {riddle, profile: profileRef.current},
           });
           postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
           trackEvent("level_start", {
@@ -161,11 +164,9 @@ export function useHostRiddleLifecycle({
           if (!dailyCompleted) captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
           /** Safe player-facing failure notice. */
           const message = getHostErrorMessage(error);
-          setNotice(message);
-          postOperation(requestId, "loadRiddle", false, undefined, message);
-          // Only the server-confirmed completion of today’s Daily allows an automatic Classic launch.
+          // Confirmed Daily completion routes both launch and Next Level requests to Classic.
           // Outages remain on Daily and use the existing bounded recovery loop.
-          if (dailyCompleted && !requestId) {
+          if (dailyCompleted) {
             gameModeRef.current = "classic";
             setGameMode("classic");
             try {
@@ -175,7 +176,8 @@ export function useHostRiddleLifecycle({
               }));
               if (contextVersion !== contextVersionRef.current) return false;
               loadedRef.current = true;
-              postToGame({type: "host:riddleLoaded", payload: {riddle, profile}});
+              postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}});
+              postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
               setStartupComplete(true);
               setStartupUnavailable(false);
               // Completion is an expected launch decision, not a failure notice.
@@ -188,8 +190,14 @@ export function useHostRiddleLifecycle({
             } catch (fallbackError) {
               if (contextVersion !== contextVersionRef.current) return false;
               captureBrowserException(fallbackError, {component: "play_host", operation: "loadRiddle"});
-              setNotice(getHostErrorMessage(fallbackError));
+              /** Safe failure text returned through the original correlated load request. */
+              const fallbackMessage = getHostErrorMessage(fallbackError);
+              setNotice(fallbackMessage);
+              postOperation(requestId, "loadRiddle", false, undefined, fallbackMessage);
             }
+          } else {
+            setNotice(message);
+            postOperation(requestId, "loadRiddle", false, undefined, message);
           }
           setStartupUnavailable(true);
           onStartupUnavailable?.();
@@ -202,7 +210,7 @@ export function useHostRiddleLifecycle({
         if (loadInFlightRef.current === pending) loadInFlightRef.current = null;
       });
     },
-    [configurationWarning, onPlayable, onStartupUnavailable, postOperation, postToGame, profile, services, setNotice, withActivity],
+    [configurationWarning, onPlayable, onStartupUnavailable, postOperation, postToGame, services, setNotice, withActivity],
   );
   /** Latest load implementation used by recovery timers. */
   const loadRiddleRef = useRef(loadRiddle);
@@ -228,8 +236,8 @@ export function useHostRiddleLifecycle({
     };
     /** Resynchronizes the host and retries the current riddle context. */
     const recoverRiddle = async () => {
+      if (loadedRef.current || cancelled || navigator.onLine === false) return;
       onRecoveryAttempt();
-      if (loadedRef.current || cancelled) return;
       /** Whether the recovery produced a playable riddle. */
       const loaded = await loadRiddleRef.current({
         gameMode: gameModeRef.current,
@@ -241,11 +249,25 @@ export function useHostRiddleLifecycle({
       scheduleRecovery(Math.min(30_000, 500 * 2 ** Math.min(failedAttempts, 6)));
     };
     scheduleRecoveryRef.current = () => scheduleRecovery(250);
+    /** Recover immediately when the browser regains connectivity or returns to the game. */
+    const resumeRecovery = () => {
+      if (cancelled || loadedRef.current || navigator.onLine === false) return;
+      failedAttempts = 0;
+      scheduleRecovery(0);
+    };
+    /** Hidden frames keep their existing retry schedule; foregrounding supplies a fresh signal. */
+    const onVisibilityChange = () => {if (document.visibilityState === "visible") resumeRecovery();};
+    window.addEventListener("online", resumeRecovery);
+    document.addEventListener("visibilitychange", onVisibilityChange);
     scheduleRecovery(250);
     return () => {
       cancelled = true;
+      // Invalidate pending requests even when this cleanup is a final unmount.
+      contextVersionRef.current += 1;
       scheduleRecoveryRef.current = () => undefined;
       if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
+      window.removeEventListener("online", resumeRecovery);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, [locale, onRecoveryAttempt, userId]);
 

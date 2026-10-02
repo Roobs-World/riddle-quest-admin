@@ -1,0 +1,8 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts
+
+Test Suites: 7 passed, 7 total
+Tests:       46 passed, 46 total
+Snapshots:   0 total
+Time:        0.264 s, estimated 1 s
+Ran all test suites matching src/jest/__tests__/notificationFundChecklist.test.ts|src/jest/__tests__/notificationCopy.test.ts|src/jest/__tests__/engagement.test.ts|src/jest/__tests__/inlineNotificationAsset.test.ts|src/jest/__tests__/useJestNotifications.test.ts|src/jest/__tests__/notificationOperationGate.test.ts|src/jest/__tests__/firebaseNotificationCopy.test.ts.

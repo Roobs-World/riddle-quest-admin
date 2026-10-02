@@ -15,12 +15,19 @@ const RETRY_MS = 5 * 60000;
 
 /** Claims a durable request transactionally so overlapping scheduled invocations cannot generate twice. */
 export async function processClassicSupplyJob(requestId: string): Promise<"skipped" | "generated" | "retry"> {
+  /** Firestore owns the durable generation request and retry lease. */
   const db = admin.firestore();
+  /** Stable job document survives worker retries and crashes. */
   const ref = db.collection("classicSupplyJobs").doc(requestId);
+  /** Invocation identity prevents an expired worker from settling a newer lease. */
   const leaseId = randomUUID();
+  /** Claim time defines lease eligibility and the generation deadline. */
   const now = Date.now();
+  /** Validated locale is returned only after this invocation acquires the job lease. */
   const locale = await db.runTransaction(async transaction => {
+    /** Current job state is read before eligibility and locale checks. */
     const snapshot = await transaction.get(ref);
+    /** Persisted completion and retry fields determine whether the job can run. */
     const data = snapshot.data();
     if (!data || data.nextAttemptAtMs > now || data.completed === true) return undefined;
     if (!SUPPORTED_LOCALES.includes(data.locale)) throw new Error("Invalid Classic supply job locale.");
@@ -28,6 +35,7 @@ export async function processClassicSupplyJob(requestId: string): Promise<"skipp
     return data.locale as SupportedLocale;
   });
   if (!locale) return "skipped";
+  /** Generation outcome controls completion or delayed retry. */
   let succeeded = false;
   try {
     await generateLocalizedClassicRiddlesForLocale(locale, RIDDLE_GENERATION_BATCH_SIZE, now + GENERATION_BUDGET_MS);
@@ -36,6 +44,7 @@ export async function processClassicSupplyJob(requestId: string): Promise<"skipp
     captureException(error, {operation: "classicSupplyJob", locale});
   }
   await db.runTransaction(async transaction => {
+    /** Latest lease owner must still match before the worker records its outcome. */
     const current = (await transaction.get(ref)).data();
     if (current?.leaseId !== leaseId) return;
     transaction.update(ref, succeeded
@@ -47,6 +56,7 @@ export async function processClassicSupplyJob(requestId: string): Promise<"skipp
 
 /** Three bounded jobs per invocation; one indexed field covers both retry and expired-lease eligibility. */
 export async function processClassicSupplyJobs(): Promise<void> {
+  /** Bounded indexed query finds eligible retries and expired leases. */
   const due = await admin.firestore().collection("classicSupplyJobs")
     .where("nextAttemptAtMs", "<=", Date.now()).orderBy("nextAttemptAtMs").limit(3).get();
   await Promise.all(due.docs.map(document => processClassicSupplyJob(document.id)));

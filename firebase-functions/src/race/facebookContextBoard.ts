@@ -7,6 +7,7 @@ import {facebookContextKey} from "./facebookContextCompetition";
 import {parseFacebookContextCompetition} from "./facebookContextService";
 import {raceClock, type RaceRunRecord} from "./raceEngine";
 import {parseRunRecord} from "./raceSetupService";
+import {readFacebookLiveTournamentRun} from "./facebookLiveTournament";
 import {assertFacebookTournamentDeck, type FacebookTournamentDeckBinding} from "./facebookTournament";
 
 /** Defines the facebook context board sort order value. */
@@ -144,17 +145,22 @@ export async function recordFacebookContextBoardRun(
       transaction.get(entryRef),
     ]);
     if (!contextSnapshot.exists) throw new HttpsError("not-found", "Facebook context board was not found.");
-    if (!runSnapshot.exists) throw new HttpsError("not-found", "Facebook context race run was not found.");
     /** Provides competition behavior. */
     const competition = parseFacebookContextCompetition(contextSnapshot.data());
     /** Provides member behavior. */
     const member = requireMember(userId, input.locale, nowMs, competition);
-    /** Provides run behavior. */
-    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
-    /** Provides deck snapshot behavior. */
-    const deckSnapshot = await transaction.get(db.doc(`raceDecks/${run.deckId}`));
-    if (!deckSnapshot.exists) throw new HttpsError("data-loss", "Facebook context race deck was not found.");
-    assertFacebookTournamentDeck(run, deckSnapshot.data() as FacebookTournamentDeckBinding);
+    /** Recorded and live sources share the same private, immutable deck validation. */
+    const source = runSnapshot.exists ? {run: parseRunRecord(runSnapshot.data(), runSnapshot.id)} :
+      await readFacebookLiveTournamentRun(transaction, db, userId, input.runId);
+    /** Owned live winners bind both seats to the creator's frozen deck. */
+    const run = source.run;
+    /** Legacy recorded runs retain their independently stored deck contract. */
+    const deck = "deck" in source ? source.deck :
+      (await transaction.get(db.doc(`raceDecks/${run.deckId}`))).data() as FacebookTournamentDeckBinding | undefined;
+    if (!deck) throw new HttpsError("data-loss", "Facebook context race deck was not found.");
+    assertFacebookTournamentDeck(run, deck);
+    if (run.finishedAtMs !== undefined && run.finishedAtMs > nowMs)
+      throw new HttpsError("failed-precondition", "Facebook context race has not finished yet.");
     /** Provides candidate behavior. */
     const candidate = deriveEntry(userId, input.locale, contextKey, run, member.joinedAtMs, competition.expiresAtMs);
     /** Provides existing behavior. */

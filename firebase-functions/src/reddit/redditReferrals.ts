@@ -297,7 +297,7 @@ export async function bindRedditReferralToken(
     const user = invitee.data()!;
     /** Provides games played behavior. */
     const gamesPlayed = requireStat(user.stats, "gamesPlayed");
-    /** Provides wins behavior. */
+    /** Server-recorded solo wins can establish the referral conversion milestone. */
     const wins = requireStat(user.stats, "wins");
     if (typeof user.hasPurchasedApp !== "boolean") throw new Error("invalid-reddit-referral-purchase-state");
     if (gamesPlayed > 0 || wins > 0 || requireStat(user.stats, "multiplayerWins", 0) > 0 ||
@@ -418,7 +418,9 @@ export async function settleRedditReferralAfterAuthoritativeWin(
       transaction.get(inviterDeletionRef),
     ]);
     if (!invitee.exists) throw new Error("reddit-referral-win-not-established");
+    /** Server-recorded solo wins can establish the referral conversion milestone. */
     const wins = requireStat(invitee.data()?.stats, "wins");
+    /** A confirmed multiplayer win also qualifies the invitee for conversion. */
     const multiplayerWins = requireStat(invitee.data()?.stats, "multiplayerWins", 0);
     if (wins < 1 && multiplayerWins < 1) {
       throw new Error("reddit-referral-win-not-established");

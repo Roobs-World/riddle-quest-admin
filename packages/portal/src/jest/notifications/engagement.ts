@@ -1,4 +1,5 @@
 import type {JestPlatformPort, PlatformResult} from "../types";
+import {notificationAsset} from "./inlineAsset";
 
 /** Defines the legacy reminder ids value. */
 export const LEGACY_REMINDER_IDS = ["riddle-quest-d1-v2", "riddle-quest-d3-v2", "riddle-quest-d7-v2"] as const;
@@ -54,7 +55,6 @@ export async function scheduleEngagementReminders(
 ): Promise<PlatformResult<void>[]> {
   /** Provides common behavior. */
   const common = {
-    ...(copy.assetReference ? {assetReference: copy.assetReference} : {}),
     entryPayload: {
       gameMode: "challenge",
       campaign: "daily_cosmic_callback_v2",
@@ -83,6 +83,11 @@ export async function scheduleEngagementReminders(
     },
   ];
 
+  /** Three deterministic cards are reused across D1-D7 and deduplicated by Jest. */
+  const assets = variants.map((variant) => notificationAsset({
+    title: copy.gameTitle, body: variant.body, ctaText: variant.cta,
+  }, copy.assetReference));
+
   return Promise.all(
     ENGAGEMENT_REMINDER_IDS.map((identifier, index) => {
       /** Provides scheduled in days behavior. */
@@ -91,6 +96,7 @@ export async function scheduleEngagementReminders(
       const variant = variants[(rotationSeed + index) % variants.length];
       return platform.scheduleNotification({
         ...common,
+        ...assets[(rotationSeed + index) % variants.length],
         identifier,
         scheduledInDays,
         priority: scheduledInDays >= 3 ? "high" : "medium",

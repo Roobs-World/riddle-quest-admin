@@ -81,3 +81,9 @@ private live-match records requires a separate review; the existing outbox owner
 sweep does not prove that broader cleanup. No deployment, provider settings
 change, real reward grant, purchase or notification send was performed by this
 work.
+
+
+Follow-up: [live account-deletion verification](live-race-deletion-2026-10-02.md)
+now exercises the private live-match cleanup and preserves a surviving Facebook
+or Reddit winner's pending first-win referral. The earlier unverified cleanup
+statement above describes the state at the time of that referral-only run.

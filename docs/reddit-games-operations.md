@@ -139,8 +139,9 @@ from the 60-second logical acceptance window.
 
 The exact signed `gameplay.presence.poll` operation now has a server-owned quota
 of 60 requests per user per UTC minute. This supports the required two-second race
-polling plus bounded state changes and consent revocation. Every other operation
-retains its 20-request limit. Requests are still signature-verified and replay
+polling plus bounded state changes and consent revocation. Other operations
+retain their 20-request limit except Live PvP: its background update budget and
+valid player-command budget are independently capped at 120 per minute. Requests are still signature-verified and replay
 checked before quota consumption, and the larger budget cannot be selected by a
 browser payload. The [presence quota check](evidence/reddit-presence-quota-2026-10-01.md)
 records the reproduced failure and passing emulator tests. This backend fix is
@@ -148,6 +149,16 @@ prepared locally and needs the complete reviewed deployment unit before hosted
 testing can prove the behavior. Rolling back to the old 20-request implementation
 also requires handling any existing polling bucket above 20; the old validator
 rejects those records even after the minute boundary until they are removed.
+
+
+The [2 October live-action quota evidence](evidence/reddit-live-action-quota-2026-10-02.md)
+reproduces player commands refused after exhausted polling. Valid signed guesses,
+hints, skips and leaving now use a separate bounded internal quota; malformed
+inputs retain the original budget. In-flight same-row updates are serialized
+within each runtime while Firestore transactions remain the distributed authority.
+The existing 64-request presence contention case passes with its cap intact;
+failed turns release the queue. No client SDK, public operation or retention
+change is required. Ship the reviewed backend unit before hosted verification.
 
 The [1 October backend metadata review](evidence/provider-backend-readiness-2026-10-01.md)
 found no deployed TTL on `redditGatewayNonces.expiresAt` or
@@ -327,3 +338,40 @@ Follow `reddit-incident-response.md`. Watch structured gateway failures, signatu
 rejections, rate-limit spikes, deletion retries, upstream latency/timeouts, and
 unexpected capability exposure. Logs must not contain raw Reddit IDs, assertions,
 gateway secrets, profile names/photos, guesses, or purchase material.
+
+
+## Live account-deletion verification
+
+The [2 October live-data cleanup evidence](evidence/live-race-deletion-2026-10-02.md)
+covers real server matchmaking, deletion and surviving-player economy/referrals.
+The guard and lease drain precede the live-data sweep. Searching tickets, active
+pointers, queue references, copied match identity/progress, invitations, challenge
+push metadata and game-owned board entries are covered. Unfinished matches close
+without a new grant; already committed surviving results remain intact. An
+anonymous cancelled creator deck preserves independent Facebook score validation.
+
+Ship the live participant index, cleanup, native score validator and Firestore
+TTL/collection-group policies together. Historical unindexed records are paged;
+missing root expiries are restored from their original source deadline or accepted
+start, without extending retention from deletion time. Verify deployed indexes,
+TTL readiness and an actual deletion retry in the reviewed backend release.
+The emulator does not prove provider-side erasure or message/score retraction.
+
+The later [Facebook score recovery regression run](evidence/facebook-live-score-recovery-2026-10-02.md)
+also passes the existing Reddit live referral ledger, deletion and shared gameplay
+cases. Facebook tournament recording and referral switches are independent;
+Reddit retains its own referral switch and hash domain. The fresh Reddit artifact
+passes its explicit provider-boundary audit and injected browser journey.
+
+
+The [Reddit Live PvP tournament follow-up](evidence/reddit-live-tournaments-2026-10-02.md)
+restores the authenticated daily board and eligible private live scoring for both
+winning seats. The existing winner outbox records before referral settlement and
+acknowledgement, with independently controlled tournament/referral switches,
+full frozen-source validation, original expiry and no additional currency grant.
+The signed HTTP recorder now returns only strict public fields and holds the
+same account-operation lease as delivery; deletion drains and sweeps its entry.
+The shared board contains no SDK; Facebook native presentation stays in its own
+adapter. Real cross-provider/gateway/deletion checks pass 119 cases, both injected
+provider browsers and all six isolated artifact audits pass. Ship the reviewed
+backend/client unit and verify hosted signed forwarding and device acceptance.

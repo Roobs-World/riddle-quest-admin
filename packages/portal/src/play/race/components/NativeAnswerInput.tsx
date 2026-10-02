@@ -1,6 +1,7 @@
 import {forwardRef, useRef} from "react";
 import {splitGraphemes} from "@qwordly/core/game";
 import {tr} from "../../i18n";
+import {useNativeAnswerBackspace} from "../../../input/useNativeAnswerBackspace";
 
 /** Normalizes pasted or committed IME text into user-perceived answer units. */
 export const nativeAnswerGraphemes = (value: string): string[] => splitGraphemes(value.normalize("NFC"));
@@ -23,6 +24,8 @@ export const NativeAnswerInput = forwardRef<
 >(function NativeAnswerInput({disabled, locale, onText, onBackspace, onSubmit}, forwardedRef) {
   /** Provides composing behavior. */
   const composing = useRef(false);
+  /** Native deletion events preserve software-keyboard editing without disturbing IME text. */
+  const inputRef = useNativeAnswerBackspace(forwardedRef, composing, onBackspace);
   /** Provides just committed composition behavior. */
   const justCommittedComposition = useRef<string | null>(null);
   /** Provides consume behavior. */
@@ -35,7 +38,7 @@ export const NativeAnswerInput = forwardRef<
 
   return (
     <input
-      ref={forwardedRef}
+      ref={inputRef}
       className="race-native-answer-input"
       type="text"
       inputMode="text"

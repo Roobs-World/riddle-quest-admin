@@ -3,7 +3,7 @@ import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
-import {mkdir, readFile} from "node:fs/promises";
+import {mkdir, readFile, writeFile} from "node:fs/promises";
 import path from "node:path";
 import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support";
@@ -218,6 +218,7 @@ describeBrowser("Jest authentication integration", () => {
     await cancel.waitFor();
     expect(await page.locator(".profile-page button").last().textContent()).toMatch(/delete account/i);
     expect(await cancel.evaluate((button) => {
+      /** Provides deletion behavior. */
       const deletion = document.querySelector(".profile-delete-account-button");
       return deletion !== null && button.closest(".profile-subscriptions")?.nextElementSibling === deletion.parentElement
         && button.getBoundingClientRect().bottom <= deletion.getBoundingClientRect().top;
@@ -628,7 +629,7 @@ describeBrowser("Jest authentication integration", () => {
           identifier: "riddle-quest-d1-v3",
           scheduledInDays: 1,
           priority: "medium",
-          assetReference: "riddle-q-notification",
+          asset: expect.stringMatching(/^data:image\/png;base64,/),
           entryPayload: expect.objectContaining({
             gameMode: "challenge",
             reference: "notification_d1_v4",
@@ -919,6 +920,47 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("schedules decodable inline daily and race cards without library references", async () => {
+    /** Registered SDK session with real browser canvas rendering. */
+    const {context, page} = await openHarness(browser, {registered: true});
+    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+    await page.waitForFunction(() => (window as any).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length >= 7);
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: {challengeId: "inline-card-race"}})));
+    await page.waitForFunction(() => (window as any).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.some((item: any) => item.identifier === "race_to_10_results_v1"));
+    /** All dispatches, including replacement after stored progress loads. */
+    const schedules = (await getHarnessState(page)).notificationSchedules;
+    /** Latest rolling series reflects the current personalized progress. */
+    const daily = [...new Map(schedules.filter((item) => item.identifier?.startsWith("riddle-quest-d")).map((item) => [item.identifier, item])).values()];
+    expect(new Set(daily.map((item) => item.asset)).size).toBe(3);
+    expect(daily.map((item) => item.scheduledInDays)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    for (const item of schedules) {
+      expect(item.assetReference).toBeUndefined();
+      expect(item.asset).toMatch(/^data:image\/png;base64,/);
+      /** Decoded payload size is checked independently of the production validator. */
+      const data = Buffer.from(item.asset!.split(",")[1], "base64");
+      expect(data.length).toBeLessThanOrEqual(2 * 1024 * 1024);
+      expect(await page.evaluate(async (asset) => {
+        /** Browser decoding confirms the image bytes and dimensions. */
+        const image = new Image();
+        image.src = asset;
+        await image.decode();
+        return [image.naturalWidth, image.naturalHeight];
+      }, item.asset!)).toEqual([900, 600]);
+    }
+    /** Race card retains its inbox attribution. */
+    const race = schedules.find((item) => item.identifier === "race_to_10_results_v1")!;
+    expect(race.entryPayload).toMatchObject({challengeId: "inline-card-race", challengeDestination: "inbox"});
+    if (process.env.JEST_NOTIFICATION_IMAGE_REPORT_DIR) {
+      /** Optional artifact destination for operator visual inspection. */
+      const directory = process.env.JEST_NOTIFICATION_IMAGE_REPORT_DIR;
+      await mkdir(directory, {recursive: true});
+      for (const [index, item] of [...daily.slice(0, 3), race].entries()) {
+        await writeFile(path.join(directory, `notification-${index + 1}.png`), Buffer.from(item.asset!.split(",")[1], "base64"));
+      }
+    }
+    await context.close();
+  });
+
   it("shares a race challenge and schedules its attributed registered-player reminder", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {registered: true});
@@ -955,6 +997,7 @@ describeBrowser("Jest authentication integration", () => {
       expect.objectContaining({
         identifier: "race_to_10_results_v1",
         scheduledInDays: 1,
+        asset: expect.stringMatching(/^data:image\/png;base64,/),
         entryPayload: expect.objectContaining({
           challengeId: "race-challenge-42",
           challengeDestination: "inbox",
@@ -2452,7 +2495,10 @@ describeBrowser("Jest authentication integration", () => {
     /** Native adapter uses a social read controlled by the injected SDK. */
     const {context, page, pageErrors} = await openHarness(browser, {registered: true, scenario: "profile-controlled"});
     await page.waitForFunction(() =>
-      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+      (window as typeof window & {
+        /** Injected SDK state used to observe authentication independently of profile loading. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      })
         .__RIDDLE_QUEST_JEST_AUTH_TEST__.firebaseTokens.length === 1,
     );
     /** Authentication completed while the social request remains pending. */

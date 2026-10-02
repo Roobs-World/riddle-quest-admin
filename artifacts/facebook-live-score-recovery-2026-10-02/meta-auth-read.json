@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-02T20:54:00.313Z",
+  "app": {
+    "app_id": "1748953042991569",
+    "name": "Riddle Quest",
+    "role": "admin",
+    "owning_business_id": "2198725140593714",
+    "caller_permissions": [
+      "read"
+    ],
+    "status": null
+  },
+  "authType": "USER_ACCESS_TOKEN"
+}

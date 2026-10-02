@@ -6,6 +6,7 @@ import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
 import {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} from "../../race/raceLiveChallengeNotifications";
 import {deliverLiveRacePush, sendFacebookLiveChallengePush} from "../../race/raceLivePushDelivery";
 import {facebookFirebaseUid} from "../../facebook/facebookSecurity";
+import * as facebookTransport from "../../facebook/facebookNotificationTransport";
 import {createUsernameReservationFields, createUsernameReservationId} from "../../profile/usernameReservations";
 import {liveChallengePushCopy} from "../../race/raceLivePushCopy";
 import {setLiveRacePushSubscription} from "../../race/raceLivePushJobs";
@@ -22,7 +23,8 @@ async function clear() {
     "liveRacePushOutbox", "liveRacePushTokens", "jestAccountDeletionTombstones", "providerIdentities", "facebookNotificationPromptLeases"]) await db.recursiveDelete(db.collection(collection));
 }
 beforeAll(() => {
-  if (!process.env.FIRESTORE_EMULATOR_HOST || !process.env.GCLOUD_PROJECT?.startsWith("demo-")) throw new Error("Isolated demo emulator required");
+  if (!/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    !process.env.GCLOUD_PROJECT?.startsWith("demo-")) throw new Error("Isolated loopback demo emulator required");
   if (!getApps().length) initializeApp({projectId: process.env.GCLOUD_PROJECT});
   db = getFirestore();
 });
@@ -168,6 +170,55 @@ it("composes the canonical Facebook identity, consent ledger and one fixed-host 
     expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toMatchObject({player_id: playerId, payload: JSON.stringify({challengeId})});
     expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).data()?.slots[0].phase).toBe("uncertain");
   } finally {if (off === undefined) delete process.env.FACEBOOK_DISABLED_FEATURES; else process.env.FACEBOOK_DISABLED_FEATURES = off;}
+});
+
+it.each(["copy", "payload", "recipient", "label", "schedule"])("refuses changed %s bytes before admitting a Facebook provider attempt", async field => {
+  /** No real recipient or provider credential is used by the real composition boundary. */
+  const appId = "1748953042991569", uidSecret = Buffer.alloc(32, 7).toString("base64"), playerId = "push_binding_fixture";
+  /** The canonical linked account and original outbox issuance are fixed before transport composition. */
+  const uid = facebookFirebaseUid(playerId, uidSecret), challengeId = `live_${"e".repeat(64)}`, issuedAtMs = Date.now();
+  await db.doc(`users/${uid}`).set({username: "Bob"});
+  await db.doc(`providerIdentities/${createHash("sha256").update(`${appId}\0${playerId}`).digest("hex")}`).set({provider: "facebook",
+    appId, providerPlayerId: playerId, uid, accountGeneration: 1, status: "active"});
+  await db.doc(`facebookNotificationPromptLeases/${uid}`).set({schemaVersion: 1, uid, accepted: true,
+    acceptedAt: Timestamp.fromMillis(issuedAtMs), lastPromptAt: Timestamp.fromMillis(issuedAtMs - 1)});
+  /** Provider fetch remains fully injected even when the real private ledger admits a request. */
+  const fetchMock = jest.fn<typeof fetch>().mockResolvedValue(new Response('{"synthetic":true}'));
+  /** Original server work supplies only authoritative targeting and localized copy. */
+  const delivery = {event: {challengeId, creatorId: facebookFirebaseUid("creator", uidSecret), recipientId: uid,
+    createdAtMs: issuedAtMs, expiresAtMs: issuedAtMs + 900000, status: "queued" as const}, title: "Alice challenged you", body: "Accept challenge"};
+  /** Retain the actual transport implementation to change only the composition boundary input. */
+  const originalTransport = facebookTransport.createFacebookNotificationTransport;
+  /** Alter bytes after the existing caller minted its ledger commitment; all authority remains real. */
+  const spy = jest.spyOn(facebookTransport, "createFacebookNotificationTransport").mockImplementation(options => {
+    /** Real transport still owns serialization, authorization, destination and result decoding. */
+    const transport = originalTransport(options);
+    return {...transport, send: request => transport.send({...request,
+      ...(field === "copy" ? {message: {...request.message, body: "Different copy"}} : {}),
+      ...(field === "payload" ? {payload: JSON.stringify({challengeId: "different"})} : {}),
+      ...(field === "recipient" ? {playerId: "different_player"} : {}),
+      ...(field === "label" ? {label: "riddlequest_different"} : {}),
+      ...(field === "schedule" ? {scheduleInterval: 300} : {}),
+    })};
+  });
+  /** Preserve developer feature settings without activating any external service. */
+  const off = process.env.FACEBOOK_DISABLED_FEATURES;
+  delete process.env.FACEBOOK_DISABLED_FEATURES;
+  try {
+    /** Synthetic credential is never sent over the network. */
+    const config = {appId, uidSecret, appAccessToken: "synthetic-token", enabled: true, fetch: fetchMock};
+    expect(await sendFacebookLiveChallengePush(db, delivery, config)).toBe("skipped");
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect((await db.collection(`users/${uid}/facebookNotificationAttempts`).get()).empty).toBe(true);
+    expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).exists).toBe(false);
+    spy.mockRestore();
+    expect(await sendFacebookLiveChallengePush(db, delivery, config)).toBe("unconfirmed");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).data()?.slots[0].phase).toBe("uncertain");
+  } finally {
+    spy.mockRestore();
+    if (off === undefined) delete process.env.FACEBOOK_DISABLED_FEATURES; else process.env.FACEBOOK_DISABLED_FEATURES = off;
+  }
 });
 
 it("accepts subscription consent only from registered Jest accounts, rebinds shared browsers and supports revocation", async () => {

@@ -1,0 +1,61 @@
+import {HttpsError, type CallableResponse} from "firebase-functions/v2/https";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import type {Firestore} from "./raceSetupService";
+
+/** Streams only an owned revision; this read-only path never changes scores, receipts or rewards. */
+export async function streamLiveRaceChanges(db: Firestore, userId: string, ticketId: string,
+  response: CallableResponse<{
+    /** Notification carries no gameplay or account contents. */
+    revision: string | null;
+  }>, lifetimeMs = 45_000): Promise<void> {
+  await db.runTransaction(async transaction => {
+    /** Ownership and account lifetime are validated together before subscribing. */
+    const [ticket, owner, deletion] = await Promise.all([transaction.get(db.doc(`liveRaceTickets/${ticketId}`)),
+      transaction.get(db.doc(`users/${userId}`)), transaction.get(getJestAccountDeletionRef(db, userId))]);
+    assertJestAccountActive(deletion);
+    if (!owner.exists || !ticket.exists || ticket.data()?.userId !== userId)
+      throw new HttpsError("permission-denied", "Live observation unavailable.");
+    if (ticket.data()!.expiresAt?.toMillis() <= Date.now()) throw new HttpsError("not-found", "Live observation expired.");
+  });
+  if (response.signal.aborted) return;
+  await new Promise<void>((resolve, reject) => {
+    /** Cleanups release listeners on expiry, connection loss, deletion and send failures. */
+    const subscriptions: (() => void)[] = [];
+    /** Last observed revision and ordered writes belong to this bounded connection. */
+    let revision: string | null = null, stopped = false, pending = Promise.resolve();
+    /** Releasing observers never waits for a game mutation or account deletion. */
+    const finish = (error?: unknown) => {
+      if (stopped) return;
+      stopped = true; clearTimeout(timeout); clearInterval(heartbeat);
+      response.signal.removeEventListener("abort", abort);
+      subscriptions.forEach(stop => stop());
+      if (error) reject(error); else resolve();
+    };
+    /** Network disconnects immediately release all database listeners. */
+    const abort = () => finish();
+    /** Serializes chunks so an earlier send cannot arrive after a newer revision. */
+    const send = () => {
+      /** Capture this revision before subsequent snapshots advance it. */
+      const chunk = {revision};
+      pending = pending.then(async () => {if (!stopped && !await response.sendChunk(chunk)) finish();})
+        .catch(finish);
+    };
+    response.signal.addEventListener("abort", abort, {once: true});
+    /** Renew before the callable runtime deadline to refresh account credentials. */
+    const timeout = setTimeout(() => finish(), lifetimeMs);
+    /** Heartbeats let the client detect an apparently open but stalled connection. */
+    const heartbeat = setInterval(send, 10_000);
+    try {
+      subscriptions.push(db.doc(`users/${userId}`).onSnapshot(snapshot => {if (!snapshot.exists) finish();}, finish));
+      subscriptions.push(getJestAccountDeletionRef(db, userId).onSnapshot(snapshot => {if (snapshot.exists) finish();}, finish));
+      subscriptions.push(db.doc(`liveRaceSignals/${ticketId}`).onSnapshot(snapshot => {
+        if (stopped) return;
+        /** Match notifications are private and expire with their owned seat. */
+        const next = snapshot.data()?.revision;
+        revision = typeof next === "string" && snapshot.data()!.expiresAt?.toMillis() > Date.now() ? next : null;
+        send();
+      }, finish));
+      if (response.signal.aborted) finish();
+    } catch (error) {finish(error);}
+  });
+}

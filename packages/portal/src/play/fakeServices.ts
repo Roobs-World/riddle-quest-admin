@@ -267,6 +267,8 @@ export const createFakeHostServices = ({
       if (!authoritative) throw new Error("No authoritative guesses exist.");
       /** Provides {attempts, is correct} behavior. */
       const {attempts, isCorrect} = authoritative;
+      // Match the production authority's once-per-day completion routing contract.
+      if (gameMode === "challenge" && isCorrect) dailyCompleted = true;
       /** Provides profile behavior. */
       const profile = snapshot.profile;
       /** Provides coins earned behavior. */

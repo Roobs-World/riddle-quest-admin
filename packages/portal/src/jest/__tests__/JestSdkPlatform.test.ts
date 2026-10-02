@@ -257,6 +257,30 @@ it("treats invalid notification arguments as terminal", async () => {
     }),
   ).resolves.toEqual({status: "terminal-failure", message: "INVALID_ARGUMENTS"});
 });
+it.each(["png", "jpeg", "webp"])("forwards inline %s notifications through the registered SDK adapter", async (format) => {
+  /** Registered SDK fixture records provider dispatches. */
+  const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  /** Payload under test at the runtime adapter boundary. */
+  const input = {identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open", asset: `data:image/${format};base64,YQ==`};
+  await expect(new JestSdkPlatform(mock).scheduleNotification(input)).resolves.toEqual({status: "success", value: undefined});
+  expect(mock.notifications.scheduleNotification).toHaveBeenCalledWith(input);
+});
+it.each([
+  {asset: "data:image/png;base64,YQ==", assetReference: "approved-card"},
+  {asset: "data:image/gif;base64,YQ=="},
+  {asset: "https://example.com/card.png"},
+  {asset: `data:image/png;base64,${Buffer.alloc(2 * 1024 * 1024 + 1).toString("base64")}`},
+])("rejects invalid inline notification arguments before SDK dispatch", async (image) => {
+  /** Registered SDK fixture records provider dispatches. */
+  const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  // Deliberately bypass the compile-time union to verify the runtime boundary too.
+  /** Payload under test at the runtime adapter boundary. */
+  const input = {identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open", ...image};
+  await expect(new JestSdkPlatform(mock).scheduleNotification(input as never)).resolves.toMatchObject({status: "terminal-failure"});
+  expect(mock.notifications.scheduleNotification).not.toHaveBeenCalled();
+});
 it("distinguishes purchase cancellation", async () => {
   /** Provides mock behavior. */
   const mock = sdk();

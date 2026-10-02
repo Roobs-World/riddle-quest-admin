@@ -4,7 +4,9 @@ describe("protected gameplay content", () => {
   it("round-trips nested multilingual content with fresh nonces", async () => {
     /** Unicode content must survive UTF-8 serialization exactly. */
     const content = {questions: [{answer: "café", riddle: "谜语", hint: "مرحبا"}], index: 2};
+    /** Provides first behavior. */
     const first = await protectContent(content);
+    /** Provides second behavior. */
     const second = await protectContent(content);
     expect(first.iv).toHaveLength(24);
     expect(first.iv).not.toBe(second.iv);
@@ -19,6 +21,7 @@ describe("protected gameplay content", () => {
   });
 
   it("strips supported negotiation metadata without changing the domain request", () => {
+    /** Provides request behavior. */
     const request = {contentProtection: 1, classicIndex: 7, locale: "fr"};
     expect(contentProtectionRequest(request)).toEqual({data: {classicIndex: 7, locale: "fr"}, protected: true});
     expect(request).toHaveProperty("contentProtection", 1);
@@ -26,7 +29,9 @@ describe("protected gameplay content", () => {
   });
 
   it("rejects malformed protocol metadata, nonce bytes, and ciphertext before decoding", async () => {
+    /** Provides valid behavior. */
     const valid = await protectContent({answer: "ok"});
+    /** Provides invalid behavior. */
     const invalid = [
       {...valid, contentProtection: 2}, {...valid, extra: true},
       {...valid, iv: 12}, {...valid, iv: "xx"}, {...valid, iv: "00"},
@@ -36,6 +41,7 @@ describe("protected gameplay content", () => {
   });
 
   it("rejects tampered authenticated content instead of accepting a modified answer", async () => {
+    /** Provides valid behavior. */
     const valid = await protectContent({answer: "ok"});
     /** Changing one ciphertext byte must invalidate its authentication tag. */
     const altered = {...valid, data: (valid.data.startsWith("00") ? "01" : "00") + valid.data.slice(2)};

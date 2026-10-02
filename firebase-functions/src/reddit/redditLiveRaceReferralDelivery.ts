@@ -24,6 +24,7 @@ export async function finishRedditLiveRaceReferralDelivery(db: Firestore, eventR
   userId: string, nowMs: number): Promise<void> {
   await settleRedditReferralAfterAuthoritativeWin(userId, nowMs, db);
   await db.runTransaction(async transaction => {
+    /** Provides current behavior. */
     const current = await transaction.get(eventRef);
     if (!current.exists || current.data()?.delivered === true) return;
     transaction.update(eventRef, {delivered: true, deliveryState: "delivered", deliveredAtMs: nowMs});

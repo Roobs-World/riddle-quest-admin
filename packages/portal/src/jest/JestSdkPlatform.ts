@@ -2,6 +2,7 @@ import {parseEntryIntent} from "./entryIntent";
 import type {JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {parsePlayerData} from "../platform/playerDataValidation";
+import {isValidNotificationAsset} from "./notifications/inlineAsset";
 
 /** Describes sdk. */
 type Sdk = Record<string, any>;
@@ -252,6 +253,9 @@ export class JestSdkPlatform implements JestPlatformPort {
   async scheduleNotification(input: Parameters<JestPlatformPort["scheduleNotification"]>[0]) {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
     try {
+      if (input.asset !== undefined && (input.assetReference !== undefined || !isValidNotificationAsset(input.asset))) {
+        throw new Error("INVALID_ARGUMENTS: notification asset must be a PNG, JPEG, or WebP data URL up to 2MB and cannot accompany assetReference");
+      }
       await this.sdk.notifications.scheduleNotification(input);
       return success(undefined);
     } catch (e) {

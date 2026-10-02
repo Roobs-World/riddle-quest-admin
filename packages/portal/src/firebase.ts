@@ -383,36 +383,18 @@ export const listRaceInbox = httpsCallable<ListRaceInboxRequest | undefined, Lis
   "listRaceInbox",
 );
 /** Immediately blocks an established social rival. */
-export const blockRival = httpsCallable<
+export const blockRival = httpsCallable<import("@qwordly/core/race").BlockSocialRivalRequest, {
+  /** Confirmed block status. */
+  blocked: true;
+}>(functions, "blockRival");
+/** Queues a categorized known-rival or private live-opponent report. */
+export const reportRival = httpsCallable<import("@qwordly/core/race").ReportSocialRivalRequest,
   {
-    /** Stores target user id. */
-    targetUserId: string;
-  },
-  {
-    /** Stores blocked. */
-    blocked: true;
-  }
->(functions, "blockRival");
-/** Queues an idempotent categorized report for an established social rival. */
-export const reportRival = httpsCallable<
-  {
-    /** Stores target user id. */
-    targetUserId: string;
-    /** Stores category. */
-    /** Stores category. */
-    category: import("@qwordly/core/race").SocialReportCategory;
-    /** Stores request id. */
-    /** Stores request id. */
-    requestId: string;
-  },
-  {
-    /** Stores report id. */
+    /** Opaque server queue receipt. */
     reportId: string;
-    /** Stores queued. */
-    /** Stores queued. */
+    /** Queue acknowledgement. */
     queued: true;
-  }
->(functions, "reportRival");
+  }>(functions, "reportRival");
 /** Gets race access. */
 export const getRaceAccess = httpsCallable<RaceAccessRequest | undefined, RaceAccessResponse>(
   raceFunctions,
@@ -539,7 +521,10 @@ export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntry
 /** Authenticated live matchmaking and input transports. */
 export const joinLiveRace = httpsCallable<import("@qwordly/core/race").JoinLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "joinLiveRace");
 /** Reads live progress and commits idempotent commands. */
-export const updateLiveRace = httpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "updateLiveRace");
+export const updateLiveRace = rawHttpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView, {
+  /** Private wake-up notification received through the same authenticated endpoint. */
+  revision: string | null;
+}>(raceFunctions, "updateLiveRace");
 
 /** Reads a server-validated private PvP invitation from platform entry data. */
 export const getLiveRaceChallenge = httpsCallable<{
@@ -556,6 +541,8 @@ export const sendLiveRaceChallenge = httpsCallable<{
 status: "queued"}>(raceFunctions, "sendLiveRaceChallenge");
 /** Reads direct challenge notices without accepting their lobby. */
 export const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("@qwordly/core/race").LiveRaceChallenge[]>(raceFunctions, "listLiveRaceChallenges");
+/** Locale-bound retained results never include another account or answer-bearing run. */
+export const listLiveRaceHistory = httpsCallable<import("@qwordly/core/race").ListLiveRaceHistoryRequest, import("@qwordly/core/race").ListLiveRaceHistoryResponse>(raceFunctions, "listLiveRaceHistory");
 /** Stores explicit browser-push consent on the authenticated registered Jest account. */
 export const setLiveRacePushSubscription = httpsCallable<{
   /** False revokes the current subscription. */ enabled: boolean;

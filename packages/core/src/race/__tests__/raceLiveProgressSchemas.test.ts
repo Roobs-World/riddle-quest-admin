@@ -33,12 +33,15 @@ it("permits withholding the first prompt during an unscored server countdown", (
 });
 
 it("rejects conflicting invitations and requires the exact riddle for live actions", () => {
+  /** Provides join behavior. */
   const join = {locale: "en", categoryId: "history", requestId: "valid-join-request"};
+  /** Provides challenge id behavior. */
   const challengeId = `live_${"a".repeat(64)}`;
   expect(JoinLiveRaceSchema.safeParse(join).success).toBe(true);
   expect(JoinLiveRaceSchema.safeParse({...join, createChallenge: true}).success).toBe(true);
   expect(JoinLiveRaceSchema.safeParse({...join, challengeId}).success).toBe(true);
   expect(JoinLiveRaceSchema.safeParse({...join, createChallenge: true, challengeId}).success).toBe(false);
+  /** Provides command behavior. */
   const command = {ticketId: "a".repeat(64), requestId: "valid-action-request"};
   expect(UpdateLiveRaceSchema.safeParse({...command, action: "poll"}).success).toBe(true);
   for (const action of ["guess", "hint", "skip"]) {

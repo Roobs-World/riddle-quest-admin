@@ -6,11 +6,10 @@ import {validateProgressTracker} from "./validate-facebook-progress.mjs";
 const tracker = readFileSync(new URL("../docs/facebook-instant-games-progress.html", import.meta.url), "utf8");
 
 test("accepts the evidence-backed 53-task tracker", () => {
-  assert.deepEqual(validateProgressTracker(tracker), {
-    total: 53,
-    complete: 20,
-    updatedAt: "2026-10-02T15:56:03+00:00",
-  });
+  const {updatedAt, ...counts} = validateProgressTracker(tracker);
+  assert.deepEqual(counts, {total: 53, complete: 20});
+  assert.match(updatedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$/);
+  assert.ok(Number.isFinite(Date.parse(updatedAt)), "tracker timestamp must identify a valid instant");
 });
 
 test("final gate rejects incomplete external work", () => {

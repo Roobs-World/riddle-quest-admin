@@ -20,9 +20,9 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require("@qwordly/core/race");
   const users = {Alice: `${provider}_${"a".repeat(40)}`, Bob: `${provider}_${"b".repeat(40)}`};
   const tickets = new Map();
-  let clockOffsetMs = 0;
+  let clockOffsetMs = 0, lastCommitAtMs = 0;
   async function clear() {
-    for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "usernameReservations", "liveRacePushOutbox", "localizedRiddles/en/riddles"])
+    for (const collection of ["jestAccountDeletionTombstones", "liveRaceSignals", "liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "usernameReservations", "liveRacePushOutbox", "localizedRiddles/en/riddles"])
       await db.recursiveDelete(db.collection(collection));
     tickets.clear();
   }
@@ -51,6 +51,7 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     const result = operation === "join"
       ? await joinLiveRaceForUser(uid, JoinLiveRaceSchema.parse(command), {db, nowMs: Date.now() + clockOffsetMs})
       : await updateLiveRaceForUser(uid, UpdateLiveRaceSchema.parse(command), {db, nowMs: Date.now() + clockOffsetMs});
+    if (command.action === "guess") lastCommitAtMs = Date.now();
     tickets.set(user, result.ticketId);
     return result;
   }
@@ -75,5 +76,11 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     if (run.status !== "completed") throw new Error("Finish-window fixture requires a completed run");
     clockOffsetMs = run.finishedAtMs + run.hintPenaltyMs + run.skipPenaltyMs - Date.now();
   }
-  return {reset, clear, call, answer, expireSearch, expireFinishWindow, balances};
+  return {observe(user, ticketId, onChange, onComplete) {
+    if (tickets.get(user) !== ticketId) throw new Error("Unknown live seat");
+    const {streamLiveRaceChanges} = require(path.join(root, "firebase-functions/lib/race/raceLiveStream.js"));
+    const controller = new AbortController();
+    void streamLiveRaceChanges(db, users[user], ticketId, {signal:controller.signal,sendChunk:async chunk=>onChange(chunk)}, 45_000).then(()=>onComplete?.(), error=>onComplete?.(error));
+    return ()=>controller.abort();
+  }, lastCommitAt:()=>lastCommitAtMs, reset, clear, call, answer, expireSearch, expireFinishWindow, balances};
 }

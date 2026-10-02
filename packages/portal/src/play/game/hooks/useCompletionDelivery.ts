@@ -63,6 +63,12 @@ export function useCompletionDelivery({
       });
     for (const delivery of deliveriesRef.current.values()) {
       if (delivery.timer !== undefined) continue;
+      delivery.attempts += 1;
+      // Register before dispatch: the same-origin bridge may acknowledge synchronously.
+      delivery.timer = window.setTimeout(() => {
+        delivery.timer = undefined;
+        setRetrySignal((signal) => signal + 1);
+      }, COMPLETION_RETRY_DELAYS[Math.min(delivery.attempts - 1, COMPLETION_RETRY_DELAYS.length - 1)]);
       postToHost({
         type: "game:completeGame",
         requestId: delivery.requestId,
@@ -72,21 +78,29 @@ export function useCompletionDelivery({
           sessionToken: delivery.outcome.sessionToken,
         },
       });
-      delivery.attempts += 1;
-      delivery.timer = window.setTimeout(() => {
-        delivery.timer = undefined;
-        setRetrySignal((signal) => signal + 1);
-      }, COMPLETION_RETRY_DELAYS[Math.min(delivery.attempts - 1, COMPLETION_RETRY_DELAYS.length - 1)]);
     }
   }, [outcome, postToHost, retrySignal]);
 
-  useEffect(
-    () => () => {
-      for (const delivery of deliveriesRef.current.values())
+  useEffect(() => {
+    /** Clears scheduled timers while preserving receipts for effect replay and reconnection. */
+    const clearTimers = () => {
+      for (const delivery of deliveriesRef.current.values()) {
         if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
-    },
-    [],
-  );
+        delivery.timer = undefined;
+      }
+    };
+    /** A restored connection need not wait for the longest backoff to acknowledge a win. */
+    const resume = () => {
+      if (deliveriesRef.current.size === 0) return;
+      clearTimers();
+      setRetrySignal(signal => signal + 1);
+    };
+    window.addEventListener("online", resume);
+    return () => {
+      window.removeEventListener("online", resume);
+      clearTimers();
+    };
+  }, []);
 
   return handleResult;
 }

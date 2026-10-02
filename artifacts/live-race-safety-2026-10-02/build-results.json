@@ -1,0 +1,38 @@
+[
+  {
+    "target": "reddit",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/live-race-safety-20261002/reddit",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "jest",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/live-race-safety-20261002/jest",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "facebook",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/live-race-safety-20261002/facebook",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "youtube",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/live-race-safety-20261002/youtube",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "netflix",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/live-race-safety-20261002/netflix",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "yahoo",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/live-race-safety-20261002/yahoo",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  }
+]

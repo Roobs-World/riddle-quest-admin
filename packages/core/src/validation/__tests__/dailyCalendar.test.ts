@@ -26,6 +26,7 @@ it.each([["2026-03-29", 23], ["2026-10-25", 25]])("handles London DST day %s las
 it("uses London for unsupported locale input", () => expect(getDailyTimeZone("unsupported")).toBe("Europe/London"));
 
 it("fails after bounded retries when a calendar provider cannot resolve midnight", () => {
+  /** Provides format behavior. */
   const format = jest.spyOn(Intl.DateTimeFormat.prototype, "formatToParts").mockReturnValue([
     {type: "year", value: "2026"}, {type: "month", value: "01"}, {type: "day", value: "01"},
     {type: "hour", value: "00"}, {type: "minute", value: "00"}, {type: "second", value: "00"},

@@ -1,0 +1,49 @@
+{
+  "project": "riddle-quest-ec2b2",
+  "verificationDate": "2026-10-02",
+  "backendDeployment": "complete",
+  "functions": [
+    {
+      "name": "joinLiveRace",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "revision": "joinliverace-00007-lof",
+      "minInstances": 1
+    },
+    {
+      "name": "joinLiveRace",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "revision": "joinliverace-00007-vus",
+      "minInstances": 1
+    },
+    {
+      "name": "updateLiveRace",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "revision": "updateliverace-00007-zeh",
+      "minInstances": 1
+    },
+    {
+      "name": "updateLiveRace",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "revision": "updateliverace-00007-sif",
+      "minInstances": 1
+    },
+    {
+      "name": "deleteAccount",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "revision": "deleteaccount-00038-pet",
+      "minInstances": 0
+    }
+  ],
+  "ttl": {
+    "collectionGroup": "liveRaceSignals",
+    "field": "expiresAt",
+    "state": "ACTIVE"
+  },
+  "clientRelease": "not uploaded or activated",
+  "additionalSoloWarming": "not deployed"
+}

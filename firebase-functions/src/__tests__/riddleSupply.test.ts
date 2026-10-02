@@ -81,10 +81,14 @@ describe("riddle supply", () => {
 
   it("does not hold gameplay completion open while the model is generating", async () => {
     mockGet.mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 20})}]});
+    /** Provides release generation behavior. */
     let releaseGeneration: () => void;
+    /** Provides model pending behavior. */
     const modelPending = new Promise<void>((resolve) => { releaseGeneration = resolve; });
     mockGenerateForLocale.mockReturnValue(modelPending);
+    /** Provides completion behavior. */
     const completion = triggerClassicRiddleGenerationIfNeeded("player-1", 21, "ar");
+    /** Provides outcome behavior. */
     const outcome = await Promise.race([
       completion.then(() => "returned"),
       new Promise<string>((resolve) => setTimeout(() => resolve("model-blocked"), 100)),

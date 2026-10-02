@@ -23,7 +23,7 @@ const destroyViews = async (views: FacebookOverlayView[]): Promise<void> => {
       try {
         await view.dismissAsync?.();
       } finally {
-        await view.destroyAsync();
+        await view.destroyAsync?.();
       }
     }),
   );

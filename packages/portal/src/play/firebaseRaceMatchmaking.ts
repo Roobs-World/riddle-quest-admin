@@ -5,9 +5,58 @@ import type {MatchmakingCapability} from "../platform/types";
 export function createFirebaseRaceMatchmaking(
   lookup: (request: RaceMatchRequest) => Promise<RaceMatchResponse> = async (request) =>
     (await (await import("../firebase")).findRaceMatch(request)).data,
+  options: {
+    /** Owning target explicitly enables ticket-bound safety controls. */
+    liveSafety?: boolean;
+    /** Only the owning provider opts into the retained live-results surface. */
+    liveHistory?: boolean;
+  } = {},
 ): MatchmakingCapability {
   return {
   live: {
+    ...(options.liveHistory ? {
+      /** Lazy strict history remains outside startup and the default Jest surface. */
+      async history(locale: import("@qwordly/core/race").RaceLocale) {
+        /** One owning-target callable and shared public schema load together. */
+        const [{listLiveRaceHistory}, {ListLiveRaceHistoryResponseSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        return ListLiveRaceHistoryResponseSchema.parse((await listLiveRaceHistory({locale, limit: 20})).data);
+      },
+    } : {}),
+    ...(options.liveSafety ? {
+      /** Existing callable resolves the private live opponent in its own mutation transaction. */
+      async blockOpponent(input: {
+        /** Caller-owned live seat. */
+        liveTicketId: string;
+      }) {
+        /** Lazy strict response contract stays outside target startup. */
+        const [{blockRival}, {BlockSocialRivalResponseSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        return BlockSocialRivalResponseSchema.parse((await blockRival(input)).data);
+      },
+      /** Report retries preserve the selected category, owned seat and request identity. */
+      async reportOpponent(input: {
+        /** Caller-owned live seat. */
+        liveTicketId: string;
+        /** Fixed reason. */
+        category: import("@qwordly/core/race").SocialReportCategory;
+        /** Retry identity. */
+        requestId: string;
+      }) {
+        /** Only an exact queue acknowledgement reaches the shared UI. */
+        const [{reportRival}, {ReportSocialRivalResponseSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        return ReportSocialRivalResponseSchema.parse((await reportRival(input)).data);
+      },
+    } : {}),
+    /** Lazy target-owned listener releases its subscription even if loading finishes after retirement. */
+    observe(ticketId, onChange, onStatus) {
+      /** Protects asynchronous SDK loading and queued listener callbacks after cleanup. */
+      let active = true, unsubscribe: (() => void) | undefined;
+      onStatus(false);
+      void import("./firebaseLiveRaceSignals").then(({observeFirebaseLiveRace}) => {
+        if (active) unsubscribe = observeFirebaseLiveRace(ticketId,
+          () => {if (active) onChange();}, connected => {if (active) onStatus(connected);});
+      }).catch(() => {if (active) onStatus(false);});
+      return () => {active = false; unsubscribe?.();};
+    },
     /** Persists an addressed invitation with one durable notification receipt. */
     async sendChallenge(input) {return (await (await import("../firebase")).sendLiveRaceChallenge(input)).data;},
     /** Loads the authenticated recipient's direct invitation notices. */

@@ -1,0 +1,10 @@
+  console.info
+    Reddit: feedback 5.6ms; next draft survives confirmation
+
+      at verifyImmediateSoloFeedback (src/play/__tests__/instantFeedback.jest-playwright.support.ts:46:11)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        10.518 s, estimated 21 s
+Ran all test suites within paths "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts".

@@ -34,6 +34,13 @@ const fixture = () => {
 
 beforeEach(() => setLocale("en"));
 
+it("projects an already-recorded official win after browser recovery", async () => {
+  /** Synthetic provider fixtures preserve authoritative server and native SDK boundaries. */
+  const {options, sdk, record} = fixture();
+  await createFacebookTournamentPresentation(options)!.projectRecord({...record, improved: false});
+  expect(sdk.tournament!.postScoreAsync).toHaveBeenCalledWith(9000);
+});
+
 it("creates one native dialog with the official current best, lower-time order and exact UTC deadline", async () => {
   /** Current entry has no native tournament. */
   const {options, sdk, board, data} = fixture();
@@ -56,16 +63,20 @@ it("shares the matching current native tournament with v8 score/data only", asyn
 
 it("projects only a fresh authoritative best after an improved record and isolates provider failure", async () => {
   /** Best may improve again after this record, so the projection rereads the server. */
-  const {options, sdk, record} = fixture();
+  const {options, sdk, record, board} = fixture();
   /** Provider projection remains separate from successful official submission. */
   const presentation = createFacebookTournamentPresentation(options)!;
   await presentation.projectRecord(record);
   expect(sdk.tournament!.postScoreAsync).toHaveBeenCalledWith(9000);
+  board.currentPlayer!.adjustedTimeMs = 8000;
   jest.mocked(sdk.tournament!.postScoreAsync).mockRejectedValueOnce(new Error("private provider diagnostics"));
   await expect(presentation.projectRecord(record)).resolves.toBeUndefined();
   expect(options.reportFailure).toHaveBeenCalledWith(new Error("facebook-tournament-score-projection-failed"));
   await presentation.projectRecord({...record, improved: false});
-  expect(sdk.tournament!.postScoreAsync).toHaveBeenCalledTimes(2);
+  expect(sdk.tournament!.postScoreAsync).toHaveBeenCalledTimes(3);
+  await presentation.projectRecord({...record, improved: false});
+  expect(sdk.tournament!.postScoreAsync).toHaveBeenCalledTimes(3);
+  board.currentPlayer!.adjustedTimeMs = 7000;
   options.reportFailure.mockImplementationOnce(() => {throw new Error("telemetry unavailable");});
   jest.mocked(sdk.tournament!.postScoreAsync).mockRejectedValueOnce(new Error("provider unavailable"));
   await expect(presentation.projectRecord(record)).resolves.toBeUndefined();
@@ -163,5 +174,39 @@ it("never posts a server best that contradicts the improved authoritative run", 
   options.list.mockResolvedValueOnce({...board, currentPlayer, standings: [currentPlayer]});
   await createFacebookTournamentPresentation(options)!.projectRecord(record);
   expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
+  expect(sdk.tournament!.postScoreAsync).not.toHaveBeenCalled();
+});
+
+it("deduplicates concurrent recovered boards and never posts an older slower best", async () => {
+  /** Synthetic provider fixtures preserve authoritative server and native SDK boundaries. */
+  const {options, sdk, board} = fixture();
+  /** One SDK lifetime owns projection deduplication and provider failure isolation. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  await Promise.all(Array.from({length: 4}, () => presentation.projectBoard(board)));
+  expect(sdk.tournament!.postScoreAsync).toHaveBeenCalledTimes(1);
+  /** A newer official best arrives before an older slower snapshot. */
+  const better = {...board, currentPlayer: {...board.currentPlayer!, adjustedTimeMs: 8000},
+    standings: [{...board.standings[0], adjustedTimeMs: 8000}]};
+  await Promise.all([presentation.projectBoard(better), presentation.projectBoard(board)]);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000], [8000]]);
+});
+
+it.each(["deletion", "locale"])("retires recovered projection after %s while provider lookup is pending", async ending => {
+  /** Synthetic provider fixtures preserve authoritative server and native SDK boundaries. */
+  const {options, sdk, board, native} = fixture();
+  /** The fixture exposes the same changing deletion gate as the real adapter. */
+  let active = true;
+  /** Selected content locale is rechecked after provider work. */
+  let locale: import("@qwordly/core/race").RaceLocale = "en";
+  /** Controlled provider completion exercises retirement during an asynchronous lookup. */
+  let resolve!: (native: FacebookInstantTournament) => void;
+  jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(yes => {resolve = yes;}));
+  /** Owned asynchronous operation remains observable until it settles. */
+  const pending = createFacebookTournamentPresentation({...options, isActive: () => active, getLocale: () => locale})!.projectBoard(board);
+  await Promise.resolve();
+  if (ending === "deletion") active = false;
+  else locale = "fr";
+  resolve(native);
+  await pending;
   expect(sdk.tournament!.postScoreAsync).not.toHaveBeenCalled();
 });

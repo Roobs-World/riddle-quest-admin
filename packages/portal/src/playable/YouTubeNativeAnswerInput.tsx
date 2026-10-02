@@ -1,4 +1,5 @@
 import {forwardRef, useRef} from "react";
+import {useNativeAnswerBackspace} from "../input/useNativeAnswerBackspace";
 /** Native text/IME entry point. Committed text is consumed into grapheme slots by the caller. */
 export const YouTubeNativeAnswerInput = forwardRef<
   HTMLInputElement,
@@ -19,6 +20,8 @@ export const YouTubeNativeAnswerInput = forwardRef<
 >(function YouTubeNativeAnswerInput({disabled, locale, label, onText, onBackspace, onSubmit}, forwardedRef) {
   /** Provides composing behavior. */
   const composing = useRef(false);
+  /** Software-keyboard backspace edits answer slots after committed text is consumed. */
+  const inputRef = useNativeAnswerBackspace(forwardedRef, composing, onBackspace);
   /** Provides just committed behavior. */
   const justCommitted = useRef<string | null>(null);
   /** Provides consume behavior. */
@@ -31,7 +34,7 @@ export const YouTubeNativeAnswerInput = forwardRef<
 
   return (
     <input
-      ref={forwardedRef}
+      ref={inputRef}
       className="yt-answer-native"
       type="text"
       inputMode="text"

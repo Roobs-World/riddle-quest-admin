@@ -15,7 +15,7 @@ export async function installRaceContextDialogs(page: Page): Promise<void> {
     /** New context has visibly distinct identity-free standings. */
     const currentPlayer = {rank: 1, adjustedTimeMs: request.contextId === "context-new" ? 2000 : 9000, isCurrentPlayer: true};
     await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
-      locale: request.locale, startsAtMs: 0, endsAtMs: 604800000, sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false,
+      locale: request.locale, startsAtMs: Date.now() - 1000, endsAtMs: Date.now() - 1000 + 604800000, sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false,
       standings: [currentPlayer], currentPlayer,
     }})});
   });
@@ -50,7 +50,7 @@ export async function installRaceContextDialogs(page: Page): Promise<void> {
 export async function verifyRaceContextDialogs(page: Page): Promise<void> {
   /** Context button uses the actual translated provider action. */
   const choose = page.locator(".race-hub-social-actions button").last();
-  await choose.waitFor(); await page.locator('[role="tab"]').nth(1).click();
+  await choose.waitFor({timeout: 5000}); await page.locator('[role="tab"]').nth(1).click();
   try {await page.locator(".race-context-board li").waitFor();}
   catch {
     /** Browser diagnostics distinguish capability synchronization from response validation failures. */
@@ -60,6 +60,8 @@ export async function verifyRaceContextDialogs(page: Page): Promise<void> {
     throw new Error(`Context standings unavailable: ${JSON.stringify(diagnostics)}`);
   }
   expect(await page.locator(".race-context-board").innerText()).toContain("0:09.0");
+  expect(await page.locator("[data-platform-owned-identity]").count()).toBe(1);
+  await page.waitForFunction(() => window.__facebookEvents.includes("overlay:picture:show") && window.__facebookEvents.includes("overlay:name:show"));
   // Dispatch twice within one JavaScript task, before React can commit disabled controls.
   await choose.evaluate((button: HTMLElement) => {button.click(); button.click();});
   expect(await page.evaluate(() => Reflect.get(window, "__contextDialogCalls"))).toBe(1);
@@ -77,4 +79,8 @@ export async function verifyRaceContextDialogs(page: Page): Promise<void> {
     .every(image => image.complete && image.naturalWidth > 0));
   await page.screenshot({path: "/tmp/race-context-dialog-recovery.png"});
   await page.getByRole("tab").first().click();
+  expect(await page.locator("[data-platform-owned-identity]").count()).toBe(0);
+  await page.waitForFunction(() => ["picture", "name"].every(kind =>
+    window.__facebookEvents.filter(event => event === `overlay:${kind}:true`).length ===
+    window.__facebookEvents.filter(event => event === `overlay:${kind}:destroy`).length));
 }

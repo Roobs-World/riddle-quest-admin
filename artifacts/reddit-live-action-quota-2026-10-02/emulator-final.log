@@ -1,0 +1,42 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-riddle-live-quota", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/redditGatewayReplay.it.test.ts src/__tests__/redditPresence.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts
+FAIL src/__tests__/redditGatewayReplay.it.test.ts (28.509 s)
+  ● bounds concurrent presence polling at 60 while other operations retain 20
+
+    10 ABORTED: Transaction lock timeout.
+
+      at callErrorFromStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:360:55)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:466:34)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+      at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+      for call at
+      at ServiceClientImpl.makeUnaryRequest (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:325:42)
+      at ServiceClientImpl.<anonymous> (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+      at ../node_modules/.pnpm/@google-cloud+firestore-api@0.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore-api/src/v1/firestore_client.ts:358:25
+      at ../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/timeout.js:44:16
+      at repeat (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/retries.js:121:25)
+      at ../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/retries.js:163:13
+      at OngoingCallPromise.call (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/call.js:70:27)
+      at NormalApiCaller.call (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/normalApiCaller.js:34:19)
+      at ../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/createApiCall.js:122:37
+
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       1 failed, 47 passed, 48 total
+Snapshots:   0 total
+Time:        57.065 s, estimated 107 s
+Ran all test suites within paths "src/__tests__/redditGatewayReplay.it.test.ts", "src/__tests__/redditPresence.it.test.ts", "src/__tests__/race/redditLiveReferrals.it.test.ts", "src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts".
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/redditGatewayReplay.it.test.ts src/__tests__/redditPresence.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts" exited with code 1

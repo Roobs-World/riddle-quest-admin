@@ -1,22 +1,9 @@
-import {z} from "zod";
+import {BlockSocialRivalRequestSchema, ReportSocialRivalRequestSchema} from "@qwordly/core/race";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {validateCallableRequest} from "../validation/callableValidation";
-import {SOCIAL_REPORT_CATEGORIES, blockKnownRival, reportKnownRival} from "./socialSafety";
-
-/** Validates the target user id data shape. */
-const TargetUserIdSchema = z.string().trim().min(1).max(128);
-/** Validates the block known rival request data shape. */
-const BlockKnownRivalRequestSchema = z.object({targetUserId: TargetUserIdSchema}).strict();
-/** Validates the report known rival request data shape. */
-const ReportKnownRivalRequestSchema = z
-  .object({
-    targetUserId: TargetUserIdSchema,
-    category: z.enum(SOCIAL_REPORT_CATEGORIES),
-    requestId: z.string().regex(/^[A-Za-z0-9_-]{8,160}$/),
-  })
-  .strict();
+import {blockKnownRival, reportKnownRival} from "./socialSafety";
 
 /** Provides require user id behavior. */
 const requireUserId = (request: CallableRequest<unknown>): string => {
@@ -32,8 +19,8 @@ export const blockRival = onCallWithSentry(
     /** Provides r id. */
     const userId = requireUserId(request);
     /** Provides input behavior. */
-    const input = validateCallableRequest(BlockKnownRivalRequestSchema, request.data, "blockRival");
-    return blockKnownRival(userId, input.targetUserId);
+    const input = validateCallableRequest(BlockSocialRivalRequestSchema, request.data, "blockRival");
+    return blockKnownRival(userId, "targetUserId" in input ? input.targetUserId : input);
   },
 );
 
@@ -45,7 +32,7 @@ export const reportRival = onCallWithSentry(
     /** Provides r id. */
     const userId = requireUserId(request);
     /** Provides input behavior. */
-    const input = validateCallableRequest(ReportKnownRivalRequestSchema, request.data, "reportRival");
+    const input = validateCallableRequest(ReportSocialRivalRequestSchema, request.data, "reportRival");
     return reportKnownRival(userId, input);
   },
 );

@@ -1,12 +1,19 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import {beforeEach, afterEach, describe, expect, it, jest} from "@jest/globals";
+/** Provides generate behavior. */
 const generate = jest.fn();
+/** Provides capture behavior. */
 const capture = jest.fn();
+/** Provides job behavior. */
 let job: Record<string, unknown>;
+/** Provides clock behavior. */
 let clock: number;
+/** Provides ref behavior. */
 const ref = {};
+/** Provides transaction behavior. */
 const transaction = {get: jest.fn(async () => ({data: () => ({...job})})), update: jest.fn((_, values) => Object.assign(job, values))};
+/** Provides db behavior. */
 const db = {collection: jest.fn(() => ({doc: jest.fn(() => ref)})), runTransaction: jest.fn(async callback => callback(transaction))};
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: () => db}}));
 jest.mock("../shared/sentryHandlers", () => ({onScheduleWithSentry: jest.fn()}));
@@ -31,8 +38,10 @@ describe("durable Classic supply worker", () => {
     expect(generate).toHaveBeenCalledTimes(1);
   });
   it("excludes another worker while generation is pending", async () => {
+    /** Provides release behavior. */
     let release: () => void;
     generate.mockReturnValue(new Promise<void>(resolve => {release = resolve;}));
+    /** Provides pending behavior. */
     const pending = processClassicSupplyJob("ar_20");
     await new Promise(resolve => setImmediate(resolve));
     expect(await processClassicSupplyJob("ar_20")).toBe("skipped");

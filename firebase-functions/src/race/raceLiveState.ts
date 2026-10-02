@@ -4,6 +4,7 @@ import {liveFinishMs} from "./raceLiveScoring";
 
 /** Private ticket contains the immutable deck and authenticated owner. */
 export type LiveTicket = {
+  /** Sanitized creator content is retained only as a surviving player's frozen deck source. */ deleted?: boolean;
   /** Private lobbies never enter the public queue or select a bot. */ privateChallenge?: boolean;
   /** Direct invitations reserve acceptance for one server-resolved recipient. */ inviteRecipientId?: string;
   /** Authenticated account. */ userId: string;
@@ -17,6 +18,8 @@ export type LiveTicket = {
 };
 /** Both runs and the victory receipt share one transaction lock. */
 export type LiveMatch = {
+  /** Indexed authenticated participants support deletion even after a ticket is missing. */ participantIds?: string[];
+  /** Deleted seats retain no account or display identity and never become live opponents again. */ deletedSeats?: [boolean, boolean];
   /** Seat ticket ids; a null second seat identifies the fallback bot. */ tickets: [string, string | null];
   /** Server start shared by both players. */ startsAtMs: number;
   /** Terminal winner seat, or null for a timed out match. */ winner?: number | null;
@@ -26,9 +29,27 @@ export type LiveMatch = {
   /** Reward grant committed with the winner decision. */ rewardCoins?: number;
   /** Winner balance at settlement, never used as client authority. */ newCoins?: number;
   /** Private immutable link to Facebook referral work committed with the winner grant. */
-  facebookReferral?: {eventId: string; ticketId: string; userId: string; createdAtMs: number};
+  facebookReferral?: {
+    /** Idempotent referral receipt identity committed with the winner grant. */
+    eventId: string;
+    /** Winner's private source ticket. */
+    ticketId: string;
+    /** Authenticated Facebook account that earned the qualifying win. */
+    userId: string;
+    /** Server settlement time in milliseconds. */
+    createdAtMs: number;
+  };
   /** Reddit keeps a separate provider binding for its first-win referral work. */
-  redditReferral?: {eventId: string; ticketId: string; userId: string; createdAtMs: number};
+  redditReferral?: {
+    /** Idempotent referral receipt identity committed with the winner grant. */
+    eventId: string;
+    /** Winner's private source ticket. */
+    ticketId: string;
+    /** Authenticated Reddit account that earned the qualifying win. */
+    userId: string;
+    /** Server settlement time in milliseconds. */
+    createdAtMs: number;
+  };
 };
 
 /** Creates an unscored server run using existing riddle and hint rules. */

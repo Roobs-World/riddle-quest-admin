@@ -1,0 +1,47 @@
+../../firebase-functions                 | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/firebaseRaceMatchmaking.test.ts
+  ● exposes retained live history through the explicitly enabled Facebook live surface
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "function"
+    Received: "undefined"
+
+      4 |   /** The owning target opts into live social features; the default adapter stays unchanged. */
+      5 |   const target = createFirebaseRaceMatchmaking(undefined, {liveSafety: true});
+    > 6 |   expect(typeof Reflect.get(target.live!, "history")).toBe("function");
+        |                                                       ^
+      7 |   expect(Reflect.get(createFirebaseRaceMatchmaking().live!, "history")).toBeUndefined();
+      8 | });
+      9 | import {raceMatchFailure} from "@qwordly/core/race";
+
+      at Object.<anonymous> (src/play/__tests__/firebaseRaceMatchmaking.test.ts:6:55)
+
+
+Summary of all failing tests
+FAIL src/play/__tests__/firebaseRaceMatchmaking.test.ts
+  ● exposes retained live history through the explicitly enabled Facebook live surface
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "function"
+    Received: "undefined"
+
+      4 |   /** The owning target opts into live social features; the default adapter stays unchanged. */
+      5 |   const target = createFirebaseRaceMatchmaking(undefined, {liveSafety: true});
+    > 6 |   expect(typeof Reflect.get(target.live!, "history")).toBe("function");
+        |                                                       ^
+      7 |   expect(Reflect.get(createFirebaseRaceMatchmaking().live!, "history")).toBeUndefined();
+      8 | });
+      9 | import {raceMatchFailure} from "@qwordly/core/race";
+
+      at Object.<anonymous> (src/play/__tests__/firebaseRaceMatchmaking.test.ts:6:55)
+
+
+Test Suites: 1 failed, 15 skipped, 264 passed, 265 of 280 total
+Tests:       1 failed, 117 skipped, 2245 passed, 2363 total
+Snapshots:   0 total
+Time:        8.603 s, estimated 35 s
+Ran all test suites.
+undefined
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand

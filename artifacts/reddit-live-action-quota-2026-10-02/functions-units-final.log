@@ -1,0 +1,6 @@
+
+Test Suites: 4 passed, 4 total
+Tests:       56 passed, 56 total
+Snapshots:   0 total
+Time:        0.624 s, estimated 2 s
+Ran all test suites within paths "src/__tests__/redditGameplayEndpoint.test.ts", "src/__tests__/redditEndpoints.test.ts", "src/__tests__/redditSecurity.test.ts", "src/__tests__/redditStorageEndpoint.test.ts".

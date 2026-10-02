@@ -1,6 +1,7 @@
 import {admin} from "../../shared/firebaseAdmin";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {deleteMatchingCollectionGroupDocuments, SINGLE_WRITE_BATCH_SIZE} from "./accountDeletionBatches";
+import {removeLiveRaceIdentitySnapshots} from "./liveRaceAccountDeletion";
 
 /** Neutral display value retained when another player's run needs ghost timing but not the deleted identity. */
 const DELETED_RACE_OPPONENT_NAME = "Riddle Quest player";
@@ -224,6 +225,7 @@ async function deleteOwnedRaceChallenges(userId: string): Promise<void> {
 
 /** Removes every targetable cross-user race identity snapshot before its legacy lookup links disappear. */
 export async function removeCrossUserRaceIdentitySnapshots(userId: string): Promise<void> {
+  await removeLiveRaceIdentitySnapshots(userId);
   await deleteMatchingCollectionGroupDocuments("raceMatchCandidates", "creatorId", userId);
   await deleteMatchingCollectionGroupDocuments("raceMatchOffers", "userId", userId);
   await deleteMatchingCollectionGroupDocuments("raceBotOffers", "userId", userId);

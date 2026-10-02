@@ -9,6 +9,10 @@ import {deliverRaceSettlement} from "./raceSettlementDelivery";
 import {deliverRacePerformance} from "./racePerformanceDelivery";
 import {RaceMatchProfileSchema} from "./raceMatchPerformance";
 import {validateFacebookLiveRaceReferralSource} from "../facebook/facebookLiveRaceReferralDelivery";
+import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
+import {readFacebookLiveTournamentDeliveryInput} from "../facebook/facebookLiveRaceDelivery";
+import {isRedditFeatureEnabled} from "../reddit/redditFeatureFlags";
+import {readRedditLiveTournamentDeliveryInput} from "../reddit/redditLiveRaceDelivery";
 import {validateRedditLiveRaceReferralSource} from "../reddit/redditLiveRaceReferralDelivery";
 
 /**
@@ -38,12 +42,19 @@ export async function replayRaceDelivery(db: Firestore, collection: RaceDelivery
     if (receipt.expiresAt.toMillis() <= nowMs)
       throw new HttpsError("failed-precondition", "Expired race data cannot be replayed.");
     if (collection === "racePerformanceOutbox" && (receipt.source === "facebook_live" || receipt.source === "reddit_live")) {
+      /** Provides live receipt behavior. */
       const liveReceipt = parseRacePerformanceEvent(event.data(), eventId);
+      /** Provides active behavior. */
       const active = receipt.source === "reddit_live" ? await validateRedditLiveRaceReferralSource(transaction, db, liveReceipt, nowMs) :
         await validateFacebookLiveRaceReferralSource(transaction, db, liveReceipt, nowMs);
       if (!active)
         throw new HttpsError("failed-precondition", "Replay requires an active canonical live winner.");
+      if (receipt.source === "facebook_live" && isFacebookFeatureEnabled("tournaments"))
+        await readFacebookLiveTournamentDeliveryInput(transaction, db, liveReceipt, nowMs);
+      if (receipt.source === "reddit_live" && isRedditFeatureEnabled("tournaments"))
+        await readRedditLiveTournamentDeliveryInput(transaction, db, liveReceipt, nowMs);
     } else {
+      /** Provides source expiry behavior. */
       const sourceExpiry = source.data()?.expiresAt;
       if (!source.exists || !(sourceExpiry instanceof admin.firestore.Timestamp) || sourceExpiry.toMillis() <= nowMs)
         throw new HttpsError("failed-precondition", "Replay requires an existing unexpired canonical source.");

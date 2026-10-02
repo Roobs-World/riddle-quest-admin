@@ -1,4 +1,5 @@
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
+import {createHash} from "node:crypto";
 
 /** Provider request routes documented by the Zero Permissions notification API. */
 export type FacebookNotificationOperation = "send" | "cancel";
@@ -26,6 +27,8 @@ export type FacebookNotificationAttemptScope = Readonly<{
   playerId: string;
   /** App-owned cancellation group. */
   label: string;
+  /** SHA-256 commitment to the exact UTF-8 JSON body sent to Meta. */
+  requestDigest: string;
   /** Present only for scheduled sends, so capacity authorization can distinguish them. */
   scheduleInterval?: number;
 }>;
@@ -117,6 +120,7 @@ export function createFacebookNotificationTransport(options: FacebookNotificatio
     /** Authorization and decoding see the same immutable scope used for transmission. */
     const scope: FacebookNotificationAttemptScope = Object.freeze({
       operation, playerId, label,
+      requestDigest: createHash("sha256").update(serialized, "utf8").digest("hex"),
       ...(typeof body.schedule_interval === "number" ? {scheduleInterval: body.schedule_interval} : {}),
     });
     if (Buffer.byteLength(serialized, "utf8") > REQUEST_BYTE_LIMIT) {

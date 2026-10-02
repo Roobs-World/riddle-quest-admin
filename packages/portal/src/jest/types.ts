@@ -193,20 +193,33 @@ type JestNotificationContent = {
   ctaText: string;
   /** Delivery priority understood by the Jest scheduler. */
   priority?: "low" | "medium" | "high" | "critical";
-  /** Bundled/provider asset identifier rather than a remote arbitrary URL. */
-  assetReference?: string;
   /** Sanitized launch data delivered when the notification is opened. */
   entryPayload?: Record<string, string>;
 };
 
+/** Exactly one inline image or approved library reference, or the platform Hero fallback. */
+export type JestNotificationAsset =
+  | {
+      /** PNG, JPEG, or WebP base64 data URL, at most 2MiB decoded. */
+      asset: string;
+      /** Inline images cannot accompany a library reference. */
+      assetReference?: never;
+    }
+  | {
+      /** Library references cannot accompany an inline image. */
+      asset?: never;
+      /** Approved library asset, or omitted to use the platform Hero image. */
+      assetReference?: string;
+    };
+
 /**
- * Notification request with exactly one relative or absolute delivery time.
+ * Notification request with exactly one delivery time and at most one asset source.
  *
  * @remarks
  * The mutually exclusive fields prevent ambiguous provider scheduling. Eligibility
  * and registration checks still occur at the {@link JestPlatformPort} boundary.
  */
-export type JestNotificationSchedule = JestNotificationContent &
+export type JestNotificationSchedule = JestNotificationContent & JestNotificationAsset &
   (
     | {
         /** Stores scheduled in days. */

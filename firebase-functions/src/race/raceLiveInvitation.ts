@@ -1,3 +1,4 @@
+import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LiveRaceChallengeSchema,
   type JoinLiveRace, type LiveRaceView} from "@qwordly/core/race";
@@ -109,7 +110,7 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     /** Both seats receive the creator's immutable deck and the same five-second countdown. */
     const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
     /** Private match uses the existing authoritative scoring and settlement lifecycle. */
-    const match: LiveMatch = {tickets: [creatorId, ownId], startsAtMs, observedAtMs: nowMs, players: [creator.player, player],
+    const match: LiveMatch = {tickets: [creatorId, ownId], participantIds: [creator.userId, userId], startsAtMs, observedAtMs: nowMs, players: [creator.player, player],
       runs: [liveRun(creator.run, creator.userId, creatorId, startsAtMs), liveRun(creator.run, userId, ownId, startsAtMs)]};
     /** Recipient seat does not expose the creator's share handle as its own invitation. */
     const own: LiveTicket = {userId, pool: creator.pool, player, createdAtMs: nowMs, seenAtMs: nowMs, matchId: creatorId, run: match.runs[1]};
@@ -119,6 +120,7 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     transaction.create(db.doc(`liveRaceMatches/${creatorId}`), {...stripUndefined(match), expiresAt});
     transaction.create(db.doc(`liveRaceTickets/${ownId}`), {...stripUndefined(own), expiresAt});
     transaction.set(pointer, {ticketId: ownId, expiresAt});
+    publishLiveRaceSignals(db, transaction, match.tickets, expiresAt);
     return liveView(ownId, own, match, nowMs);
   });
 }

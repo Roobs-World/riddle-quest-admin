@@ -1,0 +1,58 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-live-score", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts src/__tests__/race/facebookLiveReferrals.it.test.ts src/__tests__/race/raceLiveAccountDeletion.it.test.ts
+FAIL src/__tests__/race/facebookLiveReferrals.it.test.ts (20.602 s)
+  ● recovers live referral acknowledgement failure through the existing bounded queue
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 250
+    Received: 150
+
+      222 |   /** Provides expected before behavior. */
+      223 |   const expectedBefore = stage === "grant" ? 150 : 250;
+    > 224 |   expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(expectedBefore);
+          |                                                                     ^
+      225 |   await deliverRacePerformance(event.id, db, pending.nextAttemptAtMs - 1);
+      226 |   expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(expectedBefore);
+      227 |   await processRaceDeliveryQueue(db, "racePerformanceOutbox", id => deliverRacePerformance(id, db, pending.nextAttemptAtMs), pending.nextAttemptAtMs);
+
+      at src/__tests__/race/facebookLiveReferrals.it.test.ts:224:69
+
+FAIL src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts
+  ● holds an account lease until the official write drains and deletion removes the row
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "account-deletion-busy"
+    Received message:   "account-deletion-in-progress"
+
+          77 |   /** Provides snapshot behavior. */
+          78 |   const snapshot = await deletionRef.collection(JEST_ACCOUNT_OPERATION_COLLECTION).limit(1).get();
+        > 79 |   if (!snapshot.empty) throw new JestAccountDeletionBusyError();
+             |                              ^
+          80 | }
+          81 |
+          82 | /** Persists the guard before any identity-linked account data is removed. */
+
+      at assertNoActiveJestAccountOperations (src/jest/jestAccountDeletion.ts:79:30)
+      at recordJestAccountDeletion (src/jest/jestAccountDeletion.ts:98:3)
+      at Object.<anonymous> (src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts:190:5)
+      at Object.toThrow (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at Object.<anonymous> (src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts:190:65)
+
+Test Suites: 2 failed, 1 passed, 3 total
+Tests:       2 failed, 51 passed, 53 total
+Snapshots:   0 total
+Time:        29.897 s, estimated 35 s
+Ran all test suites within paths "src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts", "src/__tests__/race/facebookLiveReferrals.it.test.ts", "src/__tests__/race/raceLiveAccountDeletion.it.test.ts".
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts src/__tests__/race/facebookLiveReferrals.it.test.ts src/__tests__/race/raceLiveAccountDeletion.it.test.ts" exited with code 1

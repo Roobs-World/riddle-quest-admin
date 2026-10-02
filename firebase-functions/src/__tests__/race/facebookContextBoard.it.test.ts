@@ -7,6 +7,7 @@ import {
   removeUserFromFacebookContextCompetitions,
 } from "../../race/facebookContextService";
 import type {RaceRunRecord} from "../../race/raceEngine";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 
 /** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
@@ -55,18 +56,105 @@ const run = (userId: string, id: string, wallFinishMs: number): RaceRunRecord =>
 });
 
 beforeAll(async () => {
+  if (!PROJECT_ID.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? ""))
+    throw new Error("Isolated loopback demo emulator required");
   if (getApps().length === 0) initializeApp({projectId: PROJECT_ID});
   db = getFirestore();
   await Promise.all(
-    ["users", "raceRuns", "raceDecks", "facebookContextCompetitions"].map((name) =>
+    ["users", "raceRuns", "raceDecks", "facebookContextCompetitions", "liveRaceTickets", "liveRaceMatches", "liveRacePlayers", "liveRaceQueues", "racePerformanceOutbox", "localizedRiddles"].map((name) =>
       db.recursiveDelete(db.collection(name)),
     ),
   );
 });
 
+/** Creates real settled Facebook Live PvP authority independently of recorded runs. */
+async function settledLivePair(seat: number) {
+  for (const name of ["liveRaceTickets", "liveRaceMatches", "liveRacePlayers", "liveRaceQueues", "racePerformanceOutbox"])
+    await db.recursiveDelete(db.collection(name));
+  /** Distinct canonical identities keep the older recorded-board fixtures untouched. */
+  const players = [`facebook_${"a".repeat(40)}`, `facebook_${"b".repeat(40)}`];
+  /** Real catalog and account inputs precede authoritative matching. */
+  const batch = db.batch();
+  for (let i = 0; i < 30; i++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${i}`), {
+    riddleId: `history-${i}`, canonicalRiddleId: `history:${i}`, categoryId: "history",
+    text: `Unique historical question ${i} follows its own trail`, answer: `a${String(i).padStart(6, "0")}`,
+    difficultyBand: (["easy", "medium", "hard"] as const)[i % 3], raceEligible: true, qualityVersion: "human_review_v1",
+  });
+  for (const userId of players) batch.set(db.doc(`users/${userId}`), {username: "Live player", coins: 100});
+  await batch.commit();
+  /** Context membership is established before the live score finishes. */
+  const contextId = `live-board-${seat}`;
+  await db.recursiveDelete(db.doc(`facebookContextCompetitions/${facebookContextKey(contextId)}`));
+  for (const userId of players) await joinFacebookContextCompetition({userId, contextId, contextType: "GROUP", locale: "en", nowMs: START}, db);
+  /** Both players share the independently frozen creator deck. */
+  const a = await joinLiveRaceForUser(players[0], {locale: "en", categoryId: "history", requestId: `context-a-${seat}`}, {db, nowMs: START});
+  /** The joining seat must never use its earlier search deck as scoring authority. */
+  const b = await joinLiveRaceForUser(players[1], {locale: "en", categoryId: "history", requestId: `context-b-${seat}`}, {db, nowMs: START + 1000});
+  /** Actual owned winning seat supplies ten real engine commands. */
+  const ticketId = [a, b][seat].ticketId, userId = players[seat];
+  for (let i = 0; i < 10; i++) {
+    /** Read private synthetic fixture answers rather than trusting public result projections. */
+    const match = (await db.doc(`liveRaceMatches/${a.ticketId}`).get()).data()!;
+    /** Current private riddle advances only through the production engine. */
+    const run = match.runs[seat] as RaceRunRecord, riddle = run.riddles[run.currentPosition];
+    await updateLiveRaceForUser(userId, {ticketId, action: "guess", requestId: `context-${seat}-${i}`,
+      riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: START + 6000 + i * 1000});
+  }
+  return {ticketId, userId, contextId, creatorTicketId: a.ticketId, players};
+}
+
+it.each([0, 1])("records an authoritative live context winner in seat %i without another economy grant", async seat => {
+  /** Real winning authority contains no corresponding legacy recorded run. */
+  const {ticketId, userId, contextId, players} = await settledLivePair(seat);
+  /** Existing winner settlement is captured before official board submissions. */
+  const before = (await db.doc(`users/${userId}`).get()).data();
+  /** Concurrent submissions converge on one best score and one improved result. */
+  const records = await Promise.all(Array.from({length: 4}, () => recordFacebookContextBoardRun(userId,
+    {contextId, runId: ticketId, locale: "en"}, {db, nowMs: START + 16000})));
+  expect(records.filter(record => record.improved)).toHaveLength(1);
+  expect(records[0].entry).toMatchObject({runId: ticketId, adjustedTimeMs: 9000});
+  expect((await db.doc(`users/${userId}`).get()).data()).toEqual(before);
+  expect((await db.doc(`raceRuns/${ticketId}`).get()).exists).toBe(false);
+  await expect(recordFacebookContextBoardRun(players[1 - seat], {contextId, runId: ticketId, locale: "en"},
+    {db, nowMs: START + 16000})).rejects.toMatchObject({code: "permission-denied"});
+});
+
+/** Invalid live submissions never create a context row or repeat settlement. */
+it.each(["future", "expired", "late-membership", "corrupt-deck"] as const)("rejects %s live context scoring", async kind => {
+  /** Real engine completion remains the common source for each authority check. */
+  const {ticketId, userId, contextId, creatorTicketId} = await settledLivePair(1);
+  /** Context scope is independently stored before any submission. */
+  const contextKey = facebookContextKey(contextId);
+  /** Baseline economy must survive rejected submissions unchanged. */
+  const before = (await db.doc(`users/${userId}`).get()).data();
+  if (kind === "late-membership") {
+    /** Membership acquired after completion cannot backfill an earlier live score. */
+    const context = (await db.doc(`facebookContextCompetitions/${contextKey}`).get()).data()!;
+    await db.doc(`facebookContextCompetitions/${contextKey}`).update({members: context.members.map((member: {
+      /** Canonical fixture member identity. */
+      userId: string;
+    }) =>
+      member.userId === userId ? {...member, joinedAtMs: START + 16000} : member)});
+  }
+  if (kind === "corrupt-deck") {
+    /** The creator's immutable authority must agree with the settled winner's deck. */
+    const ticket = (await db.doc(`liveRaceTickets/${creatorTicketId}`).get()).data()!;
+    /** Independently frozen source deck to deliberately corrupt in this fixture. */
+    const source = ticket.run as RaceRunRecord;
+    source.riddles[0].answer = "changed-private-answer";
+    await db.doc(`liveRaceTickets/${creatorTicketId}`).update({run: source});
+  }
+  /** Caller time never precedes completion or crosses the seven-day membership window. */
+  const nowMs = kind === "future" ? START + 14000 : kind === "expired" ? START + FACEBOOK_CONTEXT_BOARD_DURATION_MS : START + 17000;
+  await expect(recordFacebookContextBoardRun(userId, {contextId, runId: ticketId, locale: "en"}, {db, nowMs}))
+    .rejects.toMatchObject({code: kind === "corrupt-deck" ? "data-loss" : "failed-precondition"});
+  expect((await db.doc(`facebookContextCompetitions/${contextKey}/entries/${userId}`).get()).exists).toBe(false);
+  expect((await db.doc(`users/${userId}`).get()).data()).toEqual(before);
+});
+
 afterAll(async () =>
   Promise.all(
-    ["users", "raceRuns", "raceDecks", "facebookContextCompetitions"].map((name) =>
+    ["users", "raceRuns", "raceDecks", "facebookContextCompetitions", "liveRaceTickets", "liveRaceMatches", "liveRacePlayers", "liveRaceQueues", "racePerformanceOutbox", "localizedRiddles"].map((name) =>
       db.recursiveDelete(db.collection(name)),
     ),
   ),

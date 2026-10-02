@@ -103,6 +103,7 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
   const currentRank = getRankForLevel(profile?.level ?? 1);
   /** Current level and next threshold describe the player's rank journey. */
   const level = profile?.level ?? 1;
+  /** Next rank threshold defines the remaining level progress, or is absent at the final rank. */
   const nextRank = getNextRankForLevel(level);
   /** Progress through the current rank, capped for the final rank. */
   const rankProgress = nextRank ? Math.max(0, Math.min(100, (level - currentRank.minimumLevel) / (nextRank.minimumLevel - currentRank.minimumLevel) * 100)) : 100;

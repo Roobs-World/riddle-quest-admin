@@ -1,0 +1,104 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-notification-bytes", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: pnpm exec jest --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/raceLivePush.it.test.ts --testNamePattern "refuses changed"
+FAIL src/__tests__/race/raceLivePush.it.test.ts
+  ● refuses changed copy bytes before admitting a Facebook provider attempt
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "skipped"
+    Received: "unconfirmed"
+
+      207 |     /** Synthetic credential is never sent over the network. */
+      208 |     const config = {appId, uidSecret, appAccessToken: "synthetic-token", enabled: true, fetch: fetchMock};
+    > 209 |     expect(await sendFacebookLiveChallengePush(db, delivery, config)).toBe("skipped");
+          |                                                                       ^
+      210 |     expect(fetchMock).not.toHaveBeenCalled();
+      211 |     expect((await db.collection(`users/${uid}/facebookNotificationAttempts`).get()).empty).toBe(true);
+      212 |     expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).exists).toBe(false);
+
+      at src/__tests__/race/raceLivePush.it.test.ts:209:71
+
+  ● refuses changed payload bytes before admitting a Facebook provider attempt
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "skipped"
+    Received: "unconfirmed"
+
+      207 |     /** Synthetic credential is never sent over the network. */
+      208 |     const config = {appId, uidSecret, appAccessToken: "synthetic-token", enabled: true, fetch: fetchMock};
+    > 209 |     expect(await sendFacebookLiveChallengePush(db, delivery, config)).toBe("skipped");
+          |                                                                       ^
+      210 |     expect(fetchMock).not.toHaveBeenCalled();
+      211 |     expect((await db.collection(`users/${uid}/facebookNotificationAttempts`).get()).empty).toBe(true);
+      212 |     expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).exists).toBe(false);
+
+      at src/__tests__/race/raceLivePush.it.test.ts:209:71
+
+  ● refuses changed recipient bytes before admitting a Facebook provider attempt
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "skipped"
+    Received: "unconfirmed"
+
+      207 |     /** Synthetic credential is never sent over the network. */
+      208 |     const config = {appId, uidSecret, appAccessToken: "synthetic-token", enabled: true, fetch: fetchMock};
+    > 209 |     expect(await sendFacebookLiveChallengePush(db, delivery, config)).toBe("skipped");
+          |                                                                       ^
+      210 |     expect(fetchMock).not.toHaveBeenCalled();
+      211 |     expect((await db.collection(`users/${uid}/facebookNotificationAttempts`).get()).empty).toBe(true);
+      212 |     expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).exists).toBe(false);
+
+      at src/__tests__/race/raceLivePush.it.test.ts:209:71
+
+  ● refuses changed label bytes before admitting a Facebook provider attempt
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "skipped"
+    Received: "unconfirmed"
+
+      207 |     /** Synthetic credential is never sent over the network. */
+      208 |     const config = {appId, uidSecret, appAccessToken: "synthetic-token", enabled: true, fetch: fetchMock};
+    > 209 |     expect(await sendFacebookLiveChallengePush(db, delivery, config)).toBe("skipped");
+          |                                                                       ^
+      210 |     expect(fetchMock).not.toHaveBeenCalled();
+      211 |     expect((await db.collection(`users/${uid}/facebookNotificationAttempts`).get()).empty).toBe(true);
+      212 |     expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).exists).toBe(false);
+
+      at src/__tests__/race/raceLivePush.it.test.ts:209:71
+
+  ● refuses changed schedule bytes before admitting a Facebook provider attempt
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "skipped"
+    Received: "unconfirmed"
+
+      207 |     /** Synthetic credential is never sent over the network. */
+      208 |     const config = {appId, uidSecret, appAccessToken: "synthetic-token", enabled: true, fetch: fetchMock};
+    > 209 |     expect(await sendFacebookLiveChallengePush(db, delivery, config)).toBe("skipped");
+          |                                                                       ^
+      210 |     expect(fetchMock).not.toHaveBeenCalled();
+      211 |     expect((await db.collection(`users/${uid}/facebookNotificationAttempts`).get()).empty).toBe(true);
+      212 |     expect((await db.doc(`users/${uid}/facebookNotificationState/current`).get()).exists).toBe(false);
+
+      at src/__tests__/race/raceLivePush.it.test.ts:209:71
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 16 skipped, 21 total
+Snapshots:   0 total
+Time:        1.463 s
+Ran all test suites within paths "src/__tests__/race/raceLivePush.it.test.ts".
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/raceLivePush.it.test.ts --testNamePattern "refuses changed"" exited with code 1

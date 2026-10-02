@@ -42,6 +42,12 @@ failed background record is reported; durable client-side retry after a browser
 crash is not added by this change. The server accepts idempotent re-submission,
 including after midnight.
 
+The later [durable server recovery follow-up](facebook-live-score-recovery-2026-10-02.md)
+records eligible official scores from the existing live winner outbox even when
+the browser closes. Reopening the board also restores native score presentation
+from confirmed standings. It adds no client journal and does not reconstruct
+already acknowledged historical receipts.
+
 A later 2 October scoring update counts correct answers and skips toward the
 ten-riddle finish, with all hint/skip costs retained. The native recorder now
 matches that authoritative completion rule and requires the settled private

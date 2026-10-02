@@ -70,6 +70,25 @@ describe("Facebook overlay capability", () => {
     expect(harness.name.destroyAsync).toHaveBeenCalledTimes(1);
   });
 
+  test("accepts documented v8 views without a destruction extension", async () => {
+    /** Meta's documented view lifecycle exposes show and dismiss, without a required destroy API. */
+    const documented: FacebookOverlayView = {
+      showAsync: jest.fn(async () => undefined),
+      dismissAsync: jest.fn(async () => undefined),
+    };
+    /** The real adapter receives this documented SDK shape, rather than an augmented test view. */
+    const harness = sdk();
+    harness.value.overlayViews!.createProfilePictureOverlayViewAsync = jest.fn(async () => documented);
+    harness.value.overlayViews!.createProfileNameOverlayViewAsync = jest.fn(async () => documented);
+    /** Presentation returns idempotent cleanup even when the provider offers no destruction extension. */
+    const result = await createFacebookOverlayCapability(harness.value)!.renderPlayer({playerId: "player-1", surface: connectedSurface()});
+    expect(result.status).toBe("success");
+    if (result.status !== "success") throw new Error("documented overlay failed");
+    await result.value(); await result.value();
+    expect(documented.showAsync).toHaveBeenCalledTimes(2);
+    expect(documented.dismissAsync).toHaveBeenCalledTimes(2);
+  });
+
   test("rejects another player and cleans a partially-created overlay after failure", async () => {
     /** Provides harness behavior. */
     const harness = sdk();
