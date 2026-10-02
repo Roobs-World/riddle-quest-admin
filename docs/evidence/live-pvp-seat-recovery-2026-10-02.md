@@ -1,0 +1,16 @@
+# Live PvP seat recovery without a live catalog — 2026-10-02
+
+An existing live PvP seat owns a validated immutable deck. Previously, `joinLiveRaceForUser` loaded and validated the current content catalog before reading its persisted seat or exact join receipt. A temporary catalog removal, validation failure or unavailable content query could prevent reconnecting to an otherwise intact match. It also repeated deck preparation and read the shared queue for a reconnect that required neither operation.
+
+The join transaction now reads authenticated owner, deletion state, active-seat pointer and exact receipt first. Existing seats recover their persisted deck and match view. Only a new seat loads/validates content. The shared queue is read after that new deck is ready, so content preparation does not hold the queue's transaction lock. New-seat eligibility and provider/language/category checks remain enforced.
+
+## Verification
+
+- Added two real Firestore integration regressions. On the original source, both fail with `Race category is not ready: insufficient_pool` after deleting the content collection; the other ten existing live PvP tests pass. See `artifacts/live-pvp-seat-recovery/baseline.log` and the original server source snapshot.
+- The changed implementation passes all 12 focused live PvP tests. The new cases cover a searching-seat reconnect under a new join ID, exact join replay, rejection of a new account's seat with missing content, both players' matched progress recovery, continuing to ten solved answers from the private deck, exact settled join-receipt replay and no duplicate match or winner grant.
+- The final broad race suite passes 74 suites / 1,087 tests against the local Firestore emulator. Coverage is 93.15% statements, 89.55% branches, 96.62% functions and 95.61% lines. Its backend build and operator checks also pass. See `artifacts/live-pvp-seat-recovery/race-coverage.log`.
+- A new injected browser verifier uses the actual React UI and compiled live race service backed by a separate demo Firestore project. At 1280 and 390 pixels it starts a two-player match, accepts one solve, removes the entire current content collection, reloads both player documents, verifies retained progress and exactly two seats / one match, then completes the remaining nine solves. The winner receives exactly 50 coins, balances are `[150, 100]`, both pages emit one completion event, and no page errors occur. See `artifacts/live-pvp-seat-recovery/browser.log` and recovered-win screenshots. This verifies the service and UI; provider authentication is injected locally.
+- All seven isolated target builds and their artifact audits pass. No build was uploaded/published and no Firebase functions were deployed in this batch.
+- File-size audit passes. The shared TSDoc gate still reports 27 missing declarations in concurrent classic supply-worker work; no automatic dashboard completion receipt is claimed.
+
+`docs/development-tasks/live-pvp-seat-recovery.json` retains the previous verification plan and adds the real-service browser reconnect check, bringing it to 149 checks. The broad source-stable dashboard gate remains pending while the shared documentation gate and concurrent audit are unresolved.

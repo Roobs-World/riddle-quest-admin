@@ -7,6 +7,12 @@ export function createFirebaseRaceMatchmaking(
     (await (await import("../firebase")).findRaceMatch(request)).data,
 ): MatchmakingCapability {
   return {
+  live: {
+    /** Provides join behavior. */
+    async join(input) {return (await (await import("../firebase")).joinLiveRace(input)).data;},
+    /** Provides update behavior. */
+    async update(input) {return (await (await import("../firebase")).updateLiveRace(input)).data;},
+  },
   /** Finds an authenticated recorded opponent. */
   async find(input) {
     try {

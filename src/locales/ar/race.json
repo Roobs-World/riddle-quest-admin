@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "مواجهة مسجلة",
     "TITLE": "سباق إلى 10",
     "CLOSE": "إغلاق السباق",
     "QUIT_TITLE": "مغادرة هذا السباق؟",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "تخطي",
     "RESULT_RECORDED": "تم تسجيل السباق!",
     "RESULT_PLAYER_WIN": "فزت!",
-    "RESULT_GHOST_WIN": "فاز المنافس",
+    "RESULT_OPPONENT_WIN": "فاز المنافس",
     "RESULT_TIE": "تعادل!",
     "RESULT_TIMED_OUT": "انتهى الوقت",
     "WALL_TIME": "وقت السباق",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "البحث عن منافس غير متاح لهذا الحساب.",
     "MATCH_EMPTY": "لا يوجد منافسون مناسبون حاليًا. حاول مجددًا لاحقًا.",
     "CHALLENGE_FRIEND": "تحدَّ صديقًا",
-    "SHARE_TOURNAMENT": "مشاركة البطولة"
+    "SHARE_TOURNAMENT": "مشاركة البطولة",
+    "LIVE_START": "ابدأ مباراة PvP",
+    "LIVE_FINDING": "جارٍ البحث عن خصم…",
+    "LIVE_STARTING": "تبدأ المباراة",
+    "LIVE_WAIT": "البحث لمدة دقيقة واحدة كحد أقصى، ثم ستلعب ضد روبوت.",
+    "LIVE_BOT": "روبوت الألغاز",
+    "LIVE_REWARD": "+{coins} عملة",
+    "LIVE_MODE": "PvP مباشر",
+    "LIVE_WAITING_FINISH": "بانتظار انتهاء الخصم…"
   }
 }

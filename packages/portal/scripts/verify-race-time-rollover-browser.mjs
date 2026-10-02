@@ -18,7 +18,7 @@ import {RACE_RULES} from '@qwordly/core/race';
 const milliseconds=Number(new URLSearchParams(location.search).get('ms'));
 const run={runId:'run-timer',role:'creator',status:'completed',categoryId:'mixed',locale:'en',rules:RACE_RULES,correctCount:10,wallElapsedMs:milliseconds,totalPenaltyMs:milliseconds,adjustedElapsedMs:milliseconds,currentRiddle:null,events:[]};
 const outcome={runId:run.runId,result:'recorded',correctCount:10,wallFinishMs:milliseconds,hintPenaltyMs:milliseconds,skipPenaltyMs:milliseconds,totalPenaltyMs:milliseconds,adjustedFinishMs:milliseconds,publishable:false,rematchEligible:false,newlyUnlockedAchievementIds:[],achievementCoinsAwarded:0};
-createRoot(document.getElementById('root')).render(<><RaceScoreboard run={run} adjustedNow={milliseconds} ghostCorrect={0} feedback={null} coins={0} onClose={()=>{}}/><RaceResultPanel run={null} outcome={outcome} publication={null} publishing={false} onPublish={()=>{}} onShare={()=>{}} onRematch={()=>{}} onChooseCategory={()=>{}} onClose={()=>{}}/></>);
+createRoot(document.getElementById('root')).render(<><RaceScoreboard run={run} adjustedNow={milliseconds} opponentCorrect={0} feedback={null} coins={0} onClose={()=>{}}/><RaceResultPanel run={null} outcome={outcome} publication={null} publishing={false} onPublish={()=>{}} onShare={()=>{}} onRematch={()=>{}} onChooseCategory={()=>{}} onClose={()=>{}}/></>);
 `);
 let browser,server;
 try{

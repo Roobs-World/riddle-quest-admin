@@ -1,0 +1,3 @@
+Live PvP passed at 1280px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
+Live PvP passed at 390px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
+Bot fallback UI passed at 390px; server deadline advanced through the injected transport.

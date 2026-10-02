@@ -1,0 +1,8 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand src/play/race src/play/__tests__/firebaseRaceMatchmaking.test.ts src/facebook/__tests__/raceDialogs.jest-playwright.support.ts
+
+Test Suites: 123 passed, 123 total
+Tests:       1095 passed, 1095 total
+Snapshots:   0 total
+Time:        4.533 s
+Ran all test suites matching src/play/race|src/play/__tests__/firebaseRaceMatchmaking.test.ts|src/facebook/__tests__/raceDialogs.jest-playwright.support.ts.

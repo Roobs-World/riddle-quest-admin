@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Duelo gravado",
     "TITLE": "Corrida até 10",
     "CLOSE": "Fechar Corrida até 10",
     "QUIT_TITLE": "Sair desta corrida?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Pular",
     "RESULT_RECORDED": "Corrida gravada!",
     "RESULT_PLAYER_WIN": "Você venceu!",
-    "RESULT_GHOST_WIN": "Oponente venceu",
+    "RESULT_OPPONENT_WIN": "Oponente venceu",
     "RESULT_TIE": "Empate!",
     "RESULT_TIMED_OUT": "Tempo esgotado",
     "WALL_TIME": "Tempo de corrida",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "A busca de adversários não está disponível para esta conta.",
     "MATCH_EMPTY": "Ainda não há adversários adequados disponíveis. Tente novamente mais tarde.",
     "CHALLENGE_FRIEND": "Desafie um amigo",
-    "SHARE_TOURNAMENT": "Compartilhar torneio"
+    "SHARE_TOURNAMENT": "Compartilhar torneio",
+    "LIVE_START": "Iniciar partida PvP",
+    "LIVE_FINDING": "Buscando adversário…",
+    "LIVE_STARTING": "Iniciando partida",
+    "LIVE_WAIT": "Busca por até 1 minuto. Depois você jogará contra um bot.",
+    "LIVE_BOT": "Bot de enigmas",
+    "LIVE_REWARD": "+{coins} moedas",
+    "LIVE_MODE": "PvP ao vivo",
+    "LIVE_WAITING_FINISH": "Aguardando seu adversário terminar…"
   }
 }

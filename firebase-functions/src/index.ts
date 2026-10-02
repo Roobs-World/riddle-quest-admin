@@ -155,3 +155,7 @@ export {
 export {deliverRaceSettlementEvent, deliverRacePerformanceEvent, settleRaceDeadlines} from "./race/raceSettlementJobs";
 export {reconcileRaceMatchProjections} from "./race/raceProjectionReconciliation";
 export {monitorRaceRecoveryHealth} from "./race/raceRecoveryHealth";
+
+export {replenishClassicSupply} from "./riddles/classicSupplyWorker";
+
+export {joinLiveRace, updateLiveRace} from "./race/raceLiveCallables";

@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Opgenomen duel",
     "TITLE": "Race naar 10",
     "CLOSE": "Race sluiten",
     "QUIT_TITLE": "Deze race verlaten?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Overslaan",
     "RESULT_RECORDED": "Race opgenomen!",
     "RESULT_PLAYER_WIN": "Jij wint!",
-    "RESULT_GHOST_WIN": "Tegenstander wint",
+    "RESULT_OPPONENT_WIN": "Tegenstander wint",
     "RESULT_TIE": "Gelijkspel!",
     "RESULT_TIMED_OUT": "Tijd voorbij",
     "WALL_TIME": "Racetijd",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Tegenstanders zoeken is niet beschikbaar voor dit account.",
     "MATCH_EMPTY": "Er zijn nog geen geschikte tegenstanders beschikbaar. Probeer het later opnieuw.",
     "CHALLENGE_FRIEND": "Daag een vriend uit",
-    "SHARE_TOURNAMENT": "Toernooi delen"
+    "SHARE_TOURNAMENT": "Toernooi delen",
+    "LIVE_START": "PvP-wedstrijd starten",
+    "LIVE_FINDING": "Tegenstander zoeken…",
+    "LIVE_STARTING": "Wedstrijd begint",
+    "LIVE_WAIT": "We zoeken maximaal 1 minuut. Daarna speel je tegen een bot.",
+    "LIVE_BOT": "Raadselbot",
+    "LIVE_REWARD": "+{coins} munten",
+    "LIVE_MODE": "Live PvP",
+    "LIVE_WAITING_FINISH": "Wachten tot je tegenstander klaar is…"
   }
 }

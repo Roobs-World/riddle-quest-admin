@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Aufgezeichnetes Duell",
     "TITLE": "Rennen bis 10",
     "CLOSE": "Rennen schließen",
     "QUIT_TITLE": "Dieses Rennen beenden?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Überspringen",
     "RESULT_RECORDED": "Lauf aufgezeichnet!",
     "RESULT_PLAYER_WIN": "Du gewinnst!",
-    "RESULT_GHOST_WIN": "Gegner gewinnt",
+    "RESULT_OPPONENT_WIN": "Gegner gewinnt",
     "RESULT_TIE": "Unentschieden!",
     "RESULT_TIMED_OUT": "Zeit abgelaufen",
     "WALL_TIME": "Rennzeit",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Die Gegnersuche ist für dieses Konto nicht verfügbar.",
     "MATCH_EMPTY": "Derzeit sind keine passenden Gegner verfügbar. Versuche es später erneut.",
     "CHALLENGE_FRIEND": "Freund herausfordern",
-    "SHARE_TOURNAMENT": "Turnier teilen"
+    "SHARE_TOURNAMENT": "Turnier teilen",
+    "LIVE_START": "PvP-Match starten",
+    "LIVE_FINDING": "Gegner wird gesucht…",
+    "LIVE_STARTING": "Match startet",
+    "LIVE_WAIT": "Suche bis zu 1 Minute. Danach spielst du gegen einen Bot.",
+    "LIVE_BOT": "Rätsel-Bot",
+    "LIVE_REWARD": "+{coins} Münzen",
+    "LIVE_MODE": "Live-PvP",
+    "LIVE_WAITING_FINISH": "Warte, bis dein Gegner fertig ist…"
   }
 }

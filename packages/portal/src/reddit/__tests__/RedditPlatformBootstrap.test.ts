@@ -60,6 +60,17 @@ beforeEach(() => {
 });
 
 it.each([
+  ["/api/game/race.live.update", 409, "live-race-request-failed", "failed-precondition"],
+  ["/api/game/race.live.join", 409, "live-race-request-failed", "failed-precondition"],
+  ["/api/game/race.live.update", 503, "live-race-request-failed", "unavailable"],
+  ["/api/game/race.live.update", 409, "other-error", "unavailable"],
+  ["/api/game/race.resume", 409, "live-race-request-failed", "unavailable"],
+])("preserves definitive live rejections only for their exact gateway contract: %s %i", async (path, status, marker, code) => {
+  global.fetch = jest.fn(() => Promise.resolve({ok: false, status, json: async () => ({error: marker, code: "failed-precondition"})}) as Promise<Response>);
+  await expect(postRedditGateway(path)).rejects.toMatchObject({code});
+});
+
+it.each([
   [503, raceMatchFailure("temporarily-unavailable", 1500), "retryable-failure"],
   [429, raceMatchFailure("search-budget-exceeded"), "retryable-failure"],
   [409, raceMatchFailure("intent-expired"), "retryable-failure"],

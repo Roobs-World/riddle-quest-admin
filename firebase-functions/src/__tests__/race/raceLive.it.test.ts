@@ -1,0 +1,336 @@
+import {getApps, initializeApp} from "firebase-admin/app";
+import {getFirestore} from "firebase-admin/firestore";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
+import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveMatch} from "../../race/raceLiveState";
+
+/** Renders the a interface. */
+const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
+/** Renders the now interface. */
+const NOW = 1_800_000_000_000;
+/** Provides db behavior. */
+let db: FirebaseFirestore.Firestore;
+/** Provides clear behavior. */
+async function clear() {
+  for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "localizedRiddles/en/riddles"])
+    await db.recursiveDelete(db.collection(path));
+}
+beforeAll(() => {
+  if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Local Firestore emulator required");
+  if (!getApps().length) initializeApp({projectId: "demo-riddle-quest-live"});
+  db = getFirestore();
+});
+beforeEach(async () => {
+  await clear();
+  /** Provides batch behavior. */
+  const batch = db.batch();
+  for (let index = 0; index < 30; index++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${index}`), {
+    riddleId: `history-${index}`, canonicalRiddleId: `history:${index}`, categoryId: "history",
+    text: `Unique historical question ${index} follows its own trail`, answer: `a${String(index).padStart(6, "0")}`,
+    difficultyBand: (["easy", "medium", "hard"] as const)[index % 3], raceEligible: true, qualityVersion: "human_review_v1",
+  });
+  for (const user of [A, B, C]) batch.set(db.doc(`users/${user}`), {username: user === A ? "Alice" : user === B ? "Bob" : "Charlie", coins: 100,
+    avatarUrl: "https://example.com/avatar.png"});
+  await batch.commit();
+});
+afterAll(clear);
+/** Provides join behavior. */
+const join = (user: string, requestId: string, nowMs = NOW) => joinLiveRaceForUser(user, {locale: "en", categoryId: "history", requestId}, {db, nowMs});
+/** Provides update behavior. */
+const update = (user: string, view: LiveRaceView, nowMs: number, action: "poll" | "leave" = "poll", requestId = `poll-${nowMs}`) =>
+  updateLiveRaceForUser(user, {ticketId: view.ticketId, action, requestId}, {db, nowMs});
+/** Provides pair behavior. */
+async function pair() {
+  /** Provides a behavior. */
+  const a = await join(A, "join-alice-1");
+  /** Provides b behavior. */
+  const b = await join(B, "join-bob-001", NOW + 1000);
+  return {a: await update(A, a, NOW + 1000), b};
+}
+/** Provides answer behavior. */
+async function answer(user: string, view: LiveRaceView, nowMs: number, requestId: string) {
+  /** Provides match behavior. */
+  const match = (await db.doc(`liveRaceMatches/${(await db.doc(`liveRaceTickets/${view.ticketId}`).get()).data()!.matchId}`).get()).data() as LiveMatch;
+  /** Provides seat behavior. */
+  const seat = match.tickets[0] === view.ticketId ? 0 : 1;
+  /** Provides riddle behavior. */
+  const riddle = match.runs[seat].riddles[match.runs[seat].currentPosition]!;
+  return updateLiveRaceForUser(user, {ticketId: view.ticketId, action: "guess", requestId, riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs});
+}
+
+it("observes an unchanged human match without rewriting shared state", async () => {
+  /** Matched players share one authoritative gameplay document. */
+  const {a} = await pair();
+  // The first observed transition to racing is durable; later steady progress reads are read-only.
+  await update(A, a, NOW + 7000);
+  /** Ordinary progress reads should leave both document versions untouched. */
+  const refs = [db.doc(`liveRaceMatches/${a.ticketId}`), db.doc(`liveRaceTickets/${a.ticketId}`)];
+  /** Document versions before a read-only observation. */
+  const before = await db.getAll(...refs);
+  expect(await update(A, a, NOW + 8000)).toMatchObject({phase: "racing", player: {correctCount: 0}});
+  /** A poll must not compete with answers by changing the match version. */
+  const after = await db.getAll(...refs);
+  expect(after.map((item, index) => item.updateTime!.isEqual(before[index]!.updateTime!))).toEqual([true, true]);
+});
+
+it("keeps unchanged bot observations read-only and never rewinds its server score", async () => {
+  /** Waiting alone selects exactly one server-controlled bot. */
+  const ticket = await join(A, "read-only-bot-seat");
+  await update(A, ticket, NOW + 60000);
+  expect((await update(A, ticket, NOW + 77000)).opponent?.correctCount).toBe(1);
+  /** Bot progress changes only at the next authoritative score boundary. */
+  const ref = db.doc(`liveRaceMatches/${ticket.ticketId}`);
+  /** Version after the first server-awarded bot point. */
+  const before = await ref.get();
+  expect((await update(A, ticket, NOW + 78000)).opponent?.correctCount).toBe(1);
+  expect((await update(A, ticket, NOW + 70000)).opponent?.correctCount).toBe(1);
+  expect((await ref.get()).updateTime!.isEqual(before.updateTime!)).toBe(true);
+  expect((await update(A, ticket, NOW + 89000)).opponent?.correctCount).toBe(2);
+});
+
+it("accepts one answer amid concurrent polls without losing scores or duplicating rewards", async () => {
+  /** Both browsers may observe the same match while an answer commits. */
+  const {a, b} = await pair();
+  await Promise.all([answer(A, a, NOW + 7000, "answer-under-poll-load"),
+    ...Array.from({length: 20}, (_, index) => update(index % 2 ? A : B, index % 2 ? a : b, NOW + 7000))]);
+  expect(await update(A, a, NOW + 8000)).toMatchObject({player: {correctCount: 1}, rewardCoins: 0});
+  expect(await update(B, b, NOW + 8000)).toMatchObject({opponent: {correctCount: 1}});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+});
+
+it("pairs two live seats with shared riddles, usernames, avatars and a five-second countdown", async () => {
+  /** Provides {a, b} behavior. */
+  const {a, b} = await pair();
+  expect(a.phase).toBe("countdown"); expect(b.phase).toBe("countdown");
+  expect(a.startsAtMs).toBe(NOW + 6000); expect(b.startsAtMs).toBe(a.startsAtMs);
+  expect(a.opponent).toMatchObject({displayName: "Bob", avatarUrl: "https://example.com/avatar.png", bot: false});
+  expect(b.opponent?.displayName).toBe("Alice");
+  expect(a.run?.currentRiddle?.riddleId).toBe(b.run?.currentRiddle?.riddleId);
+  expect(JSON.stringify(a)).not.toContain('"answer"');
+  expect(a.run?.preloadedRiddles).toBeUndefined();
+  await expect(answer(A, a, NOW + 5999, "too-early-guess")).rejects.toMatchObject({code: "failed-precondition"});
+  /** Provides progress behavior. */
+  const progress = await answer(A, a, NOW + 6000, "first-live-guess");
+  expect(progress.player.correctCount).toBe(1);
+  expect((await update(B, b, NOW + 7000)).opponent?.correctCount).toBe(1);
+});
+
+it("ends both players immediately on the tenth solved riddle and grants 50 coins once", async () => {
+  /** Provides {a, b} behavior. */
+  const {a, b} = await pair();
+  /** Latest accepted progress for this seat. */
+  let current = a;
+  for (let i = 0; i < 10; i++) current = await answer(A, current, NOW + 6000 + i * 1000, `answer-alice-${i}`);
+  expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50, newCoins: 150});
+  expect((await update(B, b, NOW + 16000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0});
+  /** Provides replay behavior. */
+  const replay = await answer(A, a, NOW + 17000, "answer-alice-9").catch(() => update(A, a, NOW + 17000));
+  expect(replay.phase).toBe("result");
+  await Promise.all([update(A, a, NOW + 18000), update(A, a, NOW + 18000)]);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(100);
+});
+
+it("serializes simultaneous finishes into one winner and one grant", async () => {
+  /** Provides {a, b} behavior. */
+  let {a, b} = await pair();
+  for (let i = 0; i < 9; i++) {a = await answer(A, a, NOW + 6000 + i * 1000, `a-racing-${i}`); b = await answer(B, b, NOW + 6000 + i * 1000, `b-racing-${i}`);}
+  await Promise.all([answer(A, a, NOW + 16000, "a-final-answer"), answer(B, b, NOW + 16000, "b-final-answer")]);
+  /** Provides results behavior. */
+  const results = await Promise.all([update(A, a, NOW + 17000), update(B, b, NOW + 17000)]);
+  expect(results.map(result => result.result).sort()).toEqual(["loss", "win"]);
+  /** Provides balances behavior. */
+  const balances = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
+  expect(balances.reduce((sum, item) => sum + item.data()!.coins, 0)).toBe(250);
+});
+
+it("waits exactly one minute before creating a bot and then starts a five-second countdown", async () => {
+  /** Provides a behavior. */
+  const a = await join(A, "bot-wait-request");
+  expect((await update(A, a, NOW + 59999)).phase).toBe("searching");
+  /** Provides bot behavior. */
+  const bot = await update(A, a, NOW + 60000);
+  expect(bot).toMatchObject({phase: "countdown", startsAtMs: NOW + 65000, opponent: {bot: true, correctCount: 0}});
+  expect((await update(A, a, NOW + 77000)).opponent?.correctCount).toBe(1);
+  expect((await update(A, a, NOW + 185000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+});
+
+it("replays queue joins and final guesses without duplicate seats or rewards", async () => {
+  /** Provides [a, duplicate] behavior. */
+  const [a, duplicate] = await Promise.all([join(A, "duplicate-join"), join(A, "duplicate-join")]);
+  expect(a.ticketId).toBe(duplicate.ticketId);
+  expect((await join(A, "new-tab-rejoin")).ticketId).toBe(a.ticketId);
+  /** Provides b behavior. */
+  const b = await join(B, "opponent-for-replay", NOW + 1000);
+  /** Provides first behavior. */
+  const first = await answer(A, a, NOW + 6000, "guess-idempotency");
+  /** Provides replay behavior. */
+  const replay = await answer(A, a, NOW + 7000, "guess-idempotency").catch(error => {expect(error.code).toBe("invalid-argument"); return update(A, a, NOW + 7000);});
+  expect(first.player.correctCount).toBe(1); expect(replay.player.correctCount).toBe(1);
+  expect((await update(B, b, NOW + 7000)).opponent?.correctCount).toBe(1);
+});
+
+it("rejects another account's ticket and excludes blocked or cancelled players", async () => {
+  /** Provides a behavior. */
+  const a = await join(A, "private-seat-one");
+  await expect(update(B, a, NOW + 1000)).rejects.toMatchObject({code: "permission-denied"});
+  await db.doc(`users/${A}/blockedRivals/${B}`).set({blocked: true});
+  /** Provides b behavior. */
+  const b = await join(B, "blocked-seat-two", NOW + 1000); expect(b.phase).toBe("searching");
+  await update(A, a, NOW + 2000, "leave", "cancel-search-one");
+  /** Provides c behavior. */
+  const c = await join(C, "third-seat-three", NOW + 2500); expect(c.opponent?.displayName).toBe("Bob");
+  expect((await update(A, a, NOW + 60000)).phase).toBe("cancelled");
+});
+
+it("cancels a countdown without paying a win and rewards an in-game forfeit only once", async () => {
+  /** Provides {a, b} behavior. */
+  const {a, b} = await pair();
+  expect((await update(B, b, NOW + 2000, "leave", "countdown-leave"))).toMatchObject({result: "tie", rewardCoins: 0});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+  /** Provides next a behavior. */
+  const nextA = await join(A, "next-after-cancel", NOW + 10000);
+  /** Provides next b behavior. */
+  const nextB = await join(B, "next-b-after-cancel", NOW + 11000);
+  await update(B, nextB, NOW + 17000, "leave", "forfeit-after-start");
+  expect((await update(A, nextA, NOW + 18000))).toMatchObject({result: "win", rewardCoins: 50});
+});
+
+it("does not count skipped riddles as solved answers", async () => {
+  /** Provides {a} behavior. */
+  const {a} = await pair();
+  /** Latest accepted progress for this seat. */
+  let current = a;
+  for (let i = 0; i < 10; i++) current = await updateLiveRaceForUser(A, {ticketId: current.ticketId,
+    action: "skip", riddleId: current.run!.currentRiddle!.riddleId, requestId: `skip-answer-${i}`}, {db, nowMs: NOW + 6000 + i * 1000});
+  expect(current.phase).toBe("racing"); expect(current.player.correctCount).toBe(0);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+});
+
+it("scores wrong answers on the server and cannot win by exhausting attempts", async () => {
+  /** A browser supplies only guesses against the current server-owned question. */
+  const {a} = await pair();
+  /** All attempts target the same issued question and use independent request IDs. */
+  let current = a;
+  for (let index = 0; index < 5; index++) current = await updateLiveRaceForUser(A, {
+    ticketId: a.ticketId, action: "guess", requestId: `incorrect-answer-${index}`,
+    riddleId: a.run!.currentRiddle!.riddleId, guess: "x".repeat(a.run!.currentRiddle!.answerLength),
+  }, {db, nowMs: NOW + 7000 + index * 1000});
+  expect(current).toMatchObject({phase: "racing", player: {correctCount: 0}, rewardCoins: 0});
+  expect(current.run!.currentRiddle!.position).toBe(1);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+});
+
+it("recovers an expired search on reload and grants a bot victory once", async () => {
+  /** Original owned lobby remains selected across a reload. */
+  const original = await join(A, "original-bot-search");
+  /** New delivery id must recover the original one-minute deadline. */
+  const restored = await join(A, "reload-bot-search", NOW + 60000);
+  expect(restored.ticketId).toBe(original.ticketId);
+  /** Authority selects one bot and one immutable countdown. */
+  let current = await update(A, restored, NOW + 60000);
+  expect((await update(A, restored, NOW + 61000)).startsAtMs).toBe(NOW + 65000);
+  for (let i = 0; i < 10; i++) current = await answer(A, current, NOW + 65000 + i * 1000, `bot-win-answer-${i}`);
+  expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
+  await answer(A, current, NOW + 78000, "bot-win-answer-9");
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+});
+
+it("keeps human matching and a simultaneous deadline poll exclusive", async () => {
+  /** One unmatched seat at its authoritative deadline. */
+  const a = await join(A, "deadline-race-search");
+  await update(A, a, NOW + 59000);
+  await Promise.all([update(A, a, NOW + 60000), join(B, "deadline-human-search", NOW + 59999)]);
+  /** Both racing transactions share and revalidate the original ticket lock. */
+  const matches = await db.collection("liveRaceMatches").get();
+  expect(matches.size).toBe(1);
+  expect(matches.docs[0]!.data().tickets.filter((id: string | null) => id === a.ticketId)).toHaveLength(1);
+});
+
+it("recovers searching and matched seats from their immutable decks when the catalog is unavailable", async () => {
+  /** Existing search owns its validated deck independently of later catalog availability. */
+  const searching = await join(A, "catalog-search-original");
+  await db.recursiveDelete(db.collection("localizedRiddles/en/riddles"));
+  expect(await join(A, "catalog-search-reload", NOW + 1000)).toMatchObject({ticketId: searching.ticketId, phase: "searching"});
+  expect(await join(A, "catalog-search-original", NOW + 2000)).toMatchObject({ticketId: searching.ticketId, phase: "searching"});
+  await expect(join(B, "catalog-new-seat", NOW + 2000)).rejects.toMatchObject({code: "failed-precondition"});
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(1);
+});
+
+it("recovers live progress and a settled result without rereading the current content catalog", async () => {
+  /** Both accounts already own the validated immutable match deck. */
+  const {a, b} = await pair();
+  /** Accepted first solve remains authoritative across catalog removal and reconnect. */
+  let current = await answer(A, a, NOW + 6000, "catalog-first-answer");
+  await db.recursiveDelete(db.collection("localizedRiddles/en/riddles"));
+  expect(await join(A, "catalog-match-reload", NOW + 7000)).toMatchObject({ticketId: a.ticketId, phase: "racing", player: {correctCount: 1}});
+  expect(await join(B, "catalog-rival-reload", NOW + 7000)).toMatchObject({ticketId: b.ticketId, phase: "racing", opponent: {correctCount: 1}});
+  for (let index = 1; index < 10; index++) current = await answer(A, current, NOW + 7000 + index * 1000, `catalog-answer-${index}`);
+  expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
+  expect(await join(A, "join-alice-1", NOW + 19000)).toMatchObject({ticketId: a.ticketId, phase: "result", result: "win", rewardCoins: 50});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
+});
+
+it("keeps bot progress and rejoined phase monotonic across older clock samples", async () => {
+  /** Bot's accepted progress must survive an older poll and older reconnect. */
+  const a = await join(A, "clock-bot-search");
+  await update(A, a, NOW + 60000);
+  expect((await update(A, a, NOW + 89000)).opponent?.correctCount).toBe(2);
+  /** Older sample cannot rewind the already accepted two bot solves. */
+  const older = await update(A, a, NOW + 70000);
+  expect(older).toMatchObject({phase: "racing", opponent: {correctCount: 2}});
+  expect(older.serverNowMs).toBeGreaterThanOrEqual(NOW + 89000);
+  expect(await join(A, "clock-bot-rejoin", NOW + 60000)).toMatchObject({phase: "racing", serverNowMs: older.serverNowMs});
+});
+
+it("does not turn an in-game forfeit back into a countdown cancellation", async () => {
+  /** Observing the shared start commits the live phase even without a guess. */
+  const {a, b} = await pair();
+  await update(A, a, NOW + 7000);
+  /** A rival's older poll observes the same shared accepted clock. */
+  const older = await update(B, b, NOW + 2000);
+  expect(older.phase).toBe("racing");
+  expect(older.serverNowMs).toBeGreaterThanOrEqual(NOW + 7000);
+  await update(B, b, NOW + 2000, "leave", "clock-late-forfeit");
+  expect(await update(A, a, NOW + 2000)).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+});
+
+it("admits reordered guesses after already accepted live progress without rewinding their event clocks", async () => {
+  /** First accepted solve proves the shared match has already started. */
+  const {a} = await pair();
+  await answer(A, a, NOW + 7000, "clock-first-solve");
+  /** Older sampled request still acts at the persisted authoritative progress floor. */
+  const next = await answer(A, a, NOW + 2000, "clock-reordered-solve");
+  expect(next.player.correctCount).toBe(2);
+  expect(next.phase).toBe("racing");
+  expect(next.serverNowMs).toBeGreaterThanOrEqual(NOW + 7000);
+  expect(next.run!.events.map(event => event.wallElapsedMs)).toEqual([1000, 1000]);
+});
+
+it("preserves a searching seat heartbeat when an older poll arrives afterward", async () => {
+  /** Renewed lobby lease cannot be shortened by a reordered request. */
+  const a = await join(A, "clock-search-heartbeat");
+  await update(A, a, NOW + 1000);
+  expect((await update(A, a, NOW - 1000)).serverNowMs).toBeGreaterThanOrEqual(NOW + 1000);
+  expect((await db.doc(`liveRaceTickets/${a.ticketId}`).get()).data()!.seenAtMs).toBe(NOW + 1000);
+  expect((await join(B, "clock-search-opponent", NOW + 10001)).opponent?.displayName).toBe("Alice");
+});
+
+it("derives a safe bot clock floor for records without an observation marker", async () => {
+  /** Persisted bot count remains evidence of previously accepted elapsed time. */
+  const a = await join(A, "clock-legacy-bot");
+  await update(A, a, NOW + 60000);
+  await update(A, a, NOW + 89000);
+  /** Simulates an existing match predating the explicit shared observation marker. */
+  const ref = db.doc(`liveRaceMatches/${a.ticketId}`);
+  /** Untyped historical persisted document permits removing newer optional fields. */
+  const legacy = (await ref.get()).data()!;
+  delete legacy.observedAtMs;
+  for (const run of legacy.runs) delete run.lastActionAtMs;
+  await ref.set(legacy);
+  await db.doc(`liveRaceTickets/${a.ticketId}`).update({seenAtMs: NOW + 60000});
+  expect(await update(A, a, NOW + 61000)).toMatchObject({phase: "racing", serverNowMs: NOW + 89000, opponent: {correctCount: 2}});
+});

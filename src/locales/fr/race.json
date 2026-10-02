@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Duel enregistré",
     "TITLE": "Course à 10",
     "CLOSE": "Fermer la Course à 10",
     "QUIT_TITLE": "Quitter cette course ?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Passer",
     "RESULT_RECORDED": "Course enregistrée !",
     "RESULT_PLAYER_WIN": "Vous gagnez !",
-    "RESULT_GHOST_WIN": "L’adversaire gagne",
+    "RESULT_OPPONENT_WIN": "L’adversaire gagne",
     "RESULT_TIE": "Égalité !",
     "RESULT_TIMED_OUT": "Temps écoulé",
     "WALL_TIME": "Temps de course",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "La recherche d’adversaire est indisponible pour ce compte.",
     "MATCH_EMPTY": "Aucun adversaire adapté n’est disponible pour le moment. Réessayez plus tard.",
     "CHALLENGE_FRIEND": "Défier un ami",
-    "SHARE_TOURNAMENT": "Partager le tournoi"
+    "SHARE_TOURNAMENT": "Partager le tournoi",
+    "LIVE_START": "Lancer un match PvP",
+    "LIVE_FINDING": "Recherche d’un adversaire…",
+    "LIVE_STARTING": "Début du match",
+    "LIVE_WAIT": "Recherche pendant 1 minute maximum. Ensuite, vous jouerez contre un bot.",
+    "LIVE_BOT": "Robot des énigmes",
+    "LIVE_REWARD": "+{coins} pièces",
+    "LIVE_MODE": "PvP en direct",
+    "LIVE_WAITING_FINISH": "En attendant que votre adversaire termine…"
   }
 }

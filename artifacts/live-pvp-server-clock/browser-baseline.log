@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 5717ms exceeded.
+Call log:
+[2m  - waiting for locator('.race-gameplay .guess-board') to be visible[22m
+
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-stale-clock-browser.mjs:96:50 {
+  log: [
+    "  - waiting for locator('.race-gameplay .guess-board') to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

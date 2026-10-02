@@ -1,0 +1,758 @@
+{
+  "taskId": "multiplayer:race-subscription-daily-fixture",
+  "observedAt": "2026-10-02T12:37:40.949933+00:00",
+  "status": "all-required-commands-passed-source-stability-failed",
+  "requiredCheckCount": 145,
+  "checks": [
+    {
+      "id": "node22-backend-build-and-operator-safeguards",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "node22-isolated-backend-race-coverage",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "backend-types",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "client-race-recovery",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "backend-lint",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "isolated-platform-builds",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "target-dependency-evidence",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "security",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "scalability",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "file-size-limits",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "documented-declarations",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "full-core-tests",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "portal-types",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-event-aggregate-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "client-firebase-target-routing",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-rule-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-checkpoint-isolation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-timeout-reload-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-first-resume-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-private-outcome-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-private-command-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-pending-answer-recovery-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-known-answer-feedback-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-known-answer-reveals-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-answer-free-checkpoints-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-paid-draft-checkpoints-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "timeout-receipt-and-calibration-contracts",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-provider-record-recovery-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-provider-record-deadline-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-responsive-hub-navigation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "injected-provider-capability-recovery-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-draft-reload-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "browser-player-state-deletion",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "complete-client-suite",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "abandoned-race-entry-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "provider-confirmed-outcome-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-keyboard-activation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-draft-cleanup-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-overlay-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-dialog-keyboard-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-quit-focus-recovery-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-quit-focus-containment-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-resume-selection-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-resume-read-observation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-search-journal-observation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-analytics-delivery-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-offline-delivery-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-profile-refresh-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-prefetch-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-rendered-entry-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-provider-rendered-cache-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-dialog-adapter-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-prefetch-development-strict-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-profile-refresh-development-strict-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-dialog-adapter-development-strict-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-session-browser-resource-ownership",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-matchmaking-removal-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-discovery-provider-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-discovery-storage-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-discovery-callback-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-discovery-prompt-cancellation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-retired-search-recovery-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-retirement-shared-journal-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-visibility-retirement-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-visibility-retirement-development-strict-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "invitation-callable-recovery-contracts",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-existing-attempt-authority-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-private-entry-selection-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-existing-opponent-authority-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-private-creator-acceptance-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-entry-effect-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-waiting-selection-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-cancellation-receipt-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-start-selection-authority-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-provider-start-selection-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-start-category-authority-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-entry-run-handoff-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-start-origin-context-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-start-opponent-presence-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "authentication-harness-retained-paths",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-creator-opponent-authority-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-hint-reveal-evidence-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-safety-selection-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-countdown-clock-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-discovery-retry-policy-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-resolver-failure-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-cold-search-retirement-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-cold-search-catalog-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-catalog-retry-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-resolver-reentry-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-provider-observation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-authority-observation-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-timer-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-loader-tail-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-delivery-expiry-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-start-receipt-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-recovery-clock-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-reset-clock-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-authority-clock-ownership-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-restored-attempt-rows-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-projected-attempt-rows-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-integration-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-reddit-history-opt-in-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-keyboard-feedback-strength-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-time-rollover-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-harness-feedback-parity-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-harness-delayed-receipts-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-continuity-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-confirmed-history-ledger-unit",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-confirmed-history-ledger-bounds",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-integration-prototype-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-owned-authority-session-regressions",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-prototype-retained-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-checkpoint-runtime-unit",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-hint-concurrent-history-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-guess-concurrent-history-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-confirmed-guess-retention-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-sparse-history-refresh-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-normalization-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-progression-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-attempt-budget-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-cleanup-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-clock-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-dispatch-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-event-history-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-fallback-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-guess-evidence-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-guess-feedback-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-hints-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-live-progress-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-loader-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-locale-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-paid-evidence-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-private-snapshot-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-readiness-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-reentry-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-storage-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-tick-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-unscored-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "retained-race-wrong-attempt-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-scoring-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-graphemes-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "race-history-whitespace-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "authentication-harness-extraction-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    },
+    {
+      "id": "authentication-unavailable-daily-browser",
+      "status": "passed",
+      "evidence": "Sequential complete-development-task runner reached final source guard after this command."
+    }
+  ],
+  "sourceGuardPassed": false,
+  "dashboardReceiptRecorded": false,
+  "startRevisionEvidence": "Previous task snapshot recorded 83b6a7713afea604cbdee720f114d4a35c9217de; runner does not print its initial revision.",
+  "currentRevision": "8fd48e5da3167791e9cf9f156fce33cc860e68bf",
+  "failure": "Revision changed during verification",
+  "log": "artifacts/race-full-guarded-verification/final-run.log",
+  "changesObserved": [
+    "8fd48e5d Record remaining verification artifacts",
+    "0afd9777 Record final Firebase verification artifacts",
+    "6ee7da15 Complete race history and platform updates"
+  ],
+  "concurrentAudit": {
+    "threadId": "01a0ef3b-6f07-7b31-9444-3732ae46886e",
+    "turnId": "01a0fc99-b2d4-7223-bef8-09c56a57be3e",
+    "status": "inProgress",
+    "observedWork": "Durable background generation job and hosted full-pathway evidence."
+  },
+  "notPerformed": [
+    "dashboard receipt manufacture",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ],
+  "nextAction": "Let concurrent development finish; then rerun all 145 commands against unchanged HEAD and sources before recording dashboard completion."
+}

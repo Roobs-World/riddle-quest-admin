@@ -1,0 +1,14 @@
+{
+  "runStartedAt": "2026-10-02 13:22:19.676608545 +0100",
+  "method": "Files with mtimes after log creation; candidates, not a captured before/after digest comparison.",
+  "files": [
+    {
+      "file": "docs/evidence/full-user-pathways-e2e-2026-10-01.md",
+      "modifiedAt": "2026-10-02T12:31:56.185521+00:00"
+    },
+    {
+      "file": "firebase-functions/packages/core/package.json",
+      "modifiedAt": "2026-10-02T12:26:06.545408+00:00"
+    }
+  ]
+}

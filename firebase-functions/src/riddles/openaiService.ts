@@ -199,6 +199,8 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
 
 /** Context shared by the author and independent editor. */
 export type RiddleGenerationOptions = {
+  /** Durable supply workers can spend longer per model request without delaying gameplay. */
+  background?: boolean;
   /** Stores mode. */
   mode?: "classic" | "daily" | "multiplayer";
   /** Stores category id. */
@@ -211,7 +213,7 @@ export type RiddleGenerationOptions = {
 
 /** Offline bank authoring can wait longer without extending player-facing supply deadlines. */
 const requestOptions = (options: RiddleGenerationOptions) => ({
-  timeout: options.mode === "multiplayer" ? 60_000 : 15_000,
+  timeout: options.mode === "multiplayer" || options.background ? 60_000 : 15_000,
 });
 
 /** Defines difficulty by knowledge and inference rather than answer length. */
@@ -411,7 +413,7 @@ export async function generateUniqueRiddle(
   const answerExclusionPrompt =
     excludedAnswers.length > 0
       ? `\n- Do not use any answer in this exclusion list: ${JSON.stringify(
-          [...new Set(excludedAnswers.map((answer) => normalizeGeneratedText(answer).toLocaleLowerCase()))].slice(-80),
+          [...new Set(excludedAnswers.map((answer) => normalizeGeneratedText(answer).toLocaleLowerCase()))],
         )}.`
       : "";
 

@@ -1101,7 +1101,7 @@ describe("Daily Challenge Functions", () => {
       /** Provides result behavior. */
       const result = await getCurrentClassicRiddle(mockRequest);
 
-      expect(result.error).toBe("No classic riddle available at index 10.");
+      expect(result.error).toBe("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE");
     });
 
     it("falls back to the same playable English index for invalid legacy localized content", async () => {

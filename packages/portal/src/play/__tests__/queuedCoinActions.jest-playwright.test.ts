@@ -215,6 +215,62 @@ describeBrowser("queued coin actions", () => {
     }
   });
 
+  it("hides the skipped question until an unavailable successor recovers", async () => {
+    /** Isolated page exercising the real paid Skip and question-loading bridge. */
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    page.setDefaultTimeout(4_000);
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
+      await completeMockOnboarding(page);
+      await page.getByText(/what has keys/i).waitFor();
+      await page.evaluate(() => {
+        /** Original dispatcher retained to deliver the recovered successor. */
+        const dispatch = window.dispatchEvent.bind(window);
+        window.dispatchEvent = (event: Event) => {
+          /** Correlated bridge message intercepted at the failed question-load boundary. */
+          const message = (event as CustomEvent).detail;
+          if (event.type === "riddle-quest:host-to-game" && message?.type === "host:riddleLoaded" && message.requestId?.startsWith("skip-")) {
+            if (!message.requestId.startsWith("skip-preview-")) {
+              Reflect.set(window, "__heldSkipSuccessor", message);
+              dispatch(new CustomEvent("riddle-quest:host-to-game", {detail: {
+                type: "host:operationResult", requestId: message.requestId,
+                payload: {operation: "loadRiddle", ok: false, error: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"},
+              }}));
+            }
+            return true;
+          }
+          return dispatch(event);
+        };
+        Reflect.set(window, "__releaseSkipSuccessor", () => dispatch(new CustomEvent("riddle-quest:host-to-game", {
+          detail: Reflect.get(window, "__heldSkipSuccessor"),
+        })));
+      });
+      /** Confirmed initial balance before the single Skip purchase. */
+      const coinsBefore = Number((await page.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
+      await page.getByRole("button", {name: /^skip$/i}).click();
+      await page.locator(".modal-skip .play-primary").first().click();
+      await page.waitForFunction(() => Reflect.has(window, "__heldSkipSuccessor"));
+      await expect(page.getByRole("status")).toContainText("Service temporarily unavailable");
+      await expect(page.locator(".keyboard")).toHaveCount(0);
+      await expect(page.locator(".riddle-card")).toHaveCount(0);
+      await expect(page.getByRole("button", {name: /^settings$/i})).toBeEnabled();
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 200));
+      await page.evaluate(() => Reflect.get(window, "__releaseSkipSuccessor")());
+      await page.getByText(/face and hands/i).waitFor();
+      await expect(page.locator(".keyboard")).toBeVisible();
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 200));
+    } finally {
+      await page.close();
+    }
+  });
+
   it.each([
     {action: "hint", recovery: "confirm"},
     {action: "skip", recovery: "confirm"},

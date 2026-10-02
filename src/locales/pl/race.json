@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Nagrany pojedynek",
     "TITLE": "Wyścig do 10",
     "CLOSE": "Zamknij wyścig",
     "QUIT_TITLE": "Opuścić ten wyścig?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Pomiń",
     "RESULT_RECORDED": "Wyścig zapisany!",
     "RESULT_PLAYER_WIN": "Wygrywasz!",
-    "RESULT_GHOST_WIN": "Wygrywa rywal",
+    "RESULT_OPPONENT_WIN": "Wygrywa rywal",
     "RESULT_TIE": "Remis!",
     "RESULT_TIMED_OUT": "Koniec czasu",
     "WALL_TIME": "Czas wyścigu",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Wyszukiwanie przeciwników jest niedostępne dla tego konta.",
     "MATCH_EMPTY": "Nie ma jeszcze odpowiednich przeciwników. Spróbuj ponownie później.",
     "CHALLENGE_FRIEND": "Rzuć wyzwanie znajomemu",
-    "SHARE_TOURNAMENT": "Udostępnij turniej"
+    "SHARE_TOURNAMENT": "Udostępnij turniej",
+    "LIVE_START": "Rozpocznij mecz PvP",
+    "LIVE_FINDING": "Szukanie przeciwnika…",
+    "LIVE_STARTING": "Rozpoczynanie meczu",
+    "LIVE_WAIT": "Szukanie trwa maksymalnie 1 minutę. Potem zagrasz z botem.",
+    "LIVE_BOT": "Bot zagadek",
+    "LIVE_REWARD": "+{coins} monet",
+    "LIVE_MODE": "PvP na żywo",
+    "LIVE_WAITING_FINISH": "Czekamy, aż przeciwnik skończy…"
   }
 }

@@ -12,8 +12,9 @@ export function RaceGameplay({
   viewportRef,
   gameplayRef,
   run,
+  live = false,
   adjustedNow,
-  ghostCorrect,
+  opponentCorrect,
   feedback,
   coins,
   currentLetters,
@@ -38,10 +39,12 @@ export function RaceGameplay({
   gameplayRef: RefObject<HTMLDivElement | null>;
   /** Stores run. */
   run: RaceRunView;
+  /** Selects live PvP header wording. */
+  live?: boolean;
   /** Stores adjusted now. */
   adjustedNow: number;
-  /** Stores ghost correct. */
-  ghostCorrect: number;
+  /** Server-confirmed opponent score. */
+  opponentCorrect: number;
   /** Stores feedback. */
   feedback: "correct" | "incorrect" | null;
   /** Stores coins. */
@@ -82,10 +85,10 @@ export function RaceGameplay({
   return (
     <div ref={viewportRef} className="race-gameplay-viewport">
       <div ref={gameplayRef} className="race-gameplay">
-        <RaceScoreboard
+        <RaceScoreboard live={live}
           run={run}
           adjustedNow={adjustedNow}
-          ghostCorrect={ghostCorrect}
+          opponentCorrect={opponentCorrect}
           feedback={feedback}
           coins={coins}
           onClose={onClose}

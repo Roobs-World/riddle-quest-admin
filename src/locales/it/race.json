@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Duello registrato",
     "TITLE": "Corsa a 10",
     "CLOSE": "Chiudi la corsa",
     "QUIT_TITLE": "Uscire da questa corsa?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Salta",
     "RESULT_RECORDED": "Corsa registrata!",
     "RESULT_PLAYER_WIN": "Hai vinto!",
-    "RESULT_GHOST_WIN": "Vince l’avversario",
+    "RESULT_OPPONENT_WIN": "Vince l’avversario",
     "RESULT_TIE": "Pareggio!",
     "RESULT_TIMED_OUT": "Tempo scaduto",
     "WALL_TIME": "Tempo di gara",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "La ricerca degli avversari non è disponibile per questo account.",
     "MATCH_EMPTY": "Al momento non ci sono avversari adatti. Riprova più tardi.",
     "CHALLENGE_FRIEND": "Sfida un amico",
-    "SHARE_TOURNAMENT": "Condividi torneo"
+    "SHARE_TOURNAMENT": "Condividi torneo",
+    "LIVE_START": "Avvia partita PvP",
+    "LIVE_FINDING": "Ricerca avversario…",
+    "LIVE_STARTING": "Inizio partita",
+    "LIVE_WAIT": "Ricerca fino a 1 minuto. Poi giocherai contro un bot.",
+    "LIVE_BOT": "Bot degli indovinelli",
+    "LIVE_REWARD": "+{coins} monete",
+    "LIVE_MODE": "PvP dal vivo",
+    "LIVE_WAITING_FINISH": "In attesa che l’avversario finisca…"
   }
 }

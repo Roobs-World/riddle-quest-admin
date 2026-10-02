@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "記録対戦",
     "TITLE": "10問レース",
     "CLOSE": "10問レースを閉じる",
     "QUIT_TITLE": "このレースを終了しますか？",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "スキップ",
     "RESULT_RECORDED": "記録完了！",
     "RESULT_PLAYER_WIN": "あなたの勝ち！",
-    "RESULT_GHOST_WIN": "相手の勝ち",
+    "RESULT_OPPONENT_WIN": "相手の勝ち",
     "RESULT_TIE": "引き分け！",
     "RESULT_TIMED_OUT": "時間切れ",
     "WALL_TIME": "レース時間",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "このアカウントでは対戦相手を検索できません。",
     "MATCH_EMPTY": "現在、適切な対戦相手がいません。後でもう一度お試しください。",
     "CHALLENGE_FRIEND": "友達に挑戦",
-    "SHARE_TOURNAMENT": "大会をシェア"
+    "SHARE_TOURNAMENT": "大会をシェア",
+    "LIVE_START": "PvP対戦を開始",
+    "LIVE_FINDING": "対戦相手を検索中…",
+    "LIVE_STARTING": "対戦開始",
+    "LIVE_WAIT": "最大1分間検索します。その後はボットと対戦します。",
+    "LIVE_BOT": "なぞなぞボット",
+    "LIVE_REWARD": "+{coins}コイン",
+    "LIVE_MODE": "リアルタイムPvP",
+    "LIVE_WAITING_FINISH": "対戦相手の終了を待っています…"
   }
 }

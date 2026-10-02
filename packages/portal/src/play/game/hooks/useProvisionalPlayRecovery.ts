@@ -907,7 +907,15 @@ export function useProvisionalPlayRecovery({
     }
   }, [dispatch, enqueueCoinAction, postToHost, state.locale, state.riddle, stateRef]);
 
+  /** Hide only the discarded session while its paid Skip or successor is outstanding. */
+  const waitingForSkippedRiddle = coinActionPending && Boolean(state.riddle) && (
+    (journalRef.current?.coinAction?.type === "game:skipRiddle" &&
+      journalRef.current.coinAction.payload.sessionToken === state.riddle?.sessionToken) ||
+    skipLoadRef.current?.sessionToken === state.riddle?.sessionToken
+  );
+
   return {
+    waitingForSkippedRiddle,
     canSubmit,
     submitGuess,
     handleQueuedGuessResult,

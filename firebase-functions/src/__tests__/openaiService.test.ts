@@ -366,7 +366,22 @@ describe("OpenAI Service", () => {
       for (const [, options] of mockParse.mock.calls) expect(options).toEqual({timeout: 60_000});
     });
 
-    test("rejects excluded answers outside the bounded prompt history before paying for reviews", async () => {
+    test("authors a usable candidate when existing answers exceed the prompt history window", async () => {
+      /** Existing catalog whose oldest answer previously vanished from the model's instructions. */
+      const excluded = ["rainbow", ...Array.from({length: 100}, (_, index) =>
+        `old${String.fromCharCode(97 + Math.floor(index / 26))}${String.fromCharCode(97 + index % 26)}`)];
+      // The author honors the exclusion list it receives, rather than guessing hidden catalog entries.
+      mockParse.mockImplementationOnce((request: {input: string}) => request.input.includes('"rainbow"')
+        ? parsedRiddleResponse("Which musical instrument has keys, strings and pedals?", "piano")
+        : parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"));
+      mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("piano"))
+        .mockResolvedValueOnce(approvedReviewResponse());
+      await expect(generateUniqueRiddle("en", excluded, {mode: "classic", background: true}))
+        .resolves.toEqual(["Which musical instrument has keys, strings and pedals?", "piano"]);
+      expect(mockParse).toHaveBeenCalledTimes(3);
+    });
+
+    test("rejects repeated answers before paying for reviews", async () => {
       mockParse.mockResolvedValueOnce(
         parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"),
       );

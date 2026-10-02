@@ -1,12 +1,11 @@
 import {admin} from "../shared/firebaseAdmin";
 import * as functions from "firebase-functions";
 import type {SupportedLocale} from "@qwordly/core/validation";
-import {RIDDLE_GENERATION_BATCH_SIZE, RIDDLE_GENERATION_THRESHOLD} from "../shared/constants";
-import * as riddleGeneration from "./riddleGeneration";
+import {RIDDLE_GENERATION_THRESHOLD} from "../shared/constants";
 import {captureException} from "../shared/sentry";
 
 /** Defines the riddle supply requests collection value. */
-const RIDDLE_SUPPLY_REQUESTS_COLLECTION = "riddleSupplyRequests";
+const RIDDLE_SUPPLY_REQUESTS_COLLECTION = "classicSupplyJobs";
 
 /** Indicates whether is already exists error. */
 function isAlreadyExistsError(error: unknown): boolean {
@@ -21,7 +20,7 @@ function isAlreadyExistsError(error: unknown): boolean {
   return code === 6 || code === "already-exists" || code === "6";
 }
 
-/** Replenishes localized classic riddles when a player nears the end of supply. */
+/** Durably requests localized supply without running the model in a player request. */
 export async function triggerClassicRiddleGenerationIfNeeded(
   userId: string,
   currentClassicIndex: number,
@@ -59,6 +58,7 @@ export async function triggerClassicRiddleGenerationIfNeeded(
         locale,
         highestClassicIndex,
         requestedAt: admin.firestore.FieldValue.serverTimestamp(),
+        nextAttemptAtMs: 0,
       });
     } catch (error) {
       if (isAlreadyExistsError(error)) {
@@ -68,22 +68,7 @@ export async function triggerClassicRiddleGenerationIfNeeded(
       throw error;
     }
 
-    functions.logger.info(
-      `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
-    );
-    try {
-      await riddleGeneration.generateLocalizedClassicRiddlesForLocale(locale, RIDDLE_GENERATION_BATCH_SIZE);
-      functions.logger.info(
-        `Successfully triggered generation of ${RIDDLE_GENERATION_BATCH_SIZE} new classic riddles.`,
-      );
-    } catch (error) {
-      await requestRef.delete().catch((cleanupError) => {
-        functions.logger.error("Error releasing failed riddle replenishment claim:", cleanupError);
-        captureException(cleanupError);
-      });
-      functions.logger.error("Error triggering generation of new classic riddles:", error);
-      captureException(error);
-    }
+    functions.logger.info("Queued Classic replenishment without delaying gameplay.", {locale, highestClassicIndex});
   } catch (error) {
     functions.logger.error("Error checking classic riddle count:", error);
     captureException(error);

@@ -62,7 +62,7 @@ describe("riddle supply", () => {
     mockOrderBy.mockReturnValue(query);
     mockLimit.mockReturnValue(query);
     mockDoc.mockReturnValue({create: mockCreate, delete: mockDelete});
-    mockCollection.mockImplementation((path: string) => (path === "riddleSupplyRequests" ? {doc: mockDoc} : query));
+    mockCollection.mockImplementation((path: string) => (path === "classicSupplyJobs" ? {doc: mockDoc} : query));
     mockCreate.mockResolvedValue(undefined);
     mockDelete.mockResolvedValue(undefined);
     mockGenerateForLocale.mockResolvedValue(undefined);
@@ -79,14 +79,29 @@ describe("riddle supply", () => {
     expect(mockGenerateForLocale).not.toHaveBeenCalled();
   });
 
-  it("claims and replenishes a low locale exactly once", async () => {
+  it("does not hold gameplay completion open while the model is generating", async () => {
+    mockGet.mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 20})}]});
+    let releaseGeneration: () => void;
+    const modelPending = new Promise<void>((resolve) => { releaseGeneration = resolve; });
+    mockGenerateForLocale.mockReturnValue(modelPending);
+    const completion = triggerClassicRiddleGenerationIfNeeded("player-1", 21, "ar");
+    const outcome = await Promise.race([
+      completion.then(() => "returned"),
+      new Promise<string>((resolve) => setTimeout(() => resolve("model-blocked"), 100)),
+    ]);
+    releaseGeneration!();
+    await completion;
+    expect(outcome).toBe("returned");
+  });
+
+  it("durably queues a low locale without invoking generation", async () => {
     mockGet.mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 11})}]});
 
     await triggerClassicRiddleGenerationIfNeeded("player-1", 10, "fr");
 
     expect(mockDoc).toHaveBeenCalledWith("fr_11");
-    expect(mockCreate).toHaveBeenCalledWith({locale: "fr", highestClassicIndex: 11, requestedAt: "server-time"});
-    expect(mockGenerateForLocale).toHaveBeenCalledTimes(1);
+    expect(mockCreate).toHaveBeenCalledWith({locale: "fr", highestClassicIndex: 11, requestedAt: "server-time", nextAttemptAtMs: 0});
+    expect(mockGenerateForLocale).not.toHaveBeenCalled();
   });
 
   it("does not duplicate generation when another request owns the claim", async () => {
@@ -120,30 +135,6 @@ describe("riddle supply", () => {
       expect(mockGenerateForLocale).not.toHaveBeenCalled();
     },
   );
-
-  it("releases the claim after failed generation so a later request can retry", async () => {
-    mockGet.mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 11})}]});
-    mockGenerateForLocale.mockRejectedValue(new Error("generation failed"));
-
-    await triggerClassicRiddleGenerationIfNeeded("player-1", 10, "fr");
-
-    expect(mockDelete).toHaveBeenCalledTimes(1);
-  });
-
-  it("reports a failed claim cleanup", async () => {
-    /** Provides generation error behavior. */
-    const generationError = new Error("generation failed");
-    /** Provides cleanup error behavior. */
-    const cleanupError = new Error("cleanup failed");
-    mockGet.mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: undefined})}]});
-    mockGenerateForLocale.mockRejectedValue(generationError);
-    mockDelete.mockRejectedValue(cleanupError);
-
-    await triggerClassicRiddleGenerationIfNeeded("player-1", 0, "fr");
-
-    expect(mockCaptureException).toHaveBeenCalledWith(cleanupError);
-    expect(mockCaptureException).toHaveBeenCalledWith(generationError);
-  });
 
   it("reports a failed highest-index query", async () => {
     /** Provides query error behavior. */

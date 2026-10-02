@@ -169,6 +169,18 @@ export function useHostRaceCoordination({
     [accountScope, applyCoinBalance, authSnapshot.user, identity, lifetime, postToGame, replaceProfile],
   );
 
+  useEffect(() => {
+    /** Refresh authority after a live victory without trusting event currency fields. */
+    const completed = (event: Event) => {
+      if ((event as CustomEvent<{
+        /** Account whose authoritative balance should be reloaded. */
+        ownerId?: string;
+      }>).detail?.ownerId === authSnapshot.user?.uid) void syncProgress({});
+    };
+    window.addEventListener("riddle-quest:live-race-completed", completed);
+    return () => window.removeEventListener("riddle-quest:live-race-completed", completed);
+  }, [authSnapshot.user?.uid, syncProgress]);
+
   /** Never expose a previous catalog during the replacement render before effects run. */
   const prefetchedCategories = prefetched?.scope === prefetchScope && accountScope?.() !== false ? prefetched.categories : [];
   return {enabled, prefetchedCategories, syncProgress};

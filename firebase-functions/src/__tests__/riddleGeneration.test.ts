@@ -985,5 +985,33 @@ describe("riddleGeneration", () => {
     });
   });
 
+  describe("durable supply deadline", () => {
+    test("stores a quality-approved partial batch before returning at the worker deadline", async () => {
+      let clock = 1000;
+      const date = jest.spyOn(Date, "now").mockImplementation(() => clock);
+      mockGenerateUniqueRiddle.mockImplementation(async () => {
+        clock = 2000;
+        return ["A fruit with crisp flesh and a core?", "apple"];
+      });
+      try {
+        await riddleGeneration.generateLocalizedClassicRiddlesForLocale("ar", 5, 2000);
+        expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(1);
+        expect(mockGenerateUniqueRiddle.mock.calls[0][2].background).toBe(true);
+        expect(mockSet).toHaveBeenCalledTimes(1);
+        expect(mockCommit).toHaveBeenCalledTimes(1);
+      } finally { date.mockRestore(); }
+    });
+    test("rejects an empty batch at the deadline so the durable job stays retryable", async () => {
+      let clock = 1000;
+      const date = jest.spyOn(Date, "now").mockImplementation(() => clock);
+      mockGenerateUniqueRiddle.mockImplementation(async () => {clock = 2000; return null;});
+      try {
+        await expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale("ar", 5, 2000)).rejects.toThrow("Failed to generate any unique classic riddles");
+        expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(1);
+        expect(mockSet).not.toHaveBeenCalled();
+      } finally {date.mockRestore();}
+    });
+  });
+
   // Integration tests removed to reduce memory usage and test complexity
 });

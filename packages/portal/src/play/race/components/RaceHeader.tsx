@@ -41,7 +41,7 @@ function RaceCloseButton({
 function RaceTitle() {
   return (
     <>
-      <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
+      <span className="race-kicker">{tr("RaceTo10.LIVE_MODE")}</span>
       <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
     </>
   );
@@ -53,7 +53,9 @@ export const RaceTopbar = memo(function RaceTopbar({
   onClose,
 }: {
   /** Stores coins. */
-  coins: number; /** Stores on close. */
+  coins: number;
+  /** Selects live PvP chrome. */ live?: boolean;
+  /** Stores on close. */
   /** Stores on close. */
   onClose: () => void;
 }) {
@@ -76,7 +78,9 @@ export const RaceRailHeader = memo(function RaceRailHeader({
   closeBusy = false,
 }: {
   /** Stores coins. */
-  coins: number; /** Stores on close. */
+  coins: number;
+  /** Selects live PvP chrome. */ live?: boolean;
+  /** Stores on close. */
   /** Stores on close. */
   onClose: () => void;
   /** Whether authoritative cleanup is completing before close. */

@@ -342,7 +342,14 @@ export const createPlayHostMessageHandlers = ({
       });
     } catch (error) {
       reportHostOperationError(error, "spendCoins");
-      postOperation(message.requestId, "spendCoins", false, undefined, getHostErrorMessage(error));
+      postOperation(
+        message.requestId,
+        "spendCoins",
+        false,
+        undefined,
+        getHostErrorMessage(error),
+        coinActionErrorKind(error),
+      );
     }
   },
   skipRiddle: async (message) => {

@@ -534,6 +534,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       if (!state.riddle || action.riddleId !== state.riddle.riddleId ||
         action.sessionToken !== state.riddle.sessionToken || state.guessPending || state.lastOutcome ||
         (state.engineSnapshot?.attemptsUsed ?? 0) > state.riddle.attemptsUsed ||
+        // A provider save may predate the replayed Continue grant for this session.
+        (state.engineSnapshot?.hasUsedContinue && !state.riddle.hasUsedContinue) ||
         action.currentLetters.length !== state.riddle.answerLength) {
         return state;
       }

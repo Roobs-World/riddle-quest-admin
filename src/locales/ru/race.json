@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Записанный поединок",
     "TITLE": "Гонка до 10",
     "CLOSE": "Закрыть гонку",
     "QUIT_TITLE": "Выйти из гонки?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Пропустить",
     "RESULT_RECORDED": "Результат записан!",
     "RESULT_PLAYER_WIN": "Вы победили!",
-    "RESULT_GHOST_WIN": "Победил соперник",
+    "RESULT_OPPONENT_WIN": "Победил соперник",
     "RESULT_TIE": "Ничья!",
     "RESULT_TIMED_OUT": "Время вышло",
     "WALL_TIME": "Время гонки",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Поиск соперника недоступен для этого аккаунта.",
     "MATCH_EMPTY": "Подходящих соперников пока нет. Попробуйте позже.",
     "CHALLENGE_FRIEND": "Бросить вызов другу",
-    "SHARE_TOURNAMENT": "Поделиться турниром"
+    "SHARE_TOURNAMENT": "Поделиться турниром",
+    "LIVE_START": "Начать PvP-матч",
+    "LIVE_FINDING": "Поиск соперника…",
+    "LIVE_STARTING": "Матч начинается",
+    "LIVE_WAIT": "Поиск длится не более 1 минуты. Затем вы сыграете с ботом.",
+    "LIVE_BOT": "Бот загадок",
+    "LIVE_REWARD": "+{coins} монет",
+    "LIVE_MODE": "PvP в реальном времени",
+    "LIVE_WAITING_FINISH": "Ожидание завершения соперника…"
   }
 }

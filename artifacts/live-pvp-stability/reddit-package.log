@@ -1,0 +1,70 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm stage:client && pnpm build:server && pnpm validate
+$ node scripts/stage-client.mjs
+Staged isolated Reddit client as splash.html and game.html
+$ pnpm --filter @qwordly/core build
+../../firebase-functions                 | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+$ vite build
+vite v8.3.1 building ssr environment for production...
+transforming...
+✓ 395 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/server/index.cjs  2,925.95 kB │ gzip: 354.66 kB
+
+✓ built in 87ms
+$ pnpm check:types && pnpm test && node scripts/validate-package.mjs
+$ tsc6 -p tsconfig.json --noEmit
+$ node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs
+✔ the trusted Reddit server builds Core before resolving its generated package exports (0.505387ms)
+✔ workspace build and verification assemble the trusted Reddit package from the isolated client (0.09504ms)
+✔ the Reddit server build replaces its target directory instead of retaining stale release files (76.24198ms)
+✔ direct Devvit mutations fail closed in favor of the immutable release handoff (0.504485ms)
+✔ the package release mutations exit non-zero without invoking Devvit (494.947991ms)
+✔ redacts credentials, provider IDs, profiles and URL query data (1.269054ms)
+✔ rejects unknown types, invalid provenance, residual sensitive values and oversized input (0.571472ms)
+✔ source digests are stable and byte-sensitive (0.272787ms)
+✔ accepts only complete hosted deployment, immutable artifact, approval and device evidence (0.989634ms)
+✔ gate binds clean source provenance and exact package bytes (4.988508ms)
+✔ release preparation checks clean source before building and requires both entrypoints (0.721276ms)
+✔ handoff is immutable, single-link, and hash verified (1.898265ms)
+✔ exclusive retry barrier preserves ambiguous outcomes (1.511382ms)
+✔ concurrent barrier transitions serialize (1.379132ms)
+✔ playtest uploads reject missing, stable, malformed, and extra version arguments before running commands (0.653247ms)
+✔ a private upload retains uncertainty and blocks later versions before running commands (1.957407ms)
+✔ a failed package check leaves no attempted upload and can be corrected (0.39596ms)
+✔ accepted versions are immutable and explicit resolution preserves original failure evidence (0.919211ms)
+✔ separate processes cannot validate or transmit while another playtest owns the lock (18.12093ms)
+✔ process interruption preserves the lock and orphan attempt until explicit recovery (16.667969ms)
+✔ corrupt and orphaned journal evidence fails closed before validation (0.603122ms)
+✔ requires sanitized provenance-bound fixtures for every hosted contract (14.84151ms)
+✔ promotion evidence is bound to the retained read-only candidate (7.941131ms)
+✔ overlapping install, upgrade and moderator calls submit only one canonical post (3.028456ms)
+✔ an ambiguous provider failure remains pending across retries (0.330637ms)
+✔ Redis claim failure never reaches the provider creation boundary (0.467877ms)
+✔ ambiguous post persistence preserves pending or accepted state without resubmitting (0.233743ms)
+✔ missing retained posts and malformed records never authorize replacement (0.285511ms)
+✔ a losing claim reads the winner's completed post without submitting again (0.123303ms)
+✔ invalid provider identifiers remain pending and are never cached as acceptance (0.262397ms)
+✔ identity kill switch degrades to guest core play only for the exact disabled response (2.110928ms)
+✔ matches the Firebase verifier canonical signature fixture byte-for-byte (0.525275ms)
+✔ recovers only matching account and environment orders across bounded pages (1.025823ms)
+✔ fails closed on oversized pages, cursor replay and grant failure (0.260303ms)
+✔ derives stable isolated opaque recovery keys (0.771541ms)
+✔ rejects malformed scope and weak secrets (0.142039ms)
+✔ projects exact paid and reverted Reddit orders (0.854999ms)
+✔ rejects forged identity, lifecycle, environment, price, SKU, accounting and bundles (0.175723ms)
+✔ projects only paid or delivered orders carrying one exact opaque account tag (0.324966ms)
+✔ accepts only HTTPS Reddit-owned avatar delivery hosts (0.371313ms)
+✔ injects only the server environment into exact referral requests (0.620796ms)
+✔ rejects client environment, extra fields, malformed bodies and invalid deployment configuration (0.150355ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 525.59758
+Devvit package contract passed: 416 regular files/7.13 MiB, isolated inline/game client, CJS server, Redis, and one gateway host

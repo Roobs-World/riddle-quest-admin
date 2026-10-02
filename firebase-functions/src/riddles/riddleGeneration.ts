@@ -24,6 +24,8 @@ export {generateLocalizedTodaysDailyChallenge} from "../daily/dailyRiddleGenerat
 export async function generateLocalizedClassicRiddlesForLocale(
   locale: SupportedLocale,
   numberOfRiddles: number,
+  /** Worker deadline bounds retries while preserving all content quality checks. */
+  workerDeadlineAtMs?: number,
 ): Promise<void> {
   logger.info(`Generating ${numberOfRiddles} new classic riddles for locale ${locale}...`);
 
@@ -56,13 +58,14 @@ export async function generateLocalizedClassicRiddlesForLocale(
   /** Provides attempt count behavior. */
   let attemptCount = 0;
 
-  while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
+  while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts &&
+    (workerDeadlineAtMs === undefined || Date.now() < workerDeadlineAtMs)) {
     attemptCount++;
     /** Provides riddle behavior. */
     const riddle = await generateUniqueRiddle(
       locale,
       [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
-      {mode: "classic", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+      {mode: "classic", background: workerDeadlineAtMs !== undefined, excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
     );
     if (!riddle) {
       logger.warn(
@@ -103,7 +106,7 @@ export async function generateLocalizedClassicRiddlesForLocale(
     generatedAttempts.push(newRiddle);
   }
 
-  if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
+  if (newRiddles.length < numberOfRiddles && (attemptCount >= maxAttempts || workerDeadlineAtMs !== undefined)) {
     logger.warn(
       `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} classic riddles for locale ${locale} after ${maxAttempts} attempts`,
     );

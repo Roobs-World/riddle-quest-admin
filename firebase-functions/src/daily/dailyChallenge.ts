@@ -1,3 +1,4 @@
+import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
 import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import * as functions from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
@@ -449,9 +450,10 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       /** Provides playable behavior. */
       let playable = await getPlayableClassicRiddle(classicIndex, locale);
       if (!playable) {
+        await triggerClassicRiddleGenerationIfNeeded(request.auth.uid, classicIndex, locale as (typeof SUPPORTED_LOCALES)[number]);
         return validateCallableResponse(
           GetCurrentDailyChallengeResponseSchema,
-          {error: `No classic riddle available at index ${classicIndex}.`},
+          {error: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"},
           "getCurrentClassicRiddle",
         );
       }
@@ -498,9 +500,10 @@ export const getCurrentClassicRiddle = onCallWithSentry(
           classicIndex = reconciledIndex;
           playable = await getPlayableClassicRiddle(classicIndex, locale);
           if (!playable) {
+            await triggerClassicRiddleGenerationIfNeeded(request.auth.uid, classicIndex, locale as (typeof SUPPORTED_LOCALES)[number]);
             return validateCallableResponse(
               GetCurrentDailyChallengeResponseSchema,
-              {error: `No classic riddle available at index ${classicIndex}.`},
+              {error: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"},
               "getCurrentClassicRiddle",
             );
           }

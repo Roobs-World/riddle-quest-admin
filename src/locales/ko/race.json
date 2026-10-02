@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "기록 대결",
     "TITLE": "10문제 레이스",
     "CLOSE": "레이스 닫기",
     "QUIT_TITLE": "이 레이스를 종료할까요?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "건너뛰기",
     "RESULT_RECORDED": "기록 완료!",
     "RESULT_PLAYER_WIN": "승리!",
-    "RESULT_GHOST_WIN": "상대 승리",
+    "RESULT_OPPONENT_WIN": "상대 승리",
     "RESULT_TIE": "무승부!",
     "RESULT_TIMED_OUT": "시간 종료",
     "WALL_TIME": "레이스 시간",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "이 계정에서는 상대를 검색할 수 없습니다.",
     "MATCH_EMPTY": "아직 적합한 상대가 없습니다. 나중에 다시 시도하세요.",
     "CHALLENGE_FRIEND": "친구에게 도전",
-    "SHARE_TOURNAMENT": "토너먼트 공유"
+    "SHARE_TOURNAMENT": "토너먼트 공유",
+    "LIVE_START": "PvP 대전 시작",
+    "LIVE_FINDING": "상대를 찾는 중…",
+    "LIVE_STARTING": "대전 시작",
+    "LIVE_WAIT": "최대 1분 동안 찾습니다. 이후에는 봇과 대전합니다.",
+    "LIVE_BOT": "수수께끼 봇",
+    "LIVE_REWARD": "+{coins} 코인",
+    "LIVE_MODE": "실시간 PvP",
+    "LIVE_WAITING_FINISH": "상대가 끝내기를 기다리는 중…"
   }
 }

@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "रिकॉर्डेड मुकाबला",
     "TITLE": "10 तक रेस",
     "CLOSE": "रेस बंद करें",
     "QUIT_TITLE": "यह रेस छोड़ें?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "छोड़ें",
     "RESULT_RECORDED": "रेस रिकॉर्ड हुई!",
     "RESULT_PLAYER_WIN": "आप जीते!",
-    "RESULT_GHOST_WIN": "प्रतिद्वंद्वी जीता",
+    "RESULT_OPPONENT_WIN": "प्रतिद्वंद्वी जीता",
     "RESULT_TIE": "बराबरी!",
     "RESULT_TIMED_OUT": "समय समाप्त",
     "WALL_TIME": "रेस का समय",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "इस खाते के लिए प्रतिद्वंद्वी की खोज उपलब्ध नहीं है।",
     "MATCH_EMPTY": "अभी कोई उपयुक्त प्रतिद्वंद्वी उपलब्ध नहीं है। बाद में फिर कोशिश करें।",
     "CHALLENGE_FRIEND": "दोस्त को चुनौती दें",
-    "SHARE_TOURNAMENT": "टूर्नामेंट साझा करें"
+    "SHARE_TOURNAMENT": "टूर्नामेंट साझा करें",
+    "LIVE_START": "PvP मैच शुरू करें",
+    "LIVE_FINDING": "प्रतिद्वंद्वी खोज रहे हैं…",
+    "LIVE_STARTING": "मैच शुरू हो रहा है",
+    "LIVE_WAIT": "अधिकतम 1 मिनट तक खोजेंगे। फिर आप बॉट के विरुद्ध खेलेंगे।",
+    "LIVE_BOT": "पहेली बॉट",
+    "LIVE_REWARD": "+{coins} सिक्के",
+    "LIVE_MODE": "लाइव PvP",
+    "LIVE_WAITING_FINISH": "प्रतिद्वंद्वी के समाप्त करने की प्रतीक्षा है…"
   }
 }

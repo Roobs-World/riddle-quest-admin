@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Đấu bản ghi",
     "TITLE": "Đua đến 10",
     "CLOSE": "Đóng cuộc đua",
     "QUIT_TITLE": "Thoát cuộc đua này?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Bỏ qua",
     "RESULT_RECORDED": "Đã ghi lại cuộc đua!",
     "RESULT_PLAYER_WIN": "Bạn thắng!",
-    "RESULT_GHOST_WIN": "Đối thủ thắng",
+    "RESULT_OPPONENT_WIN": "Đối thủ thắng",
     "RESULT_TIE": "Hòa!",
     "RESULT_TIMED_OUT": "Hết giờ",
     "WALL_TIME": "Thời gian đua",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Tài khoản này không thể tìm đối thủ.",
     "MATCH_EMPTY": "Hiện chưa có đối thủ phù hợp. Hãy thử lại sau.",
     "CHALLENGE_FRIEND": "Thách đấu bạn bè",
-    "SHARE_TOURNAMENT": "Chia sẻ giải đấu"
+    "SHARE_TOURNAMENT": "Chia sẻ giải đấu",
+    "LIVE_START": "Bắt đầu trận PvP",
+    "LIVE_FINDING": "Đang tìm đối thủ…",
+    "LIVE_STARTING": "Bắt đầu trận đấu",
+    "LIVE_WAIT": "Tìm tối đa 1 phút. Sau đó bạn sẽ đấu với bot.",
+    "LIVE_BOT": "Bot Câu đố",
+    "LIVE_REWARD": "+{coins} xu",
+    "LIVE_MODE": "PvP trực tiếp",
+    "LIVE_WAITING_FINISH": "Đang chờ đối thủ hoàn thành…"
   }
 }

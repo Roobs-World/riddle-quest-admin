@@ -64,6 +64,7 @@
     "verify:all-targets": "pnpm build:all-targets && pnpm test:youtube:unit && pnpm test:release-scripts && PORTAL_USE_EXISTING_BUILD=1 pnpm test:jest-local:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:facebook:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:reddit:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:youtube:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:standalone:playwright",
     "test:jest-local:playwright": "pnpm test:game-browser:playwright && pnpm test:jest-auth:playwright",
     "test:jest-deployed:playwright": "PORTAL_DEPLOYED_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/deployedJest.jest-playwright.test.ts",
+    "test:race:live:browser": "node scripts/verify-live-race-browser.mjs",
     "test:jest-multiplayer:live": "node scripts/verify-jest-multiplayer-live.mjs",
     "test:jest-payments:live": "node scripts/verify-jest-payments-live.mjs",
     "test:jest-subscription:live": "node scripts/verify-jest-subscription-live.mjs",

@@ -514,3 +514,8 @@ export const getRaceEntry = httpsCallable<{
     includeExistingAttempt?: boolean}, RaceEntryResponse>(raceFunctions, "getRaceEntry");
 /** Cancels only a creator-owned reservation, preserving reusable public challenges. */
 export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntryResponse>(raceFunctions, "cancelRaceInvite");
+
+/** Authenticated live matchmaking and input transports. */
+export const joinLiveRace = httpsCallable<import("@qwordly/core/race").JoinLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "joinLiveRace");
+/** Reads live progress and commits idempotent commands. */
+export const updateLiveRace = httpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "updateLiveRace");

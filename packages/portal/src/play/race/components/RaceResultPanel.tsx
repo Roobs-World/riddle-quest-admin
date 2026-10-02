@@ -50,7 +50,7 @@ export function RaceResultPanel({
   const opponentCorrect = getGhostCorrectCount(run?.opponent, outcome.adjustedFinishMs);
   return (
     <div className="race-panel race-result" aria-live="polite">
-      <h2>{tr(`RaceTo10.RESULT_${outcome.result.toUpperCase()}`)}</h2>
+      <h2>{tr(`RaceTo10.RESULT_${(outcome.result === "ghost_win" ? "opponent_win" : outcome.result).toUpperCase()}`)}</h2>
       {run?.opponent ? (
         <div className="race-result-score" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
           <span>

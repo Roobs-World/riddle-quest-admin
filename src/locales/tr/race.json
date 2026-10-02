@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Kayıtlı düello",
     "TITLE": "10’a Yarış",
     "CLOSE": "Yarışı kapat",
     "QUIT_TITLE": "Bu yarıştan çıkılsın mı?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Atla",
     "RESULT_RECORDED": "Koşu kaydedildi!",
     "RESULT_PLAYER_WIN": "Kazandın!",
-    "RESULT_GHOST_WIN": "Rakip kazandı",
+    "RESULT_OPPONENT_WIN": "Rakip kazandı",
     "RESULT_TIE": "Berabere!",
     "RESULT_TIMED_OUT": "Süre doldu",
     "WALL_TIME": "Yarış süresi",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Bu hesap için rakip arama kullanılamıyor.",
     "MATCH_EMPTY": "Henüz uygun rakip yok. Daha sonra tekrar deneyin.",
     "CHALLENGE_FRIEND": "Bir arkadaşına meydan oku",
-    "SHARE_TOURNAMENT": "Turnuvayı paylaş"
+    "SHARE_TOURNAMENT": "Turnuvayı paylaş",
+    "LIVE_START": "PvP maçı başlat",
+    "LIVE_FINDING": "Rakip aranıyor…",
+    "LIVE_STARTING": "Maç başlıyor",
+    "LIVE_WAIT": "En fazla 1 dakika aranır. Ardından bir bota karşı oynarsın.",
+    "LIVE_BOT": "Bilmece Botu",
+    "LIVE_REWARD": "+{coins} jeton",
+    "LIVE_MODE": "Canlı PvP",
+    "LIVE_WAITING_FINISH": "Rakibinin bitirmesi bekleniyor…"
   }
 }

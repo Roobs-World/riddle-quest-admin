@@ -206,6 +206,7 @@ export function GameFrameApp({
     delete account,
   } behavior. */
   const {
+    waitingForSkippedRiddle,
     canSubmit,
     submitGuess,
     handleQueuedGuessResult,
@@ -336,10 +337,13 @@ export function GameFrameApp({
           commerceAvailable={state.products.length > 0}
         />
 
-        {!state.riddle ? (
-          startupError ? (
+        {!state.riddle || waitingForSkippedRiddle ? (
+          startupError || waitingForSkippedRiddle ? (
             <section className="game-loading">
-              <p role="status">{startupError}</p>
+              {(startupError || state.notice) && <p role="status">{startupError ?? (
+                state.notice!.startsWith("WebPortal.") || state.notice!.startsWith("ErrorMessages.")
+                  ? tr(state.notice!) : state.notice
+              )}</p>}
               <button onClick={() => dispatch({type: "openModal", modal: "settings"})}>
                 {tr("Navigation.SETTINGS_BUTTON")}
               </button>

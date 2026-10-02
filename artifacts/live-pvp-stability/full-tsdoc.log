@@ -1,0 +1,30 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 27 production declarations are undocumented.
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:4 generate
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:5 capture
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:6 job
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:7 clock
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:8 ref
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:9 transaction
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:10 db
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:34 release
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:36 pending
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:990 clock
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:991 date
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:1005 clock
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:1006 date
+- firebase-functions/src/__tests__/riddleSupply.test.ts:84 releaseGeneration
+- firebase-functions/src/__tests__/riddleSupply.test.ts:85 modelPending
+- firebase-functions/src/__tests__/riddleSupply.test.ts:87 completion
+- firebase-functions/src/__tests__/riddleSupply.test.ts:88 outcome
+- firebase-functions/src/riddles/classicSupplyWorker.ts:18 db
+- firebase-functions/src/riddles/classicSupplyWorker.ts:19 ref
+- firebase-functions/src/riddles/classicSupplyWorker.ts:20 leaseId
+- firebase-functions/src/riddles/classicSupplyWorker.ts:21 now
+- firebase-functions/src/riddles/classicSupplyWorker.ts:22 locale
+- firebase-functions/src/riddles/classicSupplyWorker.ts:23 snapshot
+- firebase-functions/src/riddles/classicSupplyWorker.ts:24 data
+- firebase-functions/src/riddles/classicSupplyWorker.ts:31 succeeded
+- firebase-functions/src/riddles/classicSupplyWorker.ts:39 current
+- firebase-functions/src/riddles/classicSupplyWorker.ts:50 due
+[ELIFECYCLE] Command failed with exit code 1.

@@ -176,7 +176,7 @@ export function RaceInboxPanel({
                     item.result === "win"
                       ? "RaceTo10.RESULT_PLAYER_WIN"
                       : item.result === "loss"
-                        ? "RaceTo10.RESULT_GHOST_WIN"
+                        ? "RaceTo10.RESULT_OPPONENT_WIN"
                         : "RaceTo10.RESULT_TIE",
                   )}
                 </strong>

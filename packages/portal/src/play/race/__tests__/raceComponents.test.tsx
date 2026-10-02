@@ -455,7 +455,7 @@ describe("race presentation components", () => {
     expect(renderToString(<RaceCountdown countdown={0} loading={false} loadingProgress={100} coins={0} onClose={noop} />)).toContain("GO!");
     /** Scoreboard copy must explain what the bars and their values represent. */
     const scoreboardHtml = renderToString(
-      <RaceScoreboard run={run} adjustedNow={12_500} ghostCorrect={0} feedback="correct" coins={50} onClose={noop} />,
+      <RaceScoreboard run={run} adjustedNow={12_500} opponentCorrect={0} feedback="correct" coins={50} onClose={noop} />,
     );
     expect(scoreboardHtml).toContain("Riddles solved: 0 / 10");
     expect(scoreboardHtml).not.toContain("riddles remaining");
@@ -466,7 +466,7 @@ describe("race presentation components", () => {
         gameplayRef={{current: null}}
         run={run}
         adjustedNow={12_500}
-        ghostCorrect={0}
+        opponentCorrect={0}
         feedback={null}
         coins={50}
         currentLetters={["", "", "", "", ""]}
@@ -500,7 +500,7 @@ describe("race presentation components", () => {
           gameplayRef={{current: null}}
           run={{...run, status: "completed", correctCount: 10, currentRiddle: null}}
           adjustedNow={12_500}
-          ghostCorrect={0}
+          opponentCorrect={0}
           feedback={null}
           coins={50}
           currentLetters={[]}
@@ -673,22 +673,28 @@ describe("race presentation components", () => {
     expect(idleQuitDialog).not.toContain("race-quit-error");
   });
 
-  it("server-renders each initial controller route", async () => {
-    /** Initial categories supplied synchronously to the controller. */
+  it("routes retired multiplayer entries to the PvP intro without a ghost fallback", async () => {
+    /** Catalog remains available without reading or mutating any recorded race. */
     const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
-    /** Shared controller properties for isolated server rendering. */
-    const commonProps = {locale: "en" as const, coins: 10, postToHost: noop, onClose: noop};
-    expect(renderToString(<RaceTo10Game {...commonProps} initialCategories={categories} />)).toContain(
-      "race-category-grid",
-    );
-    expect(renderToString(<RaceTo10Game {...commonProps} openInbox />)).toContain("race-inbox");
-    expect(renderToString(<RaceTo10Game {...commonProps} tournamentLocale="en" />)).not.toContain("race-tournaments");
-    expect(renderToString(<RaceTo10Game {...commonProps} tournamentLocale="en" tournaments={{
-      list: async () => {throw new Error("SSR must not read provider authority");},
-      record: async () => {throw new Error("SSR must not mutate provider authority");},
-    }} />)).toContain("race-tournaments");
-    expect(renderToString(<RaceTo10Game {...commonProps} challengeId="challenge-1" />)).toContain(
-      "race-challenge-card",
-    );
+    /** Shared intro inputs isolate navigation from historical challenge state. */
+    const commonProps = {locale: "en" as const, coins: 10, postToHost: noop, onClose: noop, initialCategories: categories};
+    for (const entry of [{}, {openInbox: true}, {tournamentLocale: "en" as const}, {challengeId: "retired-challenge"}]) {
+      /** Retired entry renders the same live multiplayer intro. */
+      const html = renderToString(<RaceTo10Game {...commonProps} {...entry} />);
+      expect(html).toContain("race-category-grid");
+      expect(html).toContain("Live PvP");
+      expect(html).toContain("Start PvP match");
+      expect(html).not.toMatch(/race-inbox|race-tournaments|race-challenge-card|Recorded head-to-head|Check results/);
+      expect(html).toContain("Opponent search is unavailable for this account.");
+      expect(html).toMatch(/disabled=""[^>]*>Start PvP match/);
+    }
+    /** Live transport enables entry without starting a server operation during render. */
+    const html = renderToString(<RaceTo10Game {...commonProps} matchmaking={{find: async () => ({status: "cancelled"}), live: {
+      join: async () => {throw new Error("SSR must not create a live seat");},
+      update: async () => {throw new Error("SSR must not mutate a live seat");},
+    }}} />);
+    expect(html).not.toContain("Opponent search is unavailable for this account.");
+    expect(html).toContain('aria-pressed="true"');
+    expect(html).not.toMatch(/disabled=""[^>]*>Start PvP match/);
   });
 });

@@ -7,18 +7,21 @@ import {RaceRailHeader} from "./RaceHeader";
 /** Displays authoritative progress and timing in the right-hand multiplayer rail. */
 export function RaceScoreboard({
   run,
+  live = false,
   adjustedNow,
-  ghostCorrect,
+  opponentCorrect,
   feedback,
   coins,
   onClose,
 }: {
   /** Stores run. */
   run: RaceRunView;
+  /** Selects live PvP header wording. */
+  live?: boolean;
   /** Stores adjusted now. */
   adjustedNow: number;
-  /** Stores ghost correct. */
-  ghostCorrect: number;
+  /** Server-confirmed opponent score. */
+  opponentCorrect: number;
   /** Stores feedback. */
   feedback: "correct" | "incorrect" | null;
   /** Stores coins. */
@@ -34,7 +37,7 @@ export function RaceScoreboard({
 
   return (
     <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
-      <RaceRailHeader coins={coins} onClose={onClose} />
+      <RaceRailHeader live={live} coins={coins} onClose={onClose} />
       <div className="race-rail-game-info">
         <div className="race-header-clock" aria-live="polite">
           <span>{tr("RaceTo10.ADJUSTED_TIME")}</span>
@@ -63,14 +66,14 @@ export function RaceScoreboard({
             </progress>
           </div>
           {run.opponent && (
-            <div style={{"--race-progress": progressPercent(ghostCorrect)} as CSSProperties}>
+            <div style={{"--race-progress": progressPercent(opponentCorrect)} as CSSProperties}>
               <span title={run.opponent.displayName}>{run.opponent.displayName}</span>
-              <strong>{formatScore(ghostCorrect)}</strong>
+              <strong>{formatScore(opponentCorrect)}</strong>
               <div className="race-progress-track" aria-hidden="true">
                 <i />
               </div>
-              <progress className="sr-only" max="10" value={ghostCorrect}>
-                {ghostCorrect}/10
+              <progress className="sr-only" max="10" value={opponentCorrect}>
+                {opponentCorrect}/10
               </progress>
             </div>
           )}

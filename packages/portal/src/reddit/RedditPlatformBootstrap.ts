@@ -85,7 +85,9 @@ export const postRedditGateway = async (path: string, body: unknown = {}): Promi
       const payload: unknown = await response.json();
       if (!response.ok || !isRecord(payload) || payload.ok !== true) {
         /** Stable HTTP categories remain available when older gateways omit typed details. */
-        const code = [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
+        const code = response.status === 409 && /^\/api\/game\/race\.live\.(join|update)$/.test(path) &&
+          isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "failed-precondition" ? "failed-precondition" :
+          [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
           response.status === 429 ? "resource-exhausted" : "unavailable";
         throw Object.assign(new Error("reddit-gateway-request-failed"), {code,
           details: {matchmaking: isRecord(payload) ? payload.matchmaking : undefined}});
@@ -379,6 +381,20 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
           ...(authenticated && (session.features as Record<string, boolean>).matchmaking
             ? {
                 matchmaking: {
+                  live: {
+                    /** Enters live matchmaking through the same-origin Devvit gateway. */
+                    async join(input) {
+                      /** Answer-free response contract loaded with multiplayer. */
+                      const {LiveRaceViewSchema} = await import("@qwordly/core/race");
+                      return LiveRaceViewSchema.parse((await postRedditGateway("/api/game/race.live.join", input)).result);
+                    },
+                    /** Reads or mutates an authenticated live seat through Devvit. */
+                    async update(input) {
+                      /** Strict viewer-specific lobby and progress contract. */
+                      const {LiveRaceViewSchema} = await import("@qwordly/core/race");
+                      return LiveRaceViewSchema.parse((await postRedditGateway("/api/game/race.live.update", input)).result);
+                    },
+                  },
                   /** Provides find behavior. */
                   async find(input: RaceMatchRequest | RaceLocale) {
                     try {

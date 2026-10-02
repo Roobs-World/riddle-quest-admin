@@ -29,6 +29,8 @@ import {
   RecordFacebookTournamentRunResponseSchema,
   classifyRaceMatchFailure,
 } from "@qwordly/core/race";
+import {joinLiveRace, updateLiveRace} from "../race/raceLiveCallables";
+import {liveRaceGatewayFailure} from "../race/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
 import {assertRaceAccess} from "../race/raceRollout";
 import {
@@ -52,6 +54,7 @@ import {
   recordRedditTournamentRun,
   REDDIT_TOURNAMENT_SORT_ORDER,
 } from "../race/redditTournament";
+import {hydrateRedditLiveRaceProfile} from "./redditLiveRaceProfile";
 import {hydrateRedditRaceSocialResult} from "./redditSocialProfile";
 import {disconnectRedditPresence, pollRedditPresence} from "./redditPresence";
 import {blockKnownRival, reportKnownRival, SOCIAL_REPORT_CATEGORIES} from "../social/socialSafety";
@@ -96,6 +99,8 @@ export const REDDIT_GAMEPLAY_OPERATIONS = [
   "gameplay.race.outcome",
   "gameplay.race.inbox",
   "gameplay.race.match",
+  "gameplay.race.live.join",
+  "gameplay.race.live.update",
   "gameplay.tournament.list",
   "gameplay.tournament.record",
   "gameplay.presence.poll",
@@ -235,6 +240,10 @@ const dispatch = async (
       return getRaceOutcome.run(callableRequest(uid, payload) as never);
     case "gameplay.race.inbox":
       return listRaceInbox.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.live.join":
+      return joinLiveRace.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.live.update":
+      return updateLiveRace.run(callableRequest(uid, payload) as never);
     case "gameplay.race.match": {
       /** Provides input behavior. */
       const input = FindRedditRaceMatchRequestSchema.parse(payload);
@@ -388,6 +397,8 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
   let verifiedGuess = false;
   /** Only authenticated matchmaking failures expose the portable recovery contract. */
   let verifiedMatch = false;
+  /** Safe live command categories are exposed only after provider identity resolution. */
+  let verifiedLive = false;
   response.set("Cache-Control", "no-store");
   response.set("X-Content-Type-Options", "nosniff");
   if (request.method !== "POST") {
@@ -471,15 +482,24 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
       uidSecret: uidSecret.value(),
     });
     if (identity.needsUidRepair) throw new Error("reddit-session-refresh-required");
+    verifiedLive = operation === "gameplay.race.live.join" || operation === "gameplay.race.live.update";
     /** Provides result behavior. */
     const result = await dispatch(operation, identity.uid, envelope.payload, {postId: assertion.postId});
     response.json({
       ok: true,
-      result: operation.startsWith("gameplay.race.")
-        ? await hydrateRedditRaceSocialResult(operation, envelope.payload, result)
-        : result,
+      result: operation.startsWith("gameplay.race.live.")
+        ? await hydrateRedditLiveRaceProfile(result, admin.firestore(), Date.now())
+        : operation.startsWith("gameplay.race.")
+          ? await hydrateRedditRaceSocialResult(operation, envelope.payload, result)
+          : result,
     });
   } catch (error) {
+    if (verifiedLive) {
+      /** Safe rejection semantics permit stale-question recovery through the approved gateway. */
+      const failure = liveRaceGatewayFailure(error);
+      response.status(failure.status).json(failure.body);
+      return;
+    }
     if (verifiedMatch) {
       /** No raw exception details, player IDs or answer-bearing payloads reach the gateway. */
       const matchmaking = classifyRaceMatchFailure(error);

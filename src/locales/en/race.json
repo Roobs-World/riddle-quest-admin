@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Recorded head-to-head",
     "TITLE": "Race to 10",
     "CLOSE": "Close Race to 10",
     "QUIT_TITLE": "Quit this race?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Skip",
     "RESULT_RECORDED": "Run recorded!",
     "RESULT_PLAYER_WIN": "You win!",
-    "RESULT_GHOST_WIN": "Opponent wins",
+    "RESULT_OPPONENT_WIN": "Opponent wins",
     "RESULT_TIE": "It’s a tie!",
     "RESULT_TIMED_OUT": "Time’s up",
     "WALL_TIME": "Race time",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Opponent search is unavailable for this account.",
     "MATCH_EMPTY": "No suitable opponents are available yet. Try again later.",
     "CHALLENGE_FRIEND": "Challenge a friend",
-    "SHARE_TOURNAMENT": "Share tournament"
+    "SHARE_TOURNAMENT": "Share tournament",
+    "LIVE_START": "Start PvP match",
+    "LIVE_FINDING": "Finding opponent…",
+    "LIVE_STARTING": "Starting match",
+    "LIVE_WAIT": "Searching for up to 1 minute. Then you’ll play a bot.",
+    "LIVE_BOT": "Riddle Bot",
+    "LIVE_REWARD": "+{coins} coins",
+    "LIVE_MODE": "Live PvP",
+    "LIVE_WAITING_FINISH": "Waiting for your opponent to finish…"
   }
 }

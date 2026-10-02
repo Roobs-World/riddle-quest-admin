@@ -417,6 +417,8 @@ export type MatchmakingResult = PlatformResult<RaceMatchResponse> & {
 
 /** Provider-wide, server-authoritative offline opponent selection. */
 export type MatchmakingCapability = {
+  /** Authenticated live PvP transport, only on supported targets. */
+  live?: import("@qwordly/core/race").LiveRaceCapability;
   /**
    * Finds an identity-minimized offline opponent through the authoritative backend.
    *

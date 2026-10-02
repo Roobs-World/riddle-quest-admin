@@ -391,6 +391,25 @@ describe("game session reducer", () => {
     expect(state.pendingCoinSpend).toBeNull();
   });
 
+  it.each([false, true])("keeps a granted Continue when a stale save restores after confirmation=%s", (confirmed) => {
+    /** Authoritative exhausted question loaded before the replayed purchase finishes. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user: null, products: [], profile: {username: "Guest", coins: 300, level: 1, xp: 0,
+        winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 1}});
+    state = reduce(state, {type: "loadRiddle", riddle: {...riddle, attemptsUsed: 5, awaitingContinue: true}});
+    /** Provider save still describing the exhausted question before Continue. */
+    const staleSave = createSavedGame(state);
+    if (!staleSave) throw new Error("Missing exhausted-session save");
+    state = reduce(state, {type: "previewCoinSpend", requestId: "continue-replay", amount: 100, reason: "continue"});
+    if (confirmed) state = reduce(state, {type: "confirmCoinSpend", requestId: "continue-replay", newCoins: 200});
+    state = reduce(state, {type: "typeLetter", letter: "P"});
+    state = reduce(state, {type: "restoreSession", ...staleSave});
+    expect(state.modal).toBeNull();
+    expect(state.engineSnapshot).toMatchObject({attemptsUsed: 5, hasUsedContinue: true, gameOver: false});
+    expect(state.currentLetters.join("")).toBe("P");
+    expect(state.profile?.coins).toBe(200);
+  });
+
   it("records a declined continue without opening an answer modal", () => {
     /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});

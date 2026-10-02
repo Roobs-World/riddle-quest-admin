@@ -1,0 +1,6 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/verify-live-race-browser.mjs
+Live PvP passed at 1280px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
+Live PvP passed at 390px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
+Retired links, category selection, PvP-only return navigation and missing live capability passed.
+Bot fallback UI passed at 390px; server deadline advanced through the injected transport.

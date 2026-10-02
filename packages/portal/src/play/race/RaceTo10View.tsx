@@ -36,6 +36,8 @@ import type {RaceStage} from "./RaceSession.types";
 
 /** Describes race to10 view props. */
 export type RaceTo10ViewProps = {
+  /** Starts live PvP using an available server category. */
+  onStartLive?: (categoryId: RaceCategoryId) => void;
   /** Stores stage. */
   stage: RaceStage;
   /** Stores coins. */
@@ -96,8 +98,8 @@ export type RaceTo10ViewProps = {
   requiresRunRefresh?: boolean;
   /** Stores adjusted now. */
   adjustedNow: number;
-  /** Stores ghost correct. */
-  ghostCorrect: number;
+  /** Server-confirmed opponent score. */
+  opponentCorrect: number;
   /** Stores feedback. */
   feedback: "correct" | "incorrect" | null;
   /** Stores penalty flash. */
@@ -222,7 +224,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     sharing,
     pending, requiresRunRefresh = false,
     adjustedNow,
-    ghostCorrect,
+    opponentCorrect,
     feedback,
     penaltyFlash,
     currentLetters,
@@ -304,6 +306,9 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
         <PlatformPlayerOverlay overlay={playerOverlay} playerId={platformPlayerId} />
       )}
       {stage === "categories" && (
+        <>
+        {props.onStartLive && <button className="race-primary live-race-start" disabled={Boolean(pending || socialPending) || categories.length === 0}
+          onClick={() => props.onStartLive?.(categories.find(category => category.categoryId === "mixed")?.categoryId ?? categories[0]!.categoryId)}>{tr("RaceTo10.LIVE_START")}</button>}
         <RaceCategoriesPanel
           categories={categories}
           loading={pending === "raceCategories"}
@@ -311,6 +316,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onSelect={onSelectCategory}
           onShowInbox={onShowInbox}
         />
+        </>
       )}
       {stage === "inbox" && (
         <RaceInboxPanel
@@ -348,7 +354,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           gameplayRef={gameplayRef}
           run={run}
           adjustedNow={adjustedNow}
-          ghostCorrect={ghostCorrect}
+          opponentCorrect={opponentCorrect}
           feedback={feedback}
           coins={coins}
           currentLetters={currentLetters}

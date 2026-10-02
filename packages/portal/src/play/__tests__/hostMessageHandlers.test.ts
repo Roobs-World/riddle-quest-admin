@@ -360,6 +360,28 @@ describe("play host message handlers", () => {
     expect(raceResult).toHaveBeenCalledWith(expect.objectContaining({result: "player_win", runId: "run-1"}));
   });
 
+  it.each([
+    {code: "functions/unavailable", kind: "retryable"},
+    {code: "functions/internal", kind: "retryable"},
+    {code: "functions/failed-precondition", kind: "rejected"},
+  ])("classifies paid Continue $code as $kind", async ({code, kind}) => {
+    /** Authority failure exercised through the real paid-operation handler. */
+    const error = Object.assign(new Error("Continue failed"), {code});
+    /** Trusted economy collaborator whose network outcome is unknown. */
+    const services = createFakeHostServices();
+    jest.spyOn(services, "spendCoins").mockRejectedValue(error);
+    /** Real host bridge boundary receiving the failed paid Continue. */
+    const harness = createHarness(services);
+    await harness.handlers.spendCoins({
+      type: "game:spendCoins", requestId: "continue-network-1",
+      payload: {reason: "continue", amount: 100, gameMode: "classic", riddleId: "classic-fake-1",
+        sessionToken: "00000000-0000-4000-8000-000000000003"},
+    });
+    expect(harness.postOperation).toHaveBeenCalledWith(
+      "continue-network-1", "spendCoins", false, undefined, getHostErrorMessage(error), kind,
+    );
+  });
+
   it("reports a daily-riddle rejection through the dedicated skip service path", async () => {
     /** Provides services behavior. */
     const services = createFakeHostServices();

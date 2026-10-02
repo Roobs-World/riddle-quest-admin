@@ -332,8 +332,10 @@ export async function consumeRedditRequestQuota(
   /** Callers construct this key from the verified app, user and signed operation. */
   const keyParts = key.split("\0");
   /** Only the exact authenticated polling operation receives the larger server-owned budget. */
-  const maxRequests = keyParts.length === 3 && keyParts[0] === REDDIT_APP_NAME && keyParts[1] &&
-    keyParts[2] === "gameplay.presence.poll" ? PRESENCE_POLL_RATE_LIMIT_MAX : RATE_LIMIT_MAX;
+  const maxRequests = keyParts.length === 3 && keyParts[0] === REDDIT_APP_NAME && keyParts[1]
+    ? keyParts[2] === "gameplay.race.live.update" ? 120
+      : keyParts[2] === "gameplay.presence.poll" ? PRESENCE_POLL_RATE_LIMIT_MAX : RATE_LIMIT_MAX
+    : RATE_LIMIT_MAX;
   /** Provides id behavior. */
   const id = createHmac("sha256", secret).update("riddle-quest-reddit-rate-v1\0").update(key).digest("hex");
   /** Provides ref behavior. */

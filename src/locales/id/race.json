@@ -1,6 +1,5 @@
 {
   "RaceTo10": {
-    "MODE_LABEL": "Duel rekaman",
     "TITLE": "Balapan ke 10",
     "CLOSE": "Tutup balapan",
     "QUIT_TITLE": "Keluar dari balapan ini?",
@@ -72,7 +71,7 @@
     "SKIP_BUTTON": "Lewati",
     "RESULT_RECORDED": "Balapan direkam!",
     "RESULT_PLAYER_WIN": "Kamu menang!",
-    "RESULT_GHOST_WIN": "Lawan menang",
+    "RESULT_OPPONENT_WIN": "Lawan menang",
     "RESULT_TIE": "Seri!",
     "RESULT_TIMED_OUT": "Waktu habis",
     "WALL_TIME": "Waktu balapan",
@@ -106,6 +105,14 @@
     "MATCH_UNAVAILABLE": "Pencarian lawan tidak tersedia untuk akun ini.",
     "MATCH_EMPTY": "Belum ada lawan yang cocok. Coba lagi nanti.",
     "CHALLENGE_FRIEND": "Tantang teman",
-    "SHARE_TOURNAMENT": "Bagikan turnamen"
+    "SHARE_TOURNAMENT": "Bagikan turnamen",
+    "LIVE_START": "Mulai pertandingan PvP",
+    "LIVE_FINDING": "Mencari lawan…",
+    "LIVE_STARTING": "Memulai pertandingan",
+    "LIVE_WAIT": "Mencari hingga 1 menit. Setelah itu kamu akan melawan bot.",
+    "LIVE_BOT": "Bot Teka-teki",
+    "LIVE_REWARD": "+{coins} koin",
+    "LIVE_MODE": "PvP Langsung",
+    "LIVE_WAITING_FINISH": "Menunggu lawan selesai…"
   }
 }

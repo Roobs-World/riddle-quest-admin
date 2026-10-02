@@ -92,6 +92,8 @@ describe("Firebase browser adapter", () => {
       "recordRaceAnalytics",
       "getRaceEntry",
       "cancelRaceInvite",
+      "joinLiveRace",
+      "updateLiveRace",
     ]);
   });
 
@@ -177,6 +179,8 @@ describe("Firebase environment variants", () => {
       "listRaceInbox",
       "getRaceEntry",
       "cancelRaceInvite",
+      "joinLiveRace",
+      "updateLiveRace",
     ];
     for (const [instance, name] of mockHttpsCallable.mock.calls) {
       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
