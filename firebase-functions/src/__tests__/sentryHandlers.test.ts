@@ -1,3 +1,4 @@
+import {readProtectedContent} from "@qwordly/core/contentProtection";
 import {jest} from "@jest/globals";
 
 /** Captures exceptions routed through the handler wrappers. */
@@ -47,6 +48,24 @@ describe("Sentry Firebase handler wrappers", () => {
     expect(runWithJestAccountOperationLease).not.toHaveBeenCalled();
     expect(captureException).not.toHaveBeenCalled();
     expect(flushSentry).not.toHaveBeenCalled();
+  });
+
+  it("strips encryption negotiation before validation and protects answers and hints after authority execution", async () => {
+    /** Strict domain handler observes no transport fields. */
+    const handler = jest.fn(async (request: {
+      /** Original domain request. */ data: unknown;
+    }) => {
+      expect(request.data).toEqual({riddleId: "one"});
+      return {evaluation: {answer: "piano", locale: "en"}, hint: {index: 0, letter: "p"}};
+    });
+    /** Actual protected callable boundary. */
+    const callable = onCallWithSentry("getHint", {}, handler);
+    /** Response sent over either provider transport. */
+    const result = await callable.run({auth: {uid: "owner"}, data: {riddleId: "one", contentProtection: 1}} as never);
+    expect(JSON.stringify(result)).not.toContain("piano");
+    expect(await readProtectedContent(result)).toEqual({evaluation: {answer: "piano", locale: "en"}, hint: {index: 0, letter: "p"}});
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(runWithJestAccountOperationLease).toHaveBeenCalledWith("owner", 60, expect.any(Function));
   });
 
   it("serializes an authenticated legacy Firebase callable by UID", async () => {

@@ -80,6 +80,7 @@ try {
  for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
   reset(); await authority?.reset(); const context=await browser.newContext({viewport});const a=await context.newPage(),b=await context.newPage(); const errors=[];
   await context.route("https://live-race.invalid/**", route=>route.fulfill({contentType:"image/svg+xml",body:'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="#75baff"/><circle cx="50" cy="42" r="22" fill="#18365b"/></svg>'}));
+  if(authority)await context.route("https://live-race.invalid/Alice.svg", route=>route.fulfill({status:404,body:"Unavailable avatar"}));
   for(const page of [a,b])page.on('pageerror',error=>errors.push(error.message));
   await a.addInitScript(()=>localStorage.setItem('riddleQuest:activeRaceRun', JSON.stringify({runId:'retired-ghost',ownerId:'Alice'})));
   await a.goto(baseUrl+'/?user=Alice&challenge=retired-ghost&inbox=1&tournament=1');
@@ -92,6 +93,7 @@ try {
   await a.screenshot({path:path.join(output,`pvp-only-intro-${viewport.width}.png`),fullPage:true});
   await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
   await a.locator('.live-race-self strong').waitFor();assert.equal(await a.locator('.live-race-self strong').innerText(),'Alice');
+  if(authority){await a.locator('.live-race-self .live-race-avatar').waitFor();assert.equal(await a.locator('.live-race-self img').count(),0,'Unavailable player avatar must show a stable placeholder');}
   assert.equal(await a.locator('.live-race-rival strong').count(),0);assert.match(await a.locator('.live-race-status').innerText(),/Finding opponent/);
   const geometry=await a.evaluate(()=>{const lobby=document.querySelector('.live-race-lobby').getBoundingClientRect();const self=document.querySelector('.live-race-self').getBoundingClientRect();const status=document.querySelector('.live-race-status').getBoundingClientRect();return {lobby,self,status};});
   assert.ok(geometry.self.y<geometry.status.y);assert.ok(Math.abs(geometry.status.x+geometry.status.width/2-(geometry.lobby.x+geometry.lobby.width/2))<2);
@@ -102,6 +104,7 @@ try {
   await b.locator('.live-race-countdown').waitFor();assert.equal(await b.locator('.live-race-countdown').innerText(),'5');
   await a.locator('.live-race-rival strong').waitFor();assert.equal(await a.locator('.live-race-rival strong').innerText(),'Bob');
   assert.equal(await b.locator('.live-race-rival strong').innerText(),'Alice');
+  if(authority)await b.locator('.live-race-rival .live-race-avatar').waitFor();
   if(authority)for(const page of [a,b])assert.equal(await page.evaluate(()=>window.liveSnapshots.filter(view=>view.phase==='countdown').every(view=>view.run.currentRiddle===null)),true,'Neither player may inspect the first riddle during countdown');
   await a.screenshot({path:path.join(output,`countdown-${viewport.width}.png`),fullPage:true});
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});await b.locator('.race-gameplay .guess-board').waitFor({timeout:15000});
@@ -115,7 +118,10 @@ try {
    await a.waitForFunction(()=>window.liveSnapshots.at(-1).run.currentRiddle.revealedLetters.length===1);
    const wrongAttempts=viewport.width===1280?1:RACE_RULES.maxGuessesPerRiddle;
    for(let index=0;index<wrongAttempts;index++){
-    await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('x'.repeat((await authority.answer('Alice')).length));await a.locator('.race-actions .submit-action').click();
+    await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('x'.repeat((await authority.answer('Alice')).length));
+    if(index===0){assert.equal(await a.locator('.race-actions .submit-action').isDisabled(),true,'Hint wait must block submitting while preserving typing');assert.ok(await a.locator('.live-race-cooldown').count());}
+    await a.waitForFunction(()=>!document.querySelector('.race-actions .submit-action').disabled,null,{timeout:RACE_RULES.hintPenaltyMs+5000});
+    await a.locator('.race-actions .submit-action').click();
     await a.waitForFunction(expected=>{const riddle=window.liveSnapshots.at(-1).run?.currentRiddle;return expected===5?riddle?.position===10:riddle?.guessesUsed===expected;},index+1);
    }
    if(viewport.width===1280)await a.locator('.race-actions button').last().click();
@@ -125,6 +131,8 @@ try {
    assert.deepEqual(current.run.currentRiddle.revealedLetters,[]);assert.deepEqual(current.run.currentRiddle.confirmedGuesses,[]);
    assert.equal(current.run.currentRiddle.guessesUsed,0);assert.equal(current.run.currentRiddle.guessesRemaining,RACE_RULES.maxGuessesPerRiddle);
    assert.deepEqual(await authority.balances(),[100,100],'Skipping cannot award victory or coins');
+   assert.equal(await a.locator('.race-actions button').first().isDisabled(),true,'Skip penalty must prevent immediately advancing the race');
+   await a.waitForFunction(()=>!document.querySelector('.race-actions button').disabled,null,{timeout:RACE_RULES.skipPenaltyMs+5000});
    console.log('Hint and '+(viewport.width===1280?'manual skip':'exhausted guesses')+' at nine solves produced a fresh, unscored question at '+viewport.width+'px.');
   }
   await solve(a);

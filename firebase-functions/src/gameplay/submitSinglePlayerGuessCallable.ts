@@ -6,7 +6,7 @@ import {
   type SubmitSinglePlayerGuessResponseData,
 } from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
-import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {submitAuthoritativeGuess} from "./singlePlayerSession";
 import {completeAuthoritativeGame} from "./completeGameLogic";
@@ -15,7 +15,7 @@ import {completeAuthoritativeGame} from "./completeGameLogic";
 export const submitSinglePlayerGuess = onCallWithSentry<
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData
->("submitSinglePlayerGuess", browserCallableSecurityOptions, async (request) => {
+>("submitSinglePlayerGuess", gameplayCallableOptions, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

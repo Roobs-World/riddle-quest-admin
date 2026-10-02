@@ -51,6 +51,23 @@ export function useJestSharing({
   authHarness?: boolean;
 }): ReferralSharingCapability | null {
   useEffect(() => {
+    if (!session?.player.registered || !("serviceWorker" in navigator)) return;
+    /** Worker clicks refresh pending notices without accepting or interrupting an existing match. */
+    const receive = (event: MessageEvent<unknown>) => {
+      /** Validated data carries only a destination hint; the server owns acceptance authority. */
+      const data = event.data as {
+        /** Fixed worker event. */
+        kind?: unknown;
+        /** Opaque invitation. */
+        challengeId?: unknown;
+      };
+      if (data?.kind === "liveChallenge" && typeof data.challengeId === "string" && /^live_[a-f0-9]{64}$/.test(data.challengeId))
+        window.dispatchEvent(new Event("riddle-quest:live-race-inbox-changed"));
+    };
+    navigator.serviceWorker.addEventListener("message", receive);
+    return () => navigator.serviceWorker.removeEventListener("message", receive);
+  }, [session?.player.registered]);
+  useEffect(() => {
     if (!session) return;
     platform.setScreenshotProvider(sizeCheckedScreenshotProvider(captureGameScreenshot));
     return () => platform.setScreenshotProvider(null);
@@ -342,6 +359,11 @@ export function useJestSharing({
             shareInvite,
             shareRace,
             shareLiveRace,
+            /** Guests cannot register a server-owned push subscription. */
+            ...(session.player.registered ? {setLiveRacePush: async (enabled: boolean) => {
+              try {return await (await import("../notifications/liveChallengePush")).setJestLiveChallengePush(enabled);}
+              catch {return false;}
+            }} : {}),
           }
         : null,
     [session, shareInvite, shareRace, shareResult, shareLiveRace],

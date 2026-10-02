@@ -1,0 +1,6 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Test Suites: 1 passed, 1 total
+Tests:       57 skipped, 15 passed, 72 total
+Snapshots:   0 total
+Time:        86.161 s
+Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "hosted loading watchdog|restored language|short Jest phone|starts a guest through|external Jest SDK request|product catalog loads|already registered Jest player|retryable startup screen|delayed host handshake|optional Jest social profile|transient SDK initialization|terminal screen that cannot reload".

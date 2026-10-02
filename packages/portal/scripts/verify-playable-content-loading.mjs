@@ -40,6 +40,27 @@ try {
   console.log('PASS: unavailable locale chunk retries without granting gameReady or saving early');
   await page.close();
 
+  const corrupted = await context.newPage();
+  let corruptedAttempts = 0;
+  await corrupted.route('**/*playable-pack-fr-*.js*', async route => {
+    if (++corruptedAttempts > 1) return route.continue();
+    const response = await route.fetch();
+    const source = await response.text();
+    const changed = source.replace(/data:(["`])([a-f0-9])/, (_, quote, first) => 'data:' + quote + (first === 'a' ? 'b' : 'a'));
+    assert.ok(source !== changed, 'fixture must corrupt the actual encrypted content');
+    return route.fulfill({response, body:changed});
+  });
+  await corrupted.goto(origin);
+  await corrupted.getByRole('alert').waitFor();
+  assert.equal(await corrupted.evaluate(() => window.__contentTest.ready), 0);
+  assert.deepEqual(await corrupted.evaluate(() => window.__contentTest.saved), []);
+  await corrupted.getByRole('button', {name:'Retry'}).click();
+  await corrupted.getByRole('heading', {name:'Choisissez une énigme'}).waitFor();
+  assert.equal(corruptedAttempts, 2);
+  assert.equal(await corrupted.evaluate(() => window.__contentTest.ready), 1);
+  await corrupted.close();
+  console.log('PASS: authenticated decryption rejects corrupted content and retries without an early save');
+
   const delayed = await context.newPage();
   delayed.on('pageerror', error => errors.push(error.message));
   let release;

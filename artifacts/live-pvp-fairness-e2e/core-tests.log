@@ -2,7 +2,7 @@ firebase-functions                       | [WARN] Unsupported engine: wanted: {"
 $ cross-env NODE_ENV=test jest --config jest.config.js --runInBand
 
 Test Suites: 31 passed, 31 total
-Tests:       282 passed, 282 total
+Tests:       283 passed, 283 total
 Snapshots:   0 total
-Time:        0.994 s, estimated 1 s
+Time:        0.658 s, estimated 1 s
 Ran all test suites.

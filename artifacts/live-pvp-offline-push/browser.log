@@ -1,0 +1,9 @@
+$ node scripts/verify-live-race-invitations-browser.mjs
+jest 1280px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+jest 1280px: direct invitation, durable inbox, push permission fallback/revocation and original lobby acceptance passed.
+jest 390px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+jest 390px: direct invitation, durable inbox, push permission fallback/revocation and original lobby acceptance passed.
+facebook 1280px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+facebook 1280px: direct invitation, durable inbox, push permission fallback/revocation and original lobby acceptance passed.
+facebook 390px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+facebook 390px: direct invitation, durable inbox, push permission fallback/revocation and original lobby acceptance passed.

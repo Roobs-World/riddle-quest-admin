@@ -114,6 +114,13 @@
     "LIVE_REWARD": "+{coins} monete",
     "LIVE_MODE": "PvP dal vivo",
     "LIVE_WAITING_FINISH": "In attesa che l’avversario finisca…",
-    "LIVE_FRIEND_WAIT": "In attesa che il tuo amico accetti. Questo invito scade dopo 15 minuti."
+    "LIVE_FRIEND_WAIT": "In attesa che il tuo amico accetti. Questo invito scade dopo 15 minuti.",
+    "LIVE_ACTION_WAIT": "Prossima azione tra {seconds} s",
+    "PLAYER_USERNAME": "Nome utente del giocatore",
+    "NOTIFY_PLAYER": "Invia sfida",
+    "INVITE_QUEUED": "Invito salvato. Le notifiche dipendono dalle impostazioni del giocatore.",
+    "PUSH_ENABLE": "Attiva notifiche delle sfide",
+    "PUSH_DISABLE": "Disattiva notifiche delle sfide",
+    "PUSH_UNAVAILABLE": "Le notifiche del browser non sono disponibili qui. Gli inviti appariranno comunque in multigiocatore."
   }
 }

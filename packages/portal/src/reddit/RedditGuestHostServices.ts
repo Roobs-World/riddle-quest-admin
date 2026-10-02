@@ -1,12 +1,20 @@
+import {readProtectedContent} from "@qwordly/core/contentProtection";
 import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
 import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {AuthSnapshot, HostServices} from "../play/types";
 
-/** Provides riddles behavior. */
-const riddles = [
-  {id: "reddit-guest-1", text: "What has keys but cannot open doors?", answer: "piano"},
-  {id: "reddit-guest-2", text: "What has a face and hands but no arms?", answer: "clock"},
-] as const;
+/** Encrypted non-economic guest examples; answers are decoded only when guest play needs them. */
+const protectedRiddles = {"contentProtection":1,"iv":"7597a7068e78eb9259c77597","data":"21f77dd0362498d4f59c8133811546203d6cf9fed6924dd55c289801fc128e5f260cc79a96b70dcf48b456ba1f5927593aa6ec7dec48069ac0e7cd29bfa5666f70739aa0718679626d77658f51acb6c934739158a036fa1f226b60e5540d90600b208afc3f06b014c1fc92046f1871b3b795c221f3adec5beaf5d8f8b4c4242c0649afffeb0723422e4337c3fcec15807daf02e95dadd4433c2d7e76151f80583c43ac284142d5d9a38c50edf0c51cf6fd71f6a872685f768fc26bbd94e2376c97"};
+/** Trusted bundled guest content shape, independent of provider SDKs. */
+type GuestRiddle = {
+  /** Stable example identity. */ id: string;
+  /** Displayed clue. */ text: string;
+  /** Local answer. */ answer: string;
+};
+/** Lazy decoding avoids retaining plaintext answers during authenticated play. */
+let guestRiddles: Promise<GuestRiddle[]> | undefined;
+/** Loads the small encrypted guest deck once per browser session. */
+const loadGuestRiddles = (): Promise<GuestRiddle[]> => guestRiddles ??= readProtectedContent(protectedRiddles).then(value => value as GuestRiddle[]);
 /** Provides unavailable behavior. */
 const unavailable = async (): Promise<never> => {
   throw new Error("reddit-login-required");
@@ -43,7 +51,11 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile): Hos
   /** Provides emit behavior. */
   const emit = () => subscribers.forEach((listener) => listener({user: guestUser, profile}));
   /** Provides riddle for behavior. */
-  const riddleFor = (classicIndex = profile.classicIndex) => riddles[(Math.max(1, classicIndex) - 1) % riddles.length];
+  const riddleFor = async (classicIndex = profile.classicIndex) => {
+    /** Decoded local examples. */
+    const riddles = await loadGuestRiddles();
+    return riddles[(Math.max(1, classicIndex) - 1) % riddles.length];
+  };
 
   return {
     products: [],
@@ -63,7 +75,7 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile): Hos
     async loadRiddle({gameMode, classicIndex}) {
       if (gameMode !== "classic") throw new Error("reddit-login-required");
       /** Provides source behavior. */
-      const source = riddleFor(classicIndex);
+      const source = await riddleFor(classicIndex);
       /** Provides prior behavior. */
       const prior = attempts.get(source.id);
       return {
@@ -71,7 +83,7 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile): Hos
         text: source.text,
         answerLength: splitGraphemes(source.answer).length,
         evaluation: {answer: source.answer, locale: "en"},
-        sessionToken: `00000000-0000-4000-8000-00000000000${source === riddles[0] ? "1" : "2"}`,
+        sessionToken: `00000000-0000-4000-8000-00000000000${source.id === "reddit-guest-1" ? "1" : "2"}`,
         gameMode: "classic",
         index: classicIndex ?? profile.classicIndex,
         attemptsUsed: prior?.count ?? 0,
@@ -83,7 +95,7 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile): Hos
     async submitGuess({riddleId, gameMode, guess}) {
       if (gameMode !== "classic") throw new Error("reddit-login-required");
       /** Provides source behavior. */
-      const source = riddles.find(({id}) => id === riddleId);
+      const source = (await loadGuestRiddles()).find(({id}) => id === riddleId);
       if (!source) throw new Error("reddit-guest-riddle-not-found");
       /** Normalizes d. */
       const normalized = guess.toLocaleLowerCase();

@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import type {LiveRaceView} from "@qwordly/core/race";
+import {RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
 import type {LiveMatch} from "../../race/raceLiveState";
 import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
 
@@ -213,8 +213,8 @@ it("keeps provider, language and category pools separate while pairing eligible 
   const batch = db.batch();
   for (const document of content.docs) {
     batch.set(db.doc(`localizedRiddles/fr/riddles/${document.id}`), document.data());
-    batch.set(db.doc(`localizedRiddles/en/riddles/nature-${document.id}`), {...document.data(),
-      riddleId: `nature-${document.id}`, canonicalRiddleId: `nature:${document.id}`, categoryId: "nature"});
+    batch.set(db.doc(`localizedRiddles/en/riddles/science-${document.id}`), {...document.data(),
+      riddleId: `science-${document.id}`, canonicalRiddleId: String(document.data().canonicalRiddleId).replace("history:", "science:"), categoryId: "science"});
   }
   batch.set(db.doc(`users/${foreign}`), {username: "Facebook player", coins: 100});
   batch.set(db.doc(`users/${eligible}`), {username: "Eligible player", coins: 100});
@@ -222,7 +222,7 @@ it("keeps provider, language and category pools separate while pairing eligible 
   /** Four unrelated queues have usable content but cannot be merged. */
   const original = await join(A, "scope-original-seat");
   expect((await joinLiveRaceForUser(B, {locale: "fr", categoryId: "history", requestId: "scope-french-seat"}, {db, nowMs: NOW + 1000})).phase).toBe("searching");
-  expect((await joinLiveRaceForUser(C, {locale: "en", categoryId: "nature", requestId: "scope-nature-seat"}, {db, nowMs: NOW + 1000})).phase).toBe("searching");
+  expect((await joinLiveRaceForUser(C, {locale: "en", categoryId: "science", requestId: "scope-science-seat"}, {db, nowMs: NOW + 1000})).phase).toBe("searching");
   expect((await join(foreign, "scope-facebook-seat", NOW + 1000)).phase).toBe("searching");
   expect((await db.collection("liveRaceMatches").get()).size).toBe(0);
   expect(await join(eligible, "scope-eligible-seat", NOW + 2000)).toMatchObject({phase: "countdown", opponent: {displayName: "Alice"}});
@@ -264,8 +264,8 @@ it("does not count skipped riddles as solved answers", async () => {
   const {a} = await pair();
   /** Latest accepted progress for this seat. */
   let current = await update(A, a, NOW + 6000);
-  for (let i = 0; i < 10; i++) current = await updateLiveRaceForUser(A, {ticketId: current.ticketId,
-    action: "skip", riddleId: current.run!.currentRiddle!.riddleId, requestId: `skip-answer-${i}`}, {db, nowMs: NOW + 6000 + i * 1000});
+  for (let i = 0; i < 7; i++) current = await updateLiveRaceForUser(A, {ticketId: current.ticketId,
+    action: "skip", riddleId: current.run!.currentRiddle!.riddleId, requestId: `skip-answer-${i}`}, {db, nowMs: NOW + 6000 + i * RACE_RULES.skipPenaltyMs});
   expect(current.phase).toBe("racing"); expect(current.player.correctCount).toBe(0);
   expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
 });
@@ -279,18 +279,54 @@ it.each(["skip", "exhaust"] as const)("resets question state after %s at nine so
   /** An old question's revealed letter and wrong guess must not contaminate the next prompt. */
   const oldRiddleId = current.run!.currentRiddle!.riddleId;
   current = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "old-question-hint", riddleId: oldRiddleId}, {db, nowMs: NOW + 15000});
+  /** Wrong guesses begin only after the authoritative hint cost has elapsed. */
+  const guessAtMs = NOW + 15000 + RACE_RULES.hintPenaltyMs;
   for (let index = 0; index < (action === "skip" ? 1 : 5); index++) current = await updateLiveRaceForUser(A, {
     ticketId: a.ticketId, action: "guess", requestId: `old-question-wrong-${index}`, riddleId: oldRiddleId,
     guess: "x".repeat(current.run!.currentRiddle!.answerLength),
-  }, {db, nowMs: NOW + 16000 + index * 1000});
+  }, {db, nowMs: guessAtMs + index * 1000});
   if (action === "skip") current = await updateLiveRaceForUser(A, {
     ticketId: a.ticketId, action: "skip", requestId: "skip-tenth-issued-question", riddleId: oldRiddleId,
-  }, {db, nowMs: NOW + 21000});
+  }, {db, nowMs: guessAtMs + 5000});
   expect(current).toMatchObject({phase: "racing", player: {correctCount: 9}, rewardCoins: 0});
   expect(current.run!.currentRiddle).toMatchObject({position: 10, guessesUsed: 0, guessesRemaining: 5, revealedLetters: [], confirmedGuesses: []});
   expect(current.run!.currentRiddle!.riddleId).not.toBe(oldRiddleId);
   /** The fresh question remains solvable and immediately settles the tenth actual solve. */
-  expect(await answer(A, current, NOW + 22000, "tenth-actual-solve")).toMatchObject({result: "win", rewardCoins: 50, newCoins: 150});
+  expect(await answer(A, current, guessAtMs + 5000 + RACE_RULES.skipPenaltyMs, "tenth-actual-solve")).toMatchObject({result: "win", rewardCoins: 50, newCoins: 150});
+});
+
+it("enforces the hint penalty before accepting another live action", async () => {
+  /** Revealing letters must not provide a cost-free route to the live victory reward. */
+  const {a} = await pair();
+  /** The server releases the first question at the shared start. */
+  const started = await update(A, a, NOW + 7000);
+  /** One confirmed hint has a deadline determined only by the server-owned event. */
+  const hinted = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "fair-hint", riddleId: started.run!.currentRiddle!.riddleId}, {db, nowMs: NOW + 7000});
+  await expect(answer(A, hinted, NOW + 8000, "early-hinted-guess")).rejects.toMatchObject({code: "failed-precondition"});
+  expect(hinted).toMatchObject({actionAvailableAtMs: NOW + 7000 + RACE_RULES.hintPenaltyMs, player: {correctCount: 0}});
+  for (const action of ["hint", "skip"] as const) await expect(updateLiveRaceForUser(A, {
+    ticketId: a.ticketId, action, requestId: `early-after-hint-${action}`, riddleId: hinted.run!.currentRiddle!.riddleId,
+  }, {db, nowMs: NOW + 8000})).rejects.toMatchObject({code: "failed-precondition"});
+  expect(await answer(A, hinted, NOW + 7000 + RACE_RULES.hintPenaltyMs, "ready-hinted-guess")).toMatchObject({player: {correctCount: 1}});
+});
+
+it.each(["skip", "exhaust"] as const)("enforces the skip penalty after %s without granting a solved point", async action => {
+  /** Manual and automatic skipping have the same authoritative cost. */
+  const {a} = await pair();
+  /** The first real question is issued only after the shared start. */
+  let current = await update(A, a, NOW + 7000);
+  if (action === "skip") current = await updateLiveRaceForUser(A, {
+    ticketId: a.ticketId, action: "skip", requestId: "fair-manual-skip", riddleId: current.run!.currentRiddle!.riddleId,
+  }, {db, nowMs: NOW + 7000});
+  else for (let index = 0; index < 5; index++) current = await updateLiveRaceForUser(A, {
+    ticketId: a.ticketId, action: "guess", requestId: `fair-auto-skip-${index}`, riddleId: current.run!.currentRiddle!.riddleId,
+    guess: "x".repeat(current.run!.currentRiddle!.answerLength),
+  }, {db, nowMs: NOW + 7000 + index * 1000});
+  /** The deadline begins when the authority accepts the skipping action. */
+  const availableAtMs = NOW + (action === "skip" ? 7000 : 11000) + RACE_RULES.skipPenaltyMs;
+  await expect(answer(A, current, availableAtMs - 1, "too-early-after-skip")).rejects.toMatchObject({code: "failed-precondition"});
+  expect(current).toMatchObject({actionAvailableAtMs: availableAtMs, player: {correctCount: 0}, rewardCoins: 0});
+  expect(await answer(A, current, availableAtMs, "ready-after-skip")).toMatchObject({player: {correctCount: 1}});
 });
 
 it("scores wrong answers on the server and cannot win by exhausting attempts", async () => {

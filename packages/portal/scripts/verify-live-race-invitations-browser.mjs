@@ -25,7 +25,7 @@ const params=new URLSearchParams(location.search), user=params.get('user') || 'A
 window.inviteCalls=[];window.commands=[];window.outcome='success';
 const services=createFakeRaceServices();
 const call=async(action,input)=>{window.commands.push({action,input});const response=await fetch('/live/'+action,{method:'POST',body:JSON.stringify({user,...input})});if(!response.ok)throw new Error('Transport unavailable');return response.json();};
-const matchmaking={find:async()=>({status:'cancelled'}),live:{join:input=>call('join',input),update:input=>call('update',input),challenge:input=>call('challenge',input)}};
+const matchmaking={find:async()=>({status:'cancelled'}),live:{join:input=>call('join',input),update:input=>call('update',input),challenge:input=>call('challenge',input),sendChallenge:input=>call('sendChallenge',input),inbox:()=>call('inbox',{})}};
 const platform={setScreenshotProvider:()=>{},shareReferral:async input=>{window.inviteCalls.push({target:'jest',input});return {status:window.outcome,value:undefined};}};
 const sdk={getSupportedAPIs:()=>['shareAsync'],shareAsync:async input=>{window.inviteCalls.push({target:'facebook',input});if(window.outcome!=='success')throw {code:window.outcome==='cancelled'?'USER_INPUT':'NETWORK_ERROR'};}};
 const facebook=createFacebookReferralSharing({sdk,enabled:true,ageCategory:'13_plus',isActive:()=>true,issueToken:async()=>({token:'a'.repeat(43),expiresAtMs:Date.now()+60000}),renderImage:()=> 'data:image/png;base64,YQ=='});
@@ -34,7 +34,7 @@ const entry=params.has('challenge')?JSON.parse(params.get('challenge')):{};
 const challengeId=target==='facebook'?facebookLaunchFromEntryData(entry).initialRaceChallengeId:resolveRaceChallengeId(parseEntryIntent(entry));
 async function postToHost(message){if(message.type==='game:listRaceCategories')window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data:await services.listRaceCategories({locale:'en'})}}}));}
 const activity=async operation=>operation();const track=()=>{};const backend={};
-function App(){const jest=useJestSharing({locale:'en',session,platform,backend,withPlatformActivity:activity,withBackgroundPlatformActivity:activity,trackFunnel:track});return <ReferralSharingProvider capability={target==='facebook'?facebook:jest}><RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} /></ReferralSharingProvider>;}
+function App(){const jest=useJestSharing({locale:'en',session,platform,backend,withPlatformActivity:activity,withBackgroundPlatformActivity:activity,trackFunnel:track});const capability=target==='facebook'?facebook:jest;const push=params.has('push')?{...capability,setLiveRacePush:async enabled=>{window.pushCalls??=[];window.pushCalls.push(enabled);return window.pushAllowed??false;}}:capability;return <ReferralSharingProvider capability={push}><RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} /></ReferralSharingProvider>;}
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
@@ -111,6 +111,33 @@ try {
       assert.deepEqual(errors, []);
       await context.close();
       console.log(`${target} ${viewport.width}px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.`);
+      await authority.reset();
+      const direct = await browser.newContext({viewport});
+      const sender = await direct.newPage(), recipient = await direct.newPage();
+      await sender.goto(`${base}/?target=${target}&user=Alice`);
+      await sender.getByRole("button", {name: "Challenge a friend", exact: true}).click();
+      await sender.getByLabel("Player username", {exact: true}).fill("Bob");
+      await sender.getByRole("button", {name: "Send challenge", exact: true}).click();
+      await sender.getByText("Invitation saved. Push delivery depends on the player’s notification settings.", {exact: true}).waitFor();
+      await recipient.goto(`${base}/?target=${target}&user=Bob&push=1`);
+      await recipient.getByRole("button", {name: "Accept challenge", exact: true}).waitFor();
+      assert.equal(await recipient.evaluate(() => window.commands.some(command => command.action === "join")), false);
+      await recipient.getByRole("button", {name: "Enable challenge notifications", exact: true}).click();
+      await recipient.getByText("Browser notifications are unavailable here. Your invitations will still appear in multiplayer.", {exact: true}).waitFor();
+      await recipient.evaluate(() => window.pushAllowed = true);
+      await recipient.getByRole("button", {name: "Enable challenge notifications", exact: true}).click();
+      await recipient.getByRole("button", {name: "Enable challenge notifications", exact: true}).isDisabled().then(disabled => assert.ok(disabled));
+      await recipient.getByRole("button", {name: "Disable challenge notifications", exact: true}).click();
+      assert.deepEqual(await recipient.evaluate(() => window.pushCalls), [true, true, false]);
+      for (const button of await recipient.locator(".live-race-push-consent button").all()) assert.ok((await button.boundingBox()).height >= 48);
+      await recipient.locator(".race-screen").evaluate(element => {element.scrollTop = 0;});
+      await recipient.screenshot({path: path.join(output, `${target}-direct-inbox-${viewport.width}.png`), fullPage: true});
+      await recipient.getByRole("button", {name: "Accept challenge", exact: true}).click();
+      await recipient.locator(".live-race-countdown").waitFor();
+      await sender.locator(".live-race-rival strong").waitFor();
+      assert.equal(await sender.locator(".live-race-rival strong").innerText(), "Bob");
+      console.log(`${target} ${viewport.width}px: direct invitation, durable inbox, push permission fallback/revocation and original lobby acceptance passed.`);
+      await direct.close();
     }
   }
 } finally {

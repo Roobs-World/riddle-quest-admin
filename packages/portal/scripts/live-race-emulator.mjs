@@ -15,11 +15,13 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   const db = getFirestore();
   const {joinLiveRaceForUser, updateLiveRaceForUser} = require(path.join(root, "firebase-functions/lib/race/raceLiveService.js"));
   const {getLiveRaceChallengeForUser} = require(path.join(root, "firebase-functions/lib/race/raceLiveInvitation.js"));
+  const {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} = require(path.join(root, "firebase-functions/lib/race/raceLiveChallengeNotifications.js"));
+  const {createUsernameReservationFields} = require(path.join(root, "firebase-functions/lib/profile/usernameReservations.js"));
   const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require("@qwordly/core/race");
   const users = {Alice: `${provider}_${"a".repeat(40)}`, Bob: `${provider}_${"b".repeat(40)}`};
   const tickets = new Map();
   async function clear() {
-    for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "localizedRiddles/en/riddles"])
+    for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "usernameReservations", "liveRacePushOutbox", "localizedRiddles/en/riddles"])
       await db.recursiveDelete(db.collection(collection));
     tickets.clear();
   }
@@ -27,8 +29,9 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     await clear();
     const batch = db.batch();
     for (const [name, uid] of Object.entries(users)) batch.set(db.doc(`users/${uid}`), {
-      username: name, coins: 100, avatarUrl: `https://live-race.invalid/${name}.svg`,
+      username: name, coins: 100, avatarUrl: `https://live-race.invalid/${name}.svg`, ...createUsernameReservationFields(name),
     });
+    for (const [name, uid] of Object.entries(users)) batch.set(db.doc(`usernameReservations/${createUsernameReservationFields(name).usernameReservationId}`), {userId: uid, username: name});
     for (const categoryId of ["history", "mixed"]) for (let index = 0; index < 30; index++) batch.set(db.doc(`localizedRiddles/en/riddles/${categoryId}-${index}`), {
       riddleId: `${categoryId}-${index}`, canonicalRiddleId: `${categoryId}:${index}`, categoryId,
       text: `Unique historical question ${index} follows its own trail`, answer: `a${String(index).padStart(6, "0")}`,
@@ -41,6 +44,8 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     const uid = users[user];
     if (!uid) throw new Error("Unknown browser fixture owner");
     if (operation === "challenge") return getLiveRaceChallengeForUser(uid, command.challengeId, {db});
+    if (operation === "sendChallenge") return sendLiveRaceChallengeForUser(db, uid, command);
+    if (operation === "inbox") return listLiveRaceChallengesForUser(db, uid);
     const result = operation === "join"
       ? await joinLiveRaceForUser(uid, JoinLiveRaceSchema.parse(command), {db})
       : await updateLiveRaceForUser(uid, UpdateLiveRaceSchema.parse(command), {db});

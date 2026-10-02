@@ -3,13 +3,13 @@ import {CompleteGameRequestDataSchema, CompleteGameResponseDataSchema} from "@qw
 import type {CompleteGameRequestData, CompleteGameResponseData} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {completeAuthoritativeGame} from "./completeGameLogic";
-import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 
 /** Completes game. */
 export const completeGame = onCallWithSentry<CompleteGameRequestData, CompleteGameResponseData>(
   "completeGame",
-  browserCallableSecurityOptions,
+  gameplayCallableOptions,
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");

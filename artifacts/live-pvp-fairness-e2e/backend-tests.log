@@ -9,5 +9,5 @@ $ cross-env NODE_OPTIONS="--experimental-vm-modules" FIRESTORE_EMULATOR_HOST=127
 Test Suites: 6 passed, 6 total
 Tests:       69 passed, 69 total
 Snapshots:   0 total
-Time:        1.092 s
+Time:        1.185 s
 Ran all test suites matching raceLiveFailures|redditLiveRaceProfile|redditGameplayEndpoint|redditEndpoints|raceEngine|raceMatchGateway.

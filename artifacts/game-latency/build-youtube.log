@@ -1,17 +1,17 @@
 firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
 $ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YOUTUBE_BUILD=1 NODE_ENV=production vite build --mode youtube && pnpm audit:youtube-artifact
 $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
-✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (14.6385ms)
-✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.108204ms)
-✔ rejects shared-to-target imports across every supported TypeScript module syntax (12.888475ms)
-✔ rejects imports between different target owners (1.899929ms)
-✔ rejects the legacy platform entry while allowing the shop adapter (0.732818ms)
-✔ rejects Devvit imports outside Reddit-owned source (0.932367ms)
-✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.844394ms)
-✔ fails closed when a missing relative path lexically enters target-owned source (1.991973ms)
-✔ handles extensions and index modules with TypeScript-compatible resolution (3.245628ms)
-✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (1.045571ms)
-✔ aggregates violations in deterministic file and source order (0.992941ms)
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.974271ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.182254ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.144911ms)
+✔ rejects imports between different target owners (1.541971ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.601761ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.853306ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (0.994344ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.781611ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.963495ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.659168ms)
+✔ aggregates violations in deterministic file and source order (0.758297ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -19,8 +19,8 @@ $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && no
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 152.746201
-Web Target boundary audit passed (262 files, 1106 module references).
+ℹ duration_ms 135.083562
+Web Target boundary audit passed (262 files, 1109 module references).
 $ pnpm --dir ../../firebase-functions youtube:content:audit
 [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
 $ node scripts/youtube-content-compile.js --check
@@ -57,6 +57,6 @@ dist-youtube/assets/playable-pack-hi-KOOrH6D-.js   65.46 kB │ gzip: 17.72 kB
 dist-youtube/assets/index-BWBj2NHp.js             103.22 kB │ gzip: 34.27 kB
 dist-youtube/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
 
-✓ built in 1.29s
+✓ built in 954ms
 $ node scripts/audit-youtube-artifact.mjs
 YouTube artifact audit passed: 24 files, 1.03 MiB total and conservative initial transfer, 16 locale(s)

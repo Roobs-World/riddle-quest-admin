@@ -4,8 +4,14 @@
       "collectionGroup": "providerIdentities",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "provider", "order": "ASCENDING"},
-        {"fieldPath": "redditProfile.expiresAt", "order": "ASCENDING"}
+        {
+          "fieldPath": "provider",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "redditProfile.expiresAt",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
@@ -762,6 +768,30 @@
     },
     {
       "collectionGroup": "redditGatewayRateLimits",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "facebookNotificationAttempts",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "liveRacePushOutbox",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "liveRaceInvitations",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "liveRacePushTokens",
       "fieldPath": "expiresAt",
       "ttl": true,
       "indexes": []

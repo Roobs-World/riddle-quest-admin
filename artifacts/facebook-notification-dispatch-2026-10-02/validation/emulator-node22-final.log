@@ -1,0 +1,100 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-facebook-notify-dispatch", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/facebookNotificationDispatch.it.test.ts
+  console.warn
+    [2026-10-02T15:54:28.049Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x5b146cca error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    false for 'create' @ L296, false for 'update' @ L296
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at console.warn (jest.env.setup.js:105:5)
+      at Logger.defaultLogHandler [as _logHandler] (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:110:57)
+      at Logger.warn (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:201:10)
+      at logWarn (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:337:9)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:706:18)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+      at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+
+  console.warn
+    [2026-10-02T15:54:28.072Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x5b146ccb error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    false for 'create' @ L296, false for 'update' @ L296
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at console.warn (jest.env.setup.js:105:5)
+      at Logger.defaultLogHandler [as _logHandler] (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:110:57)
+      at Logger.warn (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:201:10)
+      at logWarn (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:337:9)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:706:18)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+      at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+
+  console.warn
+    [2026-10-02T15:54:28.106Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x5b146ccd error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    false for 'create' @ L296, false for 'update' @ L296
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at console.warn (jest.env.setup.js:105:5)
+      at Logger.defaultLogHandler [as _logHandler] (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:110:57)
+      at Logger.warn (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:201:10)
+      at logWarn (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:337:9)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:706:18)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+      at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+
+  console.warn
+    [2026-10-02T15:54:28.113Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x5b146cce error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    false for 'create' @ L296, false for 'update' @ L296
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at console.warn (jest.env.setup.js:105:5)
+      at Logger.defaultLogHandler [as _logHandler] (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:110:57)
+      at Logger.warn (../node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/src/logger.ts:201:10)
+      at logWarn (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (../node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:337:9)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:706:18)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+      at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+
+Test Suites: 1 passed, 1 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        12.393 s, estimated 13 s
+Ran all test suites within paths "src/__tests__/facebookNotificationDispatch.it.test.ts".
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

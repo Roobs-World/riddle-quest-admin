@@ -3,7 +3,7 @@ import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
-import {readFile} from "node:fs/promises";
+import {mkdir, readFile} from "node:fs/promises";
 import path from "node:path";
 import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support";
@@ -2435,6 +2435,33 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides the browser context and delayed SDK handshake page. */
     const harness = await openHarness(browser, {scenario: "init-delayed"});
     await verifyDelayedHostHandshake(harness, () => getHarnessState(harness.page));
+  });
+
+  it("authenticates during a pending social profile and reports readiness only after playable UI", async () => {
+    /** Native adapter uses a social read controlled by the injected SDK. */
+    const {context, page, pageErrors} = await openHarness(browser, {registered: true, scenario: "profile-controlled"});
+    await page.waitForFunction(() =>
+      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.firebaseTokens.length === 1,
+    );
+    /** Authentication completed while the social request remains pending. */
+    const pending = await getHarnessState(page);
+    expect(pending.profileReads).toBe(1);
+    expect(pending.backendExchanges).toEqual(["signed:jest-auth-player-stable:true"]);
+    expect(pending.calls).not.toContain("sdk.markGameLoaded");
+    expect(await page.locator(".game-app").count()).toBe(0);
+    await page.evaluate(() => window.dispatchEvent(new Event("test:resolve-social-profile")));
+    await enterRegisteredGame(page);
+    expect((await getHarnessState(page)).calls).toContain("sdk.markGameLoaded");
+    expect(await page.locator(".game-header .coin-pill strong").innerText()).toBe("300");
+    expect(pageErrors).toEqual([]);
+    if (process.env.PORTAL_JEST_LOAD_EVIDENCE_DIR) {
+      await mkdir(process.env.PORTAL_JEST_LOAD_EVIDENCE_DIR, {recursive: true});
+      await page.screenshot({path: path.join(process.env.PORTAL_JEST_LOAD_EVIDENCE_DIR, "jest-390.png")});
+      await page.setViewportSize({width: 1280, height: 900});
+      await page.screenshot({path: path.join(process.env.PORTAL_JEST_LOAD_EVIDENCE_DIR, "jest-1280.png")});
+    }
+    await context.close();
   });
 
   it("keeps registered play available when the optional Jest social profile is unavailable", async () => {

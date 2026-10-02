@@ -1,8 +1,9 @@
+import {readProtectedContent} from "@qwordly/core/contentProtection";
 import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "@qwordly/core/race";
 import {initializeApp} from "firebase/app";
 import {getAuth, initializeAuth, inMemoryPersistence} from "firebase/auth";
 import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
-import {getFunctions, httpsCallable} from "firebase/functions";
+import {getFunctions, httpsCallable as rawHttpsCallable} from "firebase/functions";
 import type {
   ClassicRiddleBufferResponse,
   CompleteGameInput,
@@ -43,6 +44,21 @@ import type {
 } from "@qwordly/core/race";
 import {firebaseEnvironment} from "./firebaseEnvironment";
 
+/** Answer and hint delivery opts into encryption; older backend responses remain readable. */
+const protectedEndpoints = new Set(["getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
+  "getHint", "skipRiddle", "startRaceRun", "readyRaceRun", "submitRaceGuess", "requestRaceHint", "skipRaceRiddle", "resumeRaceRun"]);
+/** Keeps the SDK result contract while decoding only opted-in gameplay transports. */
+function httpsCallable<Input = unknown, Output = unknown>(functions: Parameters<typeof rawHttpsCallable>[0], name: string) {
+  /** SDK operation bound to its target region. */
+  const call = rawHttpsCallable<Input, Output>(functions, name);
+  if (!protectedEndpoints.has(name)) return call;
+  return async (input?: Input) => {
+    /** Encrypted response from a supporting backend, or a legacy plaintext response. */
+    const result = await call({...input, contentProtection: 1} as Input);
+    return {...result, data: await readProtectedContent(result.data) as Output};
+  };
+}
+
 /** Provides raw firebase config behavior. */
 const rawFirebaseConfig = {
   apiKey: firebaseEnvironment.apiKey,
@@ -80,6 +96,9 @@ const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion 
 /** Jest multiplayer runs beside eur3; other capabilities retain their configured region. */
 const raceFunctions = firebaseEnvironment.platformTarget === "jest"
   ? getFunctions(firebaseApp, "europe-west1") : functions;
+/** Opts Jest solo into a deployed database-adjacent region without moving commerce or another target. */
+const gameplayFunctions = firebaseEnvironment.platformTarget === "jest" && firebaseEnvironment.gameplayRegion
+  ? getFunctions(firebaseApp, firebaseEnvironment.gameplayRegion) : functions;
 /** Shared Functions instance used by target-specific lazy adapters. */
 export const firebaseFunctions = functions;
 
@@ -127,7 +146,7 @@ export const getCurrentDailyChallenge = httpsCallable<
     }
   | undefined,
   CurrentRiddleResponse
->(functions, "getCurrentDailyChallenge");
+>(gameplayFunctions, "getCurrentDailyChallenge");
 
 /** Gets current classic riddle. */
 export const getCurrentClassicRiddle = httpsCallable<
@@ -148,9 +167,9 @@ export const getCurrentClassicRiddle = httpsCallable<
     includeGuessRecovery?: boolean;
   },
   CurrentRiddleResponse
->(functions, "getCurrentClassicRiddle");
+>(gameplayFunctions, "getCurrentClassicRiddle");
 
-/** Issues the current Classic question and up to two future questions. */
+/** Issues the current Classic question and up to three future questions. */
 export const getClassicRiddleBuffer = httpsCallable<
   {
     /** Requested content locale. */
@@ -161,22 +180,22 @@ export const getClassicRiddleBuffer = httpsCallable<
     includeGuessRecovery?: boolean;
   },
   ClassicRiddleBufferResponse
->(functions, "getClassicRiddleBuffer");
+>(gameplayFunctions, "getClassicRiddleBuffer");
 
 /** Completes game. */
-export const completeGame = httpsCallable<CompleteGameInput, CompleteGameOutput>(functions, "completeGame");
+export const completeGame = httpsCallable<CompleteGameInput, CompleteGameOutput>(gameplayFunctions, "completeGame");
 
 /** Submits one server-authoritative single-player guess. */
 export const submitSinglePlayerGuess = httpsCallable<SubmitSinglePlayerGuessInput, SubmitSinglePlayerGuessOutput>(
-  functions,
+  gameplayFunctions,
   "submitSinglePlayerGuess",
 );
 
 /** Gets hint. */
-export const getHint = httpsCallable<GetHintInput, GetHintOutput>(functions, "getHint");
+export const getHint = httpsCallable<GetHintInput, GetHintOutput>(gameplayFunctions, "getHint");
 
 /** Provides spend coins behavior. */
-export const spendCoins = httpsCallable<SpendCoinsRequest, SpendCoinsOutput>(functions, "spendCoins");
+export const spendCoins = httpsCallable<SpendCoinsRequest, SpendCoinsOutput>(gameplayFunctions, "spendCoins");
 
 /** Provides skip riddle behavior. */
 export const skipRiddle = httpsCallable<
@@ -191,7 +210,7 @@ export const skipRiddle = httpsCallable<
     requestId: string;
   },
   SkipRiddleResponse
->(functions, "skipRiddle");
+>(gameplayFunctions, "skipRiddle");
 
 /** Gets leaderboard. */
 export const getLeaderboard = httpsCallable<
@@ -527,3 +546,20 @@ export const getLiveRaceChallenge = httpsCallable<{
   /** Server invitation handle. */
   challengeId: string;
 }, import("@qwordly/core/race").LiveRaceChallenge>(raceFunctions, "getLiveRaceChallenge");
+
+/** Addresses an existing player and queues a server-owned offline notification. */
+export const sendLiveRaceChallenge = httpsCallable<{
+  /** Creator-owned private lobby. */ challengeId: string;
+  /** Server-resolved existing game username. */ recipientUsername: string;
+}, {/** Durable work receipt, not provider delivery. */ /** Stores status. */
+/** Stores status. */
+status: "queued"}>(raceFunctions, "sendLiveRaceChallenge");
+/** Reads direct challenge notices without accepting their lobby. */
+export const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("@qwordly/core/race").LiveRaceChallenge[]>(raceFunctions, "listLiveRaceChallenges");
+/** Stores explicit browser-push consent on the authenticated registered Jest account. */
+export const setLiveRacePushSubscription = httpsCallable<{
+  /** False revokes the current subscription. */ enabled: boolean;
+  /** Opaque browser instance token; never a recipient identity. */ token?: string;
+}, {/** Committed preference. */ /** Stores enabled. */
+/** Stores enabled. */
+enabled: boolean}>(raceFunctions, "setLiveRacePushSubscription");

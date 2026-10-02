@@ -12,6 +12,7 @@ export const firebaseEnvironment = {
   sentryRelease: undefined,
   appCheckSiteKey: "unit-test-site-key",
   functionsRegion: undefined,
+  gameplayRegion: undefined,
   jestRuntime: "0",
   platformTarget: "jest",
   production: false,

@@ -1,0 +1,16 @@
+✔ does not forward the signed assertion through an actual 307 redirect (14.908938ms)
+✔ stops streamed response consumption at the byte limit instead of buffering the whole body (0.761362ms)
+✔ rejects corrupt UTF-8 rather than silently rewriting provider JSON strings (0.259692ms)
+✔ preserves valid payloads and provider failure statuses without retrying (0.705847ms)
+✔ accepts exactly 64 KiB of valid multi-byte UTF-8 and rejects one byte more (0.435274ms)
+✔ rejects route escapes and malformed requests before any transmission (0.110549ms)
+✔ returns fixed diagnostics for network failures, malformed JSON and a redirected response (0.445253ms)
+✔ the ten-second deadline covers a stalled body even when a transport ignores abort (0.486792ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 73.259111

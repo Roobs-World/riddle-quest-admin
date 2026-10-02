@@ -13,52 +13,52 @@ rendering chunks...
 computing gzip size...
 dist/server/index.cjs  2,925.95 kB │ gzip: 354.66 kB
 
-✓ built in 164ms
+✓ built in 116ms
 $ pnpm check:types && pnpm test && node scripts/validate-package.mjs
 $ tsc6 -p tsconfig.json --noEmit
 $ node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs
-✔ the trusted Reddit server builds Core before resolving its generated package exports (0.373457ms)
-✔ workspace build and verification assemble the trusted Reddit package from the isolated client (0.107133ms)
-✔ the Reddit server build replaces its target directory instead of retaining stale release files (134.445674ms)
-✔ direct Devvit mutations fail closed in favor of the immutable release handoff (1.136472ms)
-✔ the package release mutations exit non-zero without invoking Devvit (563.106026ms)
-✔ redacts credentials, provider IDs, profiles and URL query data (1.308127ms)
-✔ rejects unknown types, invalid provenance, residual sensitive values and oversized input (0.593464ms)
-✔ source digests are stable and byte-sensitive (0.292224ms)
-✔ accepts only complete hosted deployment, immutable artifact, approval and device evidence (4.758013ms)
-✔ gate binds clean source provenance and exact package bytes (21.08973ms)
-✔ release preparation checks clean source before building and requires both entrypoints (0.962313ms)
-✔ handoff is immutable, single-link, and hash verified (4.878822ms)
-✔ exclusive retry barrier preserves ambiguous outcomes (3.224098ms)
-✔ concurrent barrier transitions serialize (1.090074ms)
-✔ playtest uploads reject missing, stable, malformed, and extra version arguments before running commands (1.094624ms)
-✔ a private upload retains uncertainty and blocks later versions before running commands (2.029504ms)
-✔ a failed package check leaves no attempted upload and can be corrected (0.512912ms)
-✔ accepted versions are immutable and explicit resolution preserves original failure evidence (1.052254ms)
-✔ separate processes cannot validate or transmit while another playtest owns the lock (32.542165ms)
-✔ process interruption preserves the lock and orphan attempt until explicit recovery (35.0254ms)
-✔ corrupt and orphaned journal evidence fails closed before validation (3.123687ms)
-✔ requires sanitized provenance-bound fixtures for every hosted contract (13.134771ms)
-✔ promotion evidence is bound to the retained read-only candidate (20.763303ms)
-✔ overlapping install, upgrade and moderator calls submit only one canonical post (2.966469ms)
-✔ an ambiguous provider failure remains pending across retries (0.345705ms)
-✔ Redis claim failure never reaches the provider creation boundary (0.513362ms)
-✔ ambiguous post persistence preserves pending or accepted state without resubmitting (0.345685ms)
-✔ missing retained posts and malformed records never authorize replacement (0.154803ms)
-✔ a losing claim reads the winner's completed post without submitting again (0.123635ms)
-✔ invalid provider identifiers remain pending and are never cached as acceptance (0.269821ms)
-✔ identity kill switch degrades to guest core play only for the exact disabled response (0.620605ms)
-✔ matches the Firebase verifier canonical signature fixture byte-for-byte (0.574769ms)
-✔ recovers only matching account and environment orders across bounded pages (0.954418ms)
-✔ fails closed on oversized pages, cursor replay and grant failure (2.06445ms)
-✔ derives stable isolated opaque recovery keys (0.774367ms)
-✔ rejects malformed scope and weak secrets (0.146899ms)
-✔ projects exact paid and reverted Reddit orders (0.835323ms)
-✔ rejects forged identity, lifecycle, environment, price, SKU, accounting and bundles (0.223142ms)
-✔ projects only paid or delivered orders carrying one exact opaque account tag (0.499937ms)
-✔ accepts only HTTPS Reddit-owned avatar delivery hosts (0.383536ms)
-✔ injects only the server environment into exact referral requests (0.619063ms)
-✔ rejects client environment, extra fields, malformed bodies and invalid deployment configuration (0.151467ms)
+✔ the trusted Reddit server builds Core before resolving its generated package exports (0.378988ms)
+✔ workspace build and verification assemble the trusted Reddit package from the isolated client (0.087005ms)
+✔ the Reddit server build replaces its target directory instead of retaining stale release files (80.905201ms)
+✔ direct Devvit mutations fail closed in favor of the immutable release handoff (0.526567ms)
+✔ the package release mutations exit non-zero without invoking Devvit (518.050566ms)
+✔ redacts credentials, provider IDs, profiles and URL query data (1.321984ms)
+✔ rejects unknown types, invalid provenance, residual sensitive values and oversized input (0.562957ms)
+✔ source digests are stable and byte-sensitive (1.065849ms)
+✔ accepts only complete hosted deployment, immutable artifact, approval and device evidence (0.937716ms)
+✔ gate binds clean source provenance and exact package bytes (8.655025ms)
+✔ release preparation checks clean source before building and requires both entrypoints (0.737437ms)
+✔ handoff is immutable, single-link, and hash verified (6.018992ms)
+✔ exclusive retry barrier preserves ambiguous outcomes (2.03219ms)
+✔ concurrent barrier transitions serialize (3.50497ms)
+✔ playtest uploads reject missing, stable, malformed, and extra version arguments before running commands (0.715526ms)
+✔ a private upload retains uncertainty and blocks later versions before running commands (1.899238ms)
+✔ a failed package check leaves no attempted upload and can be corrected (0.542438ms)
+✔ accepted versions are immutable and explicit resolution preserves original failure evidence (1.102659ms)
+✔ separate processes cannot validate or transmit while another playtest owns the lock (22.737572ms)
+✔ process interruption preserves the lock and orphan attempt until explicit recovery (19.825366ms)
+✔ corrupt and orphaned journal evidence fails closed before validation (0.524674ms)
+✔ requires sanitized provenance-bound fixtures for every hosted contract (20.216998ms)
+✔ promotion evidence is bound to the retained read-only candidate (8.259867ms)
+✔ overlapping install, upgrade and moderator calls submit only one canonical post (3.723373ms)
+✔ an ambiguous provider failure remains pending across retries (0.342419ms)
+✔ Redis claim failure never reaches the provider creation boundary (0.504495ms)
+✔ ambiguous post persistence preserves pending or accepted state without resubmitting (0.344703ms)
+✔ missing retained posts and malformed records never authorize replacement (0.25337ms)
+✔ a losing claim reads the winner's completed post without submitting again (0.124486ms)
+✔ invalid provider identifiers remain pending and are never cached as acceptance (0.278688ms)
+✔ identity kill switch degrades to guest core play only for the exact disabled response (0.608452ms)
+✔ matches the Firebase verifier canonical signature fixture byte-for-byte (0.572254ms)
+✔ recovers only matching account and environment orders across bounded pages (0.928098ms)
+✔ fails closed on oversized pages, cursor replay and grant failure (0.241628ms)
+✔ derives stable isolated opaque recovery keys (0.705536ms)
+✔ rejects malformed scope and weak secrets (0.143202ms)
+✔ projects exact paid and reverted Reddit orders (0.780389ms)
+✔ rejects forged identity, lifecycle, environment, price, SKU, accounting and bundles (0.176113ms)
+✔ projects only paid or delivered orders carrying one exact opaque account tag (0.336688ms)
+✔ accepts only HTTPS Reddit-owned avatar delivery hosts (0.379759ms)
+✔ injects only the server environment into exact referral requests (0.622348ms)
+✔ rejects client environment, extra fields, malformed bodies and invalid deployment configuration (0.177286ms)
 ℹ tests 42
 ℹ suites 0
 ℹ pass 42
@@ -66,5 +66,5 @@ $ node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 609.843221
-Devvit package contract passed: 416 regular files/7.16 MiB, isolated inline/game client, CJS server, Redis, and one gateway host
+ℹ duration_ms 550.711967
+Devvit package contract passed: 416 regular files/7.17 MiB, isolated inline/game client, CJS server, Redis, and one gateway host

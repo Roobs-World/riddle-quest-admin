@@ -1,0 +1,74 @@
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:21: trailing whitespace.
++    [2026-10-02T16:01:47.925Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee18 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:42: trailing whitespace.
++    [2026-10-02T16:01:47.943Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee19 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:63: trailing whitespace.
++    [2026-10-02T16:01:47.955Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1a error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:84: trailing whitespace.
++    [2026-10-02T16:01:47.963Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:105: trailing whitespace.
++    [2026-10-02T16:01:47.971Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:126: trailing whitespace.
++    [2026-10-02T16:01:47.977Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1d error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:147: trailing whitespace.
++    [2026-10-02T16:01:47.983Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1e error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:168: trailing whitespace.
++    [2026-10-02T16:01:47.990Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1f error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:189: trailing whitespace.
++    [2026-10-02T16:01:48.004Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee20 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:210: trailing whitespace.
++    [2026-10-02T16:01:48.013Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee21 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:231: trailing whitespace.
++    [2026-10-02T16:01:48.020Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee22 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:252: trailing whitespace.
++    [2026-10-02T16:01:48.026Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee23 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:273: trailing whitespace.
++    [2026-10-02T16:01:48.033Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee24 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:294: trailing whitespace.
++    [2026-10-02T16:01:48.041Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee25 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:315: trailing whitespace.
++    [2026-10-02T16:01:48.048Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee26 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:336: trailing whitespace.
++    [2026-10-02T16:01:48.058Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee27 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:357: trailing whitespace.
++    [2026-10-02T16:01:48.066Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee28 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:378: trailing whitespace.
++    [2026-10-02T16:01:48.072Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee29 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:399: trailing whitespace.
++    [2026-10-02T16:01:48.078Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2a error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:420: trailing whitespace.
++    [2026-10-02T16:01:48.085Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:441: trailing whitespace.
++    [2026-10-02T16:01:48.093Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:462: trailing whitespace.
++    [2026-10-02T16:01:48.100Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2d error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:483: trailing whitespace.
++    [2026-10-02T16:01:48.109Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2e error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:504: trailing whitespace.
++    [2026-10-02T16:01:48.117Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2f error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:525: trailing whitespace.
++    [2026-10-02T16:01:48.124Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee30 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:546: trailing whitespace.
++    [2026-10-02T16:01:48.133Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee31 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:567: trailing whitespace.
++    [2026-10-02T16:01:48.159Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee33 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:588: trailing whitespace.
++    [2026-10-02T16:01:48.171Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee34 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:609: trailing whitespace.
++    [2026-10-02T16:01:48.176Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee35 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:630: trailing whitespace.
++    [2026-10-02T16:01:48.183Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee36 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:651: trailing whitespace.
++    [2026-10-02T16:01:48.189Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee37 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:672: trailing whitespace.
++    [2026-10-02T16:01:48.195Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee38 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:693: trailing whitespace.
++    [2026-10-02T16:01:48.203Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee39 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:714: trailing whitespace.
++    [2026-10-02T16:01:48.213Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3a error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:735: trailing whitespace.
++    [2026-10-02T16:01:48.218Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:756: trailing whitespace.
++    [2026-10-02T16:01:48.244Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3d error. Code: 7 Message: 7 PERMISSION_DENIED: 
+artifacts/live-pvp-fairness-e2e/authority-e2e.log:777: trailing whitespace.
++    [2026-10-02T16:01:48.247Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3e error. Code: 7 Message: 7 PERMISSION_DENIED: 

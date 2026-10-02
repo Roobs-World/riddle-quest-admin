@@ -14,7 +14,7 @@ it.each([[0, 0], [4, 4], [9, 9], [4, 0], [4, 2]])("retains valid current and leg
   expect(RaceRunViewSchema.safeParse(fixture(position, correctCount)).success).toBe(true);
 });
 
-it.each(["correctCount", "coins", "winner", "userId", "serverNowMs", "startsAtMs"])("rejects client authority for %s", field => {
+it.each(["correctCount", "coins", "winner", "userId", "serverNowMs", "startsAtMs", "actionAvailableAtMs"])("rejects client authority for %s", field => {
   expect(UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "poll", requestId: "untrusted-command", [field]: 10}).success).toBe(false);
 });
 

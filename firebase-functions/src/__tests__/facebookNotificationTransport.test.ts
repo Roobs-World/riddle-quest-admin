@@ -30,6 +30,12 @@ function harness(overrides: Partial<FacebookNotificationTransportOptions> = {}) 
 }
 
 describe("Facebook server notification transport (synthetic HTTP fixtures only)", () => {
+  it("can make one explicitly unconfirmed send without inventing a provider acknowledgement contract", async () => {
+    const test = harness({confirmResponse: undefined, allowUnconfirmedResponse: true});
+    await expect(test.transport.send(request)).resolves.toEqual({outcome: "unconfirmed", httpStatus: 200});
+    expect(test.fetchMock).toHaveBeenCalledTimes(1);
+    expect(test.authorizeAttempt).toHaveBeenCalledTimes(1);
+  });
   /** Restores emergency switches without altering another test's default environment. */
   const originalOff = process.env.FACEBOOK_DISABLED_FEATURES;
   beforeEach(() => { delete process.env.FACEBOOK_DISABLED_FEATURES; });

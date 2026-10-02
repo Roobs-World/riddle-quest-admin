@@ -1,3 +1,4 @@
+import {contentProtectionRequest, protectContent} from "@qwordly/core/contentProtection";
 import type {
   CallableFunction,
   CallableOptions,
@@ -57,8 +58,17 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
   boundaryOptions: CallableBoundaryOptions = {},
 ): CallableFunction<T, Promise<Result>, Stream> {
   return onCall<T, Promise<Result>, Stream>(options, async (request, response) => {
-    /** Provides invoke behavior. */
-    const invoke = () => invokeWithSentry(functionName, handler, [request, response]);
+    /** Negotiates only the transport format before domain validation. */
+    const negotiation = contentProtectionRequest(request.data);
+    /** Preserves authentication and request metadata. */
+    const decodedRequest = negotiation.protected ? {...request, data: negotiation.data} : request;
+    /** Validates and authorizes domain actions before wrapping their response. */
+    const invoke = async (): Promise<Result> => {
+      /** Domain response never trusted back from the client. */
+      const result = await invokeWithSentry(functionName, handler, [decodedRequest, response]);
+      // Transport wrapping happens after handler validation and never changes authoritative state.
+      return negotiation.protected ? await protectContent(result) as Result : result;
+    };
     if (boundaryOptions.skipJestAccountOperationLease || !request.auth) {
       return invoke();
     }

@@ -1,3 +1,4 @@
+import {protectContent} from "@qwordly/core/contentProtection";
 import {readFileSync} from "node:fs";
 import type {Plugin} from "vite";
 
@@ -18,7 +19,7 @@ export function playableContentPlugin(contentPath: string): Plugin {
     /** Resolves only this plugin's generated entry. */
     resolveId(id) { return id === playableContentModule || id.startsWith(packPrefix) ? `\0${id}` : null; },
     /** Emits a small envelope and one separately addressable module per locale. */
-    load(id) {
+    async load(id) {
       if (id !== `\0${playableContentModule}` && !id.startsWith(`\0${packPrefix}`)) return null;
       this.addWatchFile(contentPath);
       /** Selected release or explicit engineering content document. */
@@ -35,7 +36,7 @@ export function playableContentPlugin(contentPath: string): Plugin {
         /** Locale selected by an emitted chunk entry. */
         const locale = id.slice(`\0${packPrefix}`.length);
         if (!Object.hasOwn(packs, locale)) throw new Error(`playable-content-pack-missing:${locale}`);
-        return `export default ${JSON.stringify(packs[locale])};`;
+        return `export default ${JSON.stringify(await protectContent(packs[locale]))};`;
       }
       /** Emitted local URLs permit retrying a failed module download with a fresh URL. */
       const loaders = Object.keys(packs).map(locale => {
@@ -44,10 +45,11 @@ export function playableContentPlugin(contentPath: string): Plugin {
         return `${JSON.stringify(locale)}:loader(import.meta.ROLLUP_FILE_URL_${reference})`;
       }).join(",");
       return `
+        import {readProtectedContent} from "@qwordly/core/contentProtection";
         function loader(url) {
           let attempt = 0, pending;
           return () => pending ??= import(/* @vite-ignore */ attempt ? url + '?retry=' + attempt : url)
-            .then(module => module.default)
+            .then(module => readProtectedContent(module.default))
             .catch(error => { pending = undefined; attempt++; throw error; });
         }
         export default {...${JSON.stringify(envelope)},loadPack:{${loaders}}};

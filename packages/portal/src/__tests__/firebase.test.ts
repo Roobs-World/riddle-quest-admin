@@ -1,3 +1,4 @@
+import {protectContent} from "@qwordly/core/contentProtection";
 /** Provides mock get doc behavior. */
 const mockGetDoc = jest.fn();
 /** Provides mock doc behavior. */
@@ -35,11 +36,23 @@ jest.mock("firebase/functions", () => ({
   httpsCallable: (...args: unknown[]) => mockHttpsCallable(...args),
 }));
 
-import {auth, firebaseApp, loadUserDocument} from "../firebase";
+import {auth, firebaseApp, loadUserDocument, getCurrentClassicRiddle} from "../firebase";
 
 describe("Firebase browser adapter", () => {
   beforeEach(() => {
     mockGetDoc.mockReset();
+  });
+
+  it("negotiates encrypted answer delivery and restores the SDK result before domain validation", async () => {
+    /** Underlying SDK operation captured before the transport adapter wraps it. */
+    const index = mockHttpsCallable.mock.calls.findIndex(call => call[1] === "getCurrentClassicRiddle");
+    /** Server response retained independently of its transport representation. */
+    const data = {challenge: {questions: [{evaluation: {answer: "café", locale: "fr"}}]}};
+    /** Native SDK callable returns its standard data envelope. */
+    const sdk = mockHttpsCallable.mock.results[index].value;
+    sdk.mockResolvedValueOnce({data: await protectContent(data)});
+    await expect(getCurrentClassicRiddle({classicIndex: 1, locale: "fr"})).resolves.toEqual({data});
+    expect(sdk).toHaveBeenCalledWith({classicIndex: 1, locale: "fr", contentProtection: 1});
   });
 
   it("initializes Firebase once and declares every callable endpoint", () => {
@@ -95,6 +108,9 @@ describe("Firebase browser adapter", () => {
       "joinLiveRace",
       "updateLiveRace",
       "getLiveRaceChallenge",
+      "sendLiveRaceChallenge",
+      "listLiveRaceChallenges",
+      "setLiveRacePushSubscription",
     ]);
   });
 
@@ -183,11 +199,28 @@ describe("Firebase environment variants", () => {
       "joinLiveRace",
       "updateLiveRace",
       "getLiveRaceChallenge",
+      "sendLiveRaceChallenge",
+      "listLiveRaceChallenges",
+      "setLiveRacePushSubscription",
     ];
     for (const [instance, name] of mockHttpsCallable.mock.calls) {
       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
     }
     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
+  });
+
+  it.each(["jest", "facebook"])("limits the optional solo region to Jest gameplay (%s)", async platformTarget => {
+    mockHttpsCallable.mockClear();
+    await loadWithEnvironment({...completeEnvironment, platformTarget, gameplayRegion: "europe-west1"});
+    /** Every session action must use one selected region; other capabilities keep their own endpoints. */
+    const soloCalls = ["getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
+      "completeGame", "submitSinglePlayerGuess", "getHint", "spendCoins", "skipRiddle"];
+    /** Economy and account calls must not move as a side effect of gameplay regional routing. */
+    const unchangedCalls = ["createYahooStripeCheckout", "confirmYahooStripeCheckout", "updateUsername", "deleteAccount"];
+    for (const [instance, name] of mockHttpsCallable.mock.calls) {
+      if (soloCalls.includes(name)) expect(instance).toMatchObject({region: platformTarget === "jest" ? "europe-west1" : "europe-west2"});
+      if (unchangedCalls.includes(name)) expect(instance).toMatchObject({region: "europe-west2"});
+    }
   });
 
   it("uses provided configuration and region values", async () => {

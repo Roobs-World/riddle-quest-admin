@@ -3,7 +3,7 @@ i  emulators: Detected demo project ID "demo-riddle-quest-live-fairness", emulat
 i  firestore: Firestore Emulator logging to firestore-debug.log
 ✔  firestore: Firestore Emulator was started in standard edition.
 ✔  firestore: Firestore Emulator UI websocket is running on 9150.
-i  Running script: node ../packages/portal/scripts/verify-live-race-browser.mjs && node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs && pnpm exec jest --config jest.config.js --testMatch "**/raceLive.it.test.ts" --runInBand && pnpm exec jest --config jest.config.js --testMatch "**/raceRules.it.test.ts" --runInBand
+i  Running script: node ../packages/portal/scripts/verify-live-race-browser.mjs && node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs && pnpm exec jest --config jest.rules.config.js --testMatch "**/raceLive.it.test.ts" --runInBand && pnpm exec jest --config jest.config.js --testMatch "**/raceRules.it.test.ts" --runInBand
 Hint and manual skip at nine solves produced a fresh, unscored question at 1280px.
 Live PvP passed at 1280px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
 Hint and exhausted guesses at nine solves produced a fresh, unscored question at 390px.
@@ -13,12 +13,12 @@ Bot fallback UI passed at 390px; server deadline advanced through the injected t
 Real Firestore PvP recovered both players after catalog removal and settled one 50-coin win at 1280px.
 Real Firestore PvP recovered both players after catalog removal and settled one 50-coin win at 390px.
 Test Suites: 1 passed, 1 total
-Tests:       24 passed, 24 total
+Tests:       30 passed, 30 total
 Snapshots:   0 total
-Time:        19.352 s
+Time:        16.607 s
 Ran all test suites.
   console.warn
-    [2026-10-02T15:33:03.480Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7491 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.925Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee18 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L54, false for 'create' @ L296, false for 'update' @ L54, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -39,7 +39,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.515Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7492 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.943Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee19 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L138, false for 'create' @ L296, false for 'update' @ L138, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -60,7 +60,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.524Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7493 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.955Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1a error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -81,7 +81,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.535Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7494 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.963Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1b error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -102,7 +102,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.546Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7495 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.971Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1c error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -123,7 +123,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.556Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7496 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.977Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1d error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -144,7 +144,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.566Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7497 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.983Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1e error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -165,7 +165,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.574Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7498 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:47.990Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee1f error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L142, false for 'create' @ L296, false for 'update' @ L142, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -186,7 +186,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.593Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a7499 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.004Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee20 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L150, false for 'create' @ L296, false for 'update' @ L150, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -207,7 +207,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.603Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a749a error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.013Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee21 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L154, false for 'create' @ L296, false for 'update' @ L154, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -228,7 +228,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.612Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a749b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.020Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee22 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L158, false for 'create' @ L296, false for 'update' @ L158, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -249,7 +249,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.620Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a749c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.026Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee23 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L162, false for 'create' @ L296, false for 'update' @ L162, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -270,7 +270,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.627Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a749d error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.033Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee24 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L166, false for 'create' @ L296, false for 'update' @ L166, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -291,7 +291,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.633Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a749e error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.041Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee25 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L170, false for 'create' @ L296, false for 'update' @ L170, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -312,7 +312,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.640Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a749f error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.048Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee26 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L170, false for 'create' @ L296, false for 'update' @ L170, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -333,7 +333,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.647Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a0 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.058Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee27 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L170, false for 'create' @ L296, false for 'update' @ L170, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -354,7 +354,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.655Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a1 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.066Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee28 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -375,7 +375,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.662Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a2 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.072Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee29 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -396,7 +396,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.671Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a3 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.078Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2a error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -417,7 +417,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.678Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a4 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.085Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2b error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -438,7 +438,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.684Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a5 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.093Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2c error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -459,7 +459,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.691Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a6 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.100Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2d error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -480,7 +480,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.705Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a7 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.109Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2e error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -501,7 +501,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.713Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a8 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.117Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee2f error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -522,7 +522,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.721Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74a9 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.124Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee30 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L174, false for 'create' @ L296, false for 'update' @ L174, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -543,7 +543,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.735Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74aa error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.133Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee31 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L178, false for 'create' @ L296, false for 'update' @ L178, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -564,7 +564,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.765Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74ac error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.159Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee33 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -585,7 +585,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.771Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74ad error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.171Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee34 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -606,7 +606,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.780Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74ae error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.176Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee35 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -627,7 +627,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.786Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74af error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.183Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee36 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -648,7 +648,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.793Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74b0 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.189Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee37 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -669,7 +669,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.799Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74b1 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.195Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee38 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L142, false for 'create' @ L296, false for 'update' @ L142, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -690,7 +690,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.805Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74b2 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.203Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee39 error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L170, false for 'create' @ L296, false for 'update' @ L170, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -711,7 +711,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.812Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74b3 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.213Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3a error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L170, false for 'create' @ L296, false for 'update' @ L170, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -732,7 +732,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.818Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74b4 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.218Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3b error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L296, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -753,7 +753,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.846Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74b6 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.244Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3d error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L27, false for 'create' @ L296, false for 'update' @ L31, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -774,7 +774,7 @@ Ran all test suites.
       at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
 
   console.warn
-    [2026-10-02T15:33:03.851Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x728a74b7 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+    [2026-10-02T16:01:48.247Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x1ca5ee3e error. Code: 7 Message: 7 PERMISSION_DENIED:
     false for 'create' @ L96, false for 'create' @ L296, false for 'update' @ L96, false for 'update' @ L296
 
       103 |     !message.includes('"private_key"')
@@ -797,7 +797,7 @@ Ran all test suites.
 Test Suites: 1 passed, 1 total
 Tests:       5 passed, 5 total
 Snapshots:   0 total
-Time:        1.104 s
+Time:        0.912 s, estimated 2 s
 Ran all test suites.
 ✔  Script exited successfully (code 0)
 i  emulators: Shutting down emulators.

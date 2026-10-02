@@ -1,7 +1,6 @@
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support";
-import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
-import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry} from "./tournaments.jest-playwright.support";
+import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
 
@@ -504,8 +503,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           },
         };
       });
-      await installRaceContextDialogs(successPage);
-      await installTournamentPresentation(successPage);
+      /** Current multiplayer journey crosses the authenticated Facebook live transport. */
+      const verifyMultiplayer = await installLiveMultiplayerJourney(successPage, "Facebook");
       await successPage.goto(`${origin}/?harness=race`);
       try {
         await successPage.waitForFunction(
@@ -616,99 +615,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await tooltip.locator("button").click();
       }
       await successPage.locator(".tooltip-backdrop").waitFor({state: "detached"});
-      try {
-        await successPage.locator(".multiplayer-navigation-action").click({timeout: 5_000});
-        await successPage.locator(".race-hub-tabs").waitFor({timeout: 5_000});
-      } catch (error) {
-        /** Provides diagnostics behavior. */
-        const diagnostics = await successPage.evaluate(() => ({
-          body: document.body.innerText,
-          events: window.__facebookEvents,
-          route: location.href,
-          viewport: {width: innerWidth, height: innerHeight},
-          multiplayerBox: (() => {
-            /** Provides box behavior. */
-            const box = document.querySelector(".multiplayer-navigation-action")?.getBoundingClientRect();
-            return box ? {x: box.x, y: box.y, width: box.width, height: box.height} : null;
-          })(),
-          content: (() => {
-            /** Provides element behavior. */
-            const element = document.querySelector(".game-content") as HTMLElement | null;
-            /** Provides box behavior. */
-            const box = element?.getBoundingClientRect();
-            return element && box
-              ? {
-                  x: box.x,
-                  width: box.width,
-                  transform: element.style.transform,
-                  direction: getComputedStyle(element).direction,
-                }
-              : null;
-          })(),
-          navigation: (() => {
-            /** Provides box behavior. */
-            const box = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
-            return box ? {x: box.x, width: box.width} : null;
-          })(),
-          ancestors: [".game-app", ".play-game-shell", "#root"].map((selector) => {
-            /** Provides box behavior. */
-            const box = document.querySelector(selector)?.getBoundingClientRect();
-            return {selector, ...(box ? {x: box.x, width: box.width} : {})};
-          }),
-        }));
-        throw new Error(
-          `Facebook hub did not open: ${error instanceof Error ? error.message : String(error)} ${JSON.stringify(diagnostics)}`,
-        );
-      }
-      /** Provides facebook hub tabs behavior. */
-      const facebookHubTabs = successPage.getByRole("tab");
-      expect(await facebookHubTabs.count()).toBe(3);
-      expect(await successPage.getByRole("tab", {name: /^tournois$/i}).count()).toBe(1);
-      await facebookHubTabs.first().focus();
-      await facebookHubTabs.first().press("ArrowRight");
-      expect(await facebookHubTabs.nth(1).getAttribute("aria-selected")).toBe("true");
-      expect(await facebookHubTabs.nth(1).evaluate((element) => element === document.activeElement)).toBe(true);
-      await successPage.locator(".riddle-sound-button").evaluate((element: HTMLElement) => element.click());
-      expect(await facebookHubTabs.nth(1).evaluate((element) => element === document.activeElement)).toBe(true);
-      try {
-        await successPage.waitForFunction(() => window.__facebookEvents.includes("overlay:name:show"), undefined, {
-          timeout: 5_000,
-        });
-      } catch (error) {
-        /** Provides events behavior. */
-        const events = await successPage.evaluate(() => window.__facebookEvents);
-        throw new Error(
-          `Facebook profile overlay did not render: ${error instanceof Error ? error.message : String(error)} ` +
-            JSON.stringify({events}),
-        );
-      }
-      expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(
-        expect.arrayContaining([
-          "overlay:picture:true",
-          "overlay:name:true",
-          "overlay:picture:show",
-          "overlay:name:show",
-        ]),
-      );
-      await facebookHubTabs.first().click();
-      await successPage.waitForFunction(() => window.__facebookEvents.includes("overlay:name:destroy"));
-      expect(
-        await successPage.evaluate(() => window.__facebookEvents.filter((event) => event.endsWith(":destroy")).sort()),
-      ).toEqual(["overlay:name:destroy", "overlay:picture:destroy"]);
-      await verifyRaceContextDialogs(successPage);
-      await verifyTournamentPresentation(successPage);
-      /** Provides mobile hub box behavior. */
-      const mobileHubBox = await successPage.locator(".race-hub-tabs").boundingBox();
-      expect(mobileHubBox).not.toBeNull();
-      expect(mobileHubBox!.x).toBeGreaterThanOrEqual(0);
-      expect(mobileHubBox!.x + mobileHubBox!.width).toBeLessThanOrEqual(390);
-      await successPage.setViewportSize({width: 1280, height: 800});
-      /** Provides desktop hub box behavior. */
-      const desktopHubBox = await successPage.locator(".race-hub-tabs").boundingBox();
-      expect(desktopHubBox).not.toBeNull();
-      expect(desktopHubBox!.x).toBeGreaterThanOrEqual(0);
-      expect(desktopHubBox!.x + desktopHubBox!.width).toBeLessThanOrEqual(1280);
-      await successPage.locator(".race-close").click();
+      await verifyMultiplayer("fr");
       await verifyImmediateSoloFeedback(successPage, "Facebook");
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:button_press:")))).toBe(true);
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:guess_submitted:")))).toBe(true);
@@ -786,7 +693,6 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-delete-dialog .profile-delete-account-button').click();
       await successPage.locator('.profile-page').waitFor({state: 'detached'});
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
-      await verifyTournamentEntry(successPage, origin);
       await verifyRewardedContinue(successPage, origin);
     } finally {
       await browser.close();

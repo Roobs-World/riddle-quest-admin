@@ -12,7 +12,7 @@ Firebase secret to an environment file or repository. Its `playtest:upload` is a
 bootstrap artifact only; it is not an immutable production candidate or promotion
 receipt.
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
 
 ## Release state
 
@@ -108,6 +108,17 @@ or external browser endpoints. The request-scoped Devvit server obtains trusted
 `userId`, post, subreddit, and app context, then signs one-operation assertions to
 `www.roobsworld.com/api/reddit-gateway/*`. That exact hostname is the only
 external domain in `devvit.json`; Reddit approval of it is required before release.
+
+The [2 October gateway transport check](evidence/reddit-gateway-transport-2026-10-02.md)
+binds all four existing function routes to that fixed HTTPS prefix. Redirects are
+not followed, actual streamed response bytes are capped at 64 KiB before retention,
+and invalid UTF-8/JSON is rejected. One ten-second deadline covers headers and
+body reads; late responses and stalled cancellation cannot extend it. The server
+returns fixed diagnostics without exposing signed assertions or provider bodies,
+preserves valid JSON/error statuses, and never retries a transport attempt.
+A timeout is not proof that a remote economic or account mutation failed.
+The complete package's 51 tests pass on Node 24 and pinned Node 22, with all six
+isolated client builds passing. Hosted signed forwarding remains unverified.
 
 Gateway assertions must remain fresh through replay-record persistence. The
 [1 October verifier check](evidence/reddit-assertion-expiry-2026-10-01.md) rejects

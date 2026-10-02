@@ -11,13 +11,14 @@ const {RACE_RULES} = require("@qwordly/core/race");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-delivery-"));
-const output = path.resolve(root, "../../artifacts/live-pvp-delivery/browser");
+const output = path.resolve(process.env.LIVE_RACE_REPORT_DIR ?? path.join(root, "../../artifacts/live-pvp-delivery/browser"));
 await mkdir(output, {recursive:true});
 const authority = null;
 const responsiveOnly = process.env.LIVE_RACE_RESPONSIVE_ONLY === "1";
 const renderOnly = process.env.LIVE_RACE_RENDER_ONLY === "1";
 const backoffOnly = process.env.LIVE_RACE_BACKOFF_ONLY === "1";
 const rejectionOnly = process.env.LIVE_RACE_REJECTION_ONLY === "1";
+const cooldownOnly = process.env.LIVE_RACE_COOLDOWN_ONLY === "1";
 const commandLostOnly = process.env.LIVE_RACE_COMMAND_LOST_ONLY === "1";
 const commandRecoveryOnly = process.env.LIVE_RACE_COMMAND_RECOVERY_ONLY === "1" || commandLostOnly;
 const source = `
@@ -36,6 +37,7 @@ const call=async(action,input)=>{
  const response=await fetch('/live/'+action,{method:'POST',body:JSON.stringify({user,...input})});
  const result=await response.json();
  if(!response.ok) throw Object.assign(new Error('Harness transport failed'),{code:result.code});
+ if(window.testActionDeadline && result.phase==='racing') result.actionAvailableAtMs=window.testActionDeadline;
  if(input.action==='poll' && window.holdPollOnce){window.holdPollOnce=false;return new Promise(resolve=>{window.releasePoll=()=>resolve(result);});}
  if(input.action==='poll' && window.holdPollErrorOnce){window.holdPollErrorOnce=false;return new Promise((_resolve,reject)=>{window.releasePollError=()=>reject(new Error('Late poll failure'));});}
  if(input.action==='guess' && window.freezeGuessOnce){window.freezeGuessOnce=false;return new Promise(()=>{});}
@@ -105,13 +107,35 @@ try {
  for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
   reset();const context=await browser.newContext({viewport});const a=await context.newPage(),b=await context.newPage();const errors=[];
   for(const page of [a,b])page.on('pageerror',error=>errors.push(error.message));
-  await a.goto(baseUrl+'/?user=Alice'+(renderOnly||responsiveOnly||backoffOnly||rejectionOnly||commandRecoveryOnly?'':'&fault=join'));await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
+  await a.goto(baseUrl+'/?user=Alice'+(renderOnly||responsiveOnly||backoffOnly||rejectionOnly||commandRecoveryOnly||cooldownOnly?'':'&fault=join'));await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
   await a.locator('.live-race-self strong').waitFor({timeout:15000});
   const joins=await a.evaluate(()=>window.deliveryCalls.filter(item=>item.action==='join'));
-  if(!renderOnly&&!responsiveOnly&&!backoffOnly&&!rejectionOnly&&!commandRecoveryOnly){assert.equal(joins.length,2);assert.equal(joins[0].requestId,joins[1].requestId);
+  if(!renderOnly&&!responsiveOnly&&!backoffOnly&&!rejectionOnly&&!commandRecoveryOnly&&!cooldownOnly){assert.equal(joins.length,2);assert.equal(joins[0].requestId,joins[1].requestId);
   console.log('Hung join recovered with the same request ID at '+viewport.width+'px.');}
   await b.goto(baseUrl+'/?user=Bob');await b.getByRole('button',{name:'Start PvP match',exact:true}).click();
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});
+  if(cooldownOnly){
+   await a.evaluate(()=>{window.testActionDeadline=Date.now()+4000;window.dispatchEvent(new Event('online'));});
+   await a.locator('.live-race-cooldown').waitFor();
+   await a.evaluate(()=>{window.failAllPolls=true;});
+   await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('test');
+   assert.equal(await a.locator('.race-actions .submit-action').isDisabled(),true,'A known penalty deadline must block submitting');
+   assert.equal(await a.locator('.guess-row .cell').allTextContents().then(values=>values.join('')),'test','Penalty waits must preserve keyboard input');
+   await a.screenshot({path:path.join(output,'cooldown-'+viewport.width+'.png'),fullPage:true});
+   const waitBounds=await a.locator('.live-race-cooldown').boundingBox();
+   assert.ok(waitBounds&&waitBounds.y>=0&&waitBounds.y+waitBounds.height<=viewport.height,'The penalty countdown must remain within the visible gameplay screen');
+   await a.waitForFunction(()=>!document.querySelector('.race-actions .submit-action').disabled,null,{timeout:6000}).catch(async failure=>{
+    console.log(JSON.stringify(await a.evaluate(()=>({deadline:window.testActionDeadline,now:Date.now(),cooldown:document.querySelector('.live-race-cooldown')?.textContent,
+     letters:[...document.querySelectorAll('.guess-row .cell')].map(cell=>cell.textContent).join(''),error:document.querySelector('.race-error')?.textContent}))));
+    throw failure;
+   });
+   assert.equal(await a.locator('.live-race-cooldown').count(),0,'A polling outage must not extend the known penalty');
+   await a.locator('.race-actions .submit-action').click();
+   await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
+   assert.equal(tickets.get('Alice').count,1);assert.deepEqual(errors,[]);
+   console.log('Known penalty deadline preserved typing and re-enabled submission during a poll outage at '+viewport.width+'px.');
+   await context.close();continue;
+  }
   if(renderOnly){
    const start = await a.locator('.race-header-clock strong').innerText();
    await a.evaluate(()=>{window.__gameplayRenders=0;});

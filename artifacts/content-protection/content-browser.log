@@ -1,0 +1,4 @@
+PASS: unavailable locale chunk retries without granting gameReady or saving early
+PASS: authenticated decryption rejects corrupted content and retries without an early save
+PASS: pause during locale download delays interactive startup until SDK resume
+PASS: all 16 bundled locales initialize with only their own pack

@@ -1,0 +1,57 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 54 production declarations are undocumented.
+- packages/core/src/contentProtection.ts:27 iv
+- packages/core/src/contentProtection.ts:28 data
+- packages/core/src/contentProtection.ts:36 envelope
+- packages/core/src/contentProtection.ts:39 iv
+- packages/core/src/contentProtection.ts:41 plain
+- packages/core/src/contentProtection.ts:46 data
+- packages/core/src/contentProtection.ts:46 protected
+- packages/core/src/contentProtection.ts:48 {contentProtection, ...payload}
+- packages/portal/src/firebase.ts:52 call
+- packages/portal/src/firebase.ts:55 result
+- packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts:2444 __RIDDLE_QUEST_JEST_AUTH_TEST__
+- packages/portal/src/play/modalPages/profile/ProfileStatsModalPages.tsx:105 nextRank
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:4 generate
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:5 capture
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:6 job
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:7 clock
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:8 ref
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:9 transaction
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:10 db
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:34 release
+- firebase-functions/src/__tests__/classicSupplyWorker.test.ts:36 pending
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:3 mockSet
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:16 ActualOpenAI
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:18 default export
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:20 body
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:21 format
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:22 parsed
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:28 timer
+- firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:44 completion
+- firebase-functions/src/__tests__/facebookNotificationTransport.test.ts:34 test
+- firebase-functions/src/__tests__/openaiService.test.ts:374 input
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:992 clock
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:993 date
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:1007 clock
+- firebase-functions/src/__tests__/riddleGeneration.test.ts:1008 date
+- firebase-functions/src/__tests__/riddleSupply.test.ts:84 releaseGeneration
+- firebase-functions/src/__tests__/riddleSupply.test.ts:85 modelPending
+- firebase-functions/src/__tests__/riddleSupply.test.ts:87 completion
+- firebase-functions/src/__tests__/riddleSupply.test.ts:88 outcome
+- firebase-functions/src/daily/dailyScheduler.ts:15 scheduledAt
+- firebase-functions/src/daily/dailyScheduler.ts:17 now
+- firebase-functions/src/riddles/classicSupplyWorker.ts:18 db
+- firebase-functions/src/riddles/classicSupplyWorker.ts:19 ref
+- firebase-functions/src/riddles/classicSupplyWorker.ts:20 leaseId
+- firebase-functions/src/riddles/classicSupplyWorker.ts:21 now
+- firebase-functions/src/riddles/classicSupplyWorker.ts:22 locale
+- firebase-functions/src/riddles/classicSupplyWorker.ts:23 snapshot
+- firebase-functions/src/riddles/classicSupplyWorker.ts:24 data
+- firebase-functions/src/riddles/classicSupplyWorker.ts:31 succeeded
+- firebase-functions/src/riddles/classicSupplyWorker.ts:39 current
+- firebase-functions/src/riddles/classicSupplyWorker.ts:50 due
+- firebase-functions/src/shared/sentryHandlers.ts:63 decodedRequest
+- firebase-functions/src/shared/sentryHandlers.ts:64 invoke
+- firebase-functions/src/shared/sentryHandlers.ts:65 result
+[ELIFECYCLE] Command failed with exit code 1.

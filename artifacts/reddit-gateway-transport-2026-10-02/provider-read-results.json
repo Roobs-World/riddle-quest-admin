@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-10-02T16:26:35+00:00",
+  "cliAuthenticatedUser": "RareAdvertising2367",
+  "subreddit": "riddle_quest_dev",
+  "installedAppName": "Riddle Quest",
+  "installedVersion": "0.0.1.23",
+  "source": "devvit whoami and devvit list installs riddle_quest_dev",
+  "settingsRead": {
+    "url": "https://developers.reddit.com/apps/riddle-quest/developer-settings",
+    "initialResult": "403; unauthenticated browser",
+    "currentResult": "Reddit MFA required; awaiting owner",
+    "approvalVerified": false
+  },
+  "unsignedGatewayProbePassed": true,
+  "signedHostedForwardingVerified": false,
+  "providerWrites": 0,
+  "uploads": 0,
+  "docReferences": [
+    "https://developers.reddit.com/docs/versioned_docs/version-0.14/capabilities/server/http-fetch",
+    "https://developers.reddit.com/docs/versioned_docs/version-0.14/capabilities/notifications/notifications-overview",
+    "https://developers.reddit.com/docs/versioned_docs/version-0.14/capabilities/notifications/pn-best-practices"
+  ],
+  "notificationBetaVerified": false,
+  "notificationCopyApproved": false
+}

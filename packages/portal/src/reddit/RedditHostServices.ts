@@ -1,3 +1,4 @@
+import {readProtectedContent} from "@qwordly/core/contentProtection";
 import {RaceEntryResponseSchema} from "@qwordly/core/race";
 import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "@qwordly/core/bridge";
 import {
@@ -29,13 +30,17 @@ import {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+/** Same-origin operations whose responses carry answers or hint reveals. */
+const protectedOperations = new Set(["riddle.classic", "riddle.classic-buffer", "riddle.daily", "hint.request", "riddle.skip",
+  "race.start", "race.ready", "race.guess", "race.hint", "race.skip", "race.resume"]);
+
 /** Provides post behavior. */
 const post = async (operation: string, body: unknown): Promise<unknown> => {
   /** Provides response behavior. */
   const response = await fetch(`/api/game/${operation}`, {
     method: "POST",
     headers: {"content-type": "application/json"},
-    body: JSON.stringify(body),
+    body: JSON.stringify(protectedOperations.has(operation) && isRecord(body) ? {...body, contentProtection: 1} : body),
   });
   /** Provides payload behavior. */
   const payload: unknown = await response.json();
@@ -47,7 +52,7 @@ const post = async (operation: string, body: unknown): Promise<unknown> => {
     if (isRecord(payload) && payload.error === "guess-rejected") error.code = "failed-precondition";
     throw error;
   }
-  return payload.result;
+  return readProtectedContent(payload.result);
 };
 
 /** Provides unavailable behavior. */

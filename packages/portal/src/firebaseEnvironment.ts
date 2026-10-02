@@ -12,6 +12,7 @@ export const firebaseEnvironment = {
   sentryRelease: import.meta.env.VITE_SENTRY_RELEASE,
   appCheckSiteKey: import.meta.env.VITE_FIREBASE_APP_CHECK_SITE_KEY,
   functionsRegion: import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION,
+  gameplayRegion: import.meta.env.VITE_FIREBASE_GAMEPLAY_REGION,
   jestRuntime: import.meta.env.VITE_JEST_RUNTIME,
   platformTarget: import.meta.env.VITE_PLATFORM_TARGET,
   production: import.meta.env.PROD,

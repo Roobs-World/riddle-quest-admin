@@ -1,0 +1,12 @@
+{"deadline":1790956918737,"now":1790956920816,"cooldown":"Next action in 1s","letters":"test","error":"The race could not continue. Retry"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 6000ms exceeded.
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-delivery-browser.mjs:124:12 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

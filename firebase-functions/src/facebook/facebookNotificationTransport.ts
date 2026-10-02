@@ -54,6 +54,8 @@ export type FacebookNotificationTransportOptions = Readonly<{
   authorizeAttempt: (scope: FacebookNotificationAttemptScope) => Promise<boolean>;
   /** Decoder backed by real provider fixtures; no guessed success decoder is supplied. */
   confirmResponse?: (scope: FacebookNotificationAttemptScope, body: unknown) => boolean;
+  /** Allows one documented POST while conservatively recording every response as unconfirmed. */
+  allowUnconfirmedResponse?: boolean;
   /** Test seam for HTTP; the destination and redirect policy remain fixed. */
   fetch?: typeof fetch;
 }>;
@@ -120,7 +122,7 @@ export function createFacebookNotificationTransport(options: FacebookNotificatio
     if (Buffer.byteLength(serialized, "utf8") > REQUEST_BYTE_LIMIT) {
       return {outcome: "not-sent", reason: "invalid-request"};
     }
-    if (!options.confirmResponse) return {outcome: "not-sent", reason: "contract-unavailable"};
+    if (!options.confirmResponse && !options.allowUnconfirmedResponse) return {outcome: "not-sent", reason: "contract-unavailable"};
     try {
       if (!options.isProviderReady() || (operation === "send" && !isFacebookFeatureEnabled("notifications"))) {
         return {outcome: "not-sent", reason: "inactive"};
@@ -162,7 +164,7 @@ export function createFacebookNotificationTransport(options: FacebookNotificatio
       }
       /** Fixture-backed decoding never treats an unrecognized 2xx body as an acknowledgement. */
       const decoded = await readResponse(response);
-      if (!controller.signal.aborted && options.confirmResponse(scope, decoded) === true) {
+      if (!controller.signal.aborted && options.confirmResponse?.(scope, decoded) === true) {
         return {outcome: "confirmed", httpStatus};
       }
     } catch { /* Provider outcome may be committed even after a timeout, parse error or transport failure. */ }

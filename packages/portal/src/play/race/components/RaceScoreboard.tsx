@@ -11,6 +11,7 @@ export function RaceScoreboard({
   live = false,
   adjustedNow,
   liveClock,
+  liveActionWaitSeconds = 0,
   opponentCorrect,
   feedback,
   coins,
@@ -24,6 +25,8 @@ export function RaceScoreboard({
   adjustedNow: number;
   /** Live clock animates independently of the board and keyboard. */
   liveClock?: LiveRaceClockAnchor;
+  /** Remaining authoritative help wait keeps its message within the existing status area. */
+  liveActionWaitSeconds?: number;
   /** Server-confirmed opponent score. */
   opponentCorrect: number;
   /** Stores feedback. */
@@ -38,6 +41,8 @@ export function RaceScoreboard({
   /** Formats the visible score so the bar's purpose and target are explicit. */
   const formatScore = (correctCount: number) =>
     `${tr("RaceTo10.PROGRESS_LABEL")}: ${correctCount} / ${run.rules.targetCorrect}`;
+  /** Live help deadlines reuse the reserved feedback row without extending the viewport. */
+  const actionWaitSeconds = live ? liveActionWaitSeconds : 0;
 
   return (
     <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
@@ -51,12 +56,13 @@ export function RaceScoreboard({
           </small>
         </div>
         <div
-          className={`race-feedback ${feedback ?? "idle"}`}
+          className={`race-feedback ${feedback ?? (actionWaitSeconds > 0 ? "live-race-cooldown" : "idle")}`}
           role="status"
           aria-live="polite"
-          aria-hidden={feedback ? undefined : true}
+          aria-hidden={feedback || actionWaitSeconds > 0 ? undefined : true}
         >
-          {feedback ? tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN") : "\u00a0"}
+          {feedback ? tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN") : actionWaitSeconds > 0 ?
+            tr("RaceTo10.LIVE_ACTION_WAIT", {seconds: actionWaitSeconds}) : "\u00a0"}
         </div>
         <div className="race-progress">
           <div style={{"--race-progress": progressPercent(run.correctCount)} as CSSProperties}>

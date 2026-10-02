@@ -3,11 +3,12 @@ i  emulators: Detected demo project ID "demo-riddle-quest-latency", emulated ser
 i  firestore: Firestore Emulator logging to firestore-debug.log
 ✔  firestore: Firestore Emulator was started in standard edition.
 ✔  firestore: Firestore Emulator UI websocket is running on 9151.
-i  Running script: pnpm exec jest --config jest.config.js --runInBand --testMatch "**/raceLive.it.test.ts"
-Test Suites: 1 passed, 1 total
-Tests:       24 passed, 24 total
+i  Running script: pnpm exec jest --config jest.config.js --runInBand --testMatch "**/raceLive.it.test.ts" --testMatch "**/raceLiveInvitation.it.test.ts"
+
+Test Suites: 2 passed, 2 total
+Tests:       36 passed, 36 total
 Snapshots:   0 total
-Time:        20.792 s
+Time:        21.109 s, estimated 23 s
 Ran all test suites.
 ✔  Script exited successfully (code 0)
 i  emulators: Shutting down emulators.

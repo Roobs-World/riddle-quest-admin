@@ -11,7 +11,10 @@ import {getSafeErrorMetadata} from "../shared/errorMetadata";
 /** Provides scheduled task handler behavior. */
 export const scheduledTaskHandler = async (context: ScheduledEvent) => {
   /** One captured generation instant shared across locale grouping. */
-  const now = context.scheduleTime ? new Date(context.scheduleTime) : new Date();
+  const dispatchedAt = new Date();
+  const scheduledAt = context.scheduleTime ? new Date(context.scheduleTime) : dispatchedAt;
+  // Preserve delayed midnight retries without advancing regional clocks on manual runs.
+  const now = scheduledAt > dispatchedAt ? dispatchedAt : scheduledAt;
   /** Supported locales grouped by the regional Daily date they currently require. */
   const groups = new Map<string, SupportedLocale[]>();
   for (const locale of SUPPORTED_LOCALES) {

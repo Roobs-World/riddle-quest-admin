@@ -1,3 +1,5 @@
+import {protectContent} from "@qwordly/core/contentProtection";
+import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium, type Page} from "@playwright/test";
@@ -190,8 +192,16 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
         /** Provides pathname behavior. */
         const pathname = new URL(route.request().url()).pathname;
         /** Provides json behavior. */
-        const json = (body: unknown) =>
-          route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify(body)});
+        const json = async (body: unknown) => {
+          /** Real wire negotiation from the built Reddit artifact. */
+          const protection = route.request().postDataJSON()?.contentProtection;
+          if (protection === 1 && body && typeof body === "object" && "result" in body) {
+            /** Server ciphertext traverses the same-origin gateway unchanged. */
+            const result = await protectContent(body.result);
+            return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({...body, result})});
+          }
+          return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify(body)});
+        };
         if (pathname === "/api/session")
           return json({
             ok: true,
@@ -363,19 +373,6 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       const expanded = await browser.newPage({viewport: {width: 390, height: 844}});
       /** Provides api requests behavior. */
       const apiRequests: string[] = [];
-      /** Captured search intents prove recovery through the rendered client. */
-      const matchRequests: Array<{
-        /** Exact content language preserved across recovery. */ locale: string;
-        /** Receipt distinguishing a replay from a fresh intent. */ requestId: string;
-      }> = [];
-      /** Releases the response lost by the first search only after a newer intent is displayed. */
-      let releaseLostMatch: (() => Promise<void>) | undefined;
-      /** Standings deliveries are controlled independently of matchmaking. */
-      let tournamentRequests = 0;
-      /** An older successful view must not finish a newer tab visit. */
-      let releaseOldTournament: (() => Promise<void>) | undefined;
-      /** An expired read's late failure must not overwrite a recovered view. */
-      let releaseLostTournament: (() => Promise<void>) | undefined;
       await injectDevvit(expanded, 2, origin);
       await expanded.addInitScript(() => {
         // Seed the same locale as the authoritative preference fixture before the first session renders.
@@ -386,11 +383,6 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
           const message = (event as CustomEvent).detail;
           if (message?.type === "host:init") document.documentElement.dataset.redditHostLocale = message.payload.locale;
         });
-        // Isolate the session deadline by emulating a provider whose own transport timeout stalls.
-        /** Original browser scheduling remains unchanged for the session's 30-second delivery budget. */
-        const schedule = window.setTimeout.bind(window);
-        window.setTimeout = ((callback: TimerHandler, delay?: number, ...args: unknown[]) =>
-          schedule(callback, delay === 15000 ? 60000 : delay, ...args)) as typeof window.setTimeout;
       });
       await expanded.route("**/api/**", async (route) => {
         /** Provides pathname behavior. */
@@ -459,71 +451,6 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
             contentType: "application/json",
             body: JSON.stringify({ok: true, result: {enabled: true, locale: route.request().postDataJSON().locale, reason: "enabled"}}),
           });
-        if (pathname === "/api/game/race.match") {
-          matchRequests.push(route.request().postDataJSON());
-          if (matchRequests.length === 1) return new Promise<void>(resolve => {
-            releaseLostMatch = async () => {
-              await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({ok: true, result: {status: "empty", locale: "ar"}})});
-              resolve();
-            };
-          });
-          if (matchRequests.length <= 3) return route.fulfill({
-            status: matchRequests.length === 2 ? 503 : 429,
-            contentType: "application/json",
-            body: JSON.stringify({error: "private provider diagnostic", matchmaking: matchRequests.length === 2
-              ? {reason: "projection-unavailable", recovery: "same-intent", retryAfterMs: 1500}
-              : {reason: "search-budget-exceeded", recovery: "new-intent", retryAfterMs: 0}}),
-          });
-          return route.fulfill({
-            status: 200,
-            contentType: "application/json",
-            body: JSON.stringify({
-              ok: true,
-              result: {
-                status: "matched",
-                challenge: {
-                  challengeId: "reddit-offline-match",
-                  creator: {displayName: "FreshRedditRival", avatarUrl: "https://styles.redditmedia.com/avatar.png"},
-                  categoryId: "history",
-                  locale: "ar",
-                  targetCorrect: 10,
-                  adjustedTimeToBeatMs: 40_000,
-                  rulesVersion: "race10_v1",
-                  expiresAtMs: Date.now() + 60_000,
-                  status: "active",
-                },
-              },
-            }),
-          });
-        }
-        if (pathname === "/api/game/tournament.list") {
-          tournamentRequests++;
-          await expanded.evaluate(count => {document.documentElement.dataset.redditTournamentRequests = String(count);}, tournamentRequests);
-          /** Same identity-free fixture distinguishes the old and current view by rank. */
-          const body = JSON.stringify({
-            ok: true,
-            result: {
-              tournamentId: "reddit-race10-ar-2026-08-20", locale: "ar",
-              startsAtMs: Date.UTC(2026, 7, 20), endsAtMs: Date.UTC(2026, 7, 21),
-              sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false,
-              standings: [{rank: tournamentRequests === 1 ? 9 : 1, adjustedTimeMs: 25_000, isCurrentPlayer: true}],
-              currentPlayer: {rank: 1, adjustedTimeMs: 25_000, isCurrentPlayer: true},
-            },
-          });
-          if (tournamentRequests <= 2) return new Promise<void>(resolve => {
-            if (tournamentRequests === 1) releaseOldTournament = async () => {
-              await route.fulfill({status: 200, contentType: "application/json", body}); resolve();
-            };
-            else releaseLostTournament = async () => {
-              await route.fulfill({status: 503, contentType: "application/json", body: JSON.stringify({error: "private expired tournament error"})}); resolve();
-            };
-          });
-          return route.fulfill({
-            status: 200,
-            contentType: "application/json",
-            body,
-          });
-        }
         if (pathname === "/api/game/presence.poll")
           return route.fulfill({
             status: 200,
@@ -575,6 +502,8 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
           body: JSON.stringify({ok: false, error: `unexpected ${pathname}`}),
         });
       });
+      /** Current multiplayer journey crosses only same-origin Devvit live endpoints. */
+      const verifyMultiplayer = await installLiveMultiplayerJourney(expanded, "Reddit");
       await expanded.goto(`${origin}/`);
       try {
         await expanded.getByText("What has keys but no locks?", {exact: true}).waitFor({timeout: 15_000});
@@ -597,72 +526,6 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       expect(await expanded.locator("html").getAttribute("data-riddle-quest-reduced-motion")).toBe("true");
       expect(await expanded.locator("html").getAttribute("data-riddle-quest-high-contrast")).toBe("true");
       expect(await expanded.getByRole("button", {name: /buy coins/i}).count()).toBe(0);
-      await expanded.locator(".multiplayer-navigation-action").evaluate((button: HTMLButtonElement) => button.click());
-      /** Provides hub tabs behavior. */
-      const hubTabs = expanded.locator('.race-hub-tabs [role="tab"]');
-      await hubTabs.first().waitFor({state: "attached"});
-      expect(await hubTabs.count()).toBe(3);
-      expect(await expanded.locator('.race-hub-tabs [role="tablist"]').count()).toBe(1);
-      expect(await expanded.locator('.race-hub-tabs [role="tab"][aria-selected="true"]').count()).toBe(1);
-      expect(await expanded.locator(".race-hub-social-actions").count()).toBe(1);
-      expect(await expanded.locator(".race-hub-social-actions button").count()).toBe(1);
-      await hubTabs.last().click();
-      await expanded.waitForFunction(() => document.documentElement.dataset.redditTournamentRequests === "1");
-      await hubTabs.first().click();
-      await hubTabs.last().click();
-      await expanded.waitForFunction(() => document.documentElement.dataset.redditTournamentRequests === "2");
-      await releaseOldTournament!();
-      await expanded.waitForTimeout(100);
-      expect(await expanded.locator(".race-tournaments li").count()).toBe(0);
-      expect(await expanded.locator(".race-tournaments [aria-live]").count()).toBe(1);
-      await expanded.locator(".race-error").waitFor({timeout: 35000});
-      expect(tournamentRequests).toBe(2);
-      await expanded.locator(".race-error button").click();
-      await expanded.locator(".race-tournaments li").waitFor({state: "attached"}).catch(async error => {
-        await expanded.screenshot({path: "/tmp/race-tournament-loading-failure.png"});
-        throw new Error(`${String(error)} ${JSON.stringify({apiRequests, body: await expanded.locator("body").innerText()})}`);
-      });
-      expect(await expanded.locator('.race-tournaments[data-rewards-enabled="false"]').count()).toBe(1);
-      expect(await expanded.locator(".race-tournaments").innerText()).toContain("#1");
-      expect(apiRequests.filter((request) => request === "/api/game/tournament.list")).toHaveLength(3);
-      await releaseLostTournament!();
-      await expanded.waitForTimeout(100);
-      expect(await expanded.locator(".race-error").count()).toBe(0);
-      expect(await expanded.locator(".race-tournaments").innerText()).not.toContain("#9");
-      await expanded.screenshot({path: "/tmp/race-provider-view-recovery.png"});
-      await hubTabs.first().click();
-      await expanded.locator(".race-hub-social-actions button").click();
-      await expanded.locator(".race-error").waitFor({timeout: 35000}).catch(async error => {
-        await expanded.screenshot({path: "/tmp/race-discovery-deadline-failure.png"});
-        throw new Error(`${String(error)} ${JSON.stringify({matchRequests, alert: await expanded.locator(".race-error").textContent().catch(() => null), body: await expanded.locator("body").innerText()})}`);
-      });
-      expect(matchRequests).toHaveLength(1);
-      await expanded.waitForFunction(() => (document.querySelector(".race-error button") as HTMLButtonElement | null)?.disabled === false);
-      await expanded.locator(".race-error button").click();
-      await expanded.locator(".race-error button[disabled]").waitFor({timeout: 5000}).catch(async () => {
-        throw new Error(JSON.stringify({matchRequests, alert: await expanded.locator(".race-error").textContent()}));
-      });
-      expect(await expanded.locator(".race-error button").isDisabled()).toBe(true);
-      expect(await expanded.locator(".race-error").innerText()).not.toContain("private provider diagnostic");
-      await expanded.waitForFunction(() => (document.querySelector(".race-error button") as HTMLButtonElement | null)?.disabled === false);
-      await expanded.locator(".race-error button").click();
-      await expanded.waitForFunction(() => document.querySelector(".race-error")?.textContent?.includes("ابدأ بحثًا جديدًا") === true);
-      await expanded.locator(".race-error button").click();
-      await expanded.locator('[data-analytics-screen="multiplayer_challenge"]').waitFor({state: "attached"});
-      expect(await expanded.locator('[data-analytics-screen="multiplayer_challenge"]').innerText()).toContain(
-        "FreshRedditRival",
-      );
-      expect(apiRequests.filter((request) => request === "/api/game/race.match")).toHaveLength(4);
-      expect(matchRequests[1]).toEqual(matchRequests[0]);
-      expect(matchRequests[2]).toEqual(matchRequests[1]);
-      expect(matchRequests[3].requestId).not.toBe(matchRequests[2].requestId);
-      expect(matchRequests.every(request => request.locale === "ar")).toBe(true);
-      await releaseLostMatch!();
-      await expanded.waitForTimeout(100);
-      expect(await expanded.locator('[data-analytics-screen="multiplayer_challenge"]').innerText()).toContain("FreshRedditRival");
-      expect(await expanded.locator(".race-error").count()).toBe(0);
-      await expanded.screenshot({path: "/tmp/race-discovery-deadline-recovery.png"});
-      await expanded.locator(".race-close").click();
       await expanded.locator(".onboarding-card button").waitFor();
       for (let step = 0; step < 10; step += 1) {
         /** Currently visible onboarding or tutorial action. */
@@ -670,6 +533,8 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
         if (await guidanceButton.count()) await guidanceButton.last().click();
         await expanded.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       }
+      await verifyMultiplayer("ar");
+      expect(apiRequests.every(request => request.startsWith("/api/"))).toBe(true);
       await verifyImmediateSoloFeedback(expanded, "Reddit");
       /** Sets tings button. */
       const settingsButton = expanded.locator(".game-bottom-navigation button").first();

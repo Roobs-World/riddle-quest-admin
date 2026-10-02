@@ -34,9 +34,16 @@ export const LiveRaceViewSchema = z.object({ticketId: z.string().regex(/^[a-f0-9
   opponent: LiveRacePlayerSchema.nullable(), run: RaceRunViewSchema.nullable(),
   result: z.enum(["win", "loss", "tie"]).nullable(), rewardCoins: z.union([z.literal(0), z.literal(50)]),
   newCoins: z.number().int().nonnegative().optional(),
+  /** Only the authority selects when the player's next mutation is available. */
+  actionAvailableAtMs: z.number().int().nonnegative().optional(),
   challengeId: LiveRaceChallengeIdSchema.optional()}).strict();
 /** Server-validated incoming invitation; previewing does not occupy a seat. */
 export const GetLiveRaceChallengeSchema = z.object({challengeId: LiveRaceChallengeIdSchema}).strict();
+/** Direct invitations resolve an existing game username on the server. */
+export const SendLiveRaceChallengeSchema = z.object({challengeId: LiveRaceChallengeIdSchema,
+  recipientUsername: z.string().trim().min(3).max(80)}).strict();
+/** Queued means durable server work, never proof of provider delivery. */
+export const SendLiveRaceChallengeResponseSchema = z.object({status: z.literal("queued")}).strict();
 /** Safe invitation status and creator identity for the multiplayer intro. */
 export const LiveRaceChallengeSchema = z.object({challengeId: LiveRaceChallengeIdSchema,
   locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema, creator: LiveRacePlayerSchema,
@@ -56,6 +63,10 @@ export type LiveRaceCapability = {
   join(input: JoinLiveRace): Promise<LiveRaceView>;
   /** Reads an invitation without joining, when supported by the target. */
   challenge?(input: z.infer<typeof GetLiveRaceChallengeSchema>): Promise<LiveRaceChallenge>;
+  /** Notifies a known game player and persists their invitation inbox entry. */
+  sendChallenge?(input: z.infer<typeof SendLiveRaceChallengeSchema>): Promise<z.infer<typeof SendLiveRaceChallengeResponseSchema>>;
+  /** Reads pending direct invitations without accepting a seat. */
+  inbox?(): Promise<LiveRaceChallenge[]>;
   /** Reads live progress or submits an idempotent action. */
   update(input: UpdateLiveRace): Promise<LiveRaceView>;
 };

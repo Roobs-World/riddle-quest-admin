@@ -53,6 +53,10 @@
     "./validation/*": {
       "types": "./dist/validation/*.d.ts",
       "default": "./dist/validation/*.js"
+    },
+    "./contentProtection": {
+      "types": "./dist/contentProtection.d.ts",
+      "default": "./dist/contentProtection.js"
     }
   },
   "scripts": {

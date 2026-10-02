@@ -24,6 +24,6 @@ it.each([false, true])("negotiates confirmed race guesses through Reddit, histor
   const services = createRedditHostServices();
   await expect(services.resumeRace!(run.runId)).resolves.toEqual({run});
   expect(global.fetch).toHaveBeenCalledWith("/api/game/race.resume", expect.objectContaining({
-    body: JSON.stringify({runId: run.runId, includeEvaluation: true, includeGuessHistory: true}),
+    body: JSON.stringify({runId: run.runId, includeEvaluation: true, includeGuessHistory: true, contentProtection: 1}),
   }));
 });

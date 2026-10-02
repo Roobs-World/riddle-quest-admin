@@ -9,7 +9,7 @@ import {raceProviderScope} from "./raceEligibility";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "./raceEngine";
 import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent, readRaceCoinBalance,
   requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
-import {liveRun, liveView, liveOperationAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
+import {liveRun, liveView, liveOperationAtMs, liveActionAvailableAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
 
 /** A short lobby heartbeat prevents matching players who already closed their game. */
 const LOBBY_LEASE_MS = 10_000;
@@ -19,6 +19,11 @@ type Options = {
   db?: Firestore;
   /** Authoritative clock supplied only by tests. */
   nowMs?: number;
+};
+/** A callable may authorize access alongside initial reads, before the transaction can mutate state. */
+type UpdateOptions = Options & {
+  /** Evaluates the current server rollout without caching access between requests. */
+  authorize?: () => Promise<void>;
 };
 /** Restricts pairing to one exact approved provider, language and category. */
 function livePool(userId: string, input: JoinLiveRace): string {
@@ -45,6 +50,8 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
   const pointer = db.doc(`liveRacePlayers/${requestDocumentId(userId, "active-live-race")}`);
   /** Provides queue ref behavior. */
   const queueRef = db.doc(`liveRaceQueues/${pool}`);
+  /** Reuses this invocation's validated immutable deck if Firestore retries the queue transaction. */
+  let preparedDeck: Promise<ReturnType<typeof buildDeterministicRaceDeck>> | undefined;
   return db.runTransaction(async transaction => {
     /** Reads owned recovery state before any shared-pool lock or content query. */
     const [current, receipt, owner, deletion] = await Promise.all([transaction.get(pointer), transaction.get(ticketRef),
@@ -83,10 +90,9 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
         }
       }
     }
-    /** New seats require a currently validated catalog; restored seats retain their immutable deck. */
-    const content = await loadEligibleContent(db, input.locale, input.categoryId);
-    /** Deck construction runs only after idempotent receipt and active-seat recovery have been ruled out. */
-    const deck = buildDeterministicRaceDeck(content, {locale: input.locale, categoryId: input.categoryId, seed: ticketId});
+    /** New seats validate one catalog per invocation; restored seats never start this query. */
+    const deck = await (preparedDeck ??= loadEligibleContent(db, input.locale, input.categoryId)
+      .then(content => buildDeterministicRaceDeck(content, {locale: input.locale, categoryId: input.categoryId, seed: ticketId})));
     /** Provides data behavior. */
     const data = owner.data()!;
     /** Provides player behavior. */
@@ -152,7 +158,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
 }
 
 /** Atomically observes both scores, accepts one action and grants exactly one winner reward. */
-export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRace, options: Options = {}) {
+export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRace, options: UpdateOptions = {}) {
   /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
   /** Provides now ms behavior. */
@@ -161,7 +167,8 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
     /** Provides ticket ref behavior. */
     const ticketRef = db.doc(`liveRaceTickets/${input.ticketId}`);
     /** Provides [snapshot, deletion] behavior. */
-    const [snapshot, deletion] = await Promise.all([transaction.get(ticketRef), transaction.get(getJestAccountDeletionRef(db, userId))]);
+    const [snapshot, deletion] = await Promise.all([transaction.get(ticketRef),
+      transaction.get(getJestAccountDeletionRef(db, userId)), options.authorize?.()]);
     assertJestAccountActive(deletion);
     if (!snapshot.exists) throw new HttpsError("not-found", "Live race unavailable.");
     /** Provides ticket behavior. */
@@ -234,6 +241,8 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
       if (input.action === "leave") match.winner = nowMs < match.startsAtMs ? null : 1 - seat;
       else {
         if (nowMs < match.startsAtMs) throw new HttpsError("failed-precondition", "Match has not started.");
+        if (nowMs < liveActionAvailableAtMs(match.runs[seat]))
+          throw new HttpsError("failed-precondition", "Wait for the hint or skip penalty to finish.");
         /** Provides run behavior. */
         const run = applyActionRateLimit(refreshRaceRun(match.runs[seat], nowMs), userId, nowMs);
         // Scoring uses the existing hint/guess rules, without an opponent recording.

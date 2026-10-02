@@ -67,6 +67,13 @@ describe("dailyChallengeScheduler", () => {
     expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false, ["ja", "ko"]);
   });
 
+  it("does not generate Shanghai content early when a manual dispatch carries a future schedule", async () => {
+    jest.setSystemTime(new Date("2026-10-02T15:33:00Z"));
+    await scheduledTaskHandler({...scheduledEvent, scheduleTime: "2026-10-02T16:00:00Z"});
+    expect(mockGenerateForDate).toHaveBeenCalledTimes(1);
+    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-10-03", false, ["ja", "ko"]);
+  });
+
   it("rethrows generation failures with bounded Cloud-log metadata", async () => {
     /** Provides failure behavior. */
     const failure = Object.assign(new Error("candidate content must stay private"), {code: "rate_limit"});

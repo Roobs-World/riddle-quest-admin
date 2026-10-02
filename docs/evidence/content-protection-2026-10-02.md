@@ -1,0 +1,21 @@
+# Answer and hint protection — 2 October 2026
+
+Bundled locale packs for YouTube, Netflix, and Yahoo now contain AES-256-GCM ciphertext instead of plaintext riddle records. The same build plugin also covers the existing GameSnacks target. Each pack gets a fresh 96-bit IV. Native Web Crypto decodes only the selected locale; ordinary content validation still runs afterward. Failed downloads and failed authentication tags clear the pack loader's pending promise so the existing Retry button can fetch a fresh module. Content and crypto remain local to each artifact, with no new SDK or external request.
+
+The Jest/Facebook Firebase adapter and authenticated Reddit same-origin adapter now request encrypted solo answers, recorded-race decks, and hint responses using `contentProtection: 1`. The callable boundary removes that transport field before strict request parsing. It wraps the response only after the existing handler has checked authentication, validated the response, and executed the authoritative game action. Reddit forwards the encrypted response through its existing Devvit gateway; browser traffic stays under `/api/*`. Clients decode before existing response-schema validation. The two non-economic Reddit guest examples are also stored as encrypted content and decoded lazily.
+
+This is a deterrent to casual bundle searches and Network-panel inspection. The client necessarily has the decoding key and sees answers in memory for instant feedback. The key is public, and authentication tags do not prove server authority to a client that can recover that key. A determined player can inspect decoded content or request a legacy plaintext response. Compatibility callers still receive their existing format. Live PvP continues to withhold answers entirely. Guess acceptance, attempt budgets, scores, hint charges, purchases, rewards, and competitive progression remain server-authoritative.
+
+Deploy the changed Firebase gameplay/race callable handlers and `redditGameplay` before releasing these client artifacts. Older backend deployments may reject the new request field even though the decoder accepts legacy plaintext responses. No production deployment was performed in this chat. No database encryption, secret rotation, content changes, or visible UI text changes are included.
+
+Validation is retained in `artifacts/content-protection/`:
+
+- All six isolated target builds and artifact audits passed: Jest, Facebook, Reddit, YouTube, Netflix, Yahoo.
+- 52 focused client unit tests, nine callable-boundary tests, and four encryption/plugin tests passed. Tests cover Unicode answers and hints, fresh IVs, modified ciphertext, malformed/versioned envelopes, SDK decoding, strict request-field removal, and legacy response compatibility.
+- Injected browser checks passed for encrypted Reddit API delivery, Facebook gameplay/feedback, YouTube hints/feedback/save lifecycle, and Netflix/Yahoo local wrong/correct-answer feedback. Three focused Jest browser startup/solo checks also passed.
+- The content-loading browser script passes all 16 locales, interrupted downloads, pause/resume, and deliberately corrupted ciphertext with successful retry and no early save.
+- An additional recorded-race skip browser check timed out while its History button was disabled, before reaching gameplay. The broader Jest authentication suite was stopped after extended waits; this is not reported as a passing suite. The three focused Jest startup checks passed in `jest-focused-browser.log`. Recorded-race/single-player/Reddit backend regression suites passed all 154 tests.
+- The release-script suite passed 142 tests. Reddit server packaging/type checks and all 51 package tests passed on recheck, with a valid Devvit package contract. The initial broad package validation was stopped while a concurrent gateway test was stalled.
+- Core/client/backend type checks and the maintained source-size audit passed. The repository-wide TSDoc audit currently reports unrelated undocumented declarations; the added declarations are documented.
+
+The authenticated-encryption choice follows the browser's built-in [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt). This protection deliberately does not add a provider dependency to any target.

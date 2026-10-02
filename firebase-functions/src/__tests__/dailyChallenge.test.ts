@@ -437,6 +437,7 @@ describe("Daily Challenge Functions", () => {
       expect(result.currentQuestion).toBe(0);
       expect(result.questionsCompleted).toBe(0);
       expect(mockGetUser).toHaveBeenCalledTimes(1);
+      expect(mockGetIssuedAuthoritativeSession).toHaveBeenCalledTimes(1);
     });
 
     it("should lazily reset stale daily progress without updating every user", async () => {
@@ -1049,6 +1050,7 @@ describe("Daily Challenge Functions", () => {
         totalQuestions: 1,
       });
       expect(mockGetClassicRiddleByIndex).toHaveBeenCalledWith(10, "en");
+      expect(mockGetIssuedAuthoritativeSession).toHaveBeenCalledTimes(1);
     });
 
     it("recovers from malformed optional legacy load hints using server-authoritative state", async () => {

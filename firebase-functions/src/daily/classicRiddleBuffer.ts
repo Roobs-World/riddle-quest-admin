@@ -6,14 +6,14 @@ import {getPlayableClassicRiddle} from "../gameplay/classicRiddleFallback";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
 import {ensureAuthoritativeSession, getIssuedAuthoritativeSession} from "../gameplay/singlePlayerSession";
 import {buildSinglePlayerChallengeResponse} from "../gameplay/singlePlayerRiddleResponse";
-import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {getCurrentClassicRiddle} from "./dailyChallenge";
 
 /** Issues the current Classic question and at most three future session snapshots. */
 export const getClassicRiddleBuffer = onCallWithSentry(
   "getClassicRiddleBuffer",
-  browserCallableSecurityOptions,
+  gameplayCallableOptions,
   async (request: CallableRequest<{
     /** Requested content locale. */ locale?: string;
     /** Opts in to authoritative purchased hint recovery. */ includeHintRecovery?: boolean;

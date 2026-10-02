@@ -11,6 +11,7 @@ import {attachRedditReferralEnvironment} from "./redditReferralRequest";
 import {REDDIT_RECOVERY_METADATA_KEY, redditCommerceRecoveryKey} from "./redditCommerceRecovery";
 import {recoverRedditCommerceOrders} from "./recoverRedditCommerce";
 import {ensureCanonicalPost} from "./canonicalPost";
+import {fetchRedditGateway} from "./redditGatewayTransport";
 
 /** Provides app behavior. */
 const app = new Hono();
@@ -71,23 +72,8 @@ async function callFirebase(
     gatewaySecret,
     payload,
   );
-  /** Provides response behavior. */
-  const response = await fetch(`https://www.roobsworld.com/api/reddit-gateway/${functionName}`, {
-    method: "POST",
-    headers: {"content-type": "application/json", "x-riddle-quest-reddit-signature": signed.signature},
-    body: JSON.stringify({assertion: signed.assertion, payload: signed.payload}),
-    signal: AbortSignal.timeout(10_000),
-  });
-  /** Provides response body behavior. */
-  const responseBody = await response.text();
-  if (Buffer.byteLength(responseBody, "utf8") > 64 * 1024) {
-    return {payload: {ok: false, error: "gateway-response-too-large"}, status: 502};
-  }
-  try {
-    return {payload: JSON.parse(responseBody), status: response.status};
-  } catch {
-    return {payload: {ok: false, error: "gateway-invalid-response"}, status: 502};
-  }
+  return fetchRedditGateway(functionName, {signature: signed.signature,
+    body: JSON.stringify({assertion: signed.assertion, payload: signed.payload})});
 }
 
 app.get("/api/health", (request) => request.json({ok: true, service: "riddle-quest-reddit-gateway"}));

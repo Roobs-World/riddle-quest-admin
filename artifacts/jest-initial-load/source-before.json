@@ -1,0 +1,7 @@
+{
+  "src/jest/startup.ts": "5eafeb73d633ae285200d1311b69d7e047f767151b3854314d9f288cf79a477f",
+  "src/jest/commitJestStartupSession.ts": "27b8222a98b40ed4e66323286ae0a40b3565bdd847abf8b33e6abaa8c34543f4",
+  "src/jest/JestPlayApp.tsx": "da7ca364634dc2715cc9082304c11e778de4fb7396827fbcaf0ec402dd2bd1ae",
+  "src/jest/__tests__/startup.test.ts": "d2b0d3ab6685e175eac2d0ef8ca9f229283b6823ebe27786462fafa4098dbbeb",
+  "scripts/verify-jest-startup-performance.mjs": "4b7571926af32b966c65f39124579b198ed43f0153735b1972ece2d6cea2b8ba"
+}

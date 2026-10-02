@@ -16,7 +16,7 @@ import {
   GetHintResponseSchema,
 } from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
-import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {
   getIssuedAuthoritativeSession,
@@ -37,7 +37,7 @@ import {getSafeErrorMetadata} from "../shared/errorMetadata";
  */
 export const skipRiddle = onCallWithSentry(
   "skipRiddle",
-  browserCallableSecurityOptions,
+  gameplayCallableOptions,
   async (request: CallableRequest<SkipRiddleRequest>): Promise<SkipRiddleResponse> => {
     try {
       if (!request.auth) {
@@ -109,7 +109,7 @@ export const skipRiddle = onCallWithSentry(
  */
 export const spendCoins = onCallWithSentry(
   "spendCoins",
-  browserCallableSecurityOptions,
+  gameplayCallableOptions,
   async (
     request: CallableRequest<SpendCoinsRequest>,
   ): Promise<{
@@ -165,7 +165,7 @@ export const spendCoins = onCallWithSentry(
  */
 export const getHint = onCallWithSentry(
   "getHint",
-  browserCallableSecurityOptions,
+  gameplayCallableOptions,
   async (request: CallableRequest<z.infer<typeof GetHintRequestSchema>>) => {
     try {
       if (!request.auth) {

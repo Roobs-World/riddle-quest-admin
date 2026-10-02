@@ -1,0 +1,28 @@
+{
+  "action": "search_docs",
+  "query": "graph.fb.gg notifications notifications_cancel_all response success error",
+  "results": [
+    {
+      "title": "Notifications",
+      "url": "https://developers.facebook.com/documentation/games/build/zero-permissions/social-features/notifications"
+    },
+    {
+      "title": "Subscriptions - Graph API",
+      "url": "https://developers.facebook.com/docs/graph-api/reference/v4.0/app/subscriptions/"
+    },
+    {
+      "title": "Graph API Reference /app-id/scores",
+      "url": "https://developers.facebook.com/docs/graph-api/reference/v26.0/app/scores/"
+    },
+    {
+      "title": "Graph API /user/achievements",
+      "url": "https://developers.facebook.com/docs/graph-api/reference/v26.0/user/achievements/"
+    },
+    {
+      "title": "A2U (App-to-User) API",
+      "url": "https://developers.facebook.com/documentation/games/retain/notifications/a2u-api"
+    }
+  ],
+  "gamingDomainResponseSchemaEstablished": false,
+  "otherGraphApiSuccessSchemasNotApplied": true
+}

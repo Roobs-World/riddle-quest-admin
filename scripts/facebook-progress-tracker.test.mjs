@@ -9,7 +9,7 @@ test("accepts the evidence-backed 53-task tracker", () => {
   assert.deepEqual(validateProgressTracker(tracker), {
     total: 53,
     complete: 20,
-    updatedAt: "2026-10-02T15:28:33+00:00",
+    updatedAt: "2026-10-02T15:56:03+00:00",
   });
 });
 

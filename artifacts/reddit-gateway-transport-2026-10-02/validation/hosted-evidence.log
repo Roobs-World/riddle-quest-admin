@@ -1,0 +1,10 @@
+$ node scripts/validate-reddit-hosted-evidence.mjs ../../docs/evidence/reddit-hosted-evidence.json
+file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/scripts/validate-reddit-hosted-evidence.mjs:9
+catch { throw new Error("reddit-hosted-evidence-missing"); }
+              ^
+
+Error: reddit-hosted-evidence-missing
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/scripts/validate-reddit-hosted-evidence.mjs:9:15
+
+Node.js v24.17.0
+[ELIFECYCLE] Command failed with exit code 1.

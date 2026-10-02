@@ -1,0 +1,67 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm stage:client && pnpm build:server && pnpm validate
+$ node scripts/stage-client.mjs
+Staged isolated Reddit client as splash.html and game.html
+$ pnpm --filter @qwordly/core build
+../../firebase-functions                 | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+$ vite build
+vite v8.3.1 building ssr environment for production...
+transforming...
+✓ 396 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/server/index.cjs  2,926.36 kB │ gzip: 354.82 kB
+
+✓ built in 86ms
+$ pnpm check:types && pnpm test && node scripts/validate-package.mjs
+$ tsc6 -p tsconfig.json --noEmit
+$ node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs
+✔ the trusted Reddit server builds Core before resolving its generated package exports (0.508853ms)
+✔ workspace build and verification assemble the trusted Reddit package from the isolated client (0.094048ms)
+✔ the Reddit server build replaces its target directory instead of retaining stale release files (127.139089ms)
+✔ direct Devvit mutations fail closed in favor of the immutable release handoff (0.71308ms)
+✔ the package release mutations exit non-zero without invoking Devvit (545.55512ms)
+✔ redacts credentials, provider IDs, profiles and URL query data (1.397216ms)
+✔ rejects unknown types, invalid provenance, residual sensitive values and oversized input (0.751734ms)
+✔ source digests are stable and byte-sensitive (0.287404ms)
+✔ accepts only complete hosted deployment, immutable artifact, approval and device evidence (1.155408ms)
+✔ gate binds clean source provenance and exact package bytes (15.327189ms)
+✔ release preparation checks clean source before building and requires both entrypoints (1.041052ms)
+✔ handoff is immutable, single-link, and hash verified (2.162125ms)
+✔ exclusive retry barrier preserves ambiguous outcomes (2.663134ms)
+✔ concurrent barrier transitions serialize (1.318277ms)
+✔ playtest uploads reject missing, stable, malformed, and extra version arguments before running commands (0.763907ms)
+✔ a private upload retains uncertainty and blocks later versions before running commands (1.876895ms)
+✔ a failed package check leaves no attempted upload and can be corrected (0.440124ms)
+✔ accepted versions are immutable and explicit resolution preserves original failure evidence (0.929491ms)
+✔ separate processes cannot validate or transmit while another playtest owns the lock (16.197437ms)
+✔ process interruption preserves the lock and orphan attempt until explicit recovery (25.267105ms)
+✔ corrupt and orphaned journal evidence fails closed before validation (0.597111ms)
+✔ requires sanitized provenance-bound fixtures for every hosted contract (7.773092ms)
+✔ promotion evidence is bound to the retained read-only candidate (9.332345ms)
+✔ overlapping install, upgrade and moderator calls submit only one canonical post (5.163139ms)
+✔ an ambiguous provider failure remains pending across retries (0.336678ms)
+✔ Redis claim failure never reaches the provider creation boundary (0.156686ms)
+✔ ambiguous post persistence preserves pending or accepted state without resubmitting (0.177917ms)
+✔ missing retained posts and malformed records never authorize replacement (0.126089ms)
+✔ a losing claim reads the winner's completed post without submitting again (0.083929ms)
+✔ invalid provider identifiers remain pending and are never cached as acceptance (0.079721ms)
+✔ identity kill switch degrades to guest core play only for the exact disabled response (0.629943ms)
+✔ matches the Firebase verifier canonical signature fixture byte-for-byte (0.575961ms)
+✔ recovers only matching account and environment orders across bounded pages (0.941603ms)
+✔ fails closed on oversized pages, cursor replay and grant failure (0.239494ms)
+✔ derives stable isolated opaque recovery keys (0.863796ms)
+✔ rejects malformed scope and weak secrets (0.155084ms)
+
+Interrupted while running:
+
+⚠ src/server/redditGatewayTransport.test.ts (src/server/redditGatewayTransport.test.ts:1:1)
+⚠ src/server/redditPaymentOrder.test.ts (src/server/redditPaymentOrder.test.ts:1:1)
+⚠ src/server/redditProfile.test.ts (src/server/redditProfile.test.ts:1:1)
+⚠ src/server/redditReferralRequest.test.ts (src/server/redditReferralRequest.test.ts:1:1)
+[ELIFECYCLE] Test failed. See above for more details.
+[ELIFECYCLE] Command failed with exit code 1.
+/home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/reddit-app@0.0.1 build:package:from-client: `pnpm stage:client && pnpm build:server && pnpm validate`
+Exit status 1

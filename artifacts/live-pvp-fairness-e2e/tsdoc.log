@@ -1,26 +1,7 @@
-TSDoc audit failed: 80 production declarations are undocumented.
-- packages/core/src/game/__tests__/economy.test.ts:7 classic
-- packages/core/src/game/__tests__/economy.test.ts:8 daily
-- packages/core/src/game/__tests__/economy.test.ts:30 usdValues
-- packages/core/src/game/__tests__/economy.test.ts:31 price
-- packages/core/src/game/__tests__/economy.test.ts:34 goldValues
-- packages/core/src/game/economy.ts:24 hints
-- packages/core/src/game/economy.ts:24 continues
-- packages/core/src/game/economy.ts:25 balance
-- packages/portal/src/firebase.ts:526 challengeId
-- packages/portal/src/jest/sharing/useJestSharing.ts:250 challengeId
-- packages/portal/src/play/__tests__/CommerceModalPages.test.tsx:189 html
-- packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:55 page
-- packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:57 errors
-- packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:77 cards
-- packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:79 grants
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 42 production declarations are undocumented.
+- packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts:2444 __RIDDLE_QUEST_JEST_AUTH_TEST__
 - packages/portal/src/play/modalPages/profile/ProfileStatsModalPages.tsx:105 nextRank
-- packages/portal/src/play/sharing/ReferralSharingCapability.tsx:46 challengeId
-- packages/portal/src/youtube/__tests__/LocalSoloAuthority.test.ts:85 scaledContent
-- packages/portal/src/youtube/__tests__/LocalSoloAuthority.test.ts:86 saveData
-- packages/portal/src/youtube/__tests__/LocalSoloAuthority.test.ts:87 authority
-- packages/portal/src/youtube/__tests__/LocalSoloAuthority.test.ts:91 result
-- firebase-functions/src/__tests__/classicRiddleBufferLatency.test.ts:37 result
 - firebase-functions/src/__tests__/classicSupplyWorker.test.ts:4 generate
 - firebase-functions/src/__tests__/classicSupplyWorker.test.ts:5 capture
 - firebase-functions/src/__tests__/classicSupplyWorker.test.ts:6 job
@@ -30,17 +11,6 @@ TSDoc audit failed: 80 production declarations are undocumented.
 - firebase-functions/src/__tests__/classicSupplyWorker.test.ts:10 db
 - firebase-functions/src/__tests__/classicSupplyWorker.test.ts:34 release
 - firebase-functions/src/__tests__/classicSupplyWorker.test.ts:36 pending
-- firebase-functions/src/__tests__/completeGameSecurity.test.ts:63 state
-- firebase-functions/src/__tests__/completeGameSecurity.test.ts:64 request
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:164 request
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:165 first
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:166 replay
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:178 request
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:179 first
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:209 started
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:212 completion
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:222 started
-- firebase-functions/src/__tests__/completeGameTransaction.test.ts:225 completion
 - firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:3 mockSet
 - firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:16 ActualOpenAI
 - firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:18 default export
@@ -49,16 +19,8 @@ TSDoc audit failed: 80 production declarations are undocumented.
 - firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:22 parsed
 - firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:28 timer
 - firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts:44 completion
+- firebase-functions/src/__tests__/facebookNotificationTransport.test.ts:34 test
 - firebase-functions/src/__tests__/openaiService.test.ts:374 input
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:16 player
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:17 ticket
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:19 match
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:25 reads
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:26 transaction
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:27 path
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:32 path
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:33 path
-- firebase-functions/src/__tests__/race/raceLiveLatency.test.ts:39 result
 - firebase-functions/src/__tests__/riddleGeneration.test.ts:992 clock
 - firebase-functions/src/__tests__/riddleGeneration.test.ts:993 date
 - firebase-functions/src/__tests__/riddleGeneration.test.ts:1007 clock
@@ -67,8 +29,9 @@ TSDoc audit failed: 80 production declarations are undocumented.
 - firebase-functions/src/__tests__/riddleSupply.test.ts:85 modelPending
 - firebase-functions/src/__tests__/riddleSupply.test.ts:87 completion
 - firebase-functions/src/__tests__/riddleSupply.test.ts:88 outcome
-- firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts:168 token
-- firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts:171 resumed
+- firebase-functions/src/daily/dailyScheduler.ts:15 scheduledAt
+- firebase-functions/src/daily/dailyScheduler.ts:17 now
+- firebase-functions/src/race/raceLivePushJobs.ts:85 code
 - firebase-functions/src/riddles/classicSupplyWorker.ts:18 db
 - firebase-functions/src/riddles/classicSupplyWorker.ts:19 ref
 - firebase-functions/src/riddles/classicSupplyWorker.ts:20 leaseId
@@ -79,3 +42,4 @@ TSDoc audit failed: 80 production declarations are undocumented.
 - firebase-functions/src/riddles/classicSupplyWorker.ts:31 succeeded
 - firebase-functions/src/riddles/classicSupplyWorker.ts:39 current
 - firebase-functions/src/riddles/classicSupplyWorker.ts:50 due
+[ELIFECYCLE] Command failed with exit code 1.

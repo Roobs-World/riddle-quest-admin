@@ -8,6 +8,8 @@ import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRequestId} from "../requestIds";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
 import {LiveRaceInvitationCard} from "./components/LiveRaceInvitationCard";
+import {LiveRaceInbox} from "./components/LiveRaceInbox";
+import {LiveRacePushConsent} from "./components/LiveRacePushConsent";
 import {LiveRaceGame} from "./LiveRaceGame";
 import {RaceTopbar} from "./components/RaceHeader";
 import {useRaceDialogFocus} from "./hooks";
@@ -106,6 +108,8 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
     <RaceTopbar live coins={coins} onClose={onClose} />
     {challengeId && /^live_[a-f0-9]{64}$/.test(challengeId) && matchmaking?.live?.challenge &&
       <LiveRaceInvitationCard key={challengeId} challengeId={challengeId} transport={matchmaking.live} onAccept={onStart} />}
+    {matchmaking?.live?.inbox && matchmaking.live.challenge &&
+      <LiveRaceInbox transport={matchmaking.live} excludeId={challengeId} onAccept={onStart} />}
     <div className="race-panel">
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
       <p>{tr("RaceTo10.FIRST_TO_TEN")}</p>
@@ -125,6 +129,7 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
         onClick={() => {if (selected && matchmaking?.live) onStart({categoryId: selected, locale});}}>{tr("RaceTo10.LIVE_START")}</button>
       {sharing?.shareLiveRace && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || failed || !selected}
         onClick={() => {if (selected) onStart({categoryId: selected, locale, createChallenge: true});}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
+      <LiveRacePushConsent />
     </div>
   </section>;
 }

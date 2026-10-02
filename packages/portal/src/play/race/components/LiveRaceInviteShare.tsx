@@ -1,10 +1,13 @@
 import {useRef, useState} from "react";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 import {tr} from "../../i18n";
+import {type LiveRaceCapability} from "@qwordly/core/race";
+import {LiveRaceDirectInvite} from "./LiveRaceDirectInvite";
 
 /** Opens only the active platform's native invitation dialog for a reserved live lobby. */
-export function LiveRaceInviteShare({challengeId}: {
+export function LiveRaceInviteShare({challengeId, transport}: {
   /** Server-issued invitation handle, never a player identity. */ challengeId: string;
+  /** Target-owned direct invitation delivery. */ transport?: LiveRaceCapability;
 }) {
   /** Optional platform behavior supplied by the authenticated target adapter. */
   const sharing = useReferralSharing();
@@ -27,5 +30,6 @@ export function LiveRaceInviteShare({challengeId}: {
   return sharing?.shareLiveRace ? <div className="live-race-invite-share">
     <button className="race-primary" disabled={busy} aria-busy={busy} onClick={() => void send()}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>
     {failed && <p role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>}
+    {transport?.sendChallenge && <LiveRaceDirectInvite challengeId={challengeId} transport={transport} />}
   </div> : null;
 }

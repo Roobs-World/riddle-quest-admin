@@ -24,6 +24,7 @@ async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Tran
   /** Authoritative invitation creator and immutable content selection. */
   const ticket = snapshot.data() as LiveTicket | undefined;
   if (!ticket?.privateChallenge || raceProviderScope(userId) !== raceProviderScope(ticket.userId) ||
+    ticket.inviteRecipientId && ![ticket.userId, ticket.inviteRecipientId].includes(userId) ||
     !["jest", "facebook"].includes(raceProviderScope(userId) ?? ""))
     throw new HttpsError("not-found", "Invitation unavailable.");
   /** Account deletion and blocks are checked in the same transaction as acceptance. */

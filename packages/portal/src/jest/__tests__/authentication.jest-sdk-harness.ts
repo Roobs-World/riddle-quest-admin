@@ -209,6 +209,11 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
           state.calls.push("sdk.social.getProfile");
           state.profileReads += 1;
           if (selectedScenario === "profile-failure") throw new Error("Mock profile request failed");
+          if (selectedScenario === "profile-controlled") {
+            await new Promise<void>((resolve) => {
+              window.addEventListener("test:resolve-social-profile", () => resolve(), {once: true});
+            });
+          }
           return {
             username: "Authenticated Solver",
             avatarUrl: selectedScenario === "avatar-profile" ? "https://cdn.jest.com/mock-avatar.webp" : null,

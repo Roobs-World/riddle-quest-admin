@@ -1,0 +1,12 @@
+✔ protects Unicode answers, complete decks, and hints with a fresh IV without altering gameplay data (5.375231ms)
+✔ rejects ciphertext edits, mismatched IVs, malformed encodings, and unsupported envelopes (1.802535ms)
+✔ transport negotiation preserves strict domain payloads and legacy callers (0.194318ms)
+✔ keeps every locale in local assets while the production entry contains only metadata and loaders (5.236949ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.051645

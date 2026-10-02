@@ -1,3 +1,4 @@
+import {readProtectedContent} from "@qwordly/core/contentProtection";
 import {splitGraphemes} from "@qwordly/core/game";
 import contentDocument from "#youtube-content";
 import {YOUTUBE_ANSWER_MAX_GRAPHEMES} from "./limits";
@@ -223,7 +224,7 @@ export async function loadYouTubeContent(locale: YouTubeLocale): Promise<YouTube
   const load = document.loadPack[selected];
   if (!load) throw new Error(`youtube-content-pack-missing:${selected}`);
   /** Answer-bearing data stays behind the existing runtime validation. */
-  const pack = await load();
+  const pack = await readProtectedContent(await load());
   return parseYouTubeContentDocument({...document, packs: {[selected]: pack}}, selected);
 }
 /** Schema compatibility is available before downloading any answer-bearing pack. */

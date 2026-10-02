@@ -21,6 +21,7 @@ module.exports = {
     "**/__tests__/race/facebookContextBoard.it.test.ts",
     "**/__tests__/facebookIdentityNonce.it.test.ts",
     "**/__tests__/facebookNotificationPrompts.it.test.ts",
+    "**/__tests__/facebookNotificationDispatch.it.test.ts",
     "**/__tests__/redditGatewayReplay.it.test.ts",
     "**/__tests__/redditAccountDeletion.it.test.ts",
     "**/__tests__/redditMatchmaking.it.test.ts",

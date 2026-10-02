@@ -1,4 +1,4 @@
-import {updateLiveRaceForUser} from "../../race/raceLiveService";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
 
 /** Fixed authoritative observation clock and authenticated provider subjects. */
@@ -49,10 +49,60 @@ it.each(["poll", "guess"] as const)("delivers a human %s within three database r
       runTransaction: async (operation: (value: typeof transaction) => unknown) => operation(transaction)} as unknown as FirebaseFirestore.Firestore;
     /** Provides result behavior. */
     const result = updateLiveRaceForUser(OWNER, {ticketId, action, requestId: "latency-request",
-      ...(action === "guess" ? {riddleId: "q0", guess: "piano"} : {})}, {db, nowMs: NOW}).then(value => ({value}), error => ({error}));
+      ...(action === "guess" ? {riddleId: "q0", guess: "piano"} : {})}, {db, nowMs: NOW,
+      authorize: async () => {await new Promise(resolve => setTimeout(resolve, 200));},
+    }).then(value => ({value}), error => ({error}));
     await jest.runAllTimersAsync();
     expect(await result).toMatchObject({value: {phase: "racing", player: {correctCount: action === "guess" ? 1 : 0}}});
     expect(reads).toHaveLength(action === "guess" ? 7 : 6);
     expect(Date.now() - NOW).toBe(600);
   } finally {jest.useRealTimers();}
+});
+
+it("rejects denied access before any live action or transaction write", async () => {
+  /** Even an otherwise invalid seat must not bypass the supplied authoritative access gate. */
+  const write = jest.fn();
+  /** Reads can overlap authorization, but no mutations may run before it succeeds. */
+  const transaction = {get: async () => ({exists: true, data: () => ({userId: OWNER})}),
+    set: write, create: write, update: write};
+  /** Isolated callback exercises the real service ordering without committing state. */
+  const db = {doc: (path: string) => ({path}), collection: (path: string) => ({doc: (id: string) => ({path: `${path}/${id}`})}),
+    runTransaction: async (operation: (value: typeof transaction) => unknown) => operation(transaction),
+  } as unknown as FirebaseFirestore.Firestore;
+  await expect(updateLiveRaceForUser(OWNER, {ticketId: "a".repeat(64), action: "leave", requestId: "denied-leave"},
+    {db, nowMs: NOW, authorize: async () => {throw new Error("rollout denied");}})).rejects.toThrow("rollout denied");
+  expect(write).not.toHaveBeenCalled();
+});
+
+it("validates one deck per join even when the queue transaction retries", async () => {
+  /** Real pool validation consumes these unique authored records. */
+  const docs = Array.from({length: 30}, (_, index) => ({id: `history-${index}`,
+    ref: {path: `localizedRiddles/en/riddles/history-${index}`}, data: () => ({
+    riddleId: `history-${index}`, canonicalRiddleId: `history:${index}`, categoryId: "history",
+    text: `Unique historical question ${index} follows its own trail`, answer: `a${String(index).padStart(6, "0")}`,
+    difficultyBand: (["easy", "medium", "hard"] as const)[index % 3], raceEligible: true, qualityVersion: "human_review_v1",
+  })}));
+  /** A catalog RPC must not be repeated while Firestore retries the shared queue lock. */
+  const contentRead = jest.fn(async () => ({docs}));
+  /** The catalog and deletion collection share the normal database API. */
+  const collection = (path: string): unknown => ({doc: (id: string) => ({path: `${path}/${id}`}),
+    where: () => ({where: () => ({get: contentRead}), get: contentRead})});
+  /** Failed transaction attempts discard their queued writes before retrying. */
+  const transaction = {get: async (ref: {
+    /** Owned or shared document path. */
+    path: string;
+  }) => ({
+    exists: ref.path === `users/${OWNER}`, data: () => ref.path === `users/${OWNER}` ? {username: "Alice"} : undefined,
+  }), create: jest.fn(), set: jest.fn(), update: jest.fn()};
+  /** Firestore retries the callback without committing the first attempt's writes. */
+  const db = {doc: (path: string) => ({path}), collection,
+    runTransaction: async (operation: (value: typeof transaction) => unknown) => {
+      await operation(transaction);
+      transaction.create.mockClear(); transaction.set.mockClear(); transaction.update.mockClear();
+      return operation(transaction);
+    }} as unknown as FirebaseFirestore.Firestore;
+  expect(await joinLiveRaceForUser(OWNER, {locale: "en", categoryId: "history", requestId: "retry-latency-join"}, {db, nowMs: NOW}))
+    .toMatchObject({phase: "searching", player: {displayName: "Alice"}});
+  expect(contentRead).toHaveBeenCalledTimes(1);
+  expect(transaction.create).toHaveBeenCalledTimes(1);
 });

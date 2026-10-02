@@ -8,6 +8,10 @@ export function createFirebaseRaceMatchmaking(
 ): MatchmakingCapability {
   return {
   live: {
+    /** Persists an addressed invitation with one durable notification receipt. */
+    async sendChallenge(input) {return (await (await import("../firebase")).sendLiveRaceChallenge(input)).data;},
+    /** Loads the authenticated recipient's direct invitation notices. */
+    async inbox() {return (await (await import("../firebase")).listLiveRaceChallenges({})).data;},
     /** Validates an SDK invitation before showing the acceptance action. */
     async challenge(input) {return (await (await import("../firebase")).getLiveRaceChallenge(input)).data;},
     /** Provides join behavior. */

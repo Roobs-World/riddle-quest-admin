@@ -8,7 +8,7 @@ import {captureException} from "../shared/sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
 import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableResponse} from "../validation/callableValidation";
-import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
@@ -70,7 +70,7 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
  */
 export const getCurrentDailyChallenge = onCallWithSentry(
   "getCurrentDailyChallenge",
-  browserCallableSecurityOptions,
+  gameplayCallableOptions,
   async (
     request: CallableRequest<{
       /** Stores locale. */
@@ -241,16 +241,16 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         canonicalRiddle.answer,
         {challengeDate: todayDateString, difficultyBand: canonicalRiddle.difficultyBand},
       );
-      /** Provides bound session behavior. */
-      const boundSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
+      /** Projects the accepted session snapshot; only a rotated entitlement requires another read. */
+      let activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
       if (
-        boundSession.terminal &&
-        !boundSession.isSkipped &&
+        activeSession.terminal &&
+        !activeSession.isSkipped &&
         isDailyCompletionDateEligible(
-          boundSession.challengeDate,
-          boundSession.isCorrect,
-          trustedSessionDate(boundSession.terminalAt),
-          new Date(), boundSession.locale,
+          activeSession.challengeDate,
+          activeSession.isCorrect,
+          trustedSessionDate(activeSession.terminalAt),
+          new Date(), activeSession.locale,
         )
       ) {
         await completeAuthoritativeGame(
@@ -282,10 +282,9 @@ export const getCurrentDailyChallenge = onCallWithSentry(
           canonicalRiddle.answer,
           {challengeDate: todayDateString, difficultyBand: canonicalRiddle.difficultyBand},
         );
+        activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
       }
 
-      /** Provides active session behavior. */
-      const activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
       /** Provides challenge data behavior. */
       const challengeData = buildSinglePlayerChallengeResponse(
         {...canonicalRiddle, locale},
@@ -343,7 +342,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
  */
 export const getCurrentClassicRiddle = onCallWithSentry(
   "getCurrentClassicRiddle",
-  browserCallableSecurityOptions,
+  gameplayCallableOptions,
   async (
     request: CallableRequest<{
       /** Stores classic index. */
@@ -478,15 +477,15 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         riddle.answer,
         {classicIndex: expectedClassicIndex, difficultyBand: riddle.difficultyBand},
       );
-      /** Provides bound session behavior. */
-      const boundSession = await getIssuedAuthoritativeSession(
+      /** Projects the accepted session snapshot; terminal reconciliation refreshes the rotated binding. */
+      let activeSession = await getIssuedAuthoritativeSession(
         request.auth.uid,
         sessionToken,
         "classic",
         riddle.riddleId,
       );
-      if (boundSession.terminal) {
-        if (!boundSession.isSkipped) {
+      if (activeSession.terminal) {
+        if (!activeSession.isSkipped) {
           await completeAuthoritativeGame(
             {riddleId: riddle.riddleId, gameMode: "classic", sessionToken},
             {
@@ -524,15 +523,9 @@ export const getCurrentClassicRiddle = onCallWithSentry(
           riddle.answer,
           {classicIndex, difficultyBand: riddle.difficultyBand},
         );
+        activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "classic", riddle.riddleId);
       }
 
-      /** Provides active session behavior. */
-      const activeSession = await getIssuedAuthoritativeSession(
-        request.auth.uid,
-        sessionToken,
-        "classic",
-        riddle.riddleId,
-      );
       return validateCallableResponse(
         GetCurrentDailyChallengeResponseSchema,
         {

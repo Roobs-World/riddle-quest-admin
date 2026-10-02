@@ -114,6 +114,13 @@
     "LIVE_REWARD": "+{coins} monedas",
     "LIVE_MODE": "PvP en vivo",
     "LIVE_WAITING_FINISH": "Esperando a que termine tu oponente…",
-    "LIVE_FRIEND_WAIT": "Esperando a que tu amigo acepte. Esta invitación caduca después de 15 minutos."
+    "LIVE_FRIEND_WAIT": "Esperando a que tu amigo acepte. Esta invitación caduca después de 15 minutos.",
+    "LIVE_ACTION_WAIT": "Próxima acción en {seconds} s",
+    "PLAYER_USERNAME": "Nombre de usuario del jugador",
+    "NOTIFY_PLAYER": "Enviar desafío",
+    "INVITE_QUEUED": "Invitación guardada. Las notificaciones dependen de los ajustes del jugador.",
+    "PUSH_ENABLE": "Activar notificaciones de desafíos",
+    "PUSH_DISABLE": "Desactivar notificaciones de desafíos",
+    "PUSH_UNAVAILABLE": "Las notificaciones del navegador no están disponibles aquí. Tus invitaciones seguirán apareciendo en multijugador."
   }
 }

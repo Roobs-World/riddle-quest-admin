@@ -4,5 +4,5 @@ $ jest --config jest.config.cjs --runInBand '--testPathPatterns=liveRaceDelivery
 Test Suites: 7 passed, 7 total
 Tests:       87 passed, 87 total
 Snapshots:   0 total
-Time:        0.661 s, estimated 1 s
+Time:        0.459 s, estimated 1 s
 Ran all test suites matching liveRaceDeliveryDeadline|raceCountdown|raceComponents|firebaseRaceMatchmaking|RedditPlatformBootstrap|FacebookCapabilityPolicy.
