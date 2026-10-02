@@ -453,17 +453,16 @@ export class RaceSession {
     const command = this.command;
     if (!command || message.payload.operation !== command.operation || !this.play.acceptResponse(message.requestId, command.operation)) return;
     this.command = null;
-    /** A synchronous observer or adapter may replace ownership while this response is applied. */
-    const generation = this.generation;
     /** Only this accepted response lifetime may issue effects or cleanup. */
-    const current = () => this.active && generation === this.generation;
+    const current = this.captureLifetime();
     /** A valid terminal start must not be retained as a failed preparation retry. */
     let accepted = false;
     try {
       if (!message.payload.ok) {this.reject(command.operation, message.payload.error ?? "RaceTo10.ERROR_GENERIC", command.runId); return;}
       /** Parses and checks ownership before committing any authority state. */
       let patch = applyRaceAuthority(requestedRaceState(this.state, command), command.operation, message.payload.data, this.play, this.clock.now(), this.entry.locale, this.resumeDraft, this.ownedSnapshot,
-        this.ownedOutcome);
+        this.ownedOutcome, current);
+      if (!current()) return;
       assertRequestedRaceRun(command, patch.run);
       if (command.operation === "raceResume" && !this.ownedSnapshot && patch.run) {
         patch = {...patch, ...this.drafts.restore(this.entry.ownerId, patch.run, () => this.wallNow(), current)};

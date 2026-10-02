@@ -6,9 +6,9 @@ import type {
   RecordFacebookContextRunRequest,
 } from "@qwordly/core/race";
 import {firebaseFunctions} from "../firebase";
-import {SpendCoinsResponseSchema} from "@qwordly/core/validation/requestSchemas";
 import {
   parseFacebookClientConfiguration,
+  parseFacebookRewardedContinue,
   parseFacebookNotificationPromptAcceptance,
   parseFacebookNotificationPromptClaim,
   parseFacebookContextBoardResponse,
@@ -24,7 +24,7 @@ const grantFacebookRewardedContinueRaw = httpsCallable<{
 /** Rejects malformed responses before the game can resume. */
 export const grantFacebookRewardedContinue = async (input: Parameters<typeof grantFacebookRewardedContinueRaw>[0]) => {
   const result = await grantFacebookRewardedContinueRaw(input);
-  return {...result, data: SpendCoinsResponseSchema.parse(result.data)};
+  return {...result, data: parseFacebookRewardedContinue(result.data)};
 };
 
 /** Provides claim facebook notification permission prompt raw behavior. */

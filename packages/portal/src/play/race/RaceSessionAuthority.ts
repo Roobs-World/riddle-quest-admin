@@ -141,9 +141,10 @@ export const bindRaceCommand = (payload: Record<string, unknown>, owned: RaceRun
     ...(typeof payload.riddleId === "string" && owned.currentRiddle ? {riddleId: owned.currentRiddle.riddleId} : {})};
 };
 /** Internal response application; only RaceSession crosses this implementation seam. */
-export function applyRaceAuthority(state: RaceSessionState, operation: RaceOperation, data: unknown, play: RacePlay, now: number, locale: RaceLocale, resumeDraft?: RaceResumeDraft | null, ownedSnapshot?: RaceRunView | null, confirmedOutcome?: RaceOutcome | null): Partial<RaceSessionState> {
+export function applyRaceAuthority(state: RaceSessionState, operation: RaceOperation, data: unknown, play: RacePlay, now: number, locale: RaceLocale, resumeDraft?: RaceResumeDraft | null, ownedSnapshot?: RaceRunView | null, confirmedOutcome?: RaceOutcome | null, current: () => boolean = () => true): Partial<RaceSessionState> {
   /** Rejects validly shaped payloads for a different owned attempt before checkpoint consumption. */
   const owned = (run: RaceRunView): RaceRunView => {
+    if (!current()) throw new Error("Retired race receipt");
     /** Run selection remains private even when consumers edit the displayed snapshot. */
     const previous = ownedSnapshot ?? state.run;
     if (!previous || run.runId !== previous.runId || run.locale !== locale ||

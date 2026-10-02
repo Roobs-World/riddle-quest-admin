@@ -1,4 +1,5 @@
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
+import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support";
 import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
 import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry} from "./tournaments.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
@@ -317,7 +318,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
               interstitialsEnabled: true,
               notificationsEnabled: true,
               commerceEnabled: false,
-              rewardedAdsEnabled: false,
+              rewardedAdsEnabled: new URL(route.request().frame().url()).searchParams.get("rewarded") === "on",
               referralsEnabled: true,
               matchmakingEnabled: true,
               tournamentsEnabled: new URL(route.request().frame().url()).searchParams.get("tournaments") !== "off",
@@ -364,8 +365,25 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
               "player.isSubscribedBotAsync",
               "player.subscribeBotAsync",
               "getInterstitialAdAsync",
+              "getRewardedVideoAsync",
               "shareAsync",
             ];
+          },
+          /** Simulates Meta's completion, cancellation and no-fill contracts without creating rewards. */
+          async getRewardedVideoAsync(placementId) {
+            window.__facebookEvents.push(`rewarded:placement:${placementId}`);
+            return {
+              async loadAsync() {
+                window.__facebookEvents.push("rewarded:load");
+                if (Reflect.get(window, "__rewardedMode") === "no-fill") throw Object.assign(new Error("no fill"), {code: "ADS_NO_FILL"});
+              },
+              async showAsync() {
+                window.__facebookEvents.push("rewarded:show");
+                if (Reflect.get(window, "__rewardedMode") === "cancel") throw Object.assign(new Error("dismissed"), {code: "USER_INPUT"});
+                if (Reflect.get(window, "__rewardedMode") === "hold") await new Promise<void>(resolve => Reflect.set(window, "__finishRewarded", resolve));
+                window.__facebookEvents.push("rewarded:complete");
+              },
+            };
           },
           /** Captures Meta-native sharing without granting currency or switching context. */
           async shareAsync(payload) {
@@ -757,6 +775,13 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-page').waitFor({state: 'detached'});
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
       await verifyTournamentEntry(successPage, origin);
+      try {
+        await verifyRewardedContinue(successPage, origin);
+      } catch (error) {
+        console.info("Rewarded continuation diagnostics", await successPage.evaluate(() => ({body: document.body.innerText,
+          events: window.__facebookEvents, url: location.href})));
+        throw error;
+      }
     } finally {
       await browser.close();
       try {

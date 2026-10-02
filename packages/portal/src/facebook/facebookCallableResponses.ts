@@ -15,6 +15,15 @@ const FACEBOOK_TOURNAMENT_DURATION_MS = 24 * 60 * 60 * 1_000;
 /** Defines the facebook firestore timestamp max ms value. */
 const FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS = 253_402_300_799_999;
 
+/** Parses only the authoritative balance; no arbitrary provider reward/receipt is accepted. */
+export function parseFacebookRewardedContinue(value: unknown): {newCoins: number} {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error("Invalid Facebook continuation response.");
+  const record = value as Record<string, unknown>;
+  if (Object.keys(record).length !== 1 || typeof record.newCoins !== "number" || !Number.isSafeInteger(record.newCoins) || record.newCoins < 0)
+    throw new Error("Invalid Facebook continuation response.");
+  return {newCoins: record.newCoins};
+}
+
 /** Describes facebook notification prompt claim. */
 export type FacebookNotificationPromptClaim =
   | {
