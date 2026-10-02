@@ -20,8 +20,15 @@ export function getSoloWinCoins(mode: "classic" | "challenge", difficulty: unkno
   return SOLO_WIN_COINS[mode][normalizeEconomyDifficulty(difficulty)];
 }
 
+/** Whole gameplay actions a coin pack can fund, shown as alternatives. */
+export type CoinPackBuyingPower = {
+  /** Maximum number of hint purchases using the entire pack. */ hints: number;
+  /** Maximum number of extra attempts using the entire pack. */ continues: number;
+};
+
 /** Compares a pack to gameplay spending using whole actions and mutually exclusive examples. */
-export function getCoinPackBuyingPower(coins: number): {hints: number; continues: number} {
+export function getCoinPackBuyingPower(coins: number): CoinPackBuyingPower {
+  /** Invalid pack grants must never produce an inflated value claim. */
   const balance = Number.isSafeInteger(coins) && coins > 0 ? coins : 0;
   return {hints: Math.floor(balance / SOLO_COIN_COSTS.hint), continues: Math.floor(balance / SOLO_COIN_COSTS.continue)};
 }

@@ -60,7 +60,9 @@ describe("secure game completion derivation", () => {
   });
 
   it("ignores caller difficulty and uses only the private session snapshot", async () => {
+    /** Private server snapshot without authored difficulty, representing a legacy session. */
     const state = {attempts: 2, lastGuess: "piano", answer: "piano", locale: "en", completionKey: "classic:1", classicIndex: 1};
+    /** Forged difficulty is deliberately supplied alongside an otherwise valid completion. */
     const request = {riddleId: "riddle-1", gameMode: "classic" as const, sessionToken: "00000000-0000-4000-8000-000000000001", difficultyBand: "hard"};
     mockFinalizeAuthoritativeSession.mockResolvedValue(state);
     await expect(deriveAuthoritativeCompletion(request, {uid: "user-1"})).resolves.toMatchObject({difficultyBand: "easy"});

@@ -3,6 +3,7 @@ const base = require("./jest.config.js");
 module.exports = {
   ...base,
   testMatch: [
+    "**/__tests__/race/raceLive.it.test.ts",
     "**/__tests__/race/raceDeliveryQueue.it.test.ts",
     "**/__tests__/race/raceInvitation.it.test.ts",
     "**/__tests__/race/raceRules.it.test.ts",

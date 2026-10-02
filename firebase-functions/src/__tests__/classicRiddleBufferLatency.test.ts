@@ -34,6 +34,7 @@ it("loads three successors in one catalog round trip while preserving entitlemen
       await new Promise(resolve => setTimeout(resolve, 200));
       return playable(index);
     });
+    /** Provides result behavior. */
     const result = load();
     await jest.runAllTimersAsync();
     expect((await result).riddles.map(item => item.classicIndex)).toEqual([1, 2, 3, 4]);

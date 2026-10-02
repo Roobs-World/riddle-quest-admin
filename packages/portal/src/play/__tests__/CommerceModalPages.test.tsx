@@ -186,6 +186,7 @@ describe("commerce modal pages", () => {
 
 describe("coin pack buying power", () => {
   it("shows the actual coin grant as alternative whole-action amounts", () => {
+    /** Rendered provider grant and its localized buying power. */
     const html = renderToString(<ShopModalPage balance={300} products={[{
       productId: "starter", name: "Starter", description: "", coins: 250,
       displayPrice: "$0.99", productType: "consumable",

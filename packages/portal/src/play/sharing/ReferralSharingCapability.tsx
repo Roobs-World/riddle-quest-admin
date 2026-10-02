@@ -43,7 +43,10 @@ export type ReferralSharingCapability = {
   /** Shares an open invitation from the player profile. */
   shareInvite: () => void;
   /** Opens this target's native dialog for a server-reserved live PvP lobby. */
-  shareLiveRace?: (input: {/** Opaque server-owned invitation. */ challengeId: string}) => Promise<ReferralShareOutcome>;
+  shareLiveRace?: (input: {
+    /** Opaque server-owned invitation. */
+    challengeId: string;
+  }) => Promise<ReferralShareOutcome>;
   /** Shares a published multiplayer challenge and distinguishes dismissal from failure. */
   shareRace: (input: ReferralRaceShareInput) => Promise<ReferralShareOutcome>;
 };

@@ -95,7 +95,8 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
       const old = (await transaction.get(db.doc(`liveRaceTickets/${current.data()!.ticketId}`))).data() as LiveTicket | undefined;
       /** Completed or retired seats may be replaced. */
       const match = old?.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${old.matchId}`))).data() as LiveMatch | undefined : undefined;
-      if (old && !old.cancelled && (!match || match.winner === undefined))
+      if (old && !old.cancelled && !(old.privateChallenge && !match && nowMs >= old.createdAtMs + LIVE_RACE_INVITE_MS) &&
+        (!match || match.winner === undefined))
         throw new HttpsError("failed-precondition", "Finish the current live race first.");
     }
     /** Identity comes from the authenticated server account. */

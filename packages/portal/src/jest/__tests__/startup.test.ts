@@ -71,6 +71,35 @@ it.each(["throw", "reject"])("fails closed when signed-player retrieval fails vi
   markJestPlayable(platform);
 });
 
+it("authenticates while the optional social profile is pending without exposing an incomplete session", async () => {
+  /** Registered player whose optional SDK read has not finished. */
+  const platform = new MockJestPlatform(true);
+  /** Completes the controlled social read. */
+  let finishProfile!: (profile: null) => void;
+  platform.getProfile = jest.fn(() => new Promise<null>((resolve) => {finishProfile = resolve;}));
+  /** Signals completion of authoritative authentication. */
+  let authenticated!: () => void;
+  /** Allows the assertion to observe progress without timer guesses. */
+  const authenticationFinished = new Promise<void>((resolve) => {authenticated = resolve;});
+  /** Purchase reconciliation still waits for the completed startup reads. */
+  const reconcile = jest.fn(async () => ({status: "success" as const, value: 0}));
+  /** Records whether startup exposed a session while the profile is pending. */
+  let settled = false;
+  /** Starts both independent reads. */
+  const startup = startJestSession(platform,
+    {exchangeIdentity: async () => ({customToken: "token", uid: "uid"})} as never,
+    {reconcile} as never, async () => {authenticated();}).then((result) => {settled = true; return result;});
+  await authenticationFinished;
+  expect(platform.getProfile).toHaveBeenCalledTimes(1);
+  expect(settled).toBe(false);
+  expect(reconcile).not.toHaveBeenCalled();
+  expect(platform.loaded).toBe(false);
+  finishProfile(null);
+  await expect(startup).resolves.toMatchObject({status: "success", value: {firebaseAuthenticated: true, profile: null}});
+  expect(reconcile).toHaveBeenCalledTimes(1);
+  markJestPlayable(platform);
+});
+
 it("runs identity, Firebase auth and recovery in startup order", async () => {
   /** Provides order behavior. */
   const order: string[] = [];

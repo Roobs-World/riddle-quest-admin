@@ -247,7 +247,10 @@ export function useJestSharing({
   );
 
   /** Shares a private PvP lobby through Jest's native dialog, including the host's SMS share option. */
-  const shareLiveRace = useCallback(async ({challengeId}: {/** Server-issued private lobby handle. */ challengeId: string}): Promise<ReferralShareOutcome> => {
+  const shareLiveRace = useCallback(async ({challengeId}: {
+    /** Server-issued private lobby handle. */
+    challengeId: string;
+  }): Promise<ReferralShareOutcome> => {
     if (!session || !/^live_[a-f0-9]{64}$/.test(challengeId)) return "error";
     try {
       /** Opening a native dialog is not proof that a message was delivered. */

@@ -13,7 +13,7 @@ import {RaceTopbar} from "./components/RaceHeader";
 import {useRaceDialogFocus} from "./hooks";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
 
-/** All multiplayer entries, including retired challenge links, open the live PvP intro. */
+/** Platform PvP invitations and ordinary multiplayer entries open the live intro. */
 export function RaceTo10Game(props: RaceTo10GameProps) {
   return <LiveRaceEntry key={JSON.stringify([props.ownerId ?? null, props.locale])} {...props} />;
 }
@@ -28,7 +28,7 @@ type LiveSelection = {
 
 /** Owns live category selection without resuming or creating recorded races. */
 function LiveRaceEntry(props: RaceTo10GameProps) {
-  /** Category whose live seat is currently mounted. */
+  /** Immutable server content and invitation selection for the mounted live seat. */
   const [playing, setPlaying] = useState<LiveSelection | null>(null);
   if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={props.matchmaking.live}
     locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId} coins={props.coins} ownerId={props.ownerId} onClose={() => setPlaying(null)} />;

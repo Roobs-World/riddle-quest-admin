@@ -46,7 +46,7 @@ export async function commitJestStartupSession({
   let committed = false;
   try {
     await gate.run(async () => {
-      if (!isActive()) return;
+      if (!isActive() || !gate.isOpen()) return;
       /** Restored preferences select the language before the hosted game mounts. */
       const preferences = applyPlayerPreferences(session.preferences);
       /** Content and profile preparation share the locale's download window. */
@@ -54,7 +54,7 @@ export async function commitJestStartupSession({
         setLocaleAndWait(preferences.locale as Locale),
         prepareSession?.(session, preferences.locale as Locale) ?? session,
       ]);
-      if (!isActive()) return;
+      if (!isActive() || !gate.isOpen()) return;
       enablePlayerStateWrites(readySession.playerData);
       /** Saves d profile. */
       const savedProfile = readySession.playerData?.profile;

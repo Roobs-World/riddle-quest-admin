@@ -1,0 +1,17 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-latency", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node ../packages/portal/scripts/verify-live-race-browser.mjs
+Hint and manual skip at nine solves produced a fresh, unscored question at 1280px.
+Live PvP passed at 1280px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
+Hint and exhausted guesses at nine solves produced a fresh, unscored question at 390px.
+Live PvP passed at 390px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
+Retired links, category selection, PvP-only return navigation and missing live capability passed.
+Bot fallback UI passed at 390px; server deadline advanced through the injected transport.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

@@ -92,3 +92,20 @@ it("cannot replace an active public seat or reuse an unrelated join request id",
   await expect(accept(B, a.challengeId!)).rejects.toMatchObject({code: "failed-precondition"});
   await expect(accept(B, a.challengeId!, NOW + 1000, "public-existing-001")).rejects.toMatchObject({code: "failed-precondition"});
 });
+
+
+it("allows fresh searches and acceptances after an unattended private invitation expires", async () => {
+  /** Expiry is authoritative even if the creator never delivered a final heartbeat. */
+  const a = await reserve();
+  /** New public entry retires the stale private pointer without requiring a recovery detour. */
+  const publicSeat = await joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "new-public-after-expiry"}, {db, nowMs: NOW + 900_001});
+  expect(publicSeat.ticketId).not.toBe(a.ticketId);
+  expect(publicSeat.challengeId).toBeUndefined();
+  /** Replaying the expired publication returns a terminal receipt. */
+  expect((await joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "private-lobby-001", createChallenge: true}, {db, nowMs: NOW + 900_002})).phase).toBe("cancelled");
+  /** A recipient's expired invitation also cannot block acceptance of a new friend's lobby. */
+  await joinLiveRaceForUser(B, {locale: "en", categoryId: "history", requestId: "recipient-old-invite", createChallenge: true}, {db, nowMs: NOW});
+  /** Charlie's fresh private lobby is accepted under its original match identity. */
+  const c = await joinLiveRaceForUser(C, {locale: "en", categoryId: "history", requestId: "fresh-friend-invite", createChallenge: true}, {db, nowMs: NOW + 900_001});
+  expect(await accept(B, c.challengeId!, NOW + 900_002)).toMatchObject({phase: "countdown", opponent: {displayName: "Charlie"}});
+});

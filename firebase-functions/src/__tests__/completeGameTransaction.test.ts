@@ -161,8 +161,14 @@ describe("atomic authoritative completion", () => {
       attempts: 2, lastGuess: "piano", answer: "piano", locale: "en",
       completionKey: "classic:1", classicIndex: 1, terminal: true, difficultyBand,
     });
+    /** Provides request behavior. */
+    /** Canonical completion request whose receipt is replayed. */
     const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    /** Provides first behavior. */
+    /** First authoritative settlement including the difficulty reward. */
     const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    /** Provides replay behavior. */
+    /** Receipt replay that must not grant coins again. */
     const replay = await completeAuthoritativeGame(request, {uid: USER_ID});
     expect(first.rewardBreakdown?.baseWinCoins).toBe(expectedCoins);
     expect(replay).toEqual(first);
@@ -175,7 +181,11 @@ describe("atomic authoritative completion", () => {
       attempts: 2, lastGuess: "piano", answer: "piano", locale: "en",
       completionKey: "challenge:2026-08-12", challengeDate: "2026-08-12", terminal: true, difficultyBand,
     });
+    /** Provides request behavior. */
+    /** Canonical completion request whose receipt is replayed. */
     const request = {riddleId: "daily-1", gameMode: "challenge" as const, sessionToken: TOKEN_A};
+    /** Provides first behavior. */
+    /** First authoritative settlement including the difficulty reward. */
     const first = await completeAuthoritativeGame(request, {uid: USER_ID});
     expect(first.rewardBreakdown).toMatchObject({baseWinCoins: expectedCoins, dailyStreakBonus: 20});
     await expect(completeAuthoritativeGame(request, {uid: USER_ID})).resolves.toEqual(first);
@@ -206,9 +216,11 @@ describe("atomic authoritative completion", () => {
 
   it("finishes independent Classic projections in the slower task's latency", async () => {
     jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    /** Provides started behavior. */
     const started = Date.now();
     mockUpdateLeaderboardEntry.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 250)));
     mockTriggerClassicRiddleGenerationIfNeeded.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 400)));
+    /** Provides completion behavior. */
     const completion = completeAuthoritativeGame({riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN_A}, {uid: USER_ID});
     await jest.runAllTimersAsync();
     expect(await completion).toMatchObject({isCorrect: true});
@@ -219,9 +231,11 @@ describe("atomic authoritative completion", () => {
 
   it("awaits supply recovery even when the independent leaderboard projection fails", async () => {
     jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    /** Provides started behavior. */
     const started = Date.now();
     mockUpdateLeaderboardEntry.mockImplementationOnce(() => new Promise((_resolve, reject) => setTimeout(() => reject(new Error("projection offline")), 250)));
     mockTriggerClassicRiddleGenerationIfNeeded.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 400)));
+    /** Provides completion behavior. */
     const completion = completeAuthoritativeGame({riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN_A}, {uid: USER_ID});
     await jest.runAllTimersAsync();
     expect(await completion).toMatchObject({isCorrect: true});

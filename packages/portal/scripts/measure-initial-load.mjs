@@ -15,7 +15,7 @@ const results = [];
 const browser = await chromium.launch({headless: true});
 try {
   for (const target of targets) {
-    const directory = path.join(root, `dist-${target}`);
+    const directory = path.join(process.env.LOAD_ARTIFACT_ROOT ?? root, `dist-${target}`);
     const html = await readFile(path.join(directory, 'index.html'), 'utf8');
     const initialJs = [...new Set([...html.matchAll(/(?:src|href)="\.\/([^" ]+\.js)"/g)].map(match => match[1]))];
     const initialJsBytes = (await Promise.all(initialJs.map(async file => (await stat(path.join(directory, file))).size))).reduce((sum, size) => sum + size, 0);
@@ -70,6 +70,10 @@ try {
         if (process.argv.includes('--expect-split-content') && ['youtube','netflix','yahoo'].includes(target)) {
           assert.equal(metrics.contentChunks.length, 1, `${target} loaded extra locale packs`);
           assert.ok(metrics.contentChunks[0].includes(`playable-pack-${target === 'youtube' ? 'fr' : 'en'}-`), `${target} loaded the wrong locale pack`);
+        }
+        if (process.argv.includes('--expect-monolithic-content') && ['youtube','netflix','yahoo'].includes(target)) {
+          assert.equal(metrics.contentChunks.length, 0, `${target} baseline unexpectedly contains split packs`);
+          assert.ok(initialJsBytes > 1_000_000, `${target} baseline is missing the monolithic content`);
         }
         runs.push(metrics);
         if (run === 0 && process.env.LOAD_SCREENSHOT_DIR) await page.screenshot({path:path.join(process.env.LOAD_SCREENSHOT_DIR, `${target}.png`)});

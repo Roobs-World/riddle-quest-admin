@@ -82,12 +82,16 @@ const createNearBudgetSave = (combiningMarks: number): YouTubeSaveV1 => {
 describe("LocalSoloAuthority", () => {
   it.each([['classic', 'medium', 40], ['classic', 'hard', 60], ['daily', 'medium', 100], ['daily', 'hard', 125]] as const)(
     "uses bundled %s %s difficulty for the base reward", async (mode, difficultyBand, expectedCoins) => {
+      /** Isolated bundled content with authored difficulty for this scenario. */
       const scaledContent = {...content, riddles: new Map(riddles.map((riddle) => [riddle.canonicalId, {...riddle, difficultyBand}]))};
+      /** Successful Save boundary exercised by material progression changes. */
       const saveData = jest.fn(async (_data: string) => undefined);
+      /** Local authority with its own save and content snapshot. */
       const authority = await LocalSoloAuthority.restore(createEmptyYouTubeSave(content.contentVersion), scaledContent,
         new YouTubeSaveGate({saveData}), () => new Date("2026-01-01T12:00:00Z"));
       await authority.start(mode);
       authority.setInput(["r", "o", "m", "e"], 3);
+      /** Reward returned after the successful local Save. */
       const result = await authority.submitGuess();
       // First perfect Classic/Daily wins grant 3/4 achievements, a level-up (50), and a Daily streak (20).
       expect(result?.coinsEarned).toBe(expectedCoins + 75 + 50 + (mode === "daily" ? 45 : 0));

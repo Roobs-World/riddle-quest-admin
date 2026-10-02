@@ -4,7 +4,9 @@ import {REDDIT_GOLD_PRODUCTS} from "../../pricing/redditCatalog";
 
 describe("solo coin economy", () => {
   it("pays more for harder content while keeping a hint affordable after one easy win", () => {
+    /** Classic rewards in ascending authored difficulty. */
     const classic = ["easy", "medium", "hard"].map((band) => getSoloWinCoins("classic", band));
+    /** Daily rewards in ascending authored difficulty. */
     const daily = ["easy", "medium", "hard"].map((band) => getSoloWinCoins("challenge", band));
     expect(classic).toEqual([25, 40, 60]);
     expect(daily).toEqual([75, 100, 125]);
@@ -27,10 +29,13 @@ describe("solo coin economy", () => {
   });
 
   it("gives progressively better value in each USD and Reddit Gold bundle tier", () => {
+    /** Configured USD coin value at each bundle tier. */
     const usdValues = DEFAULT_PRODUCT_PRICING.map((product) => {
+      /** USD price owned by the trusted default catalog. */
       const price = product.regionalPrices.find(({currency}) => currency === "USD")!;
       return product.coins / price.amount;
     });
+    /** Reddit coin value at each Gold bundle tier. */
     const goldValues = REDDIT_GOLD_PRODUCTS.map((product) => product.coins / product.goldCost);
     for (const values of [usdValues, goldValues]) {
       for (let index = 1; index < values.length; index += 1) {

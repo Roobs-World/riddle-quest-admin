@@ -63,7 +63,15 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       if (ticket && ticket.userId === userId) {
         /** Provides match behavior. */
         const match = ticket.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as LiveMatch : undefined;
-        if (receipt.exists || !ticket.cancelled && (!match || match.winner === undefined)) {
+        /** An unattended expired invitation must not strand the account's active-seat pointer. */
+        const privateExpired = ticket.privateChallenge && !match &&
+          liveOperationAtMs(ticket, undefined, options.nowMs ?? Date.now()) >= ticket.createdAtMs + LIVE_RACE_INVITE_MS;
+        if (privateExpired && receipt.exists) {
+          ticket.cancelled = true;
+          transaction.update(old.ref, {cancelled: true});
+          return liveView(id, ticket, undefined, options.nowMs ?? Date.now());
+        }
+        if (!privateExpired && (receipt.exists || !ticket.cancelled && (!match || match.winner === undefined))) {
           if (Boolean(ticket.privateChallenge) !== Boolean(input.createChallenge))
             throw new HttpsError("failed-precondition", "Finish the current live race first.");
           if (ticket.pool !== pool) throw new HttpsError("failed-precondition", "Finish the current live race first.");

@@ -3,6 +3,7 @@ import {getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import type {LiveRaceView} from "@qwordly/core/race";
 import type {LiveMatch} from "../../race/raceLiveState";
+import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
 
 /** Renders the a interface. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
@@ -12,8 +13,9 @@ const NOW = 1_800_000_000_000;
 let db: FirebaseFirestore.Firestore;
 /** Provides clear behavior. */
 async function clear() {
-  for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "localizedRiddles/en/riddles"])
+  for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "localizedRiddles/en/riddles", "localizedRiddles/fr/riddles"])
     await db.recursiveDelete(db.collection(path));
+  await Promise.all([A, B, C].map(user => getJestAccountDeletionRef(db, user).delete()));
 }
 beforeAll(() => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Local Firestore emulator required");
@@ -200,6 +202,47 @@ it("rejects another account's ticket and excludes blocked or cancelled players",
   /** Provides c behavior. */
   const c = await join(C, "third-seat-three", NOW + 2500); expect(c.opponent?.displayName).toBe("Bob");
   expect((await update(A, a, NOW + 60000)).phase).toBe("cancelled");
+});
+
+it("keeps provider, language and category pools separate while pairing eligible waiting players", async () => {
+  /** Additional identities cannot move themselves between authenticated provider namespaces. */
+  const foreign = `facebook_${"d".repeat(40)}`, eligible = `jest_${"e".repeat(40)}`;
+  /** Equivalent catalogs are available so the test isolates matchmaking scope. */
+  const content = await db.collection("localizedRiddles/en/riddles").get();
+  /** Fixture content and two more owned profiles are prepared atomically. */
+  const batch = db.batch();
+  for (const document of content.docs) {
+    batch.set(db.doc(`localizedRiddles/fr/riddles/${document.id}`), document.data());
+    batch.set(db.doc(`localizedRiddles/en/riddles/nature-${document.id}`), {...document.data(),
+      riddleId: `nature-${document.id}`, canonicalRiddleId: `nature:${document.id}`, categoryId: "nature"});
+  }
+  batch.set(db.doc(`users/${foreign}`), {username: "Facebook player", coins: 100});
+  batch.set(db.doc(`users/${eligible}`), {username: "Eligible player", coins: 100});
+  await batch.commit();
+  /** Four unrelated queues have usable content but cannot be merged. */
+  const original = await join(A, "scope-original-seat");
+  expect((await joinLiveRaceForUser(B, {locale: "fr", categoryId: "history", requestId: "scope-french-seat"}, {db, nowMs: NOW + 1000})).phase).toBe("searching");
+  expect((await joinLiveRaceForUser(C, {locale: "en", categoryId: "nature", requestId: "scope-nature-seat"}, {db, nowMs: NOW + 1000})).phase).toBe("searching");
+  expect((await join(foreign, "scope-facebook-seat", NOW + 1000)).phase).toBe("searching");
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(0);
+  expect(await join(eligible, "scope-eligible-seat", NOW + 2000)).toMatchObject({phase: "countdown", opponent: {displayName: "Alice"}});
+  expect(await update(A, original, NOW + 2000)).toMatchObject({phase: "countdown", opponent: {displayName: "Eligible player"}});
+});
+
+it.each(["block", "delete"] as const)("settles an active %s privacy boundary without awarding a forfeit win", async boundary => {
+  /** A live opponent's withdrawal through a privacy boundary is not a competitive victory. */
+  const {a, b} = await pair();
+  await answer(A, a, NOW + 7000, "before-privacy-boundary");
+  if (boundary === "block") await db.doc(`users/${A}/blockedRivals/${B}`).set({blocked: true});
+  else await getJestAccountDeletionRef(db, B).set({deleted: true});
+  /** The remaining browser sees an anonymous rival and a no-reward draw. */
+  const result = await update(A, a, NOW + 8000);
+  expect(result).toMatchObject({phase: "result", result: "tie", rewardCoins: 0,
+    opponent: {displayName: "Riddle Quest player", avatarUrl: null}});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(100);
+  if (boundary === "delete") await expect(update(B, b, NOW + 9000)).rejects.toThrow("account-deleted");
+  else expect(await update(B, b, NOW + 9000)).toMatchObject({phase: "result", result: "tie", rewardCoins: 0});
 });
 
 it("cancels a countdown without paying a win and rewards an in-game forfeit only once", async () => {

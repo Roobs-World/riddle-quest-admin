@@ -873,7 +873,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/game-DVql3tGD.js",
+      "file": "assets/game-CSWYlZ43.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -912,11 +912,11 @@
         "assets/redditPlatform-JMhQe933.js",
         "assets/bridge-gNVIXc2H.js",
         "assets/GameModalView-CBhLJdBS.js",
-        "assets/RaceTo10Game-BzZYFNzU.js",
+        "assets/RaceTo10Game-B8kQNDcE.js",
         "assets/SolarSystem-y2wlfn6x.js",
         "assets/race-4EEkpaoG.js"
       ],
-      "sha256": "fef741676cbcc9af63d0447018a3d42551a50af1467ba3fba45e5a21b7a42197"
+      "sha256": "b4c36dc0c444efbe6fd14471f1570d86efaf14492d729ff9ad7e7baa12d427e1"
     },
     {
       "file": "assets/splash-DNO5krMd.js",
@@ -963,7 +963,7 @@
       "sha256": "15f1363f5423217517026bcf972c5cedff298e6d9342dffbb056258663e3776b"
     },
     {
-      "file": "assets/RaceTo10Game-BzZYFNzU.js",
+      "file": "assets/RaceTo10Game-B8kQNDcE.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
@@ -977,7 +977,7 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "2e6ced4075ee8589062e60cd4b55b42f5f6b2de7f845ca5972e71d2d2e3e7fa0"
+      "sha256": "4bcc824444a7b48a6ca6cb0e91c56bff706de8d4aa1b9d9810ed1968514de510"
     },
     {
       "file": "assets/ReferralSharingCapability-mAVUNqTR.js",
@@ -5211,12 +5211,12 @@
       "sha256": "cb35688673341b84ed9c51cff84abf796c2c6c91dc1e5747efb4ee9d6fde7140"
     },
     {
-      "file": "assets/RaceTo10Game-BzZYFNzU.js",
-      "sha256": "2e6ced4075ee8589062e60cd4b55b42f5f6b2de7f845ca5972e71d2d2e3e7fa0"
+      "file": "assets/RaceTo10Game-B8kQNDcE.js",
+      "sha256": "4bcc824444a7b48a6ca6cb0e91c56bff706de8d4aa1b9d9810ed1968514de510"
     },
     {
-      "file": "assets/RaceTo10Game-DaAP2e2W.css",
-      "sha256": "84cf87bcc8a472800151fd5e5db7ecd14e62fc96c621cb58e9e70cd469297b25"
+      "file": "assets/RaceTo10Game-C0-5plh6.css",
+      "sha256": "fe4ba47665ca8384af2b88e2876177509fd0ba31487ccf8bd3defc52ae90809e"
     },
     {
       "file": "assets/ReferralSharingCapability-mAVUNqTR.js",
@@ -5767,6 +5767,10 @@
       "sha256": "2837734de5e358a52d399660bb808b2860b674e8fd439277f28cd8c1c13d999d"
     },
     {
+      "file": "assets/game-CSWYlZ43.js",
+      "sha256": "b4c36dc0c444efbe6fd14471f1570d86efaf14492d729ff9ad7e7baa12d427e1"
+    },
+    {
       "file": "assets/game-CVqpj1aR.js",
       "sha256": "0f76eb19616b6a6ce18e0261694fbb0dd3273dd8b22b6967514ccc3b5ddebb1d"
     },
@@ -5785,10 +5789,6 @@
     {
       "file": "assets/game-DRkWBCJy.js",
       "sha256": "be4f9ca2d689b68a8631e323e0c5e0c2bb21a807c843bca4b183cbea4b860dd7"
-    },
-    {
-      "file": "assets/game-DVql3tGD.js",
-      "sha256": "fef741676cbcc9af63d0447018a3d42551a50af1467ba3fba45e5a21b7a42197"
     },
     {
       "file": "assets/game-Dh2yEbJ5.js",
@@ -6836,7 +6836,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "be278efc552a1cc44855575c5899d8afc92e6857cf0b5e56574b9d7ce228a7b3"
+      "sha256": "90f39ee0b4012a90b36954358b8534f3bc89f8faa425751b5d82be16260d8ead"
     },
     {
       "file": "reddit-inline.html",

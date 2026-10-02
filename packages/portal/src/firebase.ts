@@ -523,4 +523,7 @@ export const joinLiveRace = httpsCallable<import("@qwordly/core/race").JoinLiveR
 export const updateLiveRace = httpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "updateLiveRace");
 
 /** Reads a server-validated private PvP invitation from platform entry data. */
-export const getLiveRaceChallenge = httpsCallable<{/** Server invitation handle. */ challengeId: string}, import("@qwordly/core/race").LiveRaceChallenge>(raceFunctions, "getLiveRaceChallenge");
+export const getLiveRaceChallenge = httpsCallable<{
+  /** Server invitation handle. */
+  challengeId: string;
+}, import("@qwordly/core/race").LiveRaceChallenge>(raceFunctions, "getLiveRaceChallenge");

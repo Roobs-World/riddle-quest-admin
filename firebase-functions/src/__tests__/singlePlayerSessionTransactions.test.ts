@@ -165,9 +165,11 @@ describe("single-player session transactions", () => {
   });
 
   it("pins reviewed difficulty and retains it when content metadata changes on resume", async () => {
+    /** First issued token carrying the reviewed difficulty snapshot. */
     const token = await ensureAuthoritativeSession(USER_ID, "classic", "classic-1", "en", "content-en-1", "classic:1", "piano",
       {classicIndex: 1, difficultyBand: "medium"});
     expect(mockDocuments.get(sessionPath(token))?.difficultyBand).toBe("medium");
+    /** Resumed token after the catalog difficulty changes. */
     const resumed = await ensureAuthoritativeSession(USER_ID, "classic", "classic-1", "en", "content-en-1", "classic:1", "piano",
       {classicIndex: 1, difficultyBand: "hard"});
     expect(resumed).toBe(token);

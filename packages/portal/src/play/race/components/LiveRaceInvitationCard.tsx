@@ -40,7 +40,7 @@ export function LiveRaceInvitationCard({challengeId, transport, onAccept}: {
       !challenge ? <p>{tr("RaceTo10.LOADING_CHALLENGE")}</p> : <>
         <h2>{tr("RaceTo10.CHALLENGED_BY", {name: challenge.creator.displayName})}</h2>
         <p>{tr(challenge.status === "unavailable" ? "RaceTo10.INVITATION_EXPIRED" : "RaceTo10.FIRST_TO_TEN")}</p>
-        {(["available", "accepted"] as string[]).includes(challenge.status) && <button className="race-primary"
+        {(challenge.status === "available" || challenge.status === "accepted") && <button className="race-primary"
           onClick={() => onAccept({categoryId: challenge.categoryId, locale: challenge.locale, challengeId})}>{tr("RaceTo10.ACCEPT_CHALLENGE")}</button>}
       </>}
   </div>;

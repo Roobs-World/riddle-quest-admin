@@ -52,8 +52,10 @@ describeBrowser("queued coin actions", () => {
   });
 
   it.each([390, 1280])("shows shop buying power and correct action costs at %ipx", async (width) => {
+    /** Injected game page at the viewport under verification. */
     const page = await browser.newPage({viewport: {width, height: 844}});
     page.setDefaultTimeout(8_000);
+    /** Uncaught browser errors from the actual shop flow. */
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
@@ -74,8 +76,10 @@ describeBrowser("queued coin actions", () => {
       await expect(page.locator(".modal-skip")).toContainText("100");
       await page.keyboard.press("Escape");
       await page.locator(".game-header .coin-pill").click();
+      /** Consumable offers rendered from the injected provider catalog. */
       const cards = page.locator(".game-shop-grid article:not(.shop-subscription-card)");
       await expect(cards).toHaveCount(6);
+      /** Server-owned bundle amounts used for the expected buying power. */
       const grants = [250, 550, 900, 1600, 3400, 7000];
       for (let index = 0; index < grants.length; index += 1) {
         await expect(cards.nth(index)).toContainText(`Up to ${(grants[index] / 25).toLocaleString()} hints or ${(grants[index] / 50).toLocaleString()} extra attempts.`);
@@ -85,10 +89,7 @@ describeBrowser("queued coin actions", () => {
       await expect(cards.last().getByRole("button")).toBeInViewport();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
       expect(errors).toEqual([]);
-    } finally {
-      await page.screenshot({path: path.resolve(__dirname, `../../../../../artifacts/coin-economy/shop-${width}.png`), fullPage: true});
-      await page.close();
-    }
+    } finally { await page.close(); }
   });
 
   afterAll(async () => {
