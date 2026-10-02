@@ -1,0 +1,23 @@
+FAIL src/reddit/__tests__/RedditGatewayRedirect.test.ts
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 307 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 20 skipped, 21 total
+Snapshots:   0 total
+Time:        0.221 s, estimated 1 s
+Ran all test suites within paths "src/reddit/__tests__/RedditGatewayRedirect.test.ts".

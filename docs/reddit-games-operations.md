@@ -120,6 +120,16 @@ A timeout is not proof that a remote economic or account mutation failed.
 The complete package's 51 tests pass on Node 24 and pinned Node 22, with all six
 isolated client builds passing. Hosted signed forwarding remains unverified.
 
+The [browser redirect check](evidence/reddit-browser-redirects-2026-10-02.md) also
+rejects redirects at all three browser Fetch sites before another origin or an
+unrelated route can receive a request. Native HTTP and built-artifact Chromium
+regressions verify zero destination requests; ordinary responses retain their
+existing schemas and single-attempt behavior. A failed request does not establish
+whether its initial server mutation committed. All 76 Reddit adapter tests and
+149 Jest SDK/purchase/notification/matchmaking tests pass; Facebook/Jest bytes and
+self-contained target content remain unchanged. All six private artifact audits
+and the full Devvit package contract pass. Hosted approval remains separate.
+
 Gateway assertions must remain fresh through replay-record persistence. The
 [1 October verifier check](evidence/reddit-assertion-expiry-2026-10-01.md) rejects
 requests that expire while their nonce is being written. A successfully written

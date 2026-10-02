@@ -877,7 +877,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/game-eqk3bDX9.js",
+      "file": "assets/game-DU2xDF7l.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -920,7 +920,7 @@
         "assets/SolarSystem-y2wlfn6x.js",
         "assets/race-BGH5jtdN.js"
       ],
-      "sha256": "f031936cbb02afc73835aca57d8fff8edf2789f249696ef2bbdd7f41fefcab7c"
+      "sha256": "d71751f1781370fb296a2d953dbbde9b0238652da3d199d6c6fa53e9b77c45be"
     },
     {
       "file": "assets/splash-DNO5krMd.js",
@@ -5791,6 +5791,10 @@
       "sha256": "be4f9ca2d689b68a8631e323e0c5e0c2bb21a807c843bca4b183cbea4b860dd7"
     },
     {
+      "file": "assets/game-DU2xDF7l.js",
+      "sha256": "d71751f1781370fb296a2d953dbbde9b0238652da3d199d6c6fa53e9b77c45be"
+    },
+    {
       "file": "assets/game-Dh2yEbJ5.js",
       "sha256": "a7d548330ad129230e1e0d92a81cd14f83a1804141fdb142b6b2d7a59e7fffef"
     },
@@ -5801,10 +5805,6 @@
     {
       "file": "assets/game-Z6k-vNVe.js",
       "sha256": "47e1c8ba8847f314377eae565c9f5a788bb8b3b0bb2cd313104095c7f701e371"
-    },
-    {
-      "file": "assets/game-eqk3bDX9.js",
-      "sha256": "f031936cbb02afc73835aca57d8fff8edf2789f249696ef2bbdd7f41fefcab7c"
     },
     {
       "file": "assets/game-r5Ir4Jh8.js",
@@ -6840,7 +6840,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "2652cfeed466f7e369dd044bc55cd9db3f92babfdeb097032871718e3e11d5e8"
+      "sha256": "1c60a8d239a9be210579d3bb04c043b8580e813837b3dbd71765344f4723fbd4"
     },
     {
       "file": "reddit-inline.html",

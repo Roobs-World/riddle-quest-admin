@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+Test Suites: 6 passed, 6 total
+Tests:       76 passed, 76 total
+Snapshots:   0 total
+Time:        0.463 s, estimated 1 s
+Ran all test suites within paths "src/reddit/__tests__/RedditGatewayRedirect.test.ts", "src/reddit/__tests__/RedditPlatformBootstrap.test.ts", "src/reddit/__tests__/RedditHostServices.test.ts", "src/reddit/__tests__/RedditGuestHostServices.test.ts", "src/reddit/__tests__/RedditPollingPresence.test.ts", "src/reddit/__tests__/RedditRaceHistory.test.ts".

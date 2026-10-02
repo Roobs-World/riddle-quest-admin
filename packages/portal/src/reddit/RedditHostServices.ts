@@ -39,6 +39,8 @@ const post = async (operation: string, body: unknown): Promise<unknown> => {
   /** Provides response behavior. */
   const response = await fetch(`/api/game/${operation}`, {
     method: "POST",
+    // Keep the selected operation on the same-origin gateway even when an intermediary redirects.
+    redirect: "error",
     headers: {"content-type": "application/json"},
     body: JSON.stringify(protectedOperations.has(operation) && isRecord(body) ? {...body, contentProtection: 1} : body),
   });
@@ -285,6 +287,8 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
       /** Provides response behavior. */
       const response = await fetch("/api/account/delete", {
         method: "POST",
+        // Redirects cannot turn an unrelated success response into confirmation of account deletion.
+        redirect: "error",
         headers: {"content-type": "application/json"},
         body: JSON.stringify({accountGeneration}),
       });

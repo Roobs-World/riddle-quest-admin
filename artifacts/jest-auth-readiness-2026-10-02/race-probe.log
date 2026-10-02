@@ -1,0 +1,36 @@
+  console.error
+    [DEBUG-auth-race] {"body":"Classic\n300\nWhat has keys but cannot open doors?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip\nMultiplayer\nLIVE PVP\nRace to 10\n300\n×\nChoose your category\n\nFirst to 10 correct wins\n\nHistory\nPeople, events, and eras from the past\nGeography\nCountries, cities, landmarks, and the world\nMusic\nArtists, songs, instruments, and sounds\nFilm\nMovies, characters, actors, and directors\nScience\nDiscoveries, nature, space, and technology\nMixed\nA surprise from every category\nOpponent search is unavailable for this account.\nStart PvP match\nEnable challenge notifications\nDisable challenge notifications","errors":[],"calls":["sdk.init","sdk.progress:5","sdk.getPlayer","sdk.progress:15","sdk.getPlayer","sdk.getPlayerSigned","sdk.data.getAll","sdk.data.getAll","sdk.payments.getIncompletePurchases","sdk.progress:28","sdk.social.getProfile","sdk.progress:42","sdk.progress:58","sdk.progress:72","sdk.captureEvent:screen_view:{\"screen_name\":\"startup_loading\",\"screen_class\":\"RiddleQuestWeb\"}","sdk.captureEvent:session_started:{\"registered\":true,\"campaign\":\"direct\",\"reference\":\"none\",\"notificationtemplate\":\"none\",\"notificationoffset\":\"none\",\"utm_source\":\"none\",\"utm_medium\":\"none\",\"utm_campaign\":\"none\",\"utm_term\":\"none\",\"utm_content\":\"none\"}","sdk.captureEvent:screen_view:{\"screen_name\":\"game\",\"screen_class\":\"RiddleQuestWeb\"}","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.captureEvent:race_results_reminder_opened:{\"status\":\"success\"}","sdk.captureEvent:viral_referrals_reconciled:{\"conversions\":0,\"rewardsgranted\":0}","sdk.payments.getProducts:start","sdk.payments.getProducts:end","sdk.payments.getSubscriptions","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.captureEvent:screen_view:{\"screen_name\":\"multiplayer\",\"screen_class\":\"RiddleQuestWeb\",\"game_mode\":\"classic\"}","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.unscheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.getPlayer","sdk.notifications.scheduleNotification","sdk.data.set","sdk.data.flush","sdk.captureEvent:level_start:{\"game_mode\":\"classic\",\"level_name\":\"classic_1\",\"level_number\":1}","sdk.progress:100","sdk.markGameLoaded"]}
+
+      1005 |
+      1006 |     await page.getByRole("heading", {name: /challenge results/i}).waitFor({timeout: 5_000}).catch(async error => {
+    > 1007 |       console.error("[DEBUG-auth-race]", JSON.stringify({body: await page.locator("body").innerText(), errors: pageErrors, calls: (await getHarnessState(page)).calls}));
+           |               ^
+      1008 |       throw error;
+      1009 |     });
+      1010 |     await page.getByText("Nova", {exact: true}).waitFor({state: "visible"});
+
+      at src/jest/__tests__/authentication.jest-playwright.test.ts:1007:15
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:1006:5)
+
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (5.451 s)
+  ● Jest authentication integration › opens the authoritative race results inbox from a messaging deep link
+
+    locator.waitFor: Timeout 5000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('heading', { name: /challenge results/i }) to be visible[22m
+
+      1004 |     });
+      1005 |
+    > 1006 |     await page.getByRole("heading", {name: /challenge results/i}).waitFor({timeout: 5_000}).catch(async error => {
+           |                                                                   ^
+      1007 |       console.error("[DEBUG-auth-race]", JSON.stringify({body: await page.locator("body").innerText(), errors: pageErrors, calls: (await getHarnessState(page)).calls}));
+      1008 |       throw error;
+      1009 |     });
+
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:1006:67)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 72 skipped, 73 total
+Snapshots:   0 total
+Time:        5.555 s, estimated 19 s
+Ran all test suites within paths "src/jest/__tests__/authentication.jest-playwright.test.ts".

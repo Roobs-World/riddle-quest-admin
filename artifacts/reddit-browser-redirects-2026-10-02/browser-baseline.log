@@ -1,0 +1,21 @@
+FAIL src/reddit/__tests__/redditBrowser.jest-playwright.test.ts (30.356 s)
+  ● Reddit artifact with injected Devvit context › requires a trusted click to expand and starts authenticated play through same-origin APIs
+
+    page.waitForFunction: Timeout 30000ms exceeded.
+
+      56 |       });
+      57 |       await page.goto(`${origin}/game.html`);
+    > 58 |       await page.waitForFunction(() => (window as RedirectWindow).__redditRedirectOutcome !== undefined);
+         |                  ^
+      59 |       expect({status, escapedRequests}).toEqual({status, escapedRequests: 0});
+      60 |       expect(initialRequests).toBe(1);
+      61 |       expect(await page.evaluate(() => (window as RedirectWindow).__redditRedirectOutcome)).toBe("rejected");
+
+      at verifyRedditBrowserRedirects (src/reddit/__tests__/redditRedirect.jest-playwright.support.ts:58:18)
+      at Object.<anonymous> (src/reddit/__tests__/redditBrowser.jest-playwright.test.ts:124:7)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        30.459 s
+Ran all test suites within paths "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts".

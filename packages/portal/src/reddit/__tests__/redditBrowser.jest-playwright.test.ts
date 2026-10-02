@@ -1,6 +1,7 @@
 import {protectContent} from "@qwordly/core/contentProtection";
 import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
+import {verifyRedditBrowserRedirects} from "./redditRedirect.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium, type Page} from "@playwright/test";
 
@@ -120,6 +121,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
     /** Provides browser behavior. */
     const browser = await chromium.launch({headless: true});
     try {
+      await verifyRedditBrowserRedirects(browser, origin, injectDevvit);
       /** Provides inline behavior. */
       const inline = await browser.newPage({viewport: {width: 390, height: 844}});
       await injectDevvit(inline, 1, origin);

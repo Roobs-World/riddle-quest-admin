@@ -1,0 +1,10 @@
+{
+  "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/acceptFacebookNotificationPermissionPrompt",
+  "serviceConfig": {
+    "environmentVariables": {
+      "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads"
+    }
+  },
+  "state": "ACTIVE",
+  "updateTime": "2026-10-02T15:34:17.844684433Z"
+}

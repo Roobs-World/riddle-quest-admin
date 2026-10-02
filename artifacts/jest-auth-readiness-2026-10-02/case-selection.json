@@ -1,0 +1,275 @@
+{
+  "selection": "Authentication, purchases, referrals, notification SDK and solo UI; recorded-race UI cases remain unresolved",
+  "selected": [
+    {
+      "line": 139,
+      "name": "survives the hosted loading watchdog while signed identity takes 25 seconds"
+    },
+    {
+      "line": 145,
+      "name": "uses the restored language for the first hosted game handshake after reload"
+    },
+    {
+      "line": 167,
+      "name": "keeps unavailable Daily visible without silently opening Classic"
+    },
+    {
+      "line": 176,
+      "name": "keeps the riddle and controls usable in the short Jest phone preview"
+    },
+    {
+      "line": 180,
+      "name": "localizes game-owned Shop copy in Arabic and preserves provider descriptions"
+    },
+    {
+      "line": 195,
+      "name": "refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile"
+    },
+    {
+      "line": 241,
+      "name": "delivers native analytics for startup, controls, and confirmed gameplay"
+    },
+    {
+      "line": 261,
+      "name": "refreshes an unavailable cancellation without claiming it succeeded or revoking paid access"
+    },
+    {
+      "line": 282,
+      "name": "reports first_milestone after a returning player solves a riddle"
+    },
+    {
+      "line": 301,
+      "name": "starts a guest through signed identity exchange and reads stable-player progress"
+    },
+    {
+      "line": 310,
+      "name": "renders startup while the external Jest SDK request is still pending"
+    },
+    {
+      "line": 318,
+      "name": "keeps play interactive while the product catalog loads in the background"
+    },
+    {
+      "line": 337,
+      "name": "prompts a %s after the first solved riddle"
+    },
+    {
+      "line": 408,
+      "name": "reports a guest Daily completion without opening registration"
+    },
+    {
+      "line": 449,
+      "name": "offers registration when confirmation arrives after all completion popups were dismissed"
+    },
+    {
+      "line": 533,
+      "name": "offers registration after the first Classic victory while reward syncing is delayed"
+    },
+    {
+      "line": 569,
+      "name": "registers with a stable player id, re-signs identity, refreshes profile, and survives reload"
+    },
+    {
+      "line": 744,
+      "name": "prefills the Jest profile picture from the SDK avatar"
+    },
+    {
+      "line": 755,
+      "name": "runs the complete profile invite, attributed registration, and inviter reward journey"
+    },
+    {
+      "line": 862,
+      "name": "logs an existing Jest player in from the onboarding choice"
+    },
+    {
+      "line": 887,
+      "name": "skips the registration step for an already registered Jest player and restores platform data"
+    },
+    {
+      "line": 903,
+      "name": "surfaces a server-authoritative referral reward in the game"
+    },
+    {
+      "line": 911,
+      "name": "shares a race challenge and schedules its attributed registered-player reminder"
+    },
+    {
+      "line": 1943,
+      "name": "returns to the exhausted-attempt Continue prompt after closing the shop"
+    },
+    {
+      "line": 2215,
+      "name": "falls back to SDK login when the custom registration overlay cannot open"
+    },
+    {
+      "line": 2245,
+      "name": "retains a retryable registration prompt when fallback SDK login fails"
+    },
+    {
+      "line": 2283,
+      "name": "retains a retryable registration prompt when the overlay login action fails"
+    },
+    {
+      "line": 2305,
+      "name": "handles duplicate registration close callbacks idempotently"
+    },
+    {
+      "line": 2328,
+      "name": "shows a retryable terminal screen when registered identity synchronization fails"
+    },
+    {
+      "line": 2379,
+      "name": "stops registration when the authoritative identity is already deleted"
+    },
+    {
+      "line": 2396,
+      "name": "replaces play with a terminal screen that cannot reload the deleted identity"
+    },
+    {
+      "line": 2422,
+      "name": "shows a retryable startup screen for %s failures"
+    },
+    {
+      "line": 2434,
+      "name": "waits for a delayed host handshake before accessing player state and reaches playable UI"
+    },
+    {
+      "line": 2440,
+      "name": "authenticates during a pending social profile and reports readiness only after playable UI"
+    },
+    {
+      "line": 2467,
+      "name": "keeps registered play available when the optional Jest social profile is unavailable"
+    },
+    {
+      "line": 2474,
+      "name": "recovers from a transient SDK initialization failure when Retry is pressed"
+    }
+  ],
+  "deferredRecordedRace": [
+    {
+      "line": 997,
+      "name": "opens the authoritative race results inbox from a messaging deep link"
+    },
+    {
+      "line": 1018,
+      "name": "renders the preloaded next riddle before a delayed skip response returns"
+    },
+    {
+      "line": 1051,
+      "name": "renders typed invitation waiting and cancellation for an opaque creator entry"
+    },
+    {
+      "line": 1065,
+      "name": "recovers a waiting invitation from a local pointer after reloading without an incoming link"
+    },
+    {
+      "line": 1087,
+      "name": "consumes an unavailable challenge on Close so Multiplayer reopens the normal lobby"
+    },
+    {
+      "line": 1103,
+      "name": "reopens a completed recipient challenge to its result without a second start"
+    },
+    {
+      "line": 1119,
+      "name": "opens a public creator entry as recorded and routes Check results to Activity"
+    },
+    {
+      "line": 1135,
+      "name": "retains public recipient acceptance without exposing creator controls"
+    },
+    {
+      "line": 1147,
+      "name": "suspends typed invitation polling while hidden and refreshes on visible recovery"
+    },
+    {
+      "line": 1172,
+      "name": "recovers lost hint and skip confirmations by resuming the current race"
+    },
+    {
+      "line": 1230,
+      "name": "confirms an automatic skip once after the fifth incorrect guess"
+    },
+    {
+      "line": 1237,
+      "name": "merges guess confirmation hints and recovers an invalid reveal without losing successor typing"
+    },
+    {
+      "line": 1246,
+      "name": "confirms the result when a hint penalty or final skip ends the challenger race"
+    },
+    {
+      "line": 1261,
+      "name": "restores successor typing after a lost or malformed guess confirmation"
+    },
+    {
+      "line": 1275,
+      "name": "recovers a completely lost hint response after the delivery deadline"
+    },
+    {
+      "line": 1287,
+      "name": "rejects inconsistent hint confirmations and recovers authoritative reveals"
+    },
+    {
+      "line": 1302,
+      "name": "preserves the player's draft through projected and confirmed hints"
+    },
+    {
+      "line": 1315,
+      "name": "preserves solving time when hint and skip confirmations belong to another run"
+    },
+    {
+      "line": 1325,
+      "name": "publishes a completed score before reusable Jest invites reach recipients"
+    },
+    {
+      "line": 1583,
+      "name": "shows an opponent win immediately and keeps category navigation ahead of delayed outcome work"
+    },
+    {
+      "line": 1681,
+      "name": "replays an opponent skip milestone after the player's penalty clock advances"
+    },
+    {
+      "line": 1715,
+      "name": "recovers lost publication confirmations without creating another challenge"
+    },
+    {
+      "line": 1771,
+      "name": "shows a completed creator result while authoritative completion work continues in the background"
+    },
+    {
+      "line": 1848,
+      "name": "recovers a guess rejected after the ghost deadline without exposing a retry dead-end"
+    },
+    {
+      "line": 1894,
+      "name": "keeps the immediate result visible and retries failed background reconciliation"
+    },
+    {
+      "line": 1917,
+      "name": "acknowledges close during a delayed start and abandons the created run before exiting"
+    },
+    {
+      "line": 1968,
+      "name": "preserves a newer same-account resume hint when an older race completes or is abandoned"
+    },
+    {
+      "line": 2017,
+      "name": "recovers rejected race preparation without creating a second run"
+    },
+    {
+      "line": 2069,
+      "name": "recovers lost quit confirmations during preparation and active play"
+    },
+    {
+      "line": 2143,
+      "name": "confirms quitting an active race and abandons it with no result"
+    },
+    {
+      "line": 2199,
+      "name": "does not schedule race reminders for an unregistered player"
+    }
+  ]
+}

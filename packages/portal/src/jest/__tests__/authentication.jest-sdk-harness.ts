@@ -308,6 +308,7 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
           subscriptionSku: string;
         }) => {
           state.calls.push(`sdk.payments.cancelSubscription:${subscriptionSku}`);
+          if (state.scenario === "subscription-cancel-inactive") return {result: "error", error: "not_active"};
           if (state.scenario === "subscription-cancel-dismiss") return {result: "cancel"};
           if (state.scenario === "subscription-cancel-error") return {result: "error", error: "internal_error"};
           return {result: "success"};

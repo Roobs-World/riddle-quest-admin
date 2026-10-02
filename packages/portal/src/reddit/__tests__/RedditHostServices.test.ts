@@ -200,6 +200,7 @@ it("binds account deletion to the authenticated account generation", async () =>
   await expect(createRedditHostServices(7).deleteAccount("reddit-account")).resolves.toBeUndefined();
   expect(global.fetch).toHaveBeenCalledWith("/api/account/delete", {
     method: "POST",
+    redirect: "error",
     headers: {"content-type": "application/json"},
     body: JSON.stringify({accountGeneration: 7}),
   });

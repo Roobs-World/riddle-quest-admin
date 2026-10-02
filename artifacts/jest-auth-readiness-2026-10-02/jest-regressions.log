@@ -1,0 +1,6 @@
+
+Test Suites: 10 passed, 10 total
+Tests:       149 passed, 149 total
+Snapshots:   0 total
+Time:        0.367 s, estimated 1 s
+Ran all test suites within paths "src/jest/__tests__/JestSdkPlatform.test.ts", "src/jest/__tests__/purchases.test.ts", "src/jest/__tests__/useJestPurchase.test.ts", "src/play/__tests__/firebaseRaceMatchmaking.test.ts", "src/jest/__tests__/notificationFundChecklist.test.ts", "src/jest/__tests__/notificationCopy.test.ts", "src/jest/__tests__/engagement.test.ts", "src/jest/__tests__/useJestNotifications.test.ts", "src/jest/__tests__/notificationOperationGate.test.ts", "src/jest/__tests__/firebaseNotificationCopy.test.ts".

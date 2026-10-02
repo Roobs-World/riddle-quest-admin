@@ -1,0 +1,10 @@
+{
+  "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getFacebookClientConfiguration",
+  "serviceConfig": {
+    "environmentVariables": {
+      "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads"
+    }
+  },
+  "state": "ACTIVE",
+  "updateTime": "2026-10-02T15:34:23.383935093Z"
+}

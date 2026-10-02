@@ -1,0 +1,312 @@
+FAIL src/reddit/__tests__/RedditGatewayRedirect.test.ts
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 301 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 302 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 303 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 307 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 308 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 301 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 302 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 303 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 307 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 308 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 301 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 302 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 303 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 307 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 308 before reaching another origin
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+       99 |       /** Captures outcome while still asserting that no destination received a request. */
+      100 |       const outcome = await run().then(() => "accepted", () => "rejected");
+    > 101 |       expect(escapedCalls).toBe(0);
+          |                            ^
+      102 |       expect(sourceCalls).toBe(1);
+      103 |       expect(outcome).toBe("rejected");
+      104 |     },
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:101:28
+
+  ● Reddit native gateway redirect isolation › rejects gateway redirects outside the selected same-origin API route
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      109 |     /** Redirect rejection also prevents unexpected API/asset route replay on the same host. */
+      110 |     const outcome = await run().then(() => "accepted", () => "rejected");
+    > 111 |     expect(escapedCalls).toBe(0);
+          |                          ^
+      112 |     expect(sourceCalls).toBe(1);
+      113 |     expect(outcome).toBe("rejected");
+      114 |   });
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:111:26
+
+  ● Reddit native gateway redirect isolation › rejects gameplay redirects outside the selected same-origin API route
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      109 |     /** Redirect rejection also prevents unexpected API/asset route replay on the same host. */
+      110 |     const outcome = await run().then(() => "accepted", () => "rejected");
+    > 111 |     expect(escapedCalls).toBe(0);
+          |                          ^
+      112 |     expect(sourceCalls).toBe(1);
+      113 |     expect(outcome).toBe("rejected");
+      114 |   });
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:111:26
+
+  ● Reddit native gateway redirect isolation › rejects account deletion redirects outside the selected same-origin API route
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      109 |     /** Redirect rejection also prevents unexpected API/asset route replay on the same host. */
+      110 |     const outcome = await run().then(() => "accepted", () => "rejected");
+    > 111 |     expect(escapedCalls).toBe(0);
+          |                          ^
+      112 |     expect(sourceCalls).toBe(1);
+      113 |     expect(outcome).toBe("rejected");
+      114 |   });
+
+      at src/reddit/__tests__/RedditGatewayRedirect.test.ts:111:26
+
+Test Suites: 1 failed, 1 total
+Tests:       18 failed, 3 passed, 21 total
+Snapshots:   0 total
+Time:        0.367 s
+Ran all test suites within paths "src/reddit/__tests__/RedditGatewayRedirect.test.ts".

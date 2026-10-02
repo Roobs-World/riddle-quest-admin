@@ -1,0 +1,38 @@
+[
+  {
+    "target": "reddit",
+    "output": "/tmp/riddle-redirect-isolation-20261002-Dies4z/reddit",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "jest",
+    "output": "/tmp/riddle-redirect-isolation-20261002-Dies4z/jest",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "facebook",
+    "output": "/tmp/riddle-redirect-isolation-20261002-Dies4z/facebook",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "youtube",
+    "output": "/tmp/riddle-redirect-isolation-20261002-Dies4z/youtube",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "netflix",
+    "output": "/tmp/riddle-redirect-isolation-20261002-Dies4z/netflix",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "yahoo",
+    "output": "/tmp/riddle-redirect-isolation-20261002-Dies4z/yahoo",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  }
+]

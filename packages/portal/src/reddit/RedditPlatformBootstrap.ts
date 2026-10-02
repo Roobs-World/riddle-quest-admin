@@ -77,6 +77,8 @@ export const postRedditGateway = async (path: string, body: unknown = {}): Promi
       /** Provides response behavior. */
       const response = await fetch(path, {
         method: "POST",
+        // A valid initial API path must never authorize a redirect to another route or origin.
+        redirect: "error",
         headers: {"content-type": "application/json"},
         body: JSON.stringify(body),
         signal: controller.signal,

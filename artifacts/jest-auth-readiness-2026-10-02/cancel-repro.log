@@ -1,0 +1,29 @@
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (30.293 s)
+  ● Jest authentication integration › refreshes an unavailable cancellation without claiming it succeeded or revoking paid access
+
+    thrown: "Exceeded timeout of 30000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at _getError (../../node_modules/.pnpm/jest-circus@30.5.2_supports-color@8.1.1/node_modules/jest-circus/build/jestAdapterInit.js:1985:12)
+          at Array.map (<anonymous>)
+
+    Cause:
+        thrown: "Exceeded timeout of 30000 ms for a test.
+        Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+          259 |   }, 30_000);
+          260 |
+        > 261 |   it("refreshes an unavailable cancellation without claiming it succeeded or revoking paid access", async () => {
+              |     ^
+          262 |     /** Extracts the fixture or authority fields required by this transition. */
+          263 |     const {page} = await openHarness(browser, {registered: true, scenario: "subscription-cancel-inactive"});
+          264 |     await enterRegisteredGame(page);
+
+          at src/jest/__tests__/authentication.jest-playwright.test.ts:261:5
+          at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:48:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 72 skipped, 73 total
+Snapshots:   0 total
+Time:        30.402 s, estimated 35 s
+Ran all test suites within paths "src/jest/__tests__/authentication.jest-playwright.test.ts".
