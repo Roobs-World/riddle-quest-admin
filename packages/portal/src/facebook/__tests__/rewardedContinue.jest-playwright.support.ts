@@ -15,12 +15,15 @@ export async function verifyRewardedContinue(page: Page, origin: string): Promis
   });
   await page.goto(`${origin}/?harness=race&rewarded=on`);
   await page.locator(".game-bottom-navigation").waitFor();
-  if (await page.locator(".onboarding-card-welcome").isVisible()) {
-    await page.locator(".onboarding-card-welcome .play-primary").click();
-    await page.locator(".onboarding-clues").waitFor();
+  await page.locator(".onboarding-card-welcome .play-primary").click();
+  await page.locator(".onboarding-clues").waitFor();
+  await page.locator(".onboarding-card .play-primary").click();
+  for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
+    const tooltip = page.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
+    await tooltip.waitFor();
+    await tooltip.locator("button").click();
   }
-  if (await page.locator(".onboarding-card").isVisible()) await page.locator(".onboarding-card .play-primary").click();
-  while (await page.locator(".tooltip-backdrop").isVisible()) await page.locator(".tooltip-backdrop button").click();
+  await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
   for (let attempt = 0; attempt < 5; attempt += 1) {
     for (const letter of "CRANE") await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
     await page.locator(".submit-action").click();

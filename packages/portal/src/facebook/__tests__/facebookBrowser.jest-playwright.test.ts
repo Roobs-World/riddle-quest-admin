@@ -475,7 +475,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
               window.__facebookEvents.push(`read:${keys.join(",")}`);
               return {
                 riddleQuestPreferences: {
-                  locale: "fr",
+                  locale: new URL(location.href).searchParams.get("rewarded") === "on" ? "en" : "fr",
                   muted: true,
                   reducedMotion: true,
                   highContrast: true,
