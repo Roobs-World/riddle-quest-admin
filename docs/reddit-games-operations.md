@@ -221,6 +221,18 @@ configured; an unusable public endpoint is not completion evidence.
 
 ## Hosted contract fixtures
 
+Live PvP first-win referrals now use the existing `racePerformanceOutbox` event
+and bounded recovery queue. A `reddit_live` receipt and immutable private match
+binding commit with the normal win grant. Delivery rechecks provider ownership,
+the private human winner, committed reward, retention, account deletion and the
+Reddit referral switch before the idempotent 100/100 ledger. A solo or multiplayer
+win can settle a previously verified binding; established multiplayer accounts
+cannot create a new binding. Facebook keeps its own domain/binding/ledger, and
+Jest creates neither live referral receipt. Deploy the producer and consumer
+together and collect real signed post-entry/first-win acceptance; local emulator
+and injected browser checks do not establish hosted approval. See
+[Live PvP referral evidence](evidence/reddit-live-referrals-2026-10-02.md).
+
 Capture each real `auth`, `payment`, `refund`, `post-entry`, `realtime`, and
 `notification` JSON payload without writing its raw bytes to the repository. Pipe
 it through `pnpm --filter @qwordly/reddit-app capture:contract <type> -` and store
