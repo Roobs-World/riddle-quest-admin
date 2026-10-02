@@ -32,6 +32,10 @@ class TestElement {
   public focus = jest.fn(() => {
     testDocument.activeElement = this;
   });
+  /** Models a mounted node and disabled-control selector matching. */
+  public isConnected = true;
+  public disabled = false;
+  public matches(): boolean {return this.disabled;}
   /** Stores focusable. */
   public focusable: TestElement[] = [];
   /** Stores offset height. */
@@ -156,14 +160,16 @@ describe("useRaceDialogFocus", () => {
     /** Requests close. */
     const requestClose = jest.fn();
     testDocument.activeElement = previous;
+    const dialogRef = {current: dialog as TestElement | null};
+    const quitDialogRef = {current: quitDialog as TestElement | null};
     useRaceDialogFocus({
-      dialogRef: {current: dialog},
-      quitDialogRef: {current: quitDialog},
+      dialogRef,
+      quitDialogRef,
       quitConfirmationOpen,
       dismissQuitConfirmation,
       requestClose,
     });
-    return {previous, dialog, quitDialog, dismissQuitConfirmation, requestClose};
+    return {previous, dialog, quitDialog, dialogRef, quitDialogRef, dismissQuitConfirmation, requestClose};
   };
 
   it("focuses the race dialog, handles Escape, and restores previous focus", () => {
@@ -278,6 +284,51 @@ describe("useRaceDialogFocus", () => {
     keydownHandler?.(tabBeforeConfirmationMount);
     expect(tabBeforeConfirmationMount.preventDefault).not.toHaveBeenCalled();
   });
+  it("recaptures escaped focus in both directions and preserves owned key events", () => {
+    const harness = install();
+    const first = new TestElement(), last = new TestElement();
+    harness.dialog.focusable = [first, last];
+    effects[0]();
+    for (const reverse of [false, true]) {
+      testDocument.activeElement = harness.previous;
+      const event = keyboardEvent("Tab", reverse);
+      keydownHandler?.(event);
+      expect(testDocument.activeElement).toBe(reverse ? last : first);
+      expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    }
+    keydownHandler?.({...keyboardEvent("Escape"), isComposing: true});
+    keydownHandler?.({...keyboardEvent("Escape"), defaultPrevented: true});
+    expect(harness.requestClose).not.toHaveBeenCalled();
+  });
+
+  it.each(["valid", "disabled", "disconnected", "outside", "missing"])("restores appropriate focus after confirmation for %s controls", state => {
+    const harness = install(true);
+    const control = new TestElement();
+    harness.dialog.focusable = state === "outside" ? [] : [control];
+    control.disabled = state === "disabled";
+    control.isConnected = state !== "disconnected";
+    effects[0]();
+    testDocument.activeElement = state === "missing" ? null : control;
+    const cleanup = effects[1]() as () => void;
+    runLatestFrame();
+    harness.quitDialogRef.current = null;
+    harness.dialog.focus.mockClear();
+    cleanup();
+    expect(testDocument.activeElement).toBe(state === "valid" ? control : harness.dialog);
+  });
+
+  it("leaves outer focus restoration in charge after the race dialog unmounts", () => {
+    const harness = install(true);
+    effects[0]();
+    const cleanup = effects[1]() as () => void;
+    harness.dialogRef.current = null;
+    harness.quitDialogRef.current = null;
+    runLatestFrame();
+    harness.dialog.focus.mockClear();
+    cleanup();
+    expect(harness.dialog.focus).not.toHaveBeenCalled();
+  });
+
 });
 
 describe("useRaceGameplayFit", () => {

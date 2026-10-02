@@ -1,0 +1,13 @@
+✔ defaults to validation only and reports the exact target (2.5ms)
+✔ requires matching project confirmation before initializing Firebase (1.018151ms)
+✔ allows explicit application to either supported queue (0.81715ms)
+✔ rejects missing targets and arbitrary collections without contacting Firebase (1.363185ms)
+✔ reports validation failure without success output or stack traces (0.492204ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29.08685

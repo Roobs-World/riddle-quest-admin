@@ -1,5 +1,6 @@
 import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
 import {raceOperationAtMs, toRaceRunView, type RaceRunRecord} from "./raceEngine";
+import {liveFinishMs} from "./raceLiveScoring";
 
 /** Private ticket contains the immutable deck and authenticated owner. */
 export type LiveTicket = {
@@ -26,6 +27,8 @@ export type LiveMatch = {
   /** Winner balance at settlement, never used as client authority. */ newCoins?: number;
   /** Private immutable link to Facebook referral work committed with the winner grant. */
   facebookReferral?: {eventId: string; ticketId: string; userId: string; createdAtMs: number};
+  /** Reddit keeps a separate provider binding for its first-win referral work. */
+  redditReferral?: {eventId: string; ticketId: string; userId: string; createdAtMs: number};
 };
 
 /** Creates an unscored server run using existing riddle and hint rules. */
@@ -55,8 +58,10 @@ export function advanceLiveBot(match: LiveMatch, nowMs: number): boolean {
   /** Provides count behavior. */
   const count = Math.max(match.runs[1].correctCount, Math.min(RACE_RULES.targetCorrect, Math.floor((nowMs - match.startsAtMs) / LIVE_BOT_SOLVE_MS)));
   if (count <= match.runs[1].correctCount) return false;
-  match.runs[1] = {...match.runs[1], status: "active", correctCount: count, lastActionAtMs: Math.max(nowMs, match.runs[1].lastActionAtMs ?? 0)};
-  if (count === RACE_RULES.targetCorrect) match.winner = 1;
+  match.runs[1] = {...match.runs[1], status: count === RACE_RULES.targetCorrect ? "completed" : "active", correctCount: count,
+    lastActionAtMs: Math.max(nowMs, match.runs[1].lastActionAtMs ?? 0),
+    ...(count === RACE_RULES.targetCorrect ? {wallFinishMs: count * LIVE_BOT_SOLVE_MS,
+      finishedAtMs: match.startsAtMs + count * LIVE_BOT_SOLVE_MS} : {})};
   return true;
 }
 
@@ -76,7 +81,7 @@ export function liveView(ticketId: string, ticket: LiveTicket, match: LiveMatch 
   const run = own ? toRaceRunView(own, observedAtMs, false, true) : null;
   if (run && match) {
     run.opponent = {displayName: match.players[1 - seat].displayName,
-      avatarUrl: match.players[1 - seat].avatarUrl, adjustedFinishMs: RACE_RULES.maxAdjustedTimeMs,
+      avatarUrl: match.players[1 - seat].avatarUrl, adjustedFinishMs: liveFinishMs(rival!) ?? RACE_RULES.maxAdjustedTimeMs,
       events: []};
     if (terminal) {run.status = "completed"; run.currentRiddle = null;}
     // Neither seat can inspect a question before the same authoritative start boundary.

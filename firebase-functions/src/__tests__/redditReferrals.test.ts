@@ -321,6 +321,29 @@ it("always pays the eligible invitee but caps the inviter at five UTC-day conver
   expect(fixture.documents.get(`users/${inviterUid}`)?.coins).toBe(beforeInviter);
 });
 
+it("settles after a first authoritative multiplayer win without a solo win", async () => {
+  const {fixture, now} = await issuedFixture();
+  await bindRedditReferralToken(inviteeUid, token, now + 1, fixture.db);
+  fixture.documents.set(`users/${inviteeUid}`, {coins: 350, stats: {wins: 0, gamesPlayed: 0, multiplayerWins: 1}});
+  await expect(settleRedditReferralAfterAuthoritativeWin(inviteeUid, now + 2, fixture.db)).resolves.toMatchObject({
+    alreadySettled: false, inviteeCoins: 100, inviterCoins: 100,
+  });
+});
+
+it.each(["multiplayerWins", "multiplayerGamesPlayed", "multiplayerChallengesCreated"])("rejects a new binding after established %s", async field => {
+  const {fixture, now} = await issuedFixture();
+  fixture.documents.set(`users/${inviteeUid}`, {coins: 350, hasPurchasedApp: false, stats: {wins: 0, gamesPlayed: 0, [field]: 1}});
+  await expect(bindRedditReferralToken(inviteeUid, token, now + 1, fixture.db)).rejects.toThrow("reddit-invitee-already-established");
+});
+
+it.each([null, -1, "1", 1.5, Number.MAX_SAFE_INTEGER + 1])("rejects invalid multiplayer referral eligibility %s", async multiplayerWins => {
+  const {fixture, now} = await issuedFixture();
+  await bindRedditReferralToken(inviteeUid, token, now + 1, fixture.db);
+  fixture.documents.set(`users/${inviteeUid}`, {coins: 350, stats: {wins: 0, gamesPlayed: 0, multiplayerWins}});
+  await expect(settleRedditReferralAfterAuthoritativeWin(inviteeUid, now + 2, fixture.db))
+    .rejects.toThrow("invalid-reddit-referral-stats-multiplayerWins");
+});
+
 it("does not settle before an authoritative win", async () => {
   /** Provides {fixture, now} behavior. */
   const {fixture, now} = await issuedFixture();

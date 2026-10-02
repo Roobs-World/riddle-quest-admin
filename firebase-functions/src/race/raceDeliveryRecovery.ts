@@ -9,6 +9,7 @@ import {deliverRaceSettlement} from "./raceSettlementDelivery";
 import {deliverRacePerformance} from "./racePerformanceDelivery";
 import {RaceMatchProfileSchema} from "./raceMatchPerformance";
 import {validateFacebookLiveRaceReferralSource} from "../facebook/facebookLiveRaceReferralDelivery";
+import {validateRedditLiveRaceReferralSource} from "../reddit/redditLiveRaceReferralDelivery";
 
 /**
  * Administrator-only recovery of an existing, repaired delivery receipt.
@@ -36,33 +37,36 @@ export async function replayRaceDelivery(db: Firestore, collection: RaceDelivery
     /** Retention clocks are preserved rather than extended by recovery. */
     if (receipt.expiresAt.toMillis() <= nowMs)
       throw new HttpsError("failed-precondition", "Expired race data cannot be replayed.");
-    if (collection === "racePerformanceOutbox" && receipt.source === "facebook_live") {
-      if (!await validateFacebookLiveRaceReferralSource(transaction, db, parseRacePerformanceEvent(event.data(), eventId), nowMs))
+    if (collection === "racePerformanceOutbox" && (receipt.source === "facebook_live" || receipt.source === "reddit_live")) {
+      const liveReceipt = parseRacePerformanceEvent(event.data(), eventId);
+      const active = receipt.source === "reddit_live" ? await validateRedditLiveRaceReferralSource(transaction, db, liveReceipt, nowMs) :
+        await validateFacebookLiveRaceReferralSource(transaction, db, liveReceipt, nowMs);
+      if (!active)
         throw new HttpsError("failed-precondition", "Replay requires an active canonical live winner.");
     } else {
-    const sourceExpiry = source.data()?.expiresAt;
-    if (!source.exists || !(sourceExpiry instanceof admin.firestore.Timestamp) || sourceExpiry.toMillis() <= nowMs)
-      throw new HttpsError("failed-precondition", "Replay requires an existing unexpired canonical source.");
-    /** Canonical settlement is the only authority for downstream effects. */
-    const run = parseRunRecord(source.data(), source.id);
-    if (run.runId !== eventId || run.userId !== receipt.userId || !run.settledOutcome || run.settledAtMs !== receipt.createdAtMs)
-      throw new HttpsError("data-loss", "Repaired race delivery does not match its canonical source.");
-    if (collection === "raceSettlementOutbox") {
-      /** Creator metadata is checked before releasing the quarantined receipt. */
-      const settlement = parseRaceSettlementEvent(event.data(), eventId);
-      if (!run.challengeId || !run.opponent?.subjectUserId || settlement.creatorId !== run.opponent.subjectUserId ||
-        settlement.challengeId !== run.challengeId || settlement.categoryId !== run.categoryId ||
-        settlement.result !== creatorRaceResult(run.settledOutcome.result) ||
-        settlement.adjustedDeltaMs !== run.settledOutcome.adjustedFinishMs - run.opponent.adjustedFinishMs)
-        throw new HttpsError("data-loss", "Repaired creator delivery does not match its canonical source.");
-    } else {
-      if (run.finishedAtMs !== undefined && run.finishedAtMs > receipt.createdAtMs)
-        throw new HttpsError("data-loss", "Stored race performance occurrence time is invalid.");
-      /** Dry-run must validate a repaired derived profile before approving receipt release. */
-      const profile = await transaction.get(db.doc(`users/${run.userId}/raceMatchProfiles/${run.locale}`));
-      if (profile.exists && !RaceMatchProfileSchema.safeParse(profile.data()).success)
-        throw new HttpsError("data-loss", "Stored race performance profile is invalid.");
-    }
+      const sourceExpiry = source.data()?.expiresAt;
+      if (!source.exists || !(sourceExpiry instanceof admin.firestore.Timestamp) || sourceExpiry.toMillis() <= nowMs)
+        throw new HttpsError("failed-precondition", "Replay requires an existing unexpired canonical source.");
+      /** Canonical settlement is the only authority for downstream effects. */
+      const run = parseRunRecord(source.data(), source.id);
+      if (run.runId !== eventId || run.userId !== receipt.userId || !run.settledOutcome || run.settledAtMs !== receipt.createdAtMs)
+        throw new HttpsError("data-loss", "Repaired race delivery does not match its canonical source.");
+      if (collection === "raceSettlementOutbox") {
+        /** Creator metadata is checked before releasing the quarantined receipt. */
+        const settlement = parseRaceSettlementEvent(event.data(), eventId);
+        if (!run.challengeId || !run.opponent?.subjectUserId || settlement.creatorId !== run.opponent.subjectUserId ||
+          settlement.challengeId !== run.challengeId || settlement.categoryId !== run.categoryId ||
+          settlement.result !== creatorRaceResult(run.settledOutcome.result) ||
+          settlement.adjustedDeltaMs !== run.settledOutcome.adjustedFinishMs - run.opponent.adjustedFinishMs)
+          throw new HttpsError("data-loss", "Repaired creator delivery does not match its canonical source.");
+      } else {
+        if (run.finishedAtMs !== undefined && run.finishedAtMs > receipt.createdAtMs)
+          throw new HttpsError("data-loss", "Stored race performance occurrence time is invalid.");
+        /** Dry-run must validate a repaired derived profile before approving receipt release. */
+        const profile = await transaction.get(db.doc(`users/${run.userId}/raceMatchProfiles/${run.locale}`));
+        if (profile.exists && !RaceMatchProfileSchema.safeParse(profile.data()).success)
+          throw new HttpsError("data-loss", "Stored race performance profile is invalid.");
+      }
     }
     /** Another successful replay may already have released or delivered this receipt. */
     if (event.data()?.deliveryState !== "quarantined" && event.data()?.quarantined !== true) {

@@ -5,7 +5,7 @@ import {parseRunRecord} from "./raceSetupService";
 import type {RaceRunRecord} from "./raceEngine";
 import type {FacebookTournamentDeckBinding} from "./facebookTournament";
 
-/** Resolves a real human solve victory from the private live transaction records. */
+/** Resolves a completed human victory from the private live transaction records. */
 export async function readFacebookLiveTournamentRun(
   transaction: FirebaseFirestore.Transaction,
   db: FirebaseFirestore.Firestore,
@@ -33,7 +33,7 @@ export async function readFacebookLiveTournamentRun(
     throw new HttpsError("failed-precondition", "Only the human solve winner qualifies.");
   }
   // Public result projections mark both players completed, including forfeits.
-  // Only the private run retains genuine ten-solve completion and its clocks.
+  // Only the private run retains genuine ten-riddle completion and its clocks.
   const stored = match.runs[seat];
   if (!stored || stored.status !== "completed" || stored.correctCount !== RACE_TARGET_CORRECT) {
     throw new HttpsError("failed-precondition", "Only completed authoritative live solve runs qualify.");
@@ -48,7 +48,7 @@ export async function readFacebookLiveTournamentRun(
   const run = parseRunRecord(record, ticketId);
   if (run.userId !== userId || run.deckId !== ticketId || run.evaluationPolicy !== "server-only" ||
     run.status !== "completed" || run.correctCount !== RACE_TARGET_CORRECT ||
-    run.events.filter(event => event.type === "correct").length !== RACE_TARGET_CORRECT ||
+    run.events.filter(event => event.type === "correct" || event.type === "skip").length !== RACE_TARGET_CORRECT ||
     run.startedAtMs !== match.startsAtMs) {
     throw new HttpsError("failed-precondition", "Only completed authoritative live solve runs qualify.");
   }

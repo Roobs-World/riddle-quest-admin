@@ -16,6 +16,9 @@ describe("public package barrels", () => {
     expect(game.splitGraphemes).toBeDefined();
     expect(game.lowerCaseGraphemes).toBeDefined();
     expect(game.graphemeLength).toBeDefined();
+    expect(game.countCoinRewardAchievements).toBe(core.countCoinRewardAchievements);
+    expect(game.findNewMilestoneAchievementIds).toBe(core.findNewMilestoneAchievementIds);
+    expect(game.ACHIEVEMENT_MILESTONES).toBe(core.ACHIEVEMENT_MILESTONES);
     expect(game.MAX_RIDDLE_ANSWER_CHARACTERS).toBeGreaterThan(0);
   });
 });

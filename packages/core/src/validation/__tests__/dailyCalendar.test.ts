@@ -24,3 +24,19 @@ it.each([["2026-03-29", 23], ["2026-10-25", 25]])("handles London DST day %s las
   expect((getDailyMidnight("en", shiftDailyDate(day as string, 1)).getTime() - getDailyMidnight("en", day as string).getTime()) / 3600000).toBe(hours);
 });
 it("uses London for unsupported locale input", () => expect(getDailyTimeZone("unsupported")).toBe("Europe/London"));
+
+it("fails after bounded retries when a calendar provider cannot resolve midnight", () => {
+  const format = jest.spyOn(Intl.DateTimeFormat.prototype, "formatToParts").mockReturnValue([
+    {type: "year", value: "2026"}, {type: "month", value: "01"}, {type: "day", value: "01"},
+    {type: "hour", value: "00"}, {type: "minute", value: "00"}, {type: "second", value: "00"},
+  ]);
+  try {
+    expect(() => getDailyMidnight("en", "2026-01-02")).toThrow("Could not resolve Daily midnight.");
+    expect(format).toHaveBeenCalledTimes(4);
+  } finally {format.mockRestore();}
+});
+
+it("keeps the legacy UTC clock and supports the current-date default", () => {
+  expect(getDailyTimeZone("UTC")).toBe("UTC");
+  expect(getDailyDate("UTC")).toBe(new Date().toISOString().slice(0, 10));
+});

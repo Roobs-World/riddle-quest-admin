@@ -1,0 +1,146 @@
+{
+  "capturedAt": "2026-10-02T19:10:36.894871+00:00",
+  "head": "c79050f37a4519ffbceb3da249262589b2fc39e7",
+  "uploadEligible": false,
+  "cleanImmutableRelease": false,
+  "liveProviderEffects": false,
+  "validation": {
+    "emulatorSuitesPassed": 5,
+    "emulatorTestsPassed": 127,
+    "newLiveReferralTestsPassed": 23,
+    "focusedFunctionsUnitTestsPassed": 84,
+    "operatorCliTestsPassed": 5,
+    "supportedNodeRuntime": "22.23.1",
+    "functionsPrivateEmit": true,
+    "compiledRuntimeLoad": true,
+    "functionsTypes": true,
+    "productionModuleCycles": true,
+    "changedFileLint": true,
+    "sixTargetBuildsAndAudits": true,
+    "platformBrowserSuitesPassed": [
+      "facebook",
+      "reddit"
+    ],
+    "jestScopedBrowserCasesPassed": 42,
+    "jestRecordedRaceCasesSkipped": 31
+  },
+  "sourceFiles": [
+    {
+      "path": "firebase-functions/src/race/raceLiveService.ts",
+      "sha256": "44fa96d2a08e9741c5c1eab66b4df3db18fa581809e6a89794e23a68ce10aff1"
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveState.ts",
+      "sha256": "c319ffb1a2b2dd206d2fe794e84292da64cdebc435c3a9951af8eba8316e72e6"
+    },
+    {
+      "path": "firebase-functions/src/race/raceDeliveryRecords.ts",
+      "sha256": "df9072855e81031d72327bdeb9fd1c3289d66eb40ca3cba096e2f798882070ac"
+    },
+    {
+      "path": "firebase-functions/src/race/racePerformanceDelivery.ts",
+      "sha256": "12d5ec3cfafa6941565145d7301f0306030c9b6115b43e016c20bcdd025d5114"
+    },
+    {
+      "path": "firebase-functions/src/race/raceDeliveryRecovery.ts",
+      "sha256": "2d1247ef31da21383736e8a6f59711eeabc5b8980d8be0b31d691823e01c77a0"
+    },
+    {
+      "path": "firebase-functions/src/facebook/facebookLiveRaceReferralDelivery.ts",
+      "sha256": "890c55236523135d7fbd5df2c3d098c98327f28c7592fb55cad8e9d41d2f2aad"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/facebookLiveReferrals.it.test.ts",
+      "sha256": "42cae8e5ba8146b051f6fe58f6074e1516052cf6986e56ad90b805f04d1db27d"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/raceDeliveryRecords.test.ts",
+      "sha256": "e53c38fc805f159085981ea9ca79adfa8af2c20cf3aee4d8c80e432c53a33654"
+    },
+    {
+      "path": "firebase-functions/jest.rules.config.js",
+      "sha256": "f4fb8fd48a66b2410ef49541e9b05c7c65152956c3897d415708f071931ae725"
+    },
+    {
+      "path": "docs/evidence/facebook-live-referrals-2026-10-02.md",
+      "sha256": "e6721d6cf9fd18a72c17cddfd219f4e13fc9ee5714d93417d6090a00a0df379c"
+    }
+  ],
+  "logs": [
+    {
+      "path": "emulator-baseline.log",
+      "sha256": "a8995091390d8223ba7faeaba3c7d55337e11a48a046a1de03299b3a84e085e4"
+    },
+    {
+      "path": "emulator-first-fix.log",
+      "sha256": "54ef4ff8992dad837cf1e3d298a7bb7338edda815f12d98c8e455e22bd669c06"
+    },
+    {
+      "path": "emulator-regressions.log",
+      "sha256": "cdb40828404bd87fd76f36223b120569de360cfa1399d063641055c412030012"
+    },
+    {
+      "path": "emulator-final.log",
+      "sha256": "689b5ea5188bcf73c982913f58a850199cee50c390153788179ead6e42e17b6b"
+    },
+    {
+      "path": "emulator-final-boundary.log",
+      "sha256": "d441949e86cadd5c89d657e696beef209fb7d1ed836c8ae1388be2d8e8f6a5ec"
+    },
+    {
+      "path": "functions-focused-units.log",
+      "sha256": "dae82c62fc94cf325a8aaf6262c4b7e814ab03c49bddd4e70da47072d5bd8307"
+    },
+    {
+      "path": "functions-types-final-boundary.log",
+      "sha256": "8b827941587fb1aea40a0f82cb26607687e2632d8cf4803d677acbbdcfd01525"
+    },
+    {
+      "path": "functions-lint-final-boundary.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "functions-build.log",
+      "sha256": "77a36feac4cdbae3e4b8f8969d72e28aa356b1383d0eaea346a640dab4fe79b7"
+    },
+    {
+      "path": "functions-runtime.log",
+      "sha256": "a4d39ad2c171b032dd1f4670853a3246a073b16cb877fac07b4a1a87f444a0d1"
+    },
+    {
+      "path": "replay-cli.log",
+      "sha256": "95330656aac574ed8be46f3726a2c85f8b8dad047da849845304749a51a168bc"
+    },
+    {
+      "path": "build-summary.log",
+      "sha256": "8c4e6dc40192ec137bca6f15c9e3d23b8a9dfc4e96636e194d21005f3b8e16ea"
+    },
+    {
+      "path": "build-results.json",
+      "sha256": "05c54b12c80bcb1ed312f8c29cbb41f24091fc50934c324ab6bd7ad13f74af4a"
+    },
+    {
+      "path": "platform-browsers.log",
+      "sha256": "7e4c50b45d2279aaa53e70b8bd7cce7760b3098d08988f41963b9eec792d106e"
+    },
+    {
+      "path": "jest-auth.log",
+      "sha256": "8d2416244336a416bdd37fd4a0a62be1aca984a29e96e17741e4470e3e503ce0"
+    },
+    {
+      "path": "final-auth-progress.jsonl",
+      "sha256": "422ca564a3285954d75a68ae90c4c1a112228fbfcc251c87aba2cee7b298152c"
+    }
+  ],
+  "artifactHashManifest": {
+    "path": "artifact-hashes.json",
+    "sha256": "a4511d9c4bfcad1704e918933d82388c3b60ef7f9dfee7104146177c8df4272c"
+  },
+  "limitations": [
+    "Source hashes captured after verification in a shared working tree; HEAD changed during concurrent work.",
+    "No immutable clean upload candidate or deployed source-byte binding.",
+    "31 recorded-race browser cases remain unresolved.",
+    "Injected provider browser fixtures and demo Firestore tests are not Meta-host/device acceptance.",
+    "No purchase, rewarded grant or scheduled notification activation by this work."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "firestore": {
+    "rules": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/firestore.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8196
+    },
+    "hub": {
+      "host": "127.0.0.1",
+      "port": 4496
+    },
+    "logging": {
+      "host": "127.0.0.1",
+      "port": 4596
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": false
+  }
+}

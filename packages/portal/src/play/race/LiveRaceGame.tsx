@@ -275,7 +275,6 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       onClose={close} onSelectSlot={index => input("slot", index)} onLetter={letter => input("letter", letter)}
       onText={text => input("text", text)} onBackspace={() => input("backspace")} onSubmit={() => command("guess")}
       onHint={() => command("hint")} onSkip={() => command("skip")} />}
-    {phase === "racing" && view?.phase === "racing" && view.run && !view.run.currentRiddle && <p role="status">{tr("RaceTo10.LIVE_WAITING_FINISH")}</p>}
     {view?.phase === "result" && <div className="race-panel race-result live-race-victory" role="status">
       <h2>{tr(view.result === "win" ? "RaceTo10.RESULT_PLAYER_WIN" : view.result === "loss" ? "RaceTo10.RESULT_OPPONENT_WIN" : "RaceTo10.RESULT_TIE")}</h2>
       <div className="race-result-score"><span>{view.player.displayName}<strong>{view.player.correctCount}/10</strong></span>

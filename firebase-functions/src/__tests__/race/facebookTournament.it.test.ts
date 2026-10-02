@@ -142,15 +142,20 @@ it.each([0, 1])("records a real live winner in seat %i without another economy g
     {db, nowMs: START + 16000})).rejects.toMatchObject({code: "failed-precondition"});
 });
 
-it("keeps server hint and skip penalties while requiring ten solved answers", async () => {
+it("records ten completed riddles with hint and skip penalties only after the live winner settles", async () => {
   const {b} = await livePair();
   await liveSolve(LIVE_B, b.ticketId, START + 6000, "skip");
   const hintedAt = START + 6000 + RACE_RULES.skipPenaltyMs;
   await liveSolve(LIVE_B, b.ticketId, hintedAt, "hint");
   const solvedAt = hintedAt + RACE_RULES.hintPenaltyMs;
-  for (let i = 0; i < 10; i++) await liveSolve(LIVE_B, b.ticketId, solvedAt + i * 1000);
-  const record = await recordFacebookTournamentRun(LIVE_B, {runId: b.ticketId, locale: "en"}, {db, nowMs: solvedAt + 10000});
-  expect(record.entry.adjustedTimeMs).toBe(9000 + 2 * (RACE_RULES.skipPenaltyMs + RACE_RULES.hintPenaltyMs));
+  for (let i = 0; i < 9; i++) await liveSolve(LIVE_B, b.ticketId, solvedAt + i * 1000);
+  const adjustedTimeMs = 8000 + 2 * (RACE_RULES.skipPenaltyMs + RACE_RULES.hintPenaltyMs);
+  await expect(recordFacebookTournamentRun(LIVE_B, {runId: b.ticketId, locale: "en"}, {db, nowMs: solvedAt + 8000}))
+    .rejects.toMatchObject({code: "failed-precondition"});
+  await updateLiveRaceForUser(LIVE_B, {ticketId: b.ticketId, action: "poll", requestId: "tournament-penalty-settlement"},
+    {db, nowMs: START + 6000 + adjustedTimeMs});
+  const record = await recordFacebookTournamentRun(LIVE_B, {runId: b.ticketId, locale: "en"}, {db, nowMs: START + 6000 + adjustedTimeMs});
+  expect(record.entry.adjustedTimeMs).toBe(adjustedTimeMs);
 });
 
 it("rejects unfinished players and forfeit victories without writing a board", async () => {

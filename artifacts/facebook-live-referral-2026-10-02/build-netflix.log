@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.333223ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.890052ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.036249ms)
+✔ rejects imports between different target owners (1.534939ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.657656ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.867554ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.081059ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.862445ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.81474ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.728872ms)
+✔ aggregates violations in deterministic file and source order (0.837808ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.011004
+Web Target boundary audit passed (272 files, 1177 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 63 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/index-DhsmAOC4.css              6.92 kB │ gzip:  2.30 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-en-urwaEz4q.js   87.86 kB │ gzip: 47.70 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-pt-BIIotE7c.js   90.15 kB │ gzip: 48.96 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-nl-YHyhf7fO.js   90.54 kB │ gzip: 49.17 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-id-iwkn0UV3.js   91.21 kB │ gzip: 49.52 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-it-Bdjtv82x.js   91.35 kB │ gzip: 49.57 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-es-ESXL-Kth.js   91.65 kB │ gzip: 49.76 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-de-U3waxk0n.js   92.15 kB │ gzip: 50.03 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-tr-UHt4n9W5.js   92.54 kB │ gzip: 50.21 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-pl-KMCCov4V.js   92.70 kB │ gzip: 50.34 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-fr-BL40Lgom.js   93.56 kB │ gzip: 50.75 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-ja-C-8t0JsV.js   94.66 kB │ gzip: 51.39 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-vi-B_-jIW0k.js   96.78 kB │ gzip: 52.54 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-ko-DI4cAqJu.js   97.36 kB │ gzip: 52.85 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-ar-BnA57Tm5.js  102.12 kB │ gzip: 55.43 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/index-Bk3B6hVz.js             103.59 kB │ gzip: 34.55 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-ru-Y8jbcc6V.js  114.09 kB │ gzip: 61.94 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/playable-pack-hi-DnkRiB4x.js  134.49 kB │ gzip: 72.96 kB
+../../../../.cache/riddle-quest-review/live-referral-20261002/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.00s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

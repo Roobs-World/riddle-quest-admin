@@ -136,7 +136,7 @@ export function RaceGameplay({
         )}
         {!run.currentRiddle && run.status !== "active" && (
           <p className="race-outcome-loading" role="status">
-            {tr(live && run.status === "scheduled" ? "Accessibility.LOADING" : "RaceTo10.RESULTS_LOADING")}
+            {tr(live ? run.status === "scheduled" ? "Accessibility.LOADING" : "RaceTo10.LIVE_WAITING_FINISH" : "RaceTo10.RESULTS_LOADING")}
           </p>
         )}
         <div className="game-input-actions race-actions">

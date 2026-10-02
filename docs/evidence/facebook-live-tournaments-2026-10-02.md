@@ -26,7 +26,7 @@ Live PvP had a second incompatibility: its private records live in
 `liveRaceTickets` and `liveRaceMatches`, while the existing official recorder
 looked only in `raceRuns` and `raceDecks`. The recorder now additionally resolves
 an owned Facebook live ticket. It requires the private match winner, genuine
-completed ten-solve run, server clocks, and the creator's frozen deck. Both
+completed ten-riddle run, server clocks, and the creator's frozen deck. Both
 players use that creator deck; the joiner's earlier search deck is unrelated.
 The live five-second countdown is checked separately from the recorded engine's
 three-second readiness contract, before common scoring validation. Hint and skip
@@ -34,13 +34,23 @@ penalties remain part of the adjusted score. Public terminal projections, which
 also mark losers and forfeits completed, cannot qualify a run.
 
 The Facebook presentation submits only the opaque ticket ID and locale after a
-validated ten-solve victory. The existing authenticated callable enforces the
+validated ten-riddle victory. The existing authenticated callable enforces the
 provider, kill switch and account-operation lease. Official best-score writes
 remain transactional, finish-day bound and idempotent, with no economy writes.
 The native score is projected only from the confirmed fresh official best. A
 failed background record is reported; durable client-side retry after a browser
 crash is not added by this change. The server accepts idempotent re-submission,
 including after midnight.
+
+A later 2 October scoring update counts correct answers and skips toward the
+ten-riddle finish, with all hint/skip costs retained. The native recorder now
+matches that authoritative completion rule and requires the settled private
+winner. A completed penalized run cannot post while its rival can still beat
+its adjusted finish. The real regression covers nine correct answers plus one
+skip, rejects the pending result, then verifies the exact adjusted score after
+server settlement. The follow-up passes all eight tournament cases within the
+129-case integration run and 94 focused units; see
+[current referral/scoring evidence](facebook-live-referrals-2026-10-02.md).
 
 The [Live PvP consent follow-up](facebook-live-consent-2026-10-02.md) additionally
 connects this Facebook result lifecycle to the existing first-win notification

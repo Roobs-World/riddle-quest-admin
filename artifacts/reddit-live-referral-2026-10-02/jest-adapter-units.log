@@ -1,0 +1,6 @@
+
+Test Suites: 31 passed, 31 total
+Tests:       325 passed, 325 total
+Snapshots:   0 total
+Time:        1.122 s
+Ran all test suites matching src/jest/__tests__.

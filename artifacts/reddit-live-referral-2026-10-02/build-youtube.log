@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YOUTUBE_BUILD=1 NODE_ENV=production vite build --mode youtube && pnpm audit:youtube-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.887956ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.887168ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.251921ms)
+✔ rejects imports between different target owners (1.868723ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.636617ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.981712ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.723688ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.735465ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.003763ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.799887ms)
+✔ aggregates violations in deterministic file and source order (1.797939ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.495572
+Web Target boundary audit passed (272 files, 1177 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for youtube...
+transforming...
+✓ 63 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/index.html                             0.89 kB │ gzip:  0.44 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/third-party-licenses.txt               1.73 kB │ gzip:  0.89 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/index-DhsmAOC4.css              6.92 kB │ gzip:  2.30 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-en-CapT9BSj.js   87.86 kB │ gzip: 47.69 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-pt-DsNKbw3P.js   90.15 kB │ gzip: 48.94 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-nl-BXnc_OxZ.js   90.54 kB │ gzip: 49.16 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-id-CciYU7Qt.js   91.21 kB │ gzip: 49.53 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-it-CsoRfHDi.js   91.35 kB │ gzip: 49.58 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-es-DvNDKqHJ.js   91.65 kB │ gzip: 49.76 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-de-t2ietqiq.js   92.15 kB │ gzip: 50.02 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-tr-7W5uW5Iu.js   92.54 kB │ gzip: 50.24 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-pl-Dwe6b0mP.js   92.70 kB │ gzip: 50.34 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-fr-Bf9OS-k4.js   93.56 kB │ gzip: 50.76 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-ja-64pvqszh.js   94.66 kB │ gzip: 51.39 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-vi-BaxO9XZw.js   96.78 kB │ gzip: 52.54 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-ko-BkC8YhRD.js   97.36 kB │ gzip: 52.86 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-ar-DMZMcqQ7.js  102.12 kB │ gzip: 55.43 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/index-B__eJMNE.js             104.23 kB │ gzip: 34.71 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-ru-Bnl_eb8o.js  114.09 kB │ gzip: 61.93 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/playable-pack-hi-mgq0mqdB.js  134.49 kB │ gzip: 72.97 kB
+../../../../.cache/riddle-quest-review/reddit-live-referral-20261002/youtube/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.01s
+$ node scripts/audit-youtube-artifact.mjs
+YouTube artifact audit passed: 24 files, 1.80 MiB total and conservative initial transfer, 16 locale(s)

@@ -33,7 +33,7 @@ export function RaceScoreboard({
   /** Stores on close. */
   onClose: () => void;
 }) {
-  /** Converts a correct-answer count into progress toward this race's target. */
+  /** Converts a completed-riddle count into progress toward this race's target. */
   const progressPercent = (correctCount: number) => `${(correctCount / run.rules.targetCorrect) * 100}%`;
   /** Formats the visible score so the bar's purpose and target are explicit. */
   const formatScore = (correctCount: number) =>
@@ -45,7 +45,7 @@ export function RaceScoreboard({
       <div className="race-rail-game-info">
         <div className="race-header-clock" aria-live="polite">
           <span>{tr("RaceTo10.ADJUSTED_TIME")}</span>
-          <strong>{liveClock ? <LiveRaceElapsedTime anchor={liveClock} penaltyMs={run.totalPenaltyMs} /> : formatRaceTime(adjustedNow)}</strong>
+          <strong>{liveClock && run.status !== "completed" ? <LiveRaceElapsedTime anchor={liveClock} penaltyMs={run.totalPenaltyMs} /> : formatRaceTime(run.status === "completed" ? run.adjustedElapsedMs : adjustedNow)}</strong>
           <small aria-label={tr("RaceTo10.PENALTIES", {time: formatRaceTime(run.totalPenaltyMs)})}>
             +{formatRaceTime(run.totalPenaltyMs)}
           </small>

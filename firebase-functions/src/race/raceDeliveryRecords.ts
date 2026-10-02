@@ -25,10 +25,10 @@ const Settlement = Receipt.safeExtend({creatorId: Id, challengeId: Id, categoryI
   result: z.enum(["win", "loss", "tie"]), adjustedDeltaMs: z.number().int()});
 /** A Facebook reward retry can retain an already-committed owner projection. */
 const Performance = Receipt.safeExtend({facebookPerformanceRecorded: z.literal(true).optional(),
-  source: z.literal("facebook_live").optional(), liveTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+  source: z.enum(["facebook_live", "reddit_live"]).optional(), liveTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   liveMatchId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
 }).superRefine((receipt, context) => {
-  if (receipt.source === "facebook_live" ? !receipt.liveTicketId || !receipt.liveMatchId || receipt.facebookPerformanceRecorded !== undefined :
+  if (receipt.source !== undefined ? !receipt.liveTicketId || !receipt.liveMatchId || receipt.facebookPerformanceRecorded !== undefined :
     receipt.liveTicketId !== undefined || receipt.liveMatchId !== undefined)
     context.addIssue({code: "custom", message: "Inconsistent live referral source."});
 });

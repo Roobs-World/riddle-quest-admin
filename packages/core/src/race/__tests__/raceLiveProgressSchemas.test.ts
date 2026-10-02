@@ -31,3 +31,20 @@ it("permits withholding the first prompt during an unscored server countdown", (
   for (const field of ["correctCount", "totalPenaltyMs", "wallElapsedMs", "adjustedElapsedMs"])
     expect(RaceRunViewSchema.safeParse({...countdown, [field]: 1}).success).toBe(false);
 });
+
+it("rejects conflicting invitations and requires the exact riddle for live actions", () => {
+  const join = {locale: "en", categoryId: "history", requestId: "valid-join-request"};
+  const challengeId = `live_${"a".repeat(64)}`;
+  expect(JoinLiveRaceSchema.safeParse(join).success).toBe(true);
+  expect(JoinLiveRaceSchema.safeParse({...join, createChallenge: true}).success).toBe(true);
+  expect(JoinLiveRaceSchema.safeParse({...join, challengeId}).success).toBe(true);
+  expect(JoinLiveRaceSchema.safeParse({...join, createChallenge: true, challengeId}).success).toBe(false);
+  const command = {ticketId: "a".repeat(64), requestId: "valid-action-request"};
+  expect(UpdateLiveRaceSchema.safeParse({...command, action: "poll"}).success).toBe(true);
+  for (const action of ["guess", "hint", "skip"]) {
+    expect(UpdateLiveRaceSchema.safeParse({...command, action}).success).toBe(false);
+    expect(UpdateLiveRaceSchema.safeParse({...command, action, riddleId: "current", guess: "piano"}).success).toBe(true);
+  }
+  expect(UpdateLiveRaceSchema.safeParse({...command, action: "guess", guess: "piano"}).success).toBe(false);
+  expect(UpdateLiveRaceSchema.safeParse({...command, action: "guess", riddleId: "current"}).success).toBe(false);
+});

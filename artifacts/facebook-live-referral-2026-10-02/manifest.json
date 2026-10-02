@@ -1,0 +1,161 @@
+{
+  "capturedAt": "2026-10-02T19:22:16.194930+00:00",
+  "head": "c79050f37a4519ffbceb3da249262589b2fc39e7",
+  "uploadEligible": false,
+  "cleanImmutableRelease": false,
+  "liveProviderEffects": false,
+  "validation": {
+    "emulatorSuitesPassed": 5,
+    "emulatorTestsPassed": 129,
+    "newLiveReferralTestsPassed": 23,
+    "focusedFunctionsUnitTestsPassed": 94,
+    "operatorCliTestsPassed": 5,
+    "supportedNodeRuntime": "22.23.1",
+    "functionsPrivateEmit": true,
+    "compiledRuntimeLoad": true,
+    "functionsTypes": true,
+    "productionModuleCycles": true,
+    "changedFileLint": true,
+    "sixTargetBuildsAndAudits": true,
+    "platformBrowserSuitesPassed": [
+      "facebook",
+      "reddit"
+    ],
+    "jestScopedBrowserCasesPassed": 42,
+    "jestRecordedRaceCasesSkipped": 31,
+    "currentScoringRevalidated": true,
+    "sourceStableDuringFinalBrowserWindow": true
+  },
+  "sourceFiles": [
+    {
+      "path": "firebase-functions/src/race/raceLiveService.ts",
+      "sha256": "44fa96d2a08e9741c5c1eab66b4df3db18fa581809e6a89794e23a68ce10aff1"
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveState.ts",
+      "sha256": "c319ffb1a2b2dd206d2fe794e84292da64cdebc435c3a9951af8eba8316e72e6"
+    },
+    {
+      "path": "firebase-functions/src/race/raceDeliveryRecords.ts",
+      "sha256": "df9072855e81031d72327bdeb9fd1c3289d66eb40ca3cba096e2f798882070ac"
+    },
+    {
+      "path": "firebase-functions/src/race/racePerformanceDelivery.ts",
+      "sha256": "12d5ec3cfafa6941565145d7301f0306030c9b6115b43e016c20bcdd025d5114"
+    },
+    {
+      "path": "firebase-functions/src/race/raceDeliveryRecovery.ts",
+      "sha256": "2d1247ef31da21383736e8a6f59711eeabc5b8980d8be0b31d691823e01c77a0"
+    },
+    {
+      "path": "firebase-functions/src/facebook/facebookLiveRaceReferralDelivery.ts",
+      "sha256": "890c55236523135d7fbd5df2c3d098c98327f28c7592fb55cad8e9d41d2f2aad"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/facebookLiveReferrals.it.test.ts",
+      "sha256": "42cae8e5ba8146b051f6fe58f6074e1516052cf6986e56ad90b805f04d1db27d"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/raceDeliveryRecords.test.ts",
+      "sha256": "e53c38fc805f159085981ea9ca79adfa8af2c20cf3aee4d8c80e432c53a33654"
+    },
+    {
+      "path": "firebase-functions/jest.rules.config.js",
+      "sha256": "f4fb8fd48a66b2410ef49541e9b05c7c65152956c3897d415708f071931ae725"
+    },
+    {
+      "path": "docs/evidence/facebook-live-referrals-2026-10-02.md",
+      "sha256": "6b5b2f4ea7c2beea31b85dc43ecade0c0274e8c048b4d32bf386cbe7007aba51"
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveScoring.ts",
+      "sha256": "c11742ddb9c1ca5f824d5a46f2c6474339a4519b57a40e163500c91d5f95879a"
+    },
+    {
+      "path": "firebase-functions/src/race/facebookLiveTournament.ts",
+      "sha256": "de2c599f4918989fc2f8627d37ea001a386ff3b0059e69056aea6aa628b77077"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/facebookTournament.it.test.ts",
+      "sha256": "e2d6df040f10e3beded358290d692667a7b1a4710e39c94d732aaad2f69519c0"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookRaceEntry.tsx",
+      "sha256": "ad13cdfd418864b188cda4e5fab9e7bbee9326c50a16a22b1a0b8182a7b519b3"
+    },
+    {
+      "path": "packages/portal/src/play/race/LiveRaceGame.tsx",
+      "sha256": "733ba991cc34dc8382aa17e741ce3f326721f58aeb171946988073fa925c5512"
+    }
+  ],
+  "logs": [
+    {
+      "path": "emulator-baseline.log",
+      "sha256": "a8995091390d8223ba7faeaba3c7d55337e11a48a046a1de03299b3a84e085e4"
+    },
+    {
+      "path": "emulator-current-scoring.log",
+      "sha256": "af936b212907e286a114413c7c6f7829de6f92b38aba900b2b2e2ea0d070410d"
+    },
+    {
+      "path": "emulator-current-scoring-fixed.log",
+      "sha256": "66501be1bf608a91658626c34afe5b8f1f8a891fd1aaee92aac489de620405dc"
+    },
+    {
+      "path": "functions-units-current-scoring.log",
+      "sha256": "62956d0c1cc561c9284d346066b428db5243d7e890cbd271b89a69f46eaf7fb9"
+    },
+    {
+      "path": "functions-types-current-scoring.log",
+      "sha256": "d9f501e49c2e0d21df7973cdb40da75114061b8313740ef8737d39eab0d265c2"
+    },
+    {
+      "path": "functions-lint-current-scoring.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "functions-build-current-scoring.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "functions-runtime-current-scoring.log",
+      "sha256": "a4d39ad2c171b032dd1f4670853a3246a073b16cb877fac07b4a1a87f444a0d1"
+    },
+    {
+      "path": "replay-cli.log",
+      "sha256": "95330656aac574ed8be46f3726a2c85f8b8dad047da849845304749a51a168bc"
+    },
+    {
+      "path": "build-summary-current-scoring.log",
+      "sha256": "8c4e6dc40192ec137bca6f15c9e3d23b8a9dfc4e96636e194d21005f3b8e16ea"
+    },
+    {
+      "path": "build-results.json",
+      "sha256": "05c54b12c80bcb1ed312f8c29cbb41f24091fc50934c324ab6bd7ad13f74af4a"
+    },
+    {
+      "path": "platform-browsers-current-scoring.log",
+      "sha256": "c1a7da63c82c448b31c49d45978413a0d9c88e52d0f48043b3b6183bb39d4eba"
+    },
+    {
+      "path": "jest-auth-current-scoring.log",
+      "sha256": "31cc09f01fe96e3522f63fcf67be02be1fed27f01e4ad9abb806bc7c55f490ac"
+    },
+    {
+      "path": "final-auth-progress.jsonl",
+      "sha256": "920358466fe879f519460e0d3a0f94aa59002298690e7588fc65e1be65d2ea87"
+    }
+  ],
+  "artifactHashManifest": {
+    "path": "artifact-hashes.json",
+    "sha256": "e481cceefef878a890d4b0ebb63f6c327ab4dad63887c220f1e00731cc1bf96f"
+  },
+  "limitations": [
+    "Source hashes captured after verification in a shared working tree; HEAD changed during concurrent work.",
+    "No immutable clean upload candidate or deployed source-byte binding.",
+    "31 recorded-race browser cases remain unresolved.",
+    "Injected provider browser fixtures and demo Firestore tests are not Meta-host/device acceptance.",
+    "No purchase, rewarded grant or scheduled notification activation by this work.",
+    "Current-scoring logs supersede the earlier 127-integration/84-unit snapshot. The six private build directories and their build/audit logs were refreshed during revalidation; pre-scoring manifest is historical diagnostic metadata."
+  ]
+}

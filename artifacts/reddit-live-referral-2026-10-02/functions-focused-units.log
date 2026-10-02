@@ -1,0 +1,6 @@
+
+Test Suites: 4 passed, 4 total
+Tests:       76 passed, 76 total
+Snapshots:   0 total
+Time:        0.549 s, estimated 1 s
+Ran all test suites within paths "src/__tests__/redditReferrals.test.ts", "src/__tests__/race/raceDeliveryRecords.test.ts", "src/__tests__/facebookReferrals.test.ts", "src/__tests__/race/raceLiveScoring.test.ts".

@@ -1,0 +1,34 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-live", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9151.
+i  Running script: pnpm exec jest --config jest.config.js --testMatch '**/__tests__/race/raceLive.it.test.ts' '**/__tests__/race/raceLiveScoring.test.ts' '**/__tests__/race/raceLiveLatency.test.ts' --runInBand && LIVE_RACE_USE_EMULATOR=1 LIVE_RACE_REPORT_DIR=../artifacts/race-skip-progress/browser node ../packages/portal/scripts/verify-live-race-browser.mjs
+
+Test Suites: 3 passed, 3 total
+Tests:       46 passed, 46 total
+Snapshots:   0 total
+Time:        20.109 s
+Ran all test suites.
+Hint and manual skip advanced the completed-riddle counter and preserved the current question on reload at 1280px.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.race-outcome-loading') to be visible[22m
+
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-browser.mjs:154:45 {
+  log: [ "  - waiting for locator('.race-outcome-loading') to be visible" ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.config.js --testMatch '**/__tests__/race/raceLive.it.test.ts' '**/__tests__/race/raceLiveScoring.test.ts' '**/__tests__/race/raceLiveLatency.test.ts' --runInBand && LIVE_RACE_USE_EMULATOR=1 LIVE_RACE_REPORT_DIR=../artifacts/race-skip-progress/browser node ../packages/portal/scripts/verify-live-race-browser.mjs" exited with code 1

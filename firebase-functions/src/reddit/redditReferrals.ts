@@ -66,11 +66,13 @@ const requireNonNegativeInteger = (name: string, value: unknown): number => {
 };
 
 /** Provides require stat behavior. */
-const requireStat = (value: unknown, field: string): number => {
+const requireStat = (value: unknown, field: string, missingValue?: number): number => {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     throw new Error("invalid-reddit-referral-stats");
   }
-  return requireNonNegativeInteger(`stats-${field}`, (value as Record<string, unknown>)[field]);
+  /** Older profiles may omit multiplayer counters; malformed present values remain invalid. */
+  const counter = (value as Record<string, unknown>)[field];
+  return requireNonNegativeInteger(`stats-${field}`, counter === undefined ? missingValue : counter);
 };
 
 /** Provides safe add behavior. */
@@ -298,7 +300,8 @@ export async function bindRedditReferralToken(
     /** Provides wins behavior. */
     const wins = requireStat(user.stats, "wins");
     if (typeof user.hasPurchasedApp !== "boolean") throw new Error("invalid-reddit-referral-purchase-state");
-    if (gamesPlayed > 0 || wins > 0 || user.hasPurchasedApp) {
+    if (gamesPlayed > 0 || wins > 0 || requireStat(user.stats, "multiplayerWins", 0) > 0 ||
+      requireStat(user.stats, "multiplayerGamesPlayed", 0) > 0 || requireStat(user.stats, "multiplayerChallengesCreated", 0) > 0 || user.hasPurchasedApp) {
       throw new Error("reddit-invitee-already-established");
     }
     transaction.create(bindingRef, {
@@ -414,7 +417,10 @@ export async function settleRedditReferralAfterAuthoritativeWin(
       transaction.get(capRef),
       transaction.get(inviterDeletionRef),
     ]);
-    if (!invitee.exists || requireStat(invitee.data()?.stats, "wins") < 1) {
+    if (!invitee.exists) throw new Error("reddit-referral-win-not-established");
+    const wins = requireStat(invitee.data()?.stats, "wins");
+    const multiplayerWins = requireStat(invitee.data()?.stats, "multiplayerWins", 0);
+    if (wins < 1 && multiplayerWins < 1) {
       throw new Error("reddit-referral-win-not-established");
     }
     /** Provides cap count behavior. */

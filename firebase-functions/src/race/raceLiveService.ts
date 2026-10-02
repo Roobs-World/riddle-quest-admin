@@ -1,7 +1,7 @@
 import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_WAIT_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
+import {LIVE_RACE_WAIT_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS,
   type JoinLiveRace, type UpdateLiveRace} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, assertJestAccountActive} from "../jest/jestAccountDeletion";
@@ -12,6 +12,10 @@ import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent, r
 import {liveRun, liveView, liveOperationAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {pendingRaceDelivery} from "./raceDeliveryFailures";
+import {facebookLiveRaceReferralEventId} from "../facebook/facebookLiveRaceReferralDelivery";
+import {isRedditFirebaseUid} from "../reddit/redditSecurity";
+import {redditLiveRaceReferralEventId} from "../reddit/redditLiveRaceReferralDelivery";
+import {settleLiveFinish} from "./raceLiveScoring";
 
 /** A short lobby heartbeat prevents matching players who already closed their game. */
 const LOBBY_LEASE_MS = 10_000;
@@ -238,10 +242,13 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
       if (match.winner === undefined) match.winner = null;
     }
     matchChanged = advanceLiveBot(match, nowMs) || matchChanged;
-    if (match.winner === undefined && nowMs >= match.startsAtMs + RACE_RULES.maxAdjustedTimeMs) {match.winner = null; matchChanged = true;}
+    matchChanged = settleLiveFinish(match, nowMs) || matchChanged;
     if (match.winner === undefined && !receipt?.exists && input.action !== "poll") {
       matchChanged = true;
-      if (input.action === "leave") match.winner = nowMs < match.startsAtMs ? null : 1 - seat;
+      if (input.action === "leave") {
+        // Closing a finished seat cannot forfeit or shorten the rival's remaining opportunity.
+        if (match.runs[seat].status !== "completed") match.winner = nowMs < match.startsAtMs ? null : 1 - seat;
+      }
       else {
         if (nowMs < match.startsAtMs) throw new HttpsError("failed-precondition", "Match has not started.");
         /** Provides run behavior. */
@@ -252,26 +259,9 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
         /** Provides changed behavior. */
         const changed = match.runs[seat];
         changed.lastActionAtMs = Math.max(nowMs, changed.lastActionAtMs ?? 0);
-        // Only solved answers count toward victory; skips still advance the shared deck.
-        /** Provides solved behavior. */
-        const solved = changed.events.filter(event => event.type === "correct").length;
-        if (changed.correctCount !== solved) {
-          if (changed.status === "completed") {
-            changed.status = "active";
-            changed.currentPosition += 1;
-            // The recorded engine stops at its target instead of clearing the next question.
-            changed.guessesUsed = 0;
-            changed.guessHistory = [];
-            changed.hintUsed = false;
-            changed.revealedLetters = [];
-            delete changed.finishedAtMs; delete changed.wallFinishMs; delete changed.result;
-          }
-          changed.correctCount = solved;
-          /** Provides correct behavior. */
-          let correct = 0;
-          changed.events = changed.events.map(event => ({...event, correctCount: event.type === "correct" ? ++correct : correct}));
-        }
-        if (solved >= RACE_RULES.targetCorrect) match.winner = seat;
+        // Use the shared engine's completed-riddle count for guesses and skips.
+        // A penalized finish leaves the rival time to beat its adjusted duration.
+        matchChanged = settleLiveFinish(match, nowMs) || matchChanged;
       }
     }
     if (match.winner !== undefined && match.rewardCoins === undefined) {
@@ -295,12 +285,13 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
         if (!Number.isSafeInteger(multiplayerWins) || multiplayerWins < 0 || !Number.isSafeInteger(multiplayerWins + 1))
           throw new HttpsError("data-loss", "Invalid multiplayer win total.");
         transaction.update(owner.ref, {coins, "stats.multiplayerWins": multiplayerWins + 1});
-        if (winner && winnerTicket && isFacebookFirebaseUid(winner.userId)) {
+        if (winner && winnerTicket && (isFacebookFirebaseUid(winner.userId) || isRedditFirebaseUid(winner.userId))) {
           // Namespace this receipt separately from legacy recorded runs using the same request ID.
-          const eventId = requestDocumentId(winner.userId, `facebook-live-referral:${winnerTicket}`);
-          match.facebookReferral = {eventId, ticketId: winnerTicket, userId: winner.userId, createdAtMs: nowMs};
+          const facebook = isFacebookFirebaseUid(winner.userId);
+          const eventId = facebook ? facebookLiveRaceReferralEventId(winner.userId, winnerTicket) : redditLiveRaceReferralEventId(winner.userId, winnerTicket);
+          match[facebook ? "facebookReferral" : "redditReferral"] = {eventId, ticketId: winnerTicket, userId: winner.userId, createdAtMs: nowMs};
           transaction.create(db.doc(`racePerformanceOutbox/${eventId}`), {runId: eventId, userId: winner.userId,
-            source: "facebook_live", liveTicketId: winnerTicket, liveMatchId: ticket.matchId, createdAtMs: nowMs,
+            source: facebook ? "facebook_live" : "reddit_live", liveTicketId: winnerTicket, liveMatchId: ticket.matchId, createdAtMs: nowMs,
             ...pendingRaceDelivery(nowMs), expiresAt: snapshot.data()!.expiresAt});
         }
       }

@@ -1,0 +1,6 @@
+
+Test Suites: 2 passed, 2 total
+Tests:       18 passed, 18 total
+Snapshots:   0 total
+Time:        0.277 s, estimated 1 s
+Ran all test suites matching src/facebook/__tests__/FacebookLiveRaceSharing.test.ts|src/facebook/__tests__/FacebookReferralSharing.test.ts.

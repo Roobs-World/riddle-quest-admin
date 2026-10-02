@@ -8,13 +8,15 @@ import {parseRacePerformanceEvent} from "./raceDeliveryRecords";
 import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "../facebook/facebookRaceReferralDelivery";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {validateFacebookLiveRaceReferralSource} from "../facebook/facebookLiveRaceReferralDelivery";
+import {finishRedditLiveRaceReferralDelivery, needsRedditLiveRaceReferral, validateRedditLiveRaceReferralSource} from "../reddit/redditLiveRaceReferralDelivery";
+import {isRedditFirebaseUid} from "../reddit/redditSecurity";
 
 /** Idempotently folds a settled owner's performance into their language/category estimate. */
 export async function deliverRacePerformance(runId: string, db: Firestore = admin.firestore(), nowMs = Date.now()): Promise<boolean> {
   /** Provides event ref behavior. */
   const eventRef = db.doc(`racePerformanceOutbox/${runId}`);
   return withRaceDeliveryReceipt(db, eventRef, nowMs, async observe => {
-    /** Facebook grants require a durable second stage after the owner projection commits. */
+    /** Provider grants require a durable second stage after the owner projection commits. */
     let referralUserId: string | undefined;
     /** Records whether the primary projection was newly applied. */
     const changed = await db.runTransaction(async (transaction) => {
@@ -32,10 +34,12 @@ export async function deliverRacePerformance(runId: string, db: Firestore = admi
       if (receipt.nextAttemptAtMs !== undefined && receipt.nextAttemptAtMs > nowMs) return false;
       /** Owner linkage comes from the validated server receipt and is rechecked against the source. */
       const userId = receipt.userId;
-      if (receipt.source === "facebook_live") {
+      if (receipt.source !== undefined) {
         // Live results have their own private source and do not contribute recorded-race speed samples.
-        const active = await validateFacebookLiveRaceReferralSource(transaction, db, receipt, nowMs);
-        if (!active || !needsFacebookRaceReferral(userId, true)) {
+        const reddit = receipt.source === "reddit_live";
+        const active = reddit ? await validateRedditLiveRaceReferralSource(transaction, db, receipt, nowMs) :
+          await validateFacebookLiveRaceReferralSource(transaction, db, receipt, nowMs);
+        if (!active || !(reddit ? needsRedditLiveRaceReferral(userId) : needsFacebookRaceReferral(userId, true))) {
           transaction.update(eventRef, {delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: nowMs});
           return false;
         }
@@ -81,7 +85,10 @@ export async function deliverRacePerformance(runId: string, db: Firestore = admi
         {delivered: true, deliveryState: "delivered", deliveredAtMs: nowMs});
       return true;
     });
-    if (referralUserId) await finishFacebookRaceReferralDelivery(db, eventRef, referralUserId, nowMs);
+    if (referralUserId) {
+      if (isRedditFirebaseUid(referralUserId)) await finishRedditLiveRaceReferralDelivery(db, eventRef, referralUserId, nowMs);
+      else await finishFacebookRaceReferralDelivery(db, eventRef, referralUserId, nowMs);
+    }
     return changed;
   });
 }

@@ -16,6 +16,27 @@ it("accepts legacy receipts and complete supported delivery states", () => {
   }
 });
 
+it.each(["facebook_live", "reddit_live"])("accepts %s receipts without conflating them with recorded performance", source => {
+  expect(parseRacePerformanceEvent({...receipt(), source, liveTicketId: "a".repeat(64),
+    liveMatchId: "b".repeat(64)}, "run-1").source).toBe(source);
+});
+
+it.each([
+  {source: "other"}, {source: "facebook_live"},
+  {source: "facebook_live", liveTicketId: "a".repeat(64)},
+  {source: "facebook_live", liveTicketId: "unsafe/path", liveMatchId: "b".repeat(64)},
+  {source: "facebook_live", liveTicketId: "a".repeat(64), liveMatchId: "unsafe/path"},
+  {source: "facebook_live", liveTicketId: "a".repeat(64), liveMatchId: "b".repeat(64), facebookPerformanceRecorded: true},
+  {source: "reddit_live"}, {source: "reddit_live", liveMatchId: "b".repeat(64)},
+  {source: "reddit_live", liveTicketId: "unsafe/path", liveMatchId: "b".repeat(64)},
+  {source: "reddit_live", liveTicketId: "a".repeat(64), liveMatchId: "unsafe/path"},
+  {source: "reddit_live", liveTicketId: "a".repeat(64), liveMatchId: "b".repeat(64), facebookPerformanceRecorded: true},
+  {liveTicketId: "a".repeat(64)}, {liveMatchId: "b".repeat(64)},
+])("rejects mixed or incomplete live referral source metadata: %j", overrides => {
+  expect(() => parseRacePerformanceEvent({...receipt(), ...overrides}, "run-1"))
+    .toThrow("Stored race performance receipt is invalid.");
+});
+
 it.each([
   {runId: "another-run"}, {userId: "unsafe/path"}, {createdAtMs: -1}, {createdAtMs: NaN},
   {expiresAt: {seconds: 1000}}, {deliveryAttempts: 21}, {deliveryAttempts: 0.5},

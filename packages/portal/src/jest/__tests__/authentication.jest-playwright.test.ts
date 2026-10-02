@@ -1416,7 +1416,7 @@ describeBrowser("Jest authentication integration", () => {
     });
     expect(countdownCenterOffset).toBeLessThanOrEqual(0.5);
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
-    expect(await creator.page.locator(".race-progress strong").allInnerTexts()).toEqual(["Riddles solved: 0 / 10"]);
+    expect(await creator.page.locator(".race-progress strong").allInnerTexts()).toEqual(["Riddles completed: 0 / 10"]);
     await captureMultiplayerEvidence(creator.page, "02-player-1-race-started.png");
     /** Horizontal coverage of the multiplayer keyboard within its viewport. */
     const keyboardCoverage = await creator.page.locator(".race-gameplay-viewport").evaluate((viewport) => {
@@ -1575,8 +1575,8 @@ describeBrowser("Jest authentication integration", () => {
     await verifyAcceptedRaceRecording(recipient.page, invitedChallengeId!, sharedRaceChallenges.get(invitedChallengeId!)!);
     /** Progress can race with the creator's first server-confirmed automatic clear. */
     const initialProgress = await recipient.page.locator(".race-progress strong").allInnerTexts();
-    expect(initialProgress[0]).toBe("Riddles solved: 0 / 10");
-    expect(initialProgress[1]).toMatch(/^Riddles solved: [01] \/ 10$/);
+    expect(initialProgress[0]).toBe("Riddles completed: 0 / 10");
+    expect(initialProgress[1]).toMatch(/^Riddles completed: [01] \/ 10$/);
     await captureMultiplayerEvidence(recipient.page, "06-player-2-race-started.png");
     await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 30_000});
     /** Final score makes the exact opponent replay explicit after automatic completion. */

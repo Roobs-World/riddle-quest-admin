@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.471564ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.892196ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.841149ms)
+✔ rejects imports between different target owners (1.457161ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.592553ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.884666ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (0.964228ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (1.260879ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.057824ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.755261ms)
+✔ aggregates violations in deterministic file and source order (0.866392ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 133.166967
+Web Target boundary audit passed (272 files, 1177 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 63 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/index-DhsmAOC4.css              6.92 kB │ gzip:  2.30 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-en-C4y-6MQF.js   87.86 kB │ gzip: 47.69 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-pt-h8mkD8sb.js   90.15 kB │ gzip: 48.96 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-nl-C934UOXs.js   90.54 kB │ gzip: 49.17 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-id-CEhWRT-D.js   91.21 kB │ gzip: 49.53 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-it-cFj2VorU.js   91.35 kB │ gzip: 49.55 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-es-WfVvR_uh.js   91.65 kB │ gzip: 49.73 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-de-8ctN6rMm.js   92.15 kB │ gzip: 50.00 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-tr-DGPWbYnh.js   92.54 kB │ gzip: 50.24 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-pl--UiicgFS.js   92.70 kB │ gzip: 50.32 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-fr-CWqADet1.js   93.56 kB │ gzip: 50.78 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-ja-b5S_bhiZ.js   94.66 kB │ gzip: 51.41 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-vi-BkPk5tW0.js   96.78 kB │ gzip: 52.55 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-ko-xVQih_eh.js   97.36 kB │ gzip: 52.88 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-ar-egys4y2i.js  102.12 kB │ gzip: 55.45 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/index-DKqXBQAt.js             103.59 kB │ gzip: 34.55 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-ru-D81lZQs4.js  114.09 kB │ gzip: 61.89 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/playable-pack-hi-BMPMd1As.js  134.49 kB │ gzip: 72.94 kB
+../../../../.cache/riddle-quest-review/race-skip-progress-20261002/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.02s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

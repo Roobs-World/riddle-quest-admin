@@ -20,6 +20,7 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require("@qwordly/core/race");
   const users = {Alice: `${provider}_${"a".repeat(40)}`, Bob: `${provider}_${"b".repeat(40)}`};
   const tickets = new Map();
+  let clockOffsetMs = 0;
   async function clear() {
     for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "usernameReservations", "liveRacePushOutbox", "localizedRiddles/en/riddles"])
       await db.recursiveDelete(db.collection(collection));
@@ -27,6 +28,7 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   }
   async function reset() {
     await clear();
+    clockOffsetMs = 0;
     const batch = db.batch();
     for (const [name, uid] of Object.entries(users)) batch.set(db.doc(`users/${uid}`), {
       username: name, coins: 100, avatarUrl: `https://live-race.invalid/${name}.svg`, ...createUsernameReservationFields(name),
@@ -47,8 +49,8 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     if (operation === "sendChallenge") return sendLiveRaceChallengeForUser(db, uid, command);
     if (operation === "inbox") return listLiveRaceChallengesForUser(db, uid);
     const result = operation === "join"
-      ? await joinLiveRaceForUser(uid, JoinLiveRaceSchema.parse(command), {db})
-      : await updateLiveRaceForUser(uid, UpdateLiveRaceSchema.parse(command), {db});
+      ? await joinLiveRaceForUser(uid, JoinLiveRaceSchema.parse(command), {db, nowMs: Date.now() + clockOffsetMs})
+      : await updateLiveRaceForUser(uid, UpdateLiveRaceSchema.parse(command), {db, nowMs: Date.now() + clockOffsetMs});
     tickets.set(user, result.ticketId);
     return result;
   }
@@ -65,5 +67,13 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     const values = await db.getAll(...Object.values(users).map(uid => db.doc(`users/${uid}`)));
     return values.map(value => value.data().coins);
   }
-  return {reset, clear, call, answer, expireSearch, balances};
+  /** Advances only the injected server clock to the finished player's adjusted deadline. */
+  async function expireFinishWindow(user) {
+    const ticket = (await db.doc(`liveRaceTickets/${tickets.get(user)}`).get()).data();
+    const match = (await db.doc(`liveRaceMatches/${ticket.matchId}`).get()).data();
+    const run = match.runs[match.tickets[0] === tickets.get(user) ? 0 : 1];
+    if (run.status !== "completed") throw new Error("Finish-window fixture requires a completed run");
+    clockOffsetMs = run.finishedAtMs + run.hintPenaltyMs + run.skipPenaltyMs - Date.now();
+  }
+  return {reset, clear, call, answer, expireSearch, expireFinishWindow, balances};
 }

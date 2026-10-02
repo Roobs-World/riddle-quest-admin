@@ -101,3 +101,16 @@ describe("shared Cloud Functions schemas", () => {
     ).toBe(false);
   });
 });
+
+it("rejects inconsistent recovery hints and guesses without discarding valid progress", () => {
+  const question = {riddleId: "r1", text: "clue", answerLength: 4,
+    sessionToken: "00000000-0000-4000-8000-000000000001", questionNumber: 1,
+    attemptsUsed: 1, hasUsedContinue: false, awaitingContinue: false};
+  const feedback = [..."tree"].map(letter => ({letter, status: "red"}));
+  const acceptedGuesses = [{attempt: 1, feedback}];
+  expect(DailyChallengeQuestionSchema.safeParse({...question, acceptedGuesses}).success).toBe(true);
+  expect(DailyChallengeQuestionSchema.safeParse({...question, acceptedGuesses: []}).success).toBe(false);
+  expect(DailyChallengeQuestionSchema.safeParse({...question, acceptedGuesses: [{...acceptedGuesses[0], feedback: feedback.slice(1)}]}).success).toBe(false);
+  expect(DailyChallengeQuestionSchema.safeParse({...question, revealedHints: [{index: 0, letter: "t"}]}).success).toBe(true);
+  expect(DailyChallengeQuestionSchema.safeParse({...question, revealedHints: [{index: 4, letter: "t"}]}).success).toBe(false);
+});

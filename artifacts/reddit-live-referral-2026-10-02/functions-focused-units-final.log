@@ -1,0 +1,13 @@
+FAIL src/__tests__/completeGameLogic.test.ts
+  ● Test suite failed to run
+
+    ENOENT: no such file or directory, open '/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/__tests__/completeGameLogic.test.ts'
+
+      at runTestInternal (../node_modules/.pnpm/jest-runner@30.5.2_supports-color@8.1.1/node_modules/jest-runner/build/index.js:129:27)
+
+
+Test Suites: 1 failed, 9 passed, 10 total
+Tests:       123 passed, 123 total
+Snapshots:   0 total
+Time:        0.743 s, estimated 1 s
+Ran all test suites within paths "src/__tests__/redditReferrals.test.ts", "src/__tests__/race/raceDeliveryRecords.test.ts", "src/__tests__/facebookReferrals.test.ts", "src/__tests__/race/raceLiveScoring.test.ts", "src/__tests__/redditFeatureFlags.test.ts", "src/__tests__/facebookFeatureFlags.test.ts", "src/__tests__/race/raceLiveLatency.test.ts", "src/__tests__/race/raceReadService.test.ts", "src/__tests__/race/raceMatchPerformance.test.ts", "src/__tests__/completeGameLogic.test.ts".
