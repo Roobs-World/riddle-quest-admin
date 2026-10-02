@@ -50,9 +50,9 @@ const products: ProductSummary[] = [
 describe("commerce modal pages", () => {
   it("keeps displayed gameplay costs centralized", () => {
     expect({CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST}).toEqual({
-      CONTINUE_COIN_COST: 100,
-      HINT_COIN_COST: 50,
-      SKIP_COIN_COST: 200,
+      CONTINUE_COIN_COST: 50,
+      HINT_COIN_COST: 25,
+      SKIP_COIN_COST: 100,
     });
   });
 
@@ -100,15 +100,15 @@ describe("commerce modal pages", () => {
     expect(fundedHtml).not.toContain("not have enough coins to continue");
     expect(fundedHtml).not.toContain("<img");
     expect(fundedHtml).toContain('class="play-primary loss-continue-action">');
-    expect(fundedHtml.replace(/<[^>]+>/gu, "")).toContain("Use 100 Coins to Try Again");
-    expect(fundedHtml.replace(/<[^>]+>/gu, "")).toContain("Use 200 coins to Skip Level");
+    expect(fundedHtml.replace(/<[^>]+>/gu, "")).toContain("Use 50 Coins to Try Again");
+    expect(fundedHtml.replace(/<[^>]+>/gu, "")).toContain("Use 100 coins to Skip Level");
   });
 
   it("runs skip directly from the loss prompt and disables it when coins are insufficient", () => {
     /** Counts direct skip requests from the loss prompt. */
     let skipRequests = 0;
     /** Provides poor html behavior. */
-    const poorHtml = renderToString(<ContinueModalPage balance={199} onContinue={noop}
+    const poorHtml = renderToString(<ContinueModalPage balance={99} onContinue={noop}
       onSkip={() => { skipRequests += 1; }} onOpenModal={noop} />);
     /** Provides funded prompt behavior for interaction inspection. */
     const fundedPrompt = ContinueModalPage({
@@ -180,5 +180,16 @@ describe("commerce modal pages", () => {
     const html = renderToString(<TreasureModalPage balance={1234} onOpenModal={noop} />);
     expect(html).toContain("1,234");
     expect(html).toContain("Buy coins");
+  });
+});
+
+
+describe("coin pack buying power", () => {
+  it("shows the actual coin grant as alternative whole-action amounts", () => {
+    const html = renderToString(<ShopModalPage balance={300} products={[{
+      productId: "starter", name: "Starter", description: "", coins: 250,
+      displayPrice: "$0.99", productType: "consumable",
+    }]} onPurchase={noop} />);
+    expect(html.replace(/<[^>]+>/gu, "")).toContain("Up to 10 hints or 5 extra attempts.");
   });
 });

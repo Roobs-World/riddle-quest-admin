@@ -1,4 +1,4 @@
-import {evaluateAchievements} from "../gameplay/achievements";
+import {findNewAchievements, evaluateAchievements} from "../gameplay/achievements";
 import * as firestoreService from "../gameplay/firestoreService";
 import type {Player} from "../validation/firestoreSchemas";
 
@@ -83,6 +83,31 @@ const trackedStatAchievementCases: Array<[string, Partial<NonNullable<Player["st
   ["win_rate_80", {gamesPlayed: 10, winRate: 80}],
   ["efficient_10", {totalWins: 10, averageGuesses: 3}],
 ];
+
+describe("additional milestone unlocks", () => {
+  /** Independent boundary examples for each new achievement. */
+  const cases = [
+    ["wins_10", "totalWins", 10], ["wins_250", "totalWins", 250],
+    ["games_10", "gamesPlayed", 10], ["games_250", "gamesPlayed", 250],
+    ["classic_5", "highestLevelClassic", 5], ["classic_150", "highestLevelClassic", 150],
+    ["daily_3", "dailyPuzzlesCompleted", 3], ["daily_365", "dailyPuzzlesCompleted", 365],
+    ["challenge_10", "challengeWins", 10], ["challenge_100", "challengeWins", 100],
+    ["streak_60", "bestStreak", 60], ["xp_10000", "xp", 10_000],
+  ] as const;
+  it.each(cases)("grants %s at its boundary exactly once", (id, stat, threshold) => {
+    /** Player state immediately below this milestone boundary. */
+    const user = makeUser();
+    user.stats = {...user.stats, [stat]: threshold - 1};
+    expect(findNewAchievements(user, baseContext).map((entry) => entry.achievementId)).not.toContain(id);
+    user.stats[stat] = threshold;
+    /** New authoritative unlocks stamped by the evaluator. */
+    const entries = findNewAchievements(user, baseContext, 123);
+    expect(entries).toContainEqual({achievementId: id, unlockedAt: 123});
+    user.unlockedAchievements = entries;
+    user.stats[stat] = threshold + 1;
+    expect(findNewAchievements(user, baseContext)).toEqual([]);
+  });
+});
 
 describe("evaluateAchievements", () => {
   beforeEach(() => {

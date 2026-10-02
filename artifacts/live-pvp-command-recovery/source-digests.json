@@ -1,0 +1,7 @@
+{
+  "packages/portal/src/play/race/LiveRaceGame.tsx": "10d9287030c95ef598dadcc81a0e75cde0c1030ea6f938f934a7910dae68ff4c",
+  "packages/portal/src/play/race/logic/liveRaceDeliveryDeadline.ts": "13d263bbd761a39a0f85dc3dffcbb34dcaf417fdf147e799496badc0d7e23ebd",
+  "packages/portal/scripts/verify-live-race-delivery-browser.mjs": "18d35a07f44af2a11367ca845dea6e58996f8f25f8cfd5b807ec6de626df5ab2",
+  "firebase-functions/src/race/raceLiveService.ts": "1c3b39e8a81cdf434b7a2fbb7a50e86319681f18822af09160ca9342325f0427",
+  "firebase-functions/src/race/raceLiveState.ts": "b44d2db9d713955bbfac2a9633cd6c1c459dd86fcd228f5a551aecd9452fa944"
+}

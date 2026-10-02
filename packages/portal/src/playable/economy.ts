@@ -1,16 +1,17 @@
+import {SOLO_COIN_COSTS, SOLO_WIN_COINS} from "@qwordly/core/game";
 import type {YouTubeGameMode} from "./types";
 /** Defines the youtube starting coins value. */
 export const YOUTUBE_STARTING_COINS = 300;
 /** Defines the youtube hint cost value. */
-export const YOUTUBE_HINT_COST = 50;
+export const YOUTUBE_HINT_COST = SOLO_COIN_COSTS.hint;
 /** Defines the youtube continue cost value. */
-export const YOUTUBE_CONTINUE_COST = 100;
+export const YOUTUBE_CONTINUE_COST = SOLO_COIN_COSTS.continue;
 /** Defines the youtube classic skip cost value. */
-export const YOUTUBE_CLASSIC_SKIP_COST = 200;
+export const YOUTUBE_CLASSIC_SKIP_COST = SOLO_COIN_COSTS.skip;
 /** Defines the youtube classic win coins value. */
-export const YOUTUBE_CLASSIC_WIN_COINS = 25;
+export const YOUTUBE_CLASSIC_WIN_COINS = SOLO_WIN_COINS.classic.easy;
 /** Defines the youtube daily win coins value. */
-export const YOUTUBE_DAILY_WIN_COINS = 75;
+export const YOUTUBE_DAILY_WIN_COINS = SOLO_WIN_COINS.challenge.easy;
 /** Defines the youtube level up coins value. */
 export const YOUTUBE_LEVEL_UP_COINS = 50;
 /** Defines the youtube achievement coins value. */

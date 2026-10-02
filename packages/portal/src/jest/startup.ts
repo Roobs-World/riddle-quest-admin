@@ -188,18 +188,19 @@ export async function startJestSession(
       const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
       if (recovered.status !== "success") return recovered;
     }
-    /** Provides profile behavior. */
-    let profile: JestSession["profile"] = null;
-
-    if (player.registered) {
-      reportJestLoadingProgress(platform, phaseProgress[2]);
-      onProgress?.({stage: "progress", progress: phaseProgress[2]});
-      try {
-        profile = await platform.getProfile();
-      } catch (error) {
-        captureBrowserException(error, {component: "jest_profile"});
-      }
-    }
+    /** Optional social lookup overlaps the authoritative identity exchange below. */
+    const profilePromise: Promise<JestSession["profile"]> = player.registered
+      ? (async () => {
+          reportJestLoadingProgress(platform, phaseProgress[2]);
+          onProgress?.({stage: "progress", progress: phaseProgress[2]});
+          try {
+            return await platform.getProfile();
+          } catch (error) {
+            captureBrowserException(error, {component: "jest_profile"});
+            return null;
+          }
+        })()
+      : Promise.resolve(null);
 
     reportJestLoadingProgress(platform, phaseProgress[3]);
     onProgress?.({stage: "game", progress: phaseProgress[3]});
@@ -227,10 +228,11 @@ export async function startJestSession(
       await authenticateFirebase(identity.customToken);
       return Boolean(await options.onAuthenticated?.());
     };
-    /** Provides identity deleted behavior. */
-    const identityDeleted = options.withIdentityOperation
-      ? await options.withIdentityOperation(authenticateIdentity)
-      : await authenticateIdentity();
+    /** Both reads finish before exposing a session; recovery keeps its existing ordering. */
+    const [profile, identityDeleted] = await Promise.all([
+      profilePromise,
+      options.withIdentityOperation ? options.withIdentityOperation(authenticateIdentity) : authenticateIdentity(),
+    ]);
     if (identityDeleted) {
       if (identityTombstoned) await options.onIdentityDeleted?.(signed.playerSigned);
       return {status: "account-deleted"};

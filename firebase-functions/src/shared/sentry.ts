@@ -173,6 +173,9 @@ if (dsn) {
     environment: process.env.SENTRY_ENVIRONMENT?.trim() || process.env.GCLOUD_PROJECT || "production",
     release: resolveSentryRelease(process.env),
     sampleRate: 1,
+    // The automatic OpenAI integration consumes structured response bodies twice
+    // with the current SDK. Keep error reporting and our explicit AI spans.
+    integrations: (integrations) => integrations.filter((integration) => integration.name !== "OpenAI"),
     // Keep operational reporting errors-only; performance traces are
     // nonessential and require a separate, owner-approved telemetry decision.
     // Preserve the transaction redaction hook with Sentry v11.

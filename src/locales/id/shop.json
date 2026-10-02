@@ -19,6 +19,7 @@
     "BADGE_STARTER": "PEMULA",
     "BADGE_POPULAR": "POPULER",
     "BADGE_BEST_VALUE": "PALING HEMAT",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Pembatalan tidak tersedia untuk langganan ini."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Pembatalan tidak tersedia untuk langganan ini.",
+    "PACK_BUYING_POWER": "Hingga {hints} petunjuk atau {continues} percobaan tambahan."
   }
 }

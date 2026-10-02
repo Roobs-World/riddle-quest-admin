@@ -11,6 +11,8 @@
  * only requires one place to change.
  */
 
+import {findNewMilestoneAchievementIds} from "@qwordly/core/game";
+import {MILESTONE_ACHIEVEMENT_DEFINITIONS} from "./achievementMilestones";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import type {PlayerStats, PlayerProgress} from "@qwordly/core/validation";
 import {RACE_ACHIEVEMENT_DEFINITIONS} from "./race/raceAchievementDefinitions";
@@ -403,6 +405,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     icon: "❤️",
     getProgress: (p) => (p.hasPurchasedApp ? 1 : 0),
   },
+  ...MILESTONE_ACHIEVEMENT_DEFINITIONS,
   ...RACE_ACHIEVEMENT_DEFINITIONS,
 ];
 
@@ -468,6 +471,9 @@ export function predictCompletionAchievementIds(
     ["challenge_last_chance", completion.gameMode === "challenge" && completion.isCorrect && completion.attempts === 5],
     ["lesson_learned", !completion.isCorrect],
   ];
+  rules.push(...findNewMilestoneAchievementIds({
+    totalWins, gamesPlayed, highestLevelClassic, dailyPuzzlesCompleted, challengeWins,
+  }, profile.achievements).map((id): readonly [string, boolean] => [id, true]));
   return rules.filter(([id, unlocked]) => unlocked && !existing.has(id)).map(([id]) => id);
 }
 

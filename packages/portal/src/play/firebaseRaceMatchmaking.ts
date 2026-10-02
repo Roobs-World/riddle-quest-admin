@@ -8,6 +8,8 @@ export function createFirebaseRaceMatchmaking(
 ): MatchmakingCapability {
   return {
   live: {
+    /** Validates an SDK invitation before showing the acceptance action. */
+    async challenge(input) {return (await (await import("../firebase")).getLiveRaceChallenge(input)).data;},
     /** Provides join behavior. */
     async join(input) {return (await (await import("../firebase")).joinLiveRace(input)).data;},
     /** Provides update behavior. */

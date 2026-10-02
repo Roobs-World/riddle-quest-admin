@@ -329,7 +329,7 @@ async function reviewGeneratedRiddle(
   question: string,
   answer: string,
   options: RiddleGenerationOptions,
-): Promise<boolean> {
+): Promise<RiddleReview["difficulty"] | null> {
   /** Provides completion behavior. */
   const completion = await withSentrySpan(
     "openai.reviewGeneratedRiddle",
@@ -368,7 +368,7 @@ async function reviewGeneratedRiddle(
   const review = completion.output_parsed;
   if (!review) {
     functions.logger.warn("OpenAI returned empty riddle review content.");
-    return false;
+    return null;
   }
 
   if (!reviewPassed(review, options)) {
@@ -387,22 +387,22 @@ async function reviewGeneratedRiddle(
           Boolean(options.difficulty && review.difficulty !== options.difficulty),
       },
     });
-    return false;
+    return null;
   }
 
-  return true;
+  return review.difficulty;
 }
 
 /**
  * Generates a single unique riddle using OpenAI.
- * @return {Promise<[string, string] | null>} A promise that resolves with a
- *   riddle [question, answer] or null if generation fails or is a duplicate.
+ * @return {Promise<[string, string, RiddleReview["difficulty"]] | null>} A promise that resolves with a
+ *   riddle [question, answer, reviewed difficulty] or null if generation fails or is a duplicate.
  */
 export async function generateUniqueRiddle(
   locale: SupportedLocale = "en",
   excludedAnswers: string[] = [],
   options: RiddleGenerationOptions = {},
-): Promise<[string, string] | null> {
+): Promise<[string, string, RiddleReview["difficulty"]] | null> {
   /** Provides openai behavior. */
   const openai = initializeOpenAIClient();
   /** Provides model behavior. */
@@ -483,14 +483,14 @@ export async function generateUniqueRiddle(
     if (!solved) {
       return null;
     }
-    /** Provides accepted behavior. */
-    const accepted = await reviewGeneratedRiddle(openai, model, locale, question, answer, options);
-    if (!accepted) {
+    /** Approved review difficulty becomes canonical economy metadata. */
+    const reviewedDifficulty = await reviewGeneratedRiddle(openai, model, locale, question, answer, options);
+    if (!reviewedDifficulty) {
       return null;
     }
 
     functions.logger.info("Generated and quality-approved a riddle.", {answerLength: answer.length});
-    return validatedRiddle;
+    return [question, answer, reviewedDifficulty];
   } catch (error) {
     functions.logger.error("OpenAI riddle generation failed.", {model, ...getSafeErrorMetadata(error)});
     captureException(error, getSafeErrorMetadata(error));

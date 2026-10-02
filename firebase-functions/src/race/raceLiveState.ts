@@ -1,8 +1,9 @@
-import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
+import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
 import {raceOperationAtMs, toRaceRunView, type RaceRunRecord} from "./raceEngine";
 
 /** Private ticket contains the immutable deck and authenticated owner. */
 export type LiveTicket = {
+  /** Private lobbies never enter the public queue or select a bot. */ privateChallenge?: boolean;
   /** Authenticated account. */ userId: string;
   /** Scope prevents cross-provider or cross-language pairing. */ pool: string;
   /** Creation and search deadline use the server clock. */ createdAtMs: number;
@@ -75,12 +76,15 @@ export function liveView(ticketId: string, ticket: LiveTicket, match: LiveMatch 
       avatarUrl: match.players[1 - seat].avatarUrl, adjustedFinishMs: RACE_RULES.maxAdjustedTimeMs,
       events: []};
     if (terminal) {run.status = "completed"; run.currentRiddle = null;}
+    // Neither seat can inspect a question before the same authoritative start boundary.
+    else if (observedAtMs < match.startsAtMs) run.currentRiddle = null;
   }
   return LiveRaceViewSchema.parse({ticketId, phase: ticket.cancelled ? "cancelled" : !match ? "searching" :
     terminal ? "result" : observedAtMs < match.startsAtMs ? "countdown" : "racing",
-    serverNowMs: observedAtMs, searchEndsAtMs: ticket.createdAtMs + 60_000, startsAtMs: match?.startsAtMs ?? null,
+    serverNowMs: observedAtMs, searchEndsAtMs: ticket.createdAtMs + (ticket.privateChallenge ? LIVE_RACE_INVITE_MS : 60_000), startsAtMs: match?.startsAtMs ?? null,
     player: {...ticket.player, correctCount: own?.correctCount ?? 0},
     opponent: match ? {...match.players[1 - seat], correctCount: rival?.correctCount ?? 0} : null,
+    ...(ticket.privateChallenge ? {challengeId: `live_${ticketId}`} : {}),
     run, result: terminal ? match.winner === null ? "tie" : match.winner === seat ? "win" : "loss" : null,
     rewardCoins: terminal && match.winner === seat ? match.rewardCoins ?? 0 : 0,
     ...(terminal && match.winner === seat && match.rewardCoins === LIVE_RACE_WIN_COINS ? {newCoins: match.newCoins} : {})});

@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-10-02T14:47:51.206455+00:00",
+  "projectId": "riddle-quest-ec2b2",
+  "readOnly": true,
+  "metadata": {
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionCallback",
+    "serviceConfig": {
+      "environmentVariables": {
+        "FACEBOOK_DELETION_STATUS_BASE_URL": "https://facebookdatadeletionstatus-h5dplxxwha-uc.a.run.app"
+      },
+      "uri": "https://facebookdatadeletioncallback-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE"
+  },
+  "unsignedReadProbes": [
+    {
+      "kind": "callback",
+      "url": "https://facebookdatadeletioncallback-h5dplxxwha-uc.a.run.app",
+      "method": "GET",
+      "status": 405,
+      "bytes": 27,
+      "bodySha256": "f06f7b087bf36be8f295d396aa6fcee8d160acec7807ffee39bf82a36d10c30c",
+      "expectedStatus": 405
+    },
+    {
+      "kind": "status",
+      "url": "https://facebookdatadeletionstatus-h5dplxxwha-uc.a.run.app",
+      "method": "GET",
+      "status": 400,
+      "bytes": 35,
+      "bodySha256": "58702b0142f35431a0cffcf0d80653ffaf4ba054127d25781ab22ff67e7174e3",
+      "expectedStatus": 400
+    }
+  ],
+  "signedAcceptanceVerified": false
+}

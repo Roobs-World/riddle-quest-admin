@@ -164,6 +164,16 @@ describe("single-player session transactions", () => {
     mockDocuments.set(userPath, baseUser());
   });
 
+  it("pins reviewed difficulty and retains it when content metadata changes on resume", async () => {
+    const token = await ensureAuthoritativeSession(USER_ID, "classic", "classic-1", "en", "content-en-1", "classic:1", "piano",
+      {classicIndex: 1, difficultyBand: "medium"});
+    expect(mockDocuments.get(sessionPath(token))?.difficultyBand).toBe("medium");
+    const resumed = await ensureAuthoritativeSession(USER_ID, "classic", "classic-1", "en", "content-en-1", "classic:1", "piano",
+      {classicIndex: 1, difficultyBand: "hard"});
+    expect(resumed).toBe(token);
+    expect(mockDocuments.get(sessionPath(token))?.difficultyBand).toBe("medium");
+  });
+
   it("issues the content binding and private session with one identical fixed expiry", async () => {
     /** Provides token behavior. */
     const token = await ensureAuthoritativeSession(
@@ -253,9 +263,9 @@ describe("single-player session transactions", () => {
     const first = await purchaseAuthoritativeHint(USER_ID, request);
     /** Replayed request response must retain committed state without granting again. */
     const replay = await purchaseAuthoritativeHint(USER_ID, {...request, requestId: "hint-no-reward-replay"});
-    expect(first).toMatchObject({newCoins: 250, coinsCost: 50, newlyUnlockedAchievementIds: [achievementId]});
+    expect(first).toMatchObject({newCoins: 275, coinsCost: 25, newlyUnlockedAchievementIds: [achievementId]});
     expect(replay).toEqual(first);
-    expect(mockDocuments.get(userPath)?.coins).toBe(250);
+    expect(mockDocuments.get(userPath)?.coins).toBe(275);
     expect(mockDocuments.get(userPath)?.stats.totalHintsUsed).toBe(1);
     expect(mockDocuments.get(userPath)?.unlockedAchievements).toEqual([{achievementId, unlockedAt: 1}]);
   });
@@ -266,12 +276,12 @@ describe("single-player session transactions", () => {
       mockDocuments.set(sessionPath(), baseSession({gameMode: "challenge", locale: "ja", riddleId: "daily-2026-08-12", challengeDate: "2026-08-12", completionKey: "challenge:2026-08-12"}));
       /** Correlated hint request bound to the Tokyo Daily session and original receipt. */
       const request = {riddleId: "daily-2026-08-12", gameMode: "challenge" as const, sessionToken: TOKEN, requestId: "tokyo-hint-0001", currentAttempt: ["p", "i", "z", "z", "z"]};
-      expect(await purchaseAuthoritativeHint(USER_ID, request)).toMatchObject({newCoins: 250});
+      expect(await purchaseAuthoritativeHint(USER_ID, request)).toMatchObject({newCoins: 275});
       // Receipt replay remains free after rollover; a fresh spend must still fail closed.
       mockDocuments.set(sessionPath(), baseSession({gameMode: "challenge", locale: "ja", riddleId: "daily-2026-08-12", challengeDate: "2026-08-12", completionKey: "challenge:2026-08-12", expiresAt: {toDate: () => new Date("2026-08-14T00:00:00Z")} as never}));
       jest.setSystemTime(new Date("2026-08-12T15:01:00Z"));
       await expect(purchaseAuthoritativeHint(USER_ID, {...request, requestId: "tokyo-hint-0002"})).rejects.toThrow("no longer current");
-      expect(mockDocuments.get(userPath)?.coins).toBe(250);
+      expect(mockDocuments.get(userPath)?.coins).toBe(275);
     } finally { jest.useRealTimers(); }
   });
 
@@ -291,9 +301,9 @@ describe("single-player session transactions", () => {
     /** Provides replay behavior. */
     const replay = await purchaseAuthoritativeHint(USER_ID, {...request, requestId: "hint-request-fresh"});
 
-    expect(first).toMatchObject({revealedLetter: "A", index: 2, newCoins: 250});
+    expect(first).toMatchObject({revealedLetter: "A", index: 2, newCoins: 275});
     expect(replay).toEqual(first);
-    expect(mockDocuments.get(userPath)?.coins).toBe(250);
+    expect(mockDocuments.get(userPath)?.coins).toBe(275);
     expect(mockDocuments.get(userPath)?.stats.totalHintsUsed).toBe(1);
   });
 
@@ -313,13 +323,13 @@ describe("single-player session transactions", () => {
     const replay = await skipAuthoritativeRiddle(USER_ID, {...request, requestId: "skip-request-fresh"});
 
     expect(replay).toEqual(first);
-    expect(first).toMatchObject({costDeducted: 200, newCoins: 100});
-    expect(mockDocuments.get(userPath)).toMatchObject({coins: 100, progress: {classicIndex: 2}});
+    expect(first).toMatchObject({costDeducted: 100, newCoins: 200});
+    expect(mockDocuments.get(userPath)).toMatchObject({coins: 200, progress: {classicIndex: 2}});
     expect(mockDocuments.get(userPath)?.stats.classicSkipped).toBe(1);
   });
 
-  it("requires the full 200-coin skip price without mutating progress", async () => {
-    mockDocuments.set(userPath, {...baseUser(), coins: 199});
+  it("requires the full 100-coin skip price without mutating progress", async () => {
+    mockDocuments.set(userPath, {...baseUser(), coins: 99});
     /** Captures the exact session object to prove the rejected transaction leaves it untouched. */
     const sessionBefore = baseSession();
     mockDocuments.set(sessionPath(), sessionBefore);
@@ -333,7 +343,7 @@ describe("single-player session transactions", () => {
       }),
     ).rejects.toMatchObject({code: "failed-precondition"});
 
-    expect(mockDocuments.get(userPath)).toMatchObject({coins: 199, progress: {classicIndex: 1}});
+    expect(mockDocuments.get(userPath)).toMatchObject({coins: 99, progress: {classicIndex: 1}});
     expect(mockDocuments.get(sessionPath())).toBe(sessionBefore);
   });
 
@@ -355,11 +365,11 @@ describe("single-player session transactions", () => {
     );
     await expect(
       grantAuthoritativeContinue(USER_ID, "classic", "classic-1", "continue-request-0001", TOKEN),
-    ).resolves.toBe(200);
+    ).resolves.toBe(250);
     await expect(
       grantAuthoritativeContinue(USER_ID, "classic", "classic-1", "continue-request-fresh", TOKEN),
-    ).resolves.toBe(200);
-    expect(mockDocuments.get(userPath)?.coins).toBe(200);
+    ).resolves.toBe(250);
+    expect(mockDocuments.get(userPath)?.coins).toBe(250);
     expect(mockDocuments.get(sessionPath())).not.toHaveProperty("lastGuess");
     expect(mockDocuments.get(sessionPath())).not.toHaveProperty("lastGuessResult");
     await expect(

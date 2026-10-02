@@ -15,9 +15,11 @@ const output = path.resolve(root, "../../artifacts/live-pvp-delivery/browser");
 await mkdir(output, {recursive:true});
 const authority = null;
 const responsiveOnly = process.env.LIVE_RACE_RESPONSIVE_ONLY === "1";
+const renderOnly = process.env.LIVE_RACE_RENDER_ONLY === "1";
 const backoffOnly = process.env.LIVE_RACE_BACKOFF_ONLY === "1";
 const rejectionOnly = process.env.LIVE_RACE_REJECTION_ONLY === "1";
-const commandRecoveryOnly = process.env.LIVE_RACE_COMMAND_RECOVERY_ONLY === "1";
+const commandLostOnly = process.env.LIVE_RACE_COMMAND_LOST_ONLY === "1";
+const commandRecoveryOnly = process.env.LIVE_RACE_COMMAND_RECOVERY_ONLY === "1" || commandLostOnly;
 const source = `
 import React from 'react'; import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
@@ -28,6 +30,7 @@ window.deliveryCalls=[]; window.freezeJoinOnce=new URLSearchParams(location.sear
 const call=async(action,input)=>{
  window.deliveryCalls.push({action,...input});
  if(input.action==='poll' && window.failAllPolls) throw new Error('Injected offline poll');
+ if(input.action==='guess' && window.failAllGuesses) throw new Error('Injected offline command');
  if(action==='join' && window.freezeJoinOnce){window.freezeJoinOnce=false;return new Promise(()=>{});}
  if(input.action==='poll' && window.freezePollOnce){window.freezePollOnce=false;return new Promise(()=>{});}
  const response=await fetch('/live/'+action,{method:'POST',body:JSON.stringify({user,...input})});
@@ -60,14 +63,17 @@ function state(user) {
  const run=started?{runId:ticket.id,role:'creator',status:phase==='result'?'completed':phase==='countdown'?'scheduled':'active',
  serverNowMs:now,startsAtMs:started,categoryId:'history',locale:'en',rules:RACE_RULES,correctCount:ticket.count,
  wallElapsedMs:Math.max(0,now-started),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-started),events:[],
- currentRiddle:phase==='result'?null:{riddleId:'q'+ticket.count,text:'A four-letter browser test answer',answerLength:4,position:ticket.count,
+ currentRiddle:phase!=='racing'?null:{riddleId:'q'+ticket.count,text:'A four-letter browser test answer',answerLength:4,position:ticket.count,
  guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},
  opponent:rival?{displayName:rival.displayName,avatarUrl:rival.avatarUrl,adjustedFinishMs:300000,events:[]}:undefined}:null;
  return {ticketId:ticket.id,phase,serverNowMs:now,searchEndsAtMs:ticket.created+60000,startsAtMs:started,player:identity(ticket),opponent:rival,run,
  result:winner===null?null:winner===user?'win':'loss',rewardCoins:winner===user?50:0,...(winner===user?{newCoins:150}:{})};
 }
 try {
- await build({plugins:[{name:"original-live-race-baseline",async load(id){if(process.env.LIVE_RACE_BASELINE_FILE && id===path.join(root,"src/play/race/LiveRaceGame.tsx"))return await readFile(process.env.LIVE_RACE_BASELINE_FILE,"utf8");}}],root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',build:{outDir:'dist'}});
+ await build({plugins:[{name:"original-live-race-baseline",async load(id){
+  if(process.env.LIVE_RACE_BASELINE_FILE && id===path.join(root,"src/play/race/LiveRaceGame.tsx"))return await readFile(process.env.LIVE_RACE_BASELINE_FILE,"utf8");
+  if(renderOnly && id===path.join(root,"src/play/race/components/RaceGameplay.tsx"))return (await readFile(id,"utf8")).replace('const nativeInputRef =', 'globalThis.__gameplayRenders = (globalThis.__gameplayRenders ?? 0) + 1; const nativeInputRef =');
+ }}],root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',build:{outDir:'dist'}});
  server=createServer(async(request,response)=>{
   try {
    const url=new URL(request.url,'http://localhost');
@@ -99,26 +105,62 @@ try {
  for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
   reset();const context=await browser.newContext({viewport});const a=await context.newPage(),b=await context.newPage();const errors=[];
   for(const page of [a,b])page.on('pageerror',error=>errors.push(error.message));
-  await a.goto(baseUrl+'/?user=Alice'+(responsiveOnly||backoffOnly||rejectionOnly||commandRecoveryOnly?'':'&fault=join'));await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
+  await a.goto(baseUrl+'/?user=Alice'+(renderOnly||responsiveOnly||backoffOnly||rejectionOnly||commandRecoveryOnly?'':'&fault=join'));await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
   await a.locator('.live-race-self strong').waitFor({timeout:15000});
   const joins=await a.evaluate(()=>window.deliveryCalls.filter(item=>item.action==='join'));
-  if(!responsiveOnly&&!backoffOnly&&!rejectionOnly&&!commandRecoveryOnly){assert.equal(joins.length,2);assert.equal(joins[0].requestId,joins[1].requestId);
+  if(!renderOnly&&!responsiveOnly&&!backoffOnly&&!rejectionOnly&&!commandRecoveryOnly){assert.equal(joins.length,2);assert.equal(joins[0].requestId,joins[1].requestId);
   console.log('Hung join recovered with the same request ID at '+viewport.width+'px.');}
   await b.goto(baseUrl+'/?user=Bob');await b.getByRole('button',{name:'Start PvP match',exact:true}).click();
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});
+  if(renderOnly){
+   const start = await a.locator('.race-header-clock strong').innerText();
+   await a.evaluate(()=>{window.__gameplayRenders=0;});
+   await new Promise(resolve=>setTimeout(resolve,2100));
+   const renders = await a.evaluate(()=>window.__gameplayRenders);
+   const finish = await a.locator('.race-header-clock strong').innerText();
+   console.log(JSON.stringify({viewport:viewport.width,observationMs:2100,gameplayRenders:renders,start,finish}));
+   assert.notEqual(start,finish,'The visible clock must keep advancing');
+   if(process.env.LIVE_RACE_EXPECT_ISOLATED_CLOCK==='1')assert.ok(renders<=6,'Clock updates must not rerender the answer board; observed '+renders);
+   await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('test');await a.locator('.race-actions .submit-action').click();
+   await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
+   assert.deepEqual(errors,[]);await context.close();continue;
+  }
   if(commandRecoveryOnly){
    async function solve(){await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('test');await a.locator('.race-actions .submit-action').click();}
+   if(!commandLostOnly){
    await a.evaluate(()=>{window.holdGuessOnce=true;});await solve();
    await a.getByRole('button',{name:'Retry',exact:true}).waitFor({timeout:15000});
    await a.evaluate(()=>window.releaseGuess());
    await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10')&&!document.querySelector('.race-error'),null,{timeout:1000});
    assert.equal(await a.evaluate(()=>window.deliveryCalls.filter(item=>item.action==='guess').length),1,'Late owned receipt should recover before retry');
    console.log('Late accepted command recovered without a duplicate delivery at '+viewport.width+'px.');
+   }
    await a.evaluate(()=>{window.freezeGuessOnce=true;});await solve();
-   await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('2 / 10')&&!document.querySelector('.race-error'),null,{timeout:15000});
+   await a.waitForFunction(count=>document.querySelector('.race-progress > div:first-child strong').textContent.includes(count+' / 10')&&!document.querySelector('.race-error'),commandLostOnly?1:2,{timeout:15000});
    const guesses=await a.evaluate(()=>window.deliveryCalls.filter(item=>item.action==='guess'));
-   assert.equal(guesses.length,3);assert.equal(guesses[1].requestId,guesses[2].requestId);assert.equal(tickets.get('Alice').count,2);
+   assert.equal(guesses.length,commandLostOnly?2:3);assert.equal(guesses.at(-2).requestId,guesses.at(-1).requestId);assert.equal(tickets.get('Alice').count,commandLostOnly?1:2);
    console.log('Lost accepted answer recovered automatically with its original request ID at '+viewport.width+'px.');
+   if(commandLostOnly){assert.deepEqual(errors,[]);await context.close();continue;}
+   await a.evaluate(()=>{window.holdGuessOnce=true;});await solve();
+   await a.getByRole('button',{name:'Retry',exact:true}).waitFor({timeout:15000});
+   await a.getByRole('button',{name:'Retry',exact:true}).click();
+   await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('3 / 10')&&!document.querySelector('.race-error'));
+   await solve();await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('4 / 10'));
+   await a.evaluate(()=>window.releaseGuess());await new Promise(resolve=>setTimeout(resolve,150));
+   assert.match(await a.locator('.race-progress > div:first-child strong').innerText(),/4 \/ 10/);
+   assert.equal(await a.locator('.race-error').count(),0);
+   console.log('A late superseded command cannot replace a newer accepted answer at '+viewport.width+'px.');
+   const beforeOffline=await a.evaluate(()=>window.deliveryCalls.filter(item=>item.action==='guess').length);
+   await a.evaluate(()=>{window.failAllGuesses=true;});await solve();
+   await new Promise(resolve=>setTimeout(resolve,6100));
+   const offline=await a.evaluate(start=>window.deliveryCalls.filter(item=>item.action==='guess').slice(start),beforeOffline);
+   assert.ok(offline.length>=2&&offline.length<=3,'Uncertain commands must retry with bounded backoff');
+   assert.ok(offline.every(item=>item.requestId===offline[0].requestId),'Automatic retries must retain the exact command ID');
+   assert.equal(tickets.get('Alice').count,4,'Transport failures cannot award a local score');
+   await a.evaluate(()=>{window.failAllGuesses=false;window.dispatchEvent(new Event('online'));});
+   await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('5 / 10')&&!document.querySelector('.race-error'));
+   assert.equal(tickets.get('Alice').count,5);
+   console.log('Command outage backed off and reconciled the original answer on reconnect at '+viewport.width+'px.');
    // The authority has completed the match while the next accepted answer response is lost.
    await a.evaluate(()=>{window.freezeGuessOnce=true;});await solve();winner='Bob';tickets.get('Bob').count=10;
    await a.locator('.live-race-victory').waitFor({timeout:15000});

@@ -154,3 +154,21 @@ it("shares results and profile invitations without promising a share-time reward
   await invitation;
   expect(shareAsync.mock.calls[1][0]).toMatchObject({intent: "INVITE", data: {referralToken: "a".repeat(43)}});
 });
+
+it("shares a private PvP lobby through Meta's native friend challenge dialog", async () => {
+  /** Isolated provider dialog records its opaque invitation entry data. */
+  const {options, shareAsync} = fixture();
+  /** Server lobby handle carries no player identity or client-scored result. */
+  const challengeId = `live_${"a".repeat(64)}`;
+  await expect(createFacebookReferralSharing(options)!.shareLiveRace!({challengeId})).resolves.toBe("success");
+  expect(shareAsync).toHaveBeenCalledWith(expect.objectContaining({intent: "CHALLENGE", switchContext: false,
+    data: {challengeId, referralToken: "a".repeat(43)}}));
+  expect(shareAsync.mock.calls[0][0].text).not.toContain("Time to beat");
+});
+
+it("rejects malformed live lobby handles before opening Meta UI", async () => {
+  /** Invalid launch destinations must not reach the native provider dialog. */
+  const {options, shareAsync} = fixture();
+  await expect(createFacebookReferralSharing(options)!.shareLiveRace!({challengeId: "live_../ticket"})).resolves.toBe("error");
+  expect(shareAsync).not.toHaveBeenCalled();
+});

@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Legal",
     "UNLOCKED_ALERT_MESSAGE": "Verifique seu perfil para ver suas novas conquistas.",
     "UNLOCKED_ALERT_OK": "Certo",
-    "UNLOCKED_ALERT_TITLE": "Conquista(s) desbloqueadas!"
+    "UNLOCKED_ALERT_TITLE": "Conquista(s) desbloqueadas!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Vitórias: 10",
+        "DESCRIPTION": "Vença 10 enigmas"
+      },
+      "wins_250": {
+        "NAME": "Vitórias: 250",
+        "DESCRIPTION": "Vença 250 enigmas"
+      },
+      "games_10": {
+        "NAME": "Enigmas: 10",
+        "DESCRIPTION": "Jogue 10 enigmas"
+      },
+      "games_250": {
+        "NAME": "Enigmas: 250",
+        "DESCRIPTION": "Jogue 250 enigmas"
+      },
+      "classic_5": {
+        "NAME": "Clássico: 5",
+        "DESCRIPTION": "Complete 5 níveis clássicos"
+      },
+      "classic_150": {
+        "NAME": "Clássico: 150",
+        "DESCRIPTION": "Complete 150 níveis clássicos"
+      },
+      "daily_3": {
+        "NAME": "Diários: 3",
+        "DESCRIPTION": "Complete 3 desafios diários"
+      },
+      "daily_365": {
+        "NAME": "Diários: 365",
+        "DESCRIPTION": "Complete 365 desafios diários"
+      },
+      "challenge_10": {
+        "NAME": "Vitórias diárias: 10",
+        "DESCRIPTION": "Vença 10 desafios diários"
+      },
+      "challenge_100": {
+        "NAME": "Vitórias diárias: 100",
+        "DESCRIPTION": "Vença 100 desafios diários"
+      },
+      "streak_60": {
+        "NAME": "Sequência: 60",
+        "DESCRIPTION": "Alcance uma sequência de vitórias de 60 dias"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Ganhe 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Desbloqueado"
   }
 }

@@ -19,6 +19,7 @@
     "BADGE_STARTER": "KHỞI ĐẦU",
     "BADGE_POPULAR": "PHỔ BIẾN",
     "BADGE_BEST_VALUE": "GIÁ TRỊ TỐT NHẤT",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Không thể hủy gói đăng ký này."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Không thể hủy gói đăng ký này.",
+    "PACK_BUYING_POWER": "Tối đa {hints} gợi ý hoặc {continues} lượt thử thêm."
   }
 }

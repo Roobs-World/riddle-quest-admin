@@ -1177,6 +1177,17 @@ describeBrowser("standalone Jest browser game", () => {
       await page.getByRole("button", {name: /next page/i}).click();
       expect(await leaderboardList.locator("li").count()).toBe(10);
       expect(await leaderboardList.locator("li").first().locator("b").textContent()).toBe("11");
+      // Changing measurements returns to page one and survives the runtime-validated bridge.
+      await page.getByRole("button", {name: /^multiplayer wins$/i}).click();
+      await page.waitForFunction(() => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false");
+      expect(await page.getByRole("button", {name: /^multiplayer wins$/i}).getAttribute("aria-pressed")).toBe("true");
+      expect(await leaderboardList.locator("li").first().locator("b").textContent()).toBe("1");
+      expect(await leaderboardList.locator("li").first().locator("strong").textContent()).toBe("20");
+      expect(await leaderboardList.locator("li").first().innerText()).toContain("Solver 20");
+      await expectAccessible(page, "multiplayer wins leaderboard");
+      await page.getByRole("button", {name: /^wins$/i}).click();
+      await page.waitForFunction(() => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false");
+      expect(await leaderboardList.locator("li").first().locator("strong").textContent()).toBe("29");
       await page.keyboard.press("Escape");
       await page
         .getByRole("button", {name: /^settings$/i})

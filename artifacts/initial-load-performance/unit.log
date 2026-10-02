@@ -1,0 +1,8 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --runTestsByPath src/youtube/__tests__/LocalSoloAuthority.test.ts src/youtube/__tests__/YouTubeSaveGate.test.ts src/youtube/__tests__/content.test.ts src/youtube/__tests__/economy.test.ts src/youtube/__tests__/i18n.test.ts src/youtube/__tests__/input.test.ts src/youtube/__tests__/save.test.ts src/youtube/__tests__/sdk.test.ts
+
+Test Suites: 8 passed, 8 total
+Tests:       45 passed, 45 total
+Snapshots:   0 total
+Time:        0.295 s, estimated 1 s
+Ran all test suites within paths "src/youtube/__tests__/LocalSoloAuthority.test.ts", "src/youtube/__tests__/YouTubeSaveGate.test.ts", "src/youtube/__tests__/content.test.ts", "src/youtube/__tests__/economy.test.ts", "src/youtube/__tests__/i18n.test.ts", "src/youtube/__tests__/input.test.ts", "src/youtube/__tests__/save.test.ts", "src/youtube/__tests__/sdk.test.ts".

@@ -113,6 +113,7 @@
     "LIVE_BOT": "수수께끼 봇",
     "LIVE_REWARD": "+{coins} 코인",
     "LIVE_MODE": "실시간 PvP",
-    "LIVE_WAITING_FINISH": "상대가 끝내기를 기다리는 중…"
+    "LIVE_WAITING_FINISH": "상대가 끝내기를 기다리는 중…",
+    "LIVE_FRIEND_WAIT": "친구가 수락하기를 기다리고 있습니다. 이 초대는 15분 후에 만료됩니다."
   }
 }

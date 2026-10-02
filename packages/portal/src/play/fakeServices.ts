@@ -1,3 +1,4 @@
+import {getSoloWinCoins, SOLO_COIN_COSTS} from "@qwordly/core/game";
 import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
 import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
@@ -76,7 +77,7 @@ const createFakeProfile = (): BridgeProfile => ({
 
 /** Provides leaderboard rows behavior. */
 const leaderboardRows: BridgeLeaderboardEntry[] = [
-  {userId: "jest-guest", username: "Guest Solver", level: 3, xp: 420, totalWins: 5, bestStreak: 2},
+  {userId: "jest-guest", username: "Guest Solver", level: 3, xp: 420, totalWins: 5, multiplayerWins: 3, bestStreak: 2},
   {
     userId: "mira",
     username: "Mira",
@@ -85,15 +86,17 @@ const leaderboardRows: BridgeLeaderboardEntry[] = [
     level: 8,
     xp: 2220,
     totalWins: 29,
+    multiplayerWins: 17,
     bestStreak: 9,
   },
-  {userId: "tal", username: "Tal", level: 6, xp: 1540, totalWins: 21, bestStreak: 6},
+  {userId: "tal", username: "Tal", level: 6, xp: 1540, totalWins: 21, multiplayerWins: 9, bestStreak: 6},
   ...Array.from({length: 20}, (_, index) => ({
     userId: `solver-${index + 1}`,
     username: `Solver ${index + 1}`,
     level: 2 + (index % 7),
     xp: 360 + index * 85,
     totalWins: 4 + index,
+    multiplayerWins: 1 + index,
     bestStreak: 1 + (index % 11),
   })),
 ];
@@ -267,7 +270,7 @@ export const createFakeHostServices = ({
       /** Provides profile behavior. */
       const profile = snapshot.profile;
       /** Provides coins earned behavior. */
-      const coinsEarned = isCorrect ? (gameMode === "challenge" ? 75 : 50) : 0;
+      const coinsEarned = isCorrect ? getSoloWinCoins(gameMode, undefined) : 0;
       /** Provides next classic index behavior. */
       const nextClassicIndex =
         gameMode === "classic" && isCorrect ? (profile?.classicIndex ?? 1) + 1 : profile?.classicIndex;
@@ -338,12 +341,12 @@ export const createFakeHostServices = ({
       }
 
       /** Provides new coins behavior. */
-      const newCoins = spend(50);
+      const newCoins = spend(SOLO_COIN_COSTS.hint);
       updateProfile({totalHintsUsed: (snapshot.profile?.totalHintsUsed ?? 0) + 1});
       return {
         revealedLetter: answerLetters[revealIndex],
         index: revealIndex,
-        coinsCost: 50,
+        coinsCost: SOLO_COIN_COSTS.hint,
         newCoins,
       };
     },
@@ -404,6 +407,9 @@ export const createFakeHostServices = ({
       const rows = [...leaderboardRows];
       if (type === "totalWins") {
         return rows.sort((left, right) => right.totalWins - left.totalWins);
+      }
+      if (type === "multiplayerWins") {
+        return rows.sort((left, right) => (right.multiplayerWins ?? 0) - (left.multiplayerWins ?? 0));
       }
       if (type === "bestStreak") {
         return rows.sort((left, right) => right.bestStreak - left.bestStreak);

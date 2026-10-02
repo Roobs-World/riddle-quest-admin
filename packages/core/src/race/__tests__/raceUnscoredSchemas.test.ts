@@ -13,8 +13,7 @@ const corruptions = [{correctCount: 1}, {totalPenaltyMs: 1000, adjustedElapsedMs
   {adjustedElapsedMs: 1000}, {events: [{sequence: 0, type: "correct", riddlePosition: 0, penaltyAddedMs: 0,
     totalPenaltyMs: 0, correctCount: 1, wallElapsedMs: 0, adjustedElapsedMs: 0}]},
   ...[{position: 1}, {guessesUsed: 1, guessesRemaining: 4}, {guessesRemaining: 4}, {hintAvailable: false},
-    {revealedLetters: [{index: 0, letter: "t"}]}].map(prompt => ({currentRiddle: {...fixture("prepared").currentRiddle!, ...prompt}})),
-  {currentRiddle: null}];
+    {revealedLetters: [{index: 0, letter: "t"}]}].map(prompt => ({currentRiddle: {...fixture("prepared").currentRiddle!, ...prompt}}))];
 
 it.each((["prepared", "scheduled"] as const).flatMap(status => corruptions.map(invalid => ({status, invalid}))))("rejects independently malformed unscored projection %j", ({status, invalid}) => {
   expect(RaceRunViewSchema.safeParse({...fixture(status), ...invalid}).success).toBe(false);
@@ -24,6 +23,15 @@ it.each(["prepared", "scheduled"] as const)("accepts untouched %s, including leg
   expect(RaceRunViewSchema.safeParse(fixture(status)).success).toBe(true);
   expect(RaceRunViewSchema.safeParse({...fixture(status), serverNowMs: undefined, startsAtMs: undefined,
     preparationExpiresAtMs: undefined}).success).toBe(true);
+});
+
+it("withholds a prompt only for a countdown with a known authoritative start and observation", () => {
+  /** Live countdown metadata can remain answer-free until the shared start. */
+  const countdown = {...fixture("scheduled"), currentRiddle: null};
+  expect(RaceRunViewSchema.safeParse(countdown).success).toBe(true);
+  expect(RaceRunViewSchema.safeParse({...countdown, status: "prepared"}).success).toBe(false);
+  expect(RaceRunViewSchema.safeParse({...countdown, startsAtMs: undefined}).success).toBe(false);
+  expect(RaceRunViewSchema.safeParse({...countdown, serverNowMs: undefined}).success).toBe(false);
 });
 
 it.each([30000, 30001])("rejects preparation sampled at or after its known expiry: %s", serverNowMs => {

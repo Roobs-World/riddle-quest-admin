@@ -19,6 +19,7 @@
     "BADGE_STARTER": "INICIAL",
     "BADGE_POPULAR": "POPULAR",
     "BADGE_BEST_VALUE": "MEJOR OFERTA",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "No se puede cancelar esta suscripción."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "No se puede cancelar esta suscripción.",
+    "PACK_BUYING_POWER": "Hasta {hints} pistas o {continues} intentos adicionales."
   }
 }

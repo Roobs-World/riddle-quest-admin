@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Bon",
     "UNLOCKED_ALERT_MESSAGE": "Vérifiez votre profil pour voir vos nouveaux succès.",
     "UNLOCKED_ALERT_OK": "D'ACCORD",
-    "UNLOCKED_ALERT_TITLE": "Réalisation(s) débloquée(s) !"
+    "UNLOCKED_ALERT_TITLE": "Réalisation(s) débloquée(s) !",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Victoires : 10",
+        "DESCRIPTION": "Gagnez 10 énigmes"
+      },
+      "wins_250": {
+        "NAME": "Victoires : 250",
+        "DESCRIPTION": "Gagnez 250 énigmes"
+      },
+      "games_10": {
+        "NAME": "Énigmes : 10",
+        "DESCRIPTION": "Jouez à 10 énigmes"
+      },
+      "games_250": {
+        "NAME": "Énigmes : 250",
+        "DESCRIPTION": "Jouez à 250 énigmes"
+      },
+      "classic_5": {
+        "NAME": "Classique : 5",
+        "DESCRIPTION": "Terminez 5 niveaux classiques"
+      },
+      "classic_150": {
+        "NAME": "Classique : 150",
+        "DESCRIPTION": "Terminez 150 niveaux classiques"
+      },
+      "daily_3": {
+        "NAME": "Défis du jour : 3",
+        "DESCRIPTION": "Terminez 3 défis quotidiens"
+      },
+      "daily_365": {
+        "NAME": "Défis du jour : 365",
+        "DESCRIPTION": "Terminez 365 défis quotidiens"
+      },
+      "challenge_10": {
+        "NAME": "Victoires du jour : 10",
+        "DESCRIPTION": "Gagnez 10 défis quotidiens"
+      },
+      "challenge_100": {
+        "NAME": "Victoires du jour : 100",
+        "DESCRIPTION": "Gagnez 100 défis quotidiens"
+      },
+      "streak_60": {
+        "NAME": "Série : 60",
+        "DESCRIPTION": "Atteignez une série de victoires de 60 jours"
+      },
+      "xp_10000": {
+        "NAME": "XP : 10000",
+        "DESCRIPTION": "Gagnez 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Débloqué"
   }
 }

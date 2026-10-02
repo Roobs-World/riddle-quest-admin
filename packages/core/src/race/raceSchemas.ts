@@ -166,13 +166,13 @@ export const RaceRunViewSchema = z
     if (run.status === "active" && (run.correctCount >= run.rules.targetCorrect ||
       run.currentRiddle && run.correctCount > run.currentRiddle.position))
       context.issues.push({code: "custom", input: run, message: "Active score cannot exceed owned question progress or reach the target."});
-    /** Preparation and countdown expose the untouched first question, never accepted scoring. */
+    /** Countdown may withhold the first prompt; all unscored metadata remains untouched. */
     const unscored = run.status === "prepared" || run.status === "scheduled";
     if (unscored && (run.correctCount !== 0 || run.totalPenaltyMs !== 0 || run.adjustedElapsedMs !== 0 ||
-      run.events.length !== 0 || !run.currentRiddle || run.currentRiddle.position !== 0 ||
-      run.currentRiddle.guessesUsed !== 0 || run.currentRiddle.guessesRemaining !== run.rules.maxGuessesPerRiddle ||
-      run.currentRiddle.revealedLetters.length !== 0 || !run.currentRiddle.hintAvailable))
-      context.issues.push({code: "custom", input: run, message: "Unscored races must retain an untouched first question."});
+      run.events.length !== 0 || !prompt && (run.status !== "scheduled" || run.startsAtMs === undefined || run.serverNowMs === undefined) || prompt && (prompt.position !== 0 ||
+      prompt.guessesUsed !== 0 || prompt.guessesRemaining !== run.rules.maxGuessesPerRiddle ||
+      prompt.revealedLetters.length !== 0 || !prompt.hintAvailable)))
+      context.issues.push({code: "custom", input: run, message: "Unscored races must retain an untouched or withheld first question."});
     if (run.status === "prepared" && run.serverNowMs !== undefined && run.preparationExpiresAtMs !== undefined &&
       run.serverNowMs >= run.preparationExpiresAtMs)
       context.issues.push({code: "custom", input: run, message: "Expired preparation must be abandoned before projection."});

@@ -5,9 +5,12 @@
  * userId). Documents are written server-side only after a win in submitGuess.
  * Clients call `getLeaderboard` to retrieve the top players for a given stat.
  *
+ * Multiplayer rankings query canonical account totals through their dedicated index.
+ *
  * Leaderboard types:
  *  - "xp"          — highest cumulative XP across all modes
  *  - "totalWins"   â€” most games won
+ *  - "multiplayerWins" — most server-confirmed multiplayer victories
  *  - "bestStreak"  â€” longest win streak ever achieved
  */
 
@@ -100,6 +103,7 @@ function toSafeLeaderboardEntry(raw: Partial<LeaderboardEntry>, fallbackUserId: 
     xp,
     progressScore: computeProgressScore(level, xp),
     totalWins,
+    multiplayerWins: Math.max(0, Math.floor(asFiniteNumber(raw.multiplayerWins, 0))),
     bestStreak,
     updatedAt,
   };
@@ -127,6 +131,8 @@ interface UserDocForLeaderboard {
     xp?: number;
     /** Stores total wins. */
     totalWins?: number;
+    /** Server-confirmed multiplayer victories. */
+    multiplayerWins?: number;
     /** Stores best streak. */
     bestStreak?: number;
   };
@@ -157,6 +163,7 @@ function toLeaderboardEntryFromUserDoc(userId: string, data: UserDocForLeaderboa
     xp,
     progressScore: computeProgressScore(level, xp),
     totalWins,
+    multiplayerWins: data.stats?.multiplayerWins ?? 0,
     bestStreak,
     updatedAt: Date.now(),
   };
@@ -330,12 +337,22 @@ export const getLeaderboard = onCallWithSentry("getLeaderboard", browserCallable
   const limit = Math.min(data.limit ?? 50, 100);
 
   /** Provides valid types behavior. */
-  const validTypes: LeaderboardType[] = ["xp", "totalWins", "bestStreak"];
+  const validTypes: LeaderboardType[] = ["xp", "totalWins", "bestStreak", "multiplayerWins"];
   if (!validTypes.includes(type)) {
-    throw new HttpsError("invalid-argument", "type must be one of: xp, totalWins, bestStreak.");
+    throw new HttpsError("invalid-argument", "type must be one of: xp, totalWins, bestStreak, multiplayerWins.");
   }
 
   try {
+    // Query canonical accounts directly so historical wins need no projection backfill.
+    // This bounded single-field index is explicitly enabled beneath the unindexed stats map.
+    if (type === "multiplayerWins") {
+      /** Accounts ranked directly by their committed multiplayer victories. */
+      const snapshot = await admin.firestore().collection("users")
+        .where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc").limit(limit).get();
+      /** Public rows derived from canonical account documents. */
+      const entries = snapshot.docs.map(doc => toLeaderboardEntryFromUserDoc(doc.id, doc.data() as UserDocForLeaderboard));
+      return validateCallableResponse(GetLeaderboardResponseSchema, {entries, requestingUserId}, "getLeaderboard");
+    }
     /** Provides base ref behavior. */
     const baseRef = admin.firestore().collection("leaderboard");
     /** Provides candidate limit behavior. */

@@ -9,7 +9,7 @@ import {RevealedHintsSchema} from "../validation/revealedHints";
  */
 import {z} from "zod";
 import {BRIDGE_PROTOCOL_VERSION} from "./constants";
-import {UsernameSchema} from "../validation/requestSchemas";
+import {LeaderboardTypeSchema, UsernameSchema} from "../validation/requestSchemas";
 import {
   AbandonRaceRunRequestSchema,
   ListRaceCategoriesRequestSchema,
@@ -180,6 +180,7 @@ export const BridgeLeaderboardEntrySchema = z.object({
   level: z.number().int().positive(),
   xp: z.number().int().nonnegative(),
   totalWins: z.number().int().nonnegative(),
+  multiplayerWins: z.number().int().nonnegative().optional(),
   bestStreak: z.number().int().nonnegative(),
 });
 /** A normalized leaderboard row suitable for rendering in the game iframe. */
@@ -324,11 +325,11 @@ export const GameRequestPurchaseMessageSchema = envelope(
   }),
 );
 
-/** Restricts leaderboard requests to the three supported ranking projections. */
+/** Restricts leaderboard requests to the supported ranking projections. */
 export const GameLoadLeaderboardMessageSchema = envelope(
   "game:loadLeaderboard",
   z.object({
-    leaderboardType: z.enum(["xp", "totalWins", "bestStreak"]),
+    leaderboardType: LeaderboardTypeSchema,
   }),
 );
 

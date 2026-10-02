@@ -295,7 +295,7 @@ export class LocalSoloAuthority {
       game.attemptsUsed = attempt;
       next.progression.totalGuesses += 1;
       if (isCorrect) {
-        return this.rememberResult(completeYouTubeGame(next, game.mode, true, attempt, game.dailyDate));
+        return this.rememberResult(completeYouTubeGame(next, game.mode, true, attempt, game.dailyDate, riddle.difficultyBand));
       }
       /** Provides maximum behavior. */
       const maximum = game.hasUsedContinue ? 6 : 5;

@@ -19,6 +19,7 @@
     "BADGE_STARTER": "СТАРТОВЫЙ",
     "BADGE_POPULAR": "ПОПУЛЯРНЫЙ",
     "BADGE_BEST_VALUE": "ЛУЧШАЯ ЦЕНА",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Отмена этой подписки недоступна."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Отмена этой подписки недоступна.",
+    "PACK_BUYING_POWER": "До {hints} подсказок или {continues} дополнительных попыток."
   }
 }

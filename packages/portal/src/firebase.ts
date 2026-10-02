@@ -197,7 +197,7 @@ export const skipRiddle = httpsCallable<
 export const getLeaderboard = httpsCallable<
   {
     /** Stores type. */
-    type: "xp" | "totalWins" | "bestStreak";
+    type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
     /** Stores limit. */
     /** Stores limit. */
     limit?: number;
@@ -217,6 +217,8 @@ export const getLeaderboard = httpsCallable<
       xp: number;
       /** Stores total wins. */
       totalWins: number;
+      /** Server-confirmed multiplayer victories. */
+      multiplayerWins?: number;
       /** Stores best streak. */
       bestStreak: number;
     }>;
@@ -519,3 +521,6 @@ export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntry
 export const joinLiveRace = httpsCallable<import("@qwordly/core/race").JoinLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "joinLiveRace");
 /** Reads live progress and commits idempotent commands. */
 export const updateLiveRace = httpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "updateLiveRace");
+
+/** Reads a server-validated private PvP invitation from platform entry data. */
+export const getLiveRaceChallenge = httpsCallable<{/** Server invitation handle. */ challengeId: string}, import("@qwordly/core/race").LiveRaceChallenge>(raceFunctions, "getLiveRaceChallenge");

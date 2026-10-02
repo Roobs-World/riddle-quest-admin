@@ -156,9 +156,37 @@ const user = () => ({
 });
 
 describe("atomic authoritative completion", () => {
+  it.each([['easy', 25], ['medium', 40], ['hard', 60]] as const)("settles a %s Classic reward once across replay", async (difficultyBand, expectedCoins) => {
+    mockFinalizeAuthoritativeSession.mockResolvedValue({
+      attempts: 2, lastGuess: "piano", answer: "piano", locale: "en",
+      completionKey: "classic:1", classicIndex: 1, terminal: true, difficultyBand,
+    });
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    const replay = await completeAuthoritativeGame(request, {uid: USER_ID});
+    expect(first.rewardBreakdown?.baseWinCoins).toBe(expectedCoins);
+    expect(replay).toEqual(first);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(300 + expectedCoins);
+  });
+
+  it.each([['easy', 75], ['medium', 100], ['hard', 125]] as const)("settles a %s Daily reward once with a separate streak bonus", async (difficultyBand, expectedCoins) => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    mockFinalizeAuthoritativeSession.mockResolvedValue({
+      attempts: 2, lastGuess: "piano", answer: "piano", locale: "en",
+      completionKey: "challenge:2026-08-12", challengeDate: "2026-08-12", terminal: true, difficultyBand,
+    });
+    const request = {riddleId: "daily-1", gameMode: "challenge" as const, sessionToken: TOKEN_A};
+    const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    expect(first.rewardBreakdown).toMatchObject({baseWinCoins: expectedCoins, dailyStreakBonus: 20});
+    await expect(completeAuthoritativeGame(request, {uid: USER_ID})).resolves.toEqual(first);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(300 + expectedCoins + 20 + 50);
+  });
+
   beforeEach(() => {
     mockDocuments.clear();
     jest.clearAllMocks();
+    mockUpdateLeaderboardEntry.mockReset();
+    mockTriggerClassicRiddleGenerationIfNeeded.mockReset();
     mockFindNewAchievements.mockReturnValue([]);
     mockDocuments.set(`users/${USER_ID}`, user());
     mockFinalizeAuthoritativeSession.mockResolvedValue({
@@ -174,6 +202,31 @@ describe("atomic authoritative completion", () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it("finishes independent Classic projections in the slower task's latency", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    const started = Date.now();
+    mockUpdateLeaderboardEntry.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 250)));
+    mockTriggerClassicRiddleGenerationIfNeeded.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 400)));
+    const completion = completeAuthoritativeGame({riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN_A}, {uid: USER_ID});
+    await jest.runAllTimersAsync();
+    expect(await completion).toMatchObject({isCorrect: true});
+    expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(1);
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(1);
+    expect(Date.now() - started).toBe(400);
+  });
+
+  it("awaits supply recovery even when the independent leaderboard projection fails", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    const started = Date.now();
+    mockUpdateLeaderboardEntry.mockImplementationOnce(() => new Promise((_resolve, reject) => setTimeout(() => reject(new Error("projection offline")), 250)));
+    mockTriggerClassicRiddleGenerationIfNeeded.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 400)));
+    const completion = completeAuthoritativeGame({riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN_A}, {uid: USER_ID});
+    await jest.runAllTimersAsync();
+    expect(await completion).toMatchObject({isCorrect: true});
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(1);
+    expect(Date.now() - started).toBe(400);
   });
 
   it("commits rewards, progression, and receipt once across completion retries", async () => {
@@ -211,6 +264,34 @@ describe("atomic authoritative completion", () => {
     expect(afterFirst).toMatchObject({coins: 325, progress: {classicIndex: 2}, stats: {gamesPlayed: 1, wins: 1}});
     expect(mockDocuments.get(completionBindingPath("classic:1"))).toEqual(newerPointer);
     expect(mockDocuments.get(completionReceiptPath("classic:1"))).not.toHaveProperty("expiresAt");
+  });
+
+  it("atomically grants the new win/play milestones and replays their coin rewards once", async () => {
+    /** Real rules evaluate the post-completion player inside the reward transaction. */
+    const actual = jest.requireActual<typeof import("../gameplay/achievements")>("../gameplay/achievements");
+    mockFindNewAchievements.mockImplementation((...args) => actual.findNewAchievements(
+      ...args as Parameters<typeof actual.findNewAchievements>,
+    ));
+    /** Nine wins place the next successful completion on both new boundaries. */
+    const player = user();
+    Object.assign(player.stats, {gamesPlayed: 9, wins: 9, totalWins: 9, totalGuessesInWins: 18});
+    mockDocuments.set(`users/${USER_ID}`, {...player,
+      unlockedAchievements: ["first_win", "wins_5", "win_rate_80", "efficient_10"].map(
+        (achievementId) => ({achievementId, unlockedAt: 1}),
+      ),
+    });
+    /** Correlated completion retries must return the original grant receipt. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    /** Completion receipt containing both milestone grants. */
+    const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    expect(first.newlyUnlockedAchievementIds).toEqual(["wins_10", "games_10"]);
+    expect(first.coinsEarned).toBe(75);
+    /** Fully committed player snapshot used to detect replay mutations. */
+    const committed = structuredClone(mockDocuments.get(`users/${USER_ID}`));
+    expect(committed?.coins).toBe(375);
+    expect(await completeAuthoritativeGame(request, {uid: USER_ID})).toEqual(first);
+    expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(committed);
+    mockFindNewAchievements.mockImplementation(() => []);
   });
 
   it("pays ordinary badges but not hint badges discovered during completion", async () => {

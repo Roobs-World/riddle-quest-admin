@@ -1,7 +1,9 @@
+import type {AchievementMilestoneId} from "@qwordly/core/game";
 import type {PlayerProgress, PlayerStats} from "@qwordly/core/validation";
 
 /** Identifies the supported criteria used to unlock an achievement. */
 export type AchievementCriteriaType =
+  | AchievementMilestoneId
   | "first_win"
   | "wins_5"
   | "wins_25"

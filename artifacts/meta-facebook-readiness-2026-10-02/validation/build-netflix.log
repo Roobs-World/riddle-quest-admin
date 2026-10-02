@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.268807ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.09091ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.293442ms)
+✔ rejects imports between different target owners (1.479842ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.707119ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.943417ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.028618ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.688123ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.036042ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.801789ms)
+✔ aggregates violations in deterministic file and source order (1.63131ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.868777
+Web Target boundary audit passed (258 files, 1077 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 60 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-netflix/youtube-content-manifest.json                   0.48 kB │ gzip:  0.29 kB
+dist-netflix/index.html                                      0.81 kB │ gzip:  0.41 kB
+dist-netflix/third-party-licenses.txt                        1.79 kB │ gzip:  0.90 kB
+dist-netflix/assets/index-DhsmAOC4.css                       6.92 kB │ gzip:  2.30 kB
+dist-netflix/assets/rolldown-runtime-Czjbc987.js             0.17 kB │ gzip:  0.14 kB
+dist-netflix/assets/core-game-mef9IOwv.js                    0.67 kB │ gzip:  0.39 kB
+dist-netflix/assets/_virtual_playable-pack-en-FAiIFWUh.js   42.14 kB │ gzip: 14.93 kB
+dist-netflix/assets/_virtual_playable-pack-pt-D_5vkt3F.js   43.29 kB │ gzip: 15.56 kB
+dist-netflix/assets/_virtual_playable-pack-nl-CCCfHqRE.js   43.48 kB │ gzip: 15.54 kB
+dist-netflix/assets/_virtual_playable-pack-id-Dg3x4WCO.js   43.82 kB │ gzip: 15.31 kB
+dist-netflix/assets/_virtual_playable-pack-it-iQmdtHbX.js   43.89 kB │ gzip: 15.55 kB
+dist-netflix/assets/_virtual_playable-pack-es-BxHzkpXY.js   44.04 kB │ gzip: 15.55 kB
+dist-netflix/assets/_virtual_playable-pack-de-BDrpSJDN.js   44.29 kB │ gzip: 16.09 kB
+dist-netflix/assets/_virtual_playable-pack-tr-DREEHmnV.js   44.48 kB │ gzip: 15.94 kB
+dist-netflix/assets/_virtual_playable-pack-pl-DYEKp6Gv.js   44.56 kB │ gzip: 16.41 kB
+dist-netflix/assets/_virtual_playable-pack-fr-BDUtisZr.js   44.99 kB │ gzip: 15.95 kB
+dist-netflix/assets/_virtual_playable-pack-ja-DOnlcWgn.js   45.54 kB │ gzip: 17.05 kB
+dist-netflix/assets/_virtual_playable-pack-vi-D6FdgFAT.js   46.60 kB │ gzip: 16.39 kB
+dist-netflix/assets/_virtual_playable-pack-ko-BYuMfdY7.js   46.89 kB │ gzip: 16.69 kB
+dist-netflix/assets/_virtual_playable-pack-ar-DoVHyxu-.js   49.27 kB │ gzip: 16.19 kB
+dist-netflix/assets/_virtual_playable-pack-ru-CWjCt71_.js   55.26 kB │ gzip: 17.93 kB
+dist-netflix/assets/_virtual_playable-pack-hi-KOOrH6D-.js   65.46 kB │ gzip: 17.72 kB
+dist-netflix/assets/index-BJSGXpok.js                      103.76 kB │ gzip: 34.29 kB
+dist-netflix/assets/vendor-react-CzolT8tg.js               218.95 kB │ gzip: 68.34 kB
+
+✓ built in 959ms
+$ node scripts/audit-standalone-artifact.mjs netflix dist-netflix
+netflix artifact audit passed: 24 files, 1.03 MiB

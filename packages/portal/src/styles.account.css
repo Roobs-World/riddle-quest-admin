@@ -368,7 +368,14 @@
   padding-left: 0;
   list-style: none;
 }
+.game-modal.modal-leaderboard > h2 {
+  min-width: 0;
+  padding-inline: 24px;
+  overflow-wrap: anywhere;
+  font-size: clamp(20px, 7vw, 28px);
+}
 .leaderboard-panel {
+  min-width: 0;
   min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -439,12 +446,16 @@
 }
 .leaderboard-pagination {
   display: grid;
-  grid-template-columns: minmax(90px, 1fr) auto minmax(90px, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 12px;
   align-items: center;
   padding-top: 12px;
   text-align: center;
   font-weight: 800;
+}
+.leaderboard-pagination button {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .leaderboard-pagination button:last-child {
   justify-self: stretch;

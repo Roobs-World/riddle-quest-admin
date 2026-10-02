@@ -1,3 +1,4 @@
+import {LiveRaceInviteShare} from "./components/LiveRaceInviteShare";
 import {estimatedRaceServerNow} from "./logic/raceCountdown";
 import {liveRaceDeliveryDeadline, liveRaceCommandRejected} from "./logic/liveRaceDeliveryDeadline";
 import {useCallback, useEffect, useRef, useState} from "react";
@@ -13,10 +14,12 @@ import {editRaceInput} from "./logic/raceInput";
 import {createRaceAttempt, findFirstEditableRaceSlot, getRaceLetterStates} from "./logic/racePresentation";
 
 /** Lobby and live race presentation use one target-owned authenticated transport. */
-export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onClose}: {
+export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, coins, ownerId, onClose}: {
   /** Approved target transport. */ transport: LiveRaceCapability;
   /** Exact content language. */ locale: RaceLocale;
   /** Selected shared riddle category. */ categoryId: RaceCategoryId;
+  /** Reserves a private lobby for a platform invitation. */ createChallenge?: boolean;
+  /** Accepts the existing private lobby after the recipient confirms. */ challengeId?: string;
   /** Current profile balance. */ coins: number;
   /** Account lifetime owning result refresh. */ ownerId?: string;
   /** Return to the multiplayer intro. */ onClose: () => void;
@@ -52,10 +55,12 @@ export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onC
     /** Background observations may be superseded by an owned player command. */
     poll: boolean;
   } | null>(null);
-  /** Consecutive background failures determine a bounded reconnect delay. */
-  const pollFailures = useRef(0);
+  /** A timed-out receipt may recover only while no newer delivery has taken ownership. */
+  const latestDelivery = useRef<object | null>(null);
+  /** Consecutive delivery failures determine a bounded reconnect delay. */
+  const deliveryFailures = useRef(0);
   /** Monotonic deadline prevents repeated requests during an outage. */
-  const nextPollAt = useRef(0);
+  const nextDeliveryAt = useRef(0);
   /** Prevents updates after the mounted journey is retired. */
   const active = useRef(true);
   /** Retires the lobby immediately when the player closes it. */
@@ -100,33 +105,38 @@ export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onC
   const deliver = useCallback(async () => {
     /** Stable command selected before starting an asynchronous delivery. */
     const command = pending.current;
-    if (!active.current || closed.current || inFlight.current && (!inFlight.current.poll || !command)) return;
+    if (!active.current || closed.current || ["result", "cancelled"].includes(viewRef.current?.phase ?? "") ||
+      inFlight.current && (!inFlight.current.poll || !command)) return;
     /** Receipt ownership prevents a superseded poll from replacing an accepted answer. */
     const delivery = {poll: Boolean(viewRef.current && !command)};
     /** Definitively rejected commands reconcile against the current authoritative question. */
     let reconcile = false;
     inFlight.current = delivery;
+    latestDelivery.current = delivery;
     if (command || !viewRef.current) setBusy(true);
-    try {
-      /** Viewer-specific result returned by the selected platform adapter. */
-      const result = await liveRaceDeliveryDeadline(!viewRef.current ? transport.join({locale, categoryId, requestId: requestId.current}) :
-        transport.update(command ?? {ticketId: viewRef.current.ticketId, action: "poll", requestId: createRequestId("live-poll")}),
-        Boolean(viewRef.current && !command), late => {
-          // A timed-out join may still establish a seat after the player has closed the lobby.
-          if ((closed.current || !active.current) && !["result", "cancelled"].includes(late.phase))
-            void transport.update({ticketId: late.ticketId, action: "leave", requestId: leaveId.current}).catch(() => {});
-        });
+    /** Accepts an owned receipt; late superseded deliveries cannot rewind gameplay. */
+    const accept = (result: LiveRaceView) => {
       if (closed.current || !active.current) {
         if (!["result", "cancelled"].includes(result.phase)) void transport.update({ticketId: result.ticketId, action: "leave", requestId: leaveId.current}).catch(() => {});
         return;
       }
-      if (inFlight.current !== delivery) return;
+      if (latestDelivery.current !== delivery) return;
       apply(result);
       if (pending.current === command) pending.current = null;
       refreshRequired.current = false;
-      pollFailures.current = 0;
-      nextPollAt.current = 0;
+      deliveryFailures.current = 0;
+      nextDeliveryAt.current = 0;
       setError(false);
+    };
+    try {
+      /** Viewer-specific result returned by the selected platform adapter. */
+      const result = await liveRaceDeliveryDeadline(!viewRef.current ? transport.join({locale, categoryId, requestId: requestId.current, ...(createChallenge ? {createChallenge: true} : {}), ...(challengeId ? {challengeId} : {})}) :
+        transport.update(command ?? {ticketId: viewRef.current.ticketId, action: "poll", requestId: createRequestId("live-poll")}),
+        Boolean(viewRef.current && !command), late => {
+          // Owned late commands can recover before retry; polls remain superseded observations.
+          if (closed.current || !active.current || !delivery.poll && pending.current === command) accept(late);
+        });
+      accept(result);
     } catch (failure) {
       if (inFlight.current === delivery && active.current && !closed.current) {
         if (command && liveRaceCommandRejected(failure)) {
@@ -134,10 +144,8 @@ export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onC
           refreshRequired.current = true;
           reconcile = true;
         }
-        if (!command) {
-          pollFailures.current += 1;
-          nextPollAt.current = performance.now() + Math.min(8000, 1000 * 2 ** Math.min(pollFailures.current, 3));
-        }
+        deliveryFailures.current += 1;
+        nextDeliveryAt.current = performance.now() + Math.min(8000, 1000 * 2 ** Math.min(deliveryFailures.current, 3));
         setError(true);
       }
     }
@@ -150,21 +158,17 @@ export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onC
         }
       }
     }
-  }, [transport, locale, categoryId, apply]);
+  }, [transport, locale, categoryId, createChallenge, challengeId, apply]);
   useEffect(() => {
     active.current = true;
     void deliver();
-    /** One-second live progress polling interval. */
+    /** Periodic server observations also retry retained commands after their backoff. */
     const timer = window.setInterval(() => {
-      if (!pending.current && performance.now() >= nextPollAt.current && !["result", "cancelled"].includes(viewRef.current?.phase ?? "")) void deliver();
+      if (performance.now() >= nextDeliveryAt.current && !["result", "cancelled"].includes(viewRef.current?.phase ?? "")) void deliver();
     }, 1000);
-    /** Short animation interval for the five-second countdown. */
-    const clock = window.setInterval(() => {
-      if (["countdown", "racing"].includes(viewRef.current?.phase ?? "")) setNow(serverNow());
-    }, 100);
     /** Reconnect and foreground transitions promptly reconcile the original owned command. */
     const resume = () => {
-      if (document.visibilityState !== "hidden") {nextPollAt.current = 0; void deliver();}
+      if (document.visibilityState !== "hidden") {nextDeliveryAt.current = 0; void deliver();}
     };
     window.addEventListener("online", resume);
     document.addEventListener("visibilitychange", resume);
@@ -172,7 +176,6 @@ export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onC
     return () => {
       active.current = false;
       window.clearInterval(timer);
-      window.clearInterval(clock);
       window.removeEventListener("online", resume);
       document.removeEventListener("visibilitychange", resume);
       // Strict Mode reactivates this lifetime synchronously; only a real unmount retires its seat.
@@ -185,6 +188,23 @@ export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onC
       });
     };
   }, [deliver]);
+  useEffect(() => {
+    if (view?.phase !== "countdown" || view.startsAtMs === null) return;
+    /** The lobby clock stops updating the gameplay owner as soon as racing begins. */
+    const startsAtMs = view.startsAtMs;
+    /** Countdown transitions remain independent of delayed progress polls. */
+    const timer = window.setInterval(() => {
+      /** Monotonic countdown sampling stays independent of the device wall clock. */
+      const sampledNow = serverNow();
+      setNow(sampledNow);
+      if (sampledNow >= startsAtMs) {
+        window.clearInterval(timer);
+        // The authority releases the first prompt at zero; request it without a full poll delay.
+        if (!inFlight.current && performance.now() >= nextDeliveryAt.current) void deliver();
+      }
+    }, 100);
+    return () => window.clearInterval(timer);
+  }, [view?.phase, view?.startsAtMs, deliver]);
   /** Leaves the owned seat and returns to the multiplayer intro. */
   const close = () => {
     if (closed.current) return;
@@ -232,20 +252,22 @@ export function LiveRaceGame({transport, locale, categoryId, coins, ownerId, onC
     {(!view || phase === "searching" || phase === "countdown") && <div className="live-race-lobby">
       <div className="live-race-self">{view ? identity(view.player) : <p role="status">{tr("Accessibility.LOADING")}</p>}</div>
       <div className="live-race-status" role="status" aria-live="polite">
-        <h2>{tr(view?.phase === "countdown" ? "RaceTo10.LIVE_STARTING" : "RaceTo10.LIVE_FINDING")}</h2>
-        {view?.phase === "countdown" ? <strong className="live-race-countdown">{countdown}</strong> : <p>{tr("RaceTo10.LIVE_WAIT")}</p>}
+        <h2>{tr(view?.phase === "countdown" ? "RaceTo10.LIVE_STARTING" : view?.challengeId ? "RaceTo10.CHALLENGE_FRIEND" : "RaceTo10.LIVE_FINDING")}</h2>
+        {view?.phase === "countdown" ? <strong className="live-race-countdown">{countdown}</strong> : <p>{tr(view?.challengeId ? "RaceTo10.LIVE_FRIEND_WAIT" : "RaceTo10.LIVE_WAIT")}</p>}
+      {view?.phase === "searching" && view.challengeId && <LiveRaceInviteShare challengeId={view.challengeId} />}
       </div>
       <div className="live-race-rival">{view?.opponent && identity(view.opponent)}</div>
     </div>}
     {phase === "racing" && view?.run && <RaceGameplay live viewportRef={viewportRef} gameplayRef={gameplayRef}
       run={view.opponent?.bot && view.run.opponent ? {...view.run, opponent: {...view.run.opponent, displayName: tr("RaceTo10.LIVE_BOT")}} : view.run} adjustedNow={Math.max(0, now - (view.startsAtMs ?? now)) + view.run.totalPenaltyMs}
+      liveClock={{...clockAnchor.current, startsAtMs: view.startsAtMs ?? now}}
       opponentCorrect={view.opponent?.correctCount ?? 0} feedback={null} coins={coins} currentLetters={draft.letters}
       activeSlotIndex={draft.activeSlotIndex} guesses={guesses} letterStates={getRaceLetterStates(guesses)}
       pending={busy || Boolean(pending.current)} requiresRunRefresh={Boolean(pending.current) || refreshRequired.current} allowTypingWhilePending={false}
       onClose={close} onSelectSlot={index => input("slot", index)} onLetter={letter => input("letter", letter)}
       onText={text => input("text", text)} onBackspace={() => input("backspace")} onSubmit={() => command("guess")}
       onHint={() => command("hint")} onSkip={() => command("skip")} />}
-    {phase === "racing" && view?.run && !view.run.currentRiddle && <p role="status">{tr("RaceTo10.LIVE_WAITING_FINISH")}</p>}
+    {phase === "racing" && view?.phase === "racing" && view.run && !view.run.currentRiddle && <p role="status">{tr("RaceTo10.LIVE_WAITING_FINISH")}</p>}
     {view?.phase === "result" && <div className="race-panel race-result live-race-victory" role="status">
       <h2>{tr(view.result === "win" ? "RaceTo10.RESULT_PLAYER_WIN" : view.result === "loss" ? "RaceTo10.RESULT_OPPONENT_WIN" : "RaceTo10.RESULT_TIE")}</h2>
       <div className="race-result-score"><span>{view.player.displayName}<strong>{view.player.correctCount}/10</strong></span>

@@ -6,6 +6,7 @@ import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from ".
 import {raceBoardAttempts} from "../logic/raceBoardAttempts";
 import {RaceScoreboard} from "./RaceScoreboard";
 import {NativeAnswerInput} from "./NativeAnswerInput";
+import type {LiveRaceClockAnchor} from "./LiveRaceElapsedTime";
 
 /** Renders the active riddle, controlled input, actions, and multiplayer rail. */
 export function RaceGameplay({
@@ -14,6 +15,7 @@ export function RaceGameplay({
   run,
   live = false,
   adjustedNow,
+  liveClock,
   opponentCorrect,
   feedback,
   coins,
@@ -43,6 +45,8 @@ export function RaceGameplay({
   live?: boolean;
   /** Stores adjusted now. */
   adjustedNow: number;
+  /** Live clock animates without rerendering the answer controls. */
+  liveClock?: LiveRaceClockAnchor;
   /** Server-confirmed opponent score. */
   opponentCorrect: number;
   /** Stores feedback. */
@@ -88,6 +92,7 @@ export function RaceGameplay({
         <RaceScoreboard live={live}
           run={run}
           adjustedNow={adjustedNow}
+          liveClock={liveClock}
           opponentCorrect={opponentCorrect}
           feedback={feedback}
           coins={coins}
@@ -131,7 +136,7 @@ export function RaceGameplay({
         )}
         {!run.currentRiddle && run.status !== "active" && (
           <p className="race-outcome-loading" role="status">
-            {tr("RaceTo10.RESULTS_LOADING")}
+            {tr(live && run.status === "scheduled" ? "Accessibility.LOADING" : "RaceTo10.RESULTS_LOADING")}
           </p>
         )}
         <div className="game-input-actions race-actions">

@@ -113,6 +113,7 @@
     "LIVE_BOT": "Raadselbot",
     "LIVE_REWARD": "+{coins} munten",
     "LIVE_MODE": "Live PvP",
-    "LIVE_WAITING_FINISH": "Wachten tot je tegenstander klaar is…"
+    "LIVE_WAITING_FINISH": "Wachten tot je tegenstander klaar is…",
+    "LIVE_FRIEND_WAIT": "Wachten tot je vriend accepteert. Deze uitnodiging verloopt na 15 minuten."
   }
 }

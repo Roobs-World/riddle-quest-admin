@@ -113,6 +113,7 @@
     "LIVE_BOT": "Bot de enigmas",
     "LIVE_REWARD": "+{coins} moedas",
     "LIVE_MODE": "PvP ao vivo",
-    "LIVE_WAITING_FINISH": "Aguardando seu adversário terminar…"
+    "LIVE_WAITING_FINISH": "Aguardando seu adversário terminar…",
+    "LIVE_FRIEND_WAIT": "A aguardar que o teu amigo aceite. Este convite expira após 15 minutos."
   }
 }

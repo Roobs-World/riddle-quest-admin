@@ -8,6 +8,57 @@
     "NICE_BUTTON": "素敵",
     "UNLOCKED_ALERT_MESSAGE": "新しい実績を確認するにはプロフィールをチェックしてください。",
     "UNLOCKED_ALERT_OK": "わかりました",
-    "UNLOCKED_ALERT_TITLE": "実績のロックが解除されました!"
+    "UNLOCKED_ALERT_TITLE": "実績のロックが解除されました!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "勝利：10",
+        "DESCRIPTION": "なぞなぞで10回勝利する"
+      },
+      "wins_250": {
+        "NAME": "勝利：250",
+        "DESCRIPTION": "なぞなぞで250回勝利する"
+      },
+      "games_10": {
+        "NAME": "なぞなぞ：10",
+        "DESCRIPTION": "なぞなぞを10回プレイする"
+      },
+      "games_250": {
+        "NAME": "なぞなぞ：250",
+        "DESCRIPTION": "なぞなぞを250回プレイする"
+      },
+      "classic_5": {
+        "NAME": "クラシック：5",
+        "DESCRIPTION": "クラシックのレベルを5個クリアする"
+      },
+      "classic_150": {
+        "NAME": "クラシック：150",
+        "DESCRIPTION": "クラシックのレベルを150個クリアする"
+      },
+      "daily_3": {
+        "NAME": "デイリー：3",
+        "DESCRIPTION": "デイリーチャレンジを3回クリアする"
+      },
+      "daily_365": {
+        "NAME": "デイリー：365",
+        "DESCRIPTION": "デイリーチャレンジを365回クリアする"
+      },
+      "challenge_10": {
+        "NAME": "デイリー勝利：10",
+        "DESCRIPTION": "デイリーチャレンジで10回勝利する"
+      },
+      "challenge_100": {
+        "NAME": "デイリー勝利：100",
+        "DESCRIPTION": "デイリーチャレンジで100回勝利する"
+      },
+      "streak_60": {
+        "NAME": "連勝：60",
+        "DESCRIPTION": "60日間の連勝を達成する"
+      },
+      "xp_10000": {
+        "NAME": "XP：10000",
+        "DESCRIPTION": "10000 XPを獲得する"
+      }
+    },
+    "UNLOCKED_LABEL": "解除済み"
   }
 }

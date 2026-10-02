@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Tốt",
     "UNLOCKED_ALERT_MESSAGE": "Kiểm tra hồ sơ của bạn để xem các thành tích mới của bạn.",
     "UNLOCKED_ALERT_OK": "ĐƯỢC RỒI",
-    "UNLOCKED_ALERT_TITLE": "Thành tích đã được mở khóa!"
+    "UNLOCKED_ALERT_TITLE": "Thành tích đã được mở khóa!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Chiến thắng: 10",
+        "DESCRIPTION": "Thắng 10 câu đố"
+      },
+      "wins_250": {
+        "NAME": "Chiến thắng: 250",
+        "DESCRIPTION": "Thắng 250 câu đố"
+      },
+      "games_10": {
+        "NAME": "Câu đố: 10",
+        "DESCRIPTION": "Chơi 10 câu đố"
+      },
+      "games_250": {
+        "NAME": "Câu đố: 250",
+        "DESCRIPTION": "Chơi 250 câu đố"
+      },
+      "classic_5": {
+        "NAME": "Cổ điển: 5",
+        "DESCRIPTION": "Hoàn thành 5 màn cổ điển"
+      },
+      "classic_150": {
+        "NAME": "Cổ điển: 150",
+        "DESCRIPTION": "Hoàn thành 150 màn cổ điển"
+      },
+      "daily_3": {
+        "NAME": "Hằng ngày: 3",
+        "DESCRIPTION": "Hoàn thành 3 thử thách hằng ngày"
+      },
+      "daily_365": {
+        "NAME": "Hằng ngày: 365",
+        "DESCRIPTION": "Hoàn thành 365 thử thách hằng ngày"
+      },
+      "challenge_10": {
+        "NAME": "Thắng hằng ngày: 10",
+        "DESCRIPTION": "Thắng 10 thử thách hằng ngày"
+      },
+      "challenge_100": {
+        "NAME": "Thắng hằng ngày: 100",
+        "DESCRIPTION": "Thắng 100 thử thách hằng ngày"
+      },
+      "streak_60": {
+        "NAME": "Chuỗi thắng: 60",
+        "DESCRIPTION": "Đạt chuỗi thắng 60 ngày"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Kiếm 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Đã mở khóa"
   }
 }

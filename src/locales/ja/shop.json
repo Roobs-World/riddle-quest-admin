@@ -19,6 +19,7 @@
     "BADGE_STARTER": "スターター",
     "BADGE_POPULAR": "人気",
     "BADGE_BEST_VALUE": "最もお得",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "このサブスクリプションは解約できません。"
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "このサブスクリプションは解約できません。",
+    "PACK_BUYING_POWER": "ヒント最大{hints}回、または追加の挑戦{continues}回。"
   }
 }

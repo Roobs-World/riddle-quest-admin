@@ -286,6 +286,16 @@
     },
     {
       "collectionGroup": "users",
+      "fieldPath": "stats.multiplayerWins",
+      "indexes": [
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "users",
       "fieldPath": "unlockedAchievements",
       "indexes": []
     },

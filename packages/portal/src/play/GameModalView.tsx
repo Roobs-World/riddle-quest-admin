@@ -4,6 +4,7 @@ import "../styles.modal-shell.css";
 import "../styles.modal-rewards.css";
 import "../styles.modal-commerce.css";
 import "../styles.account.css";
+import "../styles.profile-details.css";
 import type {GameModal, GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
 import {SpinningWheel} from "./SpinningWheelLoader";
@@ -43,7 +44,7 @@ export type GameModalViewProps = {
   /** Stores on request skip. */
   onRequestSkip: () => void;
   /** Stores on request leaderboard. */
-  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak") => void;
+  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins") => void;
   /** Stores on update username. */
   onUpdateUsername: (username: string) => void;
   /** Stores on update avatar. */

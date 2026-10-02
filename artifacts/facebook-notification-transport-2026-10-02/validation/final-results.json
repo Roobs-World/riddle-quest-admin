@@ -1,0 +1,14 @@
+[
+  {
+    "check": "transport-lint-final",
+    "exitCode": 0
+  },
+  {
+    "check": "focused-tests-final",
+    "exitCode": 0
+  },
+  {
+    "check": "tsdoc-final",
+    "exitCode": 1
+  }
+]

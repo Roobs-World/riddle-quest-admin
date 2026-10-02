@@ -409,3 +409,6 @@
   outline: 3px solid #237d52;
   outline-offset: 3px;
 }
+
+.live-race-invite-share { margin: 18px 12px 0; }
+.live-race-invitation { border: 2px solid #7bc9ff; margin-bottom: 16px; }

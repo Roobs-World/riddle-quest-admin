@@ -113,6 +113,7 @@
     "LIVE_BOT": "Bot Câu đố",
     "LIVE_REWARD": "+{coins} xu",
     "LIVE_MODE": "PvP trực tiếp",
-    "LIVE_WAITING_FINISH": "Đang chờ đối thủ hoàn thành…"
+    "LIVE_WAITING_FINISH": "Đang chờ đối thủ hoàn thành…",
+    "LIVE_FRIEND_WAIT": "Đang chờ bạn của bạn chấp nhận. Lời mời này hết hạn sau 15 phút."
   }
 }

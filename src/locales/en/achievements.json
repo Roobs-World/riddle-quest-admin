@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Nice",
     "UNLOCKED_ALERT_MESSAGE": "Check your profile to see your new achievements.",
     "UNLOCKED_ALERT_OK": "OK",
-    "UNLOCKED_ALERT_TITLE": "Achievement(s) Unlocked!"
+    "UNLOCKED_ALERT_TITLE": "Achievement(s) Unlocked!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Wins: 10",
+        "DESCRIPTION": "Win 10 riddles"
+      },
+      "wins_250": {
+        "NAME": "Wins: 250",
+        "DESCRIPTION": "Win 250 riddles"
+      },
+      "games_10": {
+        "NAME": "Riddles: 10",
+        "DESCRIPTION": "Play 10 riddles"
+      },
+      "games_250": {
+        "NAME": "Riddles: 250",
+        "DESCRIPTION": "Play 250 riddles"
+      },
+      "classic_5": {
+        "NAME": "Classic: 5",
+        "DESCRIPTION": "Complete 5 classic levels"
+      },
+      "classic_150": {
+        "NAME": "Classic: 150",
+        "DESCRIPTION": "Complete 150 classic levels"
+      },
+      "daily_3": {
+        "NAME": "Daily: 3",
+        "DESCRIPTION": "Complete 3 daily challenges"
+      },
+      "daily_365": {
+        "NAME": "Daily: 365",
+        "DESCRIPTION": "Complete 365 daily challenges"
+      },
+      "challenge_10": {
+        "NAME": "Daily wins: 10",
+        "DESCRIPTION": "Win 10 daily challenges"
+      },
+      "challenge_100": {
+        "NAME": "Daily wins: 100",
+        "DESCRIPTION": "Win 100 daily challenges"
+      },
+      "streak_60": {
+        "NAME": "Streak: 60",
+        "DESCRIPTION": "Reach a 60-day win streak"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Earn 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Unlocked"
   }
 }

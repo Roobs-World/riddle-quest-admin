@@ -1,3 +1,4 @@
+import {normalizeEconomyDifficulty} from "@qwordly/core/game";
 import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import {coerceToDate} from "../daily/dailyStreak";
 import {countCoinRewardAchievements} from "@qwordly/core/game";
@@ -76,6 +77,8 @@ export async function ensureAuthoritativeSession(
     classicIndex?: number; /** Stores challenge date. */
     /** Stores challenge date. */
     challengeDate?: string;
+    /** Server-owned content difficulty; never accepted from gameplay requests. */
+    difficultyBand?: unknown;
   },
 ): Promise<string> {
   /** Provides binding ref behavior. */
@@ -137,6 +140,7 @@ export async function ensureAuthoritativeSession(
       locale,
       answer,
       ...entitlement,
+      difficultyBand: normalizeEconomyDifficulty(entitlement.difficultyBand),
       attempts: 0,
       hasUsedContinue: false,
       awaitingContinue: false,

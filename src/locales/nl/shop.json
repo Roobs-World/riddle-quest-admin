@@ -19,6 +19,7 @@
     "BADGE_STARTER": "STARTER",
     "BADGE_POPULAR": "POPULAIR",
     "BADGE_BEST_VALUE": "BESTE AANBIEDING",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Dit abonnement kan niet worden opgezegd."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Dit abonnement kan niet worden opgezegd.",
+    "PACK_BUYING_POWER": "Tot {hints} hints of {continues} extra pogingen."
   }
 }

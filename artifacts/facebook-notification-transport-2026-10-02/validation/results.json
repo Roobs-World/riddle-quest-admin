@@ -1,0 +1,22 @@
+[
+  {
+    "check": "types",
+    "exitCode": 0
+  },
+  {
+    "check": "transport-lint",
+    "exitCode": 1
+  },
+  {
+    "check": "focused-tests",
+    "exitCode": 0
+  },
+  {
+    "check": "tsdoc",
+    "exitCode": 1
+  },
+  {
+    "check": "sizes",
+    "exitCode": 0
+  }
+]

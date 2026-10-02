@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Bello",
     "UNLOCKED_ALERT_MESSAGE": "Controlla il tuo profilo per vedere i tuoi nuovi obiettivi.",
     "UNLOCKED_ALERT_OK": "Va bene",
-    "UNLOCKED_ALERT_TITLE": "Obiettivo/i sbloccato!"
+    "UNLOCKED_ALERT_TITLE": "Obiettivo/i sbloccato!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Vittorie: 10",
+        "DESCRIPTION": "Vinci 10 indovinelli"
+      },
+      "wins_250": {
+        "NAME": "Vittorie: 250",
+        "DESCRIPTION": "Vinci 250 indovinelli"
+      },
+      "games_10": {
+        "NAME": "Indovinelli: 10",
+        "DESCRIPTION": "Gioca 10 indovinelli"
+      },
+      "games_250": {
+        "NAME": "Indovinelli: 250",
+        "DESCRIPTION": "Gioca 250 indovinelli"
+      },
+      "classic_5": {
+        "NAME": "Classico: 5",
+        "DESCRIPTION": "Completa 5 livelli classici"
+      },
+      "classic_150": {
+        "NAME": "Classico: 150",
+        "DESCRIPTION": "Completa 150 livelli classici"
+      },
+      "daily_3": {
+        "NAME": "Giornalieri: 3",
+        "DESCRIPTION": "Completa 3 sfide giornaliere"
+      },
+      "daily_365": {
+        "NAME": "Giornalieri: 365",
+        "DESCRIPTION": "Completa 365 sfide giornaliere"
+      },
+      "challenge_10": {
+        "NAME": "Vittorie giornaliere: 10",
+        "DESCRIPTION": "Vinci 10 sfide giornaliere"
+      },
+      "challenge_100": {
+        "NAME": "Vittorie giornaliere: 100",
+        "DESCRIPTION": "Vinci 100 sfide giornaliere"
+      },
+      "streak_60": {
+        "NAME": "Serie: 60",
+        "DESCRIPTION": "Raggiungi una serie di vittorie di 60 giorni"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Guadagna 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Sbloccato"
   }
 }

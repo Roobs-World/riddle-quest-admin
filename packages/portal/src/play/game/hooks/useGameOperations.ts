@@ -23,7 +23,7 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
   );
   /** Requests leaderboard. */
   const requestLeaderboard = useCallback(
-    (leaderboardType: "xp" | "totalWins" | "bestStreak") => {
+    (leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins") => {
       dispatch({type: "leaderboardRequested", leaderboardType});
       postToHost({
         type: "game:loadLeaderboard",

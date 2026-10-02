@@ -452,8 +452,8 @@ describe("riddleGeneration", () => {
   describe("generateAndAppendRiddles", () => {
     test("should successfully generate and store unique riddles", async () => {
       (mockGenerateUniqueRiddle as any)
-        .mockResolvedValueOnce(["What is blue?", "sky"])
-        .mockResolvedValueOnce(["What is red?", "fire"]);
+        .mockResolvedValueOnce(["What is blue?", "sky", "easy"])
+        .mockResolvedValueOnce(["What is red?", "fire", "medium"]);
 
       (mockFirestoreCollection as any).mockReturnValue({
         get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
@@ -465,6 +465,8 @@ describe("riddleGeneration", () => {
 
       expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(2);
       expect(mockSet).toHaveBeenCalledTimes(2);
+      expect(mockSet.mock.calls[0][1]).toMatchObject({difficultyBand: "easy"});
+      expect(mockSet.mock.calls[1][1]).toMatchObject({difficultyBand: "medium"});
       expect(mockCommit).toHaveBeenCalled();
     });
 

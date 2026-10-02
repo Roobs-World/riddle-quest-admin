@@ -64,11 +64,17 @@ export const getClassicRiddleBuffer = onCallWithSentry(
       /** Localized authored content selected for this canonical catalog position. */
       playable: NonNullable<Awaited<ReturnType<typeof getPlayableClassicRiddle>>>;
     }> = [];
-    for (let offset = 1; offset <= 3 && currentQuestion; offset += 1) {
+    /** Three read-only catalog positions share one round trip; no later sessions are issued yet. */
+    const catalog = currentQuestion ? await Promise.allSettled(Array.from({length: 3}, (_, offset) =>
+      getPlayableClassicRiddle(confirmedClassicIndex + offset + 1, locale))) : [];
+    for (let offset = 0; offset < catalog.length; offset += 1) {
       /** Canonical catalog position binds the prepared session entitlement. */
-      const classicIndex = confirmedClassicIndex + offset;
+      const classicIndex = confirmedClassicIndex + offset + 1;
+      /** Rejections beyond the first gap cannot invalidate an otherwise usable contiguous buffer. */
+      const result = catalog[offset]!;
+      if (result.status === "rejected") throw result.reason;
       /** Localized authored content selected for this canonical catalog position. */
-      const playable = await getPlayableClassicRiddle(classicIndex, locale);
+      const playable = result.value;
       if (!playable) break;
       upcoming.push({classicIndex, playable});
     }
@@ -88,7 +94,7 @@ export const getClassicRiddleBuffer = onCallWithSentry(
         getSinglePlayerContentKey(riddle, "classic", contentLocale),
         getSinglePlayerCompletionKey("classic", classicIndex),
         riddle.answer,
-        {classicIndex},
+        {classicIndex, difficultyBand: riddle.difficultyBand},
       );
       /** Authoritative or observed state used to verify the current transition. */
       const state = await getIssuedAuthoritativeSession(userId, token, "classic", riddle.riddleId);

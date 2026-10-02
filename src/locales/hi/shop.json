@@ -19,6 +19,7 @@
     "BADGE_STARTER": "शुरुआती",
     "BADGE_POPULAR": "लोकप्रिय",
     "BADGE_BEST_VALUE": "सबसे किफ़ायती",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "इस सदस्यता को रद्द करना उपलब्ध नहीं है।"
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "इस सदस्यता को रद्द करना उपलब्ध नहीं है।",
+    "PACK_BUYING_POWER": "अधिकतम {hints} संकेत या {continues} अतिरिक्त प्रयास।"
   }
 }

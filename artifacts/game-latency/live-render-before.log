@@ -1,0 +1,16 @@
+{"viewport":1280,"observationMs":2100,"gameplayRenders":23,"start":"0:00.2","finish":"0:02.3"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Clock updates must not rerender the answer board; observed 23
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-delivery-browser.mjs:123:64 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,9 +1,10 @@
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {JoinLiveRaceSchema, UpdateLiveRaceSchema, LiveRaceViewSchema} from "@qwordly/core/race";
+import {JoinLiveRaceSchema, UpdateLiveRaceSchema, LiveRaceViewSchema, GetLiveRaceChallengeSchema, LiveRaceChallengeSchema} from "@qwordly/core/race";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {assertRaceAccess} from "./raceRollout";
+import {getLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "./raceLiveService";
 
 /** Live transport uses the same authenticated regional boundary as recorded races. */
@@ -30,4 +31,15 @@ export const updateLiveRace = onCallWithSentry("updateLiveRace", options, async 
   const userId = owner(request);
   await assertRaceAccess(userId);
   return validateCallableResponse(LiveRaceViewSchema, await updateLiveRaceForUser(userId, input), "updateLiveRace");
+});
+
+/** Validates incoming SDK entry data without reserving the recipient seat. */
+export const getLiveRaceChallenge = onCallWithSentry("getLiveRaceChallenge", options, async request => {
+  /** Untrusted launch data contains only an opaque invitation handle. */
+  const input = validateCallableRequest(GetLiveRaceChallengeSchema, request.data, "getLiveRaceChallenge");
+  /** Caller identity comes exclusively from verified authentication. */
+  const userId = owner(request);
+  await assertRaceAccess(userId);
+  return validateCallableResponse(LiveRaceChallengeSchema,
+    await getLiveRaceChallengeForUser(userId, input.challengeId), "getLiveRaceChallenge");
 });

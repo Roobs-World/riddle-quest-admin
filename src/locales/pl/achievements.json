@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Ładny",
     "UNLOCKED_ALERT_MESSAGE": "Sprawdź swój profil, aby zobaczyć swoje nowe osiągnięcia.",
     "UNLOCKED_ALERT_OK": "Potwierdź",
-    "UNLOCKED_ALERT_TITLE": "Osiągnięcia Odblokowane!"
+    "UNLOCKED_ALERT_TITLE": "Osiągnięcia Odblokowane!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Zwycięstwa: 10",
+        "DESCRIPTION": "Wygraj 10 zagadek"
+      },
+      "wins_250": {
+        "NAME": "Zwycięstwa: 250",
+        "DESCRIPTION": "Wygraj 250 zagadek"
+      },
+      "games_10": {
+        "NAME": "Zagadki: 10",
+        "DESCRIPTION": "Zagraj w 10 zagadek"
+      },
+      "games_250": {
+        "NAME": "Zagadki: 250",
+        "DESCRIPTION": "Zagraj w 250 zagadek"
+      },
+      "classic_5": {
+        "NAME": "Klasyczne: 5",
+        "DESCRIPTION": "Ukończ 5 klasycznych poziomów"
+      },
+      "classic_150": {
+        "NAME": "Klasyczne: 150",
+        "DESCRIPTION": "Ukończ 150 klasycznych poziomów"
+      },
+      "daily_3": {
+        "NAME": "Codzienne: 3",
+        "DESCRIPTION": "Ukończ 3 codziennych wyzwań"
+      },
+      "daily_365": {
+        "NAME": "Codzienne: 365",
+        "DESCRIPTION": "Ukończ 365 codziennych wyzwań"
+      },
+      "challenge_10": {
+        "NAME": "Codzienne zwycięstwa: 10",
+        "DESCRIPTION": "Wygraj 10 codziennych wyzwań"
+      },
+      "challenge_100": {
+        "NAME": "Codzienne zwycięstwa: 100",
+        "DESCRIPTION": "Wygraj 100 codziennych wyzwań"
+      },
+      "streak_60": {
+        "NAME": "Seria: 60",
+        "DESCRIPTION": "Osiągnij serię zwycięstw przez 60 dni"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Zdobądź 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Odblokowane"
   }
 }

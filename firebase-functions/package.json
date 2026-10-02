@@ -10,6 +10,7 @@
     "check:types": "tsc -p tsconfig.json --noEmit",
     "check:module-cycles": "node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs",
     "pretest": "node scripts/prepare-deploy.js",
+    "test:sentry-openai": "pnpm build && node --test scripts/sentry-openai-response.test.js",
     "test:deploy-scripts": "node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js && node scripts/facebook-referral-retention.test.js && node scripts/facebook-context-retention.test.js && node scripts/facebook-nonce-retention.test.js && node scripts/reddit-profile-retention.test.js",
     "audit:facebook-exports": "node scripts/audit-facebook-backend-exports.js",
     "audit:reddit-exports": "node scripts/audit-reddit-backend-exports.js",

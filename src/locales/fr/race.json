@@ -113,6 +113,7 @@
     "LIVE_BOT": "Robot des énigmes",
     "LIVE_REWARD": "+{coins} pièces",
     "LIVE_MODE": "PvP en direct",
-    "LIVE_WAITING_FINISH": "En attendant que votre adversaire termine…"
+    "LIVE_WAITING_FINISH": "En attendant que votre adversaire termine…",
+    "LIVE_FRIEND_WAIT": "En attendant que votre ami accepte. Cette invitation expire après 15 minutes."
   }
 }

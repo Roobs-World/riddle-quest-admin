@@ -1,6 +1,7 @@
+import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_WAIT_MS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
+import {LIVE_RACE_WAIT_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
   type JoinLiveRace, type UpdateLiveRace} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, assertJestAccountActive} from "../jest/jestAccountDeletion";
@@ -29,6 +30,7 @@ function livePool(userId: string, input: JoinLiveRace): string {
 
 /** Enters one owned queue seat; retries and concurrent tabs recover the same active ticket. */
 export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, options: Options = {}) {
+  if (input.challengeId) return acceptLiveRaceChallengeForUser(userId, input, options);
   /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
   /** Provides now ms behavior. */
@@ -62,6 +64,8 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
         /** Provides match behavior. */
         const match = ticket.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as LiveMatch : undefined;
         if (receipt.exists || !ticket.cancelled && (!match || match.winner === undefined)) {
+          if (Boolean(ticket.privateChallenge) !== Boolean(input.createChallenge))
+            throw new HttpsError("failed-precondition", "Finish the current live race first.");
           if (ticket.pool !== pool) throw new HttpsError("failed-precondition", "Finish the current live race first.");
           /** Reconnect observations renew this owned lease without rewinding either seat's clock. */
           const observedAtMs = liveOperationAtMs(ticket, match, options.nowMs ?? Date.now());
@@ -81,8 +85,17 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     const player = {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
     /** Provides ticket behavior. */
-    const ticket: LiveTicket = {userId, pool, player, createdAtMs: nowMs, seenAtMs: nowMs,
+    const ticket: LiveTicket = {userId, pool, player, ...(input.createChallenge ? {privateChallenge: true} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
       run: liveRun({...deck, locale: input.locale, categoryId: input.categoryId}, userId, ticketId)};
+    if (input.createChallenge) {
+      if (!["jest", "facebook"].includes(raceProviderScope(userId) ?? ""))
+        throw new HttpsError("permission-denied", "Platform invitations unavailable.");
+      /** Private seats are recoverable but cannot be selected by public searches. */
+      const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
+      transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
+      transaction.set(pointer, {ticketId, expiresAt});
+      return liveView(ticketId, ticket, undefined, nowMs);
+    }
     /** Shared queue is locked only after the new deck is ready; reconnects never read it. */
     const queue = await transaction.get(queueRef);
     /** Provides ids behavior. */
@@ -161,7 +174,12 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
       transaction.update(ticketRef, {cancelled: true, seenAtMs: nowMs});
       return liveView(input.ticketId, ticket, undefined, nowMs);
     }
-    if (!match && nowMs >= ticket.createdAtMs + LIVE_RACE_WAIT_MS) {
+    if (!match && ticket.privateChallenge && nowMs >= ticket.createdAtMs + LIVE_RACE_INVITE_MS) {
+      ticket.cancelled = true;
+      transaction.update(ticketRef, {cancelled: true, seenAtMs: nowMs});
+      return liveView(input.ticketId, ticket, undefined, nowMs);
+    }
+    if (!match && !ticket.privateChallenge && nowMs >= ticket.createdAtMs + LIVE_RACE_WAIT_MS) {
       ticket.matchId = input.ticketId;
       /** Provides starts at ms behavior. */
       const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
@@ -183,18 +201,19 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
     if (seat === -1) throw new HttpsError("data-loss", "Invalid live seat.");
     /** Requests ref. */
     const requestRef = db.doc(`liveRaceMatches/${ticket.matchId}/requests/${requestDocumentId(userId, input.requestId)}`);
-    /** Provides receipt behavior. */
-    const receipt = input.action === "poll" ? null : await transaction.get(requestRef);
-    /** Provides binding behavior. */
-    const binding = createHash("sha256").update(JSON.stringify(input)).digest("hex");
-    if (receipt?.exists && receipt.data()?.binding !== binding) throw new HttpsError("invalid-argument", "Live command id reused.");
     /** Provides rival id behavior. */
     const rivalId = match.tickets[1 - seat];
     /** Provides rival user behavior. */
     const rivalUser = match.runs[1 - seat].userId;
-    /** Provides checks behavior. */
-    const checks = rivalId ? await Promise.all([transaction.get(db.doc(`users/${userId}/blockedRivals/${rivalUser}`)),
-      transaction.get(db.doc(`users/${rivalUser}/blockedRivals/${userId}`)), transaction.get(getJestAccountDeletionRef(db, rivalUser))]) : [];
+    /** Receipt and privacy checks depend only on the accepted match, so share one read round trip. */
+    const [receipt, checks] = await Promise.all([
+      input.action === "poll" ? null : transaction.get(requestRef),
+      rivalId ? Promise.all([transaction.get(db.doc(`users/${userId}/blockedRivals/${rivalUser}`)),
+        transaction.get(db.doc(`users/${rivalUser}/blockedRivals/${userId}`)), transaction.get(getJestAccountDeletionRef(db, rivalUser))]) : [],
+    ]);
+    /** Read-only polls have no command binding or receipt to persist. */
+    const binding = input.action === "poll" ? "" : createHash("sha256").update(JSON.stringify(input)).digest("hex");
+    if (receipt?.exists && receipt.data()?.binding !== binding) throw new HttpsError("invalid-argument", "Live command id reused.");
     if (checks.some(check => check.exists)) {
       matchChanged ||= match.players[1 - seat].displayName !== "Riddle Quest player" || match.players[1 - seat].avatarUrl !== null || match.winner === undefined;
       match.players[1 - seat] = {...match.players[1 - seat], displayName: "Riddle Quest player", avatarUrl: null};
@@ -222,6 +241,11 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
           if (changed.status === "completed") {
             changed.status = "active";
             changed.currentPosition += 1;
+            // The recorded engine stops at its target instead of clearing the next question.
+            changed.guessesUsed = 0;
+            changed.guessHistory = [];
+            changed.hintUsed = false;
+            changed.revealedLetters = [];
             delete changed.finishedAtMs; delete changed.wallFinishMs; delete changed.result;
           }
           changed.correctCount = solved;
@@ -248,7 +272,11 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
         if (!Number.isSafeInteger(coins)) throw new HttpsError("data-loss", "Invalid coin balance.");
         match.rewardCoins = LIVE_RACE_WIN_COINS;
         match.newCoins = coins;
-        transaction.update(owner.ref, {coins});
+        /** Count the victory under the same one-time settlement receipt as the coin grant. */
+        const multiplayerWins = owner.data()!.stats?.multiplayerWins ?? 0;
+        if (!Number.isSafeInteger(multiplayerWins) || multiplayerWins < 0 || !Number.isSafeInteger(multiplayerWins + 1))
+          throw new HttpsError("data-loss", "Invalid multiplayer win total.");
+        transaction.update(owner.ref, {coins, "stats.multiplayerWins": multiplayerWins + 1});
       }
     }
     match.observedAtMs = nowMs;

@@ -19,6 +19,7 @@
     "BADGE_STARTER": "INIZIALE",
     "BADGE_POPULAR": "POPOLARE",
     "BADGE_BEST_VALUE": "MIGLIOR OFFERTA",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "La cancellazione di questo abbonamento non è disponibile."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "La cancellazione di questo abbonamento non è disponibile.",
+    "PACK_BUYING_POWER": "Fino a {hints} indizi o {continues} tentativi extra."
   }
 }

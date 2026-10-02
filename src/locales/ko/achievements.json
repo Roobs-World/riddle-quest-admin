@@ -8,6 +8,57 @@
     "NICE_BUTTON": "좋습니다",
     "UNLOCKED_ALERT_MESSAGE": "새 업적을 보려면 프로필을 확인하세요.",
     "UNLOCKED_ALERT_OK": "좋아요",
-    "UNLOCKED_ALERT_TITLE": "업적 잠금 해제됨!"
+    "UNLOCKED_ALERT_TITLE": "업적 잠금 해제됨!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "승리: 10",
+        "DESCRIPTION": "수수께끼에서 10번 승리하세요"
+      },
+      "wins_250": {
+        "NAME": "승리: 250",
+        "DESCRIPTION": "수수께끼에서 250번 승리하세요"
+      },
+      "games_10": {
+        "NAME": "수수께끼: 10",
+        "DESCRIPTION": "수수께끼를 10번 플레이하세요"
+      },
+      "games_250": {
+        "NAME": "수수께끼: 250",
+        "DESCRIPTION": "수수께끼를 250번 플레이하세요"
+      },
+      "classic_5": {
+        "NAME": "클래식: 5",
+        "DESCRIPTION": "클래식 레벨 5개를 완료하세요"
+      },
+      "classic_150": {
+        "NAME": "클래식: 150",
+        "DESCRIPTION": "클래식 레벨 150개를 완료하세요"
+      },
+      "daily_3": {
+        "NAME": "일일 도전: 3",
+        "DESCRIPTION": "일일 도전을 3번 완료하세요"
+      },
+      "daily_365": {
+        "NAME": "일일 도전: 365",
+        "DESCRIPTION": "일일 도전을 365번 완료하세요"
+      },
+      "challenge_10": {
+        "NAME": "일일 승리: 10",
+        "DESCRIPTION": "일일 도전에서 10번 승리하세요"
+      },
+      "challenge_100": {
+        "NAME": "일일 승리: 100",
+        "DESCRIPTION": "일일 도전에서 100번 승리하세요"
+      },
+      "streak_60": {
+        "NAME": "연승: 60",
+        "DESCRIPTION": "60일 연승을 달성하세요"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "10000 XP를 획득하세요"
+      }
+    },
+    "UNLOCKED_LABEL": "잠금 해제됨"
   }
 }

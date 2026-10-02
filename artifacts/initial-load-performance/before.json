@@ -1,0 +1,239 @@
+{
+  "conditions": "5 cold runs; local uncompressed assets; mobile viewport; 4x CPU; 300ms injected SDK response; French playable locale",
+  "results": [
+    {
+      "target": "jest",
+      "initialJsBytes": 478688,
+      "medianFcpMs": 84,
+      "medianDomContentLoadedMs": 52.5,
+      "medianReadyMs": null,
+      "runs": [
+        {
+          "fcpMs": 88,
+          "domContentLoadedMs": 55.599999994039536,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 88,
+          "domContentLoadedMs": 55.900000005960464,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 84,
+          "domContentLoadedMs": 51.69999998807907,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 84,
+          "domContentLoadedMs": 50.79999998211861,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 84,
+          "domContentLoadedMs": 52.5,
+          "readyMs": null,
+          "contentChunks": []
+        }
+      ]
+    },
+    {
+      "target": "facebook",
+      "initialJsBytes": 559636,
+      "medianFcpMs": 424,
+      "medianDomContentLoadedMs": 381.09999999403954,
+      "medianReadyMs": null,
+      "runs": [
+        {
+          "fcpMs": 424,
+          "domContentLoadedMs": 380.89999997615814,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 428,
+          "domContentLoadedMs": 381.09999999403954,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 428,
+          "domContentLoadedMs": 385.19999998807907,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 420,
+          "domContentLoadedMs": 378.39999997615814,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 424,
+          "domContentLoadedMs": 381.19999998807907,
+          "readyMs": null,
+          "contentChunks": []
+        }
+      ]
+    },
+    {
+      "target": "reddit",
+      "initialJsBytes": 559623,
+      "medianFcpMs": 144,
+      "medianDomContentLoadedMs": 105.19999998807907,
+      "medianReadyMs": null,
+      "runs": [
+        {
+          "fcpMs": 148,
+          "domContentLoadedMs": 106.2999999821186,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 144,
+          "domContentLoadedMs": 105.89999997615814,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 140,
+          "domContentLoadedMs": 102.19999998807907,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 144,
+          "domContentLoadedMs": 103.7999999821186,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 144,
+          "domContentLoadedMs": 105.19999998807907,
+          "readyMs": null,
+          "contentChunks": []
+        }
+      ]
+    },
+    {
+      "target": "youtube",
+      "initialJsBytes": 1094937,
+      "medianFcpMs": 336,
+      "medianDomContentLoadedMs": 385.2999999821186,
+      "medianReadyMs": 469.40000000596046,
+      "runs": [
+        {
+          "fcpMs": 332,
+          "domContentLoadedMs": 384.90000000596046,
+          "readyMs": 469.40000000596046,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 336,
+          "domContentLoadedMs": 385.2999999821186,
+          "readyMs": 500.69999998807907,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 336,
+          "domContentLoadedMs": 389,
+          "readyMs": 468.09999999403954,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 328,
+          "domContentLoadedMs": 387.2999999821186,
+          "readyMs": 466.90000000596046,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 416,
+          "domContentLoadedMs": 379.5,
+          "readyMs": 492.19999998807907,
+          "contentChunks": []
+        }
+      ]
+    },
+    {
+      "target": "netflix",
+      "initialJsBytes": 1094297,
+      "medianFcpMs": 28,
+      "medianDomContentLoadedMs": 88,
+      "medianReadyMs": null,
+      "runs": [
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 89,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 32,
+          "domContentLoadedMs": 90.09999999403954,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 82.19999998807907,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 32,
+          "domContentLoadedMs": 88,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 83.30000001192093,
+          "readyMs": null,
+          "contentChunks": []
+        }
+      ]
+    },
+    {
+      "target": "yahoo",
+      "initialJsBytes": 1094293,
+      "medianFcpMs": 28,
+      "medianDomContentLoadedMs": 85.40000000596046,
+      "medianReadyMs": null,
+      "runs": [
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 84.7000000178814,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 104.80000001192093,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 84.59999999403954,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 85.40000000596046,
+          "readyMs": null,
+          "contentChunks": []
+        },
+        {
+          "fcpMs": 28,
+          "domContentLoadedMs": 107.69999998807907,
+          "readyMs": null,
+          "contentChunks": []
+        }
+      ]
+    }
+  ]
+}

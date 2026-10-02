@@ -1,5 +1,11 @@
 # Meta Social Technologies MCP registration — 1 October 2026
 
+Current follow-up: the owner completed authentication, and the 2 October
+authenticated MCP inventory confirms read-only access to Riddle Quest. The tools
+are now callable. App configuration, review, compliance and webhook observations
+are recorded in [the current readiness evidence](meta-facebook-readiness-2026-10-02.md).
+The pending/expired authentication observations below describe the initial setup.
+
 Registered `facebook_devtools` at `https://mcp.facebook.com/devtools` in the local
 Codex MCP configuration. This is a separate endpoint from the previously
 registered Ads MCP. Meta now calls it **Social Technologies MCP**; its former

@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Schön",
     "UNLOCKED_ALERT_MESSAGE": "Überprüfen Sie Ihr Profil, um Ihre neuen Erfolge zu sehen.",
     "UNLOCKED_ALERT_OK": "Bestätigen",
-    "UNLOCKED_ALERT_TITLE": "Erfolg(e) freigeschaltet!"
+    "UNLOCKED_ALERT_TITLE": "Erfolg(e) freigeschaltet!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Siege: 10",
+        "DESCRIPTION": "Gewinne 10 Rätsel"
+      },
+      "wins_250": {
+        "NAME": "Siege: 250",
+        "DESCRIPTION": "Gewinne 250 Rätsel"
+      },
+      "games_10": {
+        "NAME": "Rätsel: 10",
+        "DESCRIPTION": "Spiele 10 Rätsel"
+      },
+      "games_250": {
+        "NAME": "Rätsel: 250",
+        "DESCRIPTION": "Spiele 250 Rätsel"
+      },
+      "classic_5": {
+        "NAME": "Klassisch: 5",
+        "DESCRIPTION": "Schließe 5 klassische Level ab"
+      },
+      "classic_150": {
+        "NAME": "Klassisch: 150",
+        "DESCRIPTION": "Schließe 150 klassische Level ab"
+      },
+      "daily_3": {
+        "NAME": "Tagesrätsel: 3",
+        "DESCRIPTION": "Schließe 3 tägliche Herausforderungen ab"
+      },
+      "daily_365": {
+        "NAME": "Tagesrätsel: 365",
+        "DESCRIPTION": "Schließe 365 tägliche Herausforderungen ab"
+      },
+      "challenge_10": {
+        "NAME": "Tagessiege: 10",
+        "DESCRIPTION": "Gewinne 10 tägliche Herausforderungen"
+      },
+      "challenge_100": {
+        "NAME": "Tagessiege: 100",
+        "DESCRIPTION": "Gewinne 100 tägliche Herausforderungen"
+      },
+      "streak_60": {
+        "NAME": "Serie: 60",
+        "DESCRIPTION": "Erreiche eine Siegesserie von 60 Tagen"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Verdiene 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Freigeschaltet"
   }
 }

@@ -113,6 +113,7 @@
     "LIVE_BOT": "Bot zagadek",
     "LIVE_REWARD": "+{coins} monet",
     "LIVE_MODE": "PvP na żywo",
-    "LIVE_WAITING_FINISH": "Czekamy, aż przeciwnik skończy…"
+    "LIVE_WAITING_FINISH": "Czekamy, aż przeciwnik skończy…",
+    "LIVE_FRIEND_WAIT": "Czekamy, aż znajomy zaakceptuje. To zaproszenie wygasa po 15 minutach."
   }
 }

@@ -53,7 +53,7 @@ function state(user) {
  const run=started?{runId:ticket.id,role:'creator',status:phase==='result'?'completed':phase==='countdown'?'scheduled':'active',
  serverNowMs:now,startsAtMs:started,categoryId:'history',locale:'en',rules:RACE_RULES,correctCount:ticket.count,
  wallElapsedMs:Math.max(0,now-started),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-started),events:[],
- currentRiddle:phase==='result'?null:{riddleId:'q'+ticket.count,text:'A four-letter browser test answer',answerLength:4,position:ticket.count,
+ currentRiddle:phase!=='racing'?null:{riddleId:'q'+ticket.count,text:'A four-letter browser test answer',answerLength:4,position:ticket.count,
  guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},
  opponent:rival?{displayName:rival.displayName,avatarUrl:rival.avatarUrl,adjustedFinishMs:300000,events:[]}:undefined}:null;
  return {ticketId:ticket.id,phase,serverNowMs:now,searchEndsAtMs:ticket.created+60000,startsAtMs:started,player:identity(ticket),opponent:rival,run,
@@ -107,8 +107,11 @@ try {
    const remaining=started-Date.now();assert.ok(remaining>3000,'Fault must land before shared countdown ends');
    await a.evaluate(skew=>{window.freezePolls=true;const original=Date.now;Date.now=()=>original()+skew;},skew);
    await new Promise(resolve=>setTimeout(resolve,250));assert.equal(await a.locator('.race-gameplay').count(),0,'Clock change must not start gameplay early');
-   await a.locator('.race-gameplay .guess-board').waitFor({timeout:remaining+2000});
+   await a.locator('.race-gameplay').waitFor({timeout:remaining+2000});
+   assert.equal(await a.locator('.race-gameplay .guess-board').count(),0,'An unavailable first prompt must not be invented during offline countdown');
    assert.ok(Date.now()>=started-150,'Gameplay must respect scheduled server start');assert.deepEqual(errors,[]);
+   await a.evaluate(()=>{window.freezePolls=false;window.dispatchEvent(new Event('online'));});
+   await a.locator('.race-gameplay .guess-board').waitFor({timeout:5000});
    await a.screenshot({path:path.join(output,'clock-'+skew+'-'+viewport.width+'.png'),fullPage:true});
    console.log('Countdown resisted '+skew+'ms wall-clock change at '+viewport.width+'px.');await context.close();
   }

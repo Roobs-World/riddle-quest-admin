@@ -246,6 +246,20 @@ export function useJestSharing({
     [locale, platform, session, trackFunnel, withPlatformActivity],
   );
 
+  /** Shares a private PvP lobby through Jest's native dialog, including the host's SMS share option. */
+  const shareLiveRace = useCallback(async ({challengeId}: {/** Server-issued private lobby handle. */ challengeId: string}): Promise<ReferralShareOutcome> => {
+    if (!session || !/^live_[a-f0-9]{64}$/.test(challengeId)) return "error";
+    try {
+      /** Opening a native dialog is not proof that a message was delivered. */
+      const result = await withPlatformActivity(() => platform.shareReferral({
+        reference: "live_pvp_v1", shareTitle: tr("RaceTo10.CHALLENGE_FRIEND"),
+        shareText: tr("RaceTo10.CHALLENGED_BY", {name: session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK")}),
+        entryPayload: {inviteKind: "race", campaign: "live_pvp_v1", challengeDestination: "multiplayer", challengeId},
+      }));
+      return result.status === "success" ? "success" : result.status === "cancelled" ? "cancelled" : "error";
+    } catch {return "error";}
+  }, [locale, platform, session, withPlatformActivity]);
+
   /** Opens Jest's provider-owned profile invite dialog with custom referral details. */
   const shareInvite = useCallback(() => {
     if (!session) return;
@@ -324,8 +338,9 @@ export function useJestSharing({
             shareResult,
             shareInvite,
             shareRace,
+            shareLiveRace,
           }
         : null,
-    [session, shareInvite, shareRace, shareResult],
+    [session, shareInvite, shareRace, shareResult, shareLiveRace],
   );
 }

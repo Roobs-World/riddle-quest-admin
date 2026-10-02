@@ -8,6 +8,57 @@
     "NICE_BUTTON": "अच्छी",
     "UNLOCKED_ALERT_MESSAGE": "अपनी नई उपलब्धियां देखने के लिए अपनी प्रोफ़ाइल जांचें।",
     "UNLOCKED_ALERT_OK": "ठीक",
-    "UNLOCKED_ALERT_TITLE": "उपलब्धियां अनलॉक!"
+    "UNLOCKED_ALERT_TITLE": "उपलब्धियां अनलॉक!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "जीत: 10",
+        "DESCRIPTION": "10 पहेलियाँ जीतें"
+      },
+      "wins_250": {
+        "NAME": "जीत: 250",
+        "DESCRIPTION": "250 पहेलियाँ जीतें"
+      },
+      "games_10": {
+        "NAME": "पहेलियाँ: 10",
+        "DESCRIPTION": "10 पहेलियाँ खेलें"
+      },
+      "games_250": {
+        "NAME": "पहेलियाँ: 250",
+        "DESCRIPTION": "250 पहेलियाँ खेलें"
+      },
+      "classic_5": {
+        "NAME": "क्लासिक: 5",
+        "DESCRIPTION": "5 क्लासिक स्तर पूरे करें"
+      },
+      "classic_150": {
+        "NAME": "क्लासिक: 150",
+        "DESCRIPTION": "150 क्लासिक स्तर पूरे करें"
+      },
+      "daily_3": {
+        "NAME": "दैनिक: 3",
+        "DESCRIPTION": "3 दैनिक चुनौतियाँ पूरी करें"
+      },
+      "daily_365": {
+        "NAME": "दैनिक: 365",
+        "DESCRIPTION": "365 दैनिक चुनौतियाँ पूरी करें"
+      },
+      "challenge_10": {
+        "NAME": "दैनिक जीत: 10",
+        "DESCRIPTION": "10 दैनिक चुनौतियाँ जीतें"
+      },
+      "challenge_100": {
+        "NAME": "दैनिक जीत: 100",
+        "DESCRIPTION": "100 दैनिक चुनौतियाँ जीतें"
+      },
+      "streak_60": {
+        "NAME": "जीत का सिलसिला: 60",
+        "DESCRIPTION": "60 दिनों की जीत का सिलसिला बनाएँ"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "10000 XP अर्जित करें"
+      }
+    },
+    "UNLOCKED_LABEL": "अनलॉक हुआ"
   }
 }

@@ -29,7 +29,7 @@ import type {
 /** Describes web game mode. */
 export type WebGameMode = "classic" | "challenge";
 /** Describes leaderboard type. */
-export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
+export type LeaderboardType = "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
 
 /** Describes product summary. */
 export type ProductSummary = {

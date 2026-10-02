@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Bagus",
     "UNLOCKED_ALERT_MESSAGE": "Periksa profil Anda untuk melihat pencapaian baru Anda.",
     "UNLOCKED_ALERT_OK": "OKE",
-    "UNLOCKED_ALERT_TITLE": "Pencapaian Tidak Terkunci!"
+    "UNLOCKED_ALERT_TITLE": "Pencapaian Tidak Terkunci!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Kemenangan: 10",
+        "DESCRIPTION": "Menangkan 10 teka-teki"
+      },
+      "wins_250": {
+        "NAME": "Kemenangan: 250",
+        "DESCRIPTION": "Menangkan 250 teka-teki"
+      },
+      "games_10": {
+        "NAME": "Teka-teki: 10",
+        "DESCRIPTION": "Mainkan 10 teka-teki"
+      },
+      "games_250": {
+        "NAME": "Teka-teki: 250",
+        "DESCRIPTION": "Mainkan 250 teka-teki"
+      },
+      "classic_5": {
+        "NAME": "Klasik: 5",
+        "DESCRIPTION": "Selesaikan 5 level klasik"
+      },
+      "classic_150": {
+        "NAME": "Klasik: 150",
+        "DESCRIPTION": "Selesaikan 150 level klasik"
+      },
+      "daily_3": {
+        "NAME": "Harian: 3",
+        "DESCRIPTION": "Selesaikan 3 tantangan harian"
+      },
+      "daily_365": {
+        "NAME": "Harian: 365",
+        "DESCRIPTION": "Selesaikan 365 tantangan harian"
+      },
+      "challenge_10": {
+        "NAME": "Kemenangan harian: 10",
+        "DESCRIPTION": "Menangkan 10 tantangan harian"
+      },
+      "challenge_100": {
+        "NAME": "Kemenangan harian: 100",
+        "DESCRIPTION": "Menangkan 100 tantangan harian"
+      },
+      "streak_60": {
+        "NAME": "Rentetan: 60",
+        "DESCRIPTION": "Raih rentetan kemenangan selama 60 hari"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Dapatkan 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Terbuka"
   }
 }

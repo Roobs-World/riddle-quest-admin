@@ -43,7 +43,7 @@ describe("immutable localized Daily generation", () => {
   it("writes a playable dated document and never overwrites legacy current", async () => {
     await generateLocalizedDailyChallengeForDate("2026-08-12");
 
-    expect(mockGenerateUniqueRiddle).toHaveBeenCalledWith("en", [], {mode: "daily", excludedQuestions: []});
+    expect(mockGenerateUniqueRiddle).toHaveBeenCalledWith("en", [], {mode: "daily", background: true, excludedQuestions: []});
     expect(mockGetLocalizedDailyDocRef).toHaveBeenCalledWith("en", "2026-08-12");
     expect(mockSet).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -53,6 +53,12 @@ describe("immutable localized Daily generation", () => {
         locale: "en",
       }),
     );
+  });
+
+  it("preserves the reviewed difficulty on the canonical Daily document", async () => {
+    mockGenerateUniqueRiddle.mockResolvedValue(["What has hands but cannot clap?", "clock", "medium"]);
+    await generateLocalizedDailyChallengeForDate("2026-08-12");
+    expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({answer: "clock", difficultyBand: "medium"}));
   });
 
   it("regenerates an existing document whose answer is not keyboard-playable", async () => {

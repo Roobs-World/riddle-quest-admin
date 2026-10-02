@@ -259,7 +259,7 @@ export function useGameMessageRouter({
                 })
               : [];
             /** Provides leaderboard type behavior. */
-            const leaderboardType = data.type === "totalWins" || data.type === "bestStreak" ? data.type : "xp";
+            const leaderboardType = data.type === "totalWins" || data.type === "bestStreak" || data.type === "multiplayerWins" ? data.type : "xp";
             dispatch({type: "leaderboardLoaded", leaderboardType, entries});
             return;
           }

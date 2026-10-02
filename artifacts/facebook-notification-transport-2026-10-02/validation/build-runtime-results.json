@@ -1,0 +1,38 @@
+[
+  {
+    "check": "node22-tests",
+    "exitCode": 0
+  },
+  {
+    "check": "backend-build",
+    "exitCode": 0
+  },
+  {
+    "check": "facebook-exports",
+    "exitCode": 0
+  },
+  {
+    "check": "build-jest",
+    "exitCode": 0
+  },
+  {
+    "check": "build-facebook",
+    "exitCode": 0
+  },
+  {
+    "check": "build-reddit",
+    "exitCode": 0
+  },
+  {
+    "check": "build-youtube",
+    "exitCode": 0
+  },
+  {
+    "check": "build-netflix",
+    "exitCode": 0
+  },
+  {
+    "check": "build-yahoo",
+    "exitCode": 0
+  }
+]

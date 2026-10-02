@@ -24,6 +24,11 @@ beforeAll(async () => {
     await Promise.all([
       setDoc(doc(db, "localizedRiddles/en/riddles/history-1"), {text: "Secret clue", answer: "piano"}),
       setDoc(doc(db, "raceDecks/deck-1"), {answers: ["piano"]}),
+      setDoc(doc(db, "liveRaceTickets/ticket-1"), {userId: "player-1", run: {answer: "piano"}}),
+      setDoc(doc(db, "liveRaceMatches/match-1"), {runs: [{answer: "piano"}], winner: 0, rewardCoins: 50}),
+      setDoc(doc(db, "liveRaceMatches/match-1/requests/request-1"), {binding: "private-receipt"}),
+      setDoc(doc(db, "liveRaceQueues/pool-1"), {tickets: ["ticket-1"]}),
+      setDoc(doc(db, "liveRacePlayers/player-1"), {ticketId: "ticket-1"}),
       setDoc(doc(db, "raceRuns/run-1"), {userId: "player-1", answer: "piano"}),
       setDoc(doc(db, "raceChallenges/challenge-1"), {creatorId: "player-1"}),
       setDoc(doc(db, "raceInviteLobbies/challenge-1"), {
@@ -74,6 +79,11 @@ describe("Race to 10 Firestore trust boundary", () => {
     const paths = [
       "localizedRiddles/en/riddles/history-1",
       "raceDecks/deck-1",
+      "liveRaceTickets/ticket-1",
+      "liveRaceMatches/match-1",
+      "liveRaceMatches/match-1/requests/request-1",
+      "liveRaceQueues/pool-1",
+      "liveRacePlayers/player-1",
       "raceRuns/run-1",
       "raceChallenges/challenge-1",
       "raceInviteLobbies/challenge-1",
@@ -103,6 +113,10 @@ describe("Race to 10 Firestore trust boundary", () => {
   it("denies unauthenticated clients too", async () => {
     /** Provides db behavior. */
     const db = testEnvironment.unauthenticatedContext().firestore();
+    for (const path of ["liveRaceTickets/ticket-1", "liveRaceMatches/match-1", "liveRaceMatches/match-1/requests/request-1", "liveRaceQueues/pool-1", "liveRacePlayers/player-1"]) {
+      await assertFails(getDoc(doc(db, path)));
+      await assertFails(setDoc(doc(db, path), {forged: true}));
+    }
     await assertFails(getDoc(doc(db, "raceChallenges/challenge-1")));
     await assertFails(setDoc(doc(db, "raceRuns/run-2"), {userId: "attacker"}));
     await assertFails(getDoc(doc(db, "raceMaintenance/projectionReconciliation")));

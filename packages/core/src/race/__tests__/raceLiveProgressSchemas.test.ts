@@ -21,3 +21,13 @@ it.each(["correctCount", "coins", "winner", "userId", "serverNowMs", "startsAtMs
 it("does not let a lobby request choose its authenticated player identity", () => {
   expect(JoinLiveRaceSchema.safeParse({locale: "en", categoryId: "history", requestId: "untrusted-join", userId: "another-player"}).success).toBe(false);
 });
+
+it("permits withholding the first prompt during an unscored server countdown", () => {
+  /** Both seats may receive only countdown metadata until their common start boundary. */
+  const countdown = {...fixture(0, 0), status: "scheduled", currentRiddle: null, startsAtMs: 1000, serverNowMs: 999};
+  expect(RaceRunViewSchema.safeParse(countdown).success).toBe(true);
+  expect(RaceRunViewSchema.safeParse({...countdown, status: "prepared"}).success).toBe(false);
+  expect(RaceRunViewSchema.safeParse({...countdown, serverNowMs: 1000}).success).toBe(false);
+  for (const field of ["correctCount", "totalPenaltyMs", "wallElapsedMs", "adjustedElapsedMs"])
+    expect(RaceRunViewSchema.safeParse({...countdown, [field]: 1}).success).toBe(false);
+});

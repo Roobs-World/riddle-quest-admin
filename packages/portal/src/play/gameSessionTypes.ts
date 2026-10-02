@@ -47,7 +47,7 @@ export type GameSessionState = {
   } | null;
   /** Purchasable products exposed by the current platform. */ products: ProductSummary[];
   /** Current leaderboard page. */ leaderboard: BridgeLeaderboardEntry[];
-  /** Metric used to rank the current leaderboard page. */ leaderboardType: "xp" | "totalWins" | "bestStreak";
+  /** Metric used to rank the current leaderboard page. */ leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
   /** Indicates whether a leaderboard request is in flight. */ leaderboardLoading: boolean;
   /** Answer-bearing riddle currently loaded into the local engine. */ riddle: BridgeRiddle | null;
   /** Graphemes entered into the current guess. */ currentLetters: string[];
@@ -275,7 +275,7 @@ export type GameSessionAction =
       /** Stores type. */
       type: "leaderboardLoaded"; /** Stores leaderboard type. */
       /** Stores leaderboard type. */
-      leaderboardType: "xp" | "totalWins" | "bestStreak"; /** Stores entries. */
+      leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins"; /** Stores entries. */
       /** Stores entries. */
       entries: BridgeLeaderboardEntry[];
     }
@@ -283,7 +283,7 @@ export type GameSessionAction =
       /** Stores type. */
       type: "leaderboardRequested"; /** Stores leaderboard type. */
       /** Stores leaderboard type. */
-      leaderboardType: "xp" | "totalWins" | "bestStreak";
+      leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
     }
   | {
       /** Stores type. */

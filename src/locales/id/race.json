@@ -113,6 +113,7 @@
     "LIVE_BOT": "Bot Teka-teki",
     "LIVE_REWARD": "+{coins} koin",
     "LIVE_MODE": "PvP Langsung",
-    "LIVE_WAITING_FINISH": "Menunggu lawan selesai…"
+    "LIVE_WAITING_FINISH": "Menunggu lawan selesai…",
+    "LIVE_FRIEND_WAIT": "Menunggu temanmu menerima. Undangan ini kedaluwarsa setelah 15 menit."
   }
 }

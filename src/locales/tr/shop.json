@@ -19,6 +19,7 @@
     "BADGE_STARTER": "BAŞLANGIÇ",
     "BADGE_POPULAR": "POPÜLER",
     "BADGE_BEST_VALUE": "EN İYİ FİYAT",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Bu abonelik için iptal işlemi kullanılamıyor."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Bu abonelik için iptal işlemi kullanılamıyor.",
+    "PACK_BUYING_POWER": "En fazla {hints} ipucu veya {continues} ek deneme."
   }
 }

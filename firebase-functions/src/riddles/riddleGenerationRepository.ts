@@ -1,3 +1,4 @@
+import type {EconomyDifficulty} from "@qwordly/core/game";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import type {DocumentReference} from "firebase-admin/firestore";
@@ -15,6 +16,8 @@ export function riddleExists(
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   },
   existingQuestions: string[],
   existingAnswers: string[],
@@ -216,6 +219,8 @@ export async function storeClassicRiddlesInFirestore(
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[],
   startingIndex: number,
 ): Promise<void> {
@@ -232,6 +237,7 @@ export async function storeClassicRiddlesInFirestore(
       riddleId: docId,
       text: riddle.question,
       answer: riddle.answer,
+      ...(riddle.difficultyBand ? {difficultyBand: riddle.difficultyBand} : {}),
       classicIndex: startingIndex + index,
       category: "classic",
     };
@@ -257,6 +263,8 @@ export async function storeLocalizedClassicRiddlesInFirestore(
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[],
   startingIndex: number,
 ): Promise<void> {
@@ -275,6 +283,7 @@ export async function storeLocalizedClassicRiddlesInFirestore(
       locale,
       text: riddle.question,
       answer: riddle.answer,
+      ...(riddle.difficultyBand ? {difficultyBand: riddle.difficultyBand} : {}),
       classicIndex: startingIndex + index,
       category: "classic",
     };
@@ -326,6 +335,8 @@ export async function storeDailyRiddlesInFirestore(
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[],
   startingIndex: number,
 ): Promise<void> {
@@ -349,6 +360,7 @@ export async function storeDailyRiddlesInFirestore(
     riddleId: "current",
     text: selectedRiddle.question,
     answer: selectedRiddle.answer,
+    ...(selectedRiddle.difficultyBand ? {difficultyBand: selectedRiddle.difficultyBand} : {}),
     dailyIndex: startingIndex,
     category: "daily",
     timestamp: admin.firestore.FieldValue.serverTimestamp(),

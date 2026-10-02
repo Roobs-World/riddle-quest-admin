@@ -113,6 +113,7 @@
     "LIVE_BOT": "Bot degli indovinelli",
     "LIVE_REWARD": "+{coins} monete",
     "LIVE_MODE": "PvP dal vivo",
-    "LIVE_WAITING_FINISH": "In attesa che l’avversario finisca…"
+    "LIVE_WAITING_FINISH": "In attesa che l’avversario finisca…",
+    "LIVE_FRIEND_WAIT": "In attesa che il tuo amico accetti. Questo invito scade dopo 15 minuti."
   }
 }

@@ -113,6 +113,7 @@
     "LIVE_BOT": "Bilmece Botu",
     "LIVE_REWARD": "+{coins} jeton",
     "LIVE_MODE": "Canlı PvP",
-    "LIVE_WAITING_FINISH": "Rakibinin bitirmesi bekleniyor…"
+    "LIVE_WAITING_FINISH": "Rakibinin bitirmesi bekleniyor…",
+    "LIVE_FRIEND_WAIT": "Arkadaşının kabul etmesi bekleniyor. Bu davet 15 dakika sonra sona erer."
   }
 }

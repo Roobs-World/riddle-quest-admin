@@ -317,7 +317,7 @@ export const UpdateAvatarResponseSchema = z
   .strict();
 
 /** Validates the leaderboard type data shape. */
-export const LeaderboardTypeSchema = z.enum(["xp", "totalWins", "bestStreak"]);
+export const LeaderboardTypeSchema = z.enum(["xp", "totalWins", "bestStreak", "multiplayerWins"]);
 /** Describes leaderboard type. */
 export type LeaderboardType = z.infer<typeof LeaderboardTypeSchema>;
 
@@ -342,6 +342,7 @@ export const LeaderboardEntrySchema = z
     xp: z.number().int().nonnegative(),
     progressScore: z.number().nonnegative(),
     totalWins: z.number().int().nonnegative(),
+    multiplayerWins: z.number().int().nonnegative().optional(),
     bestStreak: z.number().int().nonnegative(),
     updatedAt: z.number().nonnegative(),
   })

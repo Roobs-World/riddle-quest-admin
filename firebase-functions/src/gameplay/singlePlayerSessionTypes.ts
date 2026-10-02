@@ -1,3 +1,4 @@
+import type {EconomyDifficulty} from "@qwordly/core/game";
 import type {PlayerProgress} from "../validation/firestoreSchemas";
 import type {
   SubmitSinglePlayerGuessRequestData,
@@ -52,6 +53,7 @@ export type SinglePlayerSessionState = {
   /** Locale-independent entitlement identity used to deduplicate rewards. */ completionKey: string;
   /** Locale bound when the session was issued. */ locale: string;
   /** Private canonical answer snapshot. */ answer: string;
+  /** Difficulty pinned from server-owned content when the session was issued. */ difficultyBand?: EconomyDifficulty;
   /** Trusted Firestore expiry bounding private state and replay lifetime. */ expiresAt: FirebaseFirestore.Timestamp;
   /** Authoritative Classic progression index. */ classicIndex?: number;
   /** Authoritative UTC challenge date. */ challengeDate?: string;

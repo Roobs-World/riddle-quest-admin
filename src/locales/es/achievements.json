@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Bueno",
     "UNLOCKED_ALERT_MESSAGE": "Consulta tu perfil para ver tus nuevos logros.",
     "UNLOCKED_ALERT_OK": "DE ACUERDO",
-    "UNLOCKED_ALERT_TITLE": "¡Logro(s) desbloqueado!"
+    "UNLOCKED_ALERT_TITLE": "¡Logro(s) desbloqueado!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Victorias: 10",
+        "DESCRIPTION": "Gana 10 acertijos"
+      },
+      "wins_250": {
+        "NAME": "Victorias: 250",
+        "DESCRIPTION": "Gana 250 acertijos"
+      },
+      "games_10": {
+        "NAME": "Acertijos: 10",
+        "DESCRIPTION": "Juega 10 acertijos"
+      },
+      "games_250": {
+        "NAME": "Acertijos: 250",
+        "DESCRIPTION": "Juega 250 acertijos"
+      },
+      "classic_5": {
+        "NAME": "Clásico: 5",
+        "DESCRIPTION": "Completa 5 niveles clásicos"
+      },
+      "classic_150": {
+        "NAME": "Clásico: 150",
+        "DESCRIPTION": "Completa 150 niveles clásicos"
+      },
+      "daily_3": {
+        "NAME": "Diarios: 3",
+        "DESCRIPTION": "Completa 3 desafíos diarios"
+      },
+      "daily_365": {
+        "NAME": "Diarios: 365",
+        "DESCRIPTION": "Completa 365 desafíos diarios"
+      },
+      "challenge_10": {
+        "NAME": "Victorias diarias: 10",
+        "DESCRIPTION": "Gana 10 desafíos diarios"
+      },
+      "challenge_100": {
+        "NAME": "Victorias diarias: 100",
+        "DESCRIPTION": "Gana 100 desafíos diarios"
+      },
+      "streak_60": {
+        "NAME": "Racha: 60",
+        "DESCRIPTION": "Alcanza una racha de victorias de 60 días"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Consigue 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Desbloqueado"
   }
 }

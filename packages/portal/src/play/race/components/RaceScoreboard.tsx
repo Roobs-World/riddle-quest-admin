@@ -3,12 +3,14 @@ import type {RaceRunView} from "@qwordly/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
 import {RaceRailHeader} from "./RaceHeader";
+import {LiveRaceElapsedTime, type LiveRaceClockAnchor} from "./LiveRaceElapsedTime";
 
 /** Displays authoritative progress and timing in the right-hand multiplayer rail. */
 export function RaceScoreboard({
   run,
   live = false,
   adjustedNow,
+  liveClock,
   opponentCorrect,
   feedback,
   coins,
@@ -20,6 +22,8 @@ export function RaceScoreboard({
   live?: boolean;
   /** Stores adjusted now. */
   adjustedNow: number;
+  /** Live clock animates independently of the board and keyboard. */
+  liveClock?: LiveRaceClockAnchor;
   /** Server-confirmed opponent score. */
   opponentCorrect: number;
   /** Stores feedback. */
@@ -41,7 +45,7 @@ export function RaceScoreboard({
       <div className="race-rail-game-info">
         <div className="race-header-clock" aria-live="polite">
           <span>{tr("RaceTo10.ADJUSTED_TIME")}</span>
-          <strong>{formatRaceTime(adjustedNow)}</strong>
+          <strong>{liveClock ? <LiveRaceElapsedTime anchor={liveClock} penaltyMs={run.totalPenaltyMs} /> : formatRaceTime(adjustedNow)}</strong>
           <small aria-label={tr("RaceTo10.PENALTIES", {time: formatRaceTime(run.totalPenaltyMs)})}>
             +{formatRaceTime(run.totalPenaltyMs)}
           </small>

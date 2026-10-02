@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Leuk",
     "UNLOCKED_ALERT_MESSAGE": "Check je profiel om je nieuwe prestaties te zien.",
     "UNLOCKED_ALERT_OK": "Bevestigen",
-    "UNLOCKED_ALERT_TITLE": "Prestatie(s) ontgrendeld!"
+    "UNLOCKED_ALERT_TITLE": "Prestatie(s) ontgrendeld!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Overwinningen: 10",
+        "DESCRIPTION": "Win 10 raadsels"
+      },
+      "wins_250": {
+        "NAME": "Overwinningen: 250",
+        "DESCRIPTION": "Win 250 raadsels"
+      },
+      "games_10": {
+        "NAME": "Raadsels: 10",
+        "DESCRIPTION": "Speel 10 raadsels"
+      },
+      "games_250": {
+        "NAME": "Raadsels: 250",
+        "DESCRIPTION": "Speel 250 raadsels"
+      },
+      "classic_5": {
+        "NAME": "Klassiek: 5",
+        "DESCRIPTION": "Voltooi 5 klassieke levels"
+      },
+      "classic_150": {
+        "NAME": "Klassiek: 150",
+        "DESCRIPTION": "Voltooi 150 klassieke levels"
+      },
+      "daily_3": {
+        "NAME": "Dagelijks: 3",
+        "DESCRIPTION": "Voltooi 3 dagelijkse uitdagingen"
+      },
+      "daily_365": {
+        "NAME": "Dagelijks: 365",
+        "DESCRIPTION": "Voltooi 365 dagelijkse uitdagingen"
+      },
+      "challenge_10": {
+        "NAME": "Dagelijkse overwinningen: 10",
+        "DESCRIPTION": "Win 10 dagelijkse uitdagingen"
+      },
+      "challenge_100": {
+        "NAME": "Dagelijkse overwinningen: 100",
+        "DESCRIPTION": "Win 100 dagelijkse uitdagingen"
+      },
+      "streak_60": {
+        "NAME": "Reeks: 60",
+        "DESCRIPTION": "Bereik een winstreeks van 60 dagen"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "Verdien 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "Ontgrendeld"
   }
 }

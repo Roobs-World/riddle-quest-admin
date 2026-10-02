@@ -113,6 +113,7 @@
     "LIVE_BOT": "روبوت الألغاز",
     "LIVE_REWARD": "+{coins} عملة",
     "LIVE_MODE": "PvP مباشر",
-    "LIVE_WAITING_FINISH": "بانتظار انتهاء الخصم…"
+    "LIVE_WAITING_FINISH": "بانتظار انتهاء الخصم…",
+    "LIVE_FRIEND_WAIT": "في انتظار قبول صديقك. تنتهي صلاحية هذه الدعوة بعد 15 دقيقة."
   }
 }

@@ -1,0 +1,10 @@
+[
+  {
+    "check": "final-backend-build",
+    "exitCode": 0
+  },
+  {
+    "check": "final-node22-tests",
+    "exitCode": 0
+  }
+]

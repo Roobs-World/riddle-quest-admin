@@ -1,7 +1,7 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
 import type {GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
-import {getRankForLevel, PLAYER_RANKS} from "../../ranks";
+import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS} from "../../ranks";
 import {RankIcon} from "../../RankIcon";
 import {createAchievementPlayer} from "./profileStats";
 
@@ -15,32 +15,51 @@ export type ProfileStatsModalPageProps = {
 export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
   /** Achievement evaluation input projected from the bridge profile. */
   const achievementPlayer = createAchievementPlayer(profile);
+  /** Counts only recognized achievements recorded by the trusted profile. */
+  const unlockedCount = ACHIEVEMENT_DEFINITIONS.filter((achievement) => profile?.achievements.includes(achievement.id)).length;
 
   return (
-    <div className="achievement-grid">
+    <div className="achievements-page">
+      <section className="profile-detail-hero achievement-summary">
+        <span className="profile-detail-emblem" aria-hidden="true">🏆</span>
+        <div>
+          <span className="profile-detail-eyebrow">{tr("Achievements.UNLOCKED_LABEL")}</span>
+          <strong className="profile-detail-total">{unlockedCount} <span>/ {ACHIEVEMENT_DEFINITIONS.length}</span></strong>
+        </div>
+        <div className="achievement-progress" role="progressbar" aria-label={tr("Achievements.MODAL_TITLE")}
+          aria-valuemin={0} aria-valuemax={ACHIEVEMENT_DEFINITIONS.length} aria-valuenow={unlockedCount}>
+          <i style={{width: `${unlockedCount / ACHIEVEMENT_DEFINITIONS.length * 100}%`}} />
+        </div>
+      </section>
+      <div className="achievement-grid">
       {ACHIEVEMENT_DEFINITIONS.map((achievement) => {
         /** Whether the trusted profile records this achievement as unlocked. */
         const unlocked = profile?.achievements.includes(achievement.id) ?? false;
         /** Clamped progress displayed for this achievement. */
         const progress = unlocked
           ? achievement.threshold
-          : Math.min(achievement.threshold, achievement.getProgress(achievementPlayer));
+          : Math.max(0, Math.min(achievement.threshold, achievement.getProgress(achievementPlayer)));
+        /** Localized title also names the accessible progress indicator. */
+        const name = achievement.nameKey ? tr(achievement.nameKey) : achievement.name;
         return (
           <article className={unlocked ? "unlocked" : ""} key={achievement.id}>
-            <span className="achievement-icon">{achievement.icon}</span>
-            <div>
-              <strong>{achievement.nameKey ? tr(achievement.nameKey) : achievement.name}</strong>
+            <span className="achievement-icon" aria-hidden="true">{achievement.icon}</span>
+            <div className="achievement-details">
+              <strong>{name}</strong>
               <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>
-              <div className="achievement-progress">
+              <div className="achievement-progress" role="progressbar" aria-label={name}
+                aria-valuemin={0} aria-valuemax={achievement.threshold} aria-valuenow={progress}>
                 <i style={{width: `${(progress / achievement.threshold) * 100}%`}} />
               </div>
-              <small>
-                {progress}/{achievement.threshold}
-              </small>
+              <div className="achievement-meta">
+                <small>{progress} / {achievement.threshold}</small>
+                {unlocked ? <small className="achievement-status"><span aria-hidden="true">✓ </span>{tr("Achievements.UNLOCKED_LABEL")}</small> : null}
+              </div>
             </div>
           </article>
         );
       })}
+      </div>
     </div>
   );
 }
@@ -81,17 +100,41 @@ export function StatisticsModalPage({profile}: ProfileStatsModalPageProps) {
 export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
   /** Rank associated with the profile or default guest level. */
   const currentRank = getRankForLevel(profile?.level ?? 1);
+  /** Current level and next threshold describe the player's rank journey. */
+  const level = profile?.level ?? 1;
+  const nextRank = getNextRankForLevel(level);
+  /** Progress through the current rank, capped for the final rank. */
+  const rankProgress = nextRank ? Math.max(0, Math.min(100, (level - currentRank.minimumLevel) / (nextRank.minimumLevel - currentRank.minimumLevel) * 100)) : 100;
 
   return (
-    <div className="rank-list">
+    <div className="ranks-page">
+      <section className="profile-detail-hero rank-summary">
+        <span className="rank-emblem" style={{background: currentRank.color}} aria-hidden="true"><RankIcon name={currentRank.icon} /></span>
+        <div>
+          <span className="profile-detail-eyebrow">{tr("Ranks.CURRENT_RANK")}</span>
+          <strong>{tr(currentRank.nameKey)}</strong>
+          <span className="rank-summary-level">{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{level}</span>
+        </div>
+        <div className="rank-summary-progress">
+          <div className="achievement-progress" role="progressbar" aria-label={tr("Ranks.CURRENT_RANK")}
+            aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(rankProgress)}>
+            <i style={{width: `${rankProgress}%`}} />
+          </div>
+          <p>{nextRank ? <>{tr("Ranks.NEXT_RANK_PREFIX")} {tr(nextRank.nameKey)} {tr("Ranks.AT_LEVEL_PREFIX")} {nextRank.minimumLevel}</> : tr("Ranks.HIGHEST_RANK")}</p>
+        </div>
+      </section>
+      <p className="rank-introduction">{tr("Ranks.SUBTITLE")}</p>
+      <div className="rank-list">
       {PLAYER_RANKS.map((rank) => (
-        <article className={rank.id === currentRank.id ? "current" : ""} key={rank.id}>
-          <span className="rank-emblem" style={{background: rank.color}}>
+        <article className={rank.id === currentRank.id ? "current" : ""} key={rank.id}
+          data-reached={level >= rank.minimumLevel} aria-current={rank.id === currentRank.id ? "step" : undefined}>
+          <span className="rank-emblem" style={{background: rank.color}} aria-hidden="true">
             <RankIcon name={rank.icon} />
           </span>
           <div>
             <strong>{tr(rank.nameKey)}</strong>
             <p>{tr(rank.descriptionKey)}</p>
+            {rank.id === currentRank.id ? <span className="rank-current-label">{tr("Ranks.CURRENT_RANK")}</span> : null}
           </div>
           <small>
             {tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}
@@ -99,6 +142,7 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
           </small>
         </article>
       ))}
+      </div>
     </div>
   );
 }

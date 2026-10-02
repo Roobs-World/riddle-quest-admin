@@ -222,3 +222,11 @@ it("routes categorized block and report actions through exact same-origin operat
     services.reportRival({targetUserId: `reddit_${"b".repeat(40)}`, category: "cheating", requestId: "request-123"}),
   ).resolves.toEqual({reportId: "opaque-report", queued: true});
 });
+
+it("loads multiplayer rankings through the same-origin leaderboard gateway", async () => {
+  /** Server-confirmed scores returned through Devvit. */
+  const entry = {userId: "reddit-champion", username: "Champion", level: 1, xp: 0, progressScore: 1000000000, totalWins: 2, multiplayerWins: 42, bestStreak: 1, updatedAt: 100};
+  global.fetch = jest.fn(() => response({entries: [entry], requestingUserId: "viewer"})) as typeof fetch;
+  await expect(createRedditHostServices().loadLeaderboard("multiplayerWins")).resolves.toEqual([entry]);
+  expect(global.fetch).toHaveBeenCalledWith("/api/game/leaderboard.list", expect.objectContaining({body: JSON.stringify({type: "multiplayerWins", limit: 25})}));
+});

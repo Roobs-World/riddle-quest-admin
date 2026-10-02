@@ -1,0 +1,188 @@
+{
+  "conditions": "5 cold runs; local uncompressed assets; mobile viewport; 4x CPU; 300ms injected SDK response; French playable locale; 200 KiB/s download; 80ms RTT",
+  "results": [
+    {
+      "target": "youtube",
+      "initialJsBytes": 324253,
+      "medianFcpMs": 420,
+      "medianDomContentLoadedMs": 1851.4000000059605,
+      "medianReadyMs": 2248.899999976158,
+      "medianInteractiveMs": 2704.399999976158,
+      "medianLoadedJsBytes": 369250,
+      "runs": [
+        {
+          "fcpMs": 428,
+          "domContentLoadedMs": 1851.4000000059605,
+          "readyMs": 2250.5,
+          "interactiveMs": 2731.4000000059605,
+          "loadedJsBytes": 369250,
+          "contentChunks": [
+            "playable-pack-fr-BDUtisZr.js"
+          ]
+        },
+        {
+          "fcpMs": 436,
+          "domContentLoadedMs": 1864.199999988079,
+          "readyMs": 2248.899999976158,
+          "interactiveMs": 2704.399999976158,
+          "loadedJsBytes": 369250,
+          "contentChunks": [
+            "playable-pack-fr-BDUtisZr.js"
+          ]
+        },
+        {
+          "fcpMs": 412,
+          "domContentLoadedMs": 1850.3999999761581,
+          "readyMs": 2240.5,
+          "interactiveMs": 2700.699999988079,
+          "loadedJsBytes": 369250,
+          "contentChunks": [
+            "playable-pack-fr-BDUtisZr.js"
+          ]
+        },
+        {
+          "fcpMs": 416,
+          "domContentLoadedMs": 1866.5999999940395,
+          "readyMs": 2251.5999999940395,
+          "interactiveMs": 2710.899999976158,
+          "loadedJsBytes": 369250,
+          "contentChunks": [
+            "playable-pack-fr-BDUtisZr.js"
+          ]
+        },
+        {
+          "fcpMs": 420,
+          "domContentLoadedMs": 1849.199999988079,
+          "readyMs": 2233,
+          "interactiveMs": 2690.899999976158,
+          "loadedJsBytes": 369250,
+          "contentChunks": [
+            "playable-pack-fr-BDUtisZr.js"
+          ]
+        }
+      ]
+    },
+    {
+      "target": "netflix",
+      "initialJsBytes": 323614,
+      "medianFcpMs": 324,
+      "medianDomContentLoadedMs": 1849.5,
+      "medianReadyMs": null,
+      "medianInteractiveMs": 2710.699999988079,
+      "medianLoadedJsBytes": 365759,
+      "runs": [
+        {
+          "fcpMs": 324,
+          "domContentLoadedMs": 1850.4000000059605,
+          "readyMs": null,
+          "interactiveMs": 2712.199999988079,
+          "loadedJsBytes": 365759,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 312,
+          "domContentLoadedMs": 1850.3999999761581,
+          "readyMs": null,
+          "interactiveMs": 2710.699999988079,
+          "loadedJsBytes": 365759,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 316,
+          "domContentLoadedMs": 1849.5,
+          "readyMs": null,
+          "interactiveMs": 2709.4000000059605,
+          "loadedJsBytes": 365759,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 324,
+          "domContentLoadedMs": 1849.5,
+          "readyMs": null,
+          "interactiveMs": 2711,
+          "loadedJsBytes": 365759,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 328,
+          "domContentLoadedMs": 1849.199999988079,
+          "readyMs": null,
+          "interactiveMs": 2709.699999988079,
+          "loadedJsBytes": 365759,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        }
+      ]
+    },
+    {
+      "target": "yahoo",
+      "initialJsBytes": 323610,
+      "medianFcpMs": 320,
+      "medianDomContentLoadedMs": 1850.199999988079,
+      "medianReadyMs": null,
+      "medianInteractiveMs": 2710.5,
+      "medianLoadedJsBytes": 365755,
+      "runs": [
+        {
+          "fcpMs": 316,
+          "domContentLoadedMs": 1850.5,
+          "readyMs": null,
+          "interactiveMs": 2711.600000023842,
+          "loadedJsBytes": 365755,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 320,
+          "domContentLoadedMs": 1850.199999988079,
+          "readyMs": null,
+          "interactiveMs": 2711.199999988079,
+          "loadedJsBytes": 365755,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 320,
+          "domContentLoadedMs": 1851.199999988079,
+          "readyMs": null,
+          "interactiveMs": 2710.5,
+          "loadedJsBytes": 365755,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 328,
+          "domContentLoadedMs": 1849.9000000059605,
+          "readyMs": null,
+          "interactiveMs": 2710.2999999821186,
+          "loadedJsBytes": 365755,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        },
+        {
+          "fcpMs": 316,
+          "domContentLoadedMs": 1849.4000000059605,
+          "readyMs": null,
+          "interactiveMs": 2709.5999999940395,
+          "loadedJsBytes": 365755,
+          "contentChunks": [
+            "playable-pack-en-FAiIFWUh.js"
+          ]
+        }
+      ]
+    }
+  ]
+}

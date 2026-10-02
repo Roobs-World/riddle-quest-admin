@@ -6,6 +6,7 @@
  * so clients cannot fake achievements.
  */
 
+import {ACHIEVEMENT_MILESTONES} from "@qwordly/core/game";
 import * as functions from "firebase-functions";
 import {getUser, appendUnlockedAchievements} from "./firestoreService";
 import {captureException} from "../shared/sentry";
@@ -34,6 +35,10 @@ const ACHIEVEMENT_RULES: Array<{
   /** Stores rule. */
   rule: AchievementRule;
 }> = [
+  ...ACHIEVEMENT_MILESTONES.map(({id, stat, threshold}) => ({
+    id,
+    rule: (user: Player) => (user.stats?.[stat] ?? 0) >= threshold,
+  })),
   {
     id: "first_win",
     rule: (user) => (user.stats?.totalWins ?? 0) >= 1,

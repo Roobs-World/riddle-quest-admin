@@ -19,6 +19,7 @@
     "BADGE_STARTER": "EINSTIEG",
     "BADGE_POPULAR": "BELIEBT",
     "BADGE_BEST_VALUE": "BESTES ANGEBOT",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Dieses Abonnement kann nicht gekündigt werden."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Dieses Abonnement kann nicht gekündigt werden.",
+    "PACK_BUYING_POWER": "Bis zu {hints} Hinweise oder {continues} zusätzliche Versuche."
   }
 }

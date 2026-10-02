@@ -1,3 +1,4 @@
+import {getCoinPackBuyingPower} from "@qwordly/core/game";
 import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
 import {useSubscriptionManagement} from "./useSubscriptionManagement";
 import coinUrl from "../../../../../../assets/images/coin.svg";
@@ -52,6 +53,8 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
         {visibleProducts.map((product) => {
           /** Localized game-owned labels and provider-authored product description. */
           const copy = shopProductCopy(product);
+          /** Whole-action alternatives explain the actual value of the provider coin grant. */
+          const buyingPower = getCoinPackBuyingPower(product.coins);
           return (
           <article
             key={product.productId}
@@ -78,6 +81,14 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
               </span>
             )}
             <small className="shop-product-description">{copy.description}</small>
+            {product.productType !== "subscription" && product.coins > 0 ? (
+              <small className="shop-product-description">
+                {tr("CoinShop.PACK_BUYING_POWER", {
+                  hints: buyingPower.hints.toLocaleString(),
+                  continues: buyingPower.continues.toLocaleString(),
+                })}
+              </small>
+            ) : null}
             {product.subscriptionStatus !== "active" ? (
             <button
               className="play-primary compact"

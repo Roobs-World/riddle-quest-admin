@@ -1,6 +1,6 @@
 /** Background polling must not hold an interactive player command indefinitely. */
 export const LIVE_RACE_POLL_DEADLINE_MS = 2_000;
-/** Join and accepted mutations retain a longer transport budget before explicit retry. */
+/** Join and accepted mutations retain a longer transport budget before bounded retry. */
 export const LIVE_RACE_COMMAND_DEADLINE_MS = 10_000;
 
 /** Only definitive authority rejections permit retiring an unaccepted player command. */
@@ -13,7 +13,7 @@ export function liveRaceCommandRejected(error: unknown): boolean {
 export function liveRaceDeliveryDeadline<T>(delivery: Promise<T>, poll: boolean,
   onLateResult?: (value: T) => void): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    /** A late receipt cannot regain ownership after this wait has expired. */
+    /** A late receipt uses the caller's ownership policy after this wait has expired. */
     let expired = false;
     /** One deadline releases the delivery lock even when the adapter never settles. */
     const timer = setTimeout(() => {
@@ -23,7 +23,7 @@ export function liveRaceDeliveryDeadline<T>(delivery: Promise<T>, poll: boolean,
     delivery.then(value => {
       clearTimeout(timer);
       if (expired) {
-        try {onLateResult?.(value);} catch { /* Optional late cleanup never alters accepted gameplay. */ }
+        try {onLateResult?.(value);} catch { /* Late receipt failures cannot revive an expired wait. */ }
       } else resolve(value);
     }, error => {
       clearTimeout(timer);

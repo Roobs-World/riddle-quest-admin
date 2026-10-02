@@ -142,6 +142,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       /** The same ranking used by the current operation. */
       const sameRanking = state.profile?.xp === action.profile?.xp &&
         state.profile?.wins === action.profile?.wins &&
+        state.profile?.multiplayerWins === action.profile?.multiplayerWins &&
         state.profile?.bestStreak === action.profile?.bestStreak &&
         state.profile?.username === action.profile?.username &&
         state.profile?.avatarUrl === action.profile?.avatarUrl;

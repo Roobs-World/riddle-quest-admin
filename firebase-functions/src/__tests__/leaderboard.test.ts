@@ -36,6 +36,10 @@ const mockLeaderboardLimit = jest.fn();
 const mockLeaderboardGet = jest.fn();
 /** Provides mock users limit behavior. */
 const mockUsersLimit = jest.fn();
+/** Indexed canonical account query seams. */
+const mockUsersWhere = jest.fn();
+/** Orders authoritative account statistics. */
+const mockUsersOrderBy = jest.fn();
 /** Provides mock users get behavior. */
 const mockUsersGet = jest.fn();
 /** Provides mock users doc behavior. */
@@ -68,6 +72,9 @@ const mockLeaderboardQuery = {
 
 /** Provides mock users query behavior. */
 const mockUsersQuery = {
+  where: mockUsersWhere,
+  orderBy: mockUsersOrderBy,
+  limit: mockUsersLimit,
   get: mockUsersGet,
 };
 
@@ -86,6 +93,8 @@ const mockCollection = jest.fn((collectionName: string) => {
   }
   if (collectionName === "users") {
     return {
+      where: mockUsersWhere,
+      orderBy: mockUsersOrderBy,
       limit: mockUsersLimit,
       doc: mockUsersDoc,
     };
@@ -250,6 +259,8 @@ describe("getLeaderboard callable", () => {
     mockOrderBy.mockReturnValue(mockLeaderboardQuery);
     mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
     mockUsersLimit.mockReturnValue(mockUsersQuery);
+    mockUsersWhere.mockReturnValue(mockUsersQuery);
+    mockUsersOrderBy.mockReturnValue(mockUsersQuery);
     mockUsersDoc.mockImplementation((id: string) => ({id, path: `users/${id}`, get: mockUsersDocGet}));
     mockGetAll.mockImplementation(
       async (
@@ -310,6 +321,30 @@ describe("getLeaderboard callable", () => {
         progressScore: 2_000_000_400,
       }),
     ]);
+  });
+
+  it("ranks existing canonical multiplayer totals without reading stale leaderboard projections", async () => {
+    mockUsersGet.mockResolvedValue({docs: [
+      {id: "multiplayer-champion", data: () => ({username: "Champion", avatarUrl: "https://example.com/a.png", stats: {level: 3, xp: 50, multiplayerWins: 42, totalWins: 2}})},
+      {id: "runner-up", data: () => ({displayName: "Runner", stats: {multiplayerWins: 8, totalWins: 100}})},
+    ]});
+    /** Indexed account rankings returned by the callable. */
+    const result = await callGetLeaderboard({uid: "viewer"}, {type: "multiplayerWins", limit: 25});
+    expect(mockUsersWhere).toHaveBeenCalledWith("stats.multiplayerWins", ">", 0);
+    expect(mockUsersOrderBy).toHaveBeenCalledWith("stats.multiplayerWins", "desc");
+    expect(mockUsersLimit).toHaveBeenCalledWith(25);
+    expect(mockLeaderboardGet).not.toHaveBeenCalled();
+    expect(result).toMatchObject({requestingUserId: "viewer", entries: [
+      {userId: "multiplayer-champion", username: "Champion", multiplayerWins: 42, totalWins: 2},
+      {userId: "runner-up", username: "Runner", multiplayerWins: 8, totalWins: 100},
+    ]});
+  });
+
+  it("returns an empty multiplayer board without falling back to solo scores", async () => {
+    mockUsersGet.mockResolvedValue({docs: []});
+    expect(await callGetLeaderboard({uid: "viewer"}, {type: "multiplayerWins"})).toEqual({entries: [], requestingUserId: "viewer"});
+    expect(mockUsersLimit).toHaveBeenCalledWith(50);
+    expect(mockLeaderboardGet).not.toHaveBeenCalled();
   });
 
   it("returns entries sorted by totalWins", async () => {

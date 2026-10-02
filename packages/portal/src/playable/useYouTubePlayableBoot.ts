@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {loadYouTubeContent, resolveYouTubeLocale} from "./content";
+import {loadYouTubeContent, resolveYouTubeLocale, youtubeContentVersion} from "./content";
 import {LocalSoloAuthority, YouTubeAuthorityRestoreSaveError} from "./LocalSoloAuthority";
 import {cloneYouTubeSave, createEmptyYouTubeSave, parseYouTubeSave} from "./save";
 import type {YouTubeContent, YouTubeLocale, YouTubeSaveV1, YouTubeSdkPort} from "./types";
@@ -166,7 +166,9 @@ export function useYouTubePlayableBoot(sdk: YouTubeSdkPort): YouTubeBootControll
       /** Supported locale. */
       const locale = resolveYouTubeLocale(languageTag);
       /** Locale-aligned content. */
-      const content = loadYouTubeContent(locale);
+      const content = await loadYouTubeContent(locale);
+      await waitUntilActive();
+      if (cancelled()) return null;
       /** Restored gameplay authority. */
       let authority: LocalSoloAuthority;
       try {
@@ -211,10 +213,8 @@ export function useYouTubePlayableBoot(sdk: YouTubeSdkPort): YouTubeBootControll
           const raw = await sdk.loadData();
           await waitUntilActive();
           if (cancelled) return;
-          /** Canonical content used for schema compatibility. */
-          const baseContent = loadYouTubeContent("en");
           /** Validated platform save result. */
-          const parsed = parseYouTubeSave(raw, baseContent.contentVersion);
+          const parsed = parseYouTubeSave(raw, youtubeContentVersion);
           if (parsed.kind === "invalid" || parsed.kind === "future-version") {
             /** Platform language tag. */
             const languageTag = await sdk.getLanguage();
@@ -223,7 +223,9 @@ export function useYouTubePlayableBoot(sdk: YouTubeSdkPort): YouTubeBootControll
             /** Supported locale. */
             const locale = resolveYouTubeLocale(languageTag);
             /** Locale-aligned content. */
-            const content = loadYouTubeContent(locale);
+            const content = await loadYouTubeContent(locale);
+            await waitUntilActive();
+            if (cancelled) return;
             setState({
               kind: "reset-required",
               reset: {kind: parsed.kind, locale, content, raw: parsed.raw},

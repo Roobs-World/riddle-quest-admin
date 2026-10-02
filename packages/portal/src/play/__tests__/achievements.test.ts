@@ -89,7 +89,7 @@ describe("optimistic completion achievements", () => {
       gamesPlayed: 4, wins: 4, totalWins: 4, totalGuessesInWins: 8,
       achievements: ["first_win", "perfect_guess"], classicIndex: 9,
     }, {gameMode: "classic", isCorrect: true, attempts: 1, gameOver: true})).toEqual([
-      "wins_5", "classic_10", "classic_perfect",
+      "wins_5", "classic_10", "classic_perfect", "classic_5",
     ]);
   });
 
@@ -113,7 +113,7 @@ describe("optimistic completion achievements", () => {
       username: "Challenger", coins: 0, level: 1, xp: 0, winStreak: 0,
       gamesPlayed: 9, wins: 0, achievements: [], classicIndex: 2, highestLevelClassic: 2,
     }, {gameMode: "challenge", isCorrect: true, attempts: 1, gameOver: true})).toEqual([
-      "first_win", "daily_completed", "perfect_guess", "challenge_perfect",
+      "first_win", "daily_completed", "perfect_guess", "challenge_perfect", "games_10",
     ]);
   });
 
@@ -124,7 +124,7 @@ describe("optimistic completion achievements", () => {
       dailyPuzzlesCompleted: 6, challengeWins: 4,
       achievements: ["first_win", "wins_5"], classicIndex: 0,
     }, {gameMode: "challenge", isCorrect: true, attempts: 5, gameOver: true})).toEqual([
-      "win_rate_80", "daily_completed", "daily_7", "challenge_5", "last_chance", "challenge_last_chance",
+      "win_rate_80", "daily_completed", "daily_7", "challenge_5", "last_chance", "challenge_last_chance", "wins_10", "games_10", "daily_3",
     ]);
   });
 });

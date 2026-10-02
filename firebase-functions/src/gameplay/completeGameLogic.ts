@@ -1,3 +1,4 @@
+import {getSoloWinCoins, normalizeEconomyDifficulty, type EconomyDifficulty} from "@qwordly/core/game";
 import {getDailyDate, getDailyMidnight, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import {countCoinRewardAchievements} from "@qwordly/core/game";
 import * as functions from "firebase-functions";
@@ -13,8 +14,6 @@ import {captureException} from "../shared/sentry";
 import {
   MAX_ATTEMPTS_CLASSIC,
   MAX_ATTEMPTS_CHALLENGE,
-  COINS_REWARD_CLASSIC,
-  COINS_REWARD_CHALLENGE,
   getStreakRewardBonus,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
@@ -43,6 +42,8 @@ import {settleRedditReferralAfterAuthoritativeWin} from "../reddit/redditReferra
 export type AuthoritativeCompleteGameData = CompleteGameRequestData & {
   /** Server-counted number of accepted guesses. */
   attempts: number;
+  /** Difficulty from the private canonical session snapshot. */
+  difficultyBand?: EconomyDifficulty;
   /** Correctness derived from the canonical riddle and persisted final guess. */
   isCorrect: boolean;
   /** Rollover-safe key used only by the completion receipt. */
@@ -136,6 +137,7 @@ export async function deriveAuthoritativeCompletion(
   return {
     ...data,
     attempts: state.attempts,
+    difficultyBand: normalizeEconomyDifficulty(state.difficultyBand),
     isCorrect: normalizedGuess === normalizedAnswer,
     completionKey:
       normalizedGuess === normalizedAnswer ? state.completionKey : `${state.completionKey}:loss:${data.sessionToken}`,
@@ -372,12 +374,12 @@ async function commitAuthoritativeCompletion(
         stats.dailyPuzzlesCompleted += 1;
         progress.dailyChallengeIndex += 1;
         progress.dailyChallengeCurrentQuestion = 1;
-        baseWinCoins = COINS_REWARD_CHALLENGE;
+        baseWinCoins = getSoloWinCoins("challenge", data.difficultyBand);
         dailyStreakBonus = getStreakRewardBonus(newWinStreak);
       } else {
         progress.classicIndex += 1;
         stats.highestLevelClassic = Math.max(stats.highestLevelClassic, progress.classicIndex);
-        baseWinCoins = COINS_REWARD_CLASSIC;
+        baseWinCoins = getSoloWinCoins("classic", data.difficultyBand);
       }
     } else if (data.gameMode === "challenge") {
       newWinStreak = 0;
@@ -483,8 +485,10 @@ async function commitAuthoritativeCompletion(
   try {
     /** Provides r. */
     const user = await getUser(auth.uid);
+    /** Independent projections share the same committed profile and settle before responding. */
+    const projections: Promise<unknown>[] = [];
     if (data.isCorrect && user && !auth.isAnonymous) {
-      await updateLeaderboardEntry(
+      projections.push(updateLeaderboardEntry(
         auth.uid,
         user.username,
         {
@@ -494,10 +498,16 @@ async function commitAuthoritativeCompletion(
           bestStreak: user.stats.bestStreak,
         },
         user.avatarUrl ?? null,
-      );
+      ));
     }
     if (data.isCorrect && data.gameMode === "classic" && user) {
-      await triggerClassicRiddleGenerationIfNeeded(auth.uid, user.progress.classicIndex, data.locale);
+      projections.push(triggerClassicRiddleGenerationIfNeeded(auth.uid, user.progress.classicIndex, data.locale));
+    }
+    /** One failed projection cannot suppress or leave the other running past the response. */
+    const settled = await Promise.allSettled(projections);
+    for (const projection of settled) if (projection.status === "rejected") {
+      functions.logger.error("Recoverable post-completion projection failed.", getSafeErrorMetadata(projection.reason));
+      captureException(projection.reason);
     }
   } catch (error) {
     functions.logger.error("Recoverable post-completion projection failed.", getSafeErrorMetadata(error));

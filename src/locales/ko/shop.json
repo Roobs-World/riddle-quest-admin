@@ -19,6 +19,7 @@
     "BADGE_STARTER": "스타터",
     "BADGE_POPULAR": "인기",
     "BADGE_BEST_VALUE": "최고의 혜택",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "이 구독은 취소할 수 없습니다."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "이 구독은 취소할 수 없습니다.",
+    "PACK_BUYING_POWER": "최대 힌트 {hints}회 또는 추가 시도 {continues}회."
   }
 }

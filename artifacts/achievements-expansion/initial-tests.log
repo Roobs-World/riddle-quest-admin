@@ -1,0 +1,28 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --runTestsByPath src/play/__tests__/achievements.test.ts src/youtube/__tests__/LocalSoloAuthority.test.ts
+FAIL src/youtube/__tests__/LocalSoloAuthority.test.ts
+  ● Test suite failed to run
+
+    ReferenceError: ACHIEVEMENT_MILESTONES is not defined
+
+      56 |     progress.totalHintsUsed >= threshold;
+      57 | /** Solo-only subset of the existing achievement catalog. */
+    > 58 | const YOUTUBE_ACHIEVEMENT_LIST: AchievementDefinition[] = [
+         |                                                           ^
+      59 |   ...ACHIEVEMENT_MILESTONES.map(({id, icon}) => ({
+      60 |     id, icon,
+      61 |     unlocked: (progress: YouTubeProgress) => (stat === "highestLevelClassic" ? progress.highestClassicLevel
+
+      at Object.<anonymous> (src/playable/achievements.ts:58:59)
+      at Object.<anonymous> (src/playable/LocalSoloAuthority.ts:3:1)
+      at Object.<anonymous> (src/youtube/__tests__/LocalSoloAuthority.test.ts:2:1)
+
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       11 passed, 11 total
+Snapshots:   0 total
+Time:        0.26 s, estimated 1 s
+Ran all test suites within paths "src/play/__tests__/achievements.test.ts", "src/youtube/__tests__/LocalSoloAuthority.test.ts".
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --runTestsByPath src/play/__tests__/achievements.test.ts src/youtube/__tests__/LocalSoloAuthority.test.ts`
+Exit status 1

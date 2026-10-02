@@ -1,18 +1,17 @@
-/**
- * Server-side game constants. Must stay in sync with client src/constants/game.ts
- * for skip costs and hint cost so UI and backend behavior match.
- */
+import {SOLO_COIN_COSTS, SOLO_WIN_COINS} from "@qwordly/core/game";
+
+/** Server game constants share the provider-independent solo economy with the client. */
 
 /** Coin cost to skip a level in Classic mode. */
-export const SKIP_COST_CLASSIC = 200;
+export const SKIP_COST_CLASSIC = SOLO_COIN_COSTS.skip;
 
 /** Coin cost to skip a level in Daily Challenge mode. */
 
 /** Coin cost to reveal one hint letter. */
-export const HINT_COST_COINS = 50;
+export const HINT_COST_COINS = SOLO_COIN_COSTS.hint;
 
 /** Coin cost to continue after exhausting attempts. */
-export const CONTINUE_COST_COINS = 100;
+export const CONTINUE_COST_COINS = SOLO_COIN_COSTS.continue;
 
 /** Maximum guesses allowed in Classic mode. */
 export const MAX_ATTEMPTS_CLASSIC = 5;
@@ -21,9 +20,9 @@ export const MAX_ATTEMPTS_CLASSIC = 5;
 export const MAX_ATTEMPTS_CHALLENGE = 5;
 
 /** Coins earned for solving a Classic riddle. */
-export const COINS_REWARD_CLASSIC = 25;
+export const COINS_REWARD_CLASSIC = SOLO_WIN_COINS.classic.easy;
 /** Coins earned for solving a Daily Challenge riddle. */
-export const COINS_REWARD_CHALLENGE = 75;
+export const COINS_REWARD_CHALLENGE = SOLO_WIN_COINS.challenge.easy;
 /** Number of consecutive daily wins required for each streak reward. */
 const STREAK_REWARD_INTERVAL_DAYS = 7;
 /** Daily streak bonus paid while a streak is active. */

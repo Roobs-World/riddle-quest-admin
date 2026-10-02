@@ -1,3 +1,4 @@
+import type {EconomyDifficulty} from "@qwordly/core/game";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "./openaiService";
@@ -45,6 +46,8 @@ export async function generateLocalizedClassicRiddlesForLocale(
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[] = [];
   /** Provides generated attempts behavior. */
   const generatedAttempts: {
@@ -52,6 +55,8 @@ export async function generateLocalizedClassicRiddlesForLocale(
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[] = [];
   /** Provides max attempts behavior. */
   const maxAttempts = numberOfRiddles * 10;
@@ -75,7 +80,7 @@ export async function generateLocalizedClassicRiddlesForLocale(
     }
 
     /** Provides new riddle behavior. */
-    const newRiddle = {question: riddle[0], answer: riddle[1]};
+    const newRiddle = {question: riddle[0], answer: riddle[1], ...(riddle[2] ? {difficultyBand: riddle[2]} : {})};
     if (!riddleHasPlayableClue(newRiddle)) {
       logger.warn(
         `Generated classic riddle for locale ${locale} reveals its answer, trying again... (attempt ${attemptCount}/${maxAttempts})`,
@@ -173,6 +178,8 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[] = [];
   /** Provides generated attempts behavior. */
   const generatedAttempts: {
@@ -180,6 +187,8 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[] = [];
 
   // Circuit breaker: Maximum attempts to prevent infinite loops
@@ -204,6 +213,7 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
       const newRiddle = {
         question: riddle[0],
         answer: riddle[1],
+        ...(riddle[2] ? {difficultyBand: riddle[2]} : {}),
       };
 
       if (!riddleHasPlayableClue(newRiddle)) {
@@ -283,6 +293,8 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[] = [];
   /** Provides generated attempts behavior. */
   const generatedAttempts: {
@@ -290,6 +302,8 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
     question: string; /** Stores answer. */
     /** Stores answer. */
     answer: string;
+    /** Difficulty from the independent content review, when available. */
+    difficultyBand?: EconomyDifficulty;
   }[] = [];
 
   // Circuit breaker: Maximum attempts to prevent infinite loops
@@ -314,6 +328,7 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
       const newRiddle = {
         question: riddle[0],
         answer: riddle[1],
+        ...(riddle[2] ? {difficultyBand: riddle[2]} : {}),
       };
 
       if (!riddleHasPlayableClue(newRiddle)) {

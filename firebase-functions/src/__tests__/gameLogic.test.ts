@@ -104,7 +104,7 @@ describe("authoritative game economy callables", () => {
         riddleId: "daily-2026-08-11",
         sessionToken: SESSION_TOKEN,
         requestId: "continue-request-1",
-        amount: 100,
+        amount: 50,
       }),
     );
 

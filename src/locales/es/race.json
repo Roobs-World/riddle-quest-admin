@@ -113,6 +113,7 @@
     "LIVE_BOT": "Bot de acertijos",
     "LIVE_REWARD": "+{coins} monedas",
     "LIVE_MODE": "PvP en vivo",
-    "LIVE_WAITING_FINISH": "Esperando a que termine tu oponente…"
+    "LIVE_WAITING_FINISH": "Esperando a que termine tu oponente…",
+    "LIVE_FRIEND_WAIT": "Esperando a que tu amigo acepte. Esta invitación caduca después de 15 minutos."
   }
 }

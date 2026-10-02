@@ -31,7 +31,7 @@ describe("LeaderboardModalPage", () => {
     );
     expect(loadingHtml).toContain("leaderboard-loading");
     expect(loadingHtml).toMatch(/disabled=""/g);
-    expect(loadingHtml.match(/disabled=""/g)).toHaveLength(3);
+    expect(loadingHtml.match(/disabled=""/g)).toHaveLength(4);
     expect(
       renderToString(
         <LeaderboardModalPage
@@ -42,6 +42,17 @@ describe("LeaderboardModalPage", () => {
         />,
       ),
     ).toContain("No scores yet");
+  });
+
+  it("renders multiplayer victories separately from solo wins and supports older rows", () => {
+    /** Rendered multiplayer measurement with a legacy row. */
+    const html = renderToString(
+      <LeaderboardModalPage entries={[{...createEntries(1)[0], multiplayerWins: 42}, {...createEntries(2)[1]}]}
+        loading={false} leaderboardType="multiplayerWins" onRequestLeaderboard={requestLeaderboard} />,
+    );
+    expect(html).toContain('aria-pressed="true">Multiplayer wins');
+    expect(html).toContain("<strong>42</strong>");
+    expect(html).toContain("<strong>0</strong>");
   });
 
   it("renders ranked entries, avatar fallbacks, and pagination", () => {

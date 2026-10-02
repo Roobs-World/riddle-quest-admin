@@ -1,4 +1,5 @@
 import {webBuildFacts} from "../../scripts/release/release-registry.mjs";
+import {playableContentModule, playableContentPlugin} from "./playableContentPlugin.ts";
 import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";
 import react, {reactCompilerPreset} from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
@@ -578,6 +579,7 @@ export function createWebTargetViteConfig({
     react(),
     babel({presets: [reactCompilerPreset()]}),
     ...profile.createArtifactPlugins({allowYouTubeFixture, youtubeContent}),
+    ...(["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) ? [playableContentPlugin(youtubeContent)] : []),
   ];
   if (uploadSentrySourceMaps) {
     plugins.push(sentryVitePlugin({
@@ -629,7 +631,7 @@ export function createWebTargetViteConfig({
       tsconfigPaths: true,
       alias: {
         "#shop-modal-page": profile.shopEntry,
-        "#youtube-content": youtubeContent,
+        "#youtube-content": ["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) ? playableContentModule : youtubeContent,
         "@qwordly/core/bridge/constants": fileURLToPath(new URL("../core/src/bridge/constants.ts", import.meta.url)),
         "@qwordly/core/bridge": fileURLToPath(new URL("../core/src/bridge/index.ts", import.meta.url)),
         "@qwordly/core/pricing/catalog": fileURLToPath(new URL("../core/src/pricing/catalog.ts", import.meta.url)),

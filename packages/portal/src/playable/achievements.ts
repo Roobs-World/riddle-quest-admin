@@ -1,3 +1,4 @@
+import {ACHIEVEMENT_MILESTONES} from "@qwordly/core/game";
 import type {YouTubeGameMode, YouTubeProgress} from "./types";
 /** Describes achievement context. */
 type AchievementContext = Readonly<{
@@ -56,6 +57,11 @@ const hints =
     progress.totalHintsUsed >= threshold;
 /** Solo-only subset of the existing achievement catalog. */
 const YOUTUBE_ACHIEVEMENT_LIST: AchievementDefinition[] = [
+  ...ACHIEVEMENT_MILESTONES.map(({id, icon, stat, threshold}) => ({
+    id, icon,
+    unlocked: (progress: YouTubeProgress) => (stat === "highestLevelClassic" ? progress.highestClassicLevel
+      : stat === "bestStreak" ? progress.bestDailyStreak : progress[stat]) >= threshold,
+  })),
   {id: "first_win", icon: "🏆", unlocked: wins(1)},
   {id: "wins_5", icon: "⭐", unlocked: wins(5)},
   {id: "wins_25", icon: "🌟", unlocked: wins(25)},

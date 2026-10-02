@@ -111,7 +111,7 @@ export async function generateLocalizedDailyChallengeForDate(
       const riddle = await generateUniqueRiddle(
         locale,
         [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
-        {mode: "daily", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+        {mode: "daily", background: true, excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
       );
       if (!riddle) continue;
 
@@ -141,6 +141,7 @@ export async function generateLocalizedDailyChallengeForDate(
         locale,
         text: candidate.question,
         answer: candidate.answer,
+        ...(riddle[2] ? {difficultyBand: riddle[2]} : {}),
         dailyIndex,
         category: "daily",
         timestamp: admin.firestore.FieldValue.serverTimestamp(),

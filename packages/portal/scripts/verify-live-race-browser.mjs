@@ -19,10 +19,10 @@ import React from 'react'; import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};
-window.bridgeCalls=[];window.legacyFindCalls=0;
+window.bridgeCalls=[];window.legacyFindCalls=0;window.liveSnapshots=[];
 const params=new URLSearchParams(location.search);
 const services=createFakeRaceServices(); const user=new URLSearchParams(location.search).get('user') || 'Alice';
-const call=async (action,input)=>{const response=await fetch('/live/'+action,{method:'POST',body:JSON.stringify({user,...input})}); if(!response.ok) throw new Error('Harness transport failed'); return response.json();};
+const call=async (action,input)=>{const response=await fetch('/live/'+action,{method:'POST',body:JSON.stringify({user,...input})}); if(!response.ok) throw new Error('Harness transport failed'); const result=await response.json();window.liveSnapshots.push(result);return result;};
 const matchmaking={find:async()=>{window.legacyFindCalls++;return {status:'cancelled'};}, live:{join:input=>call('join',input),update:input=>call('update',input)}};
 async function postToHost(message) {window.bridgeCalls.push(message.type);if(message.type==='game:listRaceCategories') window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',
  {detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data:await services.listRaceCategories({locale:'en'})}}}));}
@@ -44,7 +44,7 @@ function state(user) {
  const run=started?{runId:ticket.id,role:'creator',status:phase==='result'?'completed':phase==='countdown'?'scheduled':'active',
  serverNowMs:now,startsAtMs:started,categoryId:ticket.categoryId,locale:'en',rules:RACE_RULES,correctCount:ticket.count,
  wallElapsedMs:Math.max(0,now-started),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-started),events:[],
- currentRiddle:phase==='result'?null:{riddleId:'q'+ticket.count,text:'A four-letter browser test answer',answerLength:4,position:ticket.count,
+ currentRiddle:phase!=='racing'?null:{riddleId:'q'+ticket.count,text:'A four-letter browser test answer',answerLength:4,position:ticket.count,
  guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},
  opponent:rival?{displayName:rival.displayName,avatarUrl:rival.avatarUrl,adjustedFinishMs:300000,events:[]}:undefined}:null;
  return {ticketId:ticket.id,phase,serverNowMs:now,searchEndsAtMs:ticket.created+60000,startsAtMs:started,player:identity(ticket),opponent:rival,run,
@@ -102,13 +102,32 @@ try {
   await b.locator('.live-race-countdown').waitFor();assert.equal(await b.locator('.live-race-countdown').innerText(),'5');
   await a.locator('.live-race-rival strong').waitFor();assert.equal(await a.locator('.live-race-rival strong').innerText(),'Bob');
   assert.equal(await b.locator('.live-race-rival strong').innerText(),'Alice');
+  if(authority)for(const page of [a,b])assert.equal(await page.evaluate(()=>window.liveSnapshots.filter(view=>view.phase==='countdown').every(view=>view.run.currentRiddle===null)),true,'Neither player may inspect the first riddle during countdown');
   await a.screenshot({path:path.join(output,`countdown-${viewport.width}.png`),fullPage:true});
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});await b.locator('.race-gameplay .guess-board').waitFor({timeout:15000});
   async function solve(page){await page.locator('.guess-row .cell:not([disabled])').first().click();await page.keyboard.type(authority ? await authority.answer(new URL(page.url()).searchParams.get('user')) : 'test');await page.locator('.race-actions .submit-action').click();}
   await solve(b);await b.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
   await a.waitForFunction(()=>document.querySelector('.race-progress > div:nth-child(2) strong').textContent.includes('1 / 10'));
   await a.screenshot({path:path.join(output,`live-progress-${viewport.width}.png`),fullPage:true});
-  for(let i=0;i<10;i++){await solve(a);if(i<9)await a.waitForFunction(count=>document.querySelector('.race-progress > div:first-child strong').textContent.includes(count+' / 10'),i+1);}
+  for(let i=0;i<9;i++){await solve(a);await a.waitForFunction(count=>document.querySelector('.race-progress > div:first-child strong').textContent.includes(count+' / 10'),i+1);}
+  if(authority){
+   await a.locator('.race-actions button').first().click();
+   await a.waitForFunction(()=>window.liveSnapshots.at(-1).run.currentRiddle.revealedLetters.length===1);
+   const wrongAttempts=viewport.width===1280?1:RACE_RULES.maxGuessesPerRiddle;
+   for(let index=0;index<wrongAttempts;index++){
+    await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('x'.repeat((await authority.answer('Alice')).length));await a.locator('.race-actions .submit-action').click();
+    await a.waitForFunction(expected=>{const riddle=window.liveSnapshots.at(-1).run?.currentRiddle;return expected===5?riddle?.position===10:riddle?.guessesUsed===expected;},index+1);
+   }
+   if(viewport.width===1280)await a.locator('.race-actions button').last().click();
+   await a.waitForFunction(()=>window.liveSnapshots.at(-1).run?.currentRiddle?.position===10);
+   const current=await a.evaluate(()=>window.liveSnapshots.at(-1));
+   assert.equal(current.player.correctCount,9);assert.equal(current.rewardCoins,0);
+   assert.deepEqual(current.run.currentRiddle.revealedLetters,[]);assert.deepEqual(current.run.currentRiddle.confirmedGuesses,[]);
+   assert.equal(current.run.currentRiddle.guessesUsed,0);assert.equal(current.run.currentRiddle.guessesRemaining,RACE_RULES.maxGuessesPerRiddle);
+   assert.deepEqual(await authority.balances(),[100,100],'Skipping cannot award victory or coins');
+   console.log('Hint and '+(viewport.width===1280?'manual skip':'exhausted guesses')+' at nine solves produced a fresh, unscored question at '+viewport.width+'px.');
+  }
+  await solve(a);
   await a.locator('.live-race-victory').waitFor();await b.locator('.live-race-victory').waitFor({timeout:10000});
   assert.equal(await a.locator('.live-race-reward').innerText(),'+50 coins');assert.equal(await b.locator('.live-race-reward').count(),0);
   assert.equal(await a.evaluate(()=>window.completed),1);assert.equal(await b.evaluate(()=>window.completed),1);

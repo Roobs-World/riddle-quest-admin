@@ -20,7 +20,7 @@ export type LeaderboardModalPageProps = {
 };
 
 /** Stable tab order used by every leaderboard render. */
-const LEADERBOARD_TYPES: readonly LeaderboardType[] = ["xp", "totalWins", "bestStreak"];
+const LEADERBOARD_TYPES: readonly LeaderboardType[] = ["xp", "totalWins", "bestStreak", "multiplayerWins"];
 
 /** Renders the paginated, server-backed leaderboard modal. */
 export function LeaderboardModalPage({
@@ -42,14 +42,20 @@ export function LeaderboardModalPage({
             className={leaderboardType === type ? "active" : ""}
             disabled={loading}
             key={type}
-            onClick={() => onRequestLeaderboard(type)}
+            onClick={() => {
+              setRequestedPage(0);
+              onRequestLeaderboard(type);
+            }}
+            aria-pressed={leaderboardType === type}
           >
             {tr(
               type === "xp"
                 ? "Leaderboard.TAB_XP"
                 : type === "totalWins"
                   ? "Leaderboard.TAB_WINS"
-                  : "Leaderboard.TAB_STREAK",
+                  : type === "multiplayerWins"
+                    ? "Leaderboard.TAB_MULTIPLAYER_WINS"
+                    : "Leaderboard.TAB_STREAK",
             )}
           </button>
         ))}
@@ -59,10 +65,10 @@ export function LeaderboardModalPage({
           <PulsingSpinner />
         </div>
       ) : null}
-      <ol className="leaderboard-list" aria-busy={loading}>
-        {!loading && entries.length === 0 ? <li>{tr("Leaderboard.NO_SCORES_YET")}</li> : null}
+      <ol className="leaderboard-list" aria-busy={loading} aria-label={tr("Leaderboard.TITLE")} tabIndex={0} start={pageStart + 1}>
+        {!loading && entries.length === 0 ? <li className="leaderboard-empty"><span aria-hidden="true">🏆</span><p>{tr("Leaderboard.NO_SCORES_YET")}</p></li> : null}
         {visibleEntries.map((entry, index) => (
-              <li key={entry.userId}>
+              <li key={entry.userId} data-placement={pageStart + index + 1}>
                 <b>{pageStart + index + 1}</b>
                 {entry.avatarUrl ? (
                   <img className="leaderboard-avatar" src={entry.avatarUrl} alt="" referrerPolicy="no-referrer" />
@@ -71,13 +77,15 @@ export function LeaderboardModalPage({
                     {entry.username.slice(0, 1).toUpperCase()}
                   </span>
                 )}
-                <span>{entry.username}</span>
+                <span className="leaderboard-player"><span>{entry.username}</span><small>{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{entry.level}</small></span>
                 <strong>
                   {leaderboardType === "xp"
                     ? entry.xp
                     : leaderboardType === "totalWins"
                       ? entry.totalWins
-                      : entry.bestStreak}
+                      : leaderboardType === "multiplayerWins"
+                        ? entry.multiplayerWins ?? 0
+                        : entry.bestStreak}
                 </strong>
               </li>
             ))}

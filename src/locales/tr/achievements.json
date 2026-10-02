@@ -8,6 +8,57 @@
     "NICE_BUTTON": "Güzel",
     "UNLOCKED_ALERT_MESSAGE": "Yeni başarılarınızı görmek için profilinizi kontrol edin.",
     "UNLOCKED_ALERT_OK": "TAMAM",
-    "UNLOCKED_ALERT_TITLE": "Başarıların Kilidi Açıldı!"
+    "UNLOCKED_ALERT_TITLE": "Başarıların Kilidi Açıldı!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "Zafer: 10",
+        "DESCRIPTION": "10 bilmece kazan"
+      },
+      "wins_250": {
+        "NAME": "Zafer: 250",
+        "DESCRIPTION": "250 bilmece kazan"
+      },
+      "games_10": {
+        "NAME": "Bilmeceler: 10",
+        "DESCRIPTION": "10 bilmece oyna"
+      },
+      "games_250": {
+        "NAME": "Bilmeceler: 250",
+        "DESCRIPTION": "250 bilmece oyna"
+      },
+      "classic_5": {
+        "NAME": "Klasik: 5",
+        "DESCRIPTION": "5 klasik seviye tamamla"
+      },
+      "classic_150": {
+        "NAME": "Klasik: 150",
+        "DESCRIPTION": "150 klasik seviye tamamla"
+      },
+      "daily_3": {
+        "NAME": "Günlük: 3",
+        "DESCRIPTION": "3 günlük meydan okuma tamamla"
+      },
+      "daily_365": {
+        "NAME": "Günlük: 365",
+        "DESCRIPTION": "365 günlük meydan okuma tamamla"
+      },
+      "challenge_10": {
+        "NAME": "Günlük zafer: 10",
+        "DESCRIPTION": "10 günlük meydan okuma kazan"
+      },
+      "challenge_100": {
+        "NAME": "Günlük zafer: 100",
+        "DESCRIPTION": "100 günlük meydan okuma kazan"
+      },
+      "streak_60": {
+        "NAME": "Seri: 60",
+        "DESCRIPTION": "60 günlük galibiyet serisine ulaş"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "10000 XP kazan"
+      }
+    },
+    "UNLOCKED_LABEL": "Kilidi açıldı"
   }
 }

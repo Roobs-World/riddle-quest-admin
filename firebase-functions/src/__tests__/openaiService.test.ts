@@ -141,7 +141,7 @@ describe("OpenAI Service", () => {
       /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
-      expect(result).toEqual(["What flies without wings?", "time"]);
+      expect(result).toEqual(["What flies without wings?", "time", "easy"]);
       expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key", timeout: 15_000, maxRetries: 0});
       expect(mockParse).toHaveBeenCalledWith(
         {
@@ -361,7 +361,7 @@ describe("OpenAI Service", () => {
         .mockResolvedValueOnce({output_parsed: {...approvedReviewResponse().output_parsed, difficulty: "medium"}});
       await expect(
         generateUniqueRiddle("en", [], {mode: "multiplayer", difficulty: "medium", categoryId: "science"}),
-      ).resolves.not.toBeNull();
+      ).resolves.toEqual(["Seen after rain, I bend sunlight into a coloured arc.", "rainbow", "medium"]);
       expect(mockParse).toHaveBeenCalledTimes(3);
       for (const [, options] of mockParse.mock.calls) expect(options).toEqual({timeout: 60_000});
     });
@@ -377,7 +377,7 @@ describe("OpenAI Service", () => {
       mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("piano"))
         .mockResolvedValueOnce(approvedReviewResponse());
       await expect(generateUniqueRiddle("en", excluded, {mode: "classic", background: true}))
-        .resolves.toEqual(["Which musical instrument has keys, strings and pedals?", "piano"]);
+        .resolves.toEqual(["Which musical instrument has keys, strings and pedals?", "piano", "easy"]);
       expect(mockParse).toHaveBeenCalledTimes(3);
     });
 
@@ -442,7 +442,7 @@ describe("OpenAI Service", () => {
       /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
-      expect(result).toEqual(["I'm Earth's bright neighbor after sunset.", "venus"]);
+      expect(result).toEqual(["I'm Earth's bright neighbor after sunset.", "venus", "easy"]);
       expect(mockLogger.warn).not.toHaveBeenCalledWith(expect.stringContaining("Question contains invalid characters"));
     });
 
@@ -452,7 +452,7 @@ describe("OpenAI Service", () => {
       /** Provides result behavior. */
       const result = await generateUniqueRiddle("ja");
 
-      expect(result).toEqual(["銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "fujisan"]);
+      expect(result).toEqual(["銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "fujisan", "easy"]);
       expect(mockLogger.warn).not.toHaveBeenCalledWith(expect.stringContaining("Question contains invalid characters"));
     });
 

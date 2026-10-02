@@ -113,6 +113,7 @@
     "LIVE_BOT": "Rätsel-Bot",
     "LIVE_REWARD": "+{coins} Münzen",
     "LIVE_MODE": "Live-PvP",
-    "LIVE_WAITING_FINISH": "Warte, bis dein Gegner fertig ist…"
+    "LIVE_WAITING_FINISH": "Warte, bis dein Gegner fertig ist…",
+    "LIVE_FRIEND_WAIT": "Warte, bis dein Freund die Herausforderung annimmt. Diese Einladung läuft nach 15 Minuten ab."
   }
 }

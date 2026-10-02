@@ -1,11 +1,13 @@
 import {useEffect, useRef, useState, type CSSProperties} from "react";
 import {parseHostToGameMessage} from "@qwordly/core/bridge";
-import {ListRaceCategoriesResponseSchema, type RaceCategoryId} from "@qwordly/core/race";
+import {ListRaceCategoriesResponseSchema, type RaceCategoryId, type RaceLocale} from "@qwordly/core/race";
 import "../../styles.race-lobby.css";
 import "../../styles.race-gameplay.css";
 import {tr} from "../i18n";
 import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRequestId} from "../requestIds";
+import {useReferralSharing} from "../sharing/ReferralSharingCapability";
+import {LiveRaceInvitationCard} from "./components/LiveRaceInvitationCard";
 import {LiveRaceGame} from "./LiveRaceGame";
 import {RaceTopbar} from "./components/RaceHeader";
 import {useRaceDialogFocus} from "./hooks";
@@ -16,20 +18,30 @@ export function RaceTo10Game(props: RaceTo10GameProps) {
   return <LiveRaceEntry key={JSON.stringify([props.ownerId ?? null, props.locale])} {...props} />;
 }
 
+/** Immutable entry selection for public searches, private lobbies and incoming acceptances. */
+type LiveSelection = {
+  /** Exact server content category. */ categoryId: RaceCategoryId;
+  /** Invitation content language remains authoritative. */ locale: RaceLocale;
+  /** Creates a private seat without public matchmaking. */ createChallenge?: boolean;
+  /** Accepts this existing server-owned lobby. */ challengeId?: string;
+};
+
 /** Owns live category selection without resuming or creating recorded races. */
 function LiveRaceEntry(props: RaceTo10GameProps) {
   /** Category whose live seat is currently mounted. */
-  const [playing, setPlaying] = useState<RaceCategoryId | null>(null);
-  if (playing && props.matchmaking?.live) return <LiveRaceGame key={playing} transport={props.matchmaking.live}
-    locale={props.locale} categoryId={playing} coins={props.coins} ownerId={props.ownerId} onClose={() => setPlaying(null)} />;
+  const [playing, setPlaying] = useState<LiveSelection | null>(null);
+  if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={props.matchmaking.live}
+    locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId} coins={props.coins} ownerId={props.ownerId} onClose={() => setPlaying(null)} />;
   return <LiveRaceIntro {...props} onStart={setPlaying} />;
 }
 
 /** Loads only the category catalog and starts the target's live matchmaking capability. */
-function LiveRaceIntro({locale, coins, initialCategories = EMPTY_RACE_CATEGORIES, matchmaking, postToHost, onClose, onStart}: RaceTo10GameProps & {
+function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RACE_CATEGORIES, matchmaking, postToHost, onClose, onStart}: RaceTo10GameProps & {
   /** Opens a live seat in the selected category. */
-  onStart: (categoryId: RaceCategoryId) => void;
+  onStart: (selection: LiveSelection) => void;
 }) {
+  /** Only platforms supplying a real native invite dialog expose friend challenges. */
+  const sharing = useReferralSharing();
   /** Latest catalog provided by the authenticated host. */
   const [categories, setCategories] = useState(initialCategories);
   /** Explicit category preference; mixed is the default when available. */
@@ -92,6 +104,8 @@ function LiveRaceIntro({locale, coins, initialCategories = EMPTY_RACE_CATEGORIES
   return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby="race-title"
     tabIndex={-1} data-analytics-screen="multiplayer_live_intro">
     <RaceTopbar live coins={coins} onClose={onClose} />
+    {challengeId && /^live_[a-f0-9]{64}$/.test(challengeId) && matchmaking?.live?.challenge &&
+      <LiveRaceInvitationCard key={challengeId} challengeId={challengeId} transport={matchmaking.live} onAccept={onStart} />}
     <div className="race-panel">
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
       <p>{tr("RaceTo10.FIRST_TO_TEN")}</p>
@@ -108,7 +122,9 @@ function LiveRaceIntro({locale, coins, initialCategories = EMPTY_RACE_CATEGORIES
         {failed && <button onClick={() => setRetry(current => current + 1)}>{tr("RaceTo10.RETRY")}</button>}
       </div>}
       <button className="race-primary live-race-start" disabled={loading || failed || !selected || !matchmaking?.live}
-        onClick={() => {if (selected && matchmaking?.live) onStart(selected);}}>{tr("RaceTo10.LIVE_START")}</button>
+        onClick={() => {if (selected && matchmaking?.live) onStart({categoryId: selected, locale});}}>{tr("RaceTo10.LIVE_START")}</button>
+      {sharing?.shareLiveRace && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || failed || !selected}
+        onClick={() => {if (selected) onStart({categoryId: selected, locale, createChallenge: true});}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
     </div>
   </section>;
 }

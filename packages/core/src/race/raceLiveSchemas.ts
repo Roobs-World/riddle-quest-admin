@@ -8,9 +8,15 @@ export const LIVE_RACE_WAIT_MS = 60_000;
 export const LIVE_RACE_COUNTDOWN_MS = 5_000;
 /** Defines the live race win coins value. */
 export const LIVE_RACE_WIN_COINS = 50;
+/** Private invitation lifetime while the creator waits for a friend. */
+export const LIVE_RACE_INVITE_MS = 15 * 60_000;
+/** Opaque server invitation handle shared through the platform SDK. */
+export const LiveRaceChallengeIdSchema = z.string().regex(/^live_[a-f0-9]{64}$/);
 /** One authenticated, idempotent queue entry. */
 export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema,
-  requestId: z.string().min(8).max(160)}).strict();
+  requestId: z.string().min(8).max(160), createChallenge: z.boolean().optional(),
+  challengeId: LiveRaceChallengeIdSchema.optional()}).strict()
+  .refine(input => !(input.createChallenge && input.challengeId));
 /** Commands identify an owned seat and never supply scores or clock values. */
 export const UpdateLiveRaceSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
   action: z.enum(["poll", "guess", "hint", "skip", "leave"]), requestId: z.string().min(8).max(160),
@@ -27,7 +33,17 @@ export const LiveRaceViewSchema = z.object({ticketId: z.string().regex(/^[a-f0-9
   startsAtMs: z.number().int().nonnegative().nullable(), player: LiveRacePlayerSchema,
   opponent: LiveRacePlayerSchema.nullable(), run: RaceRunViewSchema.nullable(),
   result: z.enum(["win", "loss", "tie"]).nullable(), rewardCoins: z.union([z.literal(0), z.literal(50)]),
-  newCoins: z.number().int().nonnegative().optional()}).strict();
+  newCoins: z.number().int().nonnegative().optional(),
+  challengeId: LiveRaceChallengeIdSchema.optional()}).strict();
+/** Server-validated incoming invitation; previewing does not occupy a seat. */
+export const GetLiveRaceChallengeSchema = z.object({challengeId: LiveRaceChallengeIdSchema}).strict();
+/** Safe invitation status and creator identity for the multiplayer intro. */
+export const LiveRaceChallengeSchema = z.object({challengeId: LiveRaceChallengeIdSchema,
+  locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema, creator: LiveRacePlayerSchema,
+  expiresAtMs: z.number().int().nonnegative(),
+  status: z.enum(["available", "unavailable", "own", "accepted"])}).strict();
+/** Validated incoming PvP challenge. */
+export type LiveRaceChallenge = z.infer<typeof LiveRaceChallengeSchema>;
 /** Target-neutral live transport inputs and answer-free output. */
 export type JoinLiveRace = z.infer<typeof JoinLiveRaceSchema>;
 /** Target-neutral live action. */
@@ -38,6 +54,8 @@ export type LiveRaceView = z.infer<typeof LiveRaceViewSchema>;
 export type LiveRaceCapability = {
   /** Enters or recovers the player's current lobby. */
   join(input: JoinLiveRace): Promise<LiveRaceView>;
+  /** Reads an invitation without joining, when supported by the target. */
+  challenge?(input: z.infer<typeof GetLiveRaceChallengeSchema>): Promise<LiveRaceChallenge>;
   /** Reads live progress or submits an idempotent action. */
   update(input: UpdateLiveRace): Promise<LiveRaceView>;
 };

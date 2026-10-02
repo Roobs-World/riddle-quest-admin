@@ -8,6 +8,7 @@ export async function commitJestStartupSession({
   gate,
   isActive,
   session,
+  prepareSession,
   enablePlayerStateWrites,
   setEngagementProgress,
   setSession,
@@ -19,6 +20,8 @@ export async function commitJestStartupSession({
   isActive: () => boolean;
   /** Stores session. */
   session: JestSession;
+  /** Starts authenticated content preparation and hydrates authoritative progress alongside translations. */
+  prepareSession?: (session: JestSession, locale: Locale) => Promise<JestSession>;
   /** Stores enable player state writes. */
   enablePlayerStateWrites: (playerData: JestPlayerData | null) => void;
   /** Stores set engagement progress. */
@@ -46,17 +49,21 @@ export async function commitJestStartupSession({
       if (!isActive()) return;
       /** Restored preferences select the language before the hosted game mounts. */
       const preferences = applyPlayerPreferences(session.preferences);
-      await setLocaleAndWait(preferences.locale as Locale);
+      /** Content and profile preparation share the locale's download window. */
+      const [, readySession] = await Promise.all([
+        setLocaleAndWait(preferences.locale as Locale),
+        prepareSession?.(session, preferences.locale as Locale) ?? session,
+      ]);
       if (!isActive()) return;
-      enablePlayerStateWrites(session.playerData);
+      enablePlayerStateWrites(readySession.playerData);
       /** Saves d profile. */
-      const savedProfile = session.playerData?.profile;
+      const savedProfile = readySession.playerData?.profile;
       setEngagementProgress({
         level: savedProfile?.level ?? 1,
         winStreak: savedProfile?.winStreak ?? 0,
         wins: savedProfile?.wins ?? 0,
       });
-      setSession(session);
+      setSession(readySession);
       trackFunnelSafely("session_started", {
         registered: session.player.registered,
         campaign: session.entryIntent.campaign ?? "direct",

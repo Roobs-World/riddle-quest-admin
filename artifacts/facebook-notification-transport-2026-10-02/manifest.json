@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-02T15:30:56.803045+00:00",
+  "intent": "staged-server-facebook-notification-transport",
+  "providerRequestReference": "https://developers.facebook.com/documentation/games/build/zero-permissions/social-features/notifications",
+  "providerResponseSchemaVerified": false,
+  "syntheticFixturesOnly": true,
+  "transportTests": 24,
+  "focusedTests": 30,
+  "runtimeVersions": [
+    "24.17.0",
+    "22.23.1"
+  ],
+  "backendBuildPassed": true,
+  "backendPublicExportsAuditPassed": true,
+  "allSixBuildsAndArtifactAuditsPassed": true,
+  "fullRuntimeSuiteRunThisTurn": false,
+  "tsdoc": {
+    "repositoryAuditPassed": false,
+    "ownedFileViolations": 0,
+    "retainedFailureLog": "artifacts/facebook-notification-transport-2026-10-02/validation/tsdoc-final.log"
+  },
+  "head": "f18be7930918343d26a0078afc656f140d7af378",
+  "dirty": true,
+  "concurrentSourceChanges": true,
+  "sourceIdentityIsSelectedOnly": true,
+  "uploadEligible": false,
+  "source": [
+    {
+      "file": "firebase-functions/src/facebook/facebookNotificationTransport.ts",
+      "sha256": "8f838409366f3228e713f382be97f4bd420f883d709d8d67aa838a715a8e5bf1"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookNotificationTransport.test.ts",
+      "sha256": "eaeb0695620bddd8a9006766154f60217881d818bb1cb5969b41245780e3130e"
+    },
+    {
+      "file": "docs/evidence/facebook-notification-transport-2026-10-02.md",
+      "sha256": "f5fe46a423472094818ad10f3df0942f2a9116713ac1dafad33f07a9cdb9e478"
+    },
+    {
+      "file": "docs/facebook-instant-games-operations.md",
+      "sha256": "a355c42b16d8b0c8246c007b2dcd40b7427fd32e9e4e7e41ce5d4c26ba787622"
+    },
+    {
+      "file": "docs/facebook-instant-games-progress.html",
+      "sha256": "b046c3aa73831020770640d8dd28f56404fb2f67b55c363fd8650cfd53611c72"
+    },
+    {
+      "file": "scripts/facebook-progress-tracker.test.mjs",
+      "sha256": "403cf3a936839940edf06751c485c457e412c4503cbeb4457e210e6b7a22734e"
+    }
+  ],
+  "effects": {
+    "liveProviderSendCancelRequests": 0,
+    "deployments": 0,
+    "uploads": 0,
+    "notificationsDelivered": 0,
+    "publicFunctionExportsAdded": 0,
+    "uiChanges": false
+  },
+  "remaining": [
+    "real app token/access and response contract",
+    "current identity/consent/deletion dispatcher enforcement",
+    "atomic five-pending-slot and durable attempt accounting",
+    "ambiguous outcome reconciliation and confirmed replacement",
+    "approved localized copy and deep links",
+    "hosted web/iOS/Android acceptance",
+    "other Facebook and Reddit review/rollout gates"
+  ],
+  "artifacts": [
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/built-artifacts.json",
+      "bytes": 237456,
+      "sha256": "8706a02a848863cadf72e8e136cd335661fc36309850fc449653969b4af9154e"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/backend-build.log",
+      "bytes": 1137,
+      "sha256": "47caae1f29c327902273fe86b34c1603dd850e9fd976b377206d52f6ee37cd25"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/build-facebook.log",
+      "bytes": 39101,
+      "sha256": "9cb9a4597bd7ff44f167d61a8954d0618720635931607e1f5927cc72891032d4"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/build-jest.log",
+      "bytes": 37461,
+      "sha256": "bdeace2e776fd2296c26e04e25b1b209e5769536ca2e263e76be29e23083acbc"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/build-netflix.log",
+      "bytes": 4287,
+      "sha256": "1d086bded978280ba3da079396eced8c4dd329134b0646547fd06c17473c888f"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/build-reddit.log",
+      "bytes": 38694,
+      "sha256": "d515cde6149aae3de4182e12d9b92e5dff1acd8456178c19fd30fbd1e57ac135"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/build-runtime-results.json",
+      "bytes": 513,
+      "sha256": "7689dda4cefd98e72a743b120b8bff4fa58a81d2d19b7b1b642f1ae5228e039a"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/build-yahoo.log",
+      "bytes": 4223,
+      "sha256": "6f5566f8bd4f5dc3cf7bddad4cbaacf8f700be25009c6731f17a71f1dd4ac85d"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/build-youtube.log",
+      "bytes": 4316,
+      "sha256": "1296efc24de22614ad9c2647919378c6aba2ac22382e14383577bb692fe84b88"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/facebook-exports.log",
+      "bytes": 214,
+      "sha256": "6c2be4a5f0a619b7733aed5a4fa27abef491e4a87f8cc37a225de591cdfdf9fb"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/facebook-progress.log",
+      "bytes": 82,
+      "sha256": "6651d7ac8ca683dae55b65b95677f76842ae11a6d5d1b19a95acb769842a8dbd"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/final-backend-build.log",
+      "bytes": 1137,
+      "sha256": "97904141fb224fb524e364648c496a9f8702ce71d16b025c12639901302531ef"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/final-backend-results.json",
+      "bytes": 128,
+      "sha256": "3fbd9b6e80350a9102ef103cc82a64fc54af4c0c669ad6eafacaa9519fd699d3"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/final-node22-tests.log",
+      "bytes": 324,
+      "sha256": "503ff7e06e4104b546de810d451153ddc07d7c5287bf1f2ccd4b7fbc1d864b79"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/final-results.json",
+      "bytes": 185,
+      "sha256": "d65bf9fc5fe3eb4fc3e3d245074aa8bc3dd8145dda2b36714d9c57d5ed8bcfeb"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/final-tests.log",
+      "bytes": 1150,
+      "sha256": "6cd53f4b3f4b2452087181fb68817dee6e2b0c13a79dc64952092fa78c62ef8e"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/final-transport-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/final-types.log",
+      "bytes": 1094,
+      "sha256": "1a849b4c98bd5da4963747fc807aca1647ddef5dfde48d11ac728dfc8adff610"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/focused-tests-final.log",
+      "bytes": 1150,
+      "sha256": "155ad9913aea765ee3e52c6b582519fb1374001ac46d22bc4aba6f2e2ad93323"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/focused-tests.log",
+      "bytes": 1150,
+      "sha256": "1cc6b20296e76cdb9278bb589a0c93953fb79e6495ce7ed0095ea76e64d776f1"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/handoff-results.json",
+      "bytes": 408,
+      "sha256": "b2ae438d2b013325f034d115ee6935e2f12199f58ae4371b4c1d4072bbde0fbe"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/node22-tests.log",
+      "bytes": 324,
+      "sha256": "19ff5fe284a1e185b9e841a2866c5631360c5c8ad441177fef88378b98354073"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/reddit-progress.log",
+      "bytes": 44,
+      "sha256": "7123d2a01fd07f8c0f49aa96bff29743b29f8f439798e063cbb4a70c9b32c060"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/results.json",
+      "bytes": 265,
+      "sha256": "a3d1930c815e71eb11bba0c6492e196aa7233159dc5904ec6989fac41e77018d"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/sizes.log",
+      "bytes": 79,
+      "sha256": "5b3e14a46a4c30bcf28e0f1570963d3303c1146200ea851db8a57839d7d7c37c"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/tracker-tests.log",
+      "bytes": 312,
+      "sha256": "d36503f827006e12b5c6f3bf373f88a684ca1b89ea751f285a2b0f6e0be0bd11"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/transport-lint-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/transport-lint.log",
+      "bytes": 252,
+      "sha256": "f9c05059f4fd17873830dbcd862d89b195d116ae5eda0cdfc791772daf42b7a0"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/tsdoc-final.log",
+      "bytes": 7098,
+      "sha256": "2c56b86c92eda43647eff9f1f39f7ef9623127914de632a55e62ef9da1351c7f"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/tsdoc.log",
+      "bytes": 7996,
+      "sha256": "503b0efd7e548d88f26f83dce2cdd33db2b97c6b32d5f54f3214ae0e0e3ee749"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/types.log",
+      "bytes": 1095,
+      "sha256": "c5a8dd617acb41d2a2366342e114312e5adc8fd3cf70b1a95551711846488145"
+    },
+    {
+      "file": "artifacts/facebook-notification-transport-2026-10-02/validation/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

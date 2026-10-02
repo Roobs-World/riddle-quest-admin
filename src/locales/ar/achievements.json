@@ -8,6 +8,57 @@
     "NICE_BUTTON": "لطيف - جيد",
     "UNLOCKED_ALERT_MESSAGE": "راجع ملفك الشخصي لرؤية إنجازاتك الجديدة.",
     "UNLOCKED_ALERT_OK": "نعم",
-    "UNLOCKED_ALERT_TITLE": "تم فتح الإنجاز (الإنجازات)!"
+    "UNLOCKED_ALERT_TITLE": "تم فتح الإنجاز (الإنجازات)!",
+    "MILESTONES": {
+      "wins_10": {
+        "NAME": "انتصارات: 10",
+        "DESCRIPTION": "فز في 10 لغزًا"
+      },
+      "wins_250": {
+        "NAME": "انتصارات: 250",
+        "DESCRIPTION": "فز في 250 لغزًا"
+      },
+      "games_10": {
+        "NAME": "ألغاز: 10",
+        "DESCRIPTION": "العب 10 لغزًا"
+      },
+      "games_250": {
+        "NAME": "ألغاز: 250",
+        "DESCRIPTION": "العب 250 لغزًا"
+      },
+      "classic_5": {
+        "NAME": "كلاسيكي: 5",
+        "DESCRIPTION": "أكمل 5 مستوى كلاسيكيًا"
+      },
+      "classic_150": {
+        "NAME": "كلاسيكي: 150",
+        "DESCRIPTION": "أكمل 150 مستوى كلاسيكيًا"
+      },
+      "daily_3": {
+        "NAME": "يومي: 3",
+        "DESCRIPTION": "أكمل 3 تحديًا يوميًا"
+      },
+      "daily_365": {
+        "NAME": "يومي: 365",
+        "DESCRIPTION": "أكمل 365 تحديًا يوميًا"
+      },
+      "challenge_10": {
+        "NAME": "انتصارات يومية: 10",
+        "DESCRIPTION": "فز في 10 تحديًا يوميًا"
+      },
+      "challenge_100": {
+        "NAME": "انتصارات يومية: 100",
+        "DESCRIPTION": "فز في 100 تحديًا يوميًا"
+      },
+      "streak_60": {
+        "NAME": "سلسلة: 60",
+        "DESCRIPTION": "حقق سلسلة انتصارات لمدة 60 يومًا"
+      },
+      "xp_10000": {
+        "NAME": "XP: 10000",
+        "DESCRIPTION": "اكسب 10000 XP"
+      }
+    },
+    "UNLOCKED_LABEL": "تم الفتح"
   }
 }

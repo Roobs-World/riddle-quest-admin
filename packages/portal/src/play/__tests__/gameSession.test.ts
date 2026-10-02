@@ -529,6 +529,8 @@ describe("game session reducer", () => {
       .toHaveLength(0);
     expect(reduce(ranked, {type: "authState", user, profile: {...profile, xp: 20}}).leaderboard)
       .toHaveLength(0);
+    expect(reduce(ranked, {type: "authState", user, profile: {...profile, multiplayerWins: 1}}).leaderboard)
+      .toHaveLength(0);
   });
 
   it("does not replay a daily achievement when its completion response arrives after the next riddle loads", () => {

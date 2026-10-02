@@ -19,6 +19,7 @@
     "BADGE_STARTER": "للمبتدئين",
     "BADGE_POPULAR": "شائع",
     "BADGE_BEST_VALUE": "أفضل قيمة",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "إلغاء هذا الاشتراك غير متاح."
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "إلغاء هذا الاشتراك غير متاح.",
+    "PACK_BUYING_POWER": "حتى {hints} تلميحًا أو {continues} محاولة إضافية."
   }
 }

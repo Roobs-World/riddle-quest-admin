@@ -113,6 +113,7 @@
     "LIVE_BOT": "Riddle Bot",
     "LIVE_REWARD": "+{coins} coins",
     "LIVE_MODE": "Live PvP",
-    "LIVE_WAITING_FINISH": "Waiting for your opponent to finish…"
+    "LIVE_WAITING_FINISH": "Waiting for your opponent to finish…",
+    "LIVE_FRIEND_WAIT": "Waiting for your friend to accept. This invitation expires after 15 minutes."
   }
 }

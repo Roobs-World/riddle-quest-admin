@@ -24,3 +24,12 @@ export {splitGraphemes, lowerCaseGraphemes, graphemeLength} from "./graphemes";
 export {MAX_RIDDLE_ANSWER_CHARACTERS} from "./limits";
 
 export {countCoinRewardAchievements} from "./achievementRewards";
+
+export {
+  ACHIEVEMENT_MILESTONES,
+  findNewMilestoneAchievementIds,
+  type AchievementMilestoneId,
+  type AchievementMilestoneStats,
+} from "./achievementMilestones";
+
+export * from "./economy";

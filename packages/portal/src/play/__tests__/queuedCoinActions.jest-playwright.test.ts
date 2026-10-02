@@ -51,6 +51,46 @@ describeBrowser("queued coin actions", () => {
     browser = await chromium.launch({headless: true});
   });
 
+  it.each([390, 1280])("shows shop buying power and correct action costs at %ipx", async (width) => {
+    const page = await browser.newPage({viewport: {width, height: 844}});
+    page.setDefaultTimeout(8_000);
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
+      await completeMockOnboarding(page);
+      await page.getByText(/what has keys/i).waitFor();
+      await page.getByRole("button", {name: /^hint$/i}).click();
+      await expect(page.locator(".modal-hint")).toContainText("25");
+      await page.keyboard.press("Escape");
+      await page.getByRole("button", {name: /^skip$/i}).click();
+      await expect(page.locator(".modal-skip")).toContainText("100");
+      await page.keyboard.press("Escape");
+      await page.locator(".game-header .coin-pill").click();
+      const cards = page.locator(".game-shop-grid article:not(.shop-subscription-card)");
+      await expect(cards).toHaveCount(6);
+      const grants = [250, 550, 900, 1600, 3400, 7000];
+      for (let index = 0; index < grants.length; index += 1) {
+        await expect(cards.nth(index)).toContainText(`Up to ${(grants[index] / 25).toLocaleString()} hints or ${(grants[index] / 50).toLocaleString()} extra attempts.`);
+      }
+      await page.screenshot({path: path.resolve(__dirname, `../../../../../artifacts/coin-economy/shop-${width}.png`), fullPage: true});
+      await cards.last().getByRole("button").scrollIntoViewIfNeeded();
+      await expect(cards.last().getByRole("button")).toBeInViewport();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+      expect(errors).toEqual([]);
+    } finally {
+      await page.screenshot({path: path.resolve(__dirname, `../../../../../artifacts/coin-economy/shop-${width}.png`), fullPage: true});
+      await page.close();
+    }
+  });
+
   afterAll(async () => {
     await browser?.close();
     await new Promise<void>((resolve) => server?.close(() => resolve()));
@@ -125,7 +165,7 @@ describeBrowser("queued coin actions", () => {
       const coinsBefore = Number((await page.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
       await page.locator(".loss-skip-action").click();
       expect(await page.locator(".modal-skip").count()).toBe(0);
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 200));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 100));
       await page.getByText(/face and hands/i).waitFor();
     } finally {
       await page.close();
@@ -204,11 +244,11 @@ describeBrowser("queued coin actions", () => {
           return performance.now() - started;
         });
       expect(skipMs).toBeLessThan(250);
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 200));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
       await page.waitForFunction(() => Reflect.has(window, "__held_skip"));
       await page.evaluate(() => Reflect.get(window, "__releaseCoinAction")("skip"));
       await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")));
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 200));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
       expect(await page.locator(".riddle-card h1").innerText()).toMatch(/face and hands/i);
     } finally {
       await page.close();
@@ -261,11 +301,11 @@ describeBrowser("queued coin actions", () => {
       await expect(page.locator(".keyboard")).toHaveCount(0);
       await expect(page.locator(".riddle-card")).toHaveCount(0);
       await expect(page.getByRole("button", {name: /^settings$/i})).toBeEnabled();
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 200));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 100));
       await page.evaluate(() => Reflect.get(window, "__releaseSkipSuccessor")());
       await page.getByText(/face and hands/i).waitFor();
       await expect(page.locator(".keyboard")).toBeVisible();
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 200));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 100));
     } finally {
       await page.close();
     }

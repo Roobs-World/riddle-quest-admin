@@ -1,10 +1,9 @@
+import {getSoloWinCoins} from "@qwordly/core/game";
 import {countCoinRewardAchievements} from "@qwordly/core/game";
 import {lowerCaseGraphemes, splitGraphemes, type Feedback} from "@qwordly/core/game";
 import {findNewYouTubeAchievements} from "./achievements";
 import {
   YOUTUBE_ACHIEVEMENT_COINS,
-  YOUTUBE_CLASSIC_WIN_COINS,
-  YOUTUBE_DAILY_WIN_COINS,
   YOUTUBE_LEVEL_UP_COINS,
   getYouTubeDailyStreakBonus,
   getYouTubeLevelFromXp,
@@ -158,6 +157,7 @@ export const completeYouTubeGame = (
   isCorrect: boolean,
   attempts: number,
   dailyDate: string | undefined,
+  difficultyBand?: YouTubeRiddle["difficultyBand"],
 ): YouTubeResult => {
   /** Provides progress behavior. */
   const progress = next.progression;
@@ -180,12 +180,12 @@ export const completeYouTubeGame = (
     progress.level = getYouTubeLevelFromXp(progress.xp);
     if (progress.level > priorLevel) levelCoins = YOUTUBE_LEVEL_UP_COINS;
     if (mode === "classic") {
-      baseCoins = YOUTUBE_CLASSIC_WIN_COINS;
+      baseCoins = getSoloWinCoins("classic", difficultyBand);
       progress.classicIndex += 1;
       progress.highestClassicLevel = Math.max(progress.highestClassicLevel, progress.classicIndex);
     } else {
       if (!dailyDate) throw new YouTubeAuthorityError("daily-date-missing");
-      baseCoins = YOUTUBE_DAILY_WIN_COINS;
+      baseCoins = getSoloWinCoins("challenge", difficultyBand);
       progress.currentDailyStreak = nextYouTubeDailyStreak(
         progress.currentDailyStreak,
         progress.lastDailyCompletedDate,

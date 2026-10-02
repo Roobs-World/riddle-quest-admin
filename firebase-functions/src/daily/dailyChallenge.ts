@@ -192,6 +192,8 @@ export const getCurrentDailyChallenge = onCallWithSentry(
 
       /** Provides all data behavior. */
       const allData = dailyChallengeDoc.data();
+      /** Keep authored difficulty before playable-content validation narrows the clue shape. */
+      const difficultyBand = allData?.difficultyBand;
       if (!allData || !isPlayableRiddleContent(allData)) {
         functions.logger.error("Daily challenge document is missing required playable question data.");
         return validateCallableResponse(
@@ -224,6 +226,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         ...allData,
         riddleId,
         answer: allData.answer as string,
+        difficultyBand,
       };
       /** Provides content key behavior. */
       const contentKey = getSinglePlayerContentKey(canonicalRiddle, "challenge", locale);
@@ -236,7 +239,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         contentKey,
         completionKey,
         canonicalRiddle.answer,
-        {challengeDate: todayDateString},
+        {challengeDate: todayDateString, difficultyBand: canonicalRiddle.difficultyBand},
       );
       /** Provides bound session behavior. */
       const boundSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
@@ -277,7 +280,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
           contentKey,
           completionKey,
           canonicalRiddle.answer,
-          {challengeDate: todayDateString},
+          {challengeDate: todayDateString, difficultyBand: canonicalRiddle.difficultyBand},
         );
       }
 
@@ -473,7 +476,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         contentKey,
         getSinglePlayerCompletionKey("classic", expectedClassicIndex),
         riddle.answer,
-        {classicIndex: expectedClassicIndex},
+        {classicIndex: expectedClassicIndex, difficultyBand: riddle.difficultyBand},
       );
       /** Provides bound session behavior. */
       const boundSession = await getIssuedAuthoritativeSession(
@@ -519,7 +522,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
           reconciledContentKey,
           getSinglePlayerCompletionKey("classic", classicIndex),
           riddle.answer,
-          {classicIndex},
+          {classicIndex, difficultyBand: riddle.difficultyBand},
         );
       }
 

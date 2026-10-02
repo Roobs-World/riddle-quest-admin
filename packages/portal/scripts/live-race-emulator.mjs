@@ -3,7 +3,7 @@ import {fileURLToPath} from "node:url";
 import {createRequire} from "node:module";
 
 /** Real authority seam for the injected browser harness; never contacts production. */
-export async function createLiveRaceEmulator() {
+export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Live browser tests require Firestore emulator");
   const projectId = process.env.GCLOUD_PROJECT ?? "demo-riddle-quest-live-browser";
   if (!projectId.startsWith("demo-")) throw new Error("Live browser fixtures require a demo project");
@@ -14,8 +14,9 @@ export async function createLiveRaceEmulator() {
   const {getFirestore} = require("firebase-admin/firestore");
   const db = getFirestore();
   const {joinLiveRaceForUser, updateLiveRaceForUser} = require(path.join(root, "firebase-functions/lib/race/raceLiveService.js"));
+  const {getLiveRaceChallengeForUser} = require(path.join(root, "firebase-functions/lib/race/raceLiveInvitation.js"));
   const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require("@qwordly/core/race");
-  const users = {Alice: `jest_${"a".repeat(40)}`, Bob: `jest_${"b".repeat(40)}`};
+  const users = {Alice: `${provider}_${"a".repeat(40)}`, Bob: `${provider}_${"b".repeat(40)}`};
   const tickets = new Map();
   async function clear() {
     for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "localizedRiddles/en/riddles"])
@@ -39,6 +40,7 @@ export async function createLiveRaceEmulator() {
     const {user, ...command} = input;
     const uid = users[user];
     if (!uid) throw new Error("Unknown browser fixture owner");
+    if (operation === "challenge") return getLiveRaceChallengeForUser(uid, command.challengeId, {db});
     const result = operation === "join"
       ? await joinLiveRaceForUser(uid, JoinLiveRaceSchema.parse(command), {db})
       : await updateLiveRaceForUser(uid, UpdateLiveRaceSchema.parse(command), {db});

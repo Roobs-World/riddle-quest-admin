@@ -50,12 +50,22 @@ describe("secure game completion derivation", () => {
       gameMode: "classic",
       sessionToken: "00000000-0000-4000-8000-000000000001",
       attempts: 3,
+      difficultyBand: "easy",
       isCorrect: true,
       completionKey: "classic:1",
       entitlementCompletionKey: "classic:1",
       locale: "en",
       classicIndex: 1,
     });
+  });
+
+  it("ignores caller difficulty and uses only the private session snapshot", async () => {
+    const state = {attempts: 2, lastGuess: "piano", answer: "piano", locale: "en", completionKey: "classic:1", classicIndex: 1};
+    const request = {riddleId: "riddle-1", gameMode: "classic" as const, sessionToken: "00000000-0000-4000-8000-000000000001", difficultyBand: "hard"};
+    mockFinalizeAuthoritativeSession.mockResolvedValue(state);
+    await expect(deriveAuthoritativeCompletion(request, {uid: "user-1"})).resolves.toMatchObject({difficultyBand: "easy"});
+    mockFinalizeAuthoritativeSession.mockResolvedValue({...state, difficultyBand: "medium"});
+    await expect(deriveAuthoritativeCompletion(request, {uid: "user-1"})).resolves.toMatchObject({difficultyBand: "medium"});
   });
 
   it("does not trust a stale stored correctness flag", async () => {

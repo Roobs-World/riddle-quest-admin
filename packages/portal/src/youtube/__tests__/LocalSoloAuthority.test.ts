@@ -80,6 +80,21 @@ const createNearBudgetSave = (combiningMarks: number): YouTubeSaveV1 => {
 };
 
 describe("LocalSoloAuthority", () => {
+  it.each([['classic', 'medium', 40], ['classic', 'hard', 60], ['daily', 'medium', 100], ['daily', 'hard', 125]] as const)(
+    "uses bundled %s %s difficulty for the base reward", async (mode, difficultyBand, expectedCoins) => {
+      const scaledContent = {...content, riddles: new Map(riddles.map((riddle) => [riddle.canonicalId, {...riddle, difficultyBand}]))};
+      const saveData = jest.fn(async (_data: string) => undefined);
+      const authority = await LocalSoloAuthority.restore(createEmptyYouTubeSave(content.contentVersion), scaledContent,
+        new YouTubeSaveGate({saveData}), () => new Date("2026-01-01T12:00:00Z"));
+      await authority.start(mode);
+      authority.setInput(["r", "o", "m", "e"], 3);
+      const result = await authority.submitGuess();
+      // First perfect Classic/Daily wins grant 3/4 achievements, a level-up (50), and a Daily streak (20).
+      expect(result?.coinsEarned).toBe(expectedCoins + 75 + 50 + (mode === "daily" ? 45 : 0));
+      expect(authority.getSnapshot().save.progression.coins).toBe(300 + result!.coinsEarned);
+      await expect(authority.submitGuess()).rejects.toBeDefined();
+    });
+
   it("does not save empty defaults and gates every material Classic transition", async () => {
     /** Saves data. */
     const saveData = jest.fn(async (_data: string) => undefined);
@@ -200,7 +215,7 @@ describe("LocalSoloAuthority", () => {
     const authority = await createAuthority();
     await authority.start("classic");
     await expect(authority.requestHint()).resolves.toContain("hint_user");
-    expect(authority.getSnapshot().save.progression.coins).toBe(250);
+    expect(authority.getSnapshot().save.progression.coins).toBe(275);
     /** Provides hinted behavior. */
     const hinted = authority.getSnapshot().save.activeGame!;
     expect(authority.getSnapshot().displayLetters?.[hinted.hintRevealedIndices[0]]).toBe("r");
@@ -213,7 +228,7 @@ describe("LocalSoloAuthority", () => {
     }
     expect(authority.getSnapshot().save.activeGame).toMatchObject({awaitingContinue: true, attemptsUsed: 5});
     await authority.buyContinue();
-    expect(authority.getSnapshot().save.progression.coins).toBe(150);
+    expect(authority.getSnapshot().save.progression.coins).toBe(225);
     authority.setInput(["r", "x", "x", "x"], 3);
     await expect(authority.submitGuess()).resolves.toMatchObject({kind: "loss", attempts: 6});
     expect(authority.getSnapshot().save).toMatchObject({activeGame: null, progression: {gamesPlayed: 1}});
