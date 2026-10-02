@@ -1,0 +1,38 @@
+{
+  "taskId": "multiplayer:race-backend-completion-audit",
+  "observedAt": "2026-10-02T04:22:59.883213+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 143,
+  "dashboardReceiptRecorded": false,
+  "reason": "All backend race coverage passes after replacing an incoherent direct-write integration fixture with accepted mutations. Shared documentation, source-size and concurrent pathway work still prevent complete stable-source guarded verification.",
+  "sourceHashes": {
+    "firebase-functions/src/__tests__/race/raceService.it.test.ts": "79b641bd32039395e6fddacd14dc267f35777dd1edc9917d2fd0251d34f99565",
+    "docs/development-tasks/race-backend-completion-audit.json": "0cc90c5a8ff93fac03e4455e51864c53b16a322980bec2caba9b7aaf99e4e541",
+    "docs/evidence/multiplayer-backend-completion-audit.md": "27e578916f52df8eb877a745088f71ab17838fee41b374163446363b5f805268"
+  },
+  "passedAtBatchSnapshot": {
+    "backendBuildAndOperatorSafeguards": true,
+    "focusedIntegrationTests": 1,
+    "backendTests": 1075,
+    "backendSuites": 73,
+    "scopedSourceFilesStable": 149,
+    "coverage": {
+      "statements": 93.46,
+      "branches": 89.89,
+      "functions": 96.99,
+      "lines": 95.82
+    }
+  },
+  "notPerformed": [
+    "client suite rerun",
+    "isolated build rerun",
+    "full guarded verification",
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

@@ -261,6 +261,7 @@ async function prepareRaceRunForUser(
     currentPosition: 0,
     correctCount: 0,
     guessesUsed: 0,
+    guessHistory: [],
     hintUsed: false,
     revealedLetters: [],
     startedAtMs: input.prepare ? 0 : nowMs,
@@ -521,6 +522,8 @@ export async function resumeRaceRunForUser(
     nowMs?: number;
     /** The include evaluation used by the authoritative operation. */
     includeEvaluation?: boolean;
+    /** Negotiated confirmed current-question rows. */
+    includeGuessHistory?: boolean;
   } = {},
 ): Promise<RaceRunResponse> {
   /** Provides db behavior. */
@@ -542,7 +545,7 @@ export async function resumeRaceRunForUser(
     /** Provides refreshed behavior. */
     const refreshed = await settleRaceRun(transaction, db, privacy.run, nowMs);
     /** A decoding failure aborts staged rewards, outboxes and terminal transitions. */
-    const response = projectRaceRunResponse(refreshed, nowMs, options.includeEvaluation);
+    const response = projectRaceRunResponse(refreshed, nowMs, options.includeEvaluation, options.includeGuessHistory);
     if (JSON.stringify(refreshed) !== JSON.stringify(stored)) {
       transaction.set(runRef, raceRunPrivacyWrite(refreshed, privacy.scrubbed), {merge: true});
     }

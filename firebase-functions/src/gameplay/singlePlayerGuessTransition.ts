@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
-import type {SubmitSinglePlayerGuessResponseData} from "../validation/requestSchemas";
+import type {SubmitSinglePlayerGuessResponseData} from "@qwordly/core/validation/requestSchemas";
 import {MAX_ATTEMPTS_CHALLENGE, MAX_ATTEMPTS_CLASSIC} from "../shared/constants";
 import type {GuessTransition, GuessTransitionInput, SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 

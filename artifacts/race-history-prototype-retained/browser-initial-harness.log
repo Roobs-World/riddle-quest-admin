@@ -1,0 +1,8 @@
+file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs:17
+  if(!source.includes('plugins:['))throw Error('Verifier no longer exposes a plugin list: '+name);
+                                         ^
+
+Error: Verifier no longer exposes a plugin list: verify-race-paid-draft-checkpoints-browser.mjs
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs:17:42
+
+Node.js v24.17.0

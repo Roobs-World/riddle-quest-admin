@@ -1,0 +1,9 @@
+# Multiplayer shared Daily browser gate
+
+The existing unavailable-Daily authentication scenario timed out looking for its exact message inside `.spinning-wheel-loader-status strong`. An independent run of the saved pre-extraction test reproduced that failure. A temporary diagnostic browser run shows the real app displaying the exact expected error, retaining the Daily header and offering Settings, with no Classic riddle. The production `GameFrameApp` renders this settled startup error in `<p role="status">`; it no longer belongs to the spinning loader.
+
+The test now selects the accessible status role and retains the same exact error message, timeout and no-Classic heading assertion. No product code, fixture authority, visible text or translation changes. The initial failing run, original baseline and diagnostic logs remain under the preceding harness extraction and this gate's artifact folders. Temporary diagnostic test files are removed after execution.
+
+The final injected Chromium run passes seven cases: unavailable Daily, signed guest entry, creator waiting/cancellation, waiting-pointer reload, completed recipient without a second start, public creator Activity routing and unavailable invitation consumption. The run reports seven passed and 65 skipped, not a full browser-suite pass. The shared file-size audit still passes. All seven isolated target builds and portal types passed immediately before this test-locator-only change; no production source changed and those commands were not repeated.
+
+The 145-check manifest preserves all 144 previous checks and adds the exact Daily browser command. Its resolved Daily gate is removed from remaining gates. Shared documentation and full guarded source-stable verification remain incomplete, so no automatic dashboard completion receipt is recorded. The reliability goal remains active. No deployment, upload, activation, publication, commit or push occurs; Jest remains unpublished.

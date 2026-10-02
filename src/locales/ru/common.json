@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "Нет подключения к Интернету",
     "OK_BUTTON": "ХОРОШО",
     "SUCCESS_TITLE": "Успех",
-    "UNABLE_TO_OPEN_TITLE": "Невозможно открыть",
-    "TRY_AGAIN_LATER_MESSAGE": "Пожалуйста, повторите попытку позже."
+    "UNABLE_TO_OPEN_TITLE": "Невозможно открыть"
   },
   "CommonButtons": {
     "RETRY": "Повторите попытку."

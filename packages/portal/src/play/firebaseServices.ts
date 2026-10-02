@@ -88,7 +88,7 @@ export const createFirebaseHostServices = (): HostServices => {
     if (dailyPreload?.uid === uid && dailyPreload.locale === locale && dailyPreload.day === day)
       return dailyPreload.promise;
     /** Request shared by concurrent callers. */
-    const promise = getCurrentDailyChallenge({locale, includeEvaluation: true}).then(({data}) => {
+    const promise = getCurrentDailyChallenge({locale, includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true}).then(({data}) => {
       // Unavailable content must be fetched again on recovery; only a confirmed completion is durable for the day.
       if (data.error && data.hasCompletedToday !== true && dailyPreload?.promise === promise) dailyPreload = null;
       return data;
@@ -104,7 +104,7 @@ export const createFirebaseHostServices = (): HostServices => {
     if (!force && classicBufferInFlight?.uid === uid && classicBufferInFlight.locale === locale)
       return classicBufferInFlight.promise;
     /** Request shared by concurrent callers. */
-    const promise = getClassicRiddleBuffer({locale}).then(({data}) => {
+    const promise = getClassicRiddleBuffer({locale, includeHintRecovery: true, includeGuessRecovery: true}).then(({data}) => {
       if (latestSnapshot.user?.uid === uid &&
         (classicBuffer?.uid !== uid || classicBuffer.locale !== locale ||
           data.confirmedClassicIndex >= classicBuffer.data.confirmedClassicIndex))
@@ -166,7 +166,7 @@ export const createFirebaseHostServices = (): HostServices => {
         /** Provides result behavior. */
         const data = !sessionToken && !riddleId && latestSnapshot.user
           ? await preloadDaily(latestSnapshot.user.uid, locale)
-          : (await getCurrentDailyChallenge({locale, sessionToken, riddleId, includeEvaluation: true})).data;
+          : (await getCurrentDailyChallenge({locale, sessionToken, riddleId, includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true})).data;
         return mapRiddleResponse(data, "challenge");
       }
 
@@ -220,6 +220,7 @@ export const createFirebaseHostServices = (): HostServices => {
       /** Provides result behavior. */
       const result = await getCurrentClassicRiddle({
         includeEvaluation: true,
+        includeHintRecovery: true, includeGuessRecovery: true,
         classicIndex: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1,
         locale,
         sessionToken,
@@ -360,7 +361,7 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     /** Provides resume race behavior. */
     async resumeRace(runId) {
-      return (await resumeRaceRun({runId, includeEvaluation: true})).data;
+      return (await resumeRaceRun({runId, includeEvaluation: true, includeGuessHistory: true})).data;
     },
     /** Provides abandon race behavior. */
     async abandonRace(input) {

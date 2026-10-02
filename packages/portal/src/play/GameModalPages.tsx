@@ -24,6 +24,7 @@ export type GameModalPagesProps = {
   onContinue: (amount?: number) => void;
   /** Optional target-funded extra attempt; absent on unsupported targets. */
   onRecoverAttempt?: () => void;
+  /** Disables competing loss actions while continuation is awaiting completion. */
   continuationPending?: boolean;
   /** Stores on purchase. */
   onPurchase: (productId: string) => void;

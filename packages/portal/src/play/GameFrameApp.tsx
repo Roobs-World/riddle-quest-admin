@@ -7,7 +7,7 @@ import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, 
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
-import {GuidanceOverlay} from "./GuidanceOverlay";
+import {GuidanceOverlay} from "./guidance/GuidanceOverlay";
 import {SpinningWheel, SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {
   ContextBoardCapability,
@@ -57,6 +57,7 @@ export function GameFrameApp({
   localBridge = false,
   raceOwnerId,
   interactionBlocked = false,
+  startupError,
   restoredGame,
   onSaveGame,
   registrationName,
@@ -83,6 +84,8 @@ export function GameFrameApp({
   raceOwnerId?: string;
   /** Stores interaction blocked. */
   interactionBlocked?: boolean;
+  /** Failed initial content load, shown with a usable Settings recovery control. */
+  startupError?: string;
   /** Stores restored game. */
   restoredGame?: SavedGame | null;
   /** Stores on save game. */
@@ -151,6 +154,7 @@ export function GameFrameApp({
   /** Provides state ref behavior. */
   const stateRef = useRef(state);
   stateRef.current = state;
+  /** Current target continuation hook supplies modal pending state and its guarded action. */
   const recovery = useAttemptRecovery({capability: isFacebookWebTarget ? attemptRecovery : undefined, stateRef, dispatch});
 
   useOfflineDialog(online, offlineDialogRef);
@@ -333,7 +337,14 @@ export function GameFrameApp({
         />
 
         {!state.riddle ? (
-          <section className="game-loading" aria-hidden="true" />
+          startupError ? (
+            <section className="game-loading">
+              <p role="status">{startupError}</p>
+              <button onClick={() => dispatch({type: "openModal", modal: "settings"})}>
+                {tr("Navigation.SETTINGS_BUTTON")}
+              </button>
+            </section>
+          ) : <section className="game-loading" aria-hidden="true" />
         ) : (
           <>
             <section className="riddle-surface">

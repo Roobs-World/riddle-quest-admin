@@ -36,7 +36,7 @@ export async function generateLocalizedClassicRiddlesForLocale(
   /** Provides existing behavior. */
   const existing = await getLocalizedExistingRiddlesFromFirestoreForLocale(locale);
   /** Starts ing index. */
-  const startingIndex = await getNextClassicIndex();
+  const startingIndex = await getNextClassicIndex(locale);
   /** Provides new riddles behavior. */
   const newRiddles: {
     /** Stores question. */

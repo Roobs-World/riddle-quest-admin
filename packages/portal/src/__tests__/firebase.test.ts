@@ -10,13 +10,21 @@ const mockHttpsCallable = jest.fn((_functions: unknown, name: string) =>
 const mockInitializeApp = jest.fn(() => ({name: "firebase-app"}));
 /** Provides mock get auth behavior. */
 const mockGetAuth = jest.fn(() => ({name: "auth"}));
+/** Per-frame authentication avoids another Jest player replacing this tab. */
+const mockInitializeAuth = jest.fn(() => ({name: "frame-auth"}));
+/** Controlled in-memory auth persistence isolates restricted browser storage. */
+const mockInMemoryPersistence = {type: "NONE"};
 /** Provides mock get firestore behavior. */
 const mockGetFirestore = jest.fn(() => ({name: "firestore"}));
 /** Provides mock get functions behavior. */
 const mockGetFunctions = jest.fn((_app?: unknown, region?: string) => ({name: "functions", region}));
 
 jest.mock("firebase/app", () => ({initializeApp: (...args: unknown[]) => mockInitializeApp(...args)}));
-jest.mock("firebase/auth", () => ({getAuth: (...args: unknown[]) => mockGetAuth(...args)}));
+jest.mock("firebase/auth", () => ({
+  getAuth: (...args: unknown[]) => mockGetAuth(...args),
+  initializeAuth: (...args: unknown[]) => mockInitializeAuth(...args),
+  inMemoryPersistence: mockInMemoryPersistence,
+}));
 jest.mock("firebase/firestore/lite", () => ({
   doc: (...args: unknown[]) => mockDoc(...(args as [unknown, string, string])),
   getDoc: (...args: unknown[]) => mockGetDoc(...args),
@@ -36,7 +44,8 @@ describe("Firebase browser adapter", () => {
 
   it("initializes Firebase once and declares every callable endpoint", () => {
     expect(firebaseApp).toEqual({name: "firebase-app"});
-    expect(auth).toEqual({name: "auth"});
+    expect(auth).toEqual({name: "frame-auth"});
+    expect(mockInitializeAuth).toHaveBeenCalledWith(firebaseApp, {persistence: mockInMemoryPersistence});
     expect(mockInitializeApp).toHaveBeenCalledWith(
       expect.objectContaining({
         apiKey: "missing-api-key",
@@ -122,6 +131,26 @@ describe("Firebase environment variants", () => {
 
   afterEach(() => {
     jest.dontMock("../test/firebaseEnvironmentMock");
+  });
+
+  it("binds Jest authentication to this frame instead of shared persisted browser identity", async () => {
+    mockInitializeAuth.mockClear();
+    mockGetAuth.mockClear();
+    /** Loaded browser Firebase module exercises session persistence configuration. */
+    const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "jest"});
+    expect(module.auth).toEqual({name: "frame-auth"});
+    expect(mockInitializeAuth).toHaveBeenCalledWith(module.firebaseApp, {persistence: mockInMemoryPersistence});
+    expect(mockGetAuth).not.toHaveBeenCalled();
+  });
+
+  it("retains the existing authentication initialization for other target assemblies", async () => {
+    mockInitializeAuth.mockClear();
+    mockGetAuth.mockClear();
+    /** Loaded browser Firebase module exercises session persistence configuration. */
+    const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "facebook"});
+    expect(module.auth).toEqual({name: "auth"});
+    expect(mockGetAuth).toHaveBeenCalledWith(module.firebaseApp);
+    expect(mockInitializeAuth).not.toHaveBeenCalled();
   });
 
   it("routes all Jest multiplayer calls beside Firestore without rerouting other capabilities", async () => {

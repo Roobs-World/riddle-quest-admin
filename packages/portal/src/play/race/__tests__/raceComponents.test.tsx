@@ -221,6 +221,18 @@ describe("race presentation components", () => {
     expect(html).not.toContain("facebook_");
   });
 
+  it("disables category starts while discovery owns the session and restores them afterward", async () => {
+    /** Canonical category fixtures exercise discovery-owned start controls. */
+    const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
+    for (const busy of [true, false]) {
+      /** Rendered markup exposes the current control and accessibility state. */
+      const html = renderToString(<RaceCategoriesPanel categories={categories} loading={false} busy={busy} onSelect={noop} onShowInbox={noop} />);
+      /** Category grid isolates start-button disabled assertions. */
+      const grid = html.split('class="race-category-grid"')[1].split('</div>')[0];
+      expect((grid.match(/disabled=""/g) ?? []).length).toBe(busy ? categories.length : 0);
+    }
+  });
+
   it("renders category, inbox, and challenge lobby states", async () => {
     /** Deterministic fake data source for presentation fixtures. */
     const services = createFakeRaceServices();

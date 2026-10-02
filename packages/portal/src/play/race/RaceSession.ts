@@ -1,23 +1,25 @@
+import {RaceOwnedAuthority} from "./RaceOwnedAuthority";
 import {parseHostToGameMessage, type GameToHostMessage} from "@qwordly/core/bridge";
-import {StartRaceRunRequestSchema, classifyRaceMatchFailure, raceMatchFailure, type RaceMatchFailure} from "@qwordly/core/race";
+import {classifyRaceMatchFailure, raceMatchFailure, type RaceMatchFailure} from "@qwordly/core/race";
 import {type RaceOutcome, type RaceAnalyticsEventName, type RaceCategoryId, type RaceInboxItem, type RaceRunView, type SocialReportCategory} from "@qwordly/core/race";
 import type {MatchmakingCapability} from "../../platform/types";
 import {createRequestId} from "../requestIds";
 import {RacePlay, type RacePlayClock} from "./RacePlay";
-import {raceErrorKey, raceRejectedState, raceMatchErrorKey, bindRaceCommand, applyRaceAuthority, isolateConfirmedRace, raceAttemptState, type RaceResumeDraft} from "./RaceSessionAuthority";
+import {raceErrorKey, raceRejectedState, raceMatchErrorKey, bindRaceCommand, applyRaceAuthority, raceAttemptState, type RaceResumeDraft} from "./RaceSessionAuthority";
 import type {RaceSessionEffect, RaceSessionEntry, RaceSessionOptions, RaceSessionState, RaceStage} from "./RaceSession.types";
 import {browserRaceRecovery, RACE_RECOVERY_TTL_MS, type RaceRecoveryIntent, type RaceRecoveryPersistence} from "./logic/raceRecoveryStorage";
 import {clearActiveRace, readActiveRace, saveActiveRace, persistConfirmedRace} from "./logic/activeRaceStorage";
 import {isolateRaceRecovery, isolateRaceResume} from "./logic/raceOptionalStorage";
 import {nextRaceEntryPollAt, advanceRaceLoadingProgress, estimatedRaceServerNow, scheduledRaceCountdown, RACE_GO_DISPLAY_MS} from "./logic/raceCountdown";
 import {RaceDrafts} from "./logic/raceDraftStorage";
-import {initialRaceSessionState, updateRaceSessionState, idleRaceDiscovery} from "./logic/raceInitialState";
+import {initialRaceSessionState, updateRaceSessionState, idleRaceDiscovery, resetOwnedRaceState} from "./logic/raceInitialState";
 import {editRaceInput, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {ownsRaceMatchmaking, resolveRaceMatchmaking, findOwnedRaceOpponent, observeRaceMatchResult, parseOwnedRaceMatch, raceMatchDelivery, raceDiscoveryFailure} from "./logic/raceMatchDiscovery";
 import {requestedRaceState, assertRequestedRaceRun} from "./logic/raceRequestSelection";
 import {existingRaceRunId, isCreatorRaceEntry, selectedRaceChallengeId, raceEntryView} from "./logic/raceEntrySelection";
 import {canRetryRaceMatch, failedRaceDiscovery, failedRaceRecovery, retryRaceMatchIntent, restoredRaceFailure, needsRaceCatalog, recoveredRaceCatalog, type RaceMatchIntent} from "./logic/raceDiscoveryRecovery";
+import {recordOwnedRaceStart} from "./logic/raceStartDelivery";
 import {getAdjustedRaceTime} from "./logic/racePresentation";
 
 /** One observable owner for Race Session transitions and authority reconciliation. */
@@ -39,7 +41,7 @@ export class RaceSession {
   private readonly drafts: RaceDrafts;
   /** Exact last observed journal revision protects newer tab selections. */ private recoveryId: string | null = null;
   /** Identity used by transport, retries and cleanup belongs to the confirmed run. */
-  private get ownedRunId(): string | undefined {return this.ownedSnapshot?.runId ?? this.state.run?.runId;}
+  private get ownedRunId(): string | undefined {return this.authority.run?.runId ?? this.state.run?.runId;}
   /** Observable listeners. */ private readonly listeners = new Set<() => void>();
   /** Current mounted/entered lifetime. */ private active = false;
   /** Asynchronous discovery and provider effects belong to this generation. */ private generation = 0;
@@ -62,12 +64,8 @@ export class RaceSession {
   private resumeRetry: string | null = null;
   /** Successor typing survives a rejected guess until an owned resume confirms or supersedes it. */
   private resumeDraft: RaceResumeDraft | null = null;
-  /** Accepted immutable content survives optional answer-free views without altering their public payload. */
-  private ownedSnapshot: RaceRunView | null = null;
-  /** Private receipt anchor for canonical lifecycle timing, independent of observable state. */
-  private ownedReceivedAtMs = 0;
-  /** Settled competitive facts are private even when UI and provider callbacks retain result objects. */
-  private ownedOutcome: RaceOutcome | null = null;
+  /** Canonical run, outcome and receipt lifetime remain separate from mutable presentation. */
+  private readonly authority = new RaceOwnedAuthority();
   /** Catalog activity cache belongs only to this session. */ private inboxLoadedAt = -Infinity;
   /** Rivalry carried into a new creator attempt. */ private rivalryId: string | undefined;
   /** Prevents duplicate outcome reconciliation and provider completion effects. */ private outcomeRequested = false;
@@ -105,14 +103,14 @@ export class RaceSession {
   }
   /** External-store snapshot is stable between notifications. */ getSnapshot = (): RaceSessionState => this.state;
   /** Returns only the privately confirmed completion identity for optional provider catch-up. */
-  getConfirmedOutcomeRunId = (): string | null => this.ownedOutcome?.runId ?? null;
+  getConfirmedOutcomeRunId = (): string | null => this.authority.outcome?.runId ?? null;
   /** Subscribes rendering or behavioural tests to complete transitions. */
   subscribe = (listener: () => void): (() => void) => {this.listeners.add(listener); return () => this.listeners.delete(listener);};
   /** Applies all related state changes before publishing to observers. */
   private update(patch: Partial<RaceSessionState>): void {
     this.state = updateRaceSessionState(this.state, patch, this.play.requiresRunRefresh);
-    if (this.active && this.ownedSnapshot) this.drafts.sync(this.entry.ownerId, this.ownedSnapshot, this.state,
-      this.play.typingWhilePending, () => this.wallNow(), this.captureLifetime(), this.ownedReceivedAtMs, this.clock.now());
+    if (this.active && this.authority.run) this.drafts.sync(this.entry.ownerId, this.authority.run, this.state,
+      this.play.typingWhilePending, () => this.wallNow(), this.captureLifetime(), this.authority.receivedAtMs, this.clock.now());
     for (const listener of this.listeners) listener();
   }
   /** Captures outbound ownership across synchronous observers and optional adapters. */
@@ -153,8 +151,7 @@ export class RaceSession {
     this.loadedAt = null;
     this.pollAt = Infinity;
     this.pollAttempt = 0;
-    this.update(initialRaceSessionState(entry, this.clock.now()));
-    if (!current()) return;
+    if (!resetOwnedRaceState(entry, () => this.clock.now(), current, state => this.update(state))) return;
     // Incoming tournament navigation reads only the provider view; retained race hints stay untouched.
     if (entry.tournamentLocale) return;
     if (entry.openInbox) this.send("raceInbox", "game:listRaceInbox", {limit: 20});
@@ -205,8 +202,7 @@ export class RaceSession {
   /** Invalidates late host/provider responses and scheduled projection loaders. */
   dispose = (): void => {
     this.lastMatchmaking = undefined;
-    this.ownedSnapshot = null;
-    this.ownedOutcome = null;
+    this.authority.reset();
     this.active = false;
     this.drafts.reset();
     /** Cleanup notifications may install a new live journey before this frame returns. */
@@ -232,7 +228,7 @@ export class RaceSession {
   /** Correlation and mutation receipts are issued by the private gameplay module. */
   private send(operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>, replayRequestId?: string): void {
     if (!this.active) return;
-    payload = bindRaceCommand(payload, this.ownedSnapshot);
+    payload = bindRaceCommand(payload, this.authority.run);
     /** Reserve pending before notification so observers cannot dispatch a second mutation. */
     const current = this.captureLifetime();
     if (["raceStart", "raceGuess", "raceHint", "raceSkip", "raceAbandon", "raceOutcome"].includes(operation)) this.resumeDraft = null;
@@ -242,9 +238,8 @@ export class RaceSession {
     if (!current()) return;
     if (operation === "raceStart") {
       /** Store only the validated selection and original idempotency identity. */
-      const request = StartRaceRunRequestSchema.parse({...payload, requestId: replayRequestId ?? (this.options.requestId ?? createRequestId)(operation)});
-      this.saveRecovery({kind: "start", request}, replayRequestId !== undefined);
-      replayRequestId = request.requestId;
+      replayRequestId = recordOwnedRaceStart(payload, replayRequestId, this.options.requestId ?? createRequestId, current,
+        request => this.saveRecovery({kind: "start", request}, replayRequestId !== undefined));
     } else if (operation === "raceEntry" && typeof payload.challengeId === "string") {
       this.saveRecovery({kind: "challenge", challengeId: payload.challengeId,
         ...(this.matchOffer?.challengeId === payload.challengeId ? {offerId: this.matchOffer.id} : {})}, this.recoveryId !== null);
@@ -256,11 +251,12 @@ export class RaceSession {
   /** Persist minimal selection before transport can confirm synchronously or be interrupted. */
   private saveRecovery(intent: RaceRecoveryIntent, preserveSelection = false): void {
     if (!this.entry.ownerId) return;
+    /** Clock and storage observations both retain the originating journal owner. */
+    const current = this.captureLifetime();
     /** Local retention clock is separate from authoritative race timing. */
     const now = this.wallNow();
+    if (!current()) return;
     if (preserveSelection) {
-      /** Optional observation callbacks cannot transfer this completion to a replacement account. */
-      const current = this.captureLifetime();
       /** Another tab's revision belongs to its newer selection, not this provider receipt. */
       const selected = this.recovery.read(this.entry.ownerId, this.entry.locale, now);
       if (!current() || selected?.id !== this.recoveryId) return;
@@ -323,8 +319,7 @@ export class RaceSession {
   begin = (categoryId: RaceCategoryId, challengeId = selectedRaceChallengeId(this.state), fallbackOfferId?: string): void => {
     if (!this.active || this.state.pending || this.state.findingOpponent) return;
     if (isCreatorRaceEntry(this.state, challengeId)) {this.navigate("inbox"); return;}
-    this.ownedSnapshot = null;
-    this.ownedOutcome = null;
+    this.authority.reset();
     this.generation++;
     /** Preparation notifications and selection effects cannot migrate this start. */
     const current = this.captureLifetime();
@@ -360,14 +355,13 @@ export class RaceSession {
     /** Recovery cleanup and reset notifications retain the original rematch owner. */
     const current = this.captureLifetime();
     /** Selection and cleanup retain the confirmed run before reset. */
-    const run = this.ownedSnapshot ?? this.state.run;
+    const run = this.authority.run ?? this.state.run;
     /** Fallback rematches discover a fresh opponent instead of replaying a recorded challenge. */
     const fallbackRematch = Boolean(categoryId && !rivalryId && run?.role === "challenger" &&
       !run.challengeId && run.opponent);
     /** Capture cleanup identity before discarding this run's private contract. */
     const runId = this.ownedRunId;
-    this.ownedSnapshot = null;
-    this.ownedOutcome = null;
+    this.authority.reset();
     this.clearRecovery();
     if (!current()) return;
     this.clearStartupResume();
@@ -388,8 +382,8 @@ export class RaceSession {
     this.startRetry = null;
     this.resumeDraft = null;
     this.loadedAt = null;
-    this.update({...initialRaceSessionState({...this.entry, challengeId: undefined, openInbox: false, tournamentLocale: undefined}, this.clock.now()), categories: this.state.categories, inboxItems: this.state.inboxItems});
-    if (!current()) return;
+    if (!resetOwnedRaceState({...this.entry, challengeId: undefined, openInbox: false, tournamentLocale: undefined},
+      () => this.clock.now(), current, state => this.update(state), {categories: this.state.categories, inboxItems: this.state.inboxItems})) return;
     if (fallbackRematch) {
       /** Current provider adapter retains the accepted scope for the replacement search. */
       const adapter = resolveRaceMatchmaking(this.options.getMatchmaking, this.lastMatchmaking);
@@ -445,37 +439,38 @@ export class RaceSession {
   /** Processes an untrusted bridge result exactly once inside the owning lifetime. */
   receive = (raw: unknown): void => {
     if (!this.active) return;
+    /** Envelope parsing and timer acknowledgment retain the original account generation. */
+    const current = this.captureLifetime();
     /** Validated bridge envelope; malformed or unrelated traffic does not consume a receipt. */
     let message;
     try {message = parseHostToGameMessage(raw);} catch {return;}
     if (message.type !== "host:operationResult") return;
     /** Matching command context remains private until its response is accepted. */
     const command = this.command;
-    if (!command || message.payload.operation !== command.operation || !this.play.acceptResponse(message.requestId, command.operation)) return;
+    if (!current() || !command || message.payload.operation !== command.operation || !this.play.acceptResponse(message.requestId, command.operation) || !current()) return;
     this.command = null;
-    /** Only this accepted response lifetime may issue effects or cleanup. */
-    const current = this.captureLifetime();
     /** A valid terminal start must not be retained as a failed preparation retry. */
     let accepted = false;
     try {
       if (!message.payload.ok) {this.reject(command.operation, message.payload.error ?? "RaceTo10.ERROR_GENERIC", command.runId); return;}
+      /** One receipt-time observation anchors validation, accepted ownership and feedback. */
+      const receivedAt = this.clock.now();
       /** Parses and checks ownership before committing any authority state. */
-      let patch = applyRaceAuthority(requestedRaceState(this.state, command), command.operation, message.payload.data, this.play, this.clock.now(), this.entry.locale, this.resumeDraft, this.ownedSnapshot,
-        this.ownedOutcome, current);
+      let patch = applyRaceAuthority(requestedRaceState(this.state, command), command.operation, message.payload.data, this.play, receivedAt, this.entry.locale, this.resumeDraft, this.authority.run,
+        this.authority.outcome, current, run => this.authority.previewHistory(run), run => this.authority.attempts(run));
       if (!current()) return;
       assertRequestedRaceRun(command, patch.run);
-      if (command.operation === "raceResume" && !this.ownedSnapshot && patch.run) {
+      if (command.operation === "raceResume" && !this.authority.run && patch.run) {
         patch = {...patch, ...this.drafts.restore(this.entry.ownerId, patch.run, () => this.wallNow(), current)};
         if (!current()) return;
       }
-      if (patch.run) {this.ownedSnapshot = isolateConfirmedRace(patch.run, this.ownedSnapshot); this.play.confirmRunRefresh(); this.ownedReceivedAtMs = this.clock.now();}
-      if (command.operation === "raceOutcome" && patch.outcome) this.ownedOutcome = structuredClone(patch.outcome);
+      if (patch.run) {patch = {...patch, run: this.authority.confirmRun(patch.run, receivedAt)}; this.play.confirmRunRefresh();}
+      if (command.operation === "raceOutcome" && patch.outcome) this.authority.confirmOutcome(patch.outcome);
       if (command.operation === "raceCategories") patch = {...patch, ...recoveredRaceCatalog(this.state, this.matchIntent)};
       accepted = true;
       this.update({...patch, allowTypingWhilePending: this.play.typingWhilePending});
       if (!current()) return;
-      this.feedbackUntil = this.clock.now() + 1600;
-      this.penaltyUntil = this.clock.now() + 1600;
+      this.feedbackUntil = this.penaltyUntil = receivedAt + 1600;
       this.persist(command.selectNewRun, command.operation === "raceStart");
       if (current()) this.afterAuthority(command.operation);
     } catch {if (current()) this.reject(command.operation, "RaceTo10.ERROR_INVALID_RESPONSE", command.runId);}
@@ -496,10 +491,8 @@ export class RaceSession {
   };
   /** Restores provisional input and clocks on both malformed and rejected receipts. */
   private reject(operation: RaceOperation, error: string, requestedRunId?: string): void {
-    /** Rollback notifications may replace the account before the error transition. */
-    const generation = this.generation;
     /** Rejection cleanup belongs to the original journey. */
-    const current = () => this.active && generation === this.generation;
+    const current = this.captureLifetime();
     /** Full rollback checkpoint retained by RacePlay. */
     const rollback = this.play.rejectProjection(operation);
     if (rollback?.kind === "guess" && this.state.run?.currentRiddle && this.state.run.runId === rollback.draftRun.runId &&
@@ -540,8 +533,7 @@ export class RaceSession {
       /** Entry recovery and concurrent mutation delivery share one terminal hub/close transition. */
       const shouldClose = this.state.closeAfterStart;
       this.startRetry = null; this.resumeRetry = null; this.mutationRetry = null;
-      this.ownedSnapshot = null;
-      this.ownedOutcome = null;
+      this.authority.reset();
       this.resumeDraft = null;
       this.matchOffer = null;
       this.rivalryId = undefined;
@@ -603,7 +595,7 @@ export class RaceSession {
   private persist(selectNewRun: boolean, allowMissingRun: boolean): void {
     if (!this.state.run) return;
     /** Adapter callbacks cannot retarget an old accepted response's persistence work. */
-    const current = this.captureLifetime(), run = this.ownedSnapshot ?? this.state.run, ownerId = this.entry.ownerId;
+    const current = this.captureLifetime(), run = this.authority.run ?? this.state.run, ownerId = this.entry.ownerId;
     this.clearRecovery();
     if (!current()) return;
     persistConfirmedRace(run, ownerId, this.persistence, current, selectNewRun, allowMissingRun);
@@ -633,10 +625,10 @@ export class RaceSession {
         if (now - this.loadedAt >= 300) {
           patch.countdownReady = true;
           /** Server schedule is anchored to receipt time, regardless of wall-clock skew. */
-          const run = this.ownedSnapshot ?? this.state.run;
+          const run = this.authority.run ?? this.state.run;
           if (run?.startsAtMs !== undefined && run.serverNowMs !== undefined) {
             /** Visibility recovery advances directly to the authoritative start. */
-            const serverNowMs = estimatedRaceServerNow(run.serverNowMs, this.ownedSnapshot ? this.ownedReceivedAtMs : this.state.receivedAtMs, now);
+            const serverNowMs = estimatedRaceServerNow(run.serverNowMs, this.authority.run ? this.authority.receivedAtMs : this.state.receivedAtMs, now);
             patch.countdown = scheduledRaceCountdown(run.startsAtMs, serverNowMs);
             if (serverNowMs >= run.startsAtMs) {
               // Keep the established GO interval without shifting the server-issued scored clock.
@@ -757,7 +749,7 @@ export class RaceSession {
   /** Publication cannot escape unresolved projection or authority completion. */
   private flushPublication(): void {
     /** Publication eligibility is anchored to the confirmed recording, never its mutable display ID. */
-    const run = this.ownedSnapshot ?? this.state.run;
+    const run = this.authority.run ?? this.state.run;
     if (this.state.publishRequested && !this.state.published && run && this.play.canPublish(run) && this.notifiedRuns.has(run.runId)) {
       this.send("racePublish", "game:publishRace", {runId: run.runId},
         this.mutationRetry?.operation === "racePublish" && this.mutationRetry.runId === run.runId ? this.mutationRetry.requestId : undefined);

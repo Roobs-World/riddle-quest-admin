@@ -43,7 +43,8 @@ export function trackJestFunnelEvent({
   const safeParams = sanitizeAnalyticsParams(attributedParams);
   try {
     console.info("[riddle-quest-funnel]", eventName, safeParams);
-    trackEvent(eventName, safeParams);
+    // The attributed event below owns native delivery; avoid sending it twice.
+    trackEvent(eventName, safeParams, false);
   } catch {
     // A configured analytics sink is nonessential and may fail independently.
   }

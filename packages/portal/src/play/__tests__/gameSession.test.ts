@@ -243,7 +243,7 @@ describe("game session reducer", () => {
     for (const letter of "PIANO") state = reduce(state, {type: "typeLetter", letter});
     state = reduce(state, {type: "guessRequested"});
     expect(reduce(state, {
-      type: "restoreSession", currentLetters: [..."PIANO"], activeSlotIndex: 0,
+      type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken, currentLetters: [..."PIANO"], activeSlotIndex: 0,
       hintRevealedIndices: [], guesses: [], letterStates: {}, awaitingContinue: false,
       engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
     })).toBe(state);
@@ -438,7 +438,7 @@ describe("game session reducer", () => {
       isCorrect: false,
     };
     state = reduce(state, {
-      type: "restoreSession",
+      type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
       currentLetters: ["", "", "", "", ""],
       activeSlotIndex: 0,
       hintRevealedIndices: [],

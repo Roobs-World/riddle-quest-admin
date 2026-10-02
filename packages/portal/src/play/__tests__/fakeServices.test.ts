@@ -135,4 +135,11 @@ describe("fake host services", () => {
     ).rejects.toThrow(/not enough coins/i);
     expect(await services.updateUsername("Nobody")).toBeNull();
   });
+
+  it("models completed Daily before unavailable content for Classic-only browser scenarios", async () => {
+    /** Trusted fake authority reproduces the production request contract. */
+    const services = createFakeHostServices({dailyCompleted: true, dailyUnavailable: true});
+    await expect(services.loadRiddle({gameMode: "challenge", locale: "en"})).rejects.toMatchObject({code: "daily-completed"});
+    await expect(services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 1})).resolves.toMatchObject({gameMode: "classic", riddleId: "classic-fake-1"});
+  });
 });

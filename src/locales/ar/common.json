@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "لا يوجد اتصال بالإنترنت",
     "OK_BUTTON": "نعم",
     "SUCCESS_TITLE": "نجاح",
-    "UNABLE_TO_OPEN_TITLE": "غير قادر على الفتح",
-    "TRY_AGAIN_LATER_MESSAGE": "يرجى المحاولة مرة أخرى لاحقًا."
+    "UNABLE_TO_OPEN_TITLE": "غير قادر على الفتح"
   },
   "CommonButtons": {
     "RETRY": "إعادة المحاولة"

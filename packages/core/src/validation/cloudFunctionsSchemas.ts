@@ -1,3 +1,5 @@
+import {AcceptedGuessesSchema} from "./acceptedGuesses";
+import {RevealedHintsSchema} from "./revealedHints";
 import {z} from "zod";
 
 /** Validates the backend game mode data shape. */
@@ -93,6 +95,8 @@ export const DailyChallengeQuestionSchema = z
     evaluation: z.object({answer: z.string().min(1).max(64), locale: z.string().min(2).max(35)}).strict().optional(),
     sessionToken: z.string().min(20).max(128),
     questionNumber: z.number().int().positive().max(1),
+    revealedHints: RevealedHintsSchema.optional(),
+    acceptedGuesses: AcceptedGuessesSchema.optional(),
     attemptsUsed: z.number().int().nonnegative().max(6),
     hasUsedContinue: z.boolean(),
     awaitingContinue: z.boolean(),
@@ -100,6 +104,14 @@ export const DailyChallengeQuestionSchema = z
   .strict()
   .superRefine((question, context) => {
     /** Provides expected awaiting behavior. */
+    if (question.revealedHints?.some(({index}) => index >= question.answerLength)) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Revealed hint is outside the answer."});
+    }
+    if (question.acceptedGuesses && (question.acceptedGuesses.length !== question.attemptsUsed ||
+      question.acceptedGuesses.some((guess) => guess.feedback.length !== question.answerLength))) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Accepted guess recovery is inconsistent."});
+    }
+    /** The base attempt cap requires a Continue decision before another guess. */
     const expectedAwaiting = question.attemptsUsed === 5 && !question.hasUsedContinue;
     if (question.awaitingContinue !== expectedAwaiting) {
       context.addIssue({code: z.ZodIssueCode.custom, message: "Continue recovery state is inconsistent."});

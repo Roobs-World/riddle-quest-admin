@@ -8,7 +8,8 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 /** Provides hosted browser port behavior. */
 const hostedBrowserPort = Number(process.env.PORTAL_BROWSER_PORT ?? "4178");
 /** Provides hosted browser url behavior. */
-const hostedBrowserUrl = `http://127.0.0.1:${hostedBrowserPort}`; /** Provides wcag tags behavior. */
+const hostedBrowserUrl = `http://127.0.0.1:${hostedBrowserPort}`;
+  /** Provides wcag tags behavior. */
 /** Provides wcag tags behavior. */
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 /** Checks the rendered modal is vertically centered within the Jest viewport. */
@@ -857,6 +858,10 @@ describeBrowser("standalone Jest browser game", () => {
         const gameArea = document.querySelector(".riddle-surface")?.getBoundingClientRect();
         /** Provides content behavior. */
         const content = document.querySelector<HTMLElement>(".game-content");
+        /** Rendered answer cell supplies exact hint and feedback assertions. */
+        const cell = document.querySelector<HTMLElement>(".cell");
+        /** Cell geometry verifies that restored letters occupy visible slots. */
+        const cellBounds = cell?.getBoundingClientRect();
         return {
           documentHeight: document.documentElement.scrollHeight,
           keyHeight: keyboardKey?.height ?? 0,
@@ -865,6 +870,9 @@ describeBrowser("standalone Jest browser game", () => {
           guessBoardWidth: guessBoard?.width ?? 0,
           gameAreaWidth: gameArea?.width ?? 0,
           navigationBottom: navigation?.bottom ?? Infinity,
+          contentBottom: content?.getBoundingClientRect().bottom ?? Infinity,
+          cellDistortion: cellBounds ? Math.abs(cellBounds.width - cellBounds.height) : Infinity,
+          cellRadius: cell ? getComputedStyle(cell).borderRadius : "",
           scale: Number(content?.dataset.viewportScale ?? 0),
         };
       });
@@ -874,7 +882,11 @@ describeBrowser("standalone Jest browser game", () => {
       expect(compactLayout.keyHeight).toBeLessThanOrEqual(48);
       expect(compactLayout.keyboardHeight).toBeLessThanOrEqual(152);
       expect(compactLayout.keyboardWidth).toBeLessThanOrEqual(compactLayout.gameAreaWidth + 1);
-      expect(compactLayout.guessBoardWidth / compactLayout.scale).toBeGreaterThanOrEqual(245);
+      expect(compactLayout.guessBoardWidth).toBeLessThanOrEqual(compactLayout.gameAreaWidth + 1);
+      expect(compactLayout.cellDistortion).toBeLessThanOrEqual(1);
+      expect(compactLayout.cellRadius).toBe("50%");
+      expect(Math.abs(compactLayout.contentBottom - 568)).toBeLessThanOrEqual(1);
+      expect(compactLayout.navigationBottom).toBeGreaterThanOrEqual(567);
       expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
       expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
 
@@ -1509,7 +1521,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(lowEndResources.some((resource) => /music-.*\.webm/.test(resource))).toBe(true);
       expect(lowEndResources.some((resource) => /vendor-three|SolarSystem/.test(resource))).toBe(false);
       expect(await lowEndPage.locator(".keyboard").isVisible()).toBe(true);
-      // Exhaust attempts to verify the loss panel does not use the victory decoration.
+      // Exhaust attempts to verify the loss panel's shared palette without the victory wheel.
       for (let attempt = 0; attempt < 5; attempt += 1) {
         if (attempt === 4) {
           await lowEndPage.waitForFunction(
@@ -1578,7 +1590,7 @@ describeBrowser("standalone Jest browser game", () => {
       await lowEndPage.locator(".modal-continue").waitFor();
       expect(
         await lowEndPage.locator(".modal-continue").evaluate((panel) => getComputedStyle(panel).backgroundImage),
-      ).toBe("none");
+      ).toContain(".svg");
       expect(await lowEndPage.locator(".game-modal-backdrop > .spinning-wheel-graphic").count()).toBe(0);
       expect(await lowEndPage.locator(".continue-balance img").count()).toBe(0);
       expect(
@@ -1586,7 +1598,7 @@ describeBrowser("standalone Jest browser game", () => {
           .locator(".continue-actions .play-primary")
           .first()
           .evaluate((button) => getComputedStyle(button).backgroundColor),
-      ).toBe("rgb(116, 47, 58)");
+      ).toBe("rgb(244, 184, 63)");
       await expectAccessible(lowEndPage, "out of attempts");
       await lowEndPage.screenshot({path: "/tmp/jest-feedback-loss.png"});
       /** Hold the paid Skip result to verify the loss prompt acts directly and previews its charge. */
@@ -1856,11 +1868,16 @@ describeBrowser("standalone Jest browser game", () => {
         .getByRole("button", {name: /buy coins/i})
         .first()
         .click();
-      await registeredPage.getByRole("button", {name: /cancel subscription/i}).waitFor();
+      expect(await registeredPage.getByText("Premium active", {exact: true}).isVisible()).toBe(true);
       expect(await registeredPage.getByRole("button", {name: /start free trial|^subscribe$/i}).count()).toBe(0);
+      expect(await registeredPage.getByRole("button", {name: /cancel subscription/i}).count()).toBe(0);
+      await registeredPage.getByRole("button", {name: "Close", exact: true}).click();
+      await registeredPage.getByRole("button", {name: "Profile", exact: true}).click();
       await registeredPage.getByRole("button", {name: /cancel subscription/i}).click();
       await registeredPage.getByText(/renewal cancelled/i).waitFor();
       expect(await registeredPage.getByText("Premium active", {exact: true}).isVisible()).toBe(true);
+      await registeredPage.getByRole("button", {name: "Close", exact: true}).click();
+      await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
       await registeredPage
         .locator(".game-shop-grid article:not(.shop-subscription-card)")
         .first()

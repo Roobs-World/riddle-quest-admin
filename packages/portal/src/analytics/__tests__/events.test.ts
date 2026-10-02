@@ -1,5 +1,6 @@
 import {
   configureAnalytics,
+  configurePlatformAnalytics,
   installButtonAnalytics,
   installGlobalErrorAnalytics,
   resetAnalyticsForTests,
@@ -11,6 +12,52 @@ import {
 } from "../events";
 
 afterEach(resetAnalyticsForTests);
+
+it("delivers native events independently of external collection and sanitizes purchases", () => {
+  /** Observes native host delivery. */
+  const native = jest.fn();
+  /** Observes the disabled external destination. */
+  const external = jest.fn();
+  configureAnalytics(external);
+  trackScreen("Startup");
+  /** Retires the native owner. */
+  const stop = configurePlatformAnalytics(native);
+  trackEvent("Game Won", {playerId: "private", mode: "classic"});
+  trackPurchase({productId: "coins", purchaseType: "consumable", price: 1.99, currency: "USD"});
+  expect(native).toHaveBeenCalledWith("screen_view", expect.objectContaining({screen_name: "startup"}));
+  expect(native).toHaveBeenCalledWith("game_won", {mode: "classic"});
+  expect(native).toHaveBeenCalledWith("purchase", expect.objectContaining({items: [{item_id: "coins", item_category: "consumable", price: 1.99, quantity: 1}]}));
+  expect(external).not.toHaveBeenCalled();
+  stop();
+  trackEvent("retired");
+  expect(native).toHaveBeenCalledTimes(3);
+});
+
+it("keeps replacement native sinks connected when an older owner cleans up", () => {
+  /** Previous host connection. */
+  const old = jest.fn();
+  /** Successor host connection. */
+  const current = jest.fn();
+  /** Retires only the previous connection. */
+  const stop = configurePlatformAnalytics(old);
+  configurePlatformAnalytics(current);
+  stop();
+  trackEvent("current");
+  trackEvent("direct_funnel", {}, false);
+  expect(old).not.toHaveBeenCalled();
+  expect(current).toHaveBeenCalledTimes(1);
+});
+
+it("isolates synchronous and asynchronous delivery failures", async () => {
+  configurePlatformAnalytics(() => {throw new Error("provider unavailable");});
+  expect(() => trackEvent("game_won")).not.toThrow();
+  configurePlatformAnalytics(() => Promise.reject(new Error("provider unavailable")));
+  trackEvent("game_won");
+  setAnalyticsCollectionEnabled(true);
+  trackEvent("queued");
+  expect(() => configureAnalytics(() => {throw new Error("external unavailable");})).not.toThrow();
+  await Promise.resolve();
+});
 
 it("queues early events and flushes them when analytics becomes ready", () => {
   /** Provides sink behavior. */

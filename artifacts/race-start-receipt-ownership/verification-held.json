@@ -1,0 +1,38 @@
+{
+  "taskId": "multiplayer:race-start-receipt-ownership",
+  "observedAt": "2026-10-02T01:21:56.548750+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 96,
+  "dashboardReceiptRecorded": false,
+  "reason": "Full-user-pathway chat is active; its current tests have fifteen undocumented declarations. Preserve its files and evidence.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "ce3010a79597ab723a6af41514444e238ff57e545aee50d7d4ddf777f193569e",
+    "packages/portal/src/play/race/logic/raceStartDelivery.ts": "5a2f755adb98acd03cade25a7a91741a431e0ebb3d44607e415459a0983f8ebe",
+    "packages/portal/src/play/race/__tests__/raceStartReceiptOwnership.test.ts": "9659515e2185d1afdcbf03b080088e573189347c3e9cafba998671f443e914d9",
+    "packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs": "520e4bfa5887abcdb1f2ef04fe8a1d17f42e0b36049aca991dcce30c85c6d18e",
+    "docs/development-tasks/race-start-receipt-ownership.json": "475abce9152005fe40cf562f2ed84f78c96b9ee7ea6ab895ea898b6aa9a8ca2c",
+    "docs/evidence/multiplayer-start-receipt-ownership.md": "54311deadeae9b6556148018db911755a190d296bef8c5d16677e0e70e7f26c0"
+  },
+  "passed": {
+    "baselineFailures": 3,
+    "baselineControlPasses": 1,
+    "focusedTests": 26,
+    "newBrowserCases": 8,
+    "retainedBrowserCases": {
+      "startSelection": 10,
+      "timers": 10,
+      "expiry": 6
+    },
+    "clientTests": 1870,
+    "clientSuites": 230,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

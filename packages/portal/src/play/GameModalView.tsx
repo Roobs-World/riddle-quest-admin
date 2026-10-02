@@ -26,6 +26,7 @@ export type GameModalViewProps = {
   onContinue: (amount?: number) => void;
   /** Optional target-funded continuation and its exclusive operation lock. */
   onRecoverAttempt?: () => void;
+  /** Disables competing loss actions while continuation is awaiting completion. */
   continuationPending?: boolean;
   /** Stores on purchase. */
   onPurchase: (productId: string) => void;

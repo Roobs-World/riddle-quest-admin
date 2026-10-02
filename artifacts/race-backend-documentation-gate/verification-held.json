@@ -1,0 +1,33 @@
+{
+  "taskId": "multiplayer:race-backend-documentation-gate",
+  "observedAt": "2026-10-02T04:26:09.121985+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "documentation-improved-completion-held",
+  "guardedChecks": 143,
+  "dashboardReceiptRecorded": false,
+  "documentedMultiplayerDeclarations": 20,
+  "meaningUnchangedFiles": 3,
+  "sharedMissingDeclarations": 69,
+  "sharedSizeFailure": {
+    "file": "packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts",
+    "equivalentLines": 1222,
+    "limit": 1200
+  },
+  "sourceHashes": {
+    "firebase-functions/src/__tests__/race/raceRunMutationClock.test.ts": "a5a8ef89af7cc96586ef577ae5774077157f86c062201ef15ee1a8481c4b8a83",
+    "firebase-functions/src/__tests__/race/raceEngine.test.ts": "272f83cd0f25d96e9fafb603b105c8719a313bc8c92d7b0c55f9083c995984c8",
+    "packages/core/src/race/__tests__/raceSchemas.test.ts": "33b6d5eacb10cabd80347ace49b010a8b12bff7e6f0acbe772c91326c0eb65dc",
+    "docs/development-tasks/race-backend-documentation-gate.json": "b467f87548d94f01c78c23bcdb17c84496b6d3b07cf61bc7df809df7fe83919f",
+    "docs/evidence/multiplayer-backend-documentation-gate.md": "9578338691b58a36adbfbddb207fb87a4da13e6c4c6943a0b72a7d78d4c83354"
+  },
+  "notPerformed": [
+    "behavior test rerun",
+    "isolated build rerun",
+    "full guarded verification",
+    "dashboard completion",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

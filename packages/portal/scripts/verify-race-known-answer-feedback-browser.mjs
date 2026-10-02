@@ -90,7 +90,8 @@ try {
     await page.waitForFunction(()=>globalThis.testRaceSession.getSnapshot().pending===null&&globalThis.testRaceSession.getSnapshot().error===null);
     const state=await page.evaluate(()=>{const snapshot=globalThis.testRaceSession.getSnapshot();return {attempts:snapshot.run.currentRiddle.guessesUsed,history:snapshot.raceGuesses.map(row=>row.feedback)};});
     assert.equal(state.attempts,1);
-    assert.deepEqual(state.history,rejected?[]:[[mode==='legacy'&&candidate==='changed'?'yellow':'red','red','red','red','red']]);
+    // Recovery reserves the applied attempt without trusting its rejected colors.
+    assert.deepEqual(state.history,rejected?[[]]:[[mode==='legacy'&&candidate==='changed'?'yellow':'red','red','red','red','red']]);
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>command.type==='game:submitRaceGuess').length),1);
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>command.type==='game:resumeRace').length),(mode==='public-edit'?1:2)+(rejected?1:0));
     assert.equal(await page.getByRole('alert').count(),0);

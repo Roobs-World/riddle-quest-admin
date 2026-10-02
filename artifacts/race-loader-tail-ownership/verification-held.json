@@ -1,0 +1,34 @@
+{
+  "taskId": "multiplayer:race-loader-tail-ownership",
+  "observedAt": "2026-10-02T01:13:17.983673+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 94,
+  "dashboardReceiptRecorded": false,
+  "reason": "The full-user-pathway chat is still active; its test has twelve undocumented declarations. Preserve its files until it finishes.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RacePlay.ts": "d51f109c488d6300524f09a7bb28310dab0d6eff34d2bef570f62b16170db4ea",
+    "packages/portal/src/play/race/__tests__/raceLoaderTailOwnership.test.ts": "77aaff07604cc55b317d9469652c49d7265379edaa2aa497b6bfec6d23c4aba5",
+    "packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs": "74df212c3bf9a5a1b8414ac58106d82882ac7c53d744c92f089d465efeb639c3",
+    "docs/development-tasks/race-loader-tail-ownership.json": "854c0b285a5e3f38ac02fd77da744b202c3be4aa0953256d185fd13689d5a505",
+    "docs/evidence/multiplayer-loader-tail-ownership.md": "be43300c9c1a09559906129ed254eb9ec2b3db942cf368211111a0198c18387a"
+  },
+  "passed": {
+    "baselineFailures": 4,
+    "baselineControlPasses": 1,
+    "focusedTests": 16,
+    "newBrowserCases": 10,
+    "retainedTimerBrowserCases": 10,
+    "retainedAuthorityBrowserCases": 14,
+    "clientTests": 1861,
+    "clientSuites": 228,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

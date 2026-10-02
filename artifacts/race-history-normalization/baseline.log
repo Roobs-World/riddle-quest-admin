@@ -1,0 +1,81 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionHistoryNormalization
+FAIL src/play/race/__tests__/RaceSessionHistoryNormalization.test.ts
+  ● accepts normalized history after correlated feedback À
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   "error": null,
+    +   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+        "raceGuesses": Array [
+          Object {
+            "feedback": Array [
+              "red",
+            ],
+            "guess": Array [
+    -         "à",
+    +         "À",
+            ],
+          },
+        ],
+    -   "requiresRunRefresh": false,
+    +   "requiresRunRefresh": true,
+      }
+
+      20 |   resumed.currentRiddle!.confirmedGuesses = [{guess: ["à"], feedback: ["red"]}];
+      21 |   h.session.retry();h.respond("raceResume", {run: resumed});
+    > 22 |   expect(h.session.getSnapshot()).toMatchObject({error: null, requiresRunRefresh: false, raceGuesses: [{guess: ["à"], feedback: ["red"]}]});
+         |                                   ^
+      23 |   expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+      24 | });
+      25 |
+
+      at src/play/race/__tests__/RaceSessionHistoryNormalization.test.ts:22:35
+
+  ● accepts normalized history after correlated feedback à
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   "error": null,
+    +   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+        "raceGuesses": Array [
+          Object {
+            "feedback": Array [
+              "red",
+            ],
+            "guess": Array [
+    -         "à",
+    +         "à",
+            ],
+          },
+        ],
+    -   "requiresRunRefresh": false,
+    +   "requiresRunRefresh": true,
+      }
+
+      20 |   resumed.currentRiddle!.confirmedGuesses = [{guess: ["à"], feedback: ["red"]}];
+      21 |   h.session.retry();h.respond("raceResume", {run: resumed});
+    > 22 |   expect(h.session.getSnapshot()).toMatchObject({error: null, requiresRunRefresh: false, raceGuesses: [{guess: ["à"], feedback: ["red"]}]});
+         |                                   ^
+      23 |   expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+      24 | });
+      25 |
+
+      at src/play/race/__tests__/RaceSessionHistoryNormalization.test.ts:22:35
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.241 s, estimated 1 s
+Ran all test suites matching RaceSessionHistoryNormalization.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionHistoryNormalization`
+Exit status 1

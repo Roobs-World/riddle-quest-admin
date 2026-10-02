@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "インターネット接続がありません",
     "OK_BUTTON": "わかりました",
     "SUCCESS_TITLE": "成功",
-    "UNABLE_TO_OPEN_TITLE": "開けません",
-    "TRY_AGAIN_LATER_MESSAGE": "後でもう一度お試しください。"
+    "UNABLE_TO_OPEN_TITLE": "開けません"
   },
   "CommonButtons": {
     "RETRY": "再試行してください。"

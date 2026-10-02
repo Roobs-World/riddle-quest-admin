@@ -26,10 +26,16 @@ describe("Authority receipt observation retains its journey", () => {
     if (mode === "catalog") {
       /** Category parsing is pure but its patch still belongs to the original account. */
       const categories = (await catalog()).categories;
-      h.respond("raceCategories", {get categories() {replace(); return categories;}});
+      h.respond("raceCategories", {
+        /** Category property observation may synchronously install the replacement account. */
+        get categories() {replace(); return categories;},
+      });
     } else if (["start", "valid", "resume"].includes(mode)) {
       if (mode !== "resume") {h.respond("raceCategories", await catalog()); h.session.begin("mixed");}
-      h.respond(mode === "resume" ? "raceResume" : "raceStart", {get run() {replace(); return run;}});
+      h.respond(mode === "resume" ? "raceResume" : "raceStart", {
+        /** Run property observation belongs to the original start or resume receipt. */
+        get run() {replace(); return run;},
+      });
     } else {
       h.session.input("text", "wrong");
       /** Valid authority confirmations isolate lifecycle ownership from schema correctness. */
@@ -38,7 +44,10 @@ describe("Authority receipt observation retains its journey", () => {
           await authority.skipRaceRiddle({runId: run.runId, riddleId: run.currentRiddle!.riddleId, requestId: "observed-skip"});
       if (mode === "guess") h.session.submit(); else if (mode === "hint") h.session.hint(); else h.session.skip();
       /** Run accessor fires during the schema parse before projection confirmation. */
-      const data = {...result, get run() {replace(); return result.run;}};
+      const data = {...result,
+        /** Paid or guess confirmation cannot commit into a newly entered account. */
+        get run() {replace(); return result.run;},
+      };
       h.respond(mode === "guess" ? "raceGuess" : mode === "hint" ? "raceHint" : "raceSkip", data);
     }
     if (mode === "valid") expect(h.session.getSnapshot()).toMatchObject({stage: "countdown", run: {runId: run.runId}});

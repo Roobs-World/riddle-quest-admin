@@ -127,28 +127,42 @@ export class RacePlay {
   }
   /** Sends a command with one correlation/mutation receipt; recovery may replay an owned receipt. */
   send = (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>, replayRequestId?: string): void => {
+    /** Adapter callbacks cannot replace this sender's delivery while cleanup runs. */
+    const generation = this.loaderGeneration, previous = this.expected;
     this.cancelResponseTimer();
+    if (generation !== this.loaderGeneration || this.expected !== previous) return;
     /** Replaying the same authority mutation preserves its idempotency identity. */
     const id = replayRequestId ?? this.requestId(operation);
+    if (generation !== this.loaderGeneration || this.expected !== previous) return;
     /** Delivery ownership is distinct even when an explicit retry reuses the mutation receipt. */
     const delivery = {id, operation};
     this.expected = delivery;
     if (operation === "raceGuess") {
       this.loaderGeneration++;
-      if (this.timer !== undefined) this.clock.cancel(this.timer);
+      /** Detach the old loader before cancellation can install a replacement. */
+      const timer = this.timer;
       this.timer = undefined;
+      if (timer !== undefined) this.clock.cancel(timer);
+      if (this.expected !== delivery) return;
       this.loadingStarted = this.clock.now();
+      if (this.expected !== delivery) return;
       this.awaitingOutcome = false;
     }
     this.update({pending: operation, raceGuessLoading: operation === "raceGuess" || this.state.raceGuessLoading});
     // A pending-state observer can dispose or replace delivery before the host is called.
     if (this.expected !== delivery) return;
     if (this.onDeliveryFailure) {
-      this.responseTimer = this.clock.schedule(() => {
+      /** Expiry may finish before an optional scheduler returns its handle. */
+      let expired = false;
+      /** Scheduling itself may enter another delivery before returning its handle. */
+      const timer = this.clock.schedule(() => {
+        expired = true;
         if (this.expected !== delivery) return;
         this.responseTimer = undefined;
         this.onDeliveryFailure?.(id, operation);
       }, 30000);
+      if (this.expected !== delivery || expired) {if (!expired) this.clock.cancel(timer); return;}
+      this.responseTimer = timer;
     }
     try {
       /** Asynchronous adapters retain this same delivery ownership receipt. */
@@ -170,14 +184,19 @@ export class RacePlay {
   /** Consumes exactly one matching response; stale and duplicate events are ignored. */
   acceptResponse(id: string | undefined, operation: RaceOperation): boolean {
     if (!id || this.expected?.id !== id || this.expected.operation !== operation) return false;
+    /** Identity, rather than receipt text, distinguishes a replacement retry delivery. */
+    const delivery = this.expected;
     this.cancelResponseTimer();
+    if (this.expected !== delivery) return false;
     this.expected = null;
     return true;
   }
   /** Matching responses, replacement commands and lifetime disposal invalidate delivery expiry. */
   private cancelResponseTimer(): void {
-    if (this.responseTimer !== undefined) this.clock.cancel(this.responseTimer);
+    /** Release the owned handle before an optional cancellation callback can reenter. */
+    const timer = this.responseTimer;
     this.responseTimer = undefined;
+    if (timer !== undefined) this.clock.cancel(timer);
   }
   /** Keeps answer loading active until authoritative outcome reconciliation finishes. */
   setAwaitingOutcome = (awaiting: boolean): void => {
@@ -193,25 +212,38 @@ export class RacePlay {
       (operation === "raceGuess" && !this.awaitingOutcome) ||
       (operation === "raceOutcome" && this.state.raceGuessLoading)
     ) {
-      if (this.timer !== undefined) this.clock.cancel(this.timer);
       /** A replacement loader tail also invalidates any cancelled callback already queued. */
       const tailGeneration = ++this.loaderGeneration;
-      this.timer = this.clock.schedule(
+      /** Detach the old tail before cancellation can replace this lifetime. */
+      const previousTimer = this.timer;
+      this.timer = undefined;
+      if (previousTimer !== undefined) this.clock.cancel(previousTimer);
+      if (tailGeneration !== this.loaderGeneration) return;
+      /** Clock observation must settle before allocating a still-owned tail. */
+      const delay = Math.max(0, 180 - (this.clock.now() - this.loadingStarted));
+      if (tailGeneration !== this.loaderGeneration) return;
+      /** An adapter may invoke the callback before returning its handle. */
+      let completed = false;
+      /** Only the returned owned handle may become the next cancellable tail. */
+      const timer = this.clock.schedule(
         () => {
+          completed = true;
           if (tailGeneration !== this.loaderGeneration) return;
           this.timer = undefined;
           this.awaitingOutcome = false;
           this.update({...this.state, raceGuessLoading: false});
         },
-        Math.max(0, 180 - (this.clock.now() - this.loadingStarted)),
+        delay,
       );
+      if (tailGeneration !== this.loaderGeneration) {if (!completed) this.clock.cancel(timer); return;}
+      if (!completed) this.timer = timer;
     }
   };
   /** Cancels pending UI work on unmount. */
   dispose = (): void => {
-    this.loaderGeneration++;
-    this.cancelResponseTimer();
-    if (this.timer !== undefined) this.clock.cancel(this.timer);
+    /** Detach all old resources and checkpoints before invoking cancellation adapters. */
+    const generation = ++this.loaderGeneration, responseTimer = this.responseTimer, timer = this.timer;
+    this.responseTimer = undefined;
     this.timer = undefined;
     this.expected = null;
     this.refreshRequired = false;
@@ -219,7 +251,9 @@ export class RacePlay {
     this.draftEdited = false;
     this.paid = null;
     this.awaitingOutcome = false;
-    this.update({pending: null, raceGuessLoading: false});
+    if (responseTimer !== undefined) this.clock.cancel(responseTimer);
+    if (timer !== undefined) this.clock.cancel(timer);
+    if (generation === this.loaderGeneration) this.update({pending: null, raceGuessLoading: false});
   };
   /** Retains every submission checkpoint and creates immediate feedback when evaluation is available. */
   projectGuess(run: RaceRunView, letters: string[], history: ScoredGuess[], receivedAt: number) {

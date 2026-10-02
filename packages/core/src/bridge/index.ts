@@ -1,3 +1,5 @@
+import {AcceptedGuessesSchema} from "../validation/acceptedGuesses";
+import {RevealedHintsSchema} from "../validation/revealedHints";
 /**
  * Runtime-validated messages exchanged between the game iframe and its host.
  * @remarks Treat every value as untrusted. Exported schemas define the wire
@@ -139,6 +141,8 @@ export const BridgeRiddleSchema = z
     sessionToken: z.string().min(20).max(128),
     gameMode: GameModeSchema,
     index: z.number().int().nonnegative().optional(),
+    revealedHints: RevealedHintsSchema.optional(),
+    acceptedGuesses: AcceptedGuessesSchema.optional(),
     attemptsUsed: z.number().int().nonnegative().max(6),
     hasUsedContinue: z.boolean(),
     awaitingContinue: z.boolean(),
@@ -146,6 +150,14 @@ export const BridgeRiddleSchema = z
   .strict()
   .superRefine((riddle, context) => {
     /** Provides expected awaiting behavior. */
+    if (riddle.revealedHints?.some(({index}) => index >= riddle.answerLength)) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Revealed hint is outside the answer."});
+    }
+    if (riddle.acceptedGuesses && (riddle.acceptedGuesses.length !== riddle.attemptsUsed ||
+      riddle.acceptedGuesses.some((guess) => guess.feedback.length !== riddle.answerLength))) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Accepted guess recovery is inconsistent."});
+    }
+    /** The base attempt cap requires a Continue decision before another guess. */
     const expectedAwaiting = riddle.attemptsUsed === 5 && !riddle.hasUsedContinue;
     if (riddle.awaitingContinue !== expectedAwaiting) {
       context.addIssue({code: z.ZodIssueCode.custom, message: "Continue recovery state is inconsistent."});

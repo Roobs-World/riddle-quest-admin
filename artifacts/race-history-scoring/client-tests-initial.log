@@ -1,0 +1,153 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand
+FAIL src/play/race/__tests__/RaceSessionDraftReload.test.ts
+  ● restores consumed rows and feedback from authority after a fresh race lifetime
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 50
+    + Received  +  1
+
+    - Array [
+    -   Object {
+    -     "feedback": Array [
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -     ],
+    -     "guess": Array [
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -     ],
+    -   },
+    -   Object {
+    -     "feedback": Array [
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -     ],
+    -     "guess": Array [
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -     ],
+    -   },
+    -   Object {
+    -     "feedback": Array [
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -     ],
+    -     "guess": Array [
+    -       "b",
+    -       "b",
+    -       "b",
+    -       "b",
+    -       "b",
+    -     ],
+    -   },
+    - ]
+    + Array []
+
+      289 |   const reload = harness({}, run.runId);
+      290 |   reload.respond("raceResume", {run: JSON.parse(JSON.stringify(resumed))});
+    > 291 |   expect(reload.session.getSnapshot().raceGuesses).toEqual(confirmedGuesses);
+          |                                                    ^
+      292 |   expect(reload.session.getSnapshot().run?.currentRiddle?.guessesRemaining).toBe(2);
+      293 |   reload.session.dispose();
+      294 | });
+
+      at Object.<anonymous> (src/play/race/__tests__/RaceSessionDraftReload.test.ts:291:52)
+
+
+Summary of all failing tests
+FAIL src/play/race/__tests__/RaceSessionDraftReload.test.ts
+  ● restores consumed rows and feedback from authority after a fresh race lifetime
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 50
+    + Received  +  1
+
+    - Array [
+    -   Object {
+    -     "feedback": Array [
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -     ],
+    -     "guess": Array [
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -     ],
+    -   },
+    -   Object {
+    -     "feedback": Array [
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -     ],
+    -     "guess": Array [
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -       "a",
+    -     ],
+    -   },
+    -   Object {
+    -     "feedback": Array [
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -       "red",
+    -     ],
+    -     "guess": Array [
+    -       "b",
+    -       "b",
+    -       "b",
+    -       "b",
+    -       "b",
+    -     ],
+    -   },
+    - ]
+    + Array []
+
+      289 |   const reload = harness({}, run.runId);
+      290 |   reload.respond("raceResume", {run: JSON.parse(JSON.stringify(resumed))});
+    > 291 |   expect(reload.session.getSnapshot().raceGuesses).toEqual(confirmedGuesses);
+          |                                                    ^
+      292 |   expect(reload.session.getSnapshot().run?.currentRiddle?.guessesRemaining).toBe(2);
+      293 |   reload.session.dispose();
+      294 | });
+
+      at Object.<anonymous> (src/play/race/__tests__/RaceSessionDraftReload.test.ts:291:52)
+
+
+Test Suites: 1 failed, 14 skipped, 250 passed, 251 of 265 total
+Tests:       1 failed, 105 skipped, 2003 passed, 2109 total
+Snapshots:   0 total
+Time:        7.371 s, estimated 222 s
+Ran all test suites.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand`
+Exit status 1

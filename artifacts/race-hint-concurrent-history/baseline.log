@@ -1,0 +1,89 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionConcurrentHintHistory
+FAIL src/play/race/__tests__/RaceSessionConcurrentHintHistory.test.ts
+  ● merges concurrent attempts with returnedHistory=true
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 16
+    + Received  +  0
+
+    @@ -54,26 +54,10 @@
+              "b",
+              "b",
+              "a",
+            ],
+          },
+    -     Object {
+    -       "feedback": Array [
+    -         "red",
+    -         "red",
+    -         "yellow",
+    -         "green",
+    -         "red",
+    -       ],
+    -       "guess": Array [
+    -         "w",
+    -         "r",
+    -         "o",
+    -         "n",
+    -         "g",
+    -       ],
+    -     },
+        ],
+        "run": Object {
+          "currentRiddle": Object {
+            "guessesUsed": 4,
+          },
+
+      27 |   if(returnedHistory)hinted.run.currentRiddle!.confirmedGuesses=[...structuredClone(rows),newest];
+      28 |   h.respond("raceHint",hinted);
+    > 29 |   expect(h.session.getSnapshot()).toMatchObject({error:null,currentLetters:["p","a","","",""],raceGuesses:[...rows,returnedHistory?newest:{guess:[],feedback:[]}],run:{currentRiddle:{guessesUsed:4},totalPenaltyMs:15000}});
+         |                                   ^
+      30 |   expect(h.commands.filter(command=>command.type==="game:requestRaceHint")).toHaveLength(1);
+      31 | });
+      32 |
+
+      at src/play/race/__tests__/RaceSessionConcurrentHintHistory.test.ts:29:35
+
+  ● merges concurrent attempts with returnedHistory=false
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 4
+    + Received  + 0
+
+    @@ -54,14 +54,10 @@
+              "b",
+              "b",
+              "a",
+            ],
+          },
+    -     Object {
+    -       "feedback": Array [],
+    -       "guess": Array [],
+    -     },
+        ],
+        "run": Object {
+          "currentRiddle": Object {
+            "guessesUsed": 4,
+          },
+
+      27 |   if(returnedHistory)hinted.run.currentRiddle!.confirmedGuesses=[...structuredClone(rows),newest];
+      28 |   h.respond("raceHint",hinted);
+    > 29 |   expect(h.session.getSnapshot()).toMatchObject({error:null,currentLetters:["p","a","","",""],raceGuesses:[...rows,returnedHistory?newest:{guess:[],feedback:[]}],run:{currentRiddle:{guessesUsed:4},totalPenaltyMs:15000}});
+         |                                   ^
+      30 |   expect(h.commands.filter(command=>command.type==="game:requestRaceHint")).toHaveLength(1);
+      31 | });
+      32 |
+
+      at src/play/race/__tests__/RaceSessionConcurrentHintHistory.test.ts:29:35
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.244 s
+Ran all test suites matching RaceSessionConcurrentHintHistory.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionConcurrentHintHistory`
+Exit status 1

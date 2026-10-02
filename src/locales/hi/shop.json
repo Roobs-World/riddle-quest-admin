@@ -18,6 +18,7 @@
     "PACK_DESCRIPTION": "अपने शेष में {coins} सिक्के जोड़ें।",
     "BADGE_STARTER": "शुरुआती",
     "BADGE_POPULAR": "लोकप्रिय",
-    "BADGE_BEST_VALUE": "सबसे किफ़ायती"
+    "BADGE_BEST_VALUE": "सबसे किफ़ायती",
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "इस सदस्यता को रद्द करना उपलब्ध नहीं है।"
   }
 }

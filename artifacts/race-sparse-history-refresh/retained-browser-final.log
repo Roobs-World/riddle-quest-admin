@@ -1,0 +1,105 @@
+Paid draft checkpoint UI passed: 1280px modern hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free skip-normal; original draft/history ownership and no paid mutation replay.
+Retained prototype verifier passed: verify-race-paid-draft-checkpoints-browser.mjs
+Answer-free checkpoint UI passed: 1280px known=true canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true normal; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false normal; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true normal; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false normal; immutable submitted letters/history and no mutation replay.
+Retained prototype verifier passed: verify-race-answer-free-checkpoints-browser.mjs
+Authority clock ownership passed: first at 1280px.
+Authority clock ownership passed: second at 1280px.
+Authority clock ownership passed: valid at 1280px.
+Authority clock ownership passed: first at 390px.
+Authority clock ownership passed: second at 390px.
+Authority clock ownership passed: valid at 390px.
+Retained prototype verifier passed: verify-race-authority-clock-ownership-browser.mjs
+Restored attempt rows passed: cold at 1280px.
+Restored attempt rows passed: reload at 1280px.
+Projected attempt rows passed: pending wrong at 1280px.
+Projected attempt rows passed: rollback at 1280px.
+Projected attempt rows passed: correct successor at 1280px.
+Restored attempt rows passed: cold at 390px.
+Restored attempt rows passed: reload at 390px.
+Projected attempt rows passed: pending wrong at 390px.
+Projected attempt rows passed: rollback at 390px.
+Projected attempt rows passed: correct successor at 390px.
+Retained prototype verifier passed: verify-race-projected-attempt-rows-browser.mjs
+{"width":1280,"mutation":"word","expected":"reject changed confirmed history","passed":true,"snapshot":{"error":"RaceTo10.ERROR_INVALID_RESPONSE","history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":1280,"mutation":"feedback","expected":"reject changed confirmed history","passed":true,"snapshot":{"error":"RaceTo10.ERROR_INVALID_RESPONSE","history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":1280,"mutation":"shortened","expected":"retain three confirmed rows","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":1280,"mutation":"omitted","expected":"retain three confirmed rows","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":1280,"mutation":"append","expected":"accept compatible history","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":4}}
+{"width":1280,"mutation":"unchanged","expected":"accept compatible history","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":390,"mutation":"word","expected":"reject changed confirmed history","passed":true,"snapshot":{"error":"RaceTo10.ERROR_INVALID_RESPONSE","history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":390,"mutation":"feedback","expected":"reject changed confirmed history","passed":true,"snapshot":{"error":"RaceTo10.ERROR_INVALID_RESPONSE","history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":390,"mutation":"shortened","expected":"retain three confirmed rows","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":390,"mutation":"omitted","expected":"retain three confirmed rows","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"width":390,"mutation":"append","expected":"accept compatible history","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":4}}
+{"width":390,"mutation":"unchanged","expected":"accept compatible history","passed":true,"snapshot":{"error":null,"history":[{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]},{"guess":["a","b","b","b","a"],"feedback":["yellow","red","red","red","red"]}],"used":3}}
+{"cases":12,"failed":0}
+Concurrent guess history passed: full at 1280px.
+Concurrent guess history passed: partial at 1280px.
+Concurrent guess history passed: legacy at 1280px.
+Concurrent guess history passed: full at 390px.
+Concurrent guess history passed: partial at 390px.
+Concurrent guess history passed: legacy at 390px.
+Concurrent hint history passed: full at 1280px.
+Concurrent hint history passed: legacy at 1280px.
+Concurrent hint history passed: full at 390px.
+Concurrent hint history passed: legacy at 390px.
+Confirmed guess retention passed: word at 1280px.
+Confirmed guess retention passed: feedback at 1280px.
+Confirmed guess retention passed: valid at 1280px.
+Confirmed guess retention passed: word at 390px.
+Confirmed guess retention passed: feedback at 390px.
+Confirmed guess retention passed: valid at 390px.

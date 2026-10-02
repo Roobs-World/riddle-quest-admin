@@ -37,7 +37,7 @@ export class MockJestPlatform implements JestPlatformPort {
     /** Stores name. */
     name: string; /** Stores properties. */
     /** Stores properties. */
-    properties?: Record<string, string | number | boolean>;
+    properties?: import("../analytics/events").SanitizedAnalyticsParams;
   }> = [];
   /** Stores subscription active. */
   subscriptionActive = false;
@@ -231,7 +231,7 @@ export class MockJestPlatform implements JestPlatformPort {
     return ok(undefined);
   };
   /** Captures event. */
-  captureEvent = (name: string, properties?: Record<string, string | number | boolean>) => {
+  captureEvent = (name: string, properties?: import("../analytics/events").SanitizedAnalyticsParams) => {
     this.capturedEvents.push({name, properties});
   };
   /** Provides mark first milestone behavior. */

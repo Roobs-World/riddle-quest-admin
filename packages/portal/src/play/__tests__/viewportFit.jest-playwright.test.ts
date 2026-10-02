@@ -38,7 +38,13 @@ describeBrowser("phone viewport fitting", () => {
       await unavailablePage.route("https://cdn.jest.com/**", route => route.fulfill({status: 200, body: ""}));
       await unavailablePage.addInitScript(() => Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true}));
       await unavailablePage.goto(`http://127.0.0.1:${address.port}/?harness=jest&dailyUnavailable=1`);
-      await unavailablePage.locator(".spinning-wheel-loader-status strong").filter({hasText: "No daily challenge available at the moment."}).waitFor();
+      await unavailablePage.getByRole("status").filter({hasText: "No daily challenge available at the moment."}).waitFor();
+      expect(await unavailablePage.locator(".riddle-card h1").count()).toBe(0);
+      await unavailablePage.getByRole("button", {name: "Settings", exact: true}).click();
+      await unavailablePage.getByRole("dialog", {name: "Settings", exact: true}).waitFor();
+      await unavailablePage.getByRole("combobox", {name: "Language", exact: true}).selectOption("es");
+      await unavailablePage.getByRole("dialog").getByRole("button", {name: /^(Close|Cerrar)$/}).click();
+      await unavailablePage.getByRole("button", {name: "Configuración", exact: true}).waitFor();
       expect(await unavailablePage.locator(".riddle-card h1").count()).toBe(0);
       await unavailablePage.close();
       for (const [width, height] of [[384, 650], [412, 650], [360, 600], [360, 650], [320, 568], [390, 640], [412, 720]]) {

@@ -1,4 +1,5 @@
 import {buildSinglePlayerChallengeResponse} from "../gameplay/singlePlayerRiddleResponse";
+import {projectPublicSinglePlayerSession} from "../gameplay/singlePlayerPublicSession";
 import {HttpsError} from "firebase-functions/v2/https";
 import {transitionSinglePlayerGuess, type SinglePlayerSessionState} from "../gameplay/singlePlayerSession";
 
@@ -12,6 +13,67 @@ const request = (guess: string, requestId: string, gameMode: "classic" | "challe
 });
 
 describe("single-player authoritative session", () => {
+  it("recovers accepted guess feedback when another locale replaced the provider checkpoint", () => {
+    /** Only the submitted guess and its accepted feedback belong in public recovery history. */
+    const issued = transitionSinglePlayerGuess({request: request("crane", "request-0001"), answer: "piano", locale: "en"});
+    expect(projectPublicSinglePlayerSession(issued.state)).toMatchObject({
+      attemptsUsed: 1,
+      acceptedGuesses: [{attempt: 1, feedback: issued.result.feedback}],
+    });
+  });
+
+  it("recovers ordered history exactly once after receipt retries", () => {
+    /** First accepted session receipt establishes replay expectations. */
+    const first = transitionSinglePlayerGuess({request: request("crane", "request-0001"), answer: "piano", locale: "en"});
+    /** Next accepted receipt verifies progressive session recovery. */
+    const second = transitionSinglePlayerGuess({state: first.state, request: request("zzzzz", "request-0002"), answer: "piano", locale: "en"});
+    /** Repeated command must retain its original authoritative result. */
+    const replay = transitionSinglePlayerGuess({state: second.state, request: request("crane", "request-0001"), answer: "piano", locale: "en"});
+    /** Public session projection excludes private answer and receipt data. */
+    const projection = projectPublicSinglePlayerSession(replay.state);
+    expect(projection.acceptedGuesses?.map(({attempt}) => attempt)).toEqual([1, 2]);
+    expect(JSON.stringify(projection)).not.toContain("guessHash");
+    expect(JSON.stringify(projection)).not.toContain("piano");
+  });
+
+  it("returns already purchased hint letters when a locale round trip reloads the issued session", () => {
+    /** Existing session whose first letter was already purchased before another locale loaded. */
+    const issued = transitionSinglePlayerGuess({request: request("crane", "request-0001"), answer: "piano", locale: "en"});
+    /** Authoritative or observed state used to verify the current transition. */
+    const state = {...issued.state, hintRevealedIndices: [0]};
+    /** A provider checkpoint may now belong to another language; recovery must come from the server. */
+    const response = buildSinglePlayerChallengeResponse(
+      {riddleId: "riddle-1", text: "Clue", answer: "piano", locale: "en"},
+      undefined, request("crane", "request-0001").sessionToken, state, false, true,
+    );
+    expect(response.questions[0]).toMatchObject({revealedHints: [{index: 0, letter: "P"}]});
+    expect(response.questions[0]).not.toHaveProperty("evaluation");
+    expect(response.questions[0]).not.toHaveProperty("answer");
+    /** Legacy session fixture verifies optional recovery compatibility. */
+    const legacy = buildSinglePlayerChallengeResponse(
+      {riddleId: "riddle-1", text: "Clue", answer: "piano", locale: "en"},
+      undefined, request("crane", "request-0001").sessionToken, state,
+    );
+    expect(legacy.questions[0]).not.toHaveProperty("revealedHints");
+    expect(legacy.questions[0]).not.toHaveProperty("acceptedGuesses");
+    /** Negotiated response opts in to canonical recovery fields. */
+    const optedIn = buildSinglePlayerChallengeResponse(
+      {riddleId: "riddle-1", text: "Clue", answer: "piano", locale: "en"},
+      undefined, request("crane", "request-0001").sessionToken, state, false, true, true,
+    );
+    expect(optedIn.questions[0]).toMatchObject({acceptedGuesses: [{attempt: 1, feedback: issued.result.feedback}]});
+  });
+
+  it.each([[5], [0, 0], [0.5]])("rejects corrupt paid-hint indices %j before returning letters", (...indices) => {
+    /** Issued riddle binds public recovery to the current session. */
+    const issued = transitionSinglePlayerGuess({request: request("crane", "request-0001"), answer: "piano", locale: "en"});
+    expect(() => buildSinglePlayerChallengeResponse(
+      {riddleId: "riddle-1", text: "Clue", answer: "piano", locale: "en"},
+      undefined, request("crane", "request-0001").sessionToken,
+      {...issued.state, hintRevealedIndices: indices}, false, true,
+    )).toThrow(HttpsError);
+  });
+
   it("preloads the issued answer snapshot even if canonical content changes", () => {
     /** A session already bound to piano before content was edited. */
     const issued = transitionSinglePlayerGuess({request: request("crane", "request-0001"), answer: "piano", locale: "en"});

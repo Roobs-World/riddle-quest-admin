@@ -16,6 +16,7 @@ import {formatRaceTime} from "../logic/racePresentation";
 export function RaceCategoriesPanel({
   categories,
   loading,
+  busy = false,
   onSelect,
   onShowInbox,
 }: {
@@ -23,6 +24,8 @@ export function RaceCategoriesPanel({
   categories: ListRaceCategoriesResponse["categories"];
   /** Stores loading. */
   loading: boolean;
+  /** Prevents category starts while another race operation owns the session. */
+  busy?: boolean;
   /** Stores on select. */
   onSelect: (categoryId: RaceCategoryId) => void;
   /** Stores on show inbox. */
@@ -36,6 +39,7 @@ export function RaceCategoriesPanel({
         {categories.map((category) => (
           <button
             key={category.categoryId}
+            disabled={loading || busy}
             style={{"--race-color": category.colorToken} as CSSProperties}
             onClick={() => onSelect(category.categoryId)}
           >

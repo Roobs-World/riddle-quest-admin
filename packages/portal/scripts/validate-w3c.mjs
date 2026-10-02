@@ -1,52 +1,34 @@
-import {readFile} from "node:fs/promises";
+import {spawnSync} from "node:child_process";
+import {createRequire} from "node:module";
 import path from "node:path";
 
+// Resolve the pinned bundled checker from the caller's immutable portal package,
+// including when this script is copied into the trusted release-script snapshot.
+const requireFromPackage = createRequire(path.join(process.cwd(), "package.json"));
+const checkerPackage = path.dirname(requireFromPackage.resolve("vnu-jar/package.json"));
 const documentPath = path.resolve(process.cwd(), process.argv[2] || "dist-jest/index.html");
-const html = await readFile(documentPath, "utf8");
-const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 30_000);
+const java = process.env.JAVA_HOME ? path.join(process.env.JAVA_HOME, "bin", "java") : "java";
+const validation = spawnSync(java, [
+  "-jar", path.join(checkerPackage, "build", "dist", "vnu.jar"),
+  "--format", "json", documentPath,
+], {encoding: "utf8", timeout: 30_000, maxBuffer: 4 * 1024 * 1024});
+if (validation.error) throw new Error("The pinned Nu HTML checker could not run", {cause: validation.error});
 
-let response;
+// Nu writes its JSON diagnostic report to stderr, including for a successful check.
+const report = validation.stdout.trim() || validation.stderr.trim();
+let result;
 try {
-  response = await fetch("https://validator.w3.org/nu/?out=json", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "text/html; charset=utf-8",
-      "User-Agent": "Riddle-Quest-W3C-Validation/1.0",
-    },
-    body: html,
-    signal: controller.signal,
-  });
-  if (response.status === 429) {
-    console.warn("W3C validator rate-limited the request; retrying with the Nu validator mirror.");
-    response = await fetch("https://validator.nu/?out=json", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "text/html; charset=utf-8",
-        "User-Agent": "Riddle-Quest-W3C-Validation/1.0",
-      },
-      body: html,
-      signal: controller.signal,
-    });
-  }
-} finally {
-  clearTimeout(timeout);
+  result = JSON.parse(report);
+} catch {
+  throw new Error("The pinned Nu HTML checker did not return a valid diagnostic report");
 }
-
-if (!response.ok) {
-  throw new Error(`W3C validator request failed with HTTP ${response.status}`);
-}
-
-const result = await response.json();
-const messages = Array.isArray(result.messages) ? result.messages : [];
-if (messages.length > 0) {
-  const details = messages.map((message) => {
+if (!Array.isArray(result.messages)) throw new Error("The pinned Nu HTML checker report has no messages array");
+if (result.messages.length > 0) {
+  const details = result.messages.map(message => {
     const location = message.lastLine ? `line ${message.lastLine}` : "unknown location";
     return `${message.type ?? "message"} at ${location}: ${message.message ?? "Unknown validation finding"}`;
   });
-  throw new Error(`W3C HTML validation reported ${messages.length} finding(s):\n${details.join("\n")}`);
+  throw new Error(`W3C HTML validation reported ${result.messages.length} finding(s):\n${details.join("\n")}`);
 }
-
-console.log(`W3C HTML validation passed with zero findings: ${documentPath}`);
+if (validation.status !== 0) throw new Error("The pinned Nu HTML checker failed without diagnostic findings");
+console.log(`W3C HTML validation passed with zero findings (pinned Nu ${result.version}): ${documentPath}`);

@@ -1,0 +1,16 @@
+History scoring passed: prompt corrupt=true at 1280px.
+History scoring passed: prompt corrupt=false at 1280px.
+History scoring passed: deck corrupt=true at 1280px.
+History scoring passed: deck corrupt=false at 1280px.
+History scoring passed: retained corrupt=true at 1280px.
+History scoring passed: retained corrupt=false at 1280px.
+History scoring passed: answer-free corrupt=true at 1280px.
+History scoring passed: answer-free corrupt=false at 1280px.
+History scoring passed: prompt corrupt=true at 390px.
+History scoring passed: prompt corrupt=false at 390px.
+History scoring passed: deck corrupt=true at 390px.
+History scoring passed: deck corrupt=false at 390px.
+History scoring passed: retained corrupt=true at 390px.
+History scoring passed: retained corrupt=false at 390px.
+History scoring passed: answer-free corrupt=true at 390px.
+History scoring passed: answer-free corrupt=false at 390px.

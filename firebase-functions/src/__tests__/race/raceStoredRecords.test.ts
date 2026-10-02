@@ -89,3 +89,11 @@ it("binds every settled outcome measurement and identity to its parent run", () 
   expect(() => parseRunRecord({...terminal, status: "active"})).toThrow("Stored Race to 10 run is invalid");
   expect(() => parseRunRecord({...terminal, finishedAtMs: 10999})).toThrow("Stored Race to 10 run is invalid");
 });
+
+
+it("accepts legacy history gaps but refuses contradictory stored guess rows", () => {
+  expect(parseRunRecord({...run, guessesUsed: 3, guessHistory: ["aaaaaa"]})).toMatchObject({guessesUsed: 3, guessHistory: ["aaaaaa"]});
+  for (const invalid of [{guessesUsed: 0, guessHistory: ["aaaaaa"]}, {guessesUsed: 1, guessHistory: ["short"]},
+    {guessesUsed: 1, guessHistory: ["aaaaaa", "bbbbbb"]}])
+    expect(() => parseRunRecord({...run, ...invalid})).toThrow("Stored Race to 10 run is invalid");
+});

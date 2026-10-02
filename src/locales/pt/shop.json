@@ -18,6 +18,7 @@
     "PACK_DESCRIPTION": "Adicione {coins} moedas ao seu saldo.",
     "BADGE_STARTER": "INICIAL",
     "BADGE_POPULAR": "POPULAR",
-    "BADGE_BEST_VALUE": "MELHOR OFERTA"
+    "BADGE_BEST_VALUE": "MELHOR OFERTA",
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Não é possível cancelar esta subscrição."
   }
 }

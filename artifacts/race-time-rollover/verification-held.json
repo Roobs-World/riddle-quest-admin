@@ -1,0 +1,34 @@
+{
+  "taskId": "multiplayer:race-time-rollover",
+  "observedAt": "2026-10-02T02:08:47.263288+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 105,
+  "dashboardReceiptRecorded": false,
+  "reason": "Shared documentation gate reports 35 missing declarations; another chat remains active on hosted verification. Preserve its implementation and evidence.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/logic/racePresentation.ts": "3c0eea25186128dccfb920b965b27a1723a3aad512d40802ccf5c185e1ea64a4",
+    "packages/portal/src/play/race/__tests__/raceTimeRollover.test.ts": "abeb6084327ca7fdf5118aaf603a084423e88127f1be6b557fcd7e0afd0d0830",
+    "packages/portal/scripts/verify-race-time-rollover-browser.mjs": "b74884e6c16b96b9c1e495ec7171621d9f8d2434c8c7d28e0ab58149d52e402c",
+    "docs/development-tasks/race-time-rollover.json": "e611fba0c06e1618377ff4e03f0b987d6fe9e3ec02dad9de33533742e36b2e5a",
+    "docs/evidence/multiplayer-time-rollover.md": "65c5b3312b8ff64446635873baf525a24930b48155bb663bec3149541c841af1"
+  },
+  "passedAtBatchSnapshot": {
+    "baselineRegressionFailures": 4,
+    "baselineControls": 8,
+    "focusedTests": 33,
+    "timeBrowserCases": 10,
+    "retainedKeyboardBrowserCases": 8,
+    "clientTests": 1925,
+    "clientSuites": 238,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

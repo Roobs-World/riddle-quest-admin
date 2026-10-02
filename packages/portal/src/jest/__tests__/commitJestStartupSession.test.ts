@@ -1,6 +1,7 @@
 import {commitJestStartupSession} from "../commitJestStartupSession";
 import {createNotificationOperationGate, type NotificationCrossContextLock} from "../notifications/operationGate";
 import type {JestSession} from "../types";
+import {getCurrentLocale} from "../../play/i18n";
 
 /** Provides session behavior. */
 const session: JestSession = {
@@ -19,6 +20,20 @@ const createCommitDependencies = () => ({
   setEngagementProgress: jest.fn(),
   setSession: jest.fn(),
   trackFunnel: jest.fn(),
+});
+
+it("mounts returning hosted play only after its restored locale is ready", async () => {
+  /** Controlled effects isolate persistence and startup sequencing. */
+  const dependencies = createCommitDependencies();
+  /** Observed hosted mounts verify language readiness before rendering. */
+  const mountedLocales: string[] = [];
+  dependencies.setSession.mockImplementation(() => {mountedLocales.push(getCurrentLocale());});
+  /** Operation gate serializes startup with account deletion. */
+  const gate = createNotificationOperationGate({crossContextLock: null, deletionPending: () => false,
+    deletionEpoch: () => null, requireCrossContextLock: false});
+  await expect(commitJestStartupSession({gate, isActive: () => true,
+    session: {...session, preferences: {locale: "tr"}}, ...dependencies})).resolves.toBe(true);
+  expect(mountedLocales).toEqual(["tr"]);
 });
 
 it("commits restored progress and attributed invite analytics", async () => {

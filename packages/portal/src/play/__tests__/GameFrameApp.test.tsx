@@ -29,6 +29,15 @@ describe("GameFrameApp", () => {
     expect(html).toContain("58%");
   });
 
+  it("exposes Settings after a content failure without enabling answer actions", () => {
+    /** Startup failure remains recoverable without claiming a loaded riddle. */
+    const html = renderToString(<GameFrameApp startupError="A supported locale is required." />);
+    expect(html).toContain('<p role="status">A supported locale is required.</p>');
+    expect(html).toContain(">Settings</button>");
+    expect(html).not.toContain('class="riddle-card"');
+    expect(html).not.toContain('class="game-input-actions"');
+  });
+
   it("makes the game surface inert while a server operation is pending", () => {
     /** Provides html behavior. */
     const html = renderToString(<GameFrameApp interactionBlocked />);

@@ -6,7 +6,7 @@ import {admin} from "../shared/firebaseAdmin";
 import {HttpsError} from "firebase-functions/v2/https";
 import {getUser, ensureUserDocumentComplete} from "./firestoreService";
 import type {Player, PlayerStats} from "../validation/firestoreSchemas";
-import type {CompleteGameRequestData, CompleteGameResponseData} from "../validation/requestSchemas";
+import type {CompleteGameRequestData, CompleteGameResponseData} from "@qwordly/core/validation/requestSchemas";
 import {findNewAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
 import {captureException} from "../shared/sentry";

@@ -95,7 +95,7 @@ import {
   submitRaceGuess,
 } from "../../race/raceCallables";
 import {createRaceCallableCases, type RaceCallableHandlers} from "./callableCases";
-import {raceCallableUserId} from "./callableFixtures";
+import {raceCallableUserId, raceRunResponseFixture} from "./callableFixtures";
 
 /** Handles rs. */
 const handlers = {
@@ -334,4 +334,11 @@ describe("Race callable methods", () => {
     serviceMock.mockResolvedValueOnce({unexpected: true});
     await expect(handler(authenticatedRequest(input))).rejects.toMatchObject({code: "internal"});
   });
+});
+
+it("negotiates confirmed history only for an explicitly opted-in authenticated resume", async () => {
+  serviceMocks.resumeRaceRunForUser.mockResolvedValueOnce(raceRunResponseFixture);
+  await expect(resumeRaceRun(authenticatedRequest({runId: "run-1", includeGuessHistory: true}))).resolves.toEqual(raceRunResponseFixture);
+  expect(serviceMocks.resumeRaceRunForUser).toHaveBeenLastCalledWith(raceCallableUserId, "run-1",
+    {includeEvaluation: undefined, includeGuessHistory: true});
 });

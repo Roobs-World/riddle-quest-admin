@@ -256,11 +256,14 @@ const createTimestampMock = (iso: string) => ({
 const createCurrentDailyRiddleDoc = (
   overrides: Partial<{
     /** Stores riddle id. */
-    riddleId: string; /** Stores text. */
+    riddleId: string;
+      /** Stores text. */
     /** Stores text. */
-    text: string; /** Stores answer. */
+    text: string;
+      /** Stores answer. */
     /** Stores answer. */
-    answer: string; /** Stores timestamp. */
+    answer: string;
+      /** Stores timestamp. */
     /** Stores timestamp. */
     timestamp: unknown;
   }> = {},
@@ -925,6 +928,66 @@ describe("Daily Challenge Functions", () => {
       }) => riddle.classicIndex)).toEqual([10, 11, 12, 13]);
       expect(result.riddles[1].question.evaluation).toEqual({answer: "ANSWER", locale: "en"});
       expect(mockGetClassicRiddleByIndex).not.toHaveBeenCalledWith(14, "en");
+    });
+
+    it("prepares independent future sessions concurrently while returning canonical order", async () => {
+      mockGetUser.mockResolvedValue(getDefaultPlayer("classicUser", {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      mockGetClassicRiddleByIndex.mockImplementation(async (index: number) => ({
+        riddleId: `classic-${index}`, text: `Question ${index}?`, answer: "ANSWER", locale: "en",
+      }));
+      /** Controlled startup begins before the content request settles. */
+      const started: number[] = [];
+      /** In-flight operation remains observable until its controlled settlement. */
+      const pending = new Map<number, (token: string) => void>();
+      mockEnsureAuthoritativeSession.mockImplementation((...args: unknown[]) => {
+        /** Zero-based answer slot must stay within the issued grapheme shape. */
+        const index = (args[7] as {
+          /** Canonical catalog position binds the prepared session entitlement. */
+          classicIndex: number}).classicIndex;
+        if (index === 10) return Promise.resolve(SESSION_TOKEN);
+        started.push(index);
+        return new Promise<string>((resolve) => {
+          pending.set(index, resolve);
+          // Reverse completion must not reorder the returned buffer.
+          if (pending.size === 3) for (const next of [13, 12, 11]) pending.get(next)!(SESSION_TOKEN);
+        });
+      });
+      mockGetIssuedAuthoritativeSession.mockResolvedValue({
+        locale: "en", gameMode: "classic", attempts: 0, hasUsedContinue: false,
+        awaitingContinue: false, terminal: false, isCorrect: false,
+        expiresAt: {toMillis: () => Date.now() + 600_000},
+      });
+      /** Accepted result exposes the final authoritative projection. */
+      const result = await getClassicRiddleBuffer({auth: {uid: "classicUser"}, data: {locale: "en"}});
+      expect(started).toEqual([11, 12, 13]);
+      expect(result.riddles.map((riddle: {
+        /** Canonical catalog position binds the prepared session entitlement. */
+        classicIndex: number}) => riddle.classicIndex)).toEqual([10, 11, 12, 13]);
+    }, 1500);
+
+    it("does not issue a future session beyond the first missing canonical question", async () => {
+      mockGetUser.mockResolvedValue(getDefaultPlayer("classicUser", {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      mockGetClassicRiddleByIndex.mockImplementation(async (index: number) => index === 12 ? undefined : ({
+        riddleId: `classic-${index}`, text: `Question ${index}?`, answer: "ANSWER", locale: "en",
+      }));
+      mockGetIssuedAuthoritativeSession.mockResolvedValue({
+        locale: "en", gameMode: "classic", attempts: 0, hasUsedContinue: false,
+        awaitingContinue: false, terminal: false, isCorrect: false,
+        expiresAt: {toMillis: () => Date.now() + 600_000},
+      });
+      /** Accepted result exposes the final authoritative projection. */
+      const result = await getClassicRiddleBuffer({auth: {uid: "classicUser"}, data: {locale: "en"}});
+      expect(result.riddles.map((riddle: {
+        /** Canonical catalog position binds the prepared session entitlement. */
+        classicIndex: number}) => riddle.classicIndex)).toEqual([10, 11]);
+      expect(mockEnsureAuthoritativeSession.mock.calls.map((args: unknown[]) =>
+        (args[7] as {
+          /** Canonical catalog position binds the prepared session entitlement. */
+          classicIndex: number}).classicIndex)).toEqual([10, 11]);
     });
 
     it("should throw HttpsError if not authenticated", async () => {

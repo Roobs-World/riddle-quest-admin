@@ -191,6 +191,8 @@ export type GameSessionAction =
       guesses: string[];
       /** The draft used by the current operation. */
       draft: string[];
+      /** Saved selection within the unsubmitted draft; absent in legacy journals. */
+      draftActiveSlotIndex?: number;
     }
   | {
       /** Restores the last accepted issued question after rejection. */
@@ -311,7 +313,11 @@ export type GameSessionAction =
     }
   | {
       /** Stores type. */
-      type: "restoreSession"; /** Stores current letters. */
+      type: "restoreSession";
+      /** Riddle that issued this saved snapshot. */
+      riddleId: string;
+      /** Session that issued this saved snapshot. */
+      sessionToken: string;
       /** Stores current letters. */
       currentLetters: string[]; /** Stores active slot index. */
       /** Stores active slot index. */

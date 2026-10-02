@@ -6,7 +6,7 @@ import {
   type Feedback,
   type ScoredGuess,
 } from "@qwordly/core/game";
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeRiddle, BridgeProfile} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 import {predictCompletionAchievementIds} from "./achievements";
 
@@ -71,6 +71,11 @@ const preservePendingCoins = (state: GameSessionState, profile: BridgeProfile | 
 const computeStates = (guesses: ScoredGuess[]): Record<string, Feedback> => {
   return computeLetterStates(guesses);
 };
+
+/** Restores the visible round while keeping the paid Continue round's existing row reset. */
+const recoveredGuesses = (riddle: BridgeRiddle): ScoredGuess[] | undefined =>
+  riddle.acceptedGuesses?.filter(({attempt}) => !riddle.hasUsedContinue || attempt > 5)
+    .map(({feedback}) => ({guess: feedback.map(({letter}) => letter), feedback: feedback.map(({status}) => status)}));
 
 /** Provides first editable slot behavior. */
 const firstEditableSlot = (letters: string[], locked: number[], start = 0): number => {
@@ -154,19 +159,24 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       if (state.modal === "victory" && state.lastOutcome?.kind === "win") return state;
       /** Provides snapshot behavior. */
       const snapshot = {
-        guesses: [],
+        guesses: recoveredGuesses(action.riddle) ?? [],
         attemptsUsed: action.riddle.attemptsUsed,
         hasUsedContinue: action.riddle.hasUsedContinue,
         gameOver: false,
       };
+      /** Server-owned paid hint locks survive missing or other-language provider checkpoints. */
+      const hints = action.riddle.revealedHints ?? [];
+      /** Grapheme cells preserve the issued answer shape and purchased hint locks. */
+      const letters = Array.from({length: action.riddle.answerLength}, () => "");
+      for (const hint of hints) letters[hint.index] = hint.letter;
       return {
         ...state,
         riddle: action.riddle,
         gameMode: action.riddle.gameMode,
         profile: action.profile === undefined ? state.profile : preservePendingCoins(state, action.profile),
-        currentLetters: Array.from({length: action.riddle.answerLength}, () => ""),
-        activeSlotIndex: 0,
-        hintRevealedIndices: [],
+        currentLetters: letters,
+        activeSlotIndex: firstEditableSlot(letters, hints.map(({index}) => index)),
+        hintRevealedIndices: hints.map(({index}) => index),
         guesses: snapshot.guesses,
         guessPending: false,
         pendingGuessState: null,
@@ -179,7 +189,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         lastRewards: null,
         optimisticAchievementIds: [],
         auxiliaryFanfare: null,
-        letterStates: {},
+        letterStates: computeStates(snapshot.guesses),
       };
     }
     case "typeLetter": {
@@ -286,8 +296,16 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         if (letters.length !== state.riddle.answerLength || restored.engineSnapshot?.gameOver) return state;
         restored = gameSessionReducer({...restored, currentLetters: letters}, {type: "guessRequested"});
       }
-      if (action.draft.length === state.riddle.answerLength && !restored.engineSnapshot?.gameOver)
-        restored = {...restored, currentLetters: action.draft};
+      if (action.draft.length === state.riddle.answerLength && !restored.engineSnapshot?.gameOver) {
+        /** Legacy journals retain letters but omit the draft's selection. */
+        const savedSlot = action.draftActiveSlotIndex;
+        /** Editable selection is reconciled with authoritative purchased hint locks. */
+        const activeSlotIndex = savedSlot !== undefined && Number.isInteger(savedSlot) &&
+          savedSlot >= 0 && savedSlot < action.draft.length && !restored.hintRevealedIndices.includes(savedSlot)
+          ? savedSlot
+          : firstEditableSlot(action.draft, restored.hintRevealedIndices);
+        restored = {...restored, currentLetters: action.draft, activeSlotIndex};
+      }
       return restored;
     }
     case "restoreConfirmedRiddle": {
@@ -513,14 +531,15 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "showAuxiliaryFanfare":
       return {...state, auxiliaryFanfare: action.fanfare, modal: "reward"};
     case "restoreSession":
-      if (!state.riddle || state.guessPending || state.lastOutcome ||
+      if (!state.riddle || action.riddleId !== state.riddle.riddleId ||
+        action.sessionToken !== state.riddle.sessionToken || state.guessPending || state.lastOutcome ||
         (state.engineSnapshot?.attemptsUsed ?? 0) > state.riddle.attemptsUsed ||
         action.currentLetters.length !== state.riddle.answerLength) {
         return state;
       }
       {
         /** Provides guesses behavior. */
-        const guesses = action.guesses.slice(0, state.riddle.attemptsUsed);
+        const guesses = recoveredGuesses(state.riddle) ?? action.guesses.slice(0, state.riddle.attemptsUsed);
         /** Provides pending outcome behavior. */
         const pendingOutcome =
           action.pendingOutcome?.kind === "loss" &&
@@ -536,11 +555,20 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         const currentLetters = awaitingContinue
           ? Array.from({length: state.riddle.answerLength}, () => "")
           : action.currentLetters;
+        /** Provider snapshots may predate a paid hint; issued locks always take precedence. */
+        const restoredLetters = [...currentLetters];
+        /** Unique paid hint positions combine provider and authoritative recovery. */
+        const hintIndices = [...new Set([...action.hintRevealedIndices,
+          ...(state.riddle.revealedHints ?? []).map(({index}) => index)])];
+        for (const hint of state.riddle.revealedHints ?? []) restoredLetters[hint.index] = hint.letter;
+        /** Editable selection is reconciled with authoritative purchased hint locks. */
+        const activeSlotIndex = hintIndices.includes(action.activeSlotIndex)
+          ? firstEditableSlot(restoredLetters, hintIndices) : action.activeSlotIndex;
         return {
           ...state,
-          currentLetters,
-          activeSlotIndex: awaitingContinue ? 0 : action.activeSlotIndex,
-          hintRevealedIndices: action.hintRevealedIndices,
+          currentLetters: restoredLetters,
+          activeSlotIndex: awaitingContinue ? 0 : activeSlotIndex,
+          hintRevealedIndices: hintIndices,
           guesses,
           guessPending: false,
           pendingGuessState: null,

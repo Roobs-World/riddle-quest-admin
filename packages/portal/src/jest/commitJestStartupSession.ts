@@ -1,4 +1,5 @@
 import {applyPlayerPreferences} from "../play/playerPreferences";
+import {setLocaleAndWait, type Locale} from "../play/i18n";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import type {JestEngagementProgress, JestPlayerData, JestSession} from "./types";
 
@@ -43,7 +44,10 @@ export async function commitJestStartupSession({
   try {
     await gate.run(async () => {
       if (!isActive()) return;
-      applyPlayerPreferences(session.preferences);
+      /** Restored preferences select the language before the hosted game mounts. */
+      const preferences = applyPlayerPreferences(session.preferences);
+      await setLocaleAndWait(preferences.locale as Locale);
+      if (!isActive()) return;
       enablePlayerStateWrites(session.playerData);
       /** Saves d profile. */
       const savedProfile = session.playerData?.profile;

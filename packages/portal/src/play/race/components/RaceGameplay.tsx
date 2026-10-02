@@ -3,6 +3,7 @@ import type {RaceRunView} from "@qwordly/core/race";
 import {useRef, type RefObject} from "react";
 import {tr} from "../../i18n";
 import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from "../../GameFrameControls";
+import {raceBoardAttempts} from "../logic/raceBoardAttempts";
 import {RaceScoreboard} from "./RaceScoreboard";
 import {NativeAnswerInput} from "./NativeAnswerInput";
 
@@ -100,7 +101,8 @@ export function RaceGameplay({
                 currentLetters={currentLetters}
                 activeSlotIndex={activeSlotIndex}
                 hintRevealedIndices={run.currentRiddle.revealedLetters.map(({index}) => index)}
-                guesses={guesses}
+                guesses={raceBoardAttempts(guesses, run.currentRiddle.guessesUsed,
+                  pending && allowTypingWhilePending && feedback === "incorrect")}
                 onSelectSlot={(index) => {
                   onSelectSlot(index);
                   nativeInputRef.current?.focus({preventScroll: true});

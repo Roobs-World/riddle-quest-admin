@@ -1,0 +1,152 @@
+[
+  {
+    "file": "firebase-functions/src/__tests__/dailyChallenge.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "a6ec2d8e4f26b9590499db6e07395f85d444d47201baf1d64c5ff8b3211458d9"
+  },
+  {
+    "file": "firebase-functions/src/__tests__/localizedClassicIndex.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "f42a06b5ea54b2eef771b4d370694d41184a5708bdf2ad1faaa0eed72813156f"
+  },
+  {
+    "file": "firebase-functions/src/__tests__/singlePlayerSession.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "45848b4f5cfd63d43c93c5ec946053f8a5d23d89e76b57964c0f9f760d7a59b1"
+  },
+  {
+    "file": "firebase-functions/src/daily/classicRiddleBuffer.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "d090cccb4fbad3b0b0a3275d91f681e8e360ffa020a5f1cb8a5d0aa76cc7016c"
+  },
+  {
+    "file": "firebase-functions/src/gameplay/singlePlayerPublicSession.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "9a9430e0c8b5e26f567c618dfc6af913538600aa8668212a54d10a216fdc5e24"
+  },
+  {
+    "file": "firebase-functions/src/gameplay/singlePlayerRiddleResponse.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "42e46e25c97021a4b9f6819d2ad8def1e58488fde74eed35455dd6bceddfe0e4"
+  },
+  {
+    "file": "packages/core/src/bridge/__tests__/revealedHints.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "a2bf371522452056af105dbd165973c8918eccfddf4cae4b3e6da2a456bd95e0"
+  },
+  {
+    "file": "packages/core/src/bridge/index.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "cb3cfad5b6aa29351c969628ff0500e8e86e8af5dfcf59723b0a6ae60a7b0ab6"
+  },
+  {
+    "file": "packages/core/src/validation/cloudFunctionsSchemas.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "4724f452c46efc84d37d105eb0e57b93ab47baadef46f81c7173f058d76985e6"
+  },
+  {
+    "file": "packages/portal/src/__tests__/firebase.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "a870954d20c30e328cf063b14ee7c28e4359512b8d0024bdca73018e36a6d4c5"
+  },
+  {
+    "file": "packages/portal/src/firebase.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "5e8087aa32d7d83146fdeb3ebf448f629913e2f1ca1d0ed887bfd4156307eb54"
+  },
+  {
+    "file": "packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "ffa5a71779094d8e7c30b6bb7b8c89a32273d21286392a2b30de3a3cdfdacdb2"
+  },
+  {
+    "file": "packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "45dffa5a7c4512dac4f66e88003272973eeb3e6b3ebee7e3efe26300186ecc19"
+  },
+  {
+    "file": "packages/portal/src/jest/__tests__/commitJestStartupSession.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "9b4c91872d700b0af920f91c71dfa1d294ed3004cdf4071962c9a66b682d27d7"
+  },
+  {
+    "file": "packages/portal/src/jest/__tests__/useSubscriptionManagement.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "8584d06f292dece4df410932f8b8dccef14978996d359c238ca8ebd426a1758d"
+  },
+  {
+    "file": "packages/portal/src/jest/commitJestStartupSession.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "2cb21e74340aac435a234dca80aff8cad1a9d13b2790fa909d20086672b86dee"
+  },
+  {
+    "file": "packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "136e5cb8318db9c4dfbf54d122d4069126f81513963aa27a872b64a06b715ccf"
+  },
+  {
+    "file": "packages/portal/src/play/__tests__/fakeServices.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "92e294179b4366af80f06d333ccfdcec3e364090a78395c83552c3e1bdb1e27e"
+  },
+  {
+    "file": "packages/portal/src/play/__tests__/gameSessionPersistence.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "c84243463179f7ea62a2a11bccc027489c32ee5dd36dcff3dd4595df89701e20"
+  },
+  {
+    "file": "packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "eb8c08d076212db0559dc01c3cd632b4e2971c1008e55010a04adc4f14dbbfb7"
+  },
+  {
+    "file": "packages/portal/src/play/__tests__/i18n.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "fe62b4c565fe4514b1b1ba44e0ad5a6005e921adfe2ecb765031a2cdd3b20af3"
+  },
+  {
+    "file": "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "e5993e44f13c55b5c7d94f6240ae92a12c4efd575c95077ed99b89d57cb9bc22"
+  },
+  {
+    "file": "packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "38a0e8d2f0d632207293b44c046a2f3f7870e0d953b282a01eb92d5276b6fd57"
+  },
+  {
+    "file": "packages/portal/src/play/gameSession.ts",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "9a72790f8b61e05974e4b1af6d83890ef5c0af44f15e01a396fa070ca1c49e00"
+  },
+  {
+    "file": "packages/portal/src/play/race/__tests__/raceComponents.test.tsx",
+    "commentFreeTypeScriptUnchanged": true,
+    "emittedJavaScriptUnchanged": true,
+    "commentFreeDigest": "06b31dbfb9c3e846cc00b40ac2e983f97296691007eaf4031b49a19ef1bda7be"
+  }
+]

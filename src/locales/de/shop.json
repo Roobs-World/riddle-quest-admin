@@ -18,6 +18,7 @@
     "PACK_DESCRIPTION": "Füge deinem Guthaben {coins} Münzen hinzu.",
     "BADGE_STARTER": "EINSTIEG",
     "BADGE_POPULAR": "BELIEBT",
-    "BADGE_BEST_VALUE": "BESTES ANGEBOT"
+    "BADGE_BEST_VALUE": "BESTES ANGEBOT",
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Dieses Abonnement kann nicht gekündigt werden."
   }
 }

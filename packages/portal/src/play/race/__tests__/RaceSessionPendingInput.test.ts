@@ -9,7 +9,7 @@ describe("Race Session pending same-question input recovery",()=>{
     h.reject("raceGuess","Lost confirmation");
     expect(h.session.getSnapshot().currentLetters).toEqual([..."zzzzz"]);
     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
-    expect(h.session.getSnapshot()).toMatchObject({error:null,raceGuesses:[],currentLetters:["p","i","","",""],run:{currentRiddle:{guessesUsed:commit === "applied" ? 1 : 0}}});
+    expect(h.session.getSnapshot()).toMatchObject({error:null,raceGuesses:commit === "applied" ? [{guess:[],feedback:[]}] : [],currentLetters:["p","i","","",""],run:{currentRiddle:{guessesUsed:commit === "applied" ? 1 : 0}}});
     expect(h.commands.filter(command=>command.type==="game:submitRaceGuess")).toHaveLength(1);
   });
   it("retains a deliberately emptied pending draft after canonical recovery",async()=>{

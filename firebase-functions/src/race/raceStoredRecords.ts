@@ -25,7 +25,7 @@ const Run = z.looseObject({recordVersion: z.literal(1).optional(), runId: Id, us
   result: z.enum(["player_win", "ghost_win", "tie", "timed_out", "recorded"]).nullable().optional(),
   categoryId: RaceCategoryIdSchema, locale: RaceLocaleSchema, rulesVersion: z.literal(RACE_RULES_VERSION), rulesSnapshot: RaceRulesSchema.optional(),
   deckId: Id, riddles: z.array(Riddle).min(1).max(15), currentPosition: z.number().int().min(0).max(15),
-  correctCount: z.number().int().min(0).max(10), guessesUsed: z.number().int().min(0).max(5), hintUsed: z.boolean(),
+  correctCount: z.number().int().min(0).max(10), guessesUsed: z.number().int().min(0).max(5), guessHistory: z.array(z.string().min(1).max(256)).max(5).optional(), hintUsed: z.boolean(),
   revealedLetters: z.array(z.looseObject({index: z.number().int().nonnegative(), letter: z.string().min(1)})),
   startedAtMs: Ms, lastActionAtMs: Ms.optional(), readinessAcceptedAtMs: Ms.optional(), deadlineAtMs: Ms.optional(), preparationExpiresAtMs: Ms.optional(), finishedAtMs: Ms.optional(), wallFinishMs: Ms.optional(),
   hintPenaltyMs: Ms, skipPenaltyMs: Ms, events: z.array(RaceGhostEventSchema),
@@ -57,6 +57,9 @@ const Run = z.looseObject({recordVersion: z.literal(1).optional(), runId: Id, us
   const current = run.riddles[run.currentPosition];
   /** Locale-aware segmentation matches the authoritative hint engine. */
   const answer = current ? splitGraphemes(current.answer, run.locale) : [];
+  if (run.guessHistory && (run.guessHistory.length > run.guessesUsed ||
+    run.guessHistory.some(guess => splitGraphemes(guess, run.locale).length !== answer.length)))
+    context.addIssue({code: "custom", message: "Confirmed guesses must match consumed attempts and current question length."});
   if (new Set(run.revealedLetters.map(letter => letter.index)).size !== run.revealedLetters.length ||
     run.revealedLetters.some(letter => answer[letter.index] !== letter.letter))
     context.addIssue({code: "custom", message: "Revealed hints must match the current question."});

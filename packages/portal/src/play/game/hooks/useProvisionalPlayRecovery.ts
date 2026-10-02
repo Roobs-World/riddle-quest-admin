@@ -59,7 +59,7 @@ const capturePendingBase = (state: GameSessionState): PendingGuessState => ({
 /** Finds the checkpoint for an issued session retained in the journal. */
 const findSegment = (journal: PendingGuessJournal, sessionToken: string) =>
   journal.riddle.sessionToken === sessionToken
-    ? {riddle: journal.riddle, base: journal.base, draft: journal.draft, first: true as const}
+    ? {riddle: journal.riddle, base: journal.base, draft: journal.draft, draftActiveSlotIndex: journal.draftActiveSlotIndex, first: true as const}
     : journal.successors.find((segment) => segment.riddle.sessionToken === sessionToken);
 /** Owns player-initiated host commands and their idempotent retry identifiers. */
 export function useProvisionalPlayRecovery({
@@ -206,7 +206,7 @@ export function useProvisionalPlayRecovery({
         activeJournal.successors.length >= 3
       )
         return;
-      activeJournal.successors.push({riddle: state.riddle, base: capturePendingBase(state), draft: []});
+      activeJournal.successors.push({riddle: state.riddle, base: capturePendingBase(state), draft: [], draftActiveSlotIndex: 0});
       adapters.journal.write(activeJournal);
       return;
     }
@@ -240,6 +240,7 @@ export function useProvisionalPlayRecovery({
         .filter((item) => item.message.payload.sessionToken === active.riddle.sessionToken)
         .map((item) => item.message.payload.guess),
       draft: active.draft,
+      draftActiveSlotIndex: active.draftActiveSlotIndex,
     });
     if (journal.coinAction?.type === "game:spendCoins")
       dispatch({
@@ -258,14 +259,20 @@ export function useProvisionalPlayRecovery({
     /** The segment used by the current operation. */
     const segment = findSegment(journal, state.riddle.sessionToken);
     if (!segment) return;
-    if (segment.riddle.sessionToken === journal.riddle.sessionToken) journal.draft = [...state.currentLetters];
+    if (segment.riddle.sessionToken === journal.riddle.sessionToken) {
+      journal.draft = [...state.currentLetters];
+      journal.draftActiveSlotIndex = state.activeSlotIndex;
+    }
     else {
       /** The successor used by the current operation. */
       const successor = journal.successors.find((item) => item.riddle.sessionToken === state.riddle?.sessionToken);
-      if (successor) successor.draft = [...state.currentLetters];
+      if (successor) {
+        successor.draft = [...state.currentLetters];
+        successor.draftActiveSlotIndex = state.activeSlotIndex;
+      }
     }
     adapters.journal.write(journal);
-  }, [state.currentLetters, state.guessPending, state.riddle?.sessionToken]);
+  }, [state.currentLetters, state.activeSlotIndex, state.guessPending, state.riddle?.sessionToken]);
   /** Provides hint retry ref behavior. */
   const hintRetryRef = useRef<{
     /** Stores session token. */
@@ -397,6 +404,7 @@ export function useProvisionalPlayRecovery({
         successors: [],
         queue: [],
         draft: [],
+        draftActiveSlotIndex: 0,
       };
       /** The segment used by the current operation. */
       const segment = findSegment(journal, state.riddle.sessionToken);
@@ -416,6 +424,7 @@ export function useProvisionalPlayRecovery({
       }
       journal.queue = [...journal.queue, queued];
       journal.draft = [];
+      journal.draftActiveSlotIndex = 0;
       if (!adapters.journal.write(journal)) {
         if (queuedGuessesRef.current.length > 0) {
           dispatch({type: "setNotice", notice: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"});
@@ -652,6 +661,7 @@ export function useProvisionalPlayRecovery({
             journal.riddle = nextSegment.riddle;
             journal.base = nextSegment.base;
             journal.draft = nextSegment.draft;
+            journal.draftActiveSlotIndex = nextSegment.draftActiveSlotIndex;
           }
         }
         if (journal.queue.length > 0 || journal.coinAction) adapters.journal.write(journal);
@@ -754,6 +764,7 @@ export function useProvisionalPlayRecovery({
           successors: [],
           queue: [],
           draft: [...current.currentLetters],
+          draftActiveSlotIndex: current.activeSlotIndex,
         }),
         coinAction: message,
       };

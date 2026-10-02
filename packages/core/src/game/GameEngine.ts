@@ -17,9 +17,8 @@ export type GameEngineMode = "challenge" | "classic";
  * @remarks
  * `attempts` is cumulative across the base attempt budget and an accepted
  * continue. `feedback` always belongs to the guess that caused this outcome.
- * A caller must stop accepting guesses after `attemptLimitReached` until it has
- * either invoked {@link GameEngine.continueAfterLimit} or ended the surrounding
- * session.
+ * After `attemptLimitReached`, the engine rejects further guesses until
+ * {@link GameEngine.continueAfterLimit} enables the additional budget.
  */
 export type GuessOutcome =
   | {
@@ -199,17 +198,15 @@ export class GameEngine {
    * @param guessLetters - Ordered graphemes for a prevalidated guess. The engine
    * retains this array in its snapshot, so callers must not mutate it afterward.
    * @returns The resulting state transition, or `null` when the engine is already
-   * terminal.
+   * terminal or waiting for an accepted continue.
    *
    * @remarks
    * The joined guess is NFC-normalized and lowercased before comparison. The
-   * method does not enforce answer length or character policy. After an
-   * `attemptLimitReached` result, submitting again without accepting a continue
-   * will consume another attempt and repeat that result; the surrounding flow is
-   * responsible for pausing input.
+   * method does not enforce answer length or character policy. Guesses submitted
+   * while waiting for a continue leave the snapshot unchanged.
    */
   submitGuess(guessLetters: string[]): GuessOutcome | null {
-    if (this.gameOver) {
+    if (this.gameOver || this.attemptsUsed >= this.getMaxAttempts()) {
       return null;
     }
 
@@ -235,7 +232,7 @@ export class GameEngine {
     }
 
     if (currentAttempt >= maxAttempts) {
-      if (this.hasUsedContinue) {
+      if (this.hasUsedContinue || this.config.continueAttempts === 0) {
         this.gameOver = true;
         return {kind: "loss", feedback, attempts: currentAttempt};
       }
@@ -261,11 +258,13 @@ export class GameEngine {
    *
    * @remarks
    * This starts a fresh visible guess grid but deliberately preserves the
-   * cumulative `attemptsUsed` count. The method does not verify that a limit was
-   * reached or prevent multiple calls, so the surrounding flow must call it
-   * exactly once in response to `attemptLimitReached`.
+   * cumulative `attemptsUsed` count. Early, repeated, terminal, or zero-budget
+   * calls leave the snapshot unchanged. Provider authorization is handled by
+   * the surrounding authority flow before this local transition is requested.
    */
   continueAfterLimit(): void {
+    if (this.gameOver || this.hasUsedContinue || this.config.continueAttempts <= 0 ||
+      this.attemptsUsed !== this.config.initialAttempts) return;
     this.hasUsedContinue = true;
     this.gameOver = false;
     this.guesses = [];

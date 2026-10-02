@@ -7,7 +7,28 @@ export type AnalyticsParams = Record<string, AnalyticsValue | AnalyticsItem[] | 
 /** Describes sanitized analytics params. */
 export type SanitizedAnalyticsParams = Record<string, AnalyticsValue | AnalyticsItem[]>;
 /** Describes analytics sink. */
-export type AnalyticsSink = (eventName: string, params: SanitizedAnalyticsParams) => void;
+export type AnalyticsSink = (eventName: string, params: SanitizedAnalyticsParams) => void | Promise<void>;
+
+/** Native host analytics is independent of the consent-gated external sink. */
+let platformSink: AnalyticsSink | null = null;
+
+/** Isolates optional delivery failures from game operations and browser error listeners. */
+const deliver = (destination: AnalyticsSink, name: string, params: SanitizedAnalyticsParams) => {
+  try {
+    void Promise.resolve(destination(name, params)).catch(() => {});
+  } catch {
+    // Provider analytics must never interrupt gameplay.
+  }
+};
+
+/** Connects an initialized target's native SDK and returns ownership-safe cleanup. */
+export const configurePlatformAnalytics = (destination: AnalyticsSink) => {
+  platformSink = destination;
+  if (lastScreen) deliver(destination, "screen_view", {screen_name: lastScreen, screen_class: "RiddleQuestWeb"});
+  return () => {
+    if (platformSink === destination) platformSink = null;
+  };
+};
 
 /** Provides sink behavior. */
 let sink: AnalyticsSink | null = null;
@@ -18,7 +39,7 @@ let pendingEvents: Array<{
   /** Stores params. */
   params: SanitizedAnalyticsParams;
 }> = [];
-/** Nonessential analytics is disabled until an explicit consent flow enables collection. */
+/** External analytics is disabled until an explicit consent flow enables collection. */
 let collectionEnabled = false;
 /** Provides last screen behavior. */
 let lastScreen = "";
@@ -72,11 +93,11 @@ export const configureAnalytics = (nextSink: AnalyticsSink | null) => {
     return;
   }
   sink = nextSink;
-  for (const event of pendingEvents) sink(event.eventName, event.params);
+  for (const event of pendingEvents) deliver(sink, event.eventName, event.params);
   pendingEvents = [];
 };
 
-/** Enables or revokes nonessential analytics collection before a remote sink is configured. */
+/** Enables or revokes external analytics collection before a remote sink is configured. */
 export const setAnalyticsCollectionEnabled = (enabled: boolean) => {
   collectionEnabled = enabled;
   if (enabled) return;
@@ -84,14 +105,17 @@ export const setAnalyticsCollectionEnabled = (enabled: boolean) => {
   pendingEvents = [];
 };
 
-/** Tracks event. */
-export const trackEvent = (eventName: string, params: AnalyticsParams = {}) => {
-  if (!collectionEnabled) return;
+/** Sends sanitized native events and, when enabled, the optional external copy.
+ * Attributed provider funnels pass false because they own their native delivery.
+ */
+export const trackEvent = (eventName: string, params: AnalyticsParams = {}, includePlatform = true) => {
   /** Provides safe name behavior. */
   const safeName = compact(eventName, "game_event").slice(0, 40);
   /** Provides safe params behavior. */
   const safeParams = sanitizeAnalyticsParams(params);
-  if (sink) sink(safeName, safeParams);
+  if (includePlatform && platformSink) deliver(platformSink, safeName, safeParams);
+  if (!collectionEnabled) return;
+  if (sink) deliver(sink, safeName, safeParams);
   else pendingEvents = [...pendingEvents.slice(-99), {eventName: safeName, params: safeParams}];
 };
 
@@ -207,4 +231,5 @@ export const resetAnalyticsForTests = () => {
   sink = null;
   pendingEvents = [];
   collectionEnabled = false;
+  platformSink = null;
 };

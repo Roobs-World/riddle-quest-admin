@@ -1,0 +1,76 @@
+Paid draft checkpoint UI passed: 1280px modern hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px modern skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px prompt-only skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 1280px answer-free skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px modern skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px prompt-only skip-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-draft; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-question; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free hint-normal; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free skip-reject; original draft/history ownership and no paid mutation replay.
+Paid draft checkpoint UI passed: 390px answer-free skip-normal; original draft/history ownership and no paid mutation replay.
+Retained prototype verifier passed: verify-race-paid-draft-checkpoints-browser.mjs
+Answer-free checkpoint UI passed: 1280px known=true canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=true normal; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 1280px known=false normal; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=true normal; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false canonical; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false changed-echo; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false transport; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false history; immutable submitted letters/history and no mutation replay.
+Answer-free checkpoint UI passed: 390px known=false normal; immutable submitted letters/history and no mutation replay.
+Retained prototype verifier passed: verify-race-answer-free-checkpoints-browser.mjs
+Authority clock ownership passed: first at 1280px.
+Authority clock ownership passed: second at 1280px.
+Authority clock ownership passed: valid at 1280px.
+Authority clock ownership passed: first at 390px.
+Authority clock ownership passed: second at 390px.
+Authority clock ownership passed: valid at 390px.
+Retained prototype verifier passed: verify-race-authority-clock-ownership-browser.mjs
+Restored attempt rows passed: cold at 1280px.
+Restored attempt rows passed: reload at 1280px.
+Projected attempt rows passed: pending wrong at 1280px.
+Projected attempt rows passed: rollback at 1280px.
+Projected attempt rows passed: correct successor at 1280px.
+Restored attempt rows passed: cold at 390px.
+Restored attempt rows passed: reload at 390px.
+Projected attempt rows passed: pending wrong at 390px.
+Projected attempt rows passed: rollback at 390px.
+Projected attempt rows passed: correct successor at 390px.
+Retained prototype verifier passed: verify-race-projected-attempt-rows-browser.mjs

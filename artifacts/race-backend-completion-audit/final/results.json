@@ -1,0 +1,12 @@
+[
+  {
+    "id": "node22-backend-build-and-operator-safeguards",
+    "exitCode": 0,
+    "seconds": 2.1
+  },
+  {
+    "id": "node22-isolated-backend-race-coverage",
+    "exitCode": 0,
+    "seconds": 206.17
+  }
+]

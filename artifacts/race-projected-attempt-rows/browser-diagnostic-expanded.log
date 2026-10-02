@@ -1,0 +1,613 @@
+Restored attempt rows passed: cold at 1280px.
+Restored attempt rows passed: reload at 1280px.
+Projected attempt rows passed: pending wrong at 1280px.
+Projected attempt rows passed: rollback at 1280px.
+Successor diagnostic {
+  "state": {
+    "stage": "racing",
+    "entryStatus": null,
+    "challenge": null,
+    "categories": [],
+    "inboxItems": [],
+    "run": {
+      "runId": "fake-run-1",
+      "role": "creator",
+      "status": "active",
+      "serverNowMs": 1790905604439,
+      "startsAtMs": 1790905604438,
+      "categoryId": "mixed",
+      "locale": "en",
+      "rules": {
+        "version": "race10_v1",
+        "targetCorrect": 10,
+        "deckSize": 15,
+        "maxGuessesPerRiddle": 5,
+        "maxHintsPerRiddle": 7,
+        "hintPenaltyMs": 15000,
+        "skipPenaltyMs": 45000,
+        "maxAdjustedTimeMs": 300000
+      },
+      "correctCount": 0,
+      "wallElapsedMs": 1,
+      "totalPenaltyMs": 0,
+      "adjustedElapsedMs": 1,
+      "currentRiddle": {
+        "riddleId": "fake-race-1",
+        "text": "What has keys but cannot open a door?",
+        "answerLength": 5,
+        "position": 0,
+        "guessesUsed": 3,
+        "guessesRemaining": 2,
+        "hintAvailable": true,
+        "revealedLetters": [],
+        "evaluation": {
+          "answer": "piano",
+          "locale": "en"
+        }
+      },
+      "preloadedRiddles": [
+        {
+          "riddleId": "fake-race-1",
+          "text": "What has keys but cannot open a door?",
+          "answerLength": 5,
+          "position": 0,
+          "evaluation": {
+            "answer": "piano",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "p"
+          }
+        },
+        {
+          "riddleId": "fake-race-2",
+          "text": "What has hands and a face but no arms?",
+          "answerLength": 5,
+          "position": 1,
+          "evaluation": {
+            "answer": "clock",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "c"
+          }
+        },
+        {
+          "riddleId": "fake-race-3",
+          "text": "What gets wetter while it dries?",
+          "answerLength": 5,
+          "position": 2,
+          "evaluation": {
+            "answer": "towel",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "t"
+          }
+        },
+        {
+          "riddleId": "fake-race-4",
+          "text": "What has a neck but no head?",
+          "answerLength": 6,
+          "position": 3,
+          "evaluation": {
+            "answer": "bottle",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "b"
+          }
+        },
+        {
+          "riddleId": "fake-race-5",
+          "text": "What can travel around the world while staying in a corner?",
+          "answerLength": 5,
+          "position": 4,
+          "evaluation": {
+            "answer": "stamp",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "s"
+          }
+        },
+        {
+          "riddleId": "fake-race-6",
+          "text": "What has one eye but cannot see?",
+          "answerLength": 6,
+          "position": 5,
+          "evaluation": {
+            "answer": "needle",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "n"
+          }
+        },
+        {
+          "riddleId": "fake-race-7",
+          "text": "What belongs to you but others use more?",
+          "answerLength": 4,
+          "position": 6,
+          "evaluation": {
+            "answer": "name",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "n"
+          }
+        },
+        {
+          "riddleId": "fake-race-8",
+          "text": "What has many teeth but cannot bite?",
+          "answerLength": 4,
+          "position": 7,
+          "evaluation": {
+            "answer": "comb",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "c"
+          }
+        },
+        {
+          "riddleId": "fake-race-9",
+          "text": "What runs but never walks?",
+          "answerLength": 5,
+          "position": 8,
+          "evaluation": {
+            "answer": "water",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "w"
+          }
+        },
+        {
+          "riddleId": "fake-race-10",
+          "text": "What has words but never speaks?",
+          "answerLength": 4,
+          "position": 9,
+          "evaluation": {
+            "answer": "book",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "b"
+          }
+        },
+        {
+          "riddleId": "fake-race-11",
+          "text": "What goes up but never comes down?",
+          "answerLength": 3,
+          "position": 10,
+          "evaluation": {
+            "answer": "age",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "a"
+          }
+        },
+        {
+          "riddleId": "fake-race-12",
+          "text": "What has a thumb and four fingers but is not alive?",
+          "answerLength": 5,
+          "position": 11,
+          "evaluation": {
+            "answer": "glove",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "g"
+          }
+        },
+        {
+          "riddleId": "fake-race-13",
+          "text": "What building has the most stories?",
+          "answerLength": 7,
+          "position": 12,
+          "evaluation": {
+            "answer": "library",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "l"
+          }
+        },
+        {
+          "riddleId": "fake-race-14",
+          "text": "What can fill a room but takes no space?",
+          "answerLength": 5,
+          "position": 13,
+          "evaluation": {
+            "answer": "light",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "l"
+          }
+        },
+        {
+          "riddleId": "fake-race-15",
+          "text": "What has a ring but no finger?",
+          "answerLength": 5,
+          "position": 14,
+          "evaluation": {
+            "answer": "phone",
+            "locale": "en"
+          },
+          "hint": {
+            "index": 0,
+            "letter": "p"
+          }
+        }
+      ],
+      "events": []
+    },
+    "outcome": null,
+    "receivedAtMs": 103.8999999910593,
+    "adjustedNow": 1526.1000000089407,
+    "currentLetters": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "activeSlotIndex": 0,
+    "raceGuesses": [
+      {
+        "guess": [
+          "o",
+          "p",
+          "i",
+          "a",
+          "n"
+        ],
+        "feedback": [
+          "yellow",
+          "yellow",
+          "yellow",
+          "yellow",
+          "yellow"
+        ]
+      }
+    ],
+    "feedback": "incorrect",
+    "penaltyFlash": null,
+    "error": null,
+    "safetyNotice": null,
+    "safetyTargetUserId": null,
+    "pending": "raceGuess",
+    "raceGuessLoading": true,
+    "allowTypingWhilePending": true,
+    "requiresRunRefresh": false,
+    "countdown": 3,
+    "loadingProgress": 0,
+    "countdownReady": false,
+    "closeAfterStart": false,
+    "quitConfirmationOpen": false,
+    "publishRequested": false,
+    "published": null,
+    "findingOpponent": false,
+    "matchSearchStatus": "idle",
+    "matchFailure": null,
+    "matchRetryReady": true
+  },
+  "canonical": {
+    "runId": "fake-run-1",
+    "role": "creator",
+    "status": "active",
+    "categoryId": "mixed",
+    "locale": "en",
+    "rules": {
+      "version": "race10_v1",
+      "targetCorrect": 10,
+      "deckSize": 15,
+      "maxGuessesPerRiddle": 5,
+      "maxHintsPerRiddle": 7,
+      "hintPenaltyMs": 15000,
+      "skipPenaltyMs": 45000,
+      "maxAdjustedTimeMs": 300000
+    },
+    "correctCount": 0,
+    "wallElapsedMs": 1,
+    "totalPenaltyMs": 0,
+    "adjustedElapsedMs": 1,
+    "currentRiddle": {
+      "riddleId": "fake-race-1",
+      "text": "What has keys but cannot open a door?",
+      "answerLength": 5,
+      "position": 0,
+      "guessesUsed": 3,
+      "guessesRemaining": 2,
+      "hintAvailable": true,
+      "revealedLetters": [],
+      "evaluation": {
+        "answer": "piano",
+        "locale": "en"
+      }
+    },
+    "events": [],
+    "serverNowMs": 1790905604439,
+    "startsAtMs": 1790905604438,
+    "preloadedRiddles": [
+      {
+        "hint": {
+          "index": 0,
+          "letter": "p"
+        },
+        "riddleId": "fake-race-1",
+        "text": "What has keys but cannot open a door?",
+        "answerLength": 5,
+        "position": 0,
+        "evaluation": {
+          "answer": "piano",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "c"
+        },
+        "riddleId": "fake-race-2",
+        "text": "What has hands and a face but no arms?",
+        "answerLength": 5,
+        "position": 1,
+        "evaluation": {
+          "answer": "clock",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "t"
+        },
+        "riddleId": "fake-race-3",
+        "text": "What gets wetter while it dries?",
+        "answerLength": 5,
+        "position": 2,
+        "evaluation": {
+          "answer": "towel",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "b"
+        },
+        "riddleId": "fake-race-4",
+        "text": "What has a neck but no head?",
+        "answerLength": 6,
+        "position": 3,
+        "evaluation": {
+          "answer": "bottle",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "s"
+        },
+        "riddleId": "fake-race-5",
+        "text": "What can travel around the world while staying in a corner?",
+        "answerLength": 5,
+        "position": 4,
+        "evaluation": {
+          "answer": "stamp",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "n"
+        },
+        "riddleId": "fake-race-6",
+        "text": "What has one eye but cannot see?",
+        "answerLength": 6,
+        "position": 5,
+        "evaluation": {
+          "answer": "needle",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "n"
+        },
+        "riddleId": "fake-race-7",
+        "text": "What belongs to you but others use more?",
+        "answerLength": 4,
+        "position": 6,
+        "evaluation": {
+          "answer": "name",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "c"
+        },
+        "riddleId": "fake-race-8",
+        "text": "What has many teeth but cannot bite?",
+        "answerLength": 4,
+        "position": 7,
+        "evaluation": {
+          "answer": "comb",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "w"
+        },
+        "riddleId": "fake-race-9",
+        "text": "What runs but never walks?",
+        "answerLength": 5,
+        "position": 8,
+        "evaluation": {
+          "answer": "water",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "b"
+        },
+        "riddleId": "fake-race-10",
+        "text": "What has words but never speaks?",
+        "answerLength": 4,
+        "position": 9,
+        "evaluation": {
+          "answer": "book",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "a"
+        },
+        "riddleId": "fake-race-11",
+        "text": "What goes up but never comes down?",
+        "answerLength": 3,
+        "position": 10,
+        "evaluation": {
+          "answer": "age",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "g"
+        },
+        "riddleId": "fake-race-12",
+        "text": "What has a thumb and four fingers but is not alive?",
+        "answerLength": 5,
+        "position": 11,
+        "evaluation": {
+          "answer": "glove",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "l"
+        },
+        "riddleId": "fake-race-13",
+        "text": "What building has the most stories?",
+        "answerLength": 7,
+        "position": 12,
+        "evaluation": {
+          "answer": "library",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "l"
+        },
+        "riddleId": "fake-race-14",
+        "text": "What can fill a room but takes no space?",
+        "answerLength": 5,
+        "position": 13,
+        "evaluation": {
+          "answer": "light",
+          "locale": "en"
+        }
+      },
+      {
+        "hint": {
+          "index": 0,
+          "letter": "p"
+        },
+        "riddleId": "fake-race-15",
+        "text": "What has a ring but no finger?",
+        "answerLength": 5,
+        "position": 14,
+        "evaluation": {
+          "answer": "phone",
+          "locale": "en"
+        }
+      }
+    ]
+  },
+  "commands": [
+    {
+      "type": "game:resumeRace",
+      "requestId": "raceResume-b79dcc55-d20a-43ba-ac35-ccb78fce8b76",
+      "payload": {
+        "runId": "fake-run-1",
+        "includeEvaluation": true
+      }
+    },
+    {
+      "type": "game:submitRaceGuess",
+      "requestId": "raceGuess-73a5868e-318f-4ea6-b635-cfaa6a59b98d",
+      "payload": {
+        "runId": "fake-run-1",
+        "riddleId": "fake-race-1",
+        "guess": "wrong",
+        "includeEvaluation": true,
+        "requestId": "raceGuess-73a5868e-318f-4ea6-b635-cfaa6a59b98d"
+      }
+    },
+    {
+      "type": "game:resumeRace",
+      "requestId": "raceResume-bb7bc213-a90b-4503-b618-28ecfa9df527",
+      "payload": {
+        "runId": "fake-run-1",
+        "includeEvaluation": true
+      }
+    },
+    {
+      "type": "game:submitRaceGuess",
+      "requestId": "raceGuess-33238e89-6cd8-4e89-838a-e9854cacfe11",
+      "payload": {
+        "runId": "fake-run-1",
+        "riddleId": "fake-race-1",
+        "guess": "opian",
+        "includeEvaluation": true,
+        "requestId": "raceGuess-33238e89-6cd8-4e89-838a-e9854cacfe11"
+      }
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 1500ms exceeded.
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs:77:17 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

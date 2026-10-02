@@ -23,7 +23,7 @@
     "SKIP_MODAL_TITLE": "Пропустить уровень?",
     "SKIP_NOT_ENOUGH_COINS_MESSAGE": "У вас недостаточно монет, чтобы пропустить уровень.",
     "SPEND_COINS_ERROR_MESSAGE": "Не удалось потратить монеты. Пожалуйста, попробуйте еще раз.",
-    "SUBMIT_BUTTON": "ПРЕДСТАВЛЯТЬ НА РАССМОТРЕНИЕ",
+    "SUBMIT_BUTTON": "ОТПРАВИТЬ",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Не удалось отправить предположение. Повторите попытку.",
     "SUBMIT_GUESS_ERROR_TITLE": "Ошибка",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "Не удалось очистить локальные данные.",

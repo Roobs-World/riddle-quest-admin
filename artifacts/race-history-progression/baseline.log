@@ -1,0 +1,477 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionHistoryProgression
+FAIL src/play/race/__tests__/RaceSessionHistoryProgression.test.ts
+  ● rejects solved current-question history with evaluation=true
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  -   3
+    + Received  + 290
+
+      Object {
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    -   "raceGuesses": Array [],
+    -   "run": null,
+    +   "error": null,
+    +   "raceGuesses": Array [
+    +     Object {
+    +       "feedback": Array [
+    +         "green",
+    +         "green",
+    +         "green",
+    +         "green",
+    +         "green",
+    +       ],
+    +       "guess": Array [
+    +         "p",
+    +         "i",
+    +         "a",
+    +         "n",
+    +         "o",
+    +       ],
+    +     },
+    +   ],
+    +   "run": Object {
+    +     "adjustedElapsedMs": 0,
+    +     "categoryId": "mixed",
+    +     "challengeId": undefined,
+    +     "correctCount": 0,
+    +     "currentRiddle": Object {
+    +       "answerLength": 5,
+    +       "confirmedGuesses": Array [
+    +         Object {
+    +           "feedback": Array [
+    +             "green",
+    +             "green",
+    +             "green",
+    +             "green",
+    +             "green",
+    +           ],
+    +           "guess": Array [
+    +             "p",
+    +             "i",
+    +             "a",
+    +             "n",
+    +             "o",
+    +           ],
+    +         },
+    +       ],
+    +       "evaluation": Object {
+    +         "answer": "piano",
+    +         "locale": "en",
+    +       },
+    +       "guessesRemaining": 4,
+    +       "guessesUsed": 1,
+    +       "hintAvailable": true,
+    +       "position": 0,
+    +       "revealedLetters": Array [],
+    +       "riddleId": "fake-race-1",
+    +       "text": "What has keys but cannot open a door?",
+    +     },
+    +     "events": Array [],
+    +     "locale": "en",
+    +     "opponent": undefined,
+    +     "preloadedRiddles": Array [
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "piano",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "p",
+    +         },
+    +         "position": 0,
+    +         "riddleId": "fake-race-1",
+    +         "text": "What has keys but cannot open a door?",
+    +       },
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "clock",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "c",
+    +         },
+    +         "position": 1,
+    +         "riddleId": "fake-race-2",
+    +         "text": "What has hands and a face but no arms?",
+    +       },
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "towel",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "t",
+    +         },
+    +         "position": 2,
+    +         "riddleId": "fake-race-3",
+    +         "text": "What gets wetter while it dries?",
+    +       },
+    +       Object {
+    +         "answerLength": 6,
+    +         "evaluation": Object {
+    +           "answer": "bottle",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "b",
+    +         },
+    +         "position": 3,
+    +         "riddleId": "fake-race-4",
+    +         "text": "What has a neck but no head?",
+    +       },
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "stamp",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "s",
+    +         },
+    +         "position": 4,
+    +         "riddleId": "fake-race-5",
+    +         "text": "What can travel around the world while staying in a corner?",
+    +       },
+    +       Object {
+    +         "answerLength": 6,
+    +         "evaluation": Object {
+    +           "answer": "needle",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "n",
+    +         },
+    +         "position": 5,
+    +         "riddleId": "fake-race-6",
+    +         "text": "What has one eye but cannot see?",
+    +       },
+    +       Object {
+    +         "answerLength": 4,
+    +         "evaluation": Object {
+    +           "answer": "name",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "n",
+    +         },
+    +         "position": 6,
+    +         "riddleId": "fake-race-7",
+    +         "text": "What belongs to you but others use more?",
+    +       },
+    +       Object {
+    +         "answerLength": 4,
+    +         "evaluation": Object {
+    +           "answer": "comb",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "c",
+    +         },
+    +         "position": 7,
+    +         "riddleId": "fake-race-8",
+    +         "text": "What has many teeth but cannot bite?",
+    +       },
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "water",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "w",
+    +         },
+    +         "position": 8,
+    +         "riddleId": "fake-race-9",
+    +         "text": "What runs but never walks?",
+    +       },
+    +       Object {
+    +         "answerLength": 4,
+    +         "evaluation": Object {
+    +           "answer": "book",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "b",
+    +         },
+    +         "position": 9,
+    +         "riddleId": "fake-race-10",
+    +         "text": "What has words but never speaks?",
+    +       },
+    +       Object {
+    +         "answerLength": 3,
+    +         "evaluation": Object {
+    +           "answer": "age",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "a",
+    +         },
+    +         "position": 10,
+    +         "riddleId": "fake-race-11",
+    +         "text": "What goes up but never comes down?",
+    +       },
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "glove",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "g",
+    +         },
+    +         "position": 11,
+    +         "riddleId": "fake-race-12",
+    +         "text": "What has a thumb and four fingers but is not alive?",
+    +       },
+    +       Object {
+    +         "answerLength": 7,
+    +         "evaluation": Object {
+    +           "answer": "library",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "l",
+    +         },
+    +         "position": 12,
+    +         "riddleId": "fake-race-13",
+    +         "text": "What building has the most stories?",
+    +       },
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "light",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "l",
+    +         },
+    +         "position": 13,
+    +         "riddleId": "fake-race-14",
+    +         "text": "What can fill a room but takes no space?",
+    +       },
+    +       Object {
+    +         "answerLength": 5,
+    +         "evaluation": Object {
+    +           "answer": "phone",
+    +           "locale": "en",
+    +         },
+    +         "hint": Object {
+    +           "index": 0,
+    +           "letter": "p",
+    +         },
+    +         "position": 14,
+    +         "riddleId": "fake-race-15",
+    +         "text": "What has a ring but no finger?",
+    +       },
+    +     ],
+    +     "rivalryChallengeId": undefined,
+    +     "role": "creator",
+    +     "rules": Object {
+    +       "deckSize": 15,
+    +       "hintPenaltyMs": 15000,
+    +       "maxAdjustedTimeMs": 300000,
+    +       "maxGuessesPerRiddle": 5,
+    +       "maxHintsPerRiddle": 7,
+    +       "skipPenaltyMs": 45000,
+    +       "targetCorrect": 10,
+    +       "version": "race10_v1",
+    +     },
+    +     "runId": "fake-run-1",
+    +     "serverNowMs": 1790911338630,
+    +     "startsAtMs": 1790911338630,
+    +     "status": "active",
+    +     "totalPenaltyMs": 0,
+    +     "wallElapsedMs": 0,
+    +   },
+      }
+
+      11 |   /** No private prior history is required to recognize the impossible progression. */
+      12 |   const h = harness({}, run.runId);h.respond("raceResume", {run});
+    > 13 |   expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", run: null, raceGuesses: []});
+         |                                   ^
+      14 | });
+      15 |
+      16 | /** Wrong current-question history remains valid for both modern and answer-free contracts. */
+
+      at src/play/race/__tests__/RaceSessionHistoryProgression.test.ts:13:35
+
+  ● rejects solved current-question history with evaluation=false
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  -  3
+    + Received  + 74
+
+      Object {
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    -   "raceGuesses": Array [],
+    -   "run": null,
+    +   "error": null,
+    +   "raceGuesses": Array [
+    +     Object {
+    +       "feedback": Array [
+    +         "green",
+    +         "green",
+    +         "green",
+    +         "green",
+    +         "green",
+    +       ],
+    +       "guess": Array [
+    +         "p",
+    +         "i",
+    +         "a",
+    +         "n",
+    +         "o",
+    +       ],
+    +     },
+    +   ],
+    +   "run": Object {
+    +     "adjustedElapsedMs": 0,
+    +     "categoryId": "mixed",
+    +     "challengeId": undefined,
+    +     "correctCount": 0,
+    +     "currentRiddle": Object {
+    +       "answerLength": 5,
+    +       "confirmedGuesses": Array [
+    +         Object {
+    +           "feedback": Array [
+    +             "green",
+    +             "green",
+    +             "green",
+    +             "green",
+    +             "green",
+    +           ],
+    +           "guess": Array [
+    +             "p",
+    +             "i",
+    +             "a",
+    +             "n",
+    +             "o",
+    +           ],
+    +         },
+    +       ],
+    +       "guessesRemaining": 4,
+    +       "guessesUsed": 1,
+    +       "hintAvailable": true,
+    +       "position": 0,
+    +       "revealedLetters": Array [],
+    +       "riddleId": "fake-race-1",
+    +       "text": "What has keys but cannot open a door?",
+    +     },
+    +     "events": Array [],
+    +     "locale": "en",
+    +     "opponent": undefined,
+    +     "rivalryChallengeId": undefined,
+    +     "role": "creator",
+    +     "rules": Object {
+    +       "deckSize": 15,
+    +       "hintPenaltyMs": 15000,
+    +       "maxAdjustedTimeMs": 300000,
+    +       "maxGuessesPerRiddle": 5,
+    +       "maxHintsPerRiddle": 7,
+    +       "skipPenaltyMs": 45000,
+    +       "targetCorrect": 10,
+    +       "version": "race10_v1",
+    +     },
+    +     "runId": "fake-run-1",
+    +     "serverNowMs": 1790911338647,
+    +     "startsAtMs": 1790911338647,
+    +     "status": "active",
+    +     "totalPenaltyMs": 0,
+    +     "wallElapsedMs": 0,
+    +   },
+      }
+
+      11 |   /** No private prior history is required to recognize the impossible progression. */
+      12 |   const h = harness({}, run.runId);h.respond("raceResume", {run});
+    > 13 |   expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", run: null, raceGuesses: []});
+         |                                   ^
+      14 | });
+      15 |
+      16 | /** Wrong current-question history remains valid for both modern and answer-free contracts. */
+
+      at src/play/race/__tests__/RaceSessionHistoryProgression.test.ts:13:35
+
+  ● validates concurrent history before Hint confirmation, solved=true
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  -  5
+    + Received  + 22
+
+    @@ -4,15 +4,32 @@
+          "i",
+          "",
+          "",
+          "",
+        ],
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    -   "raceGuesses": Array [],
+    -   "requiresRunRefresh": true,
+    +   "error": null,
+    +   "raceGuesses": Array [
+    +     Object {
+    +       "feedback": Array [
+    +         "green",
+    +         "green",
+    +         "green",
+    +         "green",
+    +         "green",
+    +       ],
+    +       "guess": Array [
+    +         "z",
+    +         "z",
+    +         "z",
+    +         "z",
+    +         "z",
+    +       ],
+    +     },
+    +   ],
+    +   "requiresRunRefresh": false,
+        "run": Object {
+          "currentRiddle": Object {
+    -       "guessesUsed": 0,
+    +       "guessesUsed": 1,
+          },
+    -     "totalPenaltyMs": 0,
+    +     "totalPenaltyMs": 15000,
+        },
+      }
+
+      36 |   result.run.currentRiddle!.confirmedGuesses = [{guess: guess.feedback.map(cell => cell.letter), feedback: guess.feedback.map(cell => solved ? "green" : cell.status)}];
+      37 |   h.respond("raceHint", result);
+    > 38 |   if (solved) expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", requiresRunRefresh: true, currentLetters: ["p", "i", "", "", ""], raceGuesses: [], run: {totalPenaltyMs: 0, currentRiddle: {guessesUsed: 0}}});
+         |                                               ^
+      39 |   else expect(h.session.getSnapshot()).toMatchObject({error: null, run: {totalPenaltyMs: 15000, currentRiddle: {guessesUsed: 1}}});
+      40 |   expect(h.commands.filter(command => command.type === "game:requestRaceHint")).toHaveLength(1);
+      41 | });
+
+      at src/play/race/__tests__/RaceSessionHistoryProgression.test.ts:38:47
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 3 passed, 6 total
+Snapshots:   0 total
+Time:        0.26 s
+Ran all test suites matching RaceSessionHistoryProgression.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionHistoryProgression`
+Exit status 1

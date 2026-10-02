@@ -1,0 +1,1439 @@
+{
+  "objective": "continue to improve multiplayer until you cannot find ways to improve it further. concentrate on edge cases and reliability.",
+  "observedAt": "2026-10-02T04:27:40.656309+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "achieved": false,
+  "requirements": [
+    {
+      "requirement": "No identified remaining multiplayer reliability defect after edge-case review",
+      "status": "limited-review-only",
+      "evidence": "Reviewed receipt input binding, ownership, stored unique riddle identities, privacy-before-replay, accepted clock floors, per-attempt snapshot caches, canonical history retention and transaction settlement. No new defect identified in this turn; this is not proof of exhaustive correctness."
+    },
+    {
+      "requirement": "All named checks pass against one stable shared revision",
+      "status": "incomplete",
+      "evidence": "143 checks retained; no complete current-source guarded run. Two shared gates failed."
+    },
+    {
+      "requirement": "All multiplayer browser verifiers remain registered",
+      "status": "passed",
+      "evidence": "116 current verify/audit race browser scripts, all registered; 143 unique check IDs."
+    },
+    {
+      "requirement": "All isolated HTML5 target artifacts pass before handoff",
+      "status": "previous-scoped-pass-current-source-unproven",
+      "evidence": "Previous client batch built all seven isolated targets; concurrent source changes prevent treating prior artifacts as complete current workspace proof."
+    },
+    {
+      "requirement": "Dashboard automatically records verified completion",
+      "status": "incomplete",
+      "evidence": "complete-development-task.mjs requires every check plus unchanged HEAD and whole-workspace digest before writing receipt. No current receipt manufactured."
+    },
+    {
+      "requirement": "Let concurrent full-pathway audit finish and keep Jest unpublished",
+      "status": "observed-in-progress",
+      "evidence": "wait_threads confirmed 01a0ef3b-6f07-7b31-9444-3732ae46886e turn 01a0face-45e0-7be2-98da-ce767037d00a inProgress at cursor106; testing unpublished preview. No messaging, interruption or deployment in this turn."
+    }
+  ],
+  "reviewedSourceHashes": {
+    "firebase-functions/src/race/raceRunMutation.ts": "ed63fb59c036d0a3ce1c363b81e38376d7d3a3d68dd1f69e37de769cc98cb013",
+    "firebase-functions/src/race/raceTransactionReads.ts": "41e017cea1ee574bccaf9e4b431d7804b3ee46dd6d874c0e8d0d45f4081e17ed",
+    "firebase-functions/src/race/raceRequestBinding.ts": "d62e1814a89a61cfebaedb586db6cf1a845139e461fbb6a0ee07a3df092755f9",
+    "firebase-functions/src/race/raceSettlement.ts": "dd53d7af46ac7f43d1fddb5593b96e88ea791c736a02f07957821b14bf6fcb08",
+    "firebase-functions/src/race/raceStoredRecords.ts": "2ded99b92423be76ea07d51628e7191a34936f109cc40bf6f47766890426b2ff",
+    "firebase-functions/src/race/raceStoredTimeline.ts": "04267833c5d31311801c99c15c865d97bb591fd14a534624c4dc97180494c178",
+    "packages/portal/src/play/race/logic/raceConfirmedHistory.ts": "0004e7e9aa9101a86575b6e5ab7028681f76794afe9fc3465e22316db223bd96",
+    "packages/portal/src/play/race/logic/raceDraftStorage.ts": "80851b34ed26fa850a7bf60340385d7e74955468ae88b915c22dffdeb8451c5d",
+    "scripts/release/complete-development-task.mjs": "a4500c482ecc4b41798ab3d279280df5de0d4c310b6c7343417180f6d6b5f744"
+  },
+  "checks": [
+    {
+      "id": "node22-backend-build-and-operator-safeguards",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "run",
+        "pretest:race:coverage"
+      ],
+      "completionEvidenceStatus": "scoped-pass-before-comment-only-documentation",
+      "evidence": "artifacts/race-backend-completion-audit/final/node22-backend-build-and-operator-safeguards.log; comment-free TypeScript and emitted JavaScript unchanged in documented race tests."
+    },
+    {
+      "id": "node22-isolated-backend-race-coverage",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "firebase",
+        "emulators:exec",
+        "--config",
+        "firebase.race-verification.json",
+        "--only",
+        "firestore",
+        "--project",
+        "demo-riddle-quest-multiplayer",
+        "pnpm exec jest --config jest.race-coverage.config.js --runInBand"
+      ],
+      "completionEvidenceStatus": "scoped-pass-before-comment-only-documentation",
+      "evidence": "artifacts/race-backend-completion-audit/final/node22-isolated-backend-race-coverage.log; comment-free TypeScript and emitted JavaScript unchanged in documented race tests."
+    },
+    {
+      "id": "backend-types",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "check:types"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "client-race-recovery",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/play/race/__tests__"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "backend-lint",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "lint"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "isolated-platform-builds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "target-dependency-evidence",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "security",
+      "executable": "pnpm",
+      "args": [
+        "check:security"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "scalability",
+      "executable": "pnpm",
+      "args": [
+        "check:scalability"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "file-size-limits",
+      "executable": "pnpm",
+      "args": [
+        "check:file-sizes"
+      ],
+      "completionEvidenceStatus": "failed",
+      "evidence": "artifacts/race-backend-documentation-gate/file-sizes.log: authentication browser test 1222 equivalent lines, limit 1200."
+    },
+    {
+      "id": "documented-declarations",
+      "executable": "pnpm",
+      "args": [
+        "check:tsdoc"
+      ],
+      "completionEvidenceStatus": "failed",
+      "evidence": "artifacts/race-backend-documentation-gate/tsdoc-final.log: 69 missing declarations at observed snapshot."
+    },
+    {
+      "id": "full-core-tests",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/core",
+        "test",
+        "--runInBand"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-event-aggregate-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-event-aggregate-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "client-firebase-target-routing",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/__tests__/firebase.test.ts"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-rule-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-rule-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-checkpoint-isolation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-timeout-reload-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-timeout-recovery-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-first-resume-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-startup-recovery-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-private-outcome-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-outcome-isolation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-private-command-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-command-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-pending-answer-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-pending-input-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-known-answer-feedback-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-known-answer-reveals-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-answer-free-checkpoints-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-paid-draft-checkpoints-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "timeout-receipt-and-calibration-contracts",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "jest",
+        "--runInBand",
+        "--testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-provider-record-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-provider-record-deadline-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-responsive-hub-navigation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hub-navigation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "injected-provider-capability-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-capability-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-draft-reload-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-draft-reload-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "browser-player-state-deletion",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=playerPreferences.test.ts"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "complete-client-suite",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "abandoned-race-entry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-abandoned-entry-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "provider-confirmed-outcome-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-keyboard-activation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-keyboard-activation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-draft-cleanup-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-draft-cleanup-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-overlay-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-overlay-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-dialog-keyboard-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-quit-focus-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-quit-focus-containment-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-resume-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resume-selection-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-resume-read-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resume-read-observation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-search-journal-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-search-journal-observation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-analytics-delivery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-analytics-delivery-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-offline-delivery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-offline-delivery-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-profile-refresh-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-profile-refresh-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-prefetch-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-prefetch-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-rendered-entry-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-rendered-entry-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-provider-rendered-cache-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-dialog-adapter-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-dialog-adapter-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-prefetch-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-prefetch-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-profile-refresh-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-profile-refresh-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-dialog-adapter-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-dialog-adapter-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-session-browser-resource-ownership",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-session-resources-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-matchmaking-removal-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-discovery-provider-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-provider-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-discovery-storage-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-discovery-callback-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-callback-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-discovery-prompt-cancellation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-retired-search-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-retired-search-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-retirement-shared-journal-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-retirement-journal-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-visibility-retirement-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-visibility-retirement-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "invitation-callable-recovery-contracts",
+      "executable": "env",
+      "args": [
+        "GCLOUD_PROJECT=demo-riddle-quest-multiplayer",
+        "FIRESTORE_EMULATOR_HOST=127.0.0.1:18199",
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "jest",
+        "--runInBand",
+        "--testPathPatterns=raceCallables.test.ts"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-existing-attempt-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-existing-attempt-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-private-entry-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-private-entry-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-existing-opponent-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-existing-opponent-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-private-creator-acceptance-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-private-creator-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-entry-effect-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-entry-effect-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-waiting-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-waiting-selection-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-cancellation-receipt-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-start-selection-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-selection-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-provider-start-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-start-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-start-category-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-category-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-entry-run-handoff-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-start-origin-context-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-origin-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-start-opponent-presence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-opponent-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "authentication-harness-retained-paths",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "exec",
+        "jest",
+        "--config",
+        "jest.config.cjs",
+        "--runInBand",
+        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "--testNamePattern=reopens a completed recipient|opens a public creator|consumes an unavailable challenge|refreshes subscription changes|starts a guest through signed"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-creator-opponent-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-creator-opponent-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-hint-reveal-evidence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-safety-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-safety-selection-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-countdown-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-countdown-clock-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-discovery-retry-policy-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-resolver-failure-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resolver-failure-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-cold-search-retirement-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-cold-search-catalog-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-catalog-retry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-catalog-retry-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-resolver-reentry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resolver-reentry-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-provider-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-observation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-authority-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-authority-observation-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-timer-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-timer-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-loader-tail-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-delivery-expiry-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-start-receipt-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-recovery-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-recovery-clock-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-reset-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-reset-clock-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-authority-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-authority-clock-ownership-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-restored-attempt-rows-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-projected-attempt-rows-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-integration-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-integration-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-reddit-history-opt-in-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-keyboard-feedback-strength-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-time-rollover-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-time-rollover-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-harness-feedback-parity-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-harness-delayed-receipts-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-continuity-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/audit-race-history-continuity-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-confirmed-history-ledger-unit",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=raceConfirmedHistory"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-confirmed-history-ledger-bounds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=raceConfirmedHistory",
+        "--testNamePattern=equivalent confirmed rows|invalid attempt count"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-integration-prototype-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-owned-authority-session-regressions",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=RaceSession|raceAuthority|raceReset|raceRecoveryClock|raceStartReceipt"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-prototype-retained-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-checkpoint-runtime-unit",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=RaceSessionHistoryCheckpoints"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-hint-concurrent-history-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-guess-concurrent-history-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-confirmed-guess-retention-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-sparse-history-refresh-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-normalization-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-normalization-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-progression-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-progression-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-attempt-budget-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-attempt-budget-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-cleanup-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cleanup-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-clock-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-clock-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-dispatch-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-dispatch-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-event-history-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-event-history-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-fallback-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-fallback-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-guess-evidence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-guess-evidence-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-guess-feedback-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-guess-feedback-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-hints-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hints-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-live-progress-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-live-progress-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-loader-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-loader-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-locale-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-locale-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-paid-evidence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-paid-evidence-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-private-snapshot-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-private-snapshot-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-readiness-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-readiness-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-reentry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-reentry-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-storage-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-storage-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-tick-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-tick-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-unscored-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-unscored-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "retained-race-wrong-attempt-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-wrong-attempt-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-scoring-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-scoring-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-graphemes-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-graphemes-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    },
+    {
+      "id": "race-history-whitespace-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-whitespace-browser.mjs"
+      ],
+      "completionEvidenceStatus": "not-proven-for-current-whole-workspace",
+      "evidence": "No complete guarded verification has passed for the present shared source state."
+    }
+  ],
+  "nextAction": "Revalidate live pathway audit and shared gates; run full stable-source guarded verification only after gates permit it. Continue independent reliability fixes if a concrete defect is identified."
+}

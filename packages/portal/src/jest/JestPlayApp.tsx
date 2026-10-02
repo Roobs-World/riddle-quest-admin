@@ -23,7 +23,7 @@ import type {NotificationCopy} from "./notifications/copy";
 import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
-import {trackScreen} from "../analytics/events";
+import {configurePlatformAnalytics, trackScreen} from "../analytics/events";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
@@ -223,10 +223,11 @@ export function JestPlayApp() {
     () => ({
       products: jestProducts,
       refresh: refreshProducts,
-      cancel: async (sku: string): Promise<"success" | "cancelled" | "error"> => {
+      cancel: async (sku: string): Promise<"success" | "cancelled" | "unavailable" | "error"> => {
         /** Waits for the provider cancellation confirmation. */
         const result = await withPlatformActivity(() => platform.cancelSubscription(sku));
         await refreshProducts();
+        if (result.status === "unavailable" && result.message === "not_active") return "unavailable";
         return result.status === "success" || result.status === "cancelled" ? result.status : "error";
       },
     }),
@@ -292,6 +293,8 @@ export function JestPlayApp() {
   useEffect(() => {
     /** Provides active behavior. */
     let active = true;
+    /** Disconnects this startup's native analytics when the session retires. */
+    let stopAnalytics: (() => void) | undefined;
     playerStateWrites.disable();
     /** Provides deletion recovery behavior. */
     void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup, {
@@ -365,6 +368,10 @@ export function JestPlayApp() {
               },
             };
           }
+          if (!active || !notificationOperationGate.isOpen()) return;
+          stopAnalytics = configurePlatformAnalytics((name, params) => {
+            if (active && notificationOperationGate.isOpen()) platform.captureEvent(name, params);
+          });
           await commitJestStartupSession({
             gate: notificationOperationGate,
             isActive: () => active,
@@ -388,6 +395,7 @@ export function JestPlayApp() {
     });
     return () => {
       active = false;
+      stopAnalytics?.();
       playerStateWrites.disable();
       stopJestLoadingHeartbeat(platform);
     };

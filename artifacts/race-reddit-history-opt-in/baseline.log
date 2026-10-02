@@ -1,0 +1,49 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RedditRaceHistory
+FAIL src/reddit/__tests__/RedditRaceHistory.test.ts
+  ● negotiates confirmed race guesses through Reddit, history=false
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "/api/game/race.resume", ObjectContaining {"body": "{\"runId\":\"fake-run-1\",\"includeEvaluation\":true,\"includeGuessHistory\":true}"}
+    Received: "/api/game/race.resume", {"body": "{\"runId\":\"fake-run-1\",\"includeEvaluation\":true}", "headers": {"content-type": "application/json"}, "method": "POST"}
+
+    Number of calls: 1
+
+      24 |   const services = createRedditHostServices();
+      25 |   await expect(services.resumeRace!(run.runId)).resolves.toEqual({run});
+    > 26 |   expect(global.fetch).toHaveBeenCalledWith("/api/game/race.resume", expect.objectContaining({
+         |                        ^
+      27 |     body: JSON.stringify({runId: run.runId, includeEvaluation: true, includeGuessHistory: true}),
+      28 |   }));
+      29 | });
+
+      at src/reddit/__tests__/RedditRaceHistory.test.ts:26:24
+
+  ● negotiates confirmed race guesses through Reddit, history=true
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "/api/game/race.resume", ObjectContaining {"body": "{\"runId\":\"fake-run-1\",\"includeEvaluation\":true,\"includeGuessHistory\":true}"}
+    Received: "/api/game/race.resume", {"body": "{\"runId\":\"fake-run-1\",\"includeEvaluation\":true}", "headers": {"content-type": "application/json"}, "method": "POST"}
+
+    Number of calls: 1
+
+      24 |   const services = createRedditHostServices();
+      25 |   await expect(services.resumeRace!(run.runId)).resolves.toEqual({run});
+    > 26 |   expect(global.fetch).toHaveBeenCalledWith("/api/game/race.resume", expect.objectContaining({
+         |                        ^
+      27 |     body: JSON.stringify({runId: run.runId, includeEvaluation: true, includeGuessHistory: true}),
+      28 |   }));
+      29 | });
+
+      at src/reddit/__tests__/RedditRaceHistory.test.ts:26:24
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.229 s
+Ran all test suites matching RedditRaceHistory.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RedditRaceHistory`
+Exit status 1

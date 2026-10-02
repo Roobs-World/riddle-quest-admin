@@ -199,6 +199,13 @@ export interface FacebookInstantTournaments {
 
 /** Defines the contract for facebook instant sdk. */
 export interface FacebookInstantSdk {
+  /** Sends native Meta events; a returned error means the event was rejected. */
+  logEvent?(name: string, valueToSum: number | null, parameters: Record<string, string>): {
+    /** Stable provider failure category. */
+    code: string;
+    /** Provider failure description, never forwarded to event parameters. */
+    message: string;
+  } | null;
   /** Reads the current native tournament without opening a dialog. */
   getTournamentAsync?(): Promise<FacebookInstantTournament>;
   /** Optional native tournament APIs advertised by this host. */

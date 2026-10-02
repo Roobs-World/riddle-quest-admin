@@ -48,6 +48,8 @@ export type HostRiddleLifecycle = Readonly<{
   gameMode: WebGameMode;
   /** Whether at least one riddle has loaded in the current host lifetime. */
   startupComplete: boolean;
+  /** Whether a failed load has exposed recovery controls before the first riddle. */
+  startupUnavailable: boolean;
   /** Loads and delivers a riddle, preserving optional request correlation. */
   loadRiddle: (
     input: {
@@ -84,6 +86,8 @@ export function useHostRiddleLifecycle({
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode);
   /** Whether the first riddle has loaded. */
   const [startupComplete, setStartupComplete] = useState(false);
+  /** Keeps failed startup distinct from readiness and automatic Classic routing. */
+  const [startupUnavailable, setStartupUnavailable] = useState(false);
   /** Whether the current context already has a playable riddle. */
   const loadedRef = useRef(false);
   /** Shared uncorrelated automatic load, when present. */
@@ -144,6 +148,7 @@ export function useHostRiddleLifecycle({
           });
           setNotice(configurationWarning);
           setStartupComplete(true);
+          setStartupUnavailable(false);
           onPlayable?.();
           return true;
         } catch (error) {
@@ -172,6 +177,7 @@ export function useHostRiddleLifecycle({
               loadedRef.current = true;
               postToGame({type: "host:riddleLoaded", payload: {riddle, profile}});
               setStartupComplete(true);
+              setStartupUnavailable(false);
               // Completion is an expected launch decision, not a failure notice.
               setNotice(configurationWarning);
               trackEvent("level_start", {game_mode: riddle.gameMode,
@@ -185,6 +191,7 @@ export function useHostRiddleLifecycle({
               setNotice(getHostErrorMessage(fallbackError));
             }
           }
+          setStartupUnavailable(true);
           onStartupUnavailable?.();
           scheduleRecoveryRef.current();
           return false;
@@ -242,5 +249,5 @@ export function useHostRiddleLifecycle({
     };
   }, [locale, onRecoveryAttempt, userId]);
 
-  return {gameMode, startupComplete, loadRiddle};
+  return {gameMode, startupComplete, startupUnavailable, loadRiddle};
 }

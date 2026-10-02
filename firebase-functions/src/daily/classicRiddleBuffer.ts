@@ -1,6 +1,6 @@
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
-import {ClassicRiddleBufferResponseSchema} from "../validation/requestSchemas";
+import {ClassicRiddleBufferResponseSchema} from "@qwordly/core/validation/requestSchemas";
 import {getUser} from "../gameplay/firestoreService";
 import {getPlayableClassicRiddle} from "../gameplay/classicRiddleFallback";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
@@ -16,8 +16,12 @@ export const getClassicRiddleBuffer = onCallWithSentry(
   browserCallableSecurityOptions,
   async (request: CallableRequest<{
     /** Requested content locale. */ locale?: string;
+    /** Opts in to authoritative purchased hint recovery. */ includeHintRecovery?: boolean;
+    /** Opts in to authoritative accepted guess recovery. */ includeGuessRecovery?: boolean;
   }>) => {
     if (!request.auth) throw new HttpsError("unauthenticated", "Authentication is required.");
+    /** Authenticated account owns every prepared session in this buffer. */
+    const userId = request.auth.uid;
     if (request.data?.locale !== undefined && !SUPPORTED_LOCALES.includes(request.data.locale as (typeof SUPPORTED_LOCALES)[number])) {
       throw new HttpsError("invalid-argument", "A supported locale is required.");
     }
@@ -29,7 +33,7 @@ export const getClassicRiddleBuffer = onCallWithSentry(
       data: {...request.data, includeEvaluation: true},
     } as never);
     /** The user used by the authoritative operation. */
-    const user = await getUser(request.auth.uid);
+    const user = await getUser(userId);
     if (!user) throw new HttpsError("not-found", "User data not found.");
     /** The confirmed classic index used by the authoritative operation. */
     const confirmedClassicIndex = user.progress?.classicIndex ?? 1;
@@ -49,20 +53,35 @@ export const getClassicRiddleBuffer = onCallWithSentry(
     const currentQuestion = current.challenge?.questions[0];
     if (currentQuestion) {
       /** The state used by the authoritative operation. */
-      const state = await getIssuedAuthoritativeSession(request.auth.uid, currentQuestion.sessionToken, "classic", currentQuestion.riddleId);
+      const state = await getIssuedAuthoritativeSession(userId, currentQuestion.sessionToken, "classic", currentQuestion.riddleId);
       riddles.push({classicIndex: confirmedClassicIndex, expiresAtMs: state.expiresAt.toMillis(), question: currentQuestion});
     }
+    // Stop at the first catalog gap before issuing any later entitlement.
+    /** Contiguous playable successors stop at the first catalog gap. */
+    const upcoming: Array<{
+      /** Canonical catalog position binds the prepared session entitlement. */
+      classicIndex: number;
+      /** Localized authored content selected for this canonical catalog position. */
+      playable: NonNullable<Awaited<ReturnType<typeof getPlayableClassicRiddle>>>;
+    }> = [];
     for (let offset = 1; offset <= 3 && currentQuestion; offset += 1) {
-      /** The classic index used by the authoritative operation. */
+      /** Canonical catalog position binds the prepared session entitlement. */
       const classicIndex = confirmedClassicIndex + offset;
-      /** The playable used by the authoritative operation. */
+      /** Localized authored content selected for this canonical catalog position. */
       const playable = await getPlayableClassicRiddle(classicIndex, locale);
       if (!playable) break;
-      /** The destructured result used by the authoritative operation. */
+      upcoming.push({classicIndex, playable});
+    }
+    // Each canonical content key owns its binding/session transaction. Preparing
+    // at most three independent sessions together avoids serial database trips.
+    // Promise.all preserves catalog order even when later sessions finish first.
+    /** Prepared successor sessions retain canonical catalog order. */
+    const futureRiddles = await Promise.all(upcoming.map(async ({classicIndex, playable}) => {
+      /** Extracts the fixture or authority fields required by this transition. */
       const {riddle, contentLocale} = playable;
-      /** The token used by the authoritative operation. */
+      /** Issued session token authorizes recovery and later server mutations. */
       const token = await ensureAuthoritativeSession(
-        request.auth.uid,
+        userId,
         "classic",
         riddle.riddleId,
         contentLocale,
@@ -71,12 +90,13 @@ export const getClassicRiddleBuffer = onCallWithSentry(
         riddle.answer,
         {classicIndex},
       );
-      /** The state used by the authoritative operation. */
-      const state = await getIssuedAuthoritativeSession(request.auth.uid, token, "classic", riddle.riddleId);
-      /** The question used by the authoritative operation. */
-      const question = buildSinglePlayerChallengeResponse(riddle, undefined, token, state, true).questions[0];
-      riddles.push({classicIndex, expiresAtMs: state.expiresAt.toMillis(), question});
-    }
+      /** Authoritative or observed state used to verify the current transition. */
+      const state = await getIssuedAuthoritativeSession(userId, token, "classic", riddle.riddleId);
+      /** Public question carries the issued session and negotiated recovery fields. */
+      const question = buildSinglePlayerChallengeResponse(riddle, undefined, token, state, true, request.data?.includeHintRecovery === true, request.data?.includeGuessRecovery === true).questions[0];
+      return {classicIndex, expiresAtMs: state.expiresAt.toMillis(), question};
+    }));
+    riddles.push(...futureRiddles);
     return ClassicRiddleBufferResponseSchema.parse({confirmedClassicIndex, riddles});
   },
 );

@@ -18,6 +18,7 @@
     "PACK_DESCRIPTION": "Bakiyenize {coins} jeton ekleyin.",
     "BADGE_STARTER": "BAŞLANGIÇ",
     "BADGE_POPULAR": "POPÜLER",
-    "BADGE_BEST_VALUE": "EN İYİ FİYAT"
+    "BADGE_BEST_VALUE": "EN İYİ FİYAT",
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Bu abonelik için iptal işlemi kullanılamıyor."
   }
 }

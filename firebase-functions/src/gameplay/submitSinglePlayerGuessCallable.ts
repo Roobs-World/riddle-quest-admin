@@ -4,7 +4,7 @@ import {
   SubmitSinglePlayerGuessResponseDataSchema,
   type SubmitSinglePlayerGuessRequestData,
   type SubmitSinglePlayerGuessResponseData,
-} from "../validation/requestSchemas";
+} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";

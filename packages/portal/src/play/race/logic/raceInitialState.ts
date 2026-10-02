@@ -28,3 +28,22 @@ export const initialRaceSessionState = (entry: RaceSessionEntry, now: number): R
       quitConfirmationOpen: false, publishRequested: false, published: null, findingOpponent: false,
       matchSearchStatus: "idle", matchFailure: null, matchRetryReady: true};
 };
+
+/** Publishes a fresh snapshot only while clock and reset observers retain its journey. */
+export const resetOwnedRaceState = (
+  entry: RaceSessionEntry,
+  now: () => number,
+  current: () => boolean,
+  publish: (state: RaceSessionState) => void,
+  retained?: Pick<RaceSessionState, "categories" | "inboxItems">,
+): boolean => {
+  if (!current()) return false;
+  /** Capture reset time before any new snapshot can reach observers. */
+  const receivedAt = now();
+  if (!current()) return false;
+  /** Retained catalog and Activity lists belong only to the originating reset. */
+  const state = {...initialRaceSessionState(entry, receivedAt), ...retained};
+  if (!current()) return false;
+  publish(state);
+  return current();
+};

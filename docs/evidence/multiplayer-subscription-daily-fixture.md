@@ -1,0 +1,9 @@
+# Multiplayer guarded verification and subscription fixture
+
+The complete 145-check runner executed the first 79 requirements successfully, then failed check 80 (`authentication-harness-retained-paths`). Its subscription case expected the Daily clue and Daily header but opened the harness without a mode. The default harness represents a completed Daily and correctly routes into Classic. This mismatch predates this fix; no dashboard receipt was recorded. The complete failure output is retained in `artifacts/race-full-guarded-verification/run.log`.
+
+The subscription fixture now explicitly requests `gameMode: "challenge"`. Its existing clue, Daily header, plan activation, hidden purchase buttons, dismissed and failed cancellation, successful renewal cancellation and continuing Premium assertions are unchanged. The exact previously failing required command now passes all five selected cases (67 skipped). Documentation and file-size gates also pass. No product code, UI, translations, subscriptions or provider state are changed by this fixture correction.
+
+An independent full portal unit run during the guarded verification passed 2,042 tests across 253 suites, with 107 optional/browser tests and fourteen suites skipped. The guarded runner passed backend build/coverage/types/lint, multiplayer unit recovery, isolated builds, core tests and early browser requirements before reaching check 80. Because the run stopped early, it never reached final whole-workspace source stability validation; those earlier passes cannot establish guarded completion. The remaining 65 requirements are not claimed passed by that run.
+
+The new manifest preserves all 145 checks unchanged. A fresh complete guarded run is required after this correction before recording the automatic dashboard receipt. No deployment, upload, activation, publication, commit or push occurs. Jest remains unpublished and the multiplayer reliability goal remains active.

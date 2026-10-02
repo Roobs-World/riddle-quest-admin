@@ -1,0 +1,11 @@
+# Multiplayer authentication harness extraction
+
+The concurrent full-pathway chat is now idle, blocked on external phone, checkout and clock checks. Its evidence is untouched. The shared authentication test exceeded its 1,200 equivalent-line limit. Extracting `openAuthenticationHarness` into a dedicated support module resolves the size gate without raising limits, removing tests or compressing implementation.
+
+The original harness body and extracted body are identical under TypeScript AST printing. The entire suite, including every test assertion, is byte-identical after extraction. The sole dependency change passes the suite-owned server URL explicitly instead of capturing it from the test module. Optional authority fixtures, invitation state, page-error capture and SDK routes remain intact.
+
+The shared file-size audit and portal types pass. All seven configured isolated target builds pass: Jest, Facebook, Reddit, YouTube, Netflix, Yahoo and GameSnacks. Their configured artifact and boundary checks run successfully. Six injected Chromium cases pass: guest signed identity, creator waiting/cancellation, waiting-pointer reload, completed recipient result without another start, public creator Activity routing and unavailable invitation consumption. The browser run reports six passed and 66 skipped; this is scoped verification, not a full suite pass.
+
+An additional unavailable-Daily case fails waiting for its expected loader text. Running the saved original pre-extraction suite independently reproduces the same selector timeout (one failed and 71 skipped). The extraction does not cause that failure. Initial, baseline and final logs remain retained, and the scenario is an unresolved gate rather than a removed assertion or claimed pass. Documentation also remains incomplete in the shared workspace.
+
+The new 144-check manifest retains all 143 prior checks and adds the exact successful extraction browser command. Full guarded verification and the automatic dashboard receipt remain pending. No product code, UI or translations are changed. No deployment, upload, activation, publication, commit or push is performed. Jest remains unpublished. The multiplayer reliability goal remains active.

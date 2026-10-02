@@ -1,0 +1,67 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=raceResetClockOwnership
+FAIL src/play/race/__tests__/raceResetClockOwnership.test.ts
+  ● preserves replacement state during entry reset clock
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   "activeChallengeId": "replacement",
+    +   "activeChallengeId": undefined,
+        "categories": Array [],
+        "error": null,
+    -   "pending": "raceEntry",
+    -   "stage": "challenge",
+    +   "pending": null,
+    +   "stage": "categories",
+      }
+
+      30 |   else {
+      31 |     expect(commands.at(-1)?.type).toBe("game:getRaceEntry");
+    > 32 |     expect(session.getSnapshot()).toMatchObject({stage: "challenge", activeChallengeId: "replacement", pending: "raceEntry", categories: [], error: null});
+         |                                   ^
+      33 |     /** Replacement response must reconcile with the still-intact challenge presentation. */
+      34 |     const entry = commands.at(-1)!;
+      35 |     session.receive({type: "host:operationResult", requestId: entry.requestId, payload: {operation: "raceEntry", ok: true,
+
+      at src/play/race/__tests__/raceResetClockOwnership.test.ts:32:35
+
+  ● preserves replacement state during rematch reset clock
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   "activeChallengeId": "replacement",
+    +   "activeChallengeId": undefined,
+        "categories": Array [],
+        "error": null,
+    -   "pending": "raceEntry",
+    -   "stage": "challenge",
+    +   "pending": null,
+    +   "stage": "categories",
+      }
+
+      30 |   else {
+      31 |     expect(commands.at(-1)?.type).toBe("game:getRaceEntry");
+    > 32 |     expect(session.getSnapshot()).toMatchObject({stage: "challenge", activeChallengeId: "replacement", pending: "raceEntry", categories: [], error: null});
+         |                                   ^
+      33 |     /** Replacement response must reconcile with the still-intact challenge presentation. */
+      34 |     const entry = commands.at(-1)!;
+      35 |     session.receive({type: "host:operationResult", requestId: entry.requestId, payload: {operation: "raceEntry", ok: true,
+
+      at src/play/race/__tests__/raceResetClockOwnership.test.ts:32:35
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 1 passed, 3 total
+Snapshots:   0 total
+Time:        0.276 s, estimated 1 s
+Ran all test suites matching raceResetClockOwnership.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=raceResetClockOwnership`
+Exit status 1

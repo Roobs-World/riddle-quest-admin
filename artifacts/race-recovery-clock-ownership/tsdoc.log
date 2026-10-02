@@ -1,0 +1,18 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 15 production declarations are undocumented.
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:6 dependencies
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:6 value
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:13 index
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:17 index
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:18 previous
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:24 index
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:25 previous
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:39 state
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:51 stateRef
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:52 save
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:53 dispatch
+- packages/portal/src/play/__tests__/confirmedGuessPersistence.test.ts:54 render
+- packages/portal/src/play/__tests__/fakeServices.test.ts:140 services
+- packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts:860 cell
+- packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts:861 cellBounds
+[ELIFECYCLE] Command failed with exit code 1.

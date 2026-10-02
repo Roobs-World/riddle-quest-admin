@@ -18,6 +18,7 @@
     "PACK_DESCRIPTION": "残高に{coins}コインを追加します。",
     "BADGE_STARTER": "スターター",
     "BADGE_POPULAR": "人気",
-    "BADGE_BEST_VALUE": "最もお得"
+    "BADGE_BEST_VALUE": "最もお得",
+    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "このサブスクリプションは解約できません。"
   }
 }

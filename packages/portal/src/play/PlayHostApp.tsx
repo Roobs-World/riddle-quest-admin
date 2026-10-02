@@ -10,7 +10,7 @@ import type {CompletionResult, WebGameMode} from "./types";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlayerData} from "../platform/types";
-import {getHostNoticeMessage, type HostOperationName} from "./hostMessageHandlers";
+import {createHostedPlayCommandModule, getHostNoticeMessage, type HostOperationName} from "./hostMessageHandlers";
 import {safeBrowserStorageGet} from "./playerPreferences";
 import {ReferralSharingProvider} from "./sharing/ReferralSharingCapability";
 import {useHostOperations} from "./useHostOperations";
@@ -18,7 +18,6 @@ import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
 import {useHostRaceCoordination} from "./useHostRaceCoordination";
 import {useHostAuthSession} from "./useHostAuthSession";
 import {useHostBridgeLifecycle} from "./useHostBridgeLifecycle";
-import {createHostedPlayCommandModule} from "./HostedPlayCommandModule";
 import type {HostedPlaySession} from "./HostedPlaySession";
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -203,6 +202,7 @@ export function PlayHostApp({
   const {
     gameMode,
     startupComplete,
+    startupUnavailable,
     loadRiddle: loadAndPostRiddle,
   } = useHostRiddleLifecycle({
     userId: authSnapshot.user?.uid,
@@ -226,7 +226,7 @@ export function PlayHostApp({
     return () => window.clearTimeout(timer);
   }, [notice, configurationWarning, startupComplete]);
   /** Whether startup, server work, or the target lifecycle blocks interaction. */
-  const serverInteractionActive = serverActivityActive || externalInteractionBlocked || !startupComplete;
+  const serverInteractionActive = serverActivityActive || externalInteractionBlocked || (!startupComplete && !startupUnavailable);
   /** Sends the complete current host state to the game. */
   const sendInit = useCallback(() => {
     postToGame({
@@ -307,24 +307,29 @@ export function PlayHostApp({
   const commands = useMemo(
     () =>
       createHostedPlayCommandModule({
-        session: {authSnapshot, gameMode, locale, loadedUserIdRef, playableReportedRef, accountDeletionCompletedRef},
-        delivery: {setFrameReady, setNotice, sendInit, loadAndPostRiddle, postOperation},
-        execution: {
-          authority,
-          runRaceOperation,
-          withServerActivity,
-          applyPurchaseBalance,
-          syncRaceAchievementProgress,
-          persistAchievementProjection,
-        },
-        callbacks: {
-          onPlayable,
-          onAuthoritativeGuessWin,
-          onAuthoritativeComplete: handleAuthoritativeComplete,
-          onAuthoritativeRaceResult: handleAuthoritativeRaceResult,
-          onAccountDeleted,
-          onAccountDeletionRequested,
-        },
+        authSnapshot,
+        gameMode,
+        locale,
+        loadedUserIdRef,
+        playableReportedRef,
+        accountDeletionCompletedRef,
+        setFrameReady,
+        setNotice,
+        sendInit,
+        loadAndPostRiddle,
+        postOperation,
+        authority,
+        runRaceOperation,
+        withServerActivity,
+        applyPurchaseBalance,
+        syncRaceAchievementProgress,
+        persistAchievementProjection,
+        onPlayable,
+        onAuthoritativeGuessWin,
+        onAuthoritativeComplete: handleAuthoritativeComplete,
+        onAuthoritativeRaceResult: handleAuthoritativeRaceResult,
+        onAccountDeleted,
+        onAccountDeletionRequested,
       }),
     [
       applyPurchaseBalance,
@@ -385,6 +390,7 @@ export function PlayHostApp({
         <GameFrameApp
           raceOwnerId={authSnapshot.user?.uid}
           localBridge
+          startupError={startupUnavailable && !startupComplete && notice ? getHostNoticeMessage(notice) : undefined}
           interactionBlocked={serverInteractionActive}
           restoredGame={initialPlayerData?.activeGame}
           onSaveGame={saveActiveGame}
@@ -406,7 +412,7 @@ export function PlayHostApp({
           raceLocalePolicy={raceLocalePolicy}
           onPresenceStateChange={onPresenceStateChange}
         />
-        {!startupComplete ? (
+        {!startupComplete && !startupUnavailable ? (
           <SpinningWheelLoader
             overlay
             message={notice ? getHostNoticeMessage(notice) : tr("WebPortal.STARTUP_GAME")}

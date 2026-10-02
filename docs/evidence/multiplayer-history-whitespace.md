@@ -1,0 +1,11 @@
+# Multiplayer canonical history whitespace
+
+The server segments `inputData.guess.trim()` and appends that trimmed word to `guessHistory`; the local authority adapter also trims submissions. Restored canonical rows therefore cannot contain outer whitespace cells. Previously coherent two-slot rows containing leading/trailing ASCII or nonbreaking spaces, or only whitespace, passed structural and color validation. Word reconstruction now applies the same trim operation before validating exact grapheme-cell boundaries. Internal whitespace remains untouched.
+
+Ten public-session regressions failed before the fix, with two internal-space controls passing. Twelve scenarios cover five invalid outer-whitespace patterns with evaluation present or absent, plus valid interior spaces. Rejected rows never become owned history. A corrected later Resume succeeds without issuing a Guess. Thirty-eight focused trim, grapheme, scoring, normalization and checkpoint tests pass.
+
+Twenty-four actual React desktop/mobile cases cover invalid history rejection, canonical recovery, exact restored red cells, valid interior spaces, no local Guess and no page errors. All seventeen selected retained history-related verifier commands also pass, with 236 retained case executions including intentional prototype repetitions, for 260 case executions total. The complete browser inventory was not rerun for this scoped trim change.
+
+The full client suite passes 2,028 tests across 253 suites, with 106 optional/browser tests and fourteen suites skipped. Portal types pass. All seven configured isolated builds and artifact audits pass: Jest, Facebook, Reddit, YouTube, Netflix, Yahoo and GameSnacks. Logs and retained case counts remain under `artifacts/race-history-whitespace/`.
+
+The 143-check manifest preserves all earlier requirements and includes all 116 current multiplayer browser scripts. Repository documentation still reports 77 missing declarations outside this change, and the authentication browser test remains over its size limit. The user asked us to let the full-pathway audit finish; its active files and evidence remain untouched. Full guarded completion and the dashboard receipt remain pending. No backend changes, deployment, upload, activation, Jest publication, commit or push occurs. The multiplayer reliability goal remains active.

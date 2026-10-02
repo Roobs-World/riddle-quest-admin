@@ -142,3 +142,23 @@ describe("pending guess journal", () => {
     expect(acquirePendingPlayLease(scope, "tab-a", 16_003)).toBe(true);
   });
 });
+
+it("retains draft selections in the current and successor checkpoints", () => {
+  /** In-flight operation remains observable until its controlled settlement. */
+  const pending = journal();
+  pending.draft = ["P", "I", "", "", ""];
+  pending.draftActiveSlotIndex = 2;
+  pending.successors = [{riddle: pending.riddle, base: pending.base, draft: pending.draft, draftActiveSlotIndex: 1}];
+  expect(writePendingGuessJournal(pending)).toBe(true);
+  expect(readPendingGuessJournal(scope)).toMatchObject({draftActiveSlotIndex: 2, successors: [{draftActiveSlotIndex: 1}]});
+});
+
+it.each([-1, 5, 1.5, "2"])("rejects malformed persisted draft selection %p", (slot) => {
+  /** In-flight operation remains observable until its controlled settlement. */
+  const pending = journal();
+  values.set(`riddleQuest:pendingPlay:v1:${scope}`, JSON.stringify({...pending, draftActiveSlotIndex: slot}));
+  expect(readPendingGuessJournal(scope)).toBeNull();
+  values.set(`riddleQuest:pendingPlay:v1:${scope}`, JSON.stringify({...pending,
+    successors: [{riddle: pending.riddle, base: pending.base, draft: [], draftActiveSlotIndex: slot}]}));
+  expect(readPendingGuessJournal(scope)).toBeNull();
+});

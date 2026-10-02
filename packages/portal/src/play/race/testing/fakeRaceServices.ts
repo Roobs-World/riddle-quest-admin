@@ -9,6 +9,7 @@ import {
   type RaceOutcome,
   type RaceRunView,
 } from "@qwordly/core/race";
+import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
 import type {HostServices} from "../../types";
 import {readBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 
@@ -455,6 +456,9 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides delay ms behavior. */
       const delayMs = getRaceGuessDelayMs();
       if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+      /** A concurrent delivery may have committed this receipt while transport was delayed. */
+      const committed = run.responses.get(input.requestId);
+      if (committed) return committed as Awaited<ReturnType<RaceMethods["submitRaceGuess"]>>;
       requireActiveQuestion(run, input.riddleId);
       /** Current view after deliberate network latency. */
       const delayedView = syncView(run);
@@ -468,11 +472,13 @@ export const createFakeRaceServices = (): RaceMethods => {
       if (run.view.currentRiddle?.riddleId !== input.riddleId) throw new Error("That riddle is no longer active.");
       /** Provides answer behavior. */
       const answer = run.answers[run.view.currentRiddle.position];
-      if (input.guess.length !== answer.length)
+      /** Authority trims transport whitespace before validating and scoring the answer slots. */
+      const guess = input.guess.trim();
+      if (splitGraphemes(guess, run.view.locale).length !== splitGraphemes(answer, run.view.locale).length)
         throw new Error(`Guess must contain exactly ${answer.length} characters.`);
       run.guessesUsed += 1;
       /** Indicates whether is correct. */
-      const isCorrect = input.guess.toLocaleLowerCase() === answer;
+      const isCorrect = guess.normalize("NFC").toLocaleLowerCase(run.view.locale) === answer.normalize("NFC").toLocaleLowerCase(run.view.locale);
       /** Provides auto skipped behavior. */
       let autoSkipped = false;
       if (isCorrect) {
@@ -489,12 +495,13 @@ export const createFakeRaceServices = (): RaceMethods => {
         else {advance(run); finalizePenalty(run);}
         autoSkipped = true;
       }
+      /** Shared scoring preserves duplicate occurrence limits and localized grapheme positions. */
+      const feedback = computeFeedback(guess, answer, run.view.locale);
       /** Provides response behavior. */
       const response = {
         run: syncView(run),
-        feedback: [...input.guess].map((letter, index) => ({
-          letter,
-          status: (letter.toLocaleLowerCase() === answer[index] ? "green" : "red") as "green" | "red",
+        feedback: splitGraphemes(guess, run.view.locale).map((letter, index) => ({
+          letter, status: feedback[index],
         })),
         isCorrect,
         autoSkipped,
@@ -545,6 +552,9 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Artificial transport latency used to prove that the client transition is local. */
       const delayMs = getRaceSkipDelayMs();
       if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+      /** A concurrent delivery may have committed this receipt while transport was delayed. */
+      const committed = run.responses.get(input.requestId);
+      if (committed) return committed as Awaited<ReturnType<RaceMethods["skipRaceRiddle"]>>;
       requireActiveQuestion(run, input.riddleId);
       run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
       run.view = {...run.view, correctCount: run.view.correctCount + 1};

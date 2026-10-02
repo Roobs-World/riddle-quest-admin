@@ -1,5 +1,5 @@
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {SpendCoinsRequestSchema, SpendCoinsResponseSchema} from "../validation/requestSchemas";
+import {SpendCoinsRequestSchema, SpendCoinsResponseSchema} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
@@ -21,7 +21,9 @@ export const grantFacebookRewardedContinue = onCallWithSentry(
       throw new HttpsError("unauthenticated", "Facebook authentication is required.");
     }
     if (!isFacebookFeatureEnabled("rewarded_ads")) throw new HttpsError("unavailable", "Rewarded continuation is unavailable.");
+    /** Validated session and mutation identity passed to the server-owned funding path. */
     const {gameMode, riddleId, requestId, sessionToken} = validateCallableRequest(RequestSchema, request.data, "grantFacebookRewardedContinue");
+    /** Validated authoritative balance returned after the continuation grant. */
     const newCoins = await grantAuthoritativeContinue(request.auth.uid, gameMode, riddleId, requestId, sessionToken, "facebook-rewarded");
     return validateCallableResponse(SpendCoinsResponseSchema, {newCoins}, "grantFacebookRewardedContinue");
   },

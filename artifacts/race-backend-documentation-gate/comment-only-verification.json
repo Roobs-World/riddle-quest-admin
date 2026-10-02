@@ -1,0 +1,23 @@
+{
+  "method": "TypeScript AST printer with removeComments and emitted JavaScript equality. Raw scanner is unsuitable for template literals without parser rescans.",
+  "results": [
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRunMutationClock.test.ts",
+      "commentFreeTypeScriptUnchanged": true,
+      "emittedJavaScriptUnchanged": true,
+      "commentFreeDigest": "dbfcf47e3a3060f24975dd259a6f5445c1d30e0a487dbba0826f744d69205da9"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceEngine.test.ts",
+      "commentFreeTypeScriptUnchanged": true,
+      "emittedJavaScriptUnchanged": true,
+      "commentFreeDigest": "48cb8dafba5c7248b5778c6bcdd21e93110bdd093297e400b05830fc4a022f3e"
+    },
+    {
+      "file": "packages/core/src/race/__tests__/raceSchemas.test.ts",
+      "commentFreeTypeScriptUnchanged": true,
+      "emittedJavaScriptUnchanged": true,
+      "commentFreeDigest": "20514183c038e474b2b226f5fbe4abe1947519880ae615461309c94fbd470e1c"
+    }
+  ]
+}

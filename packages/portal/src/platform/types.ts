@@ -330,8 +330,16 @@ export type AdsCapability = {
 /** Target-owned recovery of one exhausted authoritative single-player attempt. */
 export type AttemptRecoveryCapability = {
   /** Resolves only after the provider flow and authoritative continuation succeed. */
-  request(input: {gameMode: "classic" | "challenge"; riddleId: string; sessionToken: string}):
-    Promise<PlatformResult<{newCoins: number}>>;
+  request(input: {
+  /** Single-player mode bound to the continuation session. */
+  gameMode: "classic" | "challenge";
+  /** Authority-owned question identity for the continuation grant. */
+  riddleId: string;
+  /** Server-issued session token binds continuation to the current question. */
+  sessionToken: string}):
+    Promise<PlatformResult<{
+    /** Validated authoritative balance returned after the continuation grant. */
+    newCoins: number}>>;
 };
 
 /** Optional provider-owned notification permission and scheduling boundary. */

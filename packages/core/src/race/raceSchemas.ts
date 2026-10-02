@@ -29,6 +29,12 @@ const OpaqueIdSchema = z.string().trim().min(1).max(160);
 /** Validates the milliseconds data shape. */
 const MillisecondsSchema = z.number().int().nonnegative();
 
+/** Confirmed presentation rows; scoring remains owned by the server run. */
+export const RaceConfirmedGuessSchema = z.object({
+  guess: z.array(z.string().min(1).max(8)).min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
+  feedback: z.array(z.enum(["green", "yellow", "red"])).min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
+}).strict();
+
 /** Schema for the current riddle, with optional local evaluation data. */
 export const RaceRiddlePromptSchema = z
   .object({
@@ -42,6 +48,8 @@ export const RaceRiddlePromptSchema = z
       .max(RACE_DECK_SIZE - 1),
     guessesUsed: z.number().int().nonnegative().max(RACE_MAX_GUESSES_PER_RIDDLE),
     guessesRemaining: z.number().int().nonnegative().max(RACE_MAX_GUESSES_PER_RIDDLE),
+    /** Optional negotiated server history, including repeated guesses as distinct attempts. */
+    confirmedGuesses: z.array(RaceConfirmedGuessSchema).max(RACE_MAX_GUESSES_PER_RIDDLE).optional(),
     hintAvailable: z.boolean(),
     revealedLetters: z.array(
       z
@@ -58,7 +66,12 @@ export const RaceRiddlePromptSchema = z
     /** Opt-in local feedback for the current question only. */
     evaluation: z.object({answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS), locale: RaceLocaleSchema}).strict().optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((prompt, context) => {
+    if (prompt.confirmedGuesses && (prompt.confirmedGuesses.length > prompt.guessesUsed ||
+      prompt.confirmedGuesses.some(row => row.guess.length !== prompt.answerLength || row.feedback.length !== prompt.answerLength)))
+      context.addIssue({code: "custom", message: "Confirmed rows must match the current question and consumed attempts."});
+  });
 /** Current riddle presented during an active run. */
 export type RaceRiddlePrompt = z.infer<typeof RaceRiddlePromptSchema>;
 
@@ -311,6 +324,8 @@ export const RaceRunIdRequestSchema = z
   .object({
     runId: OpaqueIdSchema,
     includeEvaluation: z.boolean().optional(),
+    /** New clients opt into history without changing responses accepted by older previews. */
+    includeGuessHistory: z.boolean().optional(),
   })
   .strict();
 

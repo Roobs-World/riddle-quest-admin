@@ -27,8 +27,8 @@ const JEST_SDK_LOAD_TIMEOUT_MS = 10_000;
 /** Provides success behavior. */
 const success = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 /** Provides failure behavior. */
-const failure = (error: unknown): PlatformResult<never> => {
-  captureBrowserException(error, {component: "jest_sdk"});
+const failure = (error: unknown, context: Record<string, string> = {}): PlatformResult<never> => {
+  captureBrowserException(error, {component: "jest_sdk", ...context});
   /** Provides message behavior. */
   const message = error instanceof Error ? error.message : String(error);
   return /INVALID_ARGUMENTS|BAD_REQUEST|invalid sku/i.test(message)
@@ -435,11 +435,21 @@ export class JestSdkPlatform implements JestPlatformPort {
       if (result?.result === "cancel") return {status: "cancelled"};
       /** Normalizes missing or provider-specific failure codes. */
       const message = String(result?.error ?? "invalid_response");
+      /** Reports only documented codes, never opaque provider payloads. */
+      const reason = ["not_found", "not_active", "guest_not_allowed", "internal_error", "invalid_response"].includes(message)
+        ? message : "unknown_provider_error";
+      if (message !== "not_active") captureBrowserException(new Error("Jest subscription cancellation failed"), {
+        component: "jest_sdk", operation: "cancel_subscription", reason,
+      });
       if (message === "not_found") return {status: "terminal-failure", message};
       if (message === "not_active" || message === "guest_not_allowed") return {status: "unavailable", message};
       return {status: "retryable-failure", message};
     } catch (error) {
-      return failure(error);
+      return failure(error, {
+        operation: "cancel_subscription",
+        reason: error instanceof Error && error.message === "Jest subscription cancellation timed out"
+          ? "timeout" : "exception",
+      });
     }
   }
   /**
@@ -448,7 +458,7 @@ export class JestSdkPlatform implements JestPlatformPort {
    * @param name - Stable event name.
    * @param properties - Primitive, non-sensitive event dimensions.
    */
-  captureEvent(name: string, properties?: Record<string, string | number | boolean>) {
+  captureEvent(name: string, properties?: import("../analytics/events").SanitizedAnalyticsParams) {
     this.sdk.captureEvent?.(name, properties);
   }
   /** @returns The normalized result of the provider's idempotent first-milestone signal. */

@@ -382,7 +382,7 @@ export interface JestPlatformPort {
     }>
   >;
   /** Sends one low-cardinality event through the optional Jest analytics surface. */
-  captureEvent(name: string, properties?: Record<string, string | number | boolean>): void;
+  captureEvent(name: string, properties?: import("../analytics/events").SanitizedAnalyticsParams): void;
   /** Idempotently reports the provider-defined first gameplay milestone. */
   markFirstMilestone(): Promise<PlatformResult<void>>;
   /** Reports provider loading progress on the inclusive 0-100 scale. */

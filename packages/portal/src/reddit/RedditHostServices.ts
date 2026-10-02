@@ -157,6 +157,8 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
         return BridgeRiddleSchema.parse({
           riddleId: question.riddleId, text: question.text, answerLength: question.answerLength,
           ...(question.evaluation ? {evaluation: question.evaluation} : {}),
+    ...(question.revealedHints ? {revealedHints: question.revealedHints} : {}),
+    ...(question.acceptedGuesses ? {acceptedGuesses: question.acceptedGuesses} : {}),
           sessionToken: question.sessionToken, gameMode: "classic", index: issued.classicIndex,
           attemptsUsed: question.attemptsUsed, hasUsedContinue: question.hasUsedContinue,
           awaitingContinue: question.awaitingContinue,
@@ -204,6 +206,8 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
         text: question.text,
         answerLength: question.answerLength,
         ...(question.evaluation ? {evaluation: question.evaluation} : {}),
+    ...(question.revealedHints ? {revealedHints: question.revealedHints} : {}),
+    ...(question.acceptedGuesses ? {acceptedGuesses: question.acceptedGuesses} : {}),
         sessionToken: question.sessionToken,
         gameMode: input.gameMode,
         index: input.gameMode === "classic" ? cached?.classicIndex ?? input.classicIndex ?? profile?.classicIndex ?? 1 : question.questionNumber,
@@ -308,7 +312,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     },
     /** Provides resume race behavior. */
     async resumeRace(runId) {
-      return RaceRunResponseSchema.parse(await post("race.resume", {runId, includeEvaluation: true}));
+      return RaceRunResponseSchema.parse(await post("race.resume", {runId, includeEvaluation: true, includeGuessHistory: true}));
     },
     /** Provides abandon race behavior. */
     async abandonRace(input) {

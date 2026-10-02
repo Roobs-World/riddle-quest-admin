@@ -1,0 +1,27 @@
+{
+  "taskId": "multiplayer:race-authentication-harness-extraction",
+  "observedAt": "2026-10-02T11:57:41.694107+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 144,
+  "dashboardReceiptRecorded": false,
+  "passed": {
+    "fileSizes": true,
+    "portalTypes": true,
+    "isolatedBuilds": 7,
+    "browserCases": 6,
+    "harnessBodyUnchanged": true,
+    "testSuiteAssertionsUnchanged": true
+  },
+  "unresolved": [
+    "shared undocumented declarations",
+    "pre-existing unavailable-Daily browser timeout",
+    "full guarded source-stable verification"
+  ],
+  "sourceHashes": {
+    "packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts": "c32a299d67bd5432882629b15a792349ff31a83a0db26fb25e3afa3ce8315913",
+    "packages/portal/src/jest/__tests__/authenticationHarness.jest-playwright.support.ts": "038ac76cfaa5cf1faf445a871238372ed551ccd6d0f0637faf65c942a008908d",
+    "docs/development-tasks/race-authentication-harness-extraction.json": "365d5954b72703983626563085d76bbbf53accebc7c7ff3ccaa7184bbb7ffbe8",
+    "docs/evidence/multiplayer-authentication-harness-extraction.md": "0c51bd1f0c13fbb34b79783d27e99c81ee21b9e7cab9966d8ba956239ebe0777"
+  }
+}

@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "Tidak Ada Koneksi Internet",
     "OK_BUTTON": "OKE",
     "SUCCESS_TITLE": "Sukses",
-    "UNABLE_TO_OPEN_TITLE": "Tidak Dapat Membuka",
-    "TRY_AGAIN_LATER_MESSAGE": "Silakan coba lagi nanti."
+    "UNABLE_TO_OPEN_TITLE": "Tidak Dapat Membuka"
   },
   "CommonButtons": {
     "RETRY": "Coba lagi"

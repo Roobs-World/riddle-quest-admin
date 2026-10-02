@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "Geen internetverbinding",
     "OK_BUTTON": "Bevestigen",
     "SUCCESS_TITLE": "Succes",
-    "UNABLE_TO_OPEN_TITLE": "Kan niet openen",
-    "TRY_AGAIN_LATER_MESSAGE": "Probeer het later opnieuw."
+    "UNABLE_TO_OPEN_TITLE": "Kan niet openen"
   },
   "CommonButtons": {
     "RETRY": "Opnieuw proberen"

@@ -8,5 +8,5 @@ export const ShopSubscriptionContext = createContext<{
   /** Reconciles the provider catalog before displaying offers. */
   refresh: () => Promise<void>;
   /** Opens the provider cancellation confirmation. */
-  cancel: (sku: string) => Promise<"success" | "cancelled" | "error">;
+  cancel: (sku: string) => Promise<"success" | "cancelled" | "unavailable" | "error">;
 } | null>(null);

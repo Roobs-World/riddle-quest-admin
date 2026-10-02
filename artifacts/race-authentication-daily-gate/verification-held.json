@@ -1,0 +1,21 @@
+{
+  "taskId": "multiplayer:race-authentication-daily-gate",
+  "observedAt": "2026-10-02T11:59:39.496677+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 145,
+  "dashboardReceiptRecorded": false,
+  "passed": {
+    "browserCases": 7,
+    "fileSizes": true
+  },
+  "remaining": [
+    "shared documentation",
+    "full guarded source-stable verification"
+  ],
+  "sourceHashes": {
+    "packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts": "acd4a0e0258719948b25e934ccf0fee6d290ed5e17009a1bbc72c4cdf770b485",
+    "docs/development-tasks/race-authentication-daily-gate.json": "dca4569a165d78ce79f35e32eaef5638c1f32ffd1ed33e1a5c576c215f11df0c",
+    "docs/evidence/multiplayer-authentication-daily-gate.md": "9c9d3cb09487554fd10a71e6308dc932083b189839f93a058c888c04f0343593"
+  }
+}

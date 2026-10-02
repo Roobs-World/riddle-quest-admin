@@ -8,7 +8,7 @@ import type {
   GetHintRequestSchema,
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "../validation/requestSchemas";
+} from "@qwordly/core/validation/requestSchemas";
 import type {z} from "zod";
 import type {Player, PlayerProgress} from "../validation/firestoreSchemas";
 import {admin} from "../shared/firebaseAdmin";
@@ -348,6 +348,7 @@ export async function grantAuthoritativeContinue(
     if (state.terminal || !state.awaitingContinue || state.hasUsedContinue) {
       throw new HttpsError("failed-precondition", "This riddle is not eligible for another attempt.");
     }
+    /** Server-selected continuation charge; ad-funded grants use the approved funding path. */
     const cost = funding === "facebook-rewarded" ? 0 : CONTINUE_COST_COINS;
     if (coins < cost) {
       throw new HttpsError("failed-precondition", "Insufficient coins to continue.");

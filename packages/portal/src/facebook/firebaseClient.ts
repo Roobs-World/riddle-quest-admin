@@ -19,10 +19,18 @@ import {
 
 /** Facebook-only extra-attempt boundary; it never accepts a grant amount. */
 const grantFacebookRewardedContinueRaw = httpsCallable<{
-  gameMode: "classic" | "challenge"; riddleId: string; sessionToken: string; requestId: string;
+  /** Single-player mode bound to the continuation session. */
+  gameMode: "classic" | "challenge";
+  /** Authority-owned question identity for the continuation grant. */
+  riddleId: string;
+  /** Server-issued session token binds continuation to the current question. */
+  sessionToken: string;
+  /** Stable mutation receipt retained across grant delivery retries. */
+  requestId: string;
 }, unknown>(firebaseFunctions, "grantFacebookRewardedContinue");
 /** Rejects malformed responses before the game can resume. */
 export const grantFacebookRewardedContinue = async (input: Parameters<typeof grantFacebookRewardedContinueRaw>[0]) => {
+  /** Authority response is validated before applying its balance and continuation. */
   const result = await grantFacebookRewardedContinueRaw(input);
   return {...result, data: parseFacebookRewardedContinue(result.data)};
 };

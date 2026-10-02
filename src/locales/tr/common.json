@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "İnternet Bağlantısı Yok",
     "OK_BUTTON": "TAMAM",
     "SUCCESS_TITLE": "Başarılı",
-    "UNABLE_TO_OPEN_TITLE": "Açılamıyor",
-    "TRY_AGAIN_LATER_MESSAGE": "Lütfen daha sonra tekrar deneyin."
+    "UNABLE_TO_OPEN_TITLE": "Açılamıyor"
   },
   "CommonButtons": {
     "RETRY": "Yeniden deneyin"

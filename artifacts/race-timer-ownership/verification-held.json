@@ -1,0 +1,34 @@
+{
+  "taskId": "multiplayer:race-timer-ownership",
+  "observedAt": "2026-10-02T01:08:42.830114+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 93,
+  "dashboardReceiptRecorded": false,
+  "reason": "Full-user-pathway chat is active; its new test has twelve undocumented declarations. Preserve its files and evidence until it finishes.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RacePlay.ts": "a7163b67de4e9f25f65f6de4616e2214b42bca62efa09787dd709037ed92618a",
+    "packages/portal/src/play/race/RaceSession.ts": "b44fcad1494b65a06224673f784f14d2fd1e6fef3fb4d04a7fd490d58b417636",
+    "packages/portal/src/play/race/__tests__/raceTimerOwnership.test.ts": "34bfe09dd719882eea6405a91db0afe2e4bc53ba2a974316609805b54b10c844",
+    "packages/portal/scripts/verify-race-timer-ownership-browser.mjs": "8b3b01a926f08af9bdac954fe2fb0882edeabecce87cac834601ee8c81b7ffc1",
+    "docs/development-tasks/race-timer-ownership.json": "eed44c9e5bc98ac30a7cb121fc96d9cea502f56290d7393160f3cb3096c1b6b3",
+    "docs/evidence/multiplayer-timer-ownership.md": "a3bb86e14b1eb4ee7d8c41d9633608ccdf3850b1d8beef72d812d16fdba5a0e3"
+  },
+  "passed": {
+    "focusedTests": 7,
+    "timerBrowserCases": 10,
+    "retainedAuthorityBrowserCases": 14,
+    "retainedProviderBrowserCases": 18,
+    "retainedResolverReentryBrowserCases": 10,
+    "clientTests": 1856,
+    "clientSuites": 227,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

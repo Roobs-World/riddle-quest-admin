@@ -43,7 +43,9 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
         ? {firstMilestoneMarked: true}
         : selectedScenario === "returning-guest-two-wins"
           ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2}
-          : {};
+          : selectedScenario === "returning-turkish"
+            ? {locale: "tr", onboardingComplete: true}
+            : {};
     /** Provides overlay closed behavior. */
     let overlayClosed = false;
     /** Provides subscription active behavior. */
@@ -57,6 +59,10 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
     let loadingWatchdog: ReturnType<typeof setTimeout> | undefined;
     /** Provides sdk behavior. */
     const sdk = {
+      /** Records native analytics independently of game console output. */
+      captureEvent: (name: string, properties: unknown) => {
+        state.calls.push(`sdk.captureEvent:${name}:${JSON.stringify(properties)}`);
+      },
       init: async () => {
         state.calls.push("sdk.init");
         if (selectedScenario === "init-delayed") {

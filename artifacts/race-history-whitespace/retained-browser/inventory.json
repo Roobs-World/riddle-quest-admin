@@ -1,0 +1,19 @@
+[
+  "packages/portal/scripts/audit-race-history-continuity-browser.mjs",
+  "packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs",
+  "packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs",
+  "packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs",
+  "packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs",
+  "packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs",
+  "packages/portal/scripts/verify-race-history-graphemes-browser.mjs",
+  "packages/portal/scripts/verify-race-history-integration-browser.mjs",
+  "packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs",
+  "packages/portal/scripts/verify-race-history-normalization-browser.mjs",
+  "packages/portal/scripts/verify-race-history-progression-browser.mjs",
+  "packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs",
+  "packages/portal/scripts/verify-race-history-scoring-browser.mjs",
+  "packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs",
+  "packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs",
+  "packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs",
+  "packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs"
+]

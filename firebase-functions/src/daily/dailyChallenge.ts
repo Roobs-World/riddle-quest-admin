@@ -5,7 +5,7 @@ import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {getUser} from "../gameplay/firestoreService";
 import {captureException} from "../shared/sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
-import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "../validation/requestSchemas";
+import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
@@ -78,6 +78,10 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       sessionToken?: unknown;
       /** Opts into preloaded feedback without changing legacy response shapes. */
       includeEvaluation?: boolean;
+      /** Opts in to purchased hint recovery without changing older client responses. */
+      includeHintRecovery?: boolean;
+      /** Opts in to authoritative accepted guess recovery. */
+      includeGuessRecovery?: boolean;
       /** Stores riddle id. */
       riddleId?: unknown;
     }>,
@@ -285,6 +289,8 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         sessionToken,
         activeSession,
         request.data?.includeEvaluation === true,
+        request.data?.includeHintRecovery === true,
+        request.data?.includeGuessRecovery === true,
       );
 
       /** Provides current question behavior. */
@@ -344,6 +350,10 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       sessionToken?: unknown;
       /** Opts into preloaded feedback without changing legacy response shapes. */
       includeEvaluation?: boolean;
+      /** Opts in to purchased hint recovery without changing older client responses. */
+      includeHintRecovery?: boolean;
+      /** Opts in to authoritative accepted guess recovery. */
+      includeGuessRecovery?: boolean;
       /** Stores riddle id. */
       riddleId?: unknown;
     }>,
@@ -520,7 +530,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       return validateCallableResponse(
         GetCurrentDailyChallengeResponseSchema,
         {
-          challenge: buildSinglePlayerChallengeResponse(riddle, undefined, sessionToken, activeSession, request.data?.includeEvaluation === true),
+          challenge: buildSinglePlayerChallengeResponse(riddle, undefined, sessionToken, activeSession, request.data?.includeEvaluation === true, request.data?.includeHintRecovery === true, request.data?.includeGuessRecovery === true),
         },
         "getCurrentClassicRiddle",
       );

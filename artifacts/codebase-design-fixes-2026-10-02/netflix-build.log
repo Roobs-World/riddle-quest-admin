@@ -1,0 +1,51 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (16.18481ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (4.170119ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (7.497092ms)
+✔ rejects imports between different target owners (2.462665ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.819453ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.312847ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.563081ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.863987ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.33018ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.933389ms)
+✔ aggregates violations in deterministic file and source order (0.965719ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 154.067969
+Web Target boundary audit passed (252 files, 1046 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 43 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-netflix/youtube-content-manifest.json          0.48 kB │ gzip:   0.29 kB
+dist-netflix/index.html                             0.81 kB │ gzip:   0.41 kB
+dist-netflix/third-party-licenses.txt               1.79 kB │ gzip:   0.90 kB
+dist-netflix/assets/index-DhsmAOC4.css              6.92 kB │ gzip:   2.30 kB
+dist-netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:   0.14 kB
+dist-netflix/assets/core-game-mef9IOwv.js           0.67 kB │ gzip:   0.39 kB
+dist-netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip:  68.34 kB
+dist-netflix/assets/index-wm1I5P9x.js             874.49 kB │ gzip: 290.41 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 450 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.48s
+$ node scripts/audit-standalone-artifact.mjs netflix dist-netflix
+netflix artifact audit passed: 8 files, 1.05 MiB

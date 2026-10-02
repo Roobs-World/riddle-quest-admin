@@ -89,11 +89,9 @@ export function RedditPlatformEntry() {
     };
     preferencesRef.current = effective;
     return subscribeToPlayerPreferenceChanges((change) => {
-      /** Provides next behavior. */
-      const next = {...preferencesRef.current, ...change};
       void playerPersistenceRef.current
         ?.updatePreferences(change)
-        .then(() => {
+        .then((next) => {
           preferencesRef.current = next;
         })
         .catch(() => undefined);
@@ -163,13 +161,11 @@ export function RedditPlatformEntry() {
     if (startup.state !== "ready" || !startup.session.capabilities.presence) return;
     /** Provides next behavior. */
     const next = !presenceEnabled;
-    /** Provides preferences behavior. */
-    const preferences = {...preferencesRef.current, presenceEnabled: next};
     void playerPersistenceRef.current
       ?.updatePreferences({presenceEnabled: next})
-      .then(() => presenceRef.current?.setEnabled(next))
-      .then(() => {
+      .then(async (preferences) => {
         preferencesRef.current = preferences;
+        await presenceRef.current?.setEnabled(next);
         setPresenceEnabled(next);
       })
       .catch(() => undefined);

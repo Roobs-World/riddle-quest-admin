@@ -11,6 +11,7 @@ const expectedLocales = [
 // This is the release contract for app-rendered Facebook copy. Meta-owned dialogs
 // (ads, purchases, notification permission) deliberately remain platform-owned.
 const requiredKeys = {
+  loss: ["LossModal.VIDEO_EXTRA_GO_BUTTON"],
   race: [
     "RaceTo10.HUB_PLAY",
     "RaceTo10.HUB_ACTIVITY",

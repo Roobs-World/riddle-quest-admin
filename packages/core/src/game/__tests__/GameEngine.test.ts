@@ -25,13 +25,64 @@ describe("GameEngine", () => {
   it("offers continue at first attempt limit", () => {
     /** Provides engine behavior. */
     const engine = new GameEngine(config);
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
       engine.submitGuess(["w", "o", "r", "l", "d"]);
     }
     /** Provides last behavior. */
     const last = engine.submitGuess(["w", "o", "r", "l", "d"]);
     expect(last).toMatchObject({kind: "attemptLimitReached", canOfferContinue: true});
     expect(engine.isGameOver()).toBe(false);
+  });
+
+  it("rejects extra guesses while awaiting Continue without changing progress", () => {
+    /** Local engine exercised through player transitions. */
+    const engine = new GameEngine(config);
+    for (let i = 0; i < 5; i++) engine.submitGuess([..."world"]);
+    /** Confirmed progress before rejected extra guesses. */
+    const before = engine.getSnapshot();
+
+    expect(engine.submitGuess([..."world"])).toBeNull();
+    expect(engine.submitGuess([..."hello"])).toBeNull();
+    expect(engine.getSnapshot()).toEqual(before);
+
+    engine.continueAfterLimit();
+    expect(engine.submitGuess([..."hello"])).toMatchObject({kind: "win", attempts: 6});
+  });
+
+  it("ignores early, duplicate and terminal Continue requests", () => {
+    /** Local engine exercised through player transitions. */
+    const engine = new GameEngine(config);
+    engine.submitGuess([..."world"]);
+    /** Progress that an early Continue must preserve. */
+    const early = engine.getSnapshot();
+    engine.continueAfterLimit();
+    expect(engine.getSnapshot()).toEqual(early);
+
+    for (let i = 0; i < 4; i++) engine.submitGuess([..."world"]);
+    engine.continueAfterLimit();
+    engine.submitGuess([..."world"]);
+    /** Progress that a repeated Continue must preserve. */
+    const continued = engine.getSnapshot();
+    engine.continueAfterLimit();
+    expect(engine.getSnapshot()).toEqual(continued);
+
+    engine.submitGuess([..."hello"]);
+    /** Terminal state that Continue must not reopen. */
+    const won = engine.getSnapshot();
+    engine.continueAfterLimit();
+    expect(engine.getSnapshot()).toEqual(won);
+    expect(engine.submitGuess([..."hello"])).toBeNull();
+  });
+
+  it("ends at the base limit when no Continue budget exists", () => {
+    /** Local engine exercised through player transitions. */
+    const engine = new GameEngine({...config, initialAttempts: 1, continueAttempts: 0});
+    expect(engine.submitGuess([..."world"])).toMatchObject({kind: "loss", attempts: 1});
+    /** Exhausted state with no extra attempt budget. */
+    const lost = engine.getSnapshot();
+    engine.continueAfterLimit();
+    expect(engine.getSnapshot()).toEqual(lost);
+    expect(engine.submitGuess([..."hello"])).toBeNull();
   });
 
   it("resets grid after continue and ends in loss", () => {

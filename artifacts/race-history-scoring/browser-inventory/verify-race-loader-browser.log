@@ -1,0 +1,4 @@
+Loader UI passed: 1280px, same-run; obsolete callback cannot hide the newer loader, current callback settles normally.
+Loader UI passed: 1280px, new-account; obsolete callback cannot hide the newer loader, current callback settles normally.
+Loader UI passed: 390px, same-run; obsolete callback cannot hide the newer loader, current callback settles normally.
+Loader UI passed: 390px, new-account; obsolete callback cannot hide the newer loader, current callback settles normally.

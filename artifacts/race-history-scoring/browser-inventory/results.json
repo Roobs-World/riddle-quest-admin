@@ -1,0 +1,914 @@
+[
+  {
+    "file": "packages/portal/scripts/audit-race-history-continuity-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.87,
+    "sourceHashBefore": "1c4b8673703ed77ae8aebbf8b74d69bcb4e244cc5786cec357006e554bad49b2",
+    "sourceHashAfter": "1c4b8673703ed77ae8aebbf8b74d69bcb4e244cc5786cec357006e554bad49b2",
+    "log": "artifacts/race-history-scoring/browser-inventory/audit-race-history-continuity-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-abandoned-entry-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 15.61,
+    "sourceHashBefore": "6ac1efb2e31efc04041962844e5fcac51921ddb7c8f20e234511912994e20bd2",
+    "sourceHashAfter": "6ac1efb2e31efc04041962844e5fcac51921ddb7c8f20e234511912994e20bd2",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-abandoned-entry-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-analytics-delivery-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.37,
+    "sourceHashBefore": "10b8fbf112338ed189be59daf9394f682fb43d94065653da53f3cd518513e335",
+    "sourceHashAfter": "10b8fbf112338ed189be59daf9394f682fb43d94065653da53f3cd518513e335",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-analytics-delivery-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 5.68,
+    "sourceHashBefore": "bf9b414475c6255e03f66aa180daa839870b04af2623c033d948c4529ae6077a",
+    "sourceHashAfter": "bf9b414475c6255e03f66aa180daa839870b04af2623c033d948c4529ae6077a",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-answer-free-checkpoints-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-attempt-budget-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 8.58,
+    "sourceHashBefore": "f7729ab45d6305f58c5b7133963ec8b2f04f7ea3906e44f9ce0461c94a7a978c",
+    "sourceHashAfter": "f7729ab45d6305f58c5b7133963ec8b2f04f7ea3906e44f9ce0461c94a7a978c",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-attempt-budget-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-authority-clock-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.02,
+    "sourceHashBefore": "72a671a8a4a4ad4f86bfc1f5c9fdaaa3b7eb7e906f7fb38e1a2f4524bf047a62",
+    "sourceHashAfter": "72a671a8a4a4ad4f86bfc1f5c9fdaaa3b7eb7e906f7fb38e1a2f4524bf047a62",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-authority-clock-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-authority-observation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.17,
+    "sourceHashBefore": "51f21b699313bd6dac3c85a83a55b3f75551d96d250212d3822ebe21a82e91d9",
+    "sourceHashAfter": "51f21b699313bd6dac3c85a83a55b3f75551d96d250212d3822ebe21a82e91d9",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-authority-observation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.47,
+    "sourceHashBefore": "e68665060aea18bc3e06232ed8b49b5cb5a82d22dbcb90776bde37dcdd63d1bb",
+    "sourceHashAfter": "e68665060aea18bc3e06232ed8b49b5cb5a82d22dbcb90776bde37dcdd63d1bb",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-cancellation-receipt-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-catalog-retry-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.27,
+    "sourceHashBefore": "ec7b3f880e6195dbb6f75ca4583be754ce84c130db4c6441ddcd56fa3baa145b",
+    "sourceHashAfter": "ec7b3f880e6195dbb6f75ca4583be754ce84c130db4c6441ddcd56fa3baa145b",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-catalog-retry-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 13.48,
+    "sourceHashBefore": "1ddd12d34a30546e29e2f1096e4d89060af2e838b92f653e479a340563495ed2",
+    "sourceHashAfter": "1ddd12d34a30546e29e2f1096e4d89060af2e838b92f653e479a340563495ed2",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-checkpoint-isolation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-cleanup-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.81,
+    "sourceHashBefore": "7d1d42d78f06c3214d51fa2243fc1de5a6c2f078f5c49fa007bf750850a8eb2a",
+    "sourceHashAfter": "7d1d42d78f06c3214d51fa2243fc1de5a6c2f078f5c49fa007bf750850a8eb2a",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-cleanup-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-clock-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.97,
+    "sourceHashBefore": "9c8ed164254e22fef7f43853fc9921915f83b9293bab9d739b237b4fa21f17c3",
+    "sourceHashAfter": "9c8ed164254e22fef7f43853fc9921915f83b9293bab9d739b237b4fa21f17c3",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-clock-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.42,
+    "sourceHashBefore": "06dd25c631f0cc1c2446e0be93daa298d5dfcb44001e48468b8a49ff0fb32f62",
+    "sourceHashAfter": "06dd25c631f0cc1c2446e0be93daa298d5dfcb44001e48468b8a49ff0fb32f62",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-cold-search-catalog-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.12,
+    "sourceHashBefore": "485dea559b9443d4705349ebf84fdd8ba14d3137df39d1751961a27e3b8b6fe1",
+    "sourceHashAfter": "485dea559b9443d4705349ebf84fdd8ba14d3137df39d1751961a27e3b8b6fe1",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-cold-search-retirement-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-command-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 3.57,
+    "sourceHashBefore": "4c80cebcbd40b04040352103abefe7dc443219bc380bb6715ce2f49da71940cf",
+    "sourceHashAfter": "4c80cebcbd40b04040352103abefe7dc443219bc380bb6715ce2f49da71940cf",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-command-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.02,
+    "sourceHashBefore": "09e89b55ef36a07d0b55873e1079ba71cb9baea30b70bbbad2282c40f52fb3f8",
+    "sourceHashAfter": "09e89b55ef36a07d0b55873e1079ba71cb9baea30b70bbbad2282c40f52fb3f8",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-confirmed-guess-retention-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-countdown-clock-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 42.38,
+    "sourceHashBefore": "6d8273654c6c4b376af07956e81ae750ab46388f6f01fa5a33c14ecac7ec86d5",
+    "sourceHashAfter": "6d8273654c6c4b376af07956e81ae750ab46388f6f01fa5a33c14ecac7ec86d5",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-countdown-clock-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-creator-opponent-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.22,
+    "sourceHashBefore": "df932206a2cff900b8b0fb773e7a0037d1ac20e3bb23c0209384401f2a2f61f8",
+    "sourceHashAfter": "df932206a2cff900b8b0fb773e7a0037d1ac20e3bb23c0209384401f2a2f61f8",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-creator-opponent-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.97,
+    "sourceHashBefore": "80d7748143fb9408b274846c634c82e648c1e4e4675cda03b70abc9441e96814",
+    "sourceHashAfter": "80d7748143fb9408b274846c634c82e648c1e4e4675cda03b70abc9441e96814",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-delivery-expiry-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-dialog-adapter-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 9.68,
+    "sourceHashBefore": "f341c8efdf862229ba5461d7869974f561de5e6062b11f76fdcaca5ae0ad76f2",
+    "sourceHashAfter": "f341c8efdf862229ba5461d7869974f561de5e6062b11f76fdcaca5ae0ad76f2",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-dialog-adapter-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.12,
+    "sourceHashBefore": "920da8f78da7af9b50eb0a899f6993430e267d827c146ab7d99a37e369296144",
+    "sourceHashAfter": "920da8f78da7af9b50eb0a899f6993430e267d827c146ab7d99a37e369296144",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-dialog-keyboard-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-discovery-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.82,
+    "sourceHashBefore": "5158dd4f9227f241bf6c1a4d45092005e0d2d8ce681112a738bfbf51f61643e1",
+    "sourceHashAfter": "5158dd4f9227f241bf6c1a4d45092005e0d2d8ce681112a738bfbf51f61643e1",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-discovery-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-discovery-callback-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.62,
+    "sourceHashBefore": "5551222a6b58799cf67e929b99aa13bbeba2d7e8baad289431e9dcdc2b5d160c",
+    "sourceHashAfter": "5551222a6b58799cf67e929b99aa13bbeba2d7e8baad289431e9dcdc2b5d160c",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-discovery-callback-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.27,
+    "sourceHashBefore": "815f1848a5d6a7cdcbc74c45467c22a0d66c3a438ce55d1eb558de6057bc6653",
+    "sourceHashAfter": "815f1848a5d6a7cdcbc74c45467c22a0d66c3a438ce55d1eb558de6057bc6653",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-discovery-cancellation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-discovery-provider-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.42,
+    "sourceHashBefore": "4cfc86e1a33cd07b84e9565483e4df3e422531768497de6db9b20a86e456065e",
+    "sourceHashAfter": "4cfc86e1a33cd07b84e9565483e4df3e422531768497de6db9b20a86e456065e",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-discovery-provider-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.92,
+    "sourceHashBefore": "49977eec044ee1018b6f48cf4de4c08c569ad12c55585c302e237b1730e177d9",
+    "sourceHashAfter": "49977eec044ee1018b6f48cf4de4c08c569ad12c55585c302e237b1730e177d9",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-discovery-retry-policy-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-dispatch-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.92,
+    "sourceHashBefore": "66fdaf90809c98ee4d562a183d5ca4b35f3870978b45f36b8328d99c8de9abf8",
+    "sourceHashAfter": "66fdaf90809c98ee4d562a183d5ca4b35f3870978b45f36b8328d99c8de9abf8",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-dispatch-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-draft-cleanup-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 15.13,
+    "sourceHashBefore": "107b70c0f5a5c75432f3e7399ae4978610f9b6250349e4cabf7d8d9da78e8a2a",
+    "sourceHashAfter": "107b70c0f5a5c75432f3e7399ae4978610f9b6250349e4cabf7d8d9da78e8a2a",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-draft-cleanup-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-draft-reload-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 59.09,
+    "sourceHashBefore": "50c8a5860433a3a9f5afe5c3e0cbe3bf0741a96e4fd051823cf06018ba964492",
+    "sourceHashAfter": "50c8a5860433a3a9f5afe5c3e0cbe3bf0741a96e4fd051823cf06018ba964492",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-draft-reload-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-entry-effect-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.12,
+    "sourceHashBefore": "a61f3d5b6671b6da5c20f245005481f032a8b0c6c1e4599cbf833c3eb282214e",
+    "sourceHashAfter": "a61f3d5b6671b6da5c20f245005481f032a8b0c6c1e4599cbf833c3eb282214e",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-entry-effect-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.27,
+    "sourceHashBefore": "fa35cafe4b1eaaac1ac2c75ce7ad3a0638032f0972992837e0661fc220b555c9",
+    "sourceHashAfter": "fa35cafe4b1eaaac1ac2c75ce7ad3a0638032f0972992837e0661fc220b555c9",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-entry-run-handoff-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-event-aggregate-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.42,
+    "sourceHashBefore": "92c154d05c89b6351b0d2f2c1e6be106118462f163ffedcfe021649956fe81c3",
+    "sourceHashAfter": "92c154d05c89b6351b0d2f2c1e6be106118462f163ffedcfe021649956fe81c3",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-event-aggregate-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-event-history-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.37,
+    "sourceHashBefore": "21e89a5f2724e5a67cd5337f5774f465736bed91e4849e41d0125ec201db9856",
+    "sourceHashAfter": "21e89a5f2724e5a67cd5337f5774f465736bed91e4849e41d0125ec201db9856",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-event-history-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-existing-attempt-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.37,
+    "sourceHashBefore": "e1979f679cb44979646c11b81f51cd21be57e9aed1134f9b6c8dcd374e30ac1f",
+    "sourceHashAfter": "e1979f679cb44979646c11b81f51cd21be57e9aed1134f9b6c8dcd374e30ac1f",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-existing-attempt-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-existing-opponent-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.57,
+    "sourceHashBefore": "31c931979d34805fe1905b07b4455b20379466475f538c86d26231fb0158d430",
+    "sourceHashAfter": "31c931979d34805fe1905b07b4455b20379466475f538c86d26231fb0158d430",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-existing-opponent-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-fallback-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 12.18,
+    "sourceHashBefore": "80cce2aa6342e48e550f46ae26a2eb9c81f4cd84c1b77962073aaee1837d9bee",
+    "sourceHashAfter": "80cce2aa6342e48e550f46ae26a2eb9c81f4cd84c1b77962073aaee1837d9bee",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-fallback-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.07,
+    "sourceHashBefore": "b00f868784983e4d6c54bcaa4f01cfbf1b6a596b6555a98da3e654c26c360541",
+    "sourceHashAfter": "b00f868784983e4d6c54bcaa4f01cfbf1b6a596b6555a98da3e654c26c360541",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-guess-concurrent-history-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-guess-evidence-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 8.68,
+    "sourceHashBefore": "43b04ddd06629b8c873622748e3d8985013be73fd88e2f98edcaf2c5810ac243",
+    "sourceHashAfter": "43b04ddd06629b8c873622748e3d8985013be73fd88e2f98edcaf2c5810ac243",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-guess-evidence-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-guess-feedback-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 10.63,
+    "sourceHashBefore": "59533d872309fbfa142e4361af543ef0bcd6a62bb43804a451bc92cb7277bbca",
+    "sourceHashAfter": "59533d872309fbfa142e4361af543ef0bcd6a62bb43804a451bc92cb7277bbca",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-guess-feedback-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.62,
+    "sourceHashBefore": "8ccaeaec52d31214affa6495a8d4b1fd806490ad67fe1285939c96cedf93b7aa",
+    "sourceHashAfter": "8ccaeaec52d31214affa6495a8d4b1fd806490ad67fe1285939c96cedf93b7aa",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-harness-delayed-receipts-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.07,
+    "sourceHashBefore": "0d5e52e05cde41a9ff403aae3bc792cbf04deadaa6aad26ca7d0f8d49686f7b0",
+    "sourceHashAfter": "0d5e52e05cde41a9ff403aae3bc792cbf04deadaa6aad26ca7d0f8d49686f7b0",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-harness-feedback-parity-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.87,
+    "sourceHashBefore": "81d5e8fbd831d1c9da60196e2c0bf4524b51662978095c740e287a9723ed56bc",
+    "sourceHashAfter": "81d5e8fbd831d1c9da60196e2c0bf4524b51662978095c740e287a9723ed56bc",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-hint-concurrent-history-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 11.63,
+    "sourceHashBefore": "b5af0de323c6845f47bed8b1bd6c414a5d52f750d08febcd11fcf9148ccd1176",
+    "sourceHashAfter": "b5af0de323c6845f47bed8b1bd6c414a5d52f750d08febcd11fcf9148ccd1176",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-hint-reveal-evidence-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-hints-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.02,
+    "sourceHashBefore": "ff540cf77e65955758b8f977ed935625a37c0b38c28873b981e8c756302c7062",
+    "sourceHashAfter": "ff540cf77e65955758b8f977ed935625a37c0b38c28873b981e8c756302c7062",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-hints-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-integration-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.07,
+    "sourceHashBefore": "1bc3200d0c713ea2aa1998d71d691c9b039d4db6515a935539e089f0685e63fb",
+    "sourceHashAfter": "1bc3200d0c713ea2aa1998d71d691c9b039d4db6515a935539e089f0685e63fb",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-history-integration-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.57,
+    "sourceHashBefore": "052123c937a27070c530417ed5343b6a3f2068166ca7ce0eb2c57e7c4abcf8dd",
+    "sourceHashAfter": "052123c937a27070c530417ed5343b6a3f2068166ca7ce0eb2c57e7c4abcf8dd",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-history-ledger-prototype-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-normalization-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.76,
+    "sourceHashBefore": "0f41c149007bf243c7dde1f1926ef0520a3c87179499fea8bde1b73694df340a",
+    "sourceHashAfter": "0f41c149007bf243c7dde1f1926ef0520a3c87179499fea8bde1b73694df340a",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-history-normalization-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-progression-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.62,
+    "sourceHashBefore": "76e92f9b5ab64d0d1a16a5d298221f6c68acc476a0ce977dcd1653371f2e8c7d",
+    "sourceHashAfter": "76e92f9b5ab64d0d1a16a5d298221f6c68acc476a0ce977dcd1653371f2e8c7d",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-history-progression-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 18.09,
+    "sourceHashBefore": "6433c3401bcbe4cfd05f1b02db6156e08958af1fab1666a79ef95275bd65b2b0",
+    "sourceHashAfter": "6433c3401bcbe4cfd05f1b02db6156e08958af1fab1666a79ef95275bd65b2b0",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-history-prototype-retained-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-scoring-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.02,
+    "sourceHashBefore": "99a31807d022ed43a8b80ee0f7544c1361c329b41c69d1dbf37e2051aca11202",
+    "sourceHashAfter": "99a31807d022ed43a8b80ee0f7544c1361c329b41c69d1dbf37e2051aca11202",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-history-scoring-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-hub-navigation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.02,
+    "sourceHashBefore": "bf2f467efba27b341c40e50fa0185296acec4b8ae21335411620d0aca01e30dd",
+    "sourceHashAfter": "bf2f467efba27b341c40e50fa0185296acec4b8ae21335411620d0aca01e30dd",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-hub-navigation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-keyboard-activation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.42,
+    "sourceHashBefore": "0bdd8f05ab0618ad505fa74cf743de93070fb69e0fdf5d45789be9616ecb3f13",
+    "sourceHashAfter": "0bdd8f05ab0618ad505fa74cf743de93070fb69e0fdf5d45789be9616ecb3f13",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-keyboard-activation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.07,
+    "sourceHashBefore": "642c52ba6a8ec5ac2a1880ee3a166141530271db854e377ed2d35a372e21031b",
+    "sourceHashAfter": "642c52ba6a8ec5ac2a1880ee3a166141530271db854e377ed2d35a372e21031b",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-keyboard-feedback-strength-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs",
+    "exitCode": 1,
+    "elapsedSeconds": 0.87,
+    "sourceHashBefore": "885b2a2a7e1b37c90fe0601a80c646bb5e2bb6f5a38032f63b7279e9edc6ed67",
+    "sourceHashAfter": "885b2a2a7e1b37c90fe0601a80c646bb5e2bb6f5a38032f63b7279e9edc6ed67",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-known-answer-feedback-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 3.52,
+    "sourceHashBefore": "afe9c8b2cf735a71ef392592caefd432023322363be6e8a1d49f37e58936713d",
+    "sourceHashAfter": "afe9c8b2cf735a71ef392592caefd432023322363be6e8a1d49f37e58936713d",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-known-answer-reveals-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-live-progress-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.47,
+    "sourceHashBefore": "2b2bb215a02883cb66eb88a986fddec372719787d3a5deb7660c672678b59cc8",
+    "sourceHashAfter": "2b2bb215a02883cb66eb88a986fddec372719787d3a5deb7660c672678b59cc8",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-live-progress-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-loader-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.57,
+    "sourceHashBefore": "4348ea0844708785769ac69cf8fa5926976097091dd593ebbed8a0fb1589f044",
+    "sourceHashAfter": "4348ea0844708785769ac69cf8fa5926976097091dd593ebbed8a0fb1589f044",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-loader-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 5.57,
+    "sourceHashBefore": "74df212c3bf9a5a1b8414ac58106d82882ac7c53d744c92f089d465efeb639c3",
+    "sourceHashAfter": "74df212c3bf9a5a1b8414ac58106d82882ac7c53d744c92f089d465efeb639c3",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-loader-tail-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-locale-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.87,
+    "sourceHashBefore": "d46c7ae8b72bfb216d2d602355476c9ea86961978f06c3d6cb9d1c294b0aa385",
+    "sourceHashAfter": "d46c7ae8b72bfb216d2d602355476c9ea86961978f06c3d6cb9d1c294b0aa385",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-locale-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.32,
+    "sourceHashBefore": "c913531ea9eb8f92337db783a8eb32ddabe5c8677a7dc9cabd55a54e5af55d4c",
+    "sourceHashAfter": "c913531ea9eb8f92337db783a8eb32ddabe5c8677a7dc9cabd55a54e5af55d4c",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-matchmaking-removal-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-offline-delivery-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.72,
+    "sourceHashBefore": "eb71c9394aa0f1e2d3451bcf8ccb69b5193bc465a5cee64618780c372ad5ca93",
+    "sourceHashAfter": "eb71c9394aa0f1e2d3451bcf8ccb69b5193bc465a5cee64618780c372ad5ca93",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-offline-delivery-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-outcome-isolation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.02,
+    "sourceHashBefore": "4a70f79cb14c50b8a0014f1188770d56d051558ef7c0c630a3a9e5ff7212079a",
+    "sourceHashAfter": "4a70f79cb14c50b8a0014f1188770d56d051558ef7c0c630a3a9e5ff7212079a",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-outcome-isolation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-overlay-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.87,
+    "sourceHashBefore": "81208d35aef1bfa18296e2d92d38d848e7ea6c699aeb54c464f32f2342eb19d7",
+    "sourceHashAfter": "81208d35aef1bfa18296e2d92d38d848e7ea6c699aeb54c464f32f2342eb19d7",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-overlay-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 11.53,
+    "sourceHashBefore": "011fd5c3f8aca4b570e365180e1ac0b4851053d5e4bd7c9d134987f49328b9dd",
+    "sourceHashAfter": "011fd5c3f8aca4b570e365180e1ac0b4851053d5e4bd7c9d134987f49328b9dd",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-paid-draft-checkpoints-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-paid-evidence-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.67,
+    "sourceHashBefore": "67198d6466e943d4b1fffb3af4c51aed6dc41ad000ea2415b888bb554b323216",
+    "sourceHashAfter": "67198d6466e943d4b1fffb3af4c51aed6dc41ad000ea2415b888bb554b323216",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-paid-evidence-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-pending-input-browser.mjs",
+    "exitCode": 1,
+    "elapsedSeconds": 0.66,
+    "sourceHashBefore": "91c932660db3a7b21a73df3a45ce19f0d407e63720b6447779f2694a4fc396b7",
+    "sourceHashAfter": "91c932660db3a7b21a73df3a45ce19f0d407e63720b6447779f2694a4fc396b7",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-pending-input-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-prefetch-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 5.22,
+    "sourceHashBefore": "f773fd043f5987a73cace98dc439094ac13fe65b20d5d976f29b28d961bd51ec",
+    "sourceHashAfter": "f773fd043f5987a73cace98dc439094ac13fe65b20d5d976f29b28d961bd51ec",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-prefetch-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-private-creator-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.67,
+    "sourceHashBefore": "6453e14e3f4e72e2b8ffc7783ef6b9db85bcf3ef160d472cbf5f12a3e5019b4e",
+    "sourceHashAfter": "6453e14e3f4e72e2b8ffc7783ef6b9db85bcf3ef160d472cbf5f12a3e5019b4e",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-private-creator-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-private-entry-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.37,
+    "sourceHashBefore": "28ae7d2ae8733cb471d29de93c2747d328ea1c5f29567fc20bec7d760c8d43da",
+    "sourceHashAfter": "28ae7d2ae8733cb471d29de93c2747d328ea1c5f29567fc20bec7d760c8d43da",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-private-entry-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-private-snapshot-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 9.98,
+    "sourceHashBefore": "c6bf717ecf67854e12ee7019978162e17c86ce09cd8109f8ee50e0d682957527",
+    "sourceHashAfter": "c6bf717ecf67854e12ee7019978162e17c86ce09cd8109f8ee50e0d682957527",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-private-snapshot-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-profile-refresh-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.72,
+    "sourceHashBefore": "d32ec2759f34575ae42bb43556a4cc187cf50fab4df52db08f6c7d769340332f",
+    "sourceHashAfter": "d32ec2759f34575ae42bb43556a4cc187cf50fab4df52db08f6c7d769340332f",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-profile-refresh-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.86,
+    "sourceHashBefore": "7d6d3069d9031382c494e102912fa505f84b6e448258a792b65b16833b8db9a7",
+    "sourceHashAfter": "7d6d3069d9031382c494e102912fa505f84b6e448258a792b65b16833b8db9a7",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-projected-attempt-rows-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-provider-capability-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.87,
+    "sourceHashBefore": "3b5003b78760c4154cfbc7b2679a4c09cc1e197799e35c46549a3b5fe65790d1",
+    "sourceHashAfter": "3b5003b78760c4154cfbc7b2679a4c09cc1e197799e35c46549a3b5fe65790d1",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-provider-capability-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.37,
+    "sourceHashBefore": "678f5bc03bb9127393b2eb8ba16a08e3b44f1c2c4bc16ad84b5e70b61ef96ff7",
+    "sourceHashAfter": "678f5bc03bb9127393b2eb8ba16a08e3b44f1c2c4bc16ad84b5e70b61ef96ff7",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-provider-confirmed-outcome-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-provider-observation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.22,
+    "sourceHashBefore": "d62a947be12dc376eb1ae7140181707ed1e1854c737f18beb976d42466c0f4bd",
+    "sourceHashAfter": "d62a947be12dc376eb1ae7140181707ed1e1854c737f18beb976d42466c0f4bd",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-provider-observation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.47,
+    "sourceHashBefore": "3b90e3316cbf312a192db6efa582daa6be7cd78e9433fd86b3cda68e6e1a8169",
+    "sourceHashAfter": "3b90e3316cbf312a192db6efa582daa6be7cd78e9433fd86b3cda68e6e1a8169",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-provider-record-recovery-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 3.22,
+    "sourceHashBefore": "1e71f68edb7d2e9b57a3c76d274c226cd73e3a2975cc4bcf16f13f776710c84a",
+    "sourceHashAfter": "1e71f68edb7d2e9b57a3c76d274c226cd73e3a2975cc4bcf16f13f776710c84a",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-provider-record-timeout-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 5.18,
+    "sourceHashBefore": "d14d833cd9017b730f9692ade20397a5075bbd31c3286825b339090adaf8df01",
+    "sourceHashAfter": "d14d833cd9017b730f9692ade20397a5075bbd31c3286825b339090adaf8df01",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-provider-rendered-cache-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-provider-start-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.62,
+    "sourceHashBefore": "81da177d7a0b78ee102854230b9be1001d970ae52319d658f6ea3f938eefe8cb",
+    "sourceHashAfter": "81da177d7a0b78ee102854230b9be1001d970ae52319d658f6ea3f938eefe8cb",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-provider-start-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.67,
+    "sourceHashBefore": "2f12ac5b581fe864b80fd344d2223913b7e1ac0d1cf1c8ff345007f45b9dd994",
+    "sourceHashAfter": "2f12ac5b581fe864b80fd344d2223913b7e1ac0d1cf1c8ff345007f45b9dd994",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-quit-focus-containment-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.67,
+    "sourceHashBefore": "2adb554454ff92038b41103a3f7cbb1ca542e15e6397ccc1e86040dd22db6a38",
+    "sourceHashAfter": "2adb554454ff92038b41103a3f7cbb1ca542e15e6397ccc1e86040dd22db6a38",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-quit-focus-recovery-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-readiness-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 21.6,
+    "sourceHashBefore": "bdc1ede8e04050988211aec4cdfdb59e42bf669032c16910876d84f5d2870659",
+    "sourceHashAfter": "bdc1ede8e04050988211aec4cdfdb59e42bf669032c16910876d84f5d2870659",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-readiness-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-recovery-clock-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.37,
+    "sourceHashBefore": "9f9ad15f5b97ade0518018f889358a6951197d88430e0d854ed4bd3178161db0",
+    "sourceHashAfter": "9f9ad15f5b97ade0518018f889358a6951197d88430e0d854ed4bd3178161db0",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-recovery-clock-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.07,
+    "sourceHashBefore": "2d23f14b0415bea00fae91c96a14901df5c8af5767fd3eeb497c3034e20811b4",
+    "sourceHashAfter": "2d23f14b0415bea00fae91c96a14901df5c8af5767fd3eeb497c3034e20811b4",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-reddit-history-opt-in-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-reentry-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.92,
+    "sourceHashBefore": "1706591a6e35d92c44732027b20f398fdceb41427b9eea6c7832968a25574cbe",
+    "sourceHashAfter": "1706591a6e35d92c44732027b20f398fdceb41427b9eea6c7832968a25574cbe",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-reentry-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-rendered-entry-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 3.82,
+    "sourceHashBefore": "f28399b865165934b1be2ff55a9bd56cc429d5d000601040e02058bda629374c",
+    "sourceHashAfter": "f28399b865165934b1be2ff55a9bd56cc429d5d000601040e02058bda629374c",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-rendered-entry-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-reset-clock-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.01,
+    "sourceHashBefore": "2ef360709ee1f11a73b42e76af821c70211f2cf5c3e25e7acda79d1d4c528253",
+    "sourceHashAfter": "2ef360709ee1f11a73b42e76af821c70211f2cf5c3e25e7acda79d1d4c528253",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-reset-clock-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-resolver-failure-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.12,
+    "sourceHashBefore": "78c4a2874690ab967ee636aefe7c20a7ef0a506d0d3166c63b1b499538c0abbb",
+    "sourceHashAfter": "78c4a2874690ab967ee636aefe7c20a7ef0a506d0d3166c63b1b499538c0abbb",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-resolver-failure-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-resolver-reentry-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.42,
+    "sourceHashBefore": "7402cfc18a4a638a1ea95bd8771891fddb367f1ecf2acd054dc91fd061b6f7ec",
+    "sourceHashAfter": "7402cfc18a4a638a1ea95bd8771891fddb367f1ecf2acd054dc91fd061b6f7ec",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-resolver-reentry-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.71,
+    "sourceHashBefore": "a6d1aa1bfa29b088b1e64e5f0932e66ba2493dc7e6dca64b69a1ed98ab1ef75d",
+    "sourceHashAfter": "a6d1aa1bfa29b088b1e64e5f0932e66ba2493dc7e6dca64b69a1ed98ab1ef75d",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-restored-attempt-rows-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-resume-read-observation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.67,
+    "sourceHashBefore": "28f3395fd64e6a22eb54ca1a3bca37a6eee3527d6a0a592e44ebf4cc9d1d73b7",
+    "sourceHashAfter": "28f3395fd64e6a22eb54ca1a3bca37a6eee3527d6a0a592e44ebf4cc9d1d73b7",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-resume-read-observation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-resume-selection-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.72,
+    "sourceHashBefore": "80259bf23221b71560b1c0ae1896ded57fdf7b0b18f369bd7e44027ad474bd10",
+    "sourceHashAfter": "80259bf23221b71560b1c0ae1896ded57fdf7b0b18f369bd7e44027ad474bd10",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-resume-selection-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-retired-search-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.77,
+    "sourceHashBefore": "7da6416d8f38aef93abbe46436bb9f09021e7af45fc612f57cb5623effb6b646",
+    "sourceHashAfter": "7da6416d8f38aef93abbe46436bb9f09021e7af45fc612f57cb5623effb6b646",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-retired-search-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-retirement-journal-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 13.68,
+    "sourceHashBefore": "e2c9084091a657246589c657528e40b01f791261d474f23cda26ed47b6fffd1b",
+    "sourceHashAfter": "e2c9084091a657246589c657528e40b01f791261d474f23cda26ed47b6fffd1b",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-retirement-journal-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-rule-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.37,
+    "sourceHashBefore": "32bd6ffd64d3a2c1cb7e8c99a7f5944a7292c704db9ded21eb916b90f03bce04",
+    "sourceHashAfter": "32bd6ffd64d3a2c1cb7e8c99a7f5944a7292c704db9ded21eb916b90f03bce04",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-rule-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-safety-selection-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.22,
+    "sourceHashBefore": "ffe8cf042ddf27f135e4f19c673969d139f5cd73c8e8b82f265903c76fd81ede",
+    "sourceHashAfter": "ffe8cf042ddf27f135e4f19c673969d139f5cd73c8e8b82f265903c76fd81ede",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-safety-selection-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-search-journal-observation-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.76,
+    "sourceHashBefore": "fc4a0084853bb8fadd7f97c902e191cc266f1acfb2c43b99f5a730a4a8dc6a0e",
+    "sourceHashAfter": "fc4a0084853bb8fadd7f97c902e191cc266f1acfb2c43b99f5a730a4a8dc6a0e",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-search-journal-observation-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-session-resources-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 5.82,
+    "sourceHashBefore": "0fafe048a69053c0388e7d485efb720851e456ad0916d1bcd47aaccfbcf88b2d",
+    "sourceHashAfter": "0fafe048a69053c0388e7d485efb720851e456ad0916d1bcd47aaccfbcf88b2d",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-session-resources-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.02,
+    "sourceHashBefore": "07ffed8d02b6b273b3a0aa4140cf533386eae8bc7dd9c163eefd0bdb6ec56698",
+    "sourceHashAfter": "07ffed8d02b6b273b3a0aa4140cf533386eae8bc7dd9c163eefd0bdb6ec56698",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-sparse-history-refresh-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-start-category-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.92,
+    "sourceHashBefore": "3f9b77ef67c3860edc610900884a079d2ee7c7f73f719917bc615c5a6e59ae19",
+    "sourceHashAfter": "3f9b77ef67c3860edc610900884a079d2ee7c7f73f719917bc615c5a6e59ae19",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-start-category-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-start-opponent-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.17,
+    "sourceHashBefore": "fa0cafbfa77caf30beee597f03575c22384450652775af81f3fbe36bdcf1af16",
+    "sourceHashAfter": "fa0cafbfa77caf30beee597f03575c22384450652775af81f3fbe36bdcf1af16",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-start-opponent-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-start-origin-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.72,
+    "sourceHashBefore": "8f20850b8a84f6d6f3a10358deb01d43685febaff53ddc844f1833ab62d15356",
+    "sourceHashAfter": "8f20850b8a84f6d6f3a10358deb01d43685febaff53ddc844f1833ab62d15356",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-start-origin-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.17,
+    "sourceHashBefore": "520e4bfa5887abcdb1f2ef04fe8a1d17f42e0b36049aca991dcce30c85c6d18e",
+    "sourceHashAfter": "520e4bfa5887abcdb1f2ef04fe8a1d17f42e0b36049aca991dcce30c85c6d18e",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-start-receipt-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-start-selection-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.52,
+    "sourceHashBefore": "214643a40d696e99e71c64e2cb4bdb8e5299b4db5b3ff3d1801af49d6b1784bc",
+    "sourceHashAfter": "214643a40d696e99e71c64e2cb4bdb8e5299b4db5b3ff3d1801af49d6b1784bc",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-start-selection-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-startup-recovery-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.52,
+    "sourceHashBefore": "d854fed558703610f2b5dc52453110b375761834430575632c5420f84a1139ee",
+    "sourceHashAfter": "d854fed558703610f2b5dc52453110b375761834430575632c5420f84a1139ee",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-startup-recovery-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-storage-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.77,
+    "sourceHashBefore": "4e58dcb6191678f21f8e5d646d042e1369de61d3d77a44340018703bca1ff61b",
+    "sourceHashAfter": "4e58dcb6191678f21f8e5d646d042e1369de61d3d77a44340018703bca1ff61b",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-storage-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-tick-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.77,
+    "sourceHashBefore": "fa8a4b01fabdd8b5704c4ac69aa44743cb06d909467b1f00967982a8efb43933",
+    "sourceHashAfter": "fa8a4b01fabdd8b5704c4ac69aa44743cb06d909467b1f00967982a8efb43933",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-tick-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-time-rollover-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.12,
+    "sourceHashBefore": "b74884e6c16b96b9c1e495ec7171621d9f8d2434c8c7d28e0ab58149d52e402c",
+    "sourceHashAfter": "b74884e6c16b96b9c1e495ec7171621d9f8d2434c8c7d28e0ab58149d52e402c",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-time-rollover-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-timeout-recovery-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.92,
+    "sourceHashBefore": "a5970726a4a82f39cbec76083d035b8ed6f528c9e9f2c48d8c52225aadeea042",
+    "sourceHashAfter": "a5970726a4a82f39cbec76083d035b8ed6f528c9e9f2c48d8c52225aadeea042",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-timeout-recovery-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-timer-ownership-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.42,
+    "sourceHashBefore": "8b3b01a926f08af9bdac954fe2fb0882edeabecce87cac834601ee8c81b7ffc1",
+    "sourceHashAfter": "8b3b01a926f08af9bdac954fe2fb0882edeabecce87cac834601ee8c81b7ffc1",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-timer-ownership-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-unscored-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 21.69,
+    "sourceHashBefore": "aa6ee58c68ba4d86e8d3d7fc9148c8b1d18be492f0a8abb98727cdbaf3764ce3",
+    "sourceHashAfter": "aa6ee58c68ba4d86e8d3d7fc9148c8b1d18be492f0a8abb98727cdbaf3764ce3",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-unscored-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.97,
+    "sourceHashBefore": "dea3c59a7af6f0ae2ef1182ef7ca08db373700be6cc728e6f8173af457a6a8e1",
+    "sourceHashAfter": "dea3c59a7af6f0ae2ef1182ef7ca08db373700be6cc728e6f8173af457a6a8e1",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-visibility-retirement-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-waiting-selection-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.82,
+    "sourceHashBefore": "be4586c941a48a9c6918d4b36b2afb05da00baa66c119f0e5b0bd3142861f9e1",
+    "sourceHashAfter": "be4586c941a48a9c6918d4b36b2afb05da00baa66c119f0e5b0bd3142861f9e1",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-waiting-selection-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-wrong-attempt-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 6.57,
+    "sourceHashBefore": "419da2c2062cb3c13cb4f987fba93dd120b683d06aab1180ae39d32fbb331dc5",
+    "sourceHashAfter": "419da2c2062cb3c13cb4f987fba93dd120b683d06aab1180ae39d32fbb331dc5",
+    "log": "artifacts/race-history-scoring/browser-inventory/verify-race-wrong-attempt-browser.log"
+  }
+]

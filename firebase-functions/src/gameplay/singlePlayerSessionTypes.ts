@@ -2,7 +2,7 @@ import type {PlayerProgress} from "../validation/firestoreSchemas";
 import type {
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "../validation/requestSchemas";
+} from "@qwordly/core/validation/requestSchemas";
 
 /** Authoritative response for one replay-safe hint purchase. */
 export type AuthoritativeHintResult = {

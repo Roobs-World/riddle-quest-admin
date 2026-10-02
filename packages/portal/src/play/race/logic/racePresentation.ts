@@ -6,9 +6,9 @@ type RaceRiddle = NonNullable<RaceRunView["currentRiddle"]>;
 
 /** Formats milliseconds as the minute-and-tenths display used by Race to 10. */
 export const formatRaceTime = (milliseconds: number): string => {
-  /** Non-negative elapsed time expressed in seconds. */
-  const seconds = Math.max(0, milliseconds) / 1_000;
-  return `${Math.floor(seconds / 60)}:${(seconds % 60).toFixed(1).padStart(4, "0")}`;
+  /** Round the entire duration once so the last tenth carries into the minute field. */
+  const tenths = Math.round(Math.max(0, milliseconds) / 100);
+  return `${Math.floor(tenths / 600)}:${Math.floor(tenths % 600 / 10).toString().padStart(2, "0")}.${tenths % 10}`;
 };
 
 /** Creates an editable answer attempt populated with server-revealed letters. */
@@ -182,6 +182,9 @@ export const applyRaceOutcome = (run: RaceRunView, outcome: RaceOutcome): RaceRu
   currentRiddle: null,
 });
 
+/** Confirmed presence outranks absence, and a correct position outranks presence. */
+const raceFeedbackStrength: Record<Feedback, number> = {red: 0, yellow: 1, green: 2};
+
 /** Keeps the strongest server-scored feedback observed for each keyboard letter. */
 export const getRaceLetterStates = (guesses: readonly ScoredGuess[]): Record<string, Feedback> => {
   /** Provides states behavior. */
@@ -190,7 +193,7 @@ export const getRaceLetterStates = (guesses: readonly ScoredGuess[]): Record<str
     scoredGuess.guess.forEach((letter, index) => {
       /** Provides status behavior. */
       const status = scoredGuess.feedback[index];
-      if (!letter || !status || states[letter.toLowerCase()] === "green") return;
+      if (!letter || !status || (raceFeedbackStrength[states[letter.toLowerCase()]] ?? 0) > (raceFeedbackStrength[status] ?? 0)) return;
       states[letter.toLowerCase()] = status;
     });
   }

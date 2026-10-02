@@ -1,0 +1,35 @@
+{
+  "taskId": "multiplayer:race-harness-feedback-parity",
+  "observedAt": "2026-10-02T02:13:05.922501+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 106,
+  "dashboardReceiptRecorded": false,
+  "reason": "Shared documentation gate reports 35 missing declarations; another chat remains active on hosted verification. Preserve its implementation and evidence.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/testing/fakeRaceServices.ts": "09abda75e784e0430916923867ccc772a664163967276021dbc160d2af87ec60",
+    "packages/portal/src/play/race/__tests__/fakeRaceFeedbackParity.test.ts": "27aba0625f566d247ed5bf5c99f71b3b1be4f10291da0a180803a93696156ef2",
+    "packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs": "0d5e52e05cde41a9ff403aae3bc792cbf04deadaa6aad26ca7d0f8d49686f7b0",
+    "docs/development-tasks/race-harness-feedback-parity.json": "36458c82bb45b943637fd9d831610c3321bec6964b6a4a797e29c865a286a3f2",
+    "docs/evidence/multiplayer-harness-feedback-parity.md": "f909ffd986b73eabab32f32f19561bcab066907b30bc6a29a1196f661b1ce290"
+  },
+  "passedAtBatchSnapshot": {
+    "baselineRegressionFailures": 3,
+    "baselineControls": 2,
+    "focusedTests": 30,
+    "harnessBrowserCases": 8,
+    "retainedRedditBrowserCases": 8,
+    "retainedProjectedBrowserCases": 10,
+    "clientTests": 1934,
+    "clientSuites": 239,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

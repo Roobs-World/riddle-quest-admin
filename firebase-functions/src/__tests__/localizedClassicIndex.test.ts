@@ -1,0 +1,63 @@
+import {beforeEach, describe, expect, it, jest} from "@jest/globals";
+
+/** Controlled adapter records collection operations. */
+const mockCollection = jest.fn<(path: string) => unknown>();
+/** Controlled adapter records create operations. */
+const mockCreate = jest.fn();
+/** Controlled adapter records set operations. */
+const mockSet = jest.fn();
+/** Controlled adapter records commit operations. */
+const mockCommit = jest.fn<() => Promise<void>>();
+/** Controlled adapter records doc operations. */
+const mockDoc = jest.fn((id: string) => ({id}));
+
+jest.mock("../shared/firebaseAdmin", () => ({admin: {
+  firestore: () => ({collection: mockCollection, batch: () => ({create: mockCreate, set: mockSet, commit: mockCommit})}),
+}}));
+jest.mock("../shared/sentry", () => ({captureException: jest.fn()}));
+
+import {getNextClassicIndex, storeLocalizedClassicRiddlesInFirestore} from "../riddles/riddleGenerationRepository";
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockCommit.mockResolvedValue();
+  mockCollection.mockImplementation((path) => {
+    /** Prepared catalog positions preserve bounded contiguous buffering. */
+    const indices = path === "riddles" ? [900] : path === "localizedRiddles/ko/riddles" ? [4] : [];
+    /** Controlled catalog query supplies deterministic playable content. */
+    const query = {
+      where: jest.fn().mockReturnThis(), orderBy: jest.fn().mockReturnThis(), limit: jest.fn().mockReturnThis(),
+      get: jest.fn(async () => ({empty: indices.length === 0, docs: indices.map(classicIndex => ({data: () => ({classicIndex})}))})),
+      doc: mockDoc,
+    };
+    return query;
+  });
+});
+
+describe("localized Classic append boundaries", () => {
+  it("starts an empty locale at1 even when legacy supply ends at900", async () => {
+    expect(await getNextClassicIndex("it")).toBe(1);
+    expect(mockCollection).toHaveBeenCalledWith("localizedRiddles/it/riddles");
+    expect(mockCollection).not.toHaveBeenCalledWith("riddles");
+  });
+
+  it("appends after the locale's own highest index", async () => {
+    expect(await getNextClassicIndex("ko")).toBe(5);
+  });
+
+  it("retains the legacy collection boundary for callers without a locale", async () => {
+    expect(await getNextClassicIndex()).toBe(901);
+  });
+
+  it("creates localized documents without replacing existing canonical content", async () => {
+    await storeLocalizedClassicRiddlesInFirestore("it", [{question: "A familiar clue", answer: "word"}], 1);
+    expect(mockCreate).toHaveBeenCalledWith({id: "classic_1"}, expect.objectContaining({classicIndex: 1, locale: "it", canonicalKey: "classic:1:it"}));
+    expect(mockSet).not.toHaveBeenCalled();
+  });
+
+  it("surfaces a concurrent creation conflict without overwriting any document", async () => {
+    mockCommit.mockRejectedValueOnce(new Error("already exists"));
+    await expect(storeLocalizedClassicRiddlesInFirestore("it", [{question: "A familiar clue", answer: "word"}], 1)).rejects.toThrow("Failed to store");
+    expect(mockSet).not.toHaveBeenCalled();
+  });
+});

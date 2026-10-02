@@ -1,18 +1,17 @@
-import {installJestSdkHarness} from "./authentication.jest-sdk-harness";
+import {openAuthenticationHarness} from "./authenticationHarness.jest-playwright.support";
 import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support";
 
 import {
   type AuthHarnessState,
   advanceToRegistration,
   enterRegisteredGame,
-  installJestSdkRequestRoute,
   verifyShortJestPreview,
   verifySlowStartupWatchdog,
   verifyDelayedHostHandshake,
@@ -24,9 +23,6 @@ import {
   openProfileAfterGuidance,
   solveFakeRace,
 } from "./authentication.jest-playwright.support";
-import {createFakeRaceServices} from "../../play/race/testing/fakeRaceServices";
-import {projectRaceOutcome} from "../../play/race/logic/racePresentation";
-import type {RaceRunView} from "@qwordly/core/race";
 import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
@@ -45,166 +41,9 @@ const getHarnessState = (page: Page) =>
         }
       ).__RIDDLE_QUEST_JEST_AUTH_TEST__,
   );
-/** Provides open harness behavior. */
-const openHarness = async (
-  browser: Browser,
-  options: {
-    /** Stores registered. */
-    registered?: boolean;
-    /** Stores scenario. */
-    scenario?: string;
-    /** Stores custom name. */
-    customName?: string;
-    /** Stores invite kind. */
-    inviteKind?: string;
-    /** Stores campaign. */
-    campaign?: string;
-    /** Stores reference. */
-    reference?: string;
-    /** Stores inviter name. */
-    inviterName?: string;
-    /** Stores game mode. */
-    gameMode?: string;
-    /** Real load lifecycle with absent Daily supplied by the trusted fake authority. */
-    dailyUnavailable?: boolean;
-    /** Trusted fake authority confirms Daily completion before Classic entry. */
-    dailyCompleted?: boolean;
-    /** Stores riddle id. */
-    riddleId?: string;
-    /** Stores challenge id. */
-    challengeId?: string;
-    /** Stores challenge destination. */
-    challengeDestination?: string;
-    /** Stores harness. */
-    harness?: "jest-auth" | "race-auth";
-    /** Stores player id. */
-    playerId?: string;
-    /** Stores shared race. */
-    sharedRace?: boolean;
-    /** Stores race start delay ms. */
-    raceStartDelayMs?: number;
-    /** Stores race outcome delay ms. */
-    raceOutcomeDelayMs?: number;
-    /** Number of outcome requests that fail before the harness recovers. */
-    raceOutcomeFailures?: number;
-    /** Stores race guess delay ms. */
-    raceGuessDelayMs?: number;
-    /** Stores race skip delay ms. */
-    raceSkipDelayMs?: number;
-    /** Whether late ghost guesses reproduce the production rejection. */
-    raceRejectLateGuess?: boolean;
-    /** Typed invitation adapter scenario injected before the game mounts. */
-    existingCompletedRun?: boolean;
-    /** Injected creator/recipient entry behavior for the browser invitation scenarios. */
-    invitationRole?: "creator" | "recipient" | "unavailable" | "public-creator" | "public-recipient";
-  } = {},
-) => {
-  /** Provides context behavior. */
-  const context = await browser.newContext({viewport: {width: 390, height: 844}});
-  /** Provides page behavior. */
-  const page = await context.newPage();
-  /** Captures uncaught startup failures, including asynchronous translation errors. */
-  const pageErrors: string[] = [];
-  page.on("pageerror", (error) => pageErrors.push(error.message));
-  await installJestSdkRequestRoute(page, options.scenario);
-  await installJestSdkHarness(page, options.scenario);
-  if (options.existingCompletedRun) {
-    /** Canonical fake authority run used to construct completed-entry recovery evidence. */
-    const initial = (await createFakeRaceServices().startRace({locale: "en", categoryId: "mixed", requestId: "played-fixture"})).run;
-    /** Canonical run fixture retains identity and competitive facts for recovery assertions. */
-    const run: RaceRunView = {...initial, challengeId: "played-entry", role: "challenger", status: "completed", correctCount: 10,
-      currentRiddle: null, wallElapsedMs: 60000, adjustedElapsedMs: 60000, opponent: {displayName: "Nova", adjustedFinishMs: 90000, events: []}};
-    /** Competitive result implied by the completed canonical fixture. */
-    const outcome = projectRaceOutcome(run, run.adjustedElapsedMs)!;
-    await page.addInitScript(({run, outcome}) => {
-      /** Original browser event delivery retained while the harness intercepts authority receipts. */
-      const dispatch = window.dispatchEvent.bind(window);
-      /** Observed bridge operations used to assert recovery without a second start. */
-      const calls: string[] = [];
-      Object.defineProperty(window, "__PLAYED_ENTRY_COMMANDS__", {get: () => calls});
-      window.dispatchEvent = event => {
-        /** Bridge envelope received by the injected authority interception. */
-        const detail = (event as CustomEvent).detail;
-        if (event.type === "riddle-quest:game-to-host" && detail?.type) calls.push(detail.type);
-        if (event.type === "riddle-quest:host-to-game") {
-          /** Correlated authority operation selected from the bridge receipt. */
-          const operation = detail?.payload?.operation;
-          if (operation === "raceEntry") detail.payload = {operation, ok: true, data: {status: "ready", viewerRole: "recipient", existingRunId: run.runId,
-            serverNowMs: Date.now(), challenge: {challengeId: "played-entry", locale: "en", creator: {displayName: "Nova"}, categoryId: "mixed", targetCorrect: 10,
-              adjustedTimeToBeatMs: 90000, rulesVersion: "race10_v1", expiresAtMs: Date.now() + 60000, status: "active"}}};
-          else if (operation === "raceResume") detail.payload = {operation, ok: true, data: {run}};
-          else if (operation === "raceOutcome") detail.payload = {operation, ok: true, data: outcome};
-        }
-        return dispatch(event);
-      };
-    }, {run, outcome});
-  }
-  if (options.invitationRole) await page.addInitScript(role => {
-    /** Authority adapter emits readiness facts for an opaque invitation. */
-    const dispatch = window.dispatchEvent.bind(window);
-    /** Durable terminal state owned by this injected authority adapter. */
-    let cancelled = false;
-    /** Visible read count exposes browser visibility suspension. */
-    let reads = 0;
-    Object.defineProperty(window, "__INVITATION_READS__", {get: () => reads});
-    window.dispatchEvent = event => {
-      /** Untrusted bridge envelope is replaced before any consumer parses it. */
-      const detail = (event as CustomEvent).detail;
-      if (event.type === "riddle-quest:host-to-game" && ["raceEntry", "raceInviteCancel"].includes(detail?.payload?.operation)) {
-        if (role === "unavailable") {
-          detail.payload = {operation: detail.payload.operation, ok: true, data: {
-            status: "unavailable", reason: "missing", serverNowMs: Date.now(),
-          }};
-          return dispatch(event);
-        }
-        if (role === "public-creator" || role === "public-recipient") {
-          detail.payload = {operation: detail.payload.operation, ok: true, data: {
-            status: "ready", viewerRole: role === "public-creator" ? "creator" : "recipient", serverNowMs: Date.now(),
-            challenge: {challengeId: "public-entry", locale: "en", creator: {displayName: "Nova"}, categoryId: "history",
-              targetCorrect: 10, adjustedTimeToBeatMs: 45000, rulesVersion: "race10_v1", expiresAtMs: Date.now() + 60000, status: "active"},
-          }};
-          return dispatch(event);
-        }
-        if (detail.payload.operation === "raceEntry") reads++;
-        else cancelled = true;
-        detail.payload = {operation: detail.payload.operation, ok: true, data: {
-          status: cancelled ? "cancelled" : "waiting", serverNowMs: Date.now(),
-          invitation: {role, claimState: "claimed", publicationState: "pending", canCancel: role === "creator" && !cancelled, expiresAtMs: Date.now() + 60000},
-        }};
-      }
-      return dispatch(event);
-    };
-  }, options.invitationRole);
-  /** Provides query behavior. */
-  const query = new URLSearchParams({harness: options.harness ?? "jest-auth"});
-  if (options.registered) query.set("registered", "1");
-  if (options.customName) query.set("customName", options.customName);
-  if (options.inviteKind) query.set("inviteKind", options.inviteKind);
-  if (options.campaign) query.set("campaign", options.campaign);
-  if (options.reference) query.set("reference", options.reference);
-  if (options.inviterName) query.set("inviterName", options.inviterName);
-  if (options.gameMode) query.set("gameMode", options.gameMode);
-  if (options.dailyUnavailable) query.set("dailyUnavailable", "1");
-  if (options.dailyCompleted) query.set("dailyCompleted", "1");
-  if (options.riddleId) query.set("riddleId", options.riddleId);
-  if (options.challengeId) query.set("challengeId", options.challengeId);
-  if (options.challengeDestination) query.set("challengeDestination", options.challengeDestination);
-  if (options.playerId) query.set("playerId", options.playerId);
-  if (options.sharedRace) query.set("sharedRace", "1");
-  if (options.raceStartDelayMs) query.set("raceStartDelayMs", String(options.raceStartDelayMs));
-  if (options.raceOutcomeDelayMs) query.set("raceOutcomeDelayMs", String(options.raceOutcomeDelayMs));
-  if (options.raceOutcomeFailures) query.set("raceOutcomeFailures", String(options.raceOutcomeFailures));
-  if (options.raceGuessDelayMs) query.set("raceGuessDelayMs", String(options.raceGuessDelayMs));
-  if (options.raceSkipDelayMs) query.set("raceSkipDelayMs", String(options.raceSkipDelayMs));
-  if (options.raceRejectLateGuess) query.set("raceRejectLateGuess", "1");
-  /** Provides navigation behavior. */
-  const navigation = page.goto(`${baseUrl}/?${query}`);
-  if (options.scenario === "sdk-request-delay") {
-    await page.locator("#root > *").waitFor({timeout: 2_000});
-  }
-  await navigation;
-  return {context, page, pageErrors};
-};
+/** Binds each isolated page to the suite-owned local server. */
+const openHarness = (browser: Browser, options: Parameters<typeof openAuthenticationHarness>[2] = {}) =>
+  openAuthenticationHarness(browser, baseUrl, options);
 
 describeBrowser("Jest authentication integration", () => {
   /** Provides browser behavior. */
@@ -303,16 +142,34 @@ describeBrowser("Jest authentication integration", () => {
     await verifySlowStartupWatchdog(page, pageErrors);
   }, 60_000);
 
-  it("recovers unavailable Daily startup to playable Classic and keeps the reason visible", async () => {
-    /** Isolated browser context and captured page errors for this player pathway. */
+  it("uses the restored language for the first hosted game handshake after reload", async () => {
+    /** Extracts the fixture or authority fields required by this transition. */
+    const {context, page, pageErrors} = await openHarness(browser, {registered: true, scenario: "returning-turkish"});
+    try {
+      await page.addInitScript(() => {
+        window.addEventListener("riddle-quest:host-to-game", event => {
+          /** Correlated bridge envelope exposes the authoritative operation. */
+          const message = (event as CustomEvent<HostToGameMessage>).detail;
+          if (message.type === "host:init" && !sessionStorage.getItem("test:first-host-locale")) {
+            sessionStorage.setItem("test:first-host-locale", message.payload.locale);
+          }
+        });
+      });
+      await page.reload();
+      await page.waitForFunction(() => sessionStorage.getItem("test:first-host-locale") !== null);
+      expect(await page.evaluate(() => sessionStorage.getItem("test:first-host-locale"))).toBe("tr");
+      expect(await page.locator("html").getAttribute("lang")).toBe("tr");
+      expect(pageErrors).toEqual([]);
+    } finally {await context.close();}
+  });
+
+
+  it("keeps unavailable Daily visible without silently opening Classic", async () => {
+    /** Extracts the fixture or authority fields required by this transition. */
     const {context, page} = await openHarness(browser, {registered: true, gameMode: "challenge", dailyUnavailable: true});
     try {
-      await enterRegisteredGame(page);
-      await page.getByRole("heading", {name: "What has keys but cannot open doors?", exact: true}).waitFor({timeout: 15000});
-      await page.getByRole("button", {name: "Settings", exact: true}).waitFor();
-      expect(await page.getByRole("button", {name: "Q", exact: true}).isEnabled()).toBe(true);
-      expect(await page.getByText("No daily challenge available at the moment.", {exact: true}).isVisible()).toBe(true);
-      expect(await page.getByText("Preparing your game…", {exact: true}).count()).toBe(0);
+      await page.getByRole("status").filter({hasText: "No daily challenge available at the moment."}).waitFor({timeout: 15000});
+      expect(await page.getByRole("heading", {name: "What has keys but cannot open doors?", exact: true}).count()).toBe(0);
     } finally { await context.close(); }
   });
 
@@ -336,8 +193,8 @@ describeBrowser("Jest authentication integration", () => {
   });
 
   it("refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile", async () => {
-    /** Starts a registered wallet in the injected SDK harness. */
-    const {page} = await openHarness(browser, {registered: true});
+    /** Explicit Daily entry keeps the canonical riddle available for subscription assertions. */
+    const {page} = await openHarness(browser, {registered: true, gameMode: "challenge"});
     await enterRegisteredGame(page, /I speak without a mouth/i);
     await page.locator(".game-mode-label").getByText(/daily/i).waitFor();
     await page
@@ -379,6 +236,47 @@ describeBrowser("Jest authentication integration", () => {
     await page.getByRole("button", {name: "Close", exact: true}).click();
     await page.getByRole("button", {name: /buy coins/i}).first().click();
     await page.getByRole("button", {name: /start free trial/i}).waitFor();
+  }, 30_000);
+
+  it("delivers native analytics for startup, controls, and confirmed gameplay", async () => {
+    /** Isolated Classic fixture with Daily already completed. */
+    const {context, page, pageErrors} = await openHarness(browser, {registered: true, gameMode: "classic", dailyCompleted: true});
+    try {
+      await enterRegisteredGame(page);
+      for (const letter of "PIANO") await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await page.getByRole("button", {name: /submit/i}).click();
+      await page.waitForFunction(() => window.__RIDDLE_QUEST_JEST_AUTH_TEST__?.calls.some(call => call.startsWith("sdk.captureEvent:level_end:")));
+      /** Events observed at the provider boundary. */
+      const events = (await getHarnessState(page)).calls.filter(call => call.startsWith("sdk.captureEvent:"));
+      expect(events.filter(call => call.startsWith("sdk.captureEvent:session_started:"))).toHaveLength(1);
+      expect(events.some(call => call.startsWith("sdk.captureEvent:screen_view:"))).toBe(true);
+      expect(events.some(call => call.startsWith("sdk.captureEvent:button_press:"))).toBe(true);
+      expect(events.some(call => call.includes('"success":true'))).toBe(true);
+      expect(pageErrors).toEqual([]);
+    } catch (error) {
+      throw new Error(`${String(error)}; body: ${await page.locator("body").innerText()}; errors: ${JSON.stringify(pageErrors)}`);
+    } finally { await context.close(); }
+  }, 30_000);
+
+  it("refreshes an unavailable cancellation without claiming it succeeded or revoking paid access", async () => {
+    /** Extracts the fixture or authority fields required by this transition. */
+    const {page} = await openHarness(browser, {registered: true, scenario: "subscription-cancel-inactive"});
+    await enterRegisteredGame(page);
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: true})));
+    await openProfileAfterGuidance(page);
+    /** Controlled cancellation result cannot revoke access before confirmation. */
+    const cancel = page.getByRole("button", {name: /cancel subscription/i});
+    await cancel.waitFor();
+    await cancel.click();
+    await page.getByText(/Cancellation is unavailable for this subscription/).waitFor();
+    expect(await cancel.isEnabled()).toBe(false);
+    expect(await page.getByText("Premium active", {exact: true}).isVisible()).toBe(true);
+    expect(await page.getByText(/renewal cancelled/i).count()).toBe(0);
+    expect(await page.getByRole("alert").filter({hasText: /unexpected error/i}).count()).toBe(0);
+    await page.getByRole("button", {name: "Close", exact: true}).click();
+    await page.getByRole("button", {name: /buy coins/i}).first().click();
+    await page.getByText("Premium active", {exact: true}).waitFor();
+    expect(await page.getByRole("button", {name: /start free trial|^subscribe$/i}).count()).toBe(0);
   }, 30_000);
 
   it("reports first_milestone after a returning player solves a riddle", async () => {

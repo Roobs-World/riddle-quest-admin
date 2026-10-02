@@ -1,0 +1,5 @@
+{
+  "harnessBodyUnchanged": true,
+  "suiteAndAssertionsByteIdentical": true,
+  "onlyNewInput": "Suite-owned baseUrl passed explicitly instead of module capture"
+}

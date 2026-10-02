@@ -1,6 +1,6 @@
 import {FieldPath, type Firestore, type Query, type QueryDocumentSnapshot} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
-import {UsernameSchema} from "../validation/requestSchemas";
+import {UsernameSchema} from "@qwordly/core/validation/requestSchemas";
 import {
   createUsernameReservationFields,
   reservationIdForUserData,

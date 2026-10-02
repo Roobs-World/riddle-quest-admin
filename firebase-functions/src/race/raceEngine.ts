@@ -98,6 +98,8 @@ export type RaceRunRecord = {
   correctCount: number;
   /** Stores guesses used. */
   guessesUsed: number;
+  /** Current-question confirmed guesses; absent on supported legacy runs. */
+  guessHistory?: string[];
   /** Legacy first-hint marker retained for existing persisted runs. */
   hintUsed: boolean;
   /** Stores revealed letters. */
@@ -179,6 +181,7 @@ export function raceHasLegacyTerminalGrant(run: Pick<RaceRunRecord, "recordVersi
 /** Provides copy run behavior. */
 const copyRun = (run: RaceRunRecord): RaceRunRecord => ({
   ...run,
+  ...(run.guessHistory ? {guessHistory: [...run.guessHistory]} : {}),
   riddles: run.riddles.map((riddle) => ({...riddle})),
   revealedLetters: run.revealedLetters.map((letter) => ({...letter})),
   events: run.events.map((event) => ({...event})),
@@ -301,6 +304,7 @@ const appendEvent = (
 const advanceRiddle = (run: RaceRunRecord, nowMs: number): void => {
   run.currentPosition += 1;
   run.guessesUsed = 0;
+  run.guessHistory = [];
   run.hintUsed = false;
   run.revealedLetters = [];
   if (run.currentPosition >= run.riddles.length && run.correctCount < raceRules(run).targetCorrect) {
@@ -361,6 +365,7 @@ export function applyRaceGuess(
   /** Indicates whether is correct. */
   const isCorrect = normalizeAnswer(inputData.guess, run.locale) === normalizeAnswer(riddle.answer, run.locale);
   run.guessesUsed += 1;
+  run.guessHistory = [...(run.guessHistory ?? []), inputData.guess.trim()];
 
   if (isCorrect) {
     run.correctCount += 1;
@@ -463,7 +468,7 @@ export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
 }
 
 /** Projects server-only run state, optionally including the complete immutable evaluation deck. */
-export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvaluation = false): RaceRunView {
+export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvaluation = false, includeGuessHistory = false): RaceRunView {
   /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
   includeEvaluation = includeEvaluation && run.evaluationPolicy !== "server-only";
@@ -497,6 +502,9 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvalua
           answerLength: splitGraphemes(current.answer, run.locale).length,
           position: current.position,
           guessesUsed: run.guessesUsed,
+          ...(includeGuessHistory ? {confirmedGuesses: (run.guessHistory ?? []).map(guess => ({
+            guess: splitGraphemes(guess, run.locale), feedback: computeFeedback(guess, current.answer),
+          }))} : {}),
           guessesRemaining: raceRules(run).maxGuessesPerRiddle - run.guessesUsed,
           hintAvailable: run.revealedLetters.length < Math.min(raceRules(run).maxHintsPerRiddle, splitGraphemes(current.answer, run.locale).length),
           revealedLetters: run.revealedLetters.map((letter) => ({...letter})),

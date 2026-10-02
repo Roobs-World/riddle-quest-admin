@@ -1,3 +1,5 @@
+import {raceGuessHistory, assertRaceGuessHistory} from "./logic/raceGuessHistory";
+import {raceHintHistory} from "./logic/raceHintHistory";
 import {RaceEntryResponseSchema, AbandonRaceRunResponseSchema, ListRaceCategoriesResponseSchema, ListRaceInboxResponseSchema, PublishRaceChallengeResponseSchema, RaceChallengePreviewSchema, RaceOutcomeSchema, RaceRunResponseSchema, RaceRunViewSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema, SubmitRaceGuessResponseSchema, type RaceRunView, type RaceOutcome, type RaceMatchFailure} from "@qwordly/core/race";
 import {assertExistingRaceRun} from "./logic/raceEntrySelection";
 import {RacePlay} from "./RacePlay";
@@ -5,7 +7,7 @@ import type {RaceSessionState} from "./RaceSession.types";
 import {raceOperationRequiresRefresh, type RaceOperation} from "./logic/raceOperations";
 import type {RaceLocale} from "@qwordly/core/race";
 import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, projectRaceOutcome} from "./logic/racePresentation";
-import {splitGraphemes} from "@qwordly/core/game";
+import {computeFeedback, splitGraphemes, type ScoredGuess} from "@qwordly/core/game";
 
 /** Authority diagnostics never become untranslated player-facing copy. */
 export const raceErrorKey = (error: string | null): string | null => error === null ? null
@@ -39,9 +41,17 @@ export const isolateConfirmedRace = (run: RaceRunView, owned: RaceRunView | null
     preparationExpiresAtMs: run.preparationExpiresAtMs ?? previous?.preparationExpiresAtMs});
 };
 /** Recreates input only when the authority actually changes the displayed question. */
-export const raceAttemptState = (run: RaceRunView): Pick<RaceSessionState, "currentLetters" | "activeSlotIndex" | "raceGuesses" | "feedback"> => ({
-  currentLetters: createRaceAttempt(run.currentRiddle), activeSlotIndex: findFirstEditableRaceSlot(run.currentRiddle), raceGuesses: [], feedback: null,
-});
+export const raceAttemptState = (run: RaceRunView): Pick<RaceSessionState, "currentLetters" | "activeSlotIndex" | "raceGuesses" | "feedback"> => {
+  /** The authority-owned editable question; terminal runs have no input to restore. */
+  const prompt = run.currentRiddle;
+  /** Negotiated canonical suffix may omit the letters of earlier consumed attempts. */
+  const history = prompt?.confirmedGuesses ?? [];
+  /** Legacy unknown attempts still occupy their original positions ahead of the known suffix. */
+  const missing = Math.max(0, (prompt?.guessesUsed ?? 0) - history.length);
+  return {currentLetters: createRaceAttempt(prompt), activeSlotIndex: findFirstEditableRaceSlot(prompt),
+    raceGuesses: [...Array.from({length: missing}, () => ({guess: Array<string>(prompt!.answerLength).fill(""),
+      feedback: Array<"red">(prompt!.answerLength).fill("red")})), ...history.map(row => ({guess: [...row.guess], feedback: [...row.feedback]}))], feedback: null};
+};
 /** Private input candidate whose question identity must be confirmed before restoration. */
 export type RaceResumeDraft = Pick<RaceSessionState, "run" | "currentLetters" | "activeSlotIndex" | "raceGuesses">;
 /** Validates the complete reveal set before any guess or paid-action checkpoint is consumed. */
@@ -119,6 +129,14 @@ const raceSnapshot = (run: RaceRunView, previous?: RaceRunView | null): RaceRunV
     originalPrompt.answerLength !== replacement.answerLength || originalPrompt.evaluation && replacement.evaluation &&
       (originalPrompt.evaluation.answer !== replacement.evaluation.answer || originalPrompt.evaluation.locale !== replacement.evaluation.locale))) throw new Error("Changed race prompt");
   if (!prompt) return run;
+  if (prompt.confirmedGuesses && (prompt.confirmedGuesses.length > prompt.guessesUsed ||
+    prompt.confirmedGuesses.some(row => {
+      /** Server-trimmed words must preserve exact cell boundaries, including combining marks and flags. */
+      const letters = splitGraphemes(row.guess.join("").trim(), run.locale);
+      return row.guess.length !== prompt.answerLength || row.feedback.length !== prompt.answerLength ||
+        letters.length !== row.guess.length || letters.some((letter, index) => letter !== row.guess[index].normalize("NFC")) ||
+        row.feedback.every(color => color === "green");
+    }))) throw new Error("Invalid confirmed race guesses");
   /** Position, rather than content ID alone, identifies an attempt even when content repeats. */
   const riddle = deck?.[prompt.position];
   if (riddle && (prompt.riddleId !== riddle.riddleId || prompt.text !== riddle.text || prompt.answerLength !== riddle.answerLength ||
@@ -131,6 +149,12 @@ const raceSnapshot = (run: RaceRunView, previous?: RaceRunView | null): RaceRunV
     const answer = splitGraphemes(evaluation.answer, run.locale);
     if (evaluation.locale !== run.locale || answer.length !== prompt.answerLength ||
       [...raceReveals(prompt)].some(([index, letter]) => letter.normalize("NFC") !== answer[index])) throw new Error("Invalid race answer");
+    for (const row of prompt.confirmedGuesses ?? []) {
+      /** Immutable answer evidence also constrains newly restored duplicate-letter colors. */
+      const expected = computeFeedback(row.guess.join(""), evaluation.answer, run.locale);
+      if (expected.length !== row.feedback.length || expected.some((color, index) => color !== row.feedback[index]))
+        throw new Error("Invalid confirmed race scoring");
+    }
   }
   return run;
 };
@@ -141,7 +165,7 @@ export const bindRaceCommand = (payload: Record<string, unknown>, owned: RaceRun
     ...(typeof payload.riddleId === "string" && owned.currentRiddle ? {riddleId: owned.currentRiddle.riddleId} : {})};
 };
 /** Internal response application; only RaceSession crosses this implementation seam. */
-export function applyRaceAuthority(state: RaceSessionState, operation: RaceOperation, data: unknown, play: RacePlay, now: number, locale: RaceLocale, resumeDraft?: RaceResumeDraft | null, ownedSnapshot?: RaceRunView | null, confirmedOutcome?: RaceOutcome | null, current: () => boolean = () => true): Partial<RaceSessionState> {
+export function applyRaceAuthority(state: RaceSessionState, operation: RaceOperation, data: unknown, play: RacePlay, now: number, locale: RaceLocale, resumeDraft?: RaceResumeDraft | null, ownedSnapshot?: RaceRunView | null, confirmedOutcome?: RaceOutcome | null, current: () => boolean = () => true, history: (run: RaceRunView) => RaceRunView = run => run, attempts: (run: RaceRunView) => ScoredGuess[] = run => raceAttemptState(run).raceGuesses): Partial<RaceSessionState> {
   /** Rejects validly shaped payloads for a different owned attempt before checkpoint consumption. */
   const owned = (run: RaceRunView): RaceRunView => {
     if (!current()) throw new Error("Retired race receipt");
@@ -150,7 +174,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
     if (!previous || run.runId !== previous.runId || run.locale !== locale ||
       run.role !== previous.role || run.categoryId !== previous.categoryId ||
       run.challengeId !== previous.challengeId || run.rivalryChallengeId !== previous.rivalryChallengeId) throw new Error("Wrong race run");
-    return raceSnapshot(run, previous);
+    return history(raceSnapshot(run, previous));
   };
   /** Paid confirmations must include the original action's charge before consuming its checkpoint. */
   const paid = (run: RaceRunView, type: "hint" | "skip"): void => {
@@ -190,7 +214,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
     }
     case "raceStart": case "raceResume": case "raceReady": {
       /** Prepared, scheduled, active or terminal authority snapshot. */
-      const run = raceSnapshot(RaceRunResponseSchema.parse(data).run);
+      const run = history(raceSnapshot(RaceRunResponseSchema.parse(data).run));
       // Readiness must schedule or recover this run; a preparation echo cannot acknowledge it.
       if (operation === "raceReady" && run.status === "prepared") throw new Error("Unacknowledged race readiness");
       if (run.locale !== locale) throw new Error("Wrong race locale");
@@ -203,7 +227,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
           state.challenge && (run.categoryId !== state.challenge.categoryId || run.opponent.adjustedFinishMs !== state.challenge.adjustedTimeToBeatMs ||
             run.opponent.displayName !== state.challenge.creator.displayName))) throw new Error("Wrong challenge run");
       /** Recovery preserves known input only for the same authority-owned question. */
-      let attempt = raceAttemptState(run);
+      let attempt = {...raceAttemptState(run), raceGuesses: attempts(run)};
       /** Provisional input supplies letters only after the server confirms its exact question. */
       const matchesDraft = (draft: RaceResumeDraft): boolean => Boolean(run.status === "active" && run.currentRiddle &&
         draft.run?.runId === run.runId && run.currentRiddle.riddleId === draft.run.currentRiddle?.riddleId &&
@@ -215,7 +239,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
         /** Newly confirmed hints replace only their own draft positions. */
         const currentLetters = [...draft.currentLetters];
         for (const [index, letter] of revealed) currentLetters[index] = letter;
-        attempt = {...attempt, currentLetters, raceGuesses: draft.raceGuesses,
+        attempt = {...attempt, currentLetters,
           activeSlotIndex: revealed.has(draft.activeSlotIndex)
             ? findFirstEditableRaceSlot(run.currentRiddle) : draft.activeSlotIndex};
       }
@@ -232,7 +256,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
     case "raceGuess": {
       /** Confirmation preserves any draft already typed into the projected successor. */
       const result = SubmitRaceGuessResponseSchema.parse(data);
-      owned(result.run);
+      result.run = owned(result.run);
       if (result.isCorrect && result.autoSkipped) throw new Error("Contradictory guess progression");
       if (result.autoSkipped) paid(result.run, "skip");
       if (result.isCorrect) {
@@ -252,16 +276,23 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
         throw new Error("Missing incorrect guess attempt");
       /** Invalid hint metadata must leave the original submission recoverable. */
       const revealed = raceReveals(result.run.currentRiddle);
+      /** Canonical history must agree before the pending guess checkpoint is consumed. */
+      assertRaceGuessHistory(result, original);
       /** RacePlay retains the original submission even when successor input changes. */
       const confirmation = play.confirmGuess(result, state.run, state.raceGuesses, state.currentLetters, ownedSnapshot);
       /** Authority may include hints applied while this confirmation was in flight. */
       const currentLetters = [...state.currentLetters];
       for (const [index, letter] of revealed) currentLetters[index] = letter;
       play.setAwaitingOutcome(result.run.status !== "active");
+      if (confirmation.guesses && result.run.currentRiddle && !result.run.currentRiddle.confirmedGuesses?.length) {
+        // The correlated feedback proves the latest row even when negotiated history is omitted.
+        result.run.currentRiddle.confirmedGuesses = [structuredClone(confirmation.guesses.at(-1)!)];
+        result.run = history(result.run);
+      }
       return {run: result.run, receivedAtMs: now,
         ...(confirmation.resetAttempt ? raceAttemptState(result.run) : {currentLetters,
           activeSlotIndex: revealed.has(state.activeSlotIndex) ? findFirstEditableRaceSlot(result.run.currentRiddle) : state.activeSlotIndex}),
-        ...(confirmation.guesses ? {raceGuesses: confirmation.guesses} : {}),
+        ...(confirmation.guesses ? {raceGuesses: raceGuessHistory(result.run, original!, confirmation.guesses)} : {}),
         feedback: result.isCorrect ? "correct" : "incorrect",
         ...(result.autoSkipped ? {penaltyFlash: "RaceTo10.SKIP_PENALTY"} : {}),
       };
@@ -269,7 +300,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
     case "raceHint": {
       /** Paid confirmation must match both run ownership and the pending checkpoint. */
       const result = RequestRaceHintResponseSchema.parse(data);
-      owned(result.run);
+      result.run = owned(result.run);
       paid(result.run, "hint");
       /** A hint confirms the same question even when its authority view contains additional hints. */
       const prompt = result.run.currentRiddle;
@@ -313,7 +344,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       for (const [index, letter] of revealed) currentLetters[index] = letter;
       return {run: result.run, receivedAtMs: now, currentLetters,
         activeSlotIndex: revealed.has(activeSlotIndex) ? findFirstEditableRaceSlot(prompt) : activeSlotIndex,
-        ...(draft ? {raceGuesses: draft.guesses} : {}),
+        raceGuesses: raceHintHistory(result.run, original!, draft?.guesses ?? state.raceGuesses),
         penaltyFlash: "RaceTo10.HINT_PENALTY"};
     }
     case "raceSkip": {

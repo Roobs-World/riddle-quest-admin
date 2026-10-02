@@ -1,0 +1,34 @@
+{
+  "taskId": "multiplayer:race-delivery-expiry-ownership",
+  "observedAt": "2026-10-02T01:16:50.061904+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 95,
+  "dashboardReceiptRecorded": false,
+  "reason": "Full-user-pathway chat remains active; its test has twelve undocumented declarations. Leave its files untouched until it finishes.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RacePlay.ts": "13c4b4b149417ba7704ba8af81aaa19559d5d486292cfc1fea346c9d27a69517",
+    "packages/portal/src/play/race/__tests__/raceDeliveryExpiryOwnership.test.ts": "f71caa2a019b7548cf4ac289a54b5714535d893c42ddf2c298a36c10fa427781",
+    "packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs": "80d7748143fb9408b274846c634c82e648c1e4e4675cda03b70abc9441e96814",
+    "docs/development-tasks/race-delivery-expiry-ownership.json": "23b4883598ac48b82fde3128b92fcf14aa7f53135f7cd0ecf3eadf1c1bcc7caf",
+    "docs/evidence/multiplayer-delivery-expiry-ownership.md": "3baa95331818ff08e2ff9db1fdd70cadf2960498644b53a9d800dcb37964cd67"
+  },
+  "passed": {
+    "baselineFailures": 3,
+    "baselineControlPasses": 1,
+    "focusedTests": 20,
+    "newBrowserCases": 6,
+    "retainedTimerBrowserCases": 10,
+    "retainedLoaderBrowserCases": 10,
+    "clientTests": 1865,
+    "clientSuites": 229,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

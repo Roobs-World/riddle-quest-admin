@@ -579,7 +579,15 @@ describe("Race to 10 transactional service", () => {
       });
       expect((await privacyInboxRef.get()).data()).not.toHaveProperty("opponentAvatarUrl");
 
-      await guardedRunRef.update({currentPosition: 9, correctCount: 9, guessesUsed: 0});
+      // Accepted mutations keep scoring events, consumed history and receipt clocks coherent.
+      for (let position = 0; position < 9; position++) {
+        await submitRaceGuessForUser("tombstone-challenger", {
+          runId: guardedChallenger.run.runId,
+          riddleId: guardedRecord.riddles[position].riddleId,
+          guess: guardedRecord.riddles[position].answer,
+          requestId: `guarded-progress-${position}`,
+        }, {db, nowMs: NOW + 85_500});
+      }
       /** Provides finishing record behavior. */
       const finishingRecord = (await guardedRunRef.get()).data()!;
       /** Provides creator stats before behavior. */

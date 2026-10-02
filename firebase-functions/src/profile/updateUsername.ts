@@ -2,9 +2,9 @@ import {logger} from "firebase-functions/v2";
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {captureException} from "../shared/sentry";
-import {validateUsernameForProfanity} from "../utils/profanityFilter";
+import {validateUsernameForProfanity} from "@qwordly/core/validation/profanity";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
-import {BasicSuccessMessageResponseSchema, UpdateUsernameRequestSchema} from "../validation/requestSchemas";
+import {BasicSuccessMessageResponseSchema, UpdateUsernameRequestSchema} from "@qwordly/core/validation/requestSchemas";
 import {updateUsernameRecords} from "./leaderboardProfile";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 

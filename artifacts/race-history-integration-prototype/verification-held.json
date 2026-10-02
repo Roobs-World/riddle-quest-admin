@@ -1,0 +1,36 @@
+{
+  "taskId": "multiplayer:race-history-integration-prototype",
+  "observedAt": "2026-10-02T02:32:28.891507+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "prototype-verified-runtime-integration-pending",
+  "guardedChecks": 111,
+  "dashboardReceiptRecorded": false,
+  "reason": "Prototype passes twelve browser probes; application integration must await active owning verification and preserve the 500-line session ceiling.",
+  "sourceHashes": {
+    "packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs": "4684aba654f3c2ff9a04230d33bbbeb8041c14e9b5f1bd074006304d0e30158b",
+    "packages/portal/src/play/race/RaceSession.ts": "445d02843d760ba084e14ad3842a0fe50d6e90a66c4bba6d9b2b8366e904f6e3",
+    "packages/portal/src/play/race/RaceSessionAuthority.ts": "3fabc711cb73b9e6f77f9691340f6259764b5d52b8d496e03449280070331740",
+    "packages/portal/src/play/race/logic/raceConfirmedHistory.ts": "fa6d7a2a7f4a02b8928d1cfc3789ea5136f49743dda1b0b292c48136efa57776",
+    "docs/development-tasks/race-history-integration-prototype.json": "fcbfe3e98678f537bedd0c882512163fc42bc391bda91615b57501e6751aee07",
+    "docs/evidence/multiplayer-history-integration-prototype.md": "6f70ca6a4ef3c3df9cca2985627a655c819c5660637decef62c60eddf5f5ac7a"
+  },
+  "observedAtBatchSnapshot": {
+    "prototypeBrowserCases": 12,
+    "prototypeFailures": 0,
+    "runtimeAuditKnownFailures": 8,
+    "sessionCurrentEquivalentLines": 500,
+    "sessionPrototypeEquivalentLines": 503
+  },
+  "notPerformed": [
+    "runtime integration",
+    "runtime audit rerun",
+    "full guarded verification",
+    "isolated rebuilds",
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

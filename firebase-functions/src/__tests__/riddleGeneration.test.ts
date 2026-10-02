@@ -101,6 +101,7 @@ describe("riddleGeneration", () => {
   /** Provides mock batch behavior. */
   const mockBatch = {
     set: mockSet,
+    create: mockSet,
     update: jest.fn(),
     commit: mockCommit,
   };

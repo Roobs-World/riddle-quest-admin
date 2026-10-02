@@ -83,7 +83,8 @@ try {
     const expected=mode==='advanced'||mode==='emptied'?['','','','','']:['p','i','','',''];
     assert.deepEqual(await page.evaluate(()=>globalThis.testRaceSession.getSnapshot().currentLetters),expected);
     assert.equal((await page.locator('.race-gameplay .guess-row .cell').allTextContents()).join(''),expected.join(''));
-    assert.equal(await page.evaluate(()=>globalThis.testRaceSession.getSnapshot().raceGuesses.length),0);
+    // Applied attempts reserve an unknown row; uncommitted or successor attempts have no old rows.
+    assert.deepEqual(await page.evaluate(()=>globalThis.testRaceSession.getSnapshot().raceGuesses),['applied','emptied'].includes(mode)?[{guess:[],feedback:[]}]:[]);
     assert.equal(await page.evaluate(()=>globalThis.testRaceSession.getSnapshot().run.currentRiddle.position),mode==='advanced'?1:0);
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>command.type==='game:submitRaceGuess').length),1);
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>command.type==='game:resumeRace').length),2);

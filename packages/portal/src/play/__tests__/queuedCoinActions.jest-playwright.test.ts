@@ -56,6 +56,46 @@ describeBrowser("queued coin actions", () => {
     await new Promise<void>((resolve) => server?.close(() => resolve()));
   });
 
+  it("restores a draft cursor after a wrong guess is interrupted by reload", async () => {
+    /** Isolated browser page exercises the real hosted interface. */
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+        /** Captured actions expose reducer transitions without changing authority. */
+        const dispatch = window.dispatchEvent.bind(window);
+        window.dispatchEvent = (event: Event) => {
+          /** Correlated bridge envelope exposes the authoritative operation. */
+          const message = (event as CustomEvent).detail;
+          if (event.type === "riddle-quest:game-to-host" && message?.type === "game:submitGuess") return true;
+          return dispatch(event);
+        };
+      });
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
+      await completeMockOnboarding(page);
+      await page.getByText(/what has keys/i).waitFor();
+      for (const letter of "AAAAA") await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await page.locator(".submit-action").click();
+      for (const letter of "PI") await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await expect(page.locator(".guess-row").nth(1)).toHaveText("PI");
+      await page.reload();
+      await completeMockOnboarding(page);
+      await page.getByText(/what has keys/i).waitFor();
+      await expect(page.locator(".guess-row").nth(1)).toHaveText("PI");
+      await expect(page.locator(".guess-row").nth(1).locator(".cell").nth(2)).toHaveAttribute("aria-current", "true");
+      for (const letter of "ANO") await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await expect(page.locator(".guess-row").nth(1)).toHaveText("PIANO");
+      await expect(page.locator(".submit-action")).toBeEnabled();
+    } finally {
+      await page.close();
+    }
+  });
+
   it("skips and charges directly from the loss modal", async () => {
     /** Browser page used to exhaust attempts and exercise the loss action. */
     const page = await browser.newPage({viewport: {width: 390, height: 844}});

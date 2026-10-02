@@ -2,8 +2,10 @@ jest.mock("../../platform/webTargetEnvironment", () => ({isFacebookWebTarget: tr
 import {renderToString} from "react-dom/server";
 import {ContinueModalPage} from "../../play/modalPages/commerce/CoinActionModalPages";
 
+/** Inert event callback isolates modal rendering assertions. */
 const noop = () => undefined;
 it("offers a video alongside coins even with zero coins and no shop", () => {
+  /** Rendered loss modal verifies target-specific continuation controls. */
   const html = renderToString(<ContinueModalPage balance={0} onContinue={noop} onSkip={noop} onOpenModal={noop}
     onRecoverAttempt={noop} commerceAvailable={false} />);
   expect(html).toContain("Watch a video for an extra try");
@@ -12,6 +14,7 @@ it("offers a video alongside coins even with zero coins and no shop", () => {
   expect(html).not.toContain("loss-shop-action");
 });
 it("locks both choices, Skip and Shop during provider/server work", () => {
+  /** Rendered loss modal verifies target-specific continuation controls. */
   const html = renderToString(<ContinueModalPage balance={500} onContinue={noop} onSkip={noop} onOpenModal={noop}
     onRecoverAttempt={noop} pending />);
   for (const name of ["video", "continue", "skip", "shop"]) expect(html).toMatch(new RegExp(`loss-${name}-action" disabled`));
@@ -22,6 +25,7 @@ it("never offers a video without a target capability", () => {
     .not.toContain("loss-video-action");
 });
 it("waits for the final guess before allowing the video, without blocking queued coin actions", () => {
+  /** Rendered loss modal verifies target-specific continuation controls. */
   const html = renderToString(<ContinueModalPage balance={100} onContinue={noop} onSkip={noop} onOpenModal={noop}
     onRecoverAttempt={noop} recoveryPending />);
   expect(html).toMatch(/loss-video-action" disabled/);

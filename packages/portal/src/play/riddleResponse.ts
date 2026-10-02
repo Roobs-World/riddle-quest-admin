@@ -17,6 +17,8 @@ export const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "cl
     text: question.text,
     answerLength: question.answerLength,
     ...(question.evaluation ? {evaluation: question.evaluation} : {}),
+    ...(question.revealedHints ? {revealedHints: question.revealedHints} : {}),
+    ...(question.acceptedGuesses ? {acceptedGuesses: question.acceptedGuesses} : {}),
     sessionToken: question.sessionToken,
     gameMode,
     index: question.questionNumber,

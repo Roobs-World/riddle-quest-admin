@@ -1,0 +1,31 @@
+{
+  "taskId": "multiplayer:race-history-continuity",
+  "observedAt": "2026-10-02T02:20:07.107042+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "defects-reproduced-implementation-pending",
+  "guardedChecks": 108,
+  "dashboardReceiptRecorded": false,
+  "reason": "Eight of twelve continuity probes fail; preserve the history authority implementation while the owning chat actively verifies hosted pathways.",
+  "sourceHashes": {
+    "packages/portal/scripts/audit-race-history-continuity-browser.mjs": "1c4b8673703ed77ae8aebbf8b74d69bcb4e244cc5786cec357006e554bad49b2",
+    "packages/portal/src/play/race/RaceSessionAuthority.ts": "3fabc711cb73b9e6f77f9691340f6259764b5d52b8d496e03449280070331740",
+    "docs/development-tasks/race-history-continuity.json": "76c0e9eead88cbdb330f0603fdc434e4c9c2ef67ebc12fe5c8411b18fc4ae172",
+    "docs/evidence/multiplayer-history-continuity-audit.md": "d91058775c19b8975e6536a30fa9bca9bc666921c732c6e2852820037b0bfa6a"
+  },
+  "observedAtBatchSnapshot": {
+    "browserCases": 12,
+    "failingContractCases": 8,
+    "compatibleControls": 4
+  },
+  "notPerformed": [
+    "production fix",
+    "full guarded verification",
+    "isolated rebuilds",
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

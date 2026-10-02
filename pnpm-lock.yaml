@@ -251,6 +251,9 @@ importers:
       vite:
         specifier: ^8.3.1
         version: 8.3.1(@types/node@26.6.3)(@vitejs/devtools@0.7.6)(yaml@2.9.1)
+      vnu-jar:
+        specifier: 26.9.30
+        version: 26.9.30
 
   packages/reddit-app:
     dependencies:
@@ -6924,6 +6927,11 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  vnu-jar@26.9.30:
+    resolution: {integrity: sha512-Cn7kCQ7n/V+3VRampD/G3jRzwhapG52Rrcw4jYvqsdZ2eyeFRYoEo/o/7ZhBKZ4IJdHDGqCzlRvhXe1o2kAwTA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
@@ -14957,6 +14965,8 @@ snapshots:
       '@vitejs/devtools': 0.7.6(@devframes/json-render@1.1.0(@devframes/hub@1.1.0(@devframes/agentic@1.1.0)(crossws@0.4.12(srvx@1.0.5))(devframe@1.1.0))(devframe@1.1.0))(crossws@0.4.12(srvx@1.0.5))(srvx@1.0.5)(vite@8.3.1)
       fsevents: 2.3.3
       yaml: 2.9.1
+
+  vnu-jar@26.9.30: {}
 
   w3c-xmlserializer@5.0.0:
     dependencies:

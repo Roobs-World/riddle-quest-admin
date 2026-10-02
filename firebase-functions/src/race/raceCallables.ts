@@ -244,8 +244,8 @@ export const resumeRaceRun = onCallWithSentry(
     /** Provides input behavior. */
     const input = validateCallableRequest(RaceRunIdRequestSchema, request.data, "resumeRaceRun");
     /** Provides response behavior. */
-    const response = input.includeEvaluation
-      ? await resumeRaceRunForUser(userId, input.runId, {includeEvaluation: true})
+    const response = input.includeEvaluation || input.includeGuessHistory
+      ? await resumeRaceRunForUser(userId, input.runId, {includeEvaluation: input.includeEvaluation, includeGuessHistory: input.includeGuessHistory})
       : await resumeRaceRunForUser(userId, input.runId);
     return validateCallableResponse(RaceRunResponseSchema, response, "resumeRaceRun");
   },

@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "कोई इंटरनेट कनेक्शन नहीं",
     "OK_BUTTON": "ठीक",
     "SUCCESS_TITLE": "सफलता",
-    "UNABLE_TO_OPEN_TITLE": "खोलने में असमर्थ",
-    "TRY_AGAIN_LATER_MESSAGE": "कृपया बाद में पुनः प्रयास करें।"
+    "UNABLE_TO_OPEN_TITLE": "खोलने में असमर्थ"
   },
   "CommonButtons": {
     "RETRY": "पुनः प्रयास करें"

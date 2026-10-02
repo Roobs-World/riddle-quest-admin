@@ -67,6 +67,7 @@ allowBuilds:
   protobufjs: true
   re2: false
   unrs-resolver: false
+  vnu-jar: false
 
 patchedDependencies:
   image-size@2.0.2: patches/image-size@2.0.2.patch

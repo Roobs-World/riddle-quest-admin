@@ -13,6 +13,8 @@ export function useSubscriptionManagement() {
   const [pending, setPending] = useState<string | null>(null);
   /** Records successful cancellations for this modal visit. */
   const [cancelled, setCancelled] = useState<string[]>([]);
+  /** Stops repeated requests when the provider has no cancellable subscription. */
+  const [unavailable, setUnavailable] = useState<string[]>([]);
   /** Displays localized cancellation failure feedback. */
   const [error, setError] = useState(false);
   /** Prevents duplicate cancellation and competing periodic refreshes. */
@@ -35,10 +37,10 @@ export function useSubscriptionManagement() {
       }
     };
     void refresh();
-    /** Checks for Config-panel changes that do not generate a focus event. */
+    /** Leaves room below the signed endpoint’s 30/minute limit for focus and user actions. */
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") void refresh();
-    }, 2000);
+    }, 10_000);
     window.addEventListener("focus", refresh);
     return () => {
       disposed = true;
@@ -56,6 +58,7 @@ export function useSubscriptionManagement() {
       /** Distinguishes confirmation, dismissal and failure. */
       const result = await subscriptions.cancel(sku);
       if (result === "success") setCancelled((current) => [...current, sku]);
+      if (result === "unavailable") setUnavailable((current) => [...current, sku]);
       if (result === "error") setError(true);
     } catch {
       setError(true);
@@ -64,5 +67,5 @@ export function useSubscriptionManagement() {
       setPending(null);
     }
   };
-  return {loading, pending, cancelled, error, cancel, products: subscriptions?.products ?? []};
+  return {loading, pending, cancelled, unavailable, error, cancel, products: subscriptions?.products ?? []};
 }

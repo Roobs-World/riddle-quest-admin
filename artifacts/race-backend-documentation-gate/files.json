@@ -1,0 +1,5 @@
+[
+  "firebase-functions/src/__tests__/race/raceRunMutationClock.test.ts",
+  "firebase-functions/src/__tests__/race/raceEngine.test.ts",
+  "packages/core/src/race/__tests__/raceSchemas.test.ts"
+]

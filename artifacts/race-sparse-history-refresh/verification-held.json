@@ -1,0 +1,43 @@
+{
+  "taskId": "multiplayer:race-sparse-history-refresh",
+  "observedAt": "2026-10-02T03:16:34.010866+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 118,
+  "dashboardReceiptRecorded": false,
+  "reason": "Sparse history recovery verified. Shared documentation has 68 missing declarations and the concurrently edited authentication browser test exceeds its source-size limit. Let the full-pathway audit finish and retain guarded source-stability requirements.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "82c82a5c88bd6eb06422724120f84b19a799cb9676b94c54e22abaaacf001597",
+    "packages/portal/src/play/race/RaceSessionAuthority.ts": "0467bffac50b77e7c28aa654a730881f6dd63b98318ff9e311584fd6e0fe932e",
+    "packages/portal/src/play/race/RaceOwnedAuthority.ts": "83946fe0d2e7ea0c31d23fd07357a0eba493e183f43cd00b5b883203a0a8914e",
+    "packages/portal/src/play/race/logic/raceConfirmedHistory.ts": "7ad6f0700157fd9f10a696e37913157ab58816bc74282b96993fd335fd2029e0",
+    "packages/portal/src/play/race/__tests__/RaceSessionSparseHistoryRefresh.test.ts": "9e497a88ab581a09a2db41406e73c35ed1263ee612121d1efb69afc74ca7074d",
+    "packages/portal/src/play/race/__tests__/RaceSessionPendingInput.test.ts": "8498efcd585b8c081d9682b5ad73cc585b26e7ce45dbc408fe55ff06dc4efcca",
+    "packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs": "07ffed8d02b6b273b3a0aa4140cf533386eae8bc7dd9c163eefd0bdb6ec56698",
+    "packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs": "bf9b414475c6255e03f66aa180daa839870b04af2623c033d948c4529ae6077a",
+    "docs/development-tasks/race-sparse-history-refresh.json": "f35b0cb2c45d642bfec0153a70778782f026467aef146d2fe0ca795ae693f252",
+    "docs/evidence/multiplayer-sparse-history-refresh.md": "291808de989f5c9b54493cfa4bee8820a3b11e40fb2689bf833e6b4e3f3d94fc"
+  },
+  "passedAtBatchSnapshot": {
+    "baselineRegressionFailures": 3,
+    "focusedTests": 73,
+    "sparseHistoryBrowserCases": 6,
+    "retainedBrowserCases": 100,
+    "totalBrowserCases": 106,
+    "clientTests": 1976,
+    "clientSuites": 248,
+    "isolatedBuilds": 7,
+    "portalTypes": true,
+    "changedMultiplayerSourceSizes": true
+  },
+  "notPerformed": [
+    "full guarded verification",
+    "guarded dashboard completion",
+    "live hosted verification",
+    "backend changes",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

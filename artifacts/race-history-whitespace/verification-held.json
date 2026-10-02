@@ -1,0 +1,41 @@
+{
+  "taskId": "multiplayer:race-history-whitespace",
+  "observedAt": "2026-10-02T04:02:11.870882+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 143,
+  "dashboardReceiptRecorded": false,
+  "reason": "Canonical restored words now match the server outer-whitespace trim rule; internal-space compatibility and retry recovery verified. Shared documentation, source-size and concurrent full-pathway audit prevent guarded source-stable completion.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RaceSessionAuthority.ts": "be3264eb1d89be939f19825bc98c8d0ee2808fa8dbda9c7361d197a6fe913d98",
+    "packages/portal/src/play/race/__tests__/RaceSessionHistoryWhitespace.test.ts": "3bfb046ca138ff86e32897c01ed0b808eea00fcf84923894b4929bbef8bbb34e",
+    "packages/portal/scripts/verify-race-history-whitespace-browser.mjs": "62b379b76c07c7572c4d77ce8aa28838d119d648f90ddb5b6cec09bee360700f",
+    "docs/development-tasks/race-history-whitespace.json": "b39594daa320ae6e671372ecf2855682b7ed7c0e5c91964e244f8240cc819d8f",
+    "docs/evidence/multiplayer-history-whitespace.md": "2c429e9c2cd7c86bf99acf2c0ccdcc95321be6f477827ed76020b6223fac8d8b"
+  },
+  "passedAtBatchSnapshot": {
+    "baselineRegressionFailures": 10,
+    "baselineControls": 2,
+    "focusedTests": 38,
+    "newWhitespaceBrowserCases": 24,
+    "retainedBrowserCommands": 17,
+    "retainedBrowserCaseExecutions": 236,
+    "totalBrowserCaseExecutions": 260,
+    "clientTests": 2028,
+    "clientSuites": 253,
+    "isolatedBuilds": 7,
+    "portalTypes": true,
+    "registeredBrowserScripts": 116
+  },
+  "notPerformed": [
+    "all-browser inventory rerun",
+    "full guarded verification",
+    "guarded dashboard completion",
+    "live hosted verification",
+    "backend changes",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

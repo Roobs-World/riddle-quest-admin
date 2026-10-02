@@ -391,8 +391,8 @@ const commitLocale = (locale: Locale): void => {
   emitLocaleChange();
 };
 
-/** Sets locale. */
-export const setLocale = (locale: Locale): void => {
+/** Waits for translated copy before committing the requested locale. */
+export const setLocaleAndWait = async (locale: Locale): Promise<void> => {
   /** Requests version. */
   const requestVersion = ++localeRequestVersion;
   /** Provides previous locale behavior. */
@@ -402,16 +402,21 @@ export const setLocale = (locale: Locale): void => {
     return;
   }
 
-  void loadLocaleCatalog(locale)
-    .then(() => {
-      if (requestVersion !== localeRequestVersion) return;
-      commitLocale(locale);
-    })
-    .catch((error) => {
-      if (requestVersion !== localeRequestVersion) return;
-      commitLocale(previousLocale);
-      console.warn("[riddle-quest-web] Failed to load locale", locale, error);
-    });
+  try {
+    await loadLocaleCatalog(locale);
+    if (requestVersion !== localeRequestVersion) return;
+    commitLocale(locale);
+  } catch (error) {
+    if (requestVersion === localeRequestVersion) commitLocale(previousLocale);
+    throw error;
+  }
+};
+
+/** Applies a preference without blocking an already mounted game. */
+export const setLocale = (locale: Locale): void => {
+  void setLocaleAndWait(locale).catch((error) => {
+    console.warn("[riddle-quest-web] Failed to load locale", locale, error);
+  });
 };
 
 /** Provides detect device language behavior. */

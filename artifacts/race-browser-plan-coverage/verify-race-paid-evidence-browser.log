@@ -1,0 +1,10 @@
+Paid evidence UI passed: 1280px hint missing-charge; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 1280px skip missing-charge; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 1280px skip unchanged-question; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 1280px skip unchanged-score; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 1280px skip abandoned; cross-tab abandonment returns to lobby without a result read.
+Paid evidence UI passed: 390px hint missing-charge; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 390px skip missing-charge; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 390px skip unchanged-question; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 390px skip unchanged-score; malformed confirmation rolls back, one resume recovers without resending the paid action.
+Paid evidence UI passed: 390px skip abandoned; cross-tab abandonment returns to lobby without a result read.

@@ -1,4 +1,4 @@
-import type {HostMessageHandlers} from "./bridgeRouter";
+import {createHostMessageRouter, type HostMessageHandlers} from "./bridgeRouter";
 import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
@@ -587,3 +587,8 @@ export const createPlayHostMessageHandlers = ({
   },
   error: (message) => setNotice(message.payload.message),
 });
+
+/** Parses and executes untrusted game commands through the hosted-play handlers. */
+export function createHostedPlayCommandModule(options: CreateHostMessageHandlersOptions) {
+  return {execute: createHostMessageRouter(createPlayHostMessageHandlers(options))};
+}

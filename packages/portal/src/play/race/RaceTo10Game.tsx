@@ -9,7 +9,8 @@ import {useReferralSharing} from "../sharing/ReferralSharingCapability";
 import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
 import {getGhostCorrectCount} from "./logic/racePlayback";
 import {getRaceLetterStates} from "./logic/racePresentation";
-import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard} from "./hooks";
+import {useRaceDialogFocus, useRaceGameplayFit} from "./hooks";
+import {useAnswerKeyboard} from "../game/hooks/useAnswerKeyboard";
 import {useRaceSession} from "./hooks/useRaceSession";
 import {useRaceEntryTracking} from "./hooks/useRaceRuntimeEffects";
 import {RaceTo10View} from "./RaceTo10View";
@@ -150,7 +151,7 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
   useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: state.quitConfirmationOpen,
     dismissQuitConfirmation: session.dismissQuit, requestClose: session.requestClose});
   useRaceGameplayFit({active: state.stage === "racing", screenRef: dialogRef, viewportRef: gameplayViewportRef, gameplayRef});
-  useRaceGameplayKeyboard({active: state.stage === "racing" && !state.quitConfirmationOpen && (!state.pending || state.allowTypingWhilePending),
+  useAnswerKeyboard({active: state.stage === "racing" && !state.quitConfirmationOpen && (!state.pending || state.allowTypingWhilePending),
     onLetter: letter => session.input("letter", letter), onBackspace: () => session.input("backspace"), onSubmit: session.submit});
   /** Optional context view refresh does not own session navigation. */
   const showInbox = () => {

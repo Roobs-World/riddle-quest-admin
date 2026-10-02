@@ -98,7 +98,7 @@ try {
     await page.waitForFunction(()=>globalThis.testRaceSession.getSnapshot().pending===null&&globalThis.testRaceSession.getSnapshot().error===null);
     const state=await page.evaluate(()=>{const snapshot=globalThis.testRaceSession.getSnapshot();return {letters:snapshot.currentLetters,history:snapshot.raceGuesses,attempts:snapshot.run.currentRiddle.guessesUsed};});
     assert.deepEqual(state.letters,rejected?[...'zzzzz']:['','','','','']);
-    assert.deepEqual(state.history,rejected?[]:[...history,{guess:[...'zzzzz'],feedback:['red','red','red','red','red']}]);
+    assert.deepEqual(state.history,rejected?[{guess:[],feedback:[]}]:[...history,{guess:[...'zzzzz'],feedback:['red','red','red','red','red']}]);
     assert.equal(state.attempts,scenario==='history'?2:1);
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>command.type==='game:submitRaceGuess').length),scenario==='history'?2:1);
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>command.type==='game:resumeRace').length),(known?2:1)+(rejected?1:0));

@@ -1,0 +1,98 @@
+[
+  {
+    "file": "packages/portal/scripts/audit-race-history-continuity-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.82,
+    "log": "artifacts/race-history-graphemes/retained-browser/audit-race-history-continuity-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.32,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-confirmed-guess-retention-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.37,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-guess-concurrent-history-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.77,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-harness-delayed-receipts-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.27,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-harness-feedback-parity-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.97,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-hint-concurrent-history-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-integration-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.12,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-history-integration-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.72,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-history-ledger-prototype-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-normalization-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 0.92,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-history-normalization-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-progression-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.77,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-history-progression-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 18.8,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-history-prototype-retained-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-scoring-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 2.02,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-history-scoring-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.17,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-keyboard-feedback-strength-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 4.77,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-known-answer-feedback-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.12,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-reddit-history-opt-in-browser.log"
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.02,
+    "log": "artifacts/race-history-graphemes/retained-browser/verify-race-sparse-history-refresh-browser.log"
+  }
+]

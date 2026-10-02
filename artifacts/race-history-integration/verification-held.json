@@ -1,0 +1,32 @@
+{
+  "taskId": "multiplayer:race-history-integration",
+  "observedAt": "2026-10-02T01:53:50.550188+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 102,
+  "dashboardReceiptRecorded": false,
+  "reason": "Shared documentation gate reports 34 missing declarations; other chat remains active on history deployment and hosted verification. Preserve its implementation and evidence.",
+  "sourceHashes": {
+    "packages/portal/scripts/verify-race-history-integration-browser.mjs": "1bc3200d0c713ea2aa1998d71d691c9b039d4db6515a935539e089f0685e63fb",
+    "packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs": "a6d1aa1bfa29b088b1e64e5f0932e66ba2493dc7e6dca64b69a1ed98ab1ef75d",
+    "packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs": "7d6d3069d9031382c494e102912fa505f84b6e448258a792b65b16833b8db9a7",
+    "docs/development-tasks/race-history-integration.json": "f0aebff186b35ccffdf8cf699ac0c068bd28461c53e91261d8e92d6558c59b66",
+    "docs/evidence/multiplayer-history-integration.md": "2f9501830fe42def0baf6fab5e90d47ab19f2d29a12395fdb3e14407b2f05ca6"
+  },
+  "passedAtBatchSnapshot": {
+    "historyIntegrationBrowserCases": 8,
+    "retainedProjectedBrowserCases": 10,
+    "retainedReloadBrowserCases": 4,
+    "clientTests": 1898,
+    "clientSuites": 235,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {CompleteGameRequestDataSchema, CompleteGameResponseDataSchema} from "../validation/requestSchemas";
-import type {CompleteGameRequestData, CompleteGameResponseData} from "../validation/requestSchemas";
+import {CompleteGameRequestDataSchema, CompleteGameResponseDataSchema} from "@qwordly/core/validation/requestSchemas";
+import type {CompleteGameRequestData, CompleteGameResponseData} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {completeAuthoritativeGame} from "./completeGameLogic";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";

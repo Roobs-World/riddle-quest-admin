@@ -879,3 +879,36 @@ it("normalizes subscription cancellation without treating dismissal as success",
   mock.payments.cancelSubscription.mockImplementationOnce(() => new Promise(() => undefined));
   await expect(platform.cancelSubscription("premium")).resolves.toMatchObject({status: "retryable-failure", message: expect.stringContaining("timed out")});
 });
+
+it("reports bounded cancellation diagnostics without exposing provider responses", async () => {
+  /** Extracts the fixture or authority fields required by this transition. */
+  const {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} = await import("../../observability/browserErrorReporter");
+  /** Captured delivery reports expose optional browser error reporting. */
+  const reports: Array<{
+    /** Original failure is preserved through reporting and recovery checks. */
+    error: unknown;
+    /** Captured reporting context identifies the failing operation. */
+    context: unknown}> = [];
+  configureBrowserErrorReporter((error, context) => { reports.push({error, context}); });
+  try {
+    /** Controlled SDK adapter isolates provider behavior. */
+    const mock = sdk();
+    /** Provider adapter under test owns identity and optional SDK behavior. */
+    const platform = new JestSdkPlatform(mock, 1);
+    mock.payments.cancelSubscription.mockResolvedValueOnce({result: "error", error: "not_found"});
+    await platform.cancelSubscription("premium");
+    expect(reports[0].context).toEqual({component: "jest_sdk", operation: "cancel_subscription", reason: "not_found"});
+    mock.payments.cancelSubscription.mockResolvedValueOnce({result: "error", error: "not_active"});
+    await platform.cancelSubscription("premium");
+    expect(reports).toHaveLength(1);
+    mock.payments.cancelSubscription.mockResolvedValueOnce({result: "error", error: "opaque-private-provider-response"});
+    await platform.cancelSubscription("premium");
+    expect(reports[1].context).toEqual({component: "jest_sdk", operation: "cancel_subscription", reason: "unknown_provider_error"});
+    expect(String(reports[1].error)).not.toContain("opaque-private-provider-response");
+    mock.payments.cancelSubscription.mockImplementationOnce(() => new Promise(() => undefined));
+    await platform.cancelSubscription("premium");
+    expect(reports[2].context).toEqual({component: "jest_sdk", operation: "cancel_subscription", reason: "timeout"});
+  } finally {
+    resetBrowserErrorReporterForTests();
+  }
+});

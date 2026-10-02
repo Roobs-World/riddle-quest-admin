@@ -15,6 +15,7 @@ import {
   RACE_SKIP_PENALTY_MS,
   RaceGhostEventSchema,
   RaceRunViewSchema,
+  RaceRiddlePromptSchema,
   RequestRaceHintRequestSchema,
   SkipRaceRiddleRequestSchema,
   StartRaceRunRequestSchema,
@@ -427,4 +428,17 @@ it("requires original request identity for persisted search recovery and rejects
   expect(RaceRecoverySchema.parse(hint)).toEqual(hint);
   expect(RaceRecoverySchema.safeParse({...hint, intent: {kind: "search", request: {locale: "en"}}}).success).toBe(false);
   expect(RaceRecoverySchema.safeParse({...hint, outcome: {result: "player_win"}}).success).toBe(false);
+});
+
+
+it("bounds negotiated guess rows to consumed attempts and the current answer length", () => {
+  /** Editable prompt exposes exactly one consumed two-cell attempt. */
+  const prompt = {riddleId: "q", text: "clue", answerLength: 2, position: 0, guessesUsed: 1,
+    guessesRemaining: 4, hintAvailable: true, revealedLetters: []};
+  /** Canonical row has matching grapheme and feedback lengths. */
+  const row = {guess: ["A", "A"], feedback: ["red", "red"]};
+  expect(RaceRiddlePromptSchema.safeParse({...prompt, confirmedGuesses: [row]}).success).toBe(true);
+  for (const confirmedGuesses of [[row, row], [{...row, guess: ["A"]}], [{...row, feedback: ["red"]}]])
+    expect(RaceRiddlePromptSchema.safeParse({...prompt, confirmedGuesses}).success).toBe(false);
+  expect(RaceRiddlePromptSchema.safeParse(prompt).success).toBe(true);
 });

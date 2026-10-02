@@ -81,7 +81,6 @@
 .game-modal-backdrop:has(.modal-continue) {
   place-items: center;
   overflow: hidden;
-  background: #02070d;
 }
 .game-modal-backdrop:has(.modal-hint),
 .game-modal-backdrop:has(.modal-skip),
@@ -90,7 +89,7 @@
   overflow: hidden;
 }
 .game-modal.modal-continue {
-  --modal-border-width: 5px;
+  --modal-border-width: 4px;
   width: min(460px, 100%);
   min-height: 0;
   max-height: calc(100vh - 36px);
@@ -100,13 +99,13 @@
   justify-items: center;
   padding: 26px 24px 24px;
   overflow: hidden;
-  border: 5px solid #59676d;
+  border: 4px solid #fec880;
   border-radius: 38px;
-  background: #dfe3e4;
-  color: #172329;
+  background: var(--play-panel) url("../../../assets/images/home-bg.svg") center / 118% 118% no-repeat;
+  color: #401f40;
 }
 .modal-continue > h2 {
-  color: #6b2632;
+  color: #401f40;
   font-size: 36px;
   text-align: center;
 }
@@ -133,9 +132,9 @@
   align-items: baseline;
   gap: 8px;
   padding: 12px;
-  border: 1px solid #aab3b6;
+  border: 1px solid #fec880;
   border-radius: 12px;
-  background: #cfd5d7;
+  background: #fff1c9;
 }
 .continue-balance strong,
 .continue-balance span {
@@ -147,23 +146,26 @@
 .continue-actions .play-primary {
   min-height: 50px;
   border-radius: 12px;
-  border: 2px solid #66757a;
-  background: #34464d;
+  border: 2px solid #fec880;
+  background: #401f40;
   color: #fff;
+  box-shadow: 3px 3px 0 #2b152b;
   font:
     400 19px/1 "Poetsen One",
     "Poppins",
     sans-serif;
 }
 .continue-actions .loss-continue-action {
-  border-color: #742f3a;
-  background: #742f3a;
+  background: var(--play-gold);
+  color: #401f40;
+  box-shadow: 3px 3px 0 #916812;
 }
 .continue-actions .loss-shop-action {
-  background: #526269;
+  background: #401f40;
 }
 .continue-actions .loss-skip-action {
-  background: #27383f;
+  background: var(--play-panel);
+  color: #401f40;
 }
 @media (max-height: 620px) {
   .game-modal.modal-continue {

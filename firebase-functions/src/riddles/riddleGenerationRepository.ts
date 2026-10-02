@@ -178,12 +178,12 @@ export async function getLocalizedExistingRiddlesFromFirestoreForLocale(locale: 
  * Gets the next available classic index for new riddles.
  * @returns The next available classic index.
  */
-export async function getNextClassicIndex(): Promise<number> {
+export async function getNextClassicIndex(locale?: SupportedLocale): Promise<number> {
   try {
     /** Provides riddles snapshot behavior. */
     const riddlesSnapshot = await admin
       .firestore()
-      .collection(RiddleCollections.RIDDLES)
+      .collection(locale ? getLocalizedRiddleCollection(locale) : RiddleCollections.RIDDLES)
       .where("classicIndex", ">=", 0)
       .orderBy("classicIndex", "desc")
       .limit(1)
@@ -279,7 +279,7 @@ export async function storeLocalizedClassicRiddlesInFirestore(
       category: "classic",
     };
 
-    batch.set(riddleRef, riddleData);
+    batch.create(riddleRef, riddleData);
   });
 
   try {

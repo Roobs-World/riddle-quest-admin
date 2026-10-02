@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "Aucune connexion Internet",
     "OK_BUTTON": "D'ACCORD",
     "SUCCESS_TITLE": "Succès",
-    "UNABLE_TO_OPEN_TITLE": "Impossible d'ouvrir",
-    "TRY_AGAIN_LATER_MESSAGE": "Veuillez réessayer plus tard."
+    "UNABLE_TO_OPEN_TITLE": "Impossible d'ouvrir"
   },
   "CommonButtons": {
     "RETRY": "Réessayer"

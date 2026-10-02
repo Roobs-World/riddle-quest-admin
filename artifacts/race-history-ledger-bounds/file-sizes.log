@@ -1,0 +1,14 @@
+$ node --test scripts/source-size-metric.test.mjs && node scripts/audit-file-sizes.mjs
+✔ measures equivalent TypeScript identically across formatting (0.430806ms)
+✔ excludes standalone single-line and multiline TSDoc (0.083378ms)
+✔ retains implementation following a multiline TSDoc closing delimiter (0.061927ms)
+✔ keeps physical line counts for non-TypeScript source (0.04723ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27.467181
+Maintainable-file size audit passed: 1006 source files within enforced limits.

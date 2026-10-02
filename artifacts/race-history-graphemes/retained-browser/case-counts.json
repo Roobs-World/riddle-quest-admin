@@ -1,0 +1,66 @@
+[
+  {
+    "file": "packages/portal/scripts/audit-race-history-continuity-browser.mjs",
+    "caseExecutions": 12
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs",
+    "caseExecutions": 6
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs",
+    "caseExecutions": 6
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs",
+    "caseExecutions": 10
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs",
+    "caseExecutions": 8
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs",
+    "caseExecutions": 4
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-integration-browser.mjs",
+    "caseExecutions": 8
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs",
+    "caseExecutions": 12
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-normalization-browser.mjs",
+    "caseExecutions": 4
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-progression-browser.mjs",
+    "caseExecutions": 12
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs",
+    "caseExecutions": 72
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-history-scoring-browser.mjs",
+    "caseExecutions": 16
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs",
+    "caseExecutions": 8
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs",
+    "caseExecutions": 20
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs",
+    "caseExecutions": 8
+  },
+  {
+    "file": "packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs",
+    "caseExecutions": 6
+  }
+]

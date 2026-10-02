@@ -359,6 +359,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           /** Gets supported ap is. */
           getSupportedAPIs() {
             return [
+              "logEvent",
               "overlayViews.createProfilePictureOverlayViewAsync",
               "overlayViews.createProfileNameOverlayViewAsync",
               "player.canSubscribeBotAsync",
@@ -369,14 +370,21 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
               "shareAsync",
             ];
           },
+          /** Records native analytics at the provider boundary. */
+          logEvent(name, _value, parameters) {
+            window.__facebookEvents.push(`analytics:${name}:${JSON.stringify(parameters)}`);
+            return null;
+          },
           /** Simulates Meta's completion, cancellation and no-fill contracts without creating rewards. */
           async getRewardedVideoAsync(placementId) {
             window.__facebookEvents.push(`rewarded:placement:${placementId}`);
             return {
+              /** Mock Meta video load resolves before the completion adapter is used. */
               async loadAsync() {
                 window.__facebookEvents.push("rewarded:load");
                 if (Reflect.get(window, "__rewardedMode") === "no-fill") throw Object.assign(new Error("no fill"), {code: "ADS_NO_FILL"});
               },
+              /** Mock Meta completion supports cancellation, no-fill and held-video scenarios. */
               async showAsync() {
                 window.__facebookEvents.push("rewarded:show");
                 if (Reflect.get(window, "__rewardedMode") === "cancel") throw Object.assign(new Error("dismissed"), {code: "USER_INPUT"});
@@ -519,6 +527,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         );
       }
       expect(await successPage.getByRole("alert").count()).toBe(0);
+      await successPage.waitForFunction(() => window.__facebookEvents.some(event => event.startsWith("analytics:screen_view:")));
+      expect((await successPage.evaluate(() => window.__facebookEvents)).filter(event => event.startsWith("analytics:session_started:"))).toHaveLength(1);
       expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(
         expect.arrayContaining([
           "initialize",
@@ -700,6 +710,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(desktopHubBox!.x + desktopHubBox!.width).toBeLessThanOrEqual(1280);
       await successPage.locator(".race-close").click();
       await verifyImmediateSoloFeedback(successPage, "Facebook");
+      expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:button_press:")))).toBe(true);
+      expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:guess_submitted:")))).toBe(true);
       expect(notificationClaims).toBe(0);
       expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);
       expect(await successPage.evaluate(() => window.__facebookEvents.includes("ads:show"))).toBe(false);
@@ -775,13 +787,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-page').waitFor({state: 'detached'});
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
       await verifyTournamentEntry(successPage, origin);
-      try {
-        await verifyRewardedContinue(successPage, origin);
-      } catch (error) {
-        console.info("Rewarded continuation diagnostics", await successPage.evaluate(() => ({body: document.body.innerText,
-          events: window.__facebookEvents, url: location.href})));
-        throw error;
-      }
+      await verifyRewardedContinue(successPage, origin);
     } finally {
       await browser.close();
       try {

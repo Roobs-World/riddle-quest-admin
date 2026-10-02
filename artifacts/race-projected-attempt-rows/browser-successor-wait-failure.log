@@ -1,0 +1,15 @@
+Restored attempt rows passed: cold at 1280px.
+Restored attempt rows passed: reload at 1280px.
+Projected attempt rows passed: pending wrong at 1280px.
+Projected attempt rows passed: rollback at 1280px.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs:77:13 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

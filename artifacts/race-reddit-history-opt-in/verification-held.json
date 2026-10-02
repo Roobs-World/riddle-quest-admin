@@ -1,0 +1,34 @@
+{
+  "taskId": "multiplayer:race-reddit-history-opt-in",
+  "observedAt": "2026-10-02T02:01:19.109398+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 103,
+  "dashboardReceiptRecorded": false,
+  "reason": "Shared documentation gate reports 57 missing declarations; other chats remain active on implementation and hosted verification. Preserve their work and evidence.",
+  "sourceHashes": {
+    "packages/portal/src/reddit/RedditHostServices.ts": "16d5ae76e236f83ba3ef0cb8089471f04516e4c3f20e03627a500a4f1da91adf",
+    "packages/portal/src/reddit/__tests__/RedditRaceHistory.test.ts": "c66ba8d189fe8894651e96d694d668939fad7402b304caa63e28443030bf0dc9",
+    "packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs": "2d23f14b0415bea00fae91c96a14901df5c8af5767fd3eeb497c3034e20811b4",
+    "docs/development-tasks/race-reddit-history-opt-in.json": "b7aeee334a4f04abf67c05308d2244dd006b9c44e458ef3ca86e622f66a8ca4b",
+    "docs/evidence/multiplayer-reddit-history-opt-in.md": "90ddd359fbad0d54b548baeea1774afd03e28084186221aa7eb7b84d48e6c7f6"
+  },
+  "passedAtBatchSnapshot": {
+    "baselineRegressionFailures": 2,
+    "focusedTests": 13,
+    "redditHistoryBrowserCases": 8,
+    "retainedHistoryBrowserCases": 8,
+    "retainedProjectedBrowserCases": 10,
+    "clientTests": 1904,
+    "clientSuites": 236,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

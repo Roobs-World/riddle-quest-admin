@@ -480,3 +480,33 @@ describe("legacy ghost deadline grants", () => {
     expect(refreshRaceRun(granted, STARTED_AT + 25000)).toMatchObject({status: "completed", result: "ghost_win", wallFinishMs: 20000});
   });
 });
+
+it("recovers every confirmed wrong guess through a serialized authoritative resume", () => {
+  /** Canonical record is serialized between accepted wrong guesses. */
+  let run = createRun();
+  /** Expected consumed rows retain duplicate words and their exact feedback. */
+  const history = [];
+  for (const guess of ["aaaaa", "aaaaa", "bbbbb"]) {
+    /** Accepted transition supplies both persisted state and canonical colors. */
+    const result = applyRaceGuess(run, {riddleId: "riddle-1", guess}, STARTED_AT + 100);
+    history.push({guess: [...guess], feedback: result.feedback.map(letter => letter.status)});
+    run = JSON.parse(JSON.stringify(result.run));
+  }
+  /** Negotiated resume restores every persisted consumed row. */
+  const resumed = toRaceRunView(run, STARTED_AT + 200, false, true);
+  expect(resumed.currentRiddle).toMatchObject({guessesUsed: 3, guessesRemaining: 2, confirmedGuesses: history});
+});
+
+
+it("keeps history opt-in and resets it on correct, manual and exhausted-attempt advancement", () => {
+  /** A consumed wrong guess seeds history before each advancement path. */
+  let run = applyRaceGuess(createRun(), {riddleId: "riddle-1", guess: "aaaaa"}, STARTED_AT + 1).run;
+  expect(toRaceRunView(run, STARTED_AT + 2).currentRiddle).not.toHaveProperty("confirmedGuesses");
+  /** Correct-answer advancement retires the prior question history. */
+  const correct = applyRaceGuess(run, {riddleId: "riddle-1", guess: "piano"}, STARTED_AT + 3).run;
+  /** Manual paid advancement also starts an empty successor history. */
+  const skipped = applyRaceSkip(run, {riddleId: "riddle-1"}, STARTED_AT + 3);
+  for (let attempt = 1; attempt < 5; attempt++) run = applyRaceGuess(run, {riddleId: "riddle-1", guess: "bbbbb"}, STARTED_AT + 3).run;
+  for (const advanced of [correct, skipped, run]) expect(toRaceRunView(advanced, STARTED_AT + 4, false, true).currentRiddle)
+    .toMatchObject({position: 1, guessesUsed: 0, confirmedGuesses: []});
+});

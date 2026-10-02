@@ -28,6 +28,7 @@ import {startOptionalPresence} from "../presence/startOptionalPresence";
 import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../play/services";
 import {PlayerProjectionPersistence} from "../platform/PlayerProjectionPersistence";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
+import {installFacebookAnalytics} from "./analytics";
 
 /** Describes startup state. */
 type StartupState =
@@ -82,6 +83,8 @@ export function FacebookPlatformEntry() {
   useEffect(() => {
     /** Provides active behavior. */
     let active = true;
+    /** Disconnects native analytics when this authenticated session retires. */
+    let stopAnalytics: (() => void) | undefined;
     /** Provides unsubscribe pause behavior. */
     let unsubscribePause: (() => void) | undefined;
     /** Provides unsubscribe resume behavior. */
@@ -109,6 +112,7 @@ export function FacebookPlatformEntry() {
         const userId = await authenticateFacebook(sdk);
         /** Provides ads behavior. */
         let ads = undefined;
+        /** Facebook-only continuation capability bound to the current authenticated session. */
         let attemptRecovery: import("../platform/types").AttemptRecoveryCapability | undefined;
         /** Provides tournaments behavior. */
         let tournaments = undefined;
@@ -391,13 +395,19 @@ export function FacebookPlatformEntry() {
               }),
           }),
         );
-        if (active) setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, launch});
+        if (active) {
+          if (ageCategory === "13_plus" && configurationLoaded) {
+            stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
+          }
+          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, launch});
+        }
       } catch {
         if (active) setStartup({status: "error"});
       }
     })();
     return () => {
       active = false;
+      stopAnalytics?.();
       unsubscribePause?.();
       unsubscribeResume?.();
       unsubscribePreferences?.();
@@ -428,9 +438,10 @@ export function FacebookPlatformEntry() {
     const next = !presenceEnabled;
     void deletionGateRef.current
       .run(async () => {
-        /** Provides preferences behavior. */
-        const preferences = {...preferencesRef.current, presenceEnabled: next};
-        await playerPersistenceRef.current?.updatePreferences({presenceEnabled: next});
+        /** Complete merged preferences are owned by the persistence module. */
+        const preferences = await playerPersistenceRef.current?.updatePreferences({presenceEnabled: next});
+        if (!preferences) return;
+        preferencesRef.current = preferences;
         /** Provides presence behavior. */
         const presence = presenceRef.current;
         await reconcilePresenceOptIn({
@@ -448,7 +459,6 @@ export function FacebookPlatformEntry() {
             await setPresenceConsent({enabled});
           },
         });
-        preferencesRef.current = preferences;
         setPresenceEnabled(next);
       })
       .catch((error) => {

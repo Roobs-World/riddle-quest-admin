@@ -1,0 +1,24 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-multiplayer", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 18550.
+i  Running script: pnpm exec jest --config jest.race-coverage.config.js --runInBand
+
+=============================== Coverage summary ===============================
+Statements   : 93.46% ( 3947/4223 )
+Branches     : 89.89% ( 3450/3838 )
+Functions    : 96.99% ( 613/632 )
+Lines        : 95.82% ( 3464/3615 )
+================================================================================
+
+Test Suites: 73 passed, 73 total
+Tests:       1075 passed, 1075 total
+Snapshots:   0 total
+Time:        203.593 s, estimated 215 s
+Ran all test suites.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

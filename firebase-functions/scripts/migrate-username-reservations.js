@@ -12,7 +12,7 @@ const {
   usernameReservationMigrationRef,
   USERNAME_RESERVATIONS_COLLECTION,
 } = require("../lib/profile/usernameReservations.js");
-const {UsernameSchema} = require("../lib/validation/requestSchemas.js");
+const {UsernameSchema} = require("@qwordly/core/validation/requestSchemas");
 
 const args = process.argv.slice(2);
 const option = (name) => {

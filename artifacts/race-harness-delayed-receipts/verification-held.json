@@ -1,0 +1,33 @@
+{
+  "taskId": "multiplayer:race-harness-delayed-receipts",
+  "observedAt": "2026-10-02T02:17:24.622842+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 107,
+  "dashboardReceiptRecorded": false,
+  "reason": "Shared documentation gate reports 35 missing declarations; another chat remains active on hosted verification. Preserve its implementation and evidence.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/testing/fakeRaceServices.ts": "d6a84a9467ce2aa025bd01cf99cc7841583f1fd60b3c12a4309519c6faaa7214",
+    "packages/portal/src/play/race/__tests__/fakeRaceDelayedReceipts.test.ts": "1bd6a2ae9866770e6ec7147164d98cc849061de12246919551a9058810288ad8",
+    "packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs": "8ccaeaec52d31214affa6495a8d4b1fd806490ad67fe1285939c96cedf93b7aa",
+    "docs/development-tasks/race-harness-delayed-receipts.json": "73ab7ff4a1a2d8bc92efeb3a4c87ce610bae5224ea0dd962b6932f96eb07e073",
+    "docs/evidence/multiplayer-harness-delayed-receipts.md": "a76fa8f6ba33ae12a5ad0eddf00ba8e3f76f5763057d42ec35363b858ffa40fe"
+  },
+  "passedAtBatchSnapshot": {
+    "baselineRegressionFailures": 3,
+    "focusedTests": 34,
+    "delayedReceiptBrowserCases": 10,
+    "retainedFeedbackBrowserCases": 8,
+    "clientTests": 1938,
+    "clientSuites": 240,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

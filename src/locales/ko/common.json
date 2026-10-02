@@ -13,8 +13,7 @@
     "OFFLINE_TITLE": "인터넷 연결 없음",
     "OK_BUTTON": "좋아요",
     "SUCCESS_TITLE": "성공",
-    "UNABLE_TO_OPEN_TITLE": "열 수 없습니다",
-    "TRY_AGAIN_LATER_MESSAGE": "나중에 다시 시도하십시오."
+    "UNABLE_TO_OPEN_TITLE": "열 수 없습니다"
   },
   "CommonButtons": {
     "RETRY": "재시도"

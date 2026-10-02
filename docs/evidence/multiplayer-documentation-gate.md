@@ -1,0 +1,7 @@
+# Multiplayer documentation gate
+
+The current completion-gate check identified ten undocumented declarations in multiplayer-owned code: three in authority attempt reconstruction and seven in canonical/legacy reload tests. TSDoc now explains the authority-owned question, negotiated history suffix, unknown consumed positions, cold canonical fixture, repeated guess rows, fresh Resume ownership and legacy consumed-slot reservation.
+
+TypeScript scanner token hashes before and after match for both files. These are comment-only changes; executable source, assertions and behavior are unchanged. `pnpm check:tsdoc` now reports 58 remaining declarations, down from 68, with no remaining declaration in either modified file. The latest source-size check still identifies the other chat's authentication browser test at 1,211 equivalent lines against its 1,200 limit.
+
+The full-pathway audit is authoritatively still running and currently tracing a French single-player draft cursor reload issue. Its active files and evidence are untouched. The 140-check manifest retains all prior commands, including the complete current multiplayer browser inventory. No full guarded completion or dashboard receipt is claimed. Broad client/browser/build checks were not rerun for verified comment-only changes; the preceding behavioral and browser-plan batches retain their scoped evidence. No deployment, activation, Jest publication, commit or push occurs. The multiplayer reliability goal remains active, with restored-history scoring against known evaluation still requiring audit.

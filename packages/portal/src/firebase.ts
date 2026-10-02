@@ -1,6 +1,6 @@
 import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "@qwordly/core/race";
 import {initializeApp} from "firebase/app";
-import {getAuth} from "firebase/auth";
+import {getAuth, initializeAuth, inMemoryPersistence} from "firebase/auth";
 import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
 import {getFunctions, httpsCallable} from "firebase/functions";
 import type {
@@ -68,7 +68,11 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 
 /** Provides auth behavior. */
-export const auth = getAuth(firebaseApp);
+// Jest signs each SDK player into Firebase on every launch. Keep that identity
+// inside its frame so another tab cannot replace its authority or saved profile.
+export const auth = firebaseEnvironment.platformTarget === "jest"
+  ? initializeAuth(firebaseApp, {persistence: inMemoryPersistence})
+  : getAuth(firebaseApp);
 /** Provides firestore behavior. */
 export const firebaseFirestore = getFirestore(firebaseApp);
 /** Provides functions behavior. */
@@ -116,6 +120,10 @@ export const getCurrentDailyChallenge = httpsCallable<
       riddleId?: string;
       /** Requests presentation-only scoring data for immediate feedback. */
       includeEvaluation?: boolean;
+      /** Requests authoritative purchased hint recovery. */
+      includeHintRecovery?: boolean;
+      /** Opts in to authoritative accepted guess recovery. */
+      includeGuessRecovery?: boolean;
     }
   | undefined,
   CurrentRiddleResponse
@@ -134,6 +142,10 @@ export const getCurrentClassicRiddle = httpsCallable<
     riddleId?: string;
     /** Requests presentation-only scoring data for immediate feedback. */
     includeEvaluation?: boolean;
+    /** Requests authoritative purchased hint recovery. */
+    includeHintRecovery?: boolean;
+    /** Opts in to authoritative accepted guess recovery. */
+    includeGuessRecovery?: boolean;
   },
   CurrentRiddleResponse
 >(functions, "getCurrentClassicRiddle");
@@ -143,6 +155,10 @@ export const getClassicRiddleBuffer = httpsCallable<
   {
     /** Requested content locale. */
     locale: string;
+    /** Requests authoritative purchased hint recovery. */
+    includeHintRecovery?: boolean;
+    /** Opts in to authoritative accepted guess recovery. */
+    includeGuessRecovery?: boolean;
   },
   ClassicRiddleBufferResponse
 >(functions, "getClassicRiddleBuffer");
@@ -305,6 +321,8 @@ export const resumeRaceRun = httpsCallable<
     runId: string;
     /** Requests current-question local scoring data. */
     includeEvaluation?: boolean;
+    /** Requests bounded confirmed presentation rows after reload. */
+    includeGuessHistory?: boolean;
   },
   RaceRunResponse
 >(raceFunctions, "resumeRaceRun");
@@ -417,6 +435,22 @@ export type CurrentRiddleResponse = {
       sessionToken: string;
       /** Stores question number. */
       questionNumber: number;
+      /** Letters previously purchased in the issued session. */
+      revealedHints?: {
+        /** Zero-based answer slot must stay within the issued grapheme shape. */
+        index: number;
+        /** One answer grapheme occupies its original positional slot. */
+        letter: string}[];
+      /** Complete accepted feedback history is optional for legacy sessions. */
+      acceptedGuesses?: {
+        /** Accepted attempt number orders recovered feedback rows. */
+        attempt: number;
+        /** Positional scoring colors accompany the accepted submitted graphemes. */
+        feedback: {
+        /** One answer grapheme occupies its original positional slot. */
+        letter: string;
+        /** Accepted positional color is green, yellow or red. */
+        status: "green" | "yellow" | "red"}[]}[];
       /** Stores attempts used. */
       attemptsUsed: number;
       /** Stores has used continue. */

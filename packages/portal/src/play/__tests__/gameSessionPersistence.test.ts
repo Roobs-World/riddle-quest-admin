@@ -99,7 +99,7 @@ describe("game session persistence", () => {
     /** Provides reloaded behavior. */
     let reloaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
     reloaded = gameSessionReducer(reloaded, {
-      type: "restoreSession",
+      type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
       currentLetters: saved.currentLetters,
       activeSlotIndex: saved.activeSlotIndex,
       hintRevealedIndices: saved.hintRevealedIndices,
@@ -136,7 +136,7 @@ describe("game session persistence", () => {
     /** Provides reloaded behavior. */
     let reloaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: continuedRiddle});
     reloaded = gameSessionReducer(reloaded, {
-      type: "restoreSession",
+      type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
       currentLetters: saved.currentLetters,
       activeSlotIndex: saved.activeSlotIndex,
       hintRevealedIndices: saved.hintRevealedIndices,
@@ -183,4 +183,119 @@ it("does not persist a feedback preview as confirmed progress or a completion", 
   expect(saved?.engineSnapshot.attemptsUsed).toBe(0);
   expect(saved?.pendingOutcome).toBeUndefined();
   expect(saved).not.toHaveProperty("evaluation");
+});
+
+it("resumes pending-guess drafts at the next empty slot in legacy journals", () => {
+  /** Issued riddle fixture supplies authoritative recovery state. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+    ...riddle, evaluation: {answer: "piano", locale: "fr"},
+  }});
+  /** Observed resumed supplies the recovery assertion baseline. */
+  let resumed = gameSessionReducer(loaded, {type: "restoreQueuedGuesses", base: loaded,
+    guesses: ["AAAAA"], draft: ["P", "I", "", "", ""]});
+  for (const letter of "ANO") resumed = gameSessionReducer(resumed, {type: "typeLetter", letter});
+  expect(resumed.currentLetters.join("")).toBe("PIANO");
+  expect(resumed.guesses).toHaveLength(1);
+});
+
+it("preserves an explicitly selected draft slot during pending recovery", () => {
+  /** Issued riddle fixture supplies authoritative recovery state. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
+  /** Observed resumed supplies the recovery assertion baseline. */
+  const resumed = gameSessionReducer(loaded, {type: "restoreQueuedGuesses", base: loaded,
+    guesses: [], draft: ["P", "I", "", "", ""], draftActiveSlotIndex: 1});
+  expect(gameSessionReducer(resumed, {type: "typeLetter", letter: "A"}).currentLetters).toEqual(["P", "A", "", "", ""]);
+});
+
+it("does not restore a pending draft cursor onto a locked hint", () => {
+  /** Issued riddle fixture supplies authoritative recovery state. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
+  /** Observed resumed supplies the recovery assertion baseline. */
+  const resumed = gameSessionReducer(loaded, {type: "restoreQueuedGuesses", base: {...loaded, hintRevealedIndices: [0]},
+    guesses: [], draft: ["P", "I", "", "", ""], draftActiveSlotIndex: 0});
+  expect(gameSessionReducer(resumed, {type: "typeLetter", letter: "A"}).currentLetters).toEqual(["P", "I", "A", "", ""]);
+});
+
+
+it.each([
+  {label: "same-length successor", riddleId: "classic-successor", sessionToken: "00000000-0000-4000-8000-000000000005"},
+  {label: "renewed session", riddleId: riddle.riddleId, sessionToken: "00000000-0000-4000-8000-000000000006"},
+])("rejects a saved draft queued before a $label loads", ({riddleId, sessionToken}) => {
+  /** Earlier state supplies the baseline for recovery and ownership assertions. */
+  let previous = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
+  for (const letter of "PI") previous = gameSessionReducer(previous, {type: "typeLetter", letter});
+  /** Persisted draft represents the provider checkpoint before recovery. */
+  const saved = createSavedGame(previous);
+  if (!saved) throw new Error("Expected a saved draft.");
+  /** Current authoritative state determines which recovery facts remain valid. */
+  const current = gameSessionReducer(previous, {type: "loadRiddle", riddle: {...riddle, riddleId, sessionToken}});
+  /** Recovered presentation is checked against canonical session facts. */
+  const restored = gameSessionReducer(current, {
+    type: "restoreSession", riddleId: saved.riddleId, sessionToken: saved.sessionToken,
+    currentLetters: saved.currentLetters, activeSlotIndex: saved.activeSlotIndex,
+    hintRevealedIndices: saved.hintRevealedIndices, guesses: saved.guesses,
+    engineSnapshot: saved.engineSnapshot, awaitingContinue: saved.awaitingContinue, letterStates: saved.letterStates,
+  });
+  expect(restored).toBe(current);
+  expect(restored.currentLetters).toEqual(["", "", "", "", ""]);
+});
+
+
+it("restores purchased hint locks from the issued question without a provider checkpoint", () => {
+  /** Issued riddle fixture supplies authoritative recovery state. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+    ...riddle, revealedHints: [{index: 0, letter: "P"}],
+  }});
+  expect(loaded.currentLetters).toEqual(["P", "", "", "", ""]);
+  expect(loaded.hintRevealedIndices).toEqual([0]);
+  expect(loaded.activeSlotIndex).toBe(1);
+  expect(gameSessionReducer(loaded, {type: "backspace"}).currentLetters[0]).toBe("P");
+});
+
+it("keeps issued paid hint letters when an older provider draft has no hint", () => {
+  /** Issued riddle fixture supplies authoritative recovery state. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+    ...riddle, revealedHints: [{index: 0, letter: "P"}],
+  }});
+  /** Older provider state cannot override newer authoritative progress. */
+  const stale = createSavedGame(gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle}));
+  if (!stale) throw new Error("Expected an active checkpoint.");
+  /** Recovered presentation is checked against canonical session facts. */
+  const restored = gameSessionReducer(loaded, {type: "restoreSession", ...stale,
+    currentLetters: ["X", "I", "", "", ""], activeSlotIndex: 0});
+  expect(restored.currentLetters).toEqual(["P", "I", "", "", ""]);
+  expect(restored.hintRevealedIndices).toEqual([0]);
+  expect(restored.activeSlotIndex).toBe(2);
+});
+
+
+it("restores accepted feedback without a provider save and rejects stale saved rows", () => {
+  /** Positional scoring colors accompany the accepted submitted graphemes. */
+  const feedback = [{letter: "p", status: "green" as const}, ...Array.from({length: 4}, () => ({letter: "z", status: "red" as const}))];
+  /** Issued riddle fixture supplies authoritative recovery state. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+    ...riddle, attemptsUsed: 1, revealedHints: [{index: 0, letter: "P"}],
+    acceptedGuesses: [{attempt: 1, feedback}],
+  }});
+  expect(loaded.guesses).toEqual([{guess: ["p", "z", "z", "z", "z"], feedback: ["green", "red", "red", "red", "red"]}]);
+  expect(loaded.letterStates).toMatchObject({p: "green", z: "red"});
+  /** Older provider state cannot override newer authoritative progress. */
+  const stale = createSavedGame(gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle}));
+  if (!stale) throw new Error("Expected an older checkpoint.");
+  /** Recovered presentation is checked against canonical session facts. */
+  const restored = gameSessionReducer(loaded, {type: "restoreSession", ...stale});
+  expect(restored.guesses).toEqual(loaded.guesses);
+  expect(restored.engineSnapshot?.attemptsUsed).toBe(1);
+  expect(restored.currentLetters[0]).toBe("P");
+});
+
+it("keeps the Continue round empty while recovering the five consumed attempts", () => {
+  /** Issued riddle fixture supplies authoritative recovery state. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+    ...riddle, attemptsUsed: 5, hasUsedContinue: true,
+    acceptedGuesses: Array.from({length: 5}, (_, index) => ({attempt: index + 1,
+      feedback: Array.from({length: 5}, () => ({letter: "z", status: "red" as const}))})),
+  }});
+  expect(loaded.guesses).toEqual([]);
+  expect(loaded.engineSnapshot).toMatchObject({attemptsUsed: 5, hasUsedContinue: true});
 });

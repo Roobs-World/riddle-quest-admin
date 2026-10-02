@@ -1,3 +1,4 @@
+import {computeFeedback} from "@qwordly/core/game";
 import {describe, expect, it} from "@jest/globals";
 import {RACE_HINT_PENALTY_MS, type RaceRunView} from "@qwordly/core/race";
 import {RACE_DRAFT_TTL_MS, type RaceDraftStorage} from "../logic/raceDraftStorage";
@@ -273,4 +274,34 @@ describe("server-confirmed multiplayer draft reload", () => {
     h.session.abandon(); h.respond("raceAbandon", {run: {...run, status: "abandoned", currentRiddle: null}, result: null});
     expect(h.session.getSnapshot().error).toBeNull(); expect(store.read()).toBeNull();
   });
+});
+
+it("restores consumed rows and feedback from authority after a fresh race lifetime", async () => {
+  /** Complete canonical question retained by the server across a browser reload. */
+  const run = await fixture();
+  /** Server presentation rows preserve repeated words as separately consumed attempts. */
+  const confirmedGuesses = ["aaaaa", "aaaaa", "bbbbb"].map(word => ({guess: [...word], feedback: computeFeedback(word, run.currentRiddle!.evaluation!.answer, run.locale)}));
+  /** Public attempt reconstruction is shared with the reloaded session. */
+  const {raceAttemptState} = await import("../RaceSessionAuthority");
+  /** Returned authority owns both the consumed count and the exact confirmed suffix. */
+  const resumed = {...run, currentRiddle: {...run.currentRiddle!, guessesUsed: 3, guessesRemaining: 2, confirmedGuesses}};
+  expect(raceAttemptState(resumed).raceGuesses).toEqual(confirmedGuesses);
+  /** A fresh session cannot use cached board rows before its Resume is validated. */
+  const reload = harness({}, run.runId);
+  reload.respond("raceResume", {run: JSON.parse(JSON.stringify(resumed))});
+  expect(reload.session.getSnapshot().raceGuesses).toEqual(confirmedGuesses);
+  expect(reload.session.getSnapshot().run?.currentRiddle?.guessesRemaining).toBe(2);
+  reload.session.dispose();
+});
+
+
+it("keeps consumed legacy rows ahead of restored editable input", async () => {
+  /** Compatible legacy authority reports consumed slots without their letters. */
+  const run = await fixture();
+  /** Fresh reload must reserve those slots before accepting new input. */
+  const reload = harness({}, run.runId);
+  reload.respond("raceResume", {run: {...run, currentRiddle: {...run.currentRiddle!, guessesUsed: 3, guessesRemaining: 2}}});
+  expect(reload.session.getSnapshot().raceGuesses).toHaveLength(3);
+  expect(reload.session.getSnapshot().currentLetters).toEqual(["", "", "", "", ""]);
+  reload.session.dispose();
 });

@@ -365,6 +365,7 @@
     "packages/core/src/race/raceMatchFailure.ts",
     "packages/core/src/race/raceRecoverySchemas.ts",
     "packages/core/src/race/raceSchemas.ts",
+    "packages/core/src/validation/acceptedGuesses.ts",
     "packages/core/src/validation/cloudFunctionsSchemas.ts",
     "packages/core/src/validation/firestoreSchemas.ts",
     "packages/core/src/validation/index.ts",
@@ -372,6 +373,7 @@
     "packages/core/src/validation/profanity.ts",
     "packages/core/src/validation/profanityWords.ts",
     "packages/core/src/validation/requestSchemas.ts",
+    "packages/core/src/validation/revealedHints.ts",
     "packages/portal/src/analytics/events.ts",
     "packages/portal/src/observability/browserErrorReporter.ts",
     "packages/portal/src/platform/PlayerProjectionPersistence.ts",
@@ -383,9 +385,8 @@
     "packages/portal/src/play/GameFrameControls.tsx",
     "packages/portal/src/play/GameModalPages.tsx",
     "packages/portal/src/play/GameModalView.tsx",
-    "packages/portal/src/play/GuidanceOverlay.tsx",
+    "packages/portal/src/play/GameSessionCheckpoints.ts",
     "packages/portal/src/play/HostAuthorityModules.ts",
-    "packages/portal/src/play/HostedPlayCommandModule.ts",
     "packages/portal/src/play/HostedPlaySession.ts",
     "packages/portal/src/play/PlayHostApp.tsx",
     "packages/portal/src/play/ProviderProfileContext.tsx",
@@ -440,6 +441,7 @@
     "packages/portal/src/play/performance/mobileCapabilities.ts",
     "packages/portal/src/play/playerPreferences.ts",
     "packages/portal/src/play/preloadGameModals.ts",
+    "packages/portal/src/play/race/RaceOwnedAuthority.ts",
     "packages/portal/src/play/race/RacePlay.ts",
     "packages/portal/src/play/race/RaceProviderViews.ts",
     "packages/portal/src/play/race/RaceSession.ts",
@@ -460,16 +462,19 @@
     "packages/portal/src/play/race/hooks/index.ts",
     "packages/portal/src/play/race/hooks/useRaceDialogFocus.ts",
     "packages/portal/src/play/race/hooks/useRaceGameplayFit.ts",
-    "packages/portal/src/play/race/hooks/useRaceGameplayKeyboard.ts",
     "packages/portal/src/play/race/hooks/useRaceRuntimeEffects.ts",
     "packages/portal/src/play/race/hooks/useRaceSession.ts",
     "packages/portal/src/play/race/logic/activeRaceStorage.ts",
     "packages/portal/src/play/race/logic/raceAnalytics.ts",
+    "packages/portal/src/play/race/logic/raceBoardAttempts.ts",
+    "packages/portal/src/play/race/logic/raceConfirmedHistory.ts",
     "packages/portal/src/play/race/logic/raceCountdown.ts",
     "packages/portal/src/play/race/logic/raceDiscoveryRecovery.ts",
     "packages/portal/src/play/race/logic/raceDraftStorage.ts",
     "packages/portal/src/play/race/logic/raceEntrySelection.ts",
     "packages/portal/src/play/race/logic/raceFeatureFlag.ts",
+    "packages/portal/src/play/race/logic/raceGuessHistory.ts",
+    "packages/portal/src/play/race/logic/raceHintHistory.ts",
     "packages/portal/src/play/race/logic/raceInitialState.ts",
     "packages/portal/src/play/race/logic/raceInput.ts",
     "packages/portal/src/play/race/logic/raceMatchDiscovery.ts",
@@ -479,6 +484,7 @@
     "packages/portal/src/play/race/logic/racePresentation.ts",
     "packages/portal/src/play/race/logic/raceRecoveryStorage.ts",
     "packages/portal/src/play/race/logic/raceRequestSelection.ts",
+    "packages/portal/src/play/race/logic/raceStartDelivery.ts",
     "packages/portal/src/play/race/raceAchievementDefinitions.ts",
     "packages/portal/src/play/ranks.ts",
     "packages/portal/src/play/requestIds.ts",
@@ -885,23 +891,23 @@
   ],
   "chunks": [
     {
-      "file": "assets/game-BQDG_LQb.js",
+      "file": "assets/game-Bs_5Luim.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
         "assets/client-D9Ka2dOe.js",
         "assets/redditPlatform-NO0DIMgp.js",
-        "assets/ReferralSharingCapability-CIPSQkNt.js",
+        "assets/ReferralSharingCapability-C2ttafgF.js",
         "assets/preload-helper-C57RQWSg.js",
         "assets/core-bridge-constants-Bsju_PPr.js",
-        "assets/events-DCKqUJl2.js",
+        "assets/events-CFmBVCnW.js",
         "assets/core-game-C1Q8Fsf8.js",
-        "assets/validation-CkoY2GmV.js",
+        "assets/validation-Dp6pFRQm.js",
         "assets/browserStorage-CV-PZCxe.js",
         "assets/layoutReady-B86Ech8U.js",
-        "assets/requestSchemas-CZ5mvpbA.js",
-        "assets/bridge-ixudel31.js",
+        "assets/requestSchemas-BvjBbhUK.js",
+        "assets/bridge-BgK5rQAO.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [
@@ -920,12 +926,12 @@
         "assets/redditPlatform-3JKFJnCC.js",
         "assets/redditPlatform-DhIbnMlf.js",
         "assets/redditPlatform-JMhQe933.js",
-        "assets/bridge-m-3a7N5g.js",
-        "assets/GameModalView-7kgqXM8M.js",
-        "assets/RaceTo10Game-D7G7yueX.js",
+        "assets/bridge-CsDIZQka.js",
+        "assets/GameModalView-DHqcwu_w.js",
+        "assets/RaceTo10Game-Dvm0l6rJ.js",
         "assets/SolarSystem-y2wlfn6x.js"
       ],
-      "sha256": "41c4263579af5828a443b2a628420118d85fb8be42107faa19098ff8b6ed8435"
+      "sha256": "80f802faaab3fac40d73d160922f35671705a2657abee281a152cb0801686826"
     },
     {
       "file": "assets/splash-lheYTiiy.js",
@@ -958,38 +964,38 @@
       "sha256": "b1b8d9f57b064e8a855efbece7e695cd22f1de637b494012d7dbe28993c2d1bf"
     },
     {
-      "file": "assets/GameModalView-7kgqXM8M.js",
+      "file": "assets/GameModalView-DHqcwu_w.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
-        "assets/ReferralSharingCapability-CIPSQkNt.js",
-        "assets/validation-CkoY2GmV.js",
-        "assets/requestSchemas-CZ5mvpbA.js",
+        "assets/ReferralSharingCapability-C2ttafgF.js",
+        "assets/validation-Dp6pFRQm.js",
+        "assets/requestSchemas-BvjBbhUK.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "864dc621a5e503f7acb6c1f98e4eab715f3335ac09f013de52f9371119b10dab"
+      "sha256": "e8887311645c6cf4ecea2f6c6c980d218f82040f54624859534745ed7ed60e9a"
     },
     {
-      "file": "assets/RaceTo10Game-D7G7yueX.js",
+      "file": "assets/RaceTo10Game-Dvm0l6rJ.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
-        "assets/ReferralSharingCapability-CIPSQkNt.js",
-        "assets/events-DCKqUJl2.js",
+        "assets/ReferralSharingCapability-C2ttafgF.js",
+        "assets/events-CFmBVCnW.js",
         "assets/core-game-C1Q8Fsf8.js",
         "assets/browserStorage-CV-PZCxe.js",
-        "assets/requestSchemas-CZ5mvpbA.js",
-        "assets/bridge-ixudel31.js",
+        "assets/requestSchemas-BvjBbhUK.js",
+        "assets/bridge-BgK5rQAO.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "d27be0aec15c9a794dcebfb07ad7e13ca71a175e2ac545648f2edf13a1994b08"
+      "sha256": "b4fd91611b632a4d1a104686d0d5d17a26ae824321abff048e1800eeaf18993b"
     },
     {
-      "file": "assets/ReferralSharingCapability-CIPSQkNt.js",
+      "file": "assets/ReferralSharingCapability-C2ttafgF.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
@@ -999,9 +1005,9 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [
-        "assets/localeModules-BZarlfS-.js"
+        "assets/localeModules-jmW-ZJWH.js"
       ],
-      "sha256": "f7c6786bd9f6617ec6e49f253f3cec33bc996d32ebe005f8016b164fc438262e"
+      "sha256": "c100887ae821f3fbf55daa770f928eab8bc9899b42b9e341404294e81e17ffae"
     },
     {
       "file": "assets/SolarSystem-y2wlfn6x.js",
@@ -1174,6 +1180,36 @@
       "sha256": "06f4c34496081468160c76cdd7b0c17ae189b7a309f57b1db118e8b7ce3420ae"
     },
     {
+      "file": "assets/accessibility-5aadonXn.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "def74d3379b9ff2c1f055733c6a98eec7f82fd88581fe717b6b2cd03282cd167"
+    },
+    {
+      "file": "assets/accessibility-6FKcnuQn.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "2f971dce8a549722b782b53a4bc76f79cc2a4b8d216f8e369db016fb898ae45f"
+    },
+    {
+      "file": "assets/accessibility-BTdzn21X.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "727d9362eab747e2f105b4fe52fee6e825b0563ad246a92cb6ec661437efa277"
+    },
+    {
       "file": "assets/accessibility-BtoY_R4l.js",
       "entry": false,
       "dynamicEntry": true,
@@ -1194,26 +1230,6 @@
       "sha256": "a8f4e8f1973193a805e33bcfbfaa9367f13c37df242391dcf38662e6fb509572"
     },
     {
-      "file": "assets/accessibility-CHSYBINP.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/rolldown-runtime-Czjbc987.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "b9b55fdc77a88d22b6913273ee4502bc0f9af2a1fcd46b8327299ee9d0c811c4"
-    },
-    {
-      "file": "assets/accessibility-CX8lxSLS.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/rolldown-runtime-Czjbc987.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "744a6c45238c74f774d898b83bdac05505880b42f15a6501ac227d636edbbdb3"
-    },
-    {
       "file": "assets/accessibility-CjlDnMhS.js",
       "entry": false,
       "dynamicEntry": true,
@@ -1224,44 +1240,54 @@
       "sha256": "0564fea228688f04ff2f5636a45123187d7cdfd65d7bdaf454a03dffba87f618"
     },
     {
-      "file": "assets/accessibility-DEM46xV7.js",
+      "file": "assets/accessibility-Czcbizk8.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "926cc9b24738818d0d9c3d337c1d78dc68108345bdacecfeebc71ab9cedaeb17"
+      "sha256": "86a4d7472d5997bb68403198d45f3a59f54264f0b566e146b9ee4f66f92126d6"
     },
     {
-      "file": "assets/accessibility-DJPdHRNx.js",
+      "file": "assets/accessibility-DBWotlLW.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "f8f3df7f1fdd60e29422e0885470d42a4f7772c18793668dce5c67c90eefb203"
+      "sha256": "a2747f3537ba751a5ae4aad6e241f5b5b57289127fdfd1fa8238dbe5216dcb2d"
     },
     {
-      "file": "assets/accessibility-DNNiK9LG.js",
+      "file": "assets/accessibility-DDdV10oS.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "97adc3bd726940a37ac01460dd8601cde7058b58e02f5a098420f9d48514303a"
+      "sha256": "c541be4f67de70b1f25ac0a4d0a649f63af82fd109b84678a10cbf5d6f6c8018"
     },
     {
-      "file": "assets/accessibility-Mt1Wmgw1.js",
+      "file": "assets/accessibility-DgPVrXsF.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "7ebb9afc2e483c080ff11a523f59fd6ec2f4e77b4f8bb1179b053be1d125537e"
+      "sha256": "ea93c7c7929b80bb598d602894aadabef6f03ded2a94577e7e97bfc1d891de50"
+    },
+    {
+      "file": "assets/accessibility-DoUGjQcm.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "5493852a1eb191fd6e5dd2aebaaff83faea73d7fde92350aedf8420a569a56a8"
     },
     {
       "file": "assets/accessibility-OytD13PE.js",
@@ -1274,54 +1300,34 @@
       "sha256": "01d89130870db5775ebcb8eadaba6b9766c0714ad982b98e8d8c6c732b148835"
     },
     {
-      "file": "assets/accessibility-PCP5ItBq.js",
+      "file": "assets/accessibility-bksbmqER.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "8d7f31c8124d2c6079a263ee4654ec9a35d8cf2b9a5e9e4e3cdeca34f6bdf329"
+      "sha256": "0522d75544a1304d0514ca1be44527f95a51b8e678d3b598d91c6df66d7edc83"
     },
     {
-      "file": "assets/accessibility-VP9DHUbK.js",
+      "file": "assets/accessibility-mnG6Ux4q.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "df582624a88e97b1e2cf51f436e2bd89b21f62fe3eca2c854f3e092f242ad6a1"
+      "sha256": "644d68a960def5d56afd47328740a5e523047ebe75da382e4097511a6b1d12ee"
     },
     {
-      "file": "assets/accessibility-a_lQ9ZBG.js",
+      "file": "assets/accessibility-pbCkmE6-.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "612e9a3a3b7ac46898969418798281eae65c5446fdb0f4392058ab8f0813ad43"
-    },
-    {
-      "file": "assets/accessibility-bmZwsPWC.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/rolldown-runtime-Czjbc987.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "e7ad92222d72cf7c732896c65b63691179eddf7554319deaecd930e8c2b65578"
-    },
-    {
-      "file": "assets/accessibility-g8je6L5U.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/rolldown-runtime-Czjbc987.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "a7364a4bf1f1cf108c345bc8bd4e250d9bed84311a162a01da4518246224d486"
+      "sha256": "01eba35430c5c9721068bf5c913a1c986f7b5e393d25639dc50d3250ed975188"
     },
     {
       "file": "assets/achievements-BK4_rCWG.js",
@@ -1504,6 +1510,16 @@
       "sha256": "90a17b16ef439d56941e106e3c85fd58fb689da90301dfea6353b2e0437cf947"
     },
     {
+      "file": "assets/alerts-C7m5MV33.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "99ea51367a8176efebc6ed06dee78ef2433873172f281c84ff8598e4ea816389"
+    },
+    {
       "file": "assets/alerts-C9dGsq9L.js",
       "entry": false,
       "dynamicEntry": true,
@@ -1614,37 +1630,27 @@
       "sha256": "f38ad7735f985c80a4e7bed47a1014cacf2ae23028b396c3eaacd85b7ed9897d"
     },
     {
-      "file": "assets/alerts-kH7XmubZ.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/rolldown-runtime-Czjbc987.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "307324ca9ce3bb128f9fc339d5ed09a29b0b226ef33128083a968d26fc5c835f"
-    },
-    {
-      "file": "assets/bridge-ixudel31.js",
+      "file": "assets/bridge-BgK5rQAO.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/core-bridge-constants-Bsju_PPr.js",
-        "assets/requestSchemas-CZ5mvpbA.js",
+        "assets/requestSchemas-BvjBbhUK.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "545f44d3e0dbed479a45e65469efe81b952a461909aefe527469e1c184446bc2"
+      "sha256": "8fb278bc101bbe7496cfbcd1fcb3786203eef219a7d37da2660ea7a1d6ef7d88"
     },
     {
-      "file": "assets/bridge-m-3a7N5g.js",
+      "file": "assets/bridge-CsDIZQka.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/core-bridge-constants-Bsju_PPr.js",
-        "assets/bridge-ixudel31.js"
+        "assets/bridge-BgK5rQAO.js"
       ],
       "dynamicImports": [],
-      "sha256": "28b45180907290ad2d7877d8a2435051d7b6b88d08eeb94f1a4ed57a96d08a58"
+      "sha256": "9b2466ffa359e1bb0da265224a49224b615afba9bcf189799178e898df2409d6"
     },
     {
       "file": "assets/browserStorage-CV-PZCxe.js",
@@ -1817,154 +1823,154 @@
       "sha256": "94efccb52f2f4f4fc2bd9599756afa4b750c91a8d57af1004f698d99d5ff7e95"
     },
     {
-      "file": "assets/common-BAGytzzs.js",
+      "file": "assets/common-0T1Fp4PZ.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "0c29cefa83e3ce4b5215c238899f83f01b24790022baeb64b649406a59f6556a"
+      "sha256": "9d2dd96292aac164f46542360d2215109fb8e37bdfdfd7cd3cac329b5139089d"
     },
     {
-      "file": "assets/common-BPNWMG8n.js",
+      "file": "assets/common-B7xIq-DG.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "7433ebba7ccea71aed686d774397e52f3080766f4c7ac0ac00e18a6104b272fc"
+      "sha256": "84c090a609a5798be98c50238eb464fda05229a1e5a3b3275ee16476ccb1e88d"
     },
     {
-      "file": "assets/common-BgDn3wnJ.js",
+      "file": "assets/common-BVKGsOnP.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "2d983426690ecc6d99d40e9b24add9e3eec65438e147444160201a06c7a80e35"
+      "sha256": "1f5cece5fc6aa04f176c2a17c7ae0ed0a03ccc4fa596806b226bae38046ed385"
     },
     {
-      "file": "assets/common-CTrwABs4.js",
+      "file": "assets/common-Bs_Q8hBU.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "9e31285e3efa7953f3e31bea29573af60b8037c23fe4a15bcab45a82d49757e0"
+      "sha256": "3488ece537bf0ecc1b3a309a161de7fcb114eeef833b1720752368c46b106947"
     },
     {
-      "file": "assets/common-CYlBp6ti.js",
+      "file": "assets/common-BwIO3epv.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "b0d7c65b6f04a7643078398a8fad0fe74737fce5ab6e5c8fa69d80b1cb2eb5e2"
+      "sha256": "a51d63f9017f736c2a9e4070b7019ab505e3674702026e575f630f0e117901b9"
     },
     {
-      "file": "assets/common-CZ3m9-BV.js",
+      "file": "assets/common-BxLdFFQq.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "9899712901e3ed5c3e6bba0cdea999603d61ed612156a3afcba1c5b996fecccd"
+      "sha256": "1208112d6396a5ac6fc58c91c95e78a8d8bd96ec44020638e17acf40ff5219c5"
     },
     {
-      "file": "assets/common-C_HZ6acx.js",
+      "file": "assets/common-C5vxl13O.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "3c5f4b2ca5f5be3d51b5d258939ee73155554ec293af4784bb956fe5df2311af"
+      "sha256": "ba56ba888b6a3c24d854728120bd71a4536589393d2d9dfcb13713d9ae986927"
     },
     {
-      "file": "assets/common-CkPza-iq.js",
+      "file": "assets/common-CJein-tm.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "d4efb57528970bbc33bf0707cb9f0617c03475ec36bdf730308cb1d47c12ed0d"
+      "sha256": "0d215d2ad7f919cd97007a5d247ad9848433a92dfc48020e38eaa0f0cab7db29"
     },
     {
-      "file": "assets/common-DFDYBKMC.js",
+      "file": "assets/common-DI-bC8ZO.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "4171186241bc8cfa4489eecb140bbc16db8e88fbdc73f464e5a924d60ad52dc7"
+      "sha256": "0f038ca776ebec906e93dd28133e9002b944c921bad2d12a6d0c890982d4053c"
     },
     {
-      "file": "assets/common-DFN9fgKV.js",
+      "file": "assets/common-DLRf0r44.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "ca4dc0098ea9c5b6c46365f36eb22a5f3ed6b567043c6efccdee65420e248ede"
+      "sha256": "2e9c9e13eb9dd8def0892c7544a6d93b5ba61eb59590e00e8239d3efa6a71286"
     },
     {
-      "file": "assets/common-DMJFWsLE.js",
+      "file": "assets/common-Dw_J1HMX.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "09e95ba7aed19958e6767df6879b57c4f38526fc227412c8ae5041783d530246"
+      "sha256": "c9d76ba84dea1e42a112ab229b9a9cafd820da381de26f04c982247c483c3fce"
     },
     {
-      "file": "assets/common-DSWou4nP.js",
+      "file": "assets/common-Srl377cb.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "867e83f065fc836f37a4cbccb4728ae91adbcfa66a27372c9b9f6fac4e33a782"
+      "sha256": "0cc51d9c30726ffe98292fbeab7a5ae7506dc05e5a5118f29a9ea5c2afab46eb"
     },
     {
-      "file": "assets/common-DWBWwPH8.js",
+      "file": "assets/common-_TLj9cwa.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "6241fb136799ab1359afd2e862967a91980b24bb7fc9831500aec18e321f67ac"
+      "sha256": "928a0cebea07d59f94f0e493ff70b7ed71003fd099f71f93622e41859362ea17"
     },
     {
-      "file": "assets/common-OOu9ldR5.js",
+      "file": "assets/common-lqZx1SM_.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "7008d4dbd4250386c0a5da72a2976dcdfc3e635634ab8c9e0990cb76b7f49083"
+      "sha256": "1ed21a165a68a7df9a7ff549284959b72a80362d1e68b15cb5393331cac3e2a8"
     },
     {
-      "file": "assets/common-_F3B4CCQ.js",
+      "file": "assets/common-n-P6ZiqJ.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "0641d0610032f156001acca93aa2e8f67405a9931648474de5cbee8749205748"
+      "sha256": "9cdd7655163897ddfa41589bc003a69f125d6dac5b721c47834d19157d173e22"
     },
     {
       "file": "assets/core-bridge-constants-Bsju_PPr.js",
@@ -2287,17 +2293,17 @@
       "sha256": "2c043312ac99be7741b7dcf2c14b83be7346e61c706a65854c3b0e6e1e5333f9"
     },
     {
-      "file": "assets/events-DCKqUJl2.js",
+      "file": "assets/events-CFmBVCnW.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
-        "assets/ReferralSharingCapability-CIPSQkNt.js",
+        "assets/ReferralSharingCapability-C2ttafgF.js",
         "assets/core-game-C1Q8Fsf8.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "ebd108b1ace8e0031cb733966cb782a1738e62e392b20476e40d40ac40d8c343"
+      "sha256": "9bef2b4d29f8b5a37b1cd5c3960d5806df4a586212a6b81bba6c83b65c228082"
     },
     {
       "file": "assets/game-BApwafnU.js",
@@ -2760,7 +2766,7 @@
       "sha256": "b224c4b29467d8be52db4726b88d9b66881124db200d3053214798010dfe4dbc"
     },
     {
-      "file": "assets/localeModules-BZarlfS-.js",
+      "file": "assets/localeModules-jmW-ZJWH.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
@@ -2769,11 +2775,11 @@
       ],
       "dynamicImports": [
         "assets/aboutLegal-DE8omzrK.js",
-        "assets/accessibility-g8je6L5U.js",
+        "assets/accessibility-6FKcnuQn.js",
         "assets/achievements-CvXbbAhq.js",
         "assets/alerts-C9dGsq9L.js",
         "assets/coinPurchase-DbxQErWv.js",
-        "assets/common-CTrwABs4.js",
+        "assets/common-_TLj9cwa.js",
         "assets/credits-BVHomOvF.js",
         "assets/errors-CyEYyxxk.js",
         "assets/game-CVqpj1aR.js",
@@ -2791,11 +2797,11 @@
         "assets/tooltips-DE2iImLy.js",
         "assets/victory-CdAQnwGp.js",
         "assets/aboutLegal-Czoa72th.js",
-        "assets/accessibility-CX8lxSLS.js",
+        "assets/accessibility-pbCkmE6-.js",
         "assets/achievements-D1LCYXfn.js",
         "assets/alerts-BVJgwU-_.js",
         "assets/coinPurchase-D11na4Ir.js",
-        "assets/common-CYlBp6ti.js",
+        "assets/common-Bs_Q8hBU.js",
         "assets/credits-BMuqt5mm.js",
         "assets/errors-8OKshPzs.js",
         "assets/game-DRkWBCJy.js",
@@ -2817,7 +2823,7 @@
         "assets/achievements-FU8CdIM-.js",
         "assets/alerts-D5rgpZk_.js",
         "assets/coinPurchase-DqhpsdiJ.js",
-        "assets/common-BPNWMG8n.js",
+        "assets/common-n-P6ZiqJ.js",
         "assets/credits-C-fTV8Es.js",
         "assets/errors-ApDyhna7.js",
         "assets/game-D5iiSVmO.js",
@@ -2839,7 +2845,7 @@
         "assets/achievements-CZrVZHAK.js",
         "assets/alerts-CSeGzMCX.js",
         "assets/coinPurchase-C9LzawBN.js",
-        "assets/common-DMJFWsLE.js",
+        "assets/common-B7xIq-DG.js",
         "assets/credits-N7-HSvFa.js",
         "assets/errors-KXrHpEFp.js",
         "assets/game-Dzl9eVQ5.js",
@@ -2857,11 +2863,11 @@
         "assets/tooltips-C4EgqKK2.js",
         "assets/victory-DSWYvMKn.js",
         "assets/aboutLegal-C9CEn1K6.js",
-        "assets/accessibility-bmZwsPWC.js",
+        "assets/accessibility-bksbmqER.js",
         "assets/achievements-rLBfe8jA.js",
         "assets/alerts-DB2b2bFL.js",
         "assets/coinPurchase-Df3WZgjf.js",
-        "assets/common-DFN9fgKV.js",
+        "assets/common-DLRf0r44.js",
         "assets/credits-CcHyHvgm.js",
         "assets/errors-CsX4n6XL.js",
         "assets/game-CLrbk-AC.js",
@@ -2879,11 +2885,11 @@
         "assets/tooltips-7ITtr-wV.js",
         "assets/victory-CQY7TXi8.js",
         "assets/aboutLegal-9Lub4aST.js",
-        "assets/accessibility-DNNiK9LG.js",
+        "assets/accessibility-mnG6Ux4q.js",
         "assets/achievements-BK4_rCWG.js",
         "assets/alerts-Bjw2X9IP.js",
         "assets/coinPurchase-JOGy0qmc.js",
-        "assets/common-C_HZ6acx.js",
+        "assets/common-BVKGsOnP.js",
         "assets/credits-BUHMQe8H.js",
         "assets/errors-DFFPSE-7.js",
         "assets/game-BqHhoJxi.js",
@@ -2905,7 +2911,7 @@
         "assets/achievements-Bbc2CM-y.js",
         "assets/alerts-RpDOi6GD.js",
         "assets/coinPurchase-pN1GgFfU.js",
-        "assets/common-_F3B4CCQ.js",
+        "assets/common-lqZx1SM_.js",
         "assets/credits-BAi2MGkp.js",
         "assets/errors-D2-OXfSy.js",
         "assets/game-Z6k-vNVe.js",
@@ -2923,11 +2929,11 @@
         "assets/tooltips-CyQ2-MBP.js",
         "assets/victory-SwC6BPeg.js",
         "assets/aboutLegal-BETt7Q1S.js",
-        "assets/accessibility-CHSYBINP.js",
+        "assets/accessibility-5aadonXn.js",
         "assets/achievements-p2MkDkgH.js",
         "assets/alerts-CkArfypF.js",
         "assets/coinPurchase-Dfy4vHsX.js",
-        "assets/common-DFDYBKMC.js",
+        "assets/common-Srl377cb.js",
         "assets/credits-D5AM3JCO.js",
         "assets/errors-62EEx56-.js",
         "assets/game-BApwafnU.js",
@@ -2945,11 +2951,11 @@
         "assets/tooltips-DdGlh_Tv.js",
         "assets/victory-BUTzSOaB.js",
         "assets/aboutLegal-CIQlmZyd.js",
-        "assets/accessibility-PCP5ItBq.js",
+        "assets/accessibility-BTdzn21X.js",
         "assets/achievements-DKw6pJ6X.js",
         "assets/alerts-DSQ7RoYj.js",
         "assets/coinPurchase-D0pVpDZ9.js",
-        "assets/common-CkPza-iq.js",
+        "assets/common-0T1Fp4PZ.js",
         "assets/credits-1_wv8ESf.js",
         "assets/errors-BABpJZgl.js",
         "assets/game-uUa4AxK0.js",
@@ -2967,11 +2973,11 @@
         "assets/tooltips-WYqdtrQB.js",
         "assets/victory-Ds6eFDbR.js",
         "assets/aboutLegal-BzJhPWZb.js",
-        "assets/accessibility-DEM46xV7.js",
+        "assets/accessibility-DBWotlLW.js",
         "assets/achievements-Bn7SwUKW.js",
         "assets/alerts-IAZvWJU4.js",
         "assets/coinPurchase-3W29am3Z.js",
-        "assets/common-DWBWwPH8.js",
+        "assets/common-CJein-tm.js",
         "assets/credits-D5aE9Jzr.js",
         "assets/errors-BW1VmJzc.js",
         "assets/game-r5Ir4Jh8.js",
@@ -2993,7 +2999,7 @@
         "assets/achievements-CzQcVAUd.js",
         "assets/alerts-CZIVGJSf.js",
         "assets/coinPurchase-S3LHouKQ.js",
-        "assets/common-CZ3m9-BV.js",
+        "assets/common-C5vxl13O.js",
         "assets/credits-WIsdg--y.js",
         "assets/errors-BH21ki5o.js",
         "assets/game-DP1vieUR.js",
@@ -3011,11 +3017,11 @@
         "assets/tooltips-P4yGzLRy.js",
         "assets/victory-BSurpYZb.js",
         "assets/aboutLegal-BOERrO-7.js",
-        "assets/accessibility-DJPdHRNx.js",
+        "assets/accessibility-DDdV10oS.js",
         "assets/achievements-DMNmCB2B.js",
         "assets/alerts-BKOZ8A_f.js",
         "assets/coinPurchase-DC-ee1Z4.js",
-        "assets/common-OOu9ldR5.js",
+        "assets/common-Dw_J1HMX.js",
         "assets/credits-B2FMOOee.js",
         "assets/errors-mq1bZfkt.js",
         "assets/game-BEmm6OG0.js",
@@ -3033,11 +3039,11 @@
         "assets/tooltips-yHNOr35R.js",
         "assets/victory-BBCEHWs_.js",
         "assets/aboutLegal-l9aacrYT.js",
-        "assets/accessibility-a_lQ9ZBG.js",
+        "assets/accessibility-DgPVrXsF.js",
         "assets/achievements-gUCMjln2.js",
-        "assets/alerts-kH7XmubZ.js",
+        "assets/alerts-C7m5MV33.js",
         "assets/coinPurchase-B1ipvSPi.js",
-        "assets/common-DSWou4nP.js",
+        "assets/common-BxLdFFQq.js",
         "assets/credits-C5hOuWeV.js",
         "assets/errors-LMh1MBOC.js",
         "assets/game-Dh2yEbJ5.js",
@@ -3055,11 +3061,11 @@
         "assets/tooltips-DUOdfoS9.js",
         "assets/victory-CNBe35hS.js",
         "assets/aboutLegal-BkaUziYk.js",
-        "assets/accessibility-VP9DHUbK.js",
+        "assets/accessibility-DoUGjQcm.js",
         "assets/achievements-Qodn0Xcv.js",
         "assets/alerts-Ct9CZwj4.js",
         "assets/coinPurchase-C7ASXWB7.js",
-        "assets/common-BgDn3wnJ.js",
+        "assets/common-BwIO3epv.js",
         "assets/credits-DLA52QJG.js",
         "assets/errors-Cehdj1Wx.js",
         "assets/game-CNflmOys.js",
@@ -3077,11 +3083,11 @@
         "assets/tooltips-CxP_khYh.js",
         "assets/victory-BOt-EJWI.js",
         "assets/aboutLegal-xUlXjvaE.js",
-        "assets/accessibility-Mt1Wmgw1.js",
+        "assets/accessibility-Czcbizk8.js",
         "assets/achievements-CixvqpcJ.js",
         "assets/alerts-DRwjGC7c.js",
         "assets/coinPurchase-C8bjDuJq.js",
-        "assets/common-BAGytzzs.js",
+        "assets/common-DI-bC8ZO.js",
         "assets/credits-DocYIUPf.js",
         "assets/errors-SUwuBgtY.js",
         "assets/game-DHdRy91p.js",
@@ -3099,7 +3105,7 @@
         "assets/tooltips-CO8aJWYs.js",
         "assets/victory-DiBsCrFr.js"
       ],
-      "sha256": "74a955dca0424531ed20264a9c9405492e3d1a2ac3aad302a56183092fd053c6"
+      "sha256": "aff26a88b2c64e49dce7d5babcce7687e3a9417c43f8a47d8a1269894fd40995"
     },
     {
       "file": "assets/loss-Bk9noke9.js",
@@ -4032,14 +4038,15 @@
       "sha256": "e3d06850435abed0d5f87f0f10f2ba6f45cb2eb342d6e80a80defe2b08c6e80d"
     },
     {
-      "file": "assets/requestSchemas-CZ5mvpbA.js",
+      "file": "assets/requestSchemas-BvjBbhUK.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
+        "assets/core-game-C1Q8Fsf8.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "c56b7c674f96e078d587e0fcf2f12b979df5546a1847f2546c68e2625beade9b"
+      "sha256": "893441aebad630653b713e4d1f48202f6ef9cf5130508cf128854e2b0f5c00bf"
     },
     {
       "file": "assets/rolldown-runtime-Czjbc987.js",
@@ -4800,17 +4807,17 @@
       "sha256": "31e560e308deebc4fa47cdbfd8636c49268aa4c8a5d8739e2d5b72cedff72583"
     },
     {
-      "file": "assets/validation-CkoY2GmV.js",
+      "file": "assets/validation-Dp6pFRQm.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
-        "assets/ReferralSharingCapability-CIPSQkNt.js",
-        "assets/requestSchemas-CZ5mvpbA.js",
+        "assets/ReferralSharingCapability-C2ttafgF.js",
+        "assets/requestSchemas-BvjBbhUK.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "94b6fe63741ac727ceb014d145757db5af1f19602de3bbb78061da377ba23798"
+      "sha256": "016df28957dab24b8de863f6b26d8de5b0ac7554224995835e28eec922074bd6"
     },
     {
       "file": "assets/vendor-react-BaMjfHjM.js",
@@ -5157,12 +5164,12 @@
   ],
   "files": [
     {
-      "file": "assets/GameModalView-7kgqXM8M.js",
-      "sha256": "864dc621a5e503f7acb6c1f98e4eab715f3335ac09f013de52f9371119b10dab"
+      "file": "assets/GameModalView-BUib6xJC.css",
+      "sha256": "a8deded08a59c02cca6fb950dd9d1bc7477de9bb7bbeabba6a0b38bfcdca0da1"
     },
     {
-      "file": "assets/GameModalView-DgrfXT0H.css",
-      "sha256": "bb0e438b4a9ab6726edd37d0991d8322bf6a52850b69757794f5cb8a68e50025"
+      "file": "assets/GameModalView-DHqcwu_w.js",
+      "sha256": "e8887311645c6cf4ecea2f6c6c980d218f82040f54624859534745ed7ed60e9a"
     },
     {
       "file": "assets/PoetsenOne-Regular-C2losmxN.woff2",
@@ -5185,12 +5192,12 @@
       "sha256": "4ace42b07167c7d275dc91e97ad94eb3c9880c9346d328ed8f669de7c1b18eaa"
     },
     {
-      "file": "assets/RaceTo10Game-D7G7yueX.js",
-      "sha256": "d27be0aec15c9a794dcebfb07ad7e13ca71a175e2ac545648f2edf13a1994b08"
+      "file": "assets/RaceTo10Game-Dvm0l6rJ.js",
+      "sha256": "b4fd91611b632a4d1a104686d0d5d17a26ae824321abff048e1800eeaf18993b"
     },
     {
-      "file": "assets/ReferralSharingCapability-CIPSQkNt.js",
-      "sha256": "f7c6786bd9f6617ec6e49f253f3cec33bc996d32ebe005f8016b164fc438262e"
+      "file": "assets/ReferralSharingCapability-C2ttafgF.js",
+      "sha256": "c100887ae821f3fbf55daa770f928eab8bc9899b42b9e341404294e81e17ffae"
     },
     {
       "file": "assets/SolarSystem-y2wlfn6x.js",
@@ -5257,6 +5264,18 @@
       "sha256": "06f4c34496081468160c76cdd7b0c17ae189b7a309f57b1db118e8b7ce3420ae"
     },
     {
+      "file": "assets/accessibility-5aadonXn.js",
+      "sha256": "def74d3379b9ff2c1f055733c6a98eec7f82fd88581fe717b6b2cd03282cd167"
+    },
+    {
+      "file": "assets/accessibility-6FKcnuQn.js",
+      "sha256": "2f971dce8a549722b782b53a4bc76f79cc2a4b8d216f8e369db016fb898ae45f"
+    },
+    {
+      "file": "assets/accessibility-BTdzn21X.js",
+      "sha256": "727d9362eab747e2f105b4fe52fee6e825b0563ad246a92cb6ec661437efa277"
+    },
+    {
       "file": "assets/accessibility-BtoY_R4l.js",
       "sha256": "00c8c3da40ec4a72c5fe1345b85053242b7ab6701bf0649ab62dabe4a0b22f46"
     },
@@ -5265,56 +5284,44 @@
       "sha256": "a8f4e8f1973193a805e33bcfbfaa9367f13c37df242391dcf38662e6fb509572"
     },
     {
-      "file": "assets/accessibility-CHSYBINP.js",
-      "sha256": "b9b55fdc77a88d22b6913273ee4502bc0f9af2a1fcd46b8327299ee9d0c811c4"
-    },
-    {
-      "file": "assets/accessibility-CX8lxSLS.js",
-      "sha256": "744a6c45238c74f774d898b83bdac05505880b42f15a6501ac227d636edbbdb3"
-    },
-    {
       "file": "assets/accessibility-CjlDnMhS.js",
       "sha256": "0564fea228688f04ff2f5636a45123187d7cdfd65d7bdaf454a03dffba87f618"
     },
     {
-      "file": "assets/accessibility-DEM46xV7.js",
-      "sha256": "926cc9b24738818d0d9c3d337c1d78dc68108345bdacecfeebc71ab9cedaeb17"
+      "file": "assets/accessibility-Czcbizk8.js",
+      "sha256": "86a4d7472d5997bb68403198d45f3a59f54264f0b566e146b9ee4f66f92126d6"
     },
     {
-      "file": "assets/accessibility-DJPdHRNx.js",
-      "sha256": "f8f3df7f1fdd60e29422e0885470d42a4f7772c18793668dce5c67c90eefb203"
+      "file": "assets/accessibility-DBWotlLW.js",
+      "sha256": "a2747f3537ba751a5ae4aad6e241f5b5b57289127fdfd1fa8238dbe5216dcb2d"
     },
     {
-      "file": "assets/accessibility-DNNiK9LG.js",
-      "sha256": "97adc3bd726940a37ac01460dd8601cde7058b58e02f5a098420f9d48514303a"
+      "file": "assets/accessibility-DDdV10oS.js",
+      "sha256": "c541be4f67de70b1f25ac0a4d0a649f63af82fd109b84678a10cbf5d6f6c8018"
     },
     {
-      "file": "assets/accessibility-Mt1Wmgw1.js",
-      "sha256": "7ebb9afc2e483c080ff11a523f59fd6ec2f4e77b4f8bb1179b053be1d125537e"
+      "file": "assets/accessibility-DgPVrXsF.js",
+      "sha256": "ea93c7c7929b80bb598d602894aadabef6f03ded2a94577e7e97bfc1d891de50"
+    },
+    {
+      "file": "assets/accessibility-DoUGjQcm.js",
+      "sha256": "5493852a1eb191fd6e5dd2aebaaff83faea73d7fde92350aedf8420a569a56a8"
     },
     {
       "file": "assets/accessibility-OytD13PE.js",
       "sha256": "01d89130870db5775ebcb8eadaba6b9766c0714ad982b98e8d8c6c732b148835"
     },
     {
-      "file": "assets/accessibility-PCP5ItBq.js",
-      "sha256": "8d7f31c8124d2c6079a263ee4654ec9a35d8cf2b9a5e9e4e3cdeca34f6bdf329"
+      "file": "assets/accessibility-bksbmqER.js",
+      "sha256": "0522d75544a1304d0514ca1be44527f95a51b8e678d3b598d91c6df66d7edc83"
     },
     {
-      "file": "assets/accessibility-VP9DHUbK.js",
-      "sha256": "df582624a88e97b1e2cf51f436e2bd89b21f62fe3eca2c854f3e092f242ad6a1"
+      "file": "assets/accessibility-mnG6Ux4q.js",
+      "sha256": "644d68a960def5d56afd47328740a5e523047ebe75da382e4097511a6b1d12ee"
     },
     {
-      "file": "assets/accessibility-a_lQ9ZBG.js",
-      "sha256": "612e9a3a3b7ac46898969418798281eae65c5446fdb0f4392058ab8f0813ad43"
-    },
-    {
-      "file": "assets/accessibility-bmZwsPWC.js",
-      "sha256": "e7ad92222d72cf7c732896c65b63691179eddf7554319deaecd930e8c2b65578"
-    },
-    {
-      "file": "assets/accessibility-g8je6L5U.js",
-      "sha256": "a7364a4bf1f1cf108c345bc8bd4e250d9bed84311a162a01da4518246224d486"
+      "file": "assets/accessibility-pbCkmE6-.js",
+      "sha256": "01eba35430c5c9721068bf5c913a1c986f7b5e393d25639dc50d3250ed975188"
     },
     {
       "file": "assets/achievements-BK4_rCWG.js",
@@ -5389,6 +5396,10 @@
       "sha256": "90a17b16ef439d56941e106e3c85fd58fb689da90301dfea6353b2e0437cf947"
     },
     {
+      "file": "assets/alerts-C7m5MV33.js",
+      "sha256": "99ea51367a8176efebc6ed06dee78ef2433873172f281c84ff8598e4ea816389"
+    },
+    {
       "file": "assets/alerts-C9dGsq9L.js",
       "sha256": "2982118c1e54bc647e628dc3c96e161d4d3d514617b0547303cb91359c3ee8ca"
     },
@@ -5433,16 +5444,12 @@
       "sha256": "f38ad7735f985c80a4e7bed47a1014cacf2ae23028b396c3eaacd85b7ed9897d"
     },
     {
-      "file": "assets/alerts-kH7XmubZ.js",
-      "sha256": "307324ca9ce3bb128f9fc339d5ed09a29b0b226ef33128083a968d26fc5c835f"
+      "file": "assets/bridge-BgK5rQAO.js",
+      "sha256": "8fb278bc101bbe7496cfbcd1fcb3786203eef219a7d37da2660ea7a1d6ef7d88"
     },
     {
-      "file": "assets/bridge-ixudel31.js",
-      "sha256": "545f44d3e0dbed479a45e65469efe81b952a461909aefe527469e1c184446bc2"
-    },
-    {
-      "file": "assets/bridge-m-3a7N5g.js",
-      "sha256": "28b45180907290ad2d7877d8a2435051d7b6b88d08eeb94f1a4ed57a96d08a58"
+      "file": "assets/bridge-CsDIZQka.js",
+      "sha256": "9b2466ffa359e1bb0da265224a49224b615afba9bcf189799178e898df2409d6"
     },
     {
       "file": "assets/browserStorage-CV-PZCxe.js",
@@ -5525,64 +5532,64 @@
       "sha256": "94efccb52f2f4f4fc2bd9599756afa4b750c91a8d57af1004f698d99d5ff7e95"
     },
     {
-      "file": "assets/common-BAGytzzs.js",
-      "sha256": "0c29cefa83e3ce4b5215c238899f83f01b24790022baeb64b649406a59f6556a"
+      "file": "assets/common-0T1Fp4PZ.js",
+      "sha256": "9d2dd96292aac164f46542360d2215109fb8e37bdfdfd7cd3cac329b5139089d"
     },
     {
-      "file": "assets/common-BPNWMG8n.js",
-      "sha256": "7433ebba7ccea71aed686d774397e52f3080766f4c7ac0ac00e18a6104b272fc"
+      "file": "assets/common-B7xIq-DG.js",
+      "sha256": "84c090a609a5798be98c50238eb464fda05229a1e5a3b3275ee16476ccb1e88d"
     },
     {
-      "file": "assets/common-BgDn3wnJ.js",
-      "sha256": "2d983426690ecc6d99d40e9b24add9e3eec65438e147444160201a06c7a80e35"
+      "file": "assets/common-BVKGsOnP.js",
+      "sha256": "1f5cece5fc6aa04f176c2a17c7ae0ed0a03ccc4fa596806b226bae38046ed385"
     },
     {
-      "file": "assets/common-CTrwABs4.js",
-      "sha256": "9e31285e3efa7953f3e31bea29573af60b8037c23fe4a15bcab45a82d49757e0"
+      "file": "assets/common-Bs_Q8hBU.js",
+      "sha256": "3488ece537bf0ecc1b3a309a161de7fcb114eeef833b1720752368c46b106947"
     },
     {
-      "file": "assets/common-CYlBp6ti.js",
-      "sha256": "b0d7c65b6f04a7643078398a8fad0fe74737fce5ab6e5c8fa69d80b1cb2eb5e2"
+      "file": "assets/common-BwIO3epv.js",
+      "sha256": "a51d63f9017f736c2a9e4070b7019ab505e3674702026e575f630f0e117901b9"
     },
     {
-      "file": "assets/common-CZ3m9-BV.js",
-      "sha256": "9899712901e3ed5c3e6bba0cdea999603d61ed612156a3afcba1c5b996fecccd"
+      "file": "assets/common-BxLdFFQq.js",
+      "sha256": "1208112d6396a5ac6fc58c91c95e78a8d8bd96ec44020638e17acf40ff5219c5"
     },
     {
-      "file": "assets/common-C_HZ6acx.js",
-      "sha256": "3c5f4b2ca5f5be3d51b5d258939ee73155554ec293af4784bb956fe5df2311af"
+      "file": "assets/common-C5vxl13O.js",
+      "sha256": "ba56ba888b6a3c24d854728120bd71a4536589393d2d9dfcb13713d9ae986927"
     },
     {
-      "file": "assets/common-CkPza-iq.js",
-      "sha256": "d4efb57528970bbc33bf0707cb9f0617c03475ec36bdf730308cb1d47c12ed0d"
+      "file": "assets/common-CJein-tm.js",
+      "sha256": "0d215d2ad7f919cd97007a5d247ad9848433a92dfc48020e38eaa0f0cab7db29"
     },
     {
-      "file": "assets/common-DFDYBKMC.js",
-      "sha256": "4171186241bc8cfa4489eecb140bbc16db8e88fbdc73f464e5a924d60ad52dc7"
+      "file": "assets/common-DI-bC8ZO.js",
+      "sha256": "0f038ca776ebec906e93dd28133e9002b944c921bad2d12a6d0c890982d4053c"
     },
     {
-      "file": "assets/common-DFN9fgKV.js",
-      "sha256": "ca4dc0098ea9c5b6c46365f36eb22a5f3ed6b567043c6efccdee65420e248ede"
+      "file": "assets/common-DLRf0r44.js",
+      "sha256": "2e9c9e13eb9dd8def0892c7544a6d93b5ba61eb59590e00e8239d3efa6a71286"
     },
     {
-      "file": "assets/common-DMJFWsLE.js",
-      "sha256": "09e95ba7aed19958e6767df6879b57c4f38526fc227412c8ae5041783d530246"
+      "file": "assets/common-Dw_J1HMX.js",
+      "sha256": "c9d76ba84dea1e42a112ab229b9a9cafd820da381de26f04c982247c483c3fce"
     },
     {
-      "file": "assets/common-DSWou4nP.js",
-      "sha256": "867e83f065fc836f37a4cbccb4728ae91adbcfa66a27372c9b9f6fac4e33a782"
+      "file": "assets/common-Srl377cb.js",
+      "sha256": "0cc51d9c30726ffe98292fbeab7a5ae7506dc05e5a5118f29a9ea5c2afab46eb"
     },
     {
-      "file": "assets/common-DWBWwPH8.js",
-      "sha256": "6241fb136799ab1359afd2e862967a91980b24bb7fc9831500aec18e321f67ac"
+      "file": "assets/common-_TLj9cwa.js",
+      "sha256": "928a0cebea07d59f94f0e493ff70b7ed71003fd099f71f93622e41859362ea17"
     },
     {
-      "file": "assets/common-OOu9ldR5.js",
-      "sha256": "7008d4dbd4250386c0a5da72a2976dcdfc3e635634ab8c9e0990cb76b7f49083"
+      "file": "assets/common-lqZx1SM_.js",
+      "sha256": "1ed21a165a68a7df9a7ff549284959b72a80362d1e68b15cb5393331cac3e2a8"
     },
     {
-      "file": "assets/common-_F3B4CCQ.js",
-      "sha256": "0641d0610032f156001acca93aa2e8f67405a9931648474de5cbee8749205748"
+      "file": "assets/common-n-P6ZiqJ.js",
+      "sha256": "9cdd7655163897ddfa41589bc003a69f125d6dac5b721c47834d19157d173e22"
     },
     {
       "file": "assets/core-bridge-constants-Bsju_PPr.js",
@@ -5713,8 +5720,8 @@
       "sha256": "2c043312ac99be7741b7dcf2c14b83be7346e61c706a65854c3b0e6e1e5333f9"
     },
     {
-      "file": "assets/events-DCKqUJl2.js",
-      "sha256": "ebd108b1ace8e0031cb733966cb782a1738e62e392b20476e40d40ac40d8c343"
+      "file": "assets/events-CFmBVCnW.js",
+      "sha256": "9bef2b4d29f8b5a37b1cd5c3960d5806df4a586212a6b81bba6c83b65c228082"
     },
     {
       "file": "assets/game-BApwafnU.js",
@@ -5725,12 +5732,12 @@
       "sha256": "3f4dcd70ff24d5d878ff1e43005926d2edaa40e54ad2f3c8fb318db51ef54881"
     },
     {
-      "file": "assets/game-BQDG_LQb.js",
-      "sha256": "41c4263579af5828a443b2a628420118d85fb8be42107faa19098ff8b6ed8435"
-    },
-    {
       "file": "assets/game-BqHhoJxi.js",
       "sha256": "a81b685c0efb62412a28b5590b61266ddeecad2f12697eda83d264e01bdfd684"
+    },
+    {
+      "file": "assets/game-Bs_5Luim.js",
+      "sha256": "80f802faaab3fac40d73d160922f35671705a2657abee281a152cb0801686826"
     },
     {
       "file": "assets/game-CLrbk-AC.js",
@@ -5909,8 +5916,8 @@
       "sha256": "b224c4b29467d8be52db4726b88d9b66881124db200d3053214798010dfe4dbc"
     },
     {
-      "file": "assets/localeModules-BZarlfS-.js",
-      "sha256": "74a955dca0424531ed20264a9c9405492e3d1a2ac3aad302a56183092fd053c6"
+      "file": "assets/localeModules-jmW-ZJWH.js",
+      "sha256": "aff26a88b2c64e49dce7d5babcce7687e3a9417c43f8a47d8a1269894fd40995"
     },
     {
       "file": "assets/loss-Bk9noke9.js",
@@ -6293,8 +6300,8 @@
       "sha256": "e3d06850435abed0d5f87f0f10f2ba6f45cb2eb342d6e80a80defe2b08c6e80d"
     },
     {
-      "file": "assets/requestSchemas-CZ5mvpbA.js",
-      "sha256": "c56b7c674f96e078d587e0fcf2f12b979df5546a1847f2546c68e2625beade9b"
+      "file": "assets/requestSchemas-BvjBbhUK.js",
+      "sha256": "893441aebad630653b713e4d1f48202f6ef9cf5130508cf128854e2b0f5c00bf"
     },
     {
       "file": "assets/riddlequest-r-kPbkvcmu.webp",
@@ -6673,8 +6680,8 @@
       "sha256": "31e560e308deebc4fa47cdbfd8636c49268aa4c8a5d8739e2d5b72cedff72583"
     },
     {
-      "file": "assets/validation-CkoY2GmV.js",
-      "sha256": "94b6fe63741ac727ceb014d145757db5af1f19602de3bbb78061da377ba23798"
+      "file": "assets/validation-Dp6pFRQm.js",
+      "sha256": "016df28957dab24b8de863f6b26d8de5b0ac7554224995835e28eec922074bd6"
     },
     {
       "file": "assets/vendor-react-BaMjfHjM.js",
@@ -6794,7 +6801,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "2346ed5f145b687f98448ce24fd0be319ca427b04b180ace90a1d4d5ef497d94"
+      "sha256": "b0a561cc677049ee7e3475e6af1698d614d383711eb2a5ced08e5e5528c13c1c"
     },
     {
       "file": "reddit-inline.html",

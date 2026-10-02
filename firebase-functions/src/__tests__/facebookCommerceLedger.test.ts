@@ -3,7 +3,7 @@ import {
   grantVerifiedFacebookPurchase,
   refundVerifiedFacebookPurchase,
 } from "../facebook/facebookCommerceLedger";
-import {FACEBOOK_PRODUCTS} from "../facebook/facebookProductCatalog";
+import {FACEBOOK_PRODUCTS} from "@qwordly/core/pricing/facebookCatalog";
 
 /** Describes stored. */
 type Stored = Record<string, unknown>;

@@ -1,0 +1,40 @@
+{
+  "taskId": "multiplayer:race-confirmed-guess-retention",
+  "observedAt": "2026-10-02T03:11:06.126441+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 117,
+  "dashboardReceiptRecorded": false,
+  "reason": "Confirmed guess retention verified; repository documentation reports 66 missing declarations and the user requested that the concurrent full-pathway audit finish. Preserve guarded source-stability requirements.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RaceSessionAuthority.ts": "416e0acba385996fcf2bbe258551aa281ae286a30fc427c33a5630f52c5355ec",
+    "packages/portal/src/play/race/logic/raceGuessHistory.ts": "418cc9a99d7084a49308e2aaa6471c40dd9de83bc5f2fa74dc864f7b4caf41e0",
+    "packages/portal/src/play/race/__tests__/RaceSessionConfirmedGuessRetention.test.ts": "a684e33ecf9d9b3bcbb39874dc2ac4d4bef1869ca3fd05faacc33de2ce34a1e5",
+    "packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs": "09e89b55ef36a07d0b55873e1079ba71cb9baea30b70bbbad2282c40f52fb3f8",
+    "docs/development-tasks/race-confirmed-guess-retention.json": "507db374dbe6cdfd7a957cf94173f48a81594c9f7d1e523d235f610f1306d9f1",
+    "docs/evidence/multiplayer-confirmed-guess-retention.md": "53260cdd150c742783996e7566d4a544ca80a67ff7d23fe5c98396a1572742b0"
+  },
+  "passedAtBatchSnapshot": {
+    "baselineRegressionFailures": 4,
+    "focusedTests": 11,
+    "confirmedGuessRetentionBrowserCases": 6,
+    "retainedBrowserCases": 72,
+    "continuityBrowserCases": 12,
+    "concurrentGuessBrowserCases": 6,
+    "concurrentHintBrowserCases": 4,
+    "totalBrowserCases": 100,
+    "clientTests": 1973,
+    "clientSuites": 247,
+    "isolatedBuilds": 7
+  },
+  "notPerformed": [
+    "full guarded verification",
+    "guarded dashboard completion",
+    "live hosted verification",
+    "backend changes",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}

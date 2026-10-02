@@ -1,0 +1,181 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=raceBoardAttempts
+FAIL src/play/race/__tests__/raceBoardAttempts.test.tsx
+  ● places active input after 1 authoritative attempts
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 6
+    + Received  + 1
+
+    - Array [
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    - ]
+    + Array []
+
+       9 |   /** Missing history supplies only empty presentation slots, never fabricated feedback. */
+      10 |   const guesses = raceBoardAttempts([], used);
+    > 11 |   expect(guesses).toEqual(Array.from({length: used}, () => ({guess: [], feedback: []})));
+         |                   ^
+      12 |   /** Actual board renders only the remaining editable row after those consumed slots. */
+      13 |   const html = renderToStaticMarkup(<ControlledGuessBoard answerLength={5} currentLetters={["A", "", "", "", ""]}
+      14 |     activeSlotIndex={0} hintRevealedIndices={[]} guesses={guesses} onSelectSlot={() => undefined} />);
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:11:19
+
+  ● places active input after 3 authoritative attempts
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 14
+    + Received  +  1
+
+    - Array [
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    - ]
+    + Array []
+
+       9 |   /** Missing history supplies only empty presentation slots, never fabricated feedback. */
+      10 |   const guesses = raceBoardAttempts([], used);
+    > 11 |   expect(guesses).toEqual(Array.from({length: used}, () => ({guess: [], feedback: []})));
+         |                   ^
+      12 |   /** Actual board renders only the remaining editable row after those consumed slots. */
+      13 |   const html = renderToStaticMarkup(<ControlledGuessBoard answerLength={5} currentLetters={["A", "", "", "", ""]}
+      14 |     activeSlotIndex={0} hintRevealedIndices={[]} guesses={guesses} onSelectSlot={() => undefined} />);
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:11:19
+
+  ● places active input after 4 authoritative attempts
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 18
+    + Received  +  1
+
+    - Array [
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    - ]
+    + Array []
+
+       9 |   /** Missing history supplies only empty presentation slots, never fabricated feedback. */
+      10 |   const guesses = raceBoardAttempts([], used);
+    > 11 |   expect(guesses).toEqual(Array.from({length: used}, () => ({guess: [], feedback: []})));
+         |                   ^
+      12 |   /** Actual board renders only the remaining editable row after those consumed slots. */
+      13 |   const html = renderToStaticMarkup(<ControlledGuessBoard answerLength={5} currentLetters={["A", "", "", "", ""]}
+      14 |     activeSlotIndex={0} hintRevealedIndices={[]} guesses={guesses} onSelectSlot={() => undefined} />);
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:11:19
+
+  ● places active input after 5 authoritative attempts
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 22
+    + Received  +  1
+
+    - Array [
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    - ]
+    + Array []
+
+       9 |   /** Missing history supplies only empty presentation slots, never fabricated feedback. */
+      10 |   const guesses = raceBoardAttempts([], used);
+    > 11 |   expect(guesses).toEqual(Array.from({length: used}, () => ({guess: [], feedback: []})));
+         |                   ^
+      12 |   /** Actual board renders only the remaining editable row after those consumed slots. */
+      13 |   const html = renderToStaticMarkup(<ControlledGuessBoard answerLength={5} currentLetters={["A", "", "", "", ""]}
+      14 |     activeSlotIndex={0} hintRevealedIndices={[]} guesses={guesses} onSelectSlot={() => undefined} />);
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:11:19
+
+  ● keeps known feedback and an optimistic pending row without duplicating attempts
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 8
+    + Received  + 0
+
+    @@ -1,15 +1,7 @@
+      Array [
+        Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+    -     "feedback": Array [],
+    -     "guess": Array [],
+    -   },
+    -   Object {
+          "feedback": Array [
+            "grey",
+            "grey",
+            "grey",
+            "grey",
+
+      22 |   /** One accepted wrong answer remains available after an earlier cold recovery. */
+      23 |   const known: ScoredGuess[] = [{guess: [..."wrong"], feedback: ["grey", "grey", "grey", "grey", "grey"]}];
+    > 24 |   expect(raceBoardAttempts(known, 3)).toEqual([{guess: [], feedback: []}, {guess: [], feedback: []}, ...known]);
+         |                                       ^
+      25 |   expect(raceBoardAttempts(known, 0)).toBe(known);
+      26 | });
+      27 |
+
+      at Object.<anonymous> (src/play/race/__tests__/raceBoardAttempts.test.tsx:24:39)
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 1 passed, 6 total
+Snapshots:   0 total
+Time:        0.198 s, estimated 1 s
+Ran all test suites matching raceBoardAttempts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=raceBoardAttempts`
+Exit status 1

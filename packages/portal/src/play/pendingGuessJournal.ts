@@ -46,6 +46,7 @@ export type PendingGuessJournal = {
     /** Next issued question. */ riddle: BridgeRiddle;
     /** Last confirmed state within that question. */ base: PendingGuessState;
     /** Unsubmitted letters. */ draft: string[];
+    /** Selected slot within the unsubmitted draft. */ draftActiveSlotIndex?: number;
   }>;
   /** The queue retained for safe pending-play recovery. */
   queue: QueuedGuess[];
@@ -53,6 +54,8 @@ export type PendingGuessJournal = {
   coinAction?: QueuedCoinAction;
   /** The draft retained for safe pending-play recovery. */
   draft: string[];
+  /** Selected draft slot, optional for existing version-one journals. */
+  draftActiveSlotIndex?: number;
 };
 /** The journal key retained for safe pending-play recovery. */
 const journalKey = (scope: string) => `riddleQuest:pendingPlay:v1:${scope}`;
@@ -70,6 +73,9 @@ const validRiddle = (value: unknown): value is BridgeRiddle =>
   typeof value.text === "string" &&
   Number.isInteger(value.answerLength) &&
   (value.gameMode === "classic" || value.gameMode === "challenge");
+/** Rejects malformed selections while accepting legacy journals. */
+const validDraftSlot = (value: unknown, length: number): boolean =>
+  value === undefined || (Number.isInteger(value) && Number(value) >= 0 && Number(value) < length);
 /** The valid guess retained for safe pending-play recovery. */
 const validGuess = (value: unknown): boolean =>
   isRecord(value) &&
@@ -137,9 +143,11 @@ export function readPendingGuessJournal(scope: string, storage?: PendingPlayStor
           validRiddle(segment?.riddle) &&
           segment?.base &&
           Array.isArray(segment.base.guesses) &&
-          Array.isArray(segment.draft),
+          Array.isArray(segment.draft) &&
+          validDraftSlot(segment.draftActiveSlotIndex, segment.riddle.answerLength),
       ) ||
       !Array.isArray(journal.draft) ||
+      !validDraftSlot(journal.draftActiveSlotIndex, journal.riddle.answerLength) ||
       !journal.base ||
       (journal.coinAction !== undefined && !validCoinAction(journal.coinAction)) ||
       !Array.isArray(journal.base.guesses) ||

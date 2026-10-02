@@ -3,7 +3,7 @@ jest.mock("../../test/localeModulesMock", () => ({
 }));
 
 import {loadNonEnglishNamespace} from "../../test/localeModulesMock";
-import {detectDeviceLanguage, isSupportedLocale, LANGUAGE_OPTIONS, setLocale, tr, type Locale, type NamespaceCatalog, type SharedNamespace} from "../i18n";
+import {detectDeviceLanguage, isSupportedLocale, LANGUAGE_OPTIONS, setLocale, setLocaleAndWait, tr, type Locale, type NamespaceCatalog, type SharedNamespace} from "../i18n";
 
 /** Describes deferred. */
 type Deferred = {
@@ -128,4 +128,34 @@ it("ignores a stale catalog that resolves after a newer locale request", async (
 
   expect(document.documentElement).toMatchObject({lang: "es", dir: "ltr"});
   expect(tr("WebPortal.APP_TITLE")).toBe("es title");
+});
+
+it("keeps startup waiting until the requested language is usable", async () => {
+  /** Controlled translation catalog isolates locale loading behavior. */
+  const catalog = deferred();
+  localeLoads.set("it", catalog);
+  /** Settled locale loading establishes the required translation state. */
+  let ready = false;
+  /** In-flight operation remains observable until its controlled settlement. */
+  const pending = setLocaleAndWait("it").then(() => {ready = true;});
+  await settleLocaleLoad();
+  expect(ready).toBe(false);
+  expect(document.documentElement.lang).toBe("en");
+  catalog.resolve();
+  await pending;
+  expect(document.documentElement.lang).toBe("it");
+  expect(tr("WebPortal.APP_TITLE")).toBe("it title");
+});
+
+it("rejects awaited startup locale failures instead of authorizing English play", async () => {
+  /** Controlled translation catalog isolates locale loading behavior. */
+  const catalog = deferred();
+  localeLoads.set("nl", catalog);
+  /** In-flight operation remains observable until its controlled settlement. */
+  const pending = setLocaleAndWait("nl");
+  /** Controlled rejection verifies failed translation loading and retry. */
+  const rejection = expect(pending).rejects.toThrow("catalog unavailable");
+  catalog.reject(new Error("catalog unavailable"));
+  await rejection;
+  expect(document.documentElement.lang).toBe("en");
 });

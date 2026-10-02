@@ -1,5 +1,5 @@
 import {splitGraphemes} from "@qwordly/core/game";
-import type {GetCurrentDailyChallengeResponse} from "../validation/requestSchemas";
+import type {GetCurrentDailyChallengeResponse} from "@qwordly/core/validation/requestSchemas";
 import {projectPublicSinglePlayerSession} from "./singlePlayerPublicSession";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 
@@ -18,11 +18,15 @@ export function buildSinglePlayerChallengeResponse(
   sessionToken: string,
   state: SinglePlayerSessionState,
   includeEvaluation = false,
+  includeHintRecovery = false,
+  includeGuessRecovery = false,
 ): NonNullable<GetCurrentDailyChallengeResponse["challenge"]> {
   /** Use the issued snapshot; retain compatibility with older content-only projections. */
   const answer = state.answer ?? riddle.answer;
   /** The session locale is the locale used by authoritative submission. */
   const locale = state.locale ?? riddle.locale;
+  /** Extracts the fixture or authority fields required by this transition. */
+  const {revealedHints, acceptedGuesses, ...status} = projectPublicSinglePlayerSession(state);
   return {
     date,
     questions: [
@@ -33,7 +37,9 @@ export function buildSinglePlayerChallengeResponse(
         answerLength: splitGraphemes(answer, locale).length,
         sessionToken,
         questionNumber: 1,
-        ...projectPublicSinglePlayerSession(state),
+        ...status,
+        ...(includeHintRecovery ? {revealedHints} : {}),
+        ...(includeGuessRecovery && acceptedGuesses ? {acceptedGuesses} : {}),
       },
     ],
     totalQuestions: 1,

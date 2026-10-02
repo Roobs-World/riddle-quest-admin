@@ -1,149 +1,42 @@
-import {useCallback, useEffect, useRef, type Dispatch} from "react";
+import {useEffect, useRef, type Dispatch} from "react";
 import type {SavedGame} from "../../../platform/types";
-import type {GameSessionAction, GameSessionState} from "../../gameSession";
+import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
+import {GameSessionCheckpoints} from "../../GameSessionCheckpoints";
 
-/** Projects an active game session into the versioned low-integrity Jest player-data snapshot. */
-export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): SavedGame | null => {
-  if (state.pendingGuessState) state = {...state, ...state.pendingGuessState, pendingGuessState: null};
-  if (state.pendingHintState) {
-    /** Unconfirmed hint details restored before saving. */
-    const {index, previousLetter, previousActiveSlotIndex} = state.pendingHintState;
-    /** Current draft with any unconfirmed hint removed. */
-    const currentLetters = [...state.currentLetters];
-    currentLetters[index] = previousLetter;
-    state = {...state, currentLetters, activeSlotIndex: previousActiveSlotIndex,
-      hintRevealedIndices: state.hintRevealedIndices.filter((candidate) => candidate !== index),
-      pendingHintState: null};
-  }
-  if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
-  return {
-    schemaVersion: 1,
-    savedAt,
-    riddleId: state.riddle.riddleId,
-    gameMode: state.gameMode,
-    sessionToken: state.riddle.sessionToken,
-    currentLetters: state.currentLetters,
-    activeSlotIndex: state.activeSlotIndex,
-    hintRevealedIndices: state.hintRevealedIndices,
-    guesses: state.guesses,
-    engineSnapshot: state.engineSnapshot,
-    awaitingContinue:
-      !state.engineSnapshot.gameOver &&
-      !state.engineSnapshot.hasUsedContinue &&
-      state.engineSnapshot.attemptsUsed === 5,
-    letterStates: state.letterStates,
-    ...(state.lastOutcome ? {pendingOutcome: state.lastOutcome} : {}),
-  };
-};
+export {createSavedGame} from "../../GameSessionCheckpoints";
 
-/** Restores and checkpoints resumable client progress without coupling persistence to game rendering. */
-export const useGameSessionPersistence = ({
-  state,
-  stateRef,
-  restoredGame,
-  dispatch,
-  onSaveGame,
-}: {
-  /** Stores state. */
-  state: GameSessionState;
-  /** Stores state ref. */
-  stateRef: {
-    /** Stores current. */
-    current: GameSessionState;
+/** React adapter for the session-owned checkpoint interface and browser lifecycle signals. */
+export const useGameSessionPersistence = ({state, stateRef, restoredGame, dispatch, onSaveGame}: {
+  /** Current immutable reducer snapshot. */ state: GameSessionState;
+  /** Latest snapshot used by browser lifecycle callbacks. */ stateRef: {
+    /** Current state. */ current: GameSessionState;
   };
-  /** Stores restored game. */
-  restoredGame?: SavedGame | null;
-  /** Stores dispatch. */
-  dispatch: Dispatch<GameSessionAction>;
-  /** Stores on save game. */
-  onSaveGame?: (game: SavedGame | null) => void;
+  /** Target-provided checkpoint to reconcile with the authority-issued riddle. */ restoredGame?: SavedGame | null;
+  /** Applies a restore decision through the existing reducer. */ dispatch: Dispatch<GameSessionAction>;
+  /** Sends client-owned progress to the target storage adapter. */ onSaveGame?: (game: SavedGame | null) => void;
 }) => {
-  /** Restores each loaded riddle once; subsequent saved-data echoes are checkpoints. */
-  const restoredRiddleRef = useRef<GameSessionState["riddle"]>(null);
-  /** Provides last cleared outcome ref behavior. */
-  const lastClearedOutcomeRef = useRef<string | null>(null);
-  /** Provides last server checkpoint ref behavior. */
-  const lastServerCheckpointRef = useRef<{
-    /** Stores riddle id. */
-    riddleId: string; /** Stores signature. */
-    /** Stores signature. */
-    signature: string;
-  } | null>(null);
-  /** Gets saved game. */
-  const getSavedGame = useCallback(() => createSavedGame(stateRef.current), [stateRef]);
+  /** One checkpoint owner survives render and callback changes. */
+  const checkpointsRef = useRef<GameSessionCheckpoints | null>(null);
+  if (!checkpointsRef.current) checkpointsRef.current = new GameSessionCheckpoints();
+  /** Stable module identity owns every restore/save decision. */
+  const checkpoints = checkpointsRef.current;
 
   useEffect(() => {
-    if (
-      !state.riddle || restoredRiddleRef.current === state.riddle ||
-      restoredGame?.riddleId !== state.riddle.riddleId ||
-      restoredGame.sessionToken !== state.riddle.sessionToken
-    )
-      return;
-    restoredRiddleRef.current = state.riddle;
-    dispatch({
-      type: "restoreSession",
-      currentLetters: restoredGame.currentLetters,
-      activeSlotIndex: restoredGame.activeSlotIndex,
-      hintRevealedIndices: restoredGame.hintRevealedIndices,
-      guesses: restoredGame.guesses,
-      engineSnapshot: restoredGame.engineSnapshot,
-      awaitingContinue: restoredGame.awaitingContinue,
-      letterStates: restoredGame.letterStates,
-      pendingOutcome: restoredGame.pendingOutcome,
-    });
-  }, [dispatch, restoredGame, state.riddle]);
+    /** Restoration precedes saving so an initial draft cannot overwrite restored progress. */
+    const effect = checkpoints.update(state, restoredGame);
+    if (effect?.kind === "restore") dispatch(effect.action);
+    else if (effect?.kind === "save") onSaveGame?.(effect.game);
+  }, [checkpoints, state, restoredGame, dispatch, onSaveGame]);
 
   useEffect(() => {
-    if (state.lastOutcome && state.completionAcknowledged) {
-      if (lastClearedOutcomeRef.current !== state.lastOutcome.id) {
-        lastClearedOutcomeRef.current = state.lastOutcome.id;
-        onSaveGame?.(null);
-      }
-      return;
-    }
-    /** Saves d game. */
-    const savedGame = getSavedGame();
-    if (!savedGame) return;
-    /** Provides signature behavior. */
-    const signature = JSON.stringify({
-      currentLetters: savedGame.currentLetters,
-      activeSlotIndex: savedGame.activeSlotIndex,
-      guesses: savedGame.guesses.length,
-      hints: savedGame.hintRevealedIndices,
-      attemptsUsed: savedGame.engineSnapshot.attemptsUsed,
-      hasUsedContinue: savedGame.engineSnapshot.hasUsedContinue,
-      awaitingContinue: savedGame.awaitingContinue,
-      pendingOutcome: savedGame.pendingOutcome?.id,
-    });
-    if (lastServerCheckpointRef.current?.riddleId !== savedGame.riddleId) {
-      lastServerCheckpointRef.current = {riddleId: savedGame.riddleId, signature};
-      return;
-    }
-    if (lastServerCheckpointRef.current.signature === signature) return;
-    lastServerCheckpointRef.current = {riddleId: savedGame.riddleId, signature};
-    onSaveGame?.(savedGame);
-  }, [
-    getSavedGame,
-    onSaveGame,
-    state.activeSlotIndex,
-    state.currentLetters,
-    state.engineSnapshot,
-    state.guesses,
-    state.hintRevealedIndices,
-    state.lastOutcome,
-    state.completionAcknowledged,
-    state.riddle?.riddleId,
-  ]);
-
-  useEffect(() => {
-    /** Saves before backgrounding. */
+    /** Browser lifecycle supplies only a signal; checkpoint policy stays in the module. */
     const saveBeforeBackgrounding = () => {
       if (document.visibilityState !== "hidden") return;
-      /** Saves d game. */
-      const savedGame = getSavedGame();
-      if (savedGame) onSaveGame?.(savedGame);
+      /** Background saves use the latest state even before React's normal effects run. */
+      const effect = checkpoints.update(stateRef.current, undefined, true);
+      if (effect?.kind === "save") onSaveGame?.(effect.game);
     };
     document.addEventListener("visibilitychange", saveBeforeBackgrounding);
     return () => document.removeEventListener("visibilitychange", saveBeforeBackgrounding);
-  }, [getSavedGame, onSaveGame]);
+  }, [checkpoints, stateRef, onSaveGame]);
 };

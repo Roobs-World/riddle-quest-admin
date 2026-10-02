@@ -1,0 +1,9 @@
+# Multiplayer backend documentation gate
+
+Twenty previously missing declarations in three completed multiplayer test files are documented: two negotiated-history schema fixtures, seven serialized history/advancement fixtures, and eleven accepted-command-clock transaction adapter declarations. No active hosted pathway, authentication, single-player or full-pathway evidence file is edited.
+
+The initial raw scanner comparison was unsuitable because template literal scanning needs parser rescans. The final TypeScript AST printer comparison with comments removed confirms identical TypeScript meaning in all three files. Independently transpiled JavaScript with comments removed is also identical. Assertions, test behavior, production code, UI and translations remain unchanged. Original sources and final equality digests are retained under `artifacts/race-backend-documentation-gate/`. No additional behavior tests or isolated builds are run for this documentation-only change; the immediately preceding backend suite passed 1,075 tests across 73 suites and all coverage thresholds.
+
+The twenty multiplayer declarations no longer appear in the final documentation audit. Concurrent source changes introduced other undocumented declarations, so the shared total is currently 69 rather than the expected 57 from the earlier 77 snapshot. The file-size audit currently reports the active authentication browser test at 1,222 equivalent lines against a 1,200 limit. No global gate is weakened, no shared active file is changed and no completion receipt is manufactured.
+
+The new manifest preserves all 143 required checks unchanged. The user asked us to let the full-pathway audit finish; it remains active. Full guarded verification and the automatic dashboard receipt remain pending. No deployment, upload, activation, publication, commit or push is performed. Jest remains unpublished and the multiplayer reliability goal remains active.

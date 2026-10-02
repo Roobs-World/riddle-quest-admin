@@ -1,0 +1,11 @@
+# Multiplayer display time rollover
+
+The shared race time formatter rounded seconds after separating the minute field, causing 59,999 ms to display as `0:60.0`. The formatter now rounds the full duration to integer tenths before splitting minutes and seconds. Minute-boundary values carry correctly into `1:00.0`, `2:00.0` and `10:00.0`. Authoritative milliseconds, result comparisons, penalties and deadlines are unchanged; the shared formatter also serves lobby timings and result margins.
+
+Twelve new unit cases cover negative/zero controls, tenth rounding, values just before rollover, exact boundaries and larger durations. The baseline failed four rollover cases while eight controls passed. All twelve now pass, with thirty-three tests passing across the focused time, existing presentation and keyboard-strength suites.
+
+An injected browser harness renders the actual React scoreboard and results panel at desktop and mobile widths. Ten cases verify live displayed time, penalty text and all four result duration cells around the one-, two- and ten-minute boundaries. All pass. These are component integration fixtures; they do not exercise hosted authority, purchases or publication. The retained real race history keyboard browser verifier also passes eight cases.
+
+At this batch snapshot, the complete client suite passes 1,925 tests across 238 suites, with 104 optional/browser tests and fourteen suites skipped. All seven configured isolated builds and artifact audits pass: Jest, Facebook, Reddit, YouTube, Netflix, Yahoo and GameSnacks. Portal types and source-size limits pass. Logs remain under `artifacts/race-time-rollover/`.
+
+The 105-check task manifest preserves all prior source-digest and dashboard requirements. The shared documentation gate reports 35 missing declarations outside this change, and another chat remains active on hosted E2E verification. No guarded dashboard completion receipt is recorded while these gates remain open. This batch leaves the other chat's implementation, tests and full-pathway evidence untouched. It performs no deployment, upload, activation, publication, commit or push. Jest remains unpublished, and the multiplayer reliability audit remains active.

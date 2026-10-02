@@ -24,7 +24,7 @@ import {
   GetLeaderboardResponseSchema,
   LeaderboardEntry,
   LeaderboardType,
-} from "../validation/requestSchemas";
+} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 
 /** Defines the level weight value. */

@@ -307,6 +307,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
         <RaceCategoriesPanel
           categories={categories}
           loading={pending === "raceCategories"}
+          busy={Boolean(pending || socialPending)}
           onSelect={onSelectCategory}
           onShowInbox={onShowInbox}
         />

@@ -1,0 +1,1182 @@
+{
+  "taskId": "multiplayer:race-authentication-daily-gate",
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks"
+  ],
+  "work": "Repair a stale accessible-status locator in the shared authentication browser completion gate. Preserve the exact unavailable-Daily message assertion and rejection of silent Classic fallback. Verify the Daily status alongside guest identity and invitation recovery without changing product behavior or test harness authority. Retain every prior completion requirement.",
+  "checks": [
+    {
+      "id": "node22-backend-build-and-operator-safeguards",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "run",
+        "pretest:race:coverage"
+      ]
+    },
+    {
+      "id": "node22-isolated-backend-race-coverage",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "firebase",
+        "emulators:exec",
+        "--config",
+        "firebase.race-verification.json",
+        "--only",
+        "firestore",
+        "--project",
+        "demo-riddle-quest-multiplayer",
+        "pnpm exec jest --config jest.race-coverage.config.js --runInBand"
+      ]
+    },
+    {
+      "id": "backend-types",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "check:types"
+      ]
+    },
+    {
+      "id": "client-race-recovery",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/play/race/__tests__"
+      ]
+    },
+    {
+      "id": "backend-lint",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "lint"
+      ]
+    },
+    {
+      "id": "isolated-platform-builds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ]
+    },
+    {
+      "id": "target-dependency-evidence",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ]
+    },
+    {
+      "id": "security",
+      "executable": "pnpm",
+      "args": [
+        "check:security"
+      ]
+    },
+    {
+      "id": "scalability",
+      "executable": "pnpm",
+      "args": [
+        "check:scalability"
+      ]
+    },
+    {
+      "id": "file-size-limits",
+      "executable": "pnpm",
+      "args": [
+        "check:file-sizes"
+      ]
+    },
+    {
+      "id": "documented-declarations",
+      "executable": "pnpm",
+      "args": [
+        "check:tsdoc"
+      ]
+    },
+    {
+      "id": "full-core-tests",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/core",
+        "test",
+        "--runInBand"
+      ]
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ]
+    },
+    {
+      "id": "injected-event-aggregate-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-event-aggregate-browser.mjs"
+      ]
+    },
+    {
+      "id": "client-firebase-target-routing",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/__tests__/firebase.test.ts"
+      ]
+    },
+    {
+      "id": "retained-rule-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-rule-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-checkpoint-isolation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-timeout-reload-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-timeout-recovery-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-first-resume-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-startup-recovery-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-private-outcome-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-outcome-isolation-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-private-command-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-command-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-pending-answer-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-pending-input-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-known-answer-feedback-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-known-answer-reveals-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-answer-free-checkpoints-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-paid-draft-checkpoints-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs"
+      ]
+    },
+    {
+      "id": "timeout-receipt-and-calibration-contracts",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "jest",
+        "--runInBand",
+        "--testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts"
+      ]
+    },
+    {
+      "id": "injected-provider-record-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-provider-record-deadline-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-responsive-hub-navigation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hub-navigation-browser.mjs"
+      ]
+    },
+    {
+      "id": "injected-provider-capability-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-capability-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-draft-reload-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-draft-reload-browser.mjs"
+      ]
+    },
+    {
+      "id": "browser-player-state-deletion",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=playerPreferences.test.ts"
+      ]
+    },
+    {
+      "id": "complete-client-suite",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand"
+      ]
+    },
+    {
+      "id": "abandoned-race-entry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-abandoned-entry-browser.mjs"
+      ]
+    },
+    {
+      "id": "provider-confirmed-outcome-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-keyboard-activation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-keyboard-activation-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-draft-cleanup-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-draft-cleanup-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-overlay-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-overlay-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-dialog-keyboard-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-quit-focus-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-quit-focus-containment-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-resume-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resume-selection-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-resume-read-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resume-read-observation-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-search-journal-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-search-journal-observation-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-analytics-delivery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-analytics-delivery-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-offline-delivery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-offline-delivery-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-profile-refresh-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-profile-refresh-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-prefetch-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-prefetch-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-rendered-entry-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-rendered-entry-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-provider-rendered-cache-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-dialog-adapter-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-dialog-adapter-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-prefetch-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-prefetch-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-profile-refresh-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-profile-refresh-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-dialog-adapter-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-dialog-adapter-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-session-browser-resource-ownership",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-session-resources-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-matchmaking-removal-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-discovery-provider-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-provider-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-discovery-storage-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-discovery-callback-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-callback-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-discovery-prompt-cancellation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-retired-search-recovery-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-retired-search-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-retirement-shared-journal-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-retirement-journal-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-visibility-retirement-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-visibility-retirement-development-strict-browser",
+      "executable": "env",
+      "args": [
+        "RACE_REACT_DEVELOPMENT=1",
+        "node",
+        "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs"
+      ]
+    },
+    {
+      "id": "invitation-callable-recovery-contracts",
+      "executable": "env",
+      "args": [
+        "GCLOUD_PROJECT=demo-riddle-quest-multiplayer",
+        "FIRESTORE_EMULATOR_HOST=127.0.0.1:18199",
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "jest",
+        "--runInBand",
+        "--testPathPatterns=raceCallables.test.ts"
+      ]
+    },
+    {
+      "id": "race-existing-attempt-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-existing-attempt-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-private-entry-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-private-entry-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-existing-opponent-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-existing-opponent-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-private-creator-acceptance-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-private-creator-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-entry-effect-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-entry-effect-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-waiting-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-waiting-selection-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-cancellation-receipt-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-start-selection-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-selection-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-provider-start-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-start-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-start-category-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-category-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-entry-run-handoff-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-start-origin-context-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-origin-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-start-opponent-presence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-opponent-browser.mjs"
+      ]
+    },
+    {
+      "id": "authentication-harness-retained-paths",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "exec",
+        "jest",
+        "--config",
+        "jest.config.cjs",
+        "--runInBand",
+        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "--testNamePattern=reopens a completed recipient|opens a public creator|consumes an unavailable challenge|refreshes subscription changes|starts a guest through signed"
+      ]
+    },
+    {
+      "id": "race-creator-opponent-authority-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-creator-opponent-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-hint-reveal-evidence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-safety-selection-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-safety-selection-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-countdown-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-countdown-clock-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-discovery-retry-policy-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-resolver-failure-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resolver-failure-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-cold-search-retirement-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-cold-search-catalog-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-catalog-retry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-catalog-retry-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-resolver-reentry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-resolver-reentry-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-provider-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-provider-observation-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-authority-observation-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-authority-observation-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-timer-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-timer-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-loader-tail-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-delivery-expiry-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-start-receipt-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-recovery-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-recovery-clock-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-reset-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-reset-clock-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-authority-clock-ownership-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-authority-clock-ownership-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-restored-attempt-rows-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-projected-attempt-rows-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-integration-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-integration-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-reddit-history-opt-in-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-keyboard-feedback-strength-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-time-rollover-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-time-rollover-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-harness-feedback-parity-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-harness-delayed-receipts-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-continuity-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/audit-race-history-continuity-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-confirmed-history-ledger-unit",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=raceConfirmedHistory"
+      ]
+    },
+    {
+      "id": "race-confirmed-history-ledger-bounds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=raceConfirmedHistory",
+        "--testNamePattern=equivalent confirmed rows|invalid attempt count"
+      ]
+    },
+    {
+      "id": "race-history-integration-prototype-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-owned-authority-session-regressions",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=RaceSession|raceAuthority|raceReset|raceRecoveryClock|raceStartReceipt"
+      ]
+    },
+    {
+      "id": "race-history-prototype-retained-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-checkpoint-runtime-unit",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=RaceSessionHistoryCheckpoints"
+      ]
+    },
+    {
+      "id": "race-hint-concurrent-history-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-guess-concurrent-history-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-confirmed-guess-retention-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-sparse-history-refresh-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-normalization-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-normalization-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-progression-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-progression-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-attempt-budget-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-attempt-budget-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-cleanup-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-cleanup-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-clock-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-clock-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-dispatch-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-dispatch-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-event-history-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-event-history-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-fallback-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-fallback-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-guess-evidence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-guess-evidence-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-guess-feedback-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-guess-feedback-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-hints-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-hints-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-live-progress-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-live-progress-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-loader-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-loader-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-locale-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-locale-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-paid-evidence-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-paid-evidence-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-private-snapshot-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-private-snapshot-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-readiness-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-readiness-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-reentry-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-reentry-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-storage-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-storage-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-tick-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-tick-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-unscored-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-unscored-browser.mjs"
+      ]
+    },
+    {
+      "id": "retained-race-wrong-attempt-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-wrong-attempt-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-scoring-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-scoring-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-graphemes-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-graphemes-browser.mjs"
+      ]
+    },
+    {
+      "id": "race-history-whitespace-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-race-history-whitespace-browser.mjs"
+      ]
+    },
+    {
+      "id": "authentication-harness-extraction-browser",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "--testNamePattern=starts a guest through signed identity|renders typed invitation waiting|recovers a waiting invitation|reopens a completed recipient|opens a public creator entry|consumes an unavailable challenge"
+      ]
+    },
+    {
+      "id": "authentication-unavailable-daily-browser",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "--testNamePattern=keeps unavailable Daily visible"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json"
+    }
+  ],
+  "remainingGates": [
+    "The ongoing multiplayer edge-case and reliability audit remains active.",
+    "Shared documentation must pass and the shared workspace must remain stable for the complete guarded dashboard verification.",
+    "Jest activation is authorized; publication, review submission and listing visibility remain on hold. Firebase deployment is authorized but this batch does not deploy."
+  ],
+  "nextAction": "Let the concurrent full-pathway audit finish, then resolve shared documentation and file-size gates and execute complete guarded verification against stable sources before recording the automatic dashboard receipt."
+}

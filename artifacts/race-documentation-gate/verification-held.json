@@ -1,0 +1,32 @@
+{
+  "taskId": "multiplayer:race-documentation-gate",
+  "observedAt": "2026-10-02T03:34:43.258031+00:00",
+  "revision": "83b6a7713afea604cbdee720f114d4a35c9217de",
+  "status": "scoped-verification-passed-completion-held",
+  "guardedChecks": 140,
+  "dashboardReceiptRecorded": false,
+  "reason": "Ten multiplayer-owned documentation omissions repaired with identical executable token hashes. Remaining shared documentation/size gates and the concurrent full-pathway audit prevent full guarded completion.",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RaceSessionAuthority.ts": "a796de6a255ef7547a8032cb755644e0552d421e81ecd1a80a4259317e1dcc5d",
+    "packages/portal/src/play/race/__tests__/RaceSessionDraftReload.test.ts": "494725f1d77fb04a838a4f54ee7000ad2eb44c100e979fcb23f03a7ed00d803a",
+    "docs/development-tasks/race-documentation-gate.json": "816cb519f8d9e9f0c58883b44155f3dd1e0bc18cd1b008bc1bdbaba56bbae3cc",
+    "docs/evidence/multiplayer-documentation-gate.md": "47a2a77cc7f7ec79019090302144e9de0ec45ef31deb38d547e8bd60575b8bce"
+  },
+  "passedAtBatchSnapshot": {
+    "repairedDocumentationDeclarations": 10,
+    "remainingGlobalDocumentationDeclarations": 58,
+    "executableTokenHashesUnchanged": true
+  },
+  "notPerformed": [
+    "behavior changes",
+    "full client suite rerun",
+    "all-target build rerun",
+    "full guarded verification",
+    "guarded dashboard completion",
+    "live hosted verification",
+    "deployment",
+    "Jest publication",
+    "commit",
+    "push"
+  ]
+}
