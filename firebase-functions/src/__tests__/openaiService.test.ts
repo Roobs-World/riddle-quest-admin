@@ -268,6 +268,27 @@ describe("OpenAI Service", () => {
       );
     });
 
+    test("reviews Korean daily answers using the keyboard's required Latin transliteration", async () => {
+      mockApprovedRiddle("비 오는 날 머리 위에 펼쳐 빗방울을 막고, 접어서 손에 드는 것은?", "usan");
+      await expect(generateUniqueRiddle("ko", [], {mode: "daily"})).resolves.not.toBeNull();
+      expect(mockParse.mock.calls[0][0]).toEqual(expect.objectContaining({
+        instructions: expect.stringContaining("standard unaccented lowercase Latin transliteration"),
+      }));
+      expect(mockParse.mock.calls[2][0]).toEqual(expect.objectContaining({
+        instructions: expect.stringContaining("do not reject a correct transliteration merely"),
+        input: expect.stringContaining('"targetLocale":"ko"'),
+      }));
+    });
+
+    test("still rejects unnatural native clues when their romanized answers are playable", async () => {
+      mockParse
+        .mockResolvedValueOnce(parsedRiddleResponse("비 오는 날 머리 위에 펼쳐 빗방울을 막고, 접어서 손에 드는 것은?", "usan"))
+        .mockResolvedValueOnce(approvedBlindSolveResponse("usan"))
+        .mockResolvedValueOnce({output_parsed: {...approvedReviewResponse().output_parsed,
+          naturalLanguage: false, issues: ["The native wording is unnatural."]}});
+      await expect(generateUniqueRiddle("ko", [], {mode: "daily"})).resolves.toBeNull();
+    });
+
     test("keeps generation and review pinned despite a stale OPENAI_MODEL override", async () => {
       process.env.OPENAI_MODEL = "gpt-4.1-mini";
       mockApprovedRiddle("What runs but never walks?", "river");

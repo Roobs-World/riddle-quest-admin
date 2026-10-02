@@ -340,6 +340,8 @@ async function reviewGeneratedRiddle(
           instructions:
             "You are the independent quality editor for an all-ages mobile riddle game. " +
             "Review the candidate strictly; do not repair it and do not give it the benefit of the doubt. " +
+            "The question must read naturally in the target locale. The game keyboard requires every answer to use only lowercase letters a-z: for non-Latin scripts, the supplied answer must be the standard unaccented Latin transliteration of the intended native word. " +
+            "Check that the transliteration is correct and unambiguous, but do not reject a correct transliteration merely because the native language uses a different script. " +
             "A passing clue must logically and factually support the supplied answer, make that answer clearly better than other plausible answers, read naturally in the target language, and be fair to casual players. " +
             "Reject vague clues, strained associations, incorrect facts, translation-like wording, obscure trivia, and clues that reveal the answer or an obvious variant. " +
             "Assess difficulty honestly as easy, medium, or hard. Easy is everyday recognition; medium is one straightforward inference; hard needs specialist knowledge or multiple deductions. " +
