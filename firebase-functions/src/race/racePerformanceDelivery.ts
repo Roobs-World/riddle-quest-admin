@@ -7,6 +7,7 @@ import {parseRunRecord, type Firestore} from "./raceSetupService";
 import {parseRacePerformanceEvent} from "./raceDeliveryRecords";
 import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "../facebook/facebookRaceReferralDelivery";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
+import {validateFacebookLiveRaceReferralSource} from "../facebook/facebookLiveRaceReferralDelivery";
 
 /** Idempotently folds a settled owner's performance into their language/category estimate. */
 export async function deliverRacePerformance(runId: string, db: Firestore = admin.firestore(), nowMs = Date.now()): Promise<boolean> {
@@ -31,6 +32,16 @@ export async function deliverRacePerformance(runId: string, db: Firestore = admi
       if (receipt.nextAttemptAtMs !== undefined && receipt.nextAttemptAtMs > nowMs) return false;
       /** Owner linkage comes from the validated server receipt and is rechecked against the source. */
       const userId = receipt.userId;
+      if (receipt.source === "facebook_live") {
+        // Live results have their own private source and do not contribute recorded-race speed samples.
+        const active = await validateFacebookLiveRaceReferralSource(transaction, db, receipt, nowMs);
+        if (!active || !needsFacebookRaceReferral(userId, true)) {
+          transaction.update(eventRef, {delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: nowMs});
+          return false;
+        }
+        referralUserId = userId;
+        return true;
+      }
       /** Provides [source, owner, deletion] behavior. */
       const [source, owner, deletion] = await Promise.all([transaction.get(db.doc(`raceRuns/${runId}`)),
         transaction.get(db.doc(`users/${userId}`)), transaction.get(getJestAccountDeletionRef(db, userId))]);

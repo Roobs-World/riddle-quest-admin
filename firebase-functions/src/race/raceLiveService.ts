@@ -10,6 +10,8 @@ import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "./ra
 import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent, readRaceCoinBalance,
   requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
 import {liveRun, liveView, liveOperationAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
+import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
+import {pendingRaceDelivery} from "./raceDeliveryFailures";
 
 /** A short lobby heartbeat prevents matching players who already closed their game. */
 const LOBBY_LEASE_MS = 10_000;
@@ -293,6 +295,14 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
         if (!Number.isSafeInteger(multiplayerWins) || multiplayerWins < 0 || !Number.isSafeInteger(multiplayerWins + 1))
           throw new HttpsError("data-loss", "Invalid multiplayer win total.");
         transaction.update(owner.ref, {coins, "stats.multiplayerWins": multiplayerWins + 1});
+        if (winner && winnerTicket && isFacebookFirebaseUid(winner.userId)) {
+          // Namespace this receipt separately from legacy recorded runs using the same request ID.
+          const eventId = requestDocumentId(winner.userId, `facebook-live-referral:${winnerTicket}`);
+          match.facebookReferral = {eventId, ticketId: winnerTicket, userId: winner.userId, createdAtMs: nowMs};
+          transaction.create(db.doc(`racePerformanceOutbox/${eventId}`), {runId: eventId, userId: winner.userId,
+            source: "facebook_live", liveTicketId: winnerTicket, liveMatchId: ticket.matchId, createdAtMs: nowMs,
+            ...pendingRaceDelivery(nowMs), expiresAt: snapshot.data()!.expiresAt});
+        }
       }
     }
     match.observedAtMs = nowMs;

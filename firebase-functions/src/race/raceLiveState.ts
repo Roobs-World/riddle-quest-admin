@@ -24,6 +24,8 @@ export type LiveMatch = {
   /** Safe account identities. */ players: [LiveRaceView["player"], LiveRaceView["player"]];
   /** Reward grant committed with the winner decision. */ rewardCoins?: number;
   /** Winner balance at settlement, never used as client authority. */ newCoins?: number;
+  /** Private immutable link to Facebook referral work committed with the winner grant. */
+  facebookReferral?: {eventId: string; ticketId: string; userId: string; createdAtMs: number};
 };
 
 /** Creates an unscored server run using existing riddle and hint rules. */

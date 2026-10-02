@@ -8,6 +8,7 @@ import {creatorRaceResult} from "./raceSettlement";
 import {deliverRaceSettlement} from "./raceSettlementDelivery";
 import {deliverRacePerformance} from "./racePerformanceDelivery";
 import {RaceMatchProfileSchema} from "./raceMatchPerformance";
+import {validateFacebookLiveRaceReferralSource} from "../facebook/facebookLiveRaceReferralDelivery";
 
 /**
  * Administrator-only recovery of an existing, repaired delivery receipt.
@@ -29,13 +30,19 @@ export async function replayRaceDelivery(db: Firestore, collection: RaceDelivery
   await db.runTransaction(async transaction => {
     /** Missing or expired authority cannot be reconstructed from diagnostics. */
     const [event, source] = await Promise.all([transaction.get(eventRef), transaction.get(db.doc(`raceRuns/${eventId}`))]);
-    if (!event.exists || !source.exists) throw new HttpsError("failed-precondition", "Replay requires an existing receipt and canonical source.");
+    if (!event.exists) throw new HttpsError("failed-precondition", "Replay requires an existing receipt and canonical source.");
     /** The supported storage contract applies to repaired and legacy receipts. */
     const receipt = collection === "raceSettlementOutbox" ? parseRaceSettlementEvent(event.data(), eventId) : parseRacePerformanceEvent(event.data(), eventId);
     /** Retention clocks are preserved rather than extended by recovery. */
-    const sourceExpiry = source.data()?.expiresAt;
-    if (receipt.expiresAt.toMillis() <= nowMs || !(sourceExpiry instanceof admin.firestore.Timestamp) || sourceExpiry.toMillis() <= nowMs)
+    if (receipt.expiresAt.toMillis() <= nowMs)
       throw new HttpsError("failed-precondition", "Expired race data cannot be replayed.");
+    if (collection === "racePerformanceOutbox" && receipt.source === "facebook_live") {
+      if (!await validateFacebookLiveRaceReferralSource(transaction, db, parseRacePerformanceEvent(event.data(), eventId), nowMs))
+        throw new HttpsError("failed-precondition", "Replay requires an active canonical live winner.");
+    } else {
+    const sourceExpiry = source.data()?.expiresAt;
+    if (!source.exists || !(sourceExpiry instanceof admin.firestore.Timestamp) || sourceExpiry.toMillis() <= nowMs)
+      throw new HttpsError("failed-precondition", "Replay requires an existing unexpired canonical source.");
     /** Canonical settlement is the only authority for downstream effects. */
     const run = parseRunRecord(source.data(), source.id);
     if (run.runId !== eventId || run.userId !== receipt.userId || !run.settledOutcome || run.settledAtMs !== receipt.createdAtMs)
@@ -55,6 +62,7 @@ export async function replayRaceDelivery(db: Firestore, collection: RaceDelivery
       const profile = await transaction.get(db.doc(`users/${run.userId}/raceMatchProfiles/${run.locale}`));
       if (profile.exists && !RaceMatchProfileSchema.safeParse(profile.data()).success)
         throw new HttpsError("data-loss", "Stored race performance profile is invalid.");
+    }
     }
     /** Another successful replay may already have released or delivered this receipt. */
     if (event.data()?.deliveryState !== "quarantined" && event.data()?.quarantined !== true) {

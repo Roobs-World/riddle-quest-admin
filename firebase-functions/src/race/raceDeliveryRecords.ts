@@ -24,7 +24,14 @@ const Receipt = z.looseObject({runId: Id, userId: Id, createdAtMs: Ms, expiresAt
 const Settlement = Receipt.safeExtend({creatorId: Id, challengeId: Id, categoryId: RaceCategoryIdSchema,
   result: z.enum(["win", "loss", "tie"]), adjustedDeltaMs: z.number().int()});
 /** A Facebook reward retry can retain an already-committed owner projection. */
-const Performance = Receipt.safeExtend({facebookPerformanceRecorded: z.literal(true).optional()});
+const Performance = Receipt.safeExtend({facebookPerformanceRecorded: z.literal(true).optional(),
+  source: z.literal("facebook_live").optional(), liveTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+  liveMatchId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+}).superRefine((receipt, context) => {
+  if (receipt.source === "facebook_live" ? !receipt.liveTicketId || !receipt.liveMatchId || receipt.facebookPerformanceRecorded !== undefined :
+    receipt.liveTicketId !== undefined || receipt.liveMatchId !== undefined)
+    context.addIssue({code: "custom", message: "Inconsistent live referral source."});
+});
 
 /** Rejects corrupt creator receipts with generic answer-free diagnostics. */
 export function parseRaceSettlementEvent(value: unknown, eventId: string) {

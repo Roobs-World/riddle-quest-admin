@@ -1,0 +1,17 @@
+{
+  "endpoint": "getClassicRiddleBuffer",
+  "httpStatus": 200,
+  "requestedContentProtection": 1,
+  "wirePayloadKeys": [
+    "contentProtection",
+    "iv",
+    "data"
+  ],
+  "ivHexLength": 24,
+  "ciphertextHexLength": 3478,
+  "authenticatedDecryption": true,
+  "decodedKeys": [
+    "confirmedClassicIndex",
+    "riddles"
+  ]
+}
