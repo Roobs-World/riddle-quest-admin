@@ -120,6 +120,8 @@
     "INVITE_QUEUED": "Invito salvato. Le notifiche dipendono dalle impostazioni del giocatore.",
     "PUSH_ENABLE": "Attiva notifiche delle sfide",
     "PUSH_DISABLE": "Disattiva notifiche delle sfide",
-    "PUSH_UNAVAILABLE": "Le notifiche del browser non sono disponibili qui. Gli inviti appariranno comunque in multigiocatore."
+    "PUSH_UNAVAILABLE": "Le notifiche del browser non sono disponibili qui. Gli inviti appariranno comunque in multigiocatore.",
+    "LIVE_HISTORY_TITLE": "Partite recenti",
+    "LIVE_HISTORY_EMPTY": "Nessuna partita completata per ora."
   }
 }

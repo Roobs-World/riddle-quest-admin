@@ -120,6 +120,8 @@
     "INVITE_QUEUED": "Invitación guardada. Las notificaciones dependen de los ajustes del jugador.",
     "PUSH_ENABLE": "Activar notificaciones de desafíos",
     "PUSH_DISABLE": "Desactivar notificaciones de desafíos",
-    "PUSH_UNAVAILABLE": "Las notificaciones del navegador no están disponibles aquí. Tus invitaciones seguirán apareciendo en multijugador."
+    "PUSH_UNAVAILABLE": "Las notificaciones del navegador no están disponibles aquí. Tus invitaciones seguirán apareciendo en multijugador.",
+    "LIVE_HISTORY_TITLE": "Partidas recientes",
+    "LIVE_HISTORY_EMPTY": "Aún no hay partidas completadas."
   }
 }

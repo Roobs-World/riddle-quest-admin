@@ -30,7 +30,7 @@ import {
   classifyRaceMatchFailure,
   UpdateLiveRaceSchema,
 } from "@qwordly/core/race";
-import {joinLiveRace, updateLiveRace} from "../race/raceLiveCallables";
+import {joinLiveRace, updateLiveRace, listLiveRaceHistory} from "../race/raceLiveCallables";
 import {liveRaceGatewayFailure} from "../race/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
 import {assertRaceAccess} from "../race/raceRollout";
@@ -102,6 +102,7 @@ export const REDDIT_GAMEPLAY_OPERATIONS = [
   "gameplay.race.match",
   "gameplay.race.live.join",
   "gameplay.race.live.update",
+  "gameplay.race.live.history",
   "gameplay.tournament.list",
   "gameplay.tournament.record",
   "gameplay.presence.poll",
@@ -245,6 +246,8 @@ const dispatch = async (
       return joinLiveRace.run(callableRequest(uid, payload) as never);
     case "gameplay.race.live.update":
       return updateLiveRace.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.live.history":
+      return listLiveRaceHistory.run(callableRequest(uid, payload) as never);
     case "gameplay.race.match": {
       /** Provides input behavior. */
       const input = FindRedditRaceMatchRequestSchema.parse(payload);
@@ -472,7 +475,7 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
     const result = await dispatch(operation, identity.uid, envelope.payload, {postId: assertion.postId});
     response.json({
       ok: true,
-      result: operation.startsWith("gameplay.race.live.")
+      result: operation === "gameplay.race.live.join" || operation === "gameplay.race.live.update"
         ? await hydrateRedditLiveRaceProfile(result, admin.firestore(), Date.now())
         : operation.startsWith("gameplay.race.")
           ? await hydrateRedditRaceSocialResult(operation, envelope.payload, result)

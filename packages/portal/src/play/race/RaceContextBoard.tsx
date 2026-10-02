@@ -5,9 +5,10 @@ import {PlatformPlayerOverlay} from "./components/PlatformPlayerOverlay";
 import {useRaceDialogFocus} from "./hooks/useRaceDialogFocus";
 import {formatRaceTime} from "./logic/racePresentation";
 import {tr} from "../i18n";
+import {LiveRaceHistory} from "./components/LiveRaceHistory";
 
 /** Presents only the active target's validated, identity-free context standings. */
-export function RaceContextBoard({locale, contextBoard, coins, onClose, navigation, presentation, playerOverlay, platformPlayerId}:
+export function RaceContextBoard({locale, contextBoard, matchmaking, coins, onClose, navigation, presentation, playerOverlay, platformPlayerId}:
   RaceTournamentEntryProps & {
     /** Target navigation remains inside the modal focus boundary. */ navigation: ReactNode;
   }) {
@@ -25,6 +26,7 @@ export function RaceContextBoard({locale, contextBoard, coins, onClose, navigati
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
   useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: false, dismissQuitConfirmation: () => {}, requestClose: onClose});
   useEffect(() => {
+    if (!contextBoard) {setLoading(false); setBoard(null); setError(false); return;}
     /** A retired account, locale, tab or context cannot accept a late read. */
     let current = true;
     setLoading(true); setBoard(null); setError(false);
@@ -50,13 +52,14 @@ export function RaceContextBoard({locale, contextBoard, coins, onClose, navigati
     {playerOverlay && platformPlayerId && <PlatformPlayerOverlay overlay={playerOverlay} playerId={platformPlayerId} />}
     {error && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}<button onClick={() => setRetry(value => value + 1)}>
       {tr("RaceTo10.RETRY")}</button></div>}
-    <div className="race-panel race-context-panel"><h2>{tr("RaceTo10.RESULTS_TITLE")}</h2>
+    {contextBoard && <div className="race-panel race-context-panel"><h2>{tr("RaceTo10.RESULTS_TITLE")}</h2>
       {loading ? <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p> : board &&
         <ol className="race-context-board" aria-label={tr("RaceTo10.HUB_ACTIVITY")} data-rewards-enabled="false">
           {board.standings.map((standing, index) => <li key={`${standing.rank}-${index}`} aria-current={standing.isCurrentPlayer || undefined}>
             <strong>#{standing.rank}</strong><span dir="ltr">{formatRaceTime(standing.adjustedTimeMs)}</span>
           </li>)}
         </ol>}
-    </div>
+    </div>}
+    {matchmaking?.live?.history && <LiveRaceHistory key={locale} transport={matchmaking.live} locale={locale} />}
   </section>;
 }

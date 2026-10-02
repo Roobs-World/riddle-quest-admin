@@ -13,6 +13,7 @@ const EXPECTED_FACEBOOK_EXPORTS = Object.freeze([
   "listFacebookTournament",
   "blockRival",
   "reportRival",
+  "listLiveRaceHistory",
   "aggregatePresenceStatus",
   "setPresenceConsent",
   "createFacebookReferral",

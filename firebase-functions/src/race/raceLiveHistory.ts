@@ -34,14 +34,20 @@ export async function listLiveRaceHistoryForUser(userId: string, request: ListLi
     /** Private row projections run concurrently within the same read-only transaction. */
     const projected = await Promise.all(rows.docs.map(async row => {
       /** Ticket authority comes only from the owner-filtered private collection. */
-      const ticket = row.data() as LiveTicket & {expiresAt?: FirebaseFirestore.Timestamp};
+      const ticket = row.data() as LiveTicket & {
+        /** Firestore retention deadline for the private seat. */
+        expiresAt?: FirebaseFirestore.Timestamp;
+      };
       if (!/^[a-f0-9]{64}$/.test(row.id) || ticket.deleted || ticket.userId !== userId || ticket.run?.userId !== userId ||
         ticket.run?.runId !== row.id || ticket.run?.locale !== input.locale || !RaceCategoryIdSchema.safeParse(ticket.run?.categoryId).success ||
         ticket.pool !== createHash("sha256").update(`${provider}:${input.locale}:${ticket.run.categoryId}`).digest("hex") ||
         typeof ticket.matchId !== "string" || !/^[a-f0-9]{64}$/.test(ticket.matchId) ||
         !ticket.expiresAt || typeof ticket.expiresAt.toMillis !== "function" || !Number.isFinite(ticket.expiresAt.toMillis()) || nowMs >= ticket.expiresAt.toMillis()) return null;
       /** Only a committed terminal receipt supplies result, progress and the already granted reward. */
-      const match = (await tx.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as (LiveMatch & {expiresAt?: FirebaseFirestore.Timestamp}) | undefined;
+      const match = (await tx.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as (LiveMatch & {
+        /** Firestore retention deadline for the settled authority receipt. */
+        expiresAt?: FirebaseFirestore.Timestamp;
+      }) | undefined;
       if (!match || !Array.isArray(match.tickets) || match.tickets.length !== 2 || match.tickets[0] !== ticket.matchId ||
         match.tickets[0] === match.tickets[1] || !Array.isArray(match.runs) || match.runs.length !== 2 ||
         !Array.isArray(match.players) || match.players.length !== 2 || ![0, 50].includes(match.rewardCoins ?? -1) ||

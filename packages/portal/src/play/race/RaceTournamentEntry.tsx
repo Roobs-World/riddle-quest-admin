@@ -71,9 +71,9 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
     } catch {if (active.current && started === revision.current) setContextError(true);}
     finally {choosing.current = false; if (active.current) setBusy(false);}
   };
-  if (!props.tournaments && !props.contextBoard && !props.nativeSocial) return <RaceTo10Game {...props} />;
+  if (!props.tournaments && !props.contextBoard && !props.nativeSocial && !props.matchmaking?.live?.history) return <RaceTo10Game {...props} />;
   /** Only supported boards contribute tabs; Reddit retains its two existing destinations. */
-  const destinations: Destination[] = ["play", ...(props.contextBoard ? ["activity" as const] : []),
+  const destinations: Destination[] = ["play", ...(props.contextBoard || props.matchmaking?.live?.history ? ["activity" as const] : []),
     ...(props.tournaments ? ["tournaments" as const] : [])];
   /** Navigation and optional chooser are restricted to the race lobby and social boards. */
   const navigation = <>

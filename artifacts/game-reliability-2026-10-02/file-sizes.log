@@ -1,8 +1,8 @@
 $ node --test scripts/source-size-metric.test.mjs && node scripts/audit-file-sizes.mjs
-✔ measures equivalent TypeScript identically across formatting (0.426387ms)
-✔ excludes standalone single-line and multiline TSDoc (0.081424ms)
-✔ retains implementation following a multiline TSDoc closing delimiter (0.061606ms)
-✔ keeps physical line counts for non-TypeScript source (0.045726ms)
+✔ measures equivalent TypeScript identically across formatting (0.451886ms)
+✔ excludes standalone single-line and multiline TSDoc (0.087696ms)
+✔ retains implementation following a multiline TSDoc closing delimiter (0.061977ms)
+✔ keeps physical line counts for non-TypeScript source (0.045757ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -10,7 +10,5 @@ $ node --test scripts/source-size-metric.test.mjs && node scripts/audit-file-siz
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 26.747301
-Maintainable-file size audit failed:
-- packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts: 1202 equivalent lines (limit 1200)
-[ELIFECYCLE] Command failed with exit code 1.
+ℹ duration_ms 43.942179
+Maintainable-file size audit passed: 1136 source files within enforced limits.

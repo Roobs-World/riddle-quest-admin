@@ -110,6 +110,7 @@ describe("Firebase browser adapter", () => {
       "getLiveRaceChallenge",
       "sendLiveRaceChallenge",
       "listLiveRaceChallenges",
+      "listLiveRaceHistory",
       "setLiveRacePushSubscription",
     ]);
   });
@@ -203,6 +204,7 @@ describe("Firebase environment variants", () => {
       "getLiveRaceChallenge",
       "sendLiveRaceChallenge",
       "listLiveRaceChallenges",
+      "listLiveRaceHistory",
       "setLiveRacePushSubscription",
     ];
     for (const [instance, name] of mockHttpsCallable.mock.calls) {

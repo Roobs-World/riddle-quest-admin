@@ -10,6 +10,7 @@ const EXPECTED_REDDIT_EXPORTS = Object.freeze([
   "deleteRedditAccount",
   "redditStorage",
   "redditGameplay",
+  "listLiveRaceHistory",
   "redditProfileRetentionScheduler",
 ]);
 

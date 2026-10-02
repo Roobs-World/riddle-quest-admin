@@ -1,5 +1,2 @@
 $ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 2 production declarations are undocumented.
-- packages/portal/src/play/__tests__/firebaseRaceMatchmaking.test.ts:7 target
-- firebase-functions/src/race/raceLiveHistory.ts:37 expiresAt
-[ELIFECYCLE] Command failed with exit code 1.
+TSDoc audit passed: 23058 declarations are documented across 1062 files.

@@ -384,6 +384,12 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
             ? {
                 matchmaking: {
                   live: {
+                    /** Retained results stay on the approved same-origin signed gateway. */
+                    async history(locale) {
+                      /** Exact public rows contain no account IDs, decks or confirmed guesses. */
+                      const {ListLiveRaceHistoryResponseSchema} = await import("@qwordly/core/race");
+                      return ListLiveRaceHistoryResponseSchema.parse((await postRedditGateway("/api/game/race.live.history", {locale, limit: 20})).result);
+                    },
                     /** Existing same-origin safety endpoint resolves the private human opponent. */
                     async blockOpponent(input) {
                       /** Lazy strict acknowledgement adds no provider SDK. */

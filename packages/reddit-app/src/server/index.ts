@@ -296,6 +296,7 @@ app.post("/api/game/:operation", async (request) => {
     "race.match",
     "race.live.join",
     "race.live.update",
+    "race.live.history",
     "tournament.list",
     "tournament.record",
     "presence.poll",

@@ -1,17 +1,17 @@
 firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
 $ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && REDDIT_BUILD=1 NODE_ENV=production vite build --mode reddit && pnpm audit:reddit-artifact
 $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
-✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.772016ms)
-✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.935797ms)
-✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.063087ms)
-✔ rejects imports between different target owners (1.631631ms)
-✔ rejects the legacy platform entry while allowing the shop adapter (0.69709ms)
-✔ rejects Devvit imports outside Reddit-owned source (1.020814ms)
-✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.133057ms)
-✔ fails closed when a missing relative path lexically enters target-owned source (0.794795ms)
-✔ handles extensions and index modules with TypeScript-compatible resolution (0.98187ms)
-✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.687101ms)
-✔ aggregates violations in deterministic file and source order (0.77565ms)
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.272169ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.087555ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.714742ms)
+✔ rejects imports between different target owners (1.427224ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.594426ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.871651ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.070648ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.887682ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.994143ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.646354ms)
+✔ aggregates violations in deterministic file and source order (0.756683ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -19,15 +19,15 @@ $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && no
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 133.691511
-Web Target boundary audit passed (282 files, 1223 module references).
+ℹ duration_ms 132.476279
+Web Target boundary audit passed (283 files, 1232 module references).
 $ node scripts/audit-locales.mjs
 Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
 $ node scripts/generate-third-party-licenses.mjs --check
 Third-party notices are current (107162 bytes)
 vite v8.3.1 building client environment for reddit...
 transforming...
-✓ 1115 modules transformed.
+✓ 1117 modules transformed.
 rendering chunks...
 computing gzip size...
 dist-reddit/reddit-inline.html                                1.53 kB │ gzip:  0.77 kB
@@ -66,14 +66,14 @@ dist-reddit/assets/GameModalView-CEP3Nqf2.css                23.75 kB │ gzip: 
 dist-reddit/assets/game-CLIP9yjv.css                         29.06 kB │ gzip:  7.08 kB
 dist-reddit/assets/redditPlatform-kePakTdw.js                 0.08 kB │ gzip:  0.09 kB
 dist-reddit/assets/core-bridge-constants-Bsju_PPr.js          0.10 kB │ gzip:  0.12 kB
-dist-reddit/assets/RaceTo10Game-T3cfBrd6.js                   0.11 kB │ gzip:  0.11 kB
+dist-reddit/assets/RaceTo10Game-DCXZt3_r.js                   0.11 kB │ gzip:  0.11 kB
 dist-reddit/assets/browserErrorReporter-CIy0ZweP.js           0.15 kB │ gzip:  0.14 kB
 dist-reddit/assets/rolldown-runtime-Czjbc987.js               0.17 kB │ gzip:  0.14 kB
-dist-reddit/assets/race-DVV5jt8v.js                           0.20 kB │ gzip:  0.15 kB
 dist-reddit/assets/streakFanfare-CNktPzNV.js                  0.24 kB │ gzip:  0.24 kB
 dist-reddit/assets/streakFanfare-CILTTN8I.js                  0.24 kB │ gzip:  0.22 kB
 dist-reddit/assets/streakFanfare-CoNWczXG.js                  0.24 kB │ gzip:  0.22 kB
 dist-reddit/assets/streakFanfare-CYtxZCtU.js                  0.24 kB │ gzip:  0.25 kB
+dist-reddit/assets/race-Tnn26A81.js                           0.24 kB │ gzip:  0.17 kB
 dist-reddit/assets/streakFanfare-CiFffE4P.js                  0.24 kB │ gzip:  0.22 kB
 dist-reddit/assets/streakFanfare-DbdEYngK.js                  0.24 kB │ gzip:  0.23 kB
 dist-reddit/assets/streakFanfare-B68ZEMLJ.js                  0.25 kB │ gzip:  0.22 kB
@@ -335,7 +335,7 @@ dist-reddit/assets/game-DP1vieUR.js                           2.02 kB │ gzip: 
 dist-reddit/assets/game-D5iiSVmO.js                           2.04 kB │ gzip:  1.16 kB
 dist-reddit/assets/game-Dzl9eVQ5.js                           2.07 kB │ gzip:  1.18 kB
 dist-reddit/assets/game-Z6k-vNVe.js                           2.07 kB │ gzip:  1.18 kB
-dist-reddit/assets/bridge-eDjdykHJ.js                         2.09 kB │ gzip:  0.76 kB
+dist-reddit/assets/bridge-Dq54jcOm.js                         2.09 kB │ gzip:  0.76 kB
 dist-reddit/assets/achievements-CHaj-vqJ.js                   2.13 kB │ gzip:  0.76 kB
 dist-reddit/assets/game-DRkWBCJy.js                           2.13 kB │ gzip:  1.22 kB
 dist-reddit/assets/accessibility-DgPVrXsF.js                  2.21 kB │ gzip:  1.15 kB
@@ -388,12 +388,12 @@ dist-reddit/assets/errors-CyEYyxxk.js                         3.23 kB │ gzip: 
 dist-reddit/assets/tooltips-DE2iImLy.js                       3.27 kB │ gzip:  1.37 kB
 dist-reddit/assets/game-CLrbk-AC.js                           3.35 kB │ gzip:  1.41 kB
 dist-reddit/assets/alerts-C7m5MV33.js                         3.78 kB │ gzip:  1.49 kB
-dist-reddit/assets/race-I6fwKntI.js                           3.85 kB │ gzip:  1.56 kB
 dist-reddit/assets/errors-LMh1MBOC.js                         3.85 kB │ gzip:  1.59 kB
 dist-reddit/assets/splash-DNO5krMd.js                         4.27 kB │ gzip:  1.08 kB
 dist-reddit/assets/errors-CsX4n6XL.js                         4.47 kB │ gzip:  1.54 kB
 dist-reddit/assets/alerts-DB2b2bFL.js                         4.48 kB │ gzip:  1.38 kB
 dist-reddit/assets/tooltips-7ITtr-wV.js                       4.66 kB │ gzip:  1.37 kB
+dist-reddit/assets/race-BKVyyvLa.js                           4.75 kB │ gzip:  1.82 kB
 dist-reddit/assets/race-EvBdac4e.js                           5.37 kB │ gzip:  2.34 kB
 dist-reddit/assets/race-Cp9-2MsM.js                           5.55 kB │ gzip:  2.52 kB
 dist-reddit/assets/race-S4hbIrmB.js                           5.58 kB │ gzip:  2.51 kB
@@ -419,7 +419,7 @@ dist-reddit/assets/race-CXt4nWlN.js                           6.56 kB │ gzip: 
 dist-reddit/assets/race-C-Zfx-DI.js                           6.63 kB │ gzip:  2.73 kB
 dist-reddit/assets/profile-CJdmt61x.js                        6.75 kB │ gzip:  2.86 kB
 dist-reddit/assets/profile-DXLkUE9m.js                        7.07 kB │ gzip:  2.96 kB
-dist-reddit/assets/bridge-DGyopARR.js                         7.53 kB │ gzip:  2.70 kB
+dist-reddit/assets/bridge-nrABIL85.js                         7.53 kB │ gzip:  2.70 kB
 dist-reddit/assets/profile-D0po5Ndo.js                        7.57 kB │ gzip:  2.86 kB
 dist-reddit/assets/requestSchemas-DLqEGfUx.js                 7.77 kB │ gzip:  2.30 kB
 dist-reddit/assets/race-_jpWeaws.js                           8.00 kB │ gzip:  3.02 kB
@@ -431,14 +431,14 @@ dist-reddit/assets/race-ZH6LbkMK.js                           9.81 kB │ gzip: 
 dist-reddit/assets/vendor-three-BRUU7_Lb.js                   9.91 kB │ gzip:  3.46 kB
 dist-reddit/assets/client-D9Ka2dOe.js                        10.00 kB │ gzip:  3.48 kB
 dist-reddit/assets/profile-C8J7su-P.js                       10.28 kB │ gzip:  3.08 kB
-dist-reddit/assets/RedditRaceEntry-P6sfb-ZF.js               11.52 kB │ gzip:  4.34 kB
+dist-reddit/assets/RedditRaceEntry-Bg5r_Mp2.js               11.52 kB │ gzip:  4.35 kB
 dist-reddit/assets/SolarSystem-y2wlfn6x.js                   12.81 kB │ gzip:  4.67 kB
 dist-reddit/assets/vendor-three-BiCdcn-D.js                  13.78 kB │ gzip:  4.54 kB
 dist-reddit/assets/LiveRacePushConsent-DJGP1ABN.js           17.06 kB │ gzip:  6.77 kB
 dist-reddit/assets/vendor-three-Adn5u5Zy.js                  20.91 kB │ gzip:  4.79 kB
 dist-reddit/assets/useAnswerKeyboard-pRrgs_w-.js             24.77 kB │ gzip:  7.82 kB
 dist-reddit/assets/vendor-three-CSZGoEsN.js                  37.04 kB │ gzip: 11.77 kB
-dist-reddit/assets/RaceTo10Game-Dwnnyc_a.js                  37.16 kB │ gzip: 12.39 kB
+dist-reddit/assets/RaceTo10Game-ahZBRly1.js                  37.65 kB │ gzip: 12.55 kB
 dist-reddit/assets/ReferralSharingCapability-DJSlZJpe.js     44.84 kB │ gzip: 16.11 kB
 dist-reddit/assets/GameModalView-BVYm0-g0.js                 49.86 kB │ gzip: 15.69 kB
 dist-reddit/assets/vendor-three-DvaUqFWL.js                  57.10 kB │ gzip: 14.95 kB
@@ -447,10 +447,10 @@ dist-reddit/assets/vendor-three-CFA9LI49.js                  65.49 kB │ gzip: 
 dist-reddit/assets/vendor-three-DJoh3hnH.js                  74.63 kB │ gzip: 21.29 kB
 dist-reddit/assets/vendor-three-Bsvtb-PI.js                  78.43 kB │ gzip: 23.20 kB
 dist-reddit/assets/raceSchemas-Y6nRRYVj.js                  107.56 kB │ gzip: 30.86 kB
-dist-reddit/assets/game-B-Z9i0mb.js                         129.16 kB │ gzip: 38.43 kB
+dist-reddit/assets/game-BJisp_BQ.js                         129.49 kB │ gzip: 38.48 kB
 dist-reddit/assets/vendor-three-rp2wzGbr.js                 192.57 kB │ gzip: 42.43 kB
 dist-reddit/assets/vendor-react-BaMjfHjM.js                 219.00 kB │ gzip: 68.35 kB
 
-✓ built in 1.83s
+✓ built in 1.86s
 $ node scripts/audit-reddit-artifact.mjs
 Reddit artifact audit passed: 420 regular files, 2 entry documents, 3.73 MB, 0.58 MB initial resources, isolated and same-origin only

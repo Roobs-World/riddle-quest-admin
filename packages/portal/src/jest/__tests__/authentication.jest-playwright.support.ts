@@ -82,6 +82,18 @@ export type AuthHarnessState = {
   referralSharesStartedFromProfileClick: boolean[];
 };
 
+/** Reads the injected SDK state through the authentication harness's shared typed boundary. */
+export const getHarnessState = (page: Page) =>
+  page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          /** Current SDK state recorded by this isolated page. */
+          __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+        }
+      ).__RIDDLE_QUEST_JEST_AUTH_TEST__,
+  );
+
 /** Provides advance to registration behavior. */
 export const advanceToRegistration = async (page: Page) => {
   await enterRegisteredGame(page);

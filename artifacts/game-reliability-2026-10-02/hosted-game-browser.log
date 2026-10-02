@@ -1,0 +1,26 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/hostedBrowser.jest-playwright.test.ts
+  ● standalone Jest browser game › covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+
+    expect(received).toBeNull()
+
+    Received: "expired-run-from-previous-session"
+
+      360 |       expect(await page.locator(".race-category-grid button").count()).toBeGreaterThan(0);
+      361 |       expect(await page.locator(".race-category-grid button small").count()).toBe(0);
+    > 362 |       expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
+          |                                                                                            ^
+      363 |       expect(await page.locator(".race-screen [role=alert]").count()).toBe(0);
+      364 |       expect((await page.locator(".race-coin-balance strong").innerText()).trim()).toBe(mainGameCoinBalance);
+      365 |       expect(await page.locator(".race-coin-balance").isVisible()).toBe(true);
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:362:92)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        4.447 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts

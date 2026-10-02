@@ -120,6 +120,8 @@
     "INVITE_QUEUED": "Uitnodiging opgeslagen. Pushmeldingen hangen af van de instellingen van de speler.",
     "PUSH_ENABLE": "Uitdagingsmeldingen inschakelen",
     "PUSH_DISABLE": "Uitdagingsmeldingen uitschakelen",
-    "PUSH_UNAVAILABLE": "Browsermeldingen zijn hier niet beschikbaar. Je uitnodigingen verschijnen nog steeds in multiplayer."
+    "PUSH_UNAVAILABLE": "Browsermeldingen zijn hier niet beschikbaar. Je uitnodigingen verschijnen nog steeds in multiplayer.",
+    "LIVE_HISTORY_TITLE": "Recente wedstrijden",
+    "LIVE_HISTORY_EMPTY": "Nog geen voltooide wedstrijden."
   }
 }

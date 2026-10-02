@@ -2,8 +2,8 @@ import {createFirebaseRaceMatchmaking} from "../firebaseRaceMatchmaking";
 
 it("exposes retained live history through the explicitly enabled Facebook live surface", () => {
   /** The owning target opts into live social features; the default adapter stays unchanged. */
-  const options = {liveSafety: true};
-  Reflect.set(options, "liveHistory", true);
+  const options = {liveSafety: true, liveHistory: true};
+  /** Target-owned capability surface under inspection. */
   const target = createFirebaseRaceMatchmaking(undefined, options);
   expect(typeof Reflect.get(target.live!, "history")).toBe("function");
   expect(Reflect.get(createFirebaseRaceMatchmaking().live!, "history")).toBeUndefined();

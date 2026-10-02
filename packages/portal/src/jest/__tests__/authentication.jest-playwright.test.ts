@@ -10,6 +10,7 @@ import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, 
 
 import {
   type AuthHarnessState,
+  getHarnessState,
   advanceToRegistration,
   enterRegisteredGame,
   verifyShortJestPreview,
@@ -30,17 +31,6 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 let baseUrl: string;
 /** Provides shared race challenges behavior. */
 const sharedRaceChallenges = new Map<string, string>();
-/** Gets harness state. */
-const getHarnessState = (page: Page) =>
-  page.evaluate(
-    () =>
-      (
-        window as typeof window & {
-          /** Stores riddle quest jest auth test. */
-          __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-        }
-      ).__RIDDLE_QUEST_JEST_AUTH_TEST__,
-  );
 /** Binds each isolated page to the suite-owned local server. */
 const openHarness = (browser: Browser, options: Parameters<typeof openAuthenticationHarness>[2] = {}) =>
   openAuthenticationHarness(browser, baseUrl, options);

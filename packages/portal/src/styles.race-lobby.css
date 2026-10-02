@@ -649,3 +649,10 @@
   flex: 1 0 auto;
   grid-template-rows: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
 }
+.live-race-history { margin: 1rem auto; }
+.live-race-history-list { display: grid; gap: 1rem; padding: 0; list-style: none; }
+.live-race-history-entry { min-width: 0; padding: 1rem; border: 1px solid var(--race-warm); border-radius: 18px; }
+.live-race-history-entry > header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
+.live-race-history-score { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+.live-race-history-score > span { display: flex; flex-direction: column; overflow-wrap: anywhere; }
+.live-race-history-entry .live-race-safety { padding-inline: 0; border: 0; background: transparent; box-shadow: none; }

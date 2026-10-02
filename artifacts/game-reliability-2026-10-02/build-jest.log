@@ -1,17 +1,27 @@
 firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 4h ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1
++
+Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 715ms using pnpm v11.21.0
 $ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact
 $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
-✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.486919ms)
-✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.721791ms)
-✔ rejects shared-to-target imports across every supported TypeScript module syntax (5.421952ms)
-✔ rejects imports between different target owners (2.004257ms)
-✔ rejects the legacy platform entry while allowing the shop adapter (0.937205ms)
-✔ rejects Devvit imports outside Reddit-owned source (0.90771ms)
-✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.036343ms)
-✔ fails closed when a missing relative path lexically enters target-owned source (0.78662ms)
-✔ handles extensions and index modules with TypeScript-compatible resolution (1.199082ms)
-✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.830052ms)
-✔ aggregates violations in deterministic file and source order (1.781665ms)
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (16.811618ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (4.230565ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.900633ms)
+✔ rejects imports between different target owners (2.226048ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (1.632572ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.381547ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (2.923117ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.832627ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.056221ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.704815ms)
+✔ aggregates violations in deterministic file and source order (1.048416ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -19,8 +29,8 @@ $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && no
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 143.602687
-Web Target boundary audit passed (282 files, 1223 module references).
+ℹ duration_ms 162.786609
+Web Target boundary audit passed (283 files, 1232 module references).
 $ node scripts/audit-locales.mjs
 Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
 $ node scripts/generate-third-party-licenses.mjs --check
@@ -29,7 +39,7 @@ $ node scripts/validate-jest-console-manifest.mjs
 Jest Developer Console manifest passed; owner-approved publisher and privacy values are present.
 vite v8.3.1 building client environment for jest...
 transforming...
-✓ 1381 modules transformed.
+✓ 1383 modules transformed.
 rendering chunks...
 computing gzip size...
 dist-jest/index.html                                        1.29 kB │ gzip:   0.51 kB
@@ -65,7 +75,7 @@ dist-jest/assets/LiveRacePushConsent-BStyCzQK.css           1.90 kB │ gzip:   
 dist-jest/assets/RaceTo10Game-C1kLPocP.css                 23.58 kB │ gzip:   5.94 kB
 dist-jest/assets/GameModalView-CEP3Nqf2.css                23.75 kB │ gzip:   5.84 kB
 dist-jest/assets/jest-I8x3ob_V.css                         30.38 kB │ gzip:   7.20 kB
-dist-jest/assets/index-oSQkEbHs.js                          0.04 kB │ gzip:   0.06 kB
+dist-jest/assets/index-DbDc6Vt9.js                          0.04 kB │ gzip:   0.06 kB
 dist-jest/assets/core-bridge-constants--aS0k-qf.js          0.10 kB │ gzip:   0.12 kB
 dist-jest/assets/streakFanfare-D5FNWyR-.js                  0.24 kB │ gzip:   0.24 kB
 dist-jest/assets/streakFanfare-nH51PXfP.js                  0.24 kB │ gzip:   0.22 kB
@@ -107,7 +117,7 @@ dist-jest/assets/coinPurchase-BrtYGPPp.js                   0.31 kB │ gzip:   
 dist-jest/assets/aboutLegal-BAlSQDJA.js                     0.32 kB │ gzip:   0.30 kB
 dist-jest/assets/rolldown-runtime-BX80bFGj.js               0.32 kB │ gzip:   0.24 kB
 dist-jest/assets/streakFanfare-BzlSgn3C.js                  0.32 kB │ gzip:   0.28 kB
-dist-jest/assets/raceMatchmakingFailure-DVoTT-9J.js         0.33 kB │ gzip:   0.24 kB
+dist-jest/assets/raceMatchmakingFailure-DVcXcybW.js         0.33 kB │ gzip:   0.25 kB
 dist-jest/assets/aboutLegal-DPa59xbr.js                     0.33 kB │ gzip:   0.32 kB
 dist-jest/assets/aboutLegal-DWAsypAb.js                     0.33 kB │ gzip:   0.30 kB
 dist-jest/assets/coinPurchase-O2VpNloi.js                   0.34 kB │ gzip:   0.30 kB
@@ -119,7 +129,7 @@ dist-jest/assets/levelUpFanfare-BPKjiUsq.js                 0.44 kB │ gzip:   
 dist-jest/assets/levelUpFanfare-Cl0qa3XP.js                 0.45 kB │ gzip:   0.36 kB
 dist-jest/assets/levelUpFanfare-CTGjhSJn.js                 0.45 kB │ gzip:   0.33 kB
 dist-jest/assets/levelUpFanfare-Da_x7Jue.js                 0.45 kB │ gzip:   0.34 kB
-dist-jest/assets/firebaseCopy-CUYAEe-M.js                   0.46 kB │ gzip:   0.31 kB
+dist-jest/assets/firebaseCopy-CpoUTN18.js                   0.46 kB │ gzip:   0.30 kB
 dist-jest/assets/levelUpFanfare-DyoO6WH1.js                 0.47 kB │ gzip:   0.35 kB
 dist-jest/assets/levelUpFanfare-CHdstpWu.js                 0.47 kB │ gzip:   0.35 kB
 dist-jest/assets/levelUpFanfare-BAlJ8D0X.js                 0.47 kB │ gzip:   0.36 kB
@@ -220,10 +230,10 @@ dist-jest/assets/stats-B1V3WjYh.js                          0.80 kB │ gzip:   
 dist-jest/assets/common-vpljjTN8.js                         0.81 kB │ gzip:   0.54 kB
 dist-jest/assets/common-Dz3UpTCl.js                         0.82 kB │ gzip:   0.55 kB
 dist-jest/assets/loss-CWXPUZRX.js                           0.82 kB │ gzip:   0.52 kB
-dist-jest/assets/JestFirebaseAppCheck-DgpKLxuI.js           0.82 kB │ gzip:   0.52 kB
+dist-jest/assets/JestFirebaseAppCheck-BsrwC5He.js           0.82 kB │ gzip:   0.52 kB
 dist-jest/assets/credits-CPMr9j5i.js                        0.83 kB │ gzip:   0.59 kB
 dist-jest/assets/navigation-MfKaCO-M.js                     0.83 kB │ gzip:   0.58 kB
-dist-jest/assets/firebaseLiveRaceSignals-mihYmrfH.js        0.87 kB │ gzip:   0.51 kB
+dist-jest/assets/firebaseLiveRaceSignals-DW-TA_5V.js        0.87 kB │ gzip:   0.51 kB
 dist-jest/assets/leaderboard-DDTHVAn4.js                    0.90 kB │ gzip:   0.56 kB
 dist-jest/assets/settings-CS_i32e5.js                       0.91 kB │ gzip:   0.54 kB
 dist-jest/assets/onboarding-DQLra8FR.js                     0.92 kB │ gzip:   0.59 kB
@@ -231,7 +241,7 @@ dist-jest/assets/navigation-BQVuBhL8.js                     0.93 kB │ gzip:   
 dist-jest/assets/stats-DhRrKJqk.js                          0.93 kB │ gzip:   0.59 kB
 dist-jest/assets/stats-DGElKeRF.js                          0.94 kB │ gzip:   0.63 kB
 dist-jest/assets/leaderboard-D4odGT_9.js                    0.95 kB │ gzip:   0.60 kB
-dist-jest/assets/FirebasePresenceTransport-B2YKoihU.js      0.95 kB │ gzip:   0.50 kB
+dist-jest/assets/FirebasePresenceTransport-BsP2FXuj.js      0.95 kB │ gzip:   0.50 kB
 dist-jest/assets/common-BdXkwqia.js                         0.95 kB │ gzip:   0.58 kB
 dist-jest/assets/onboarding-DBG6CBbL.js                     0.95 kB │ gzip:   0.60 kB
 dist-jest/assets/credits-BleaRYoH.js                        0.98 kB │ gzip:   0.63 kB
@@ -336,7 +346,7 @@ dist-jest/assets/errors-BwB4svYZ.js                         2.41 kB │ gzip:   
 dist-jest/assets/errors-D4Az-shn.js                         2.45 kB │ gzip:   1.28 kB
 dist-jest/assets/errors-vXKfe_fy.js                         2.48 kB │ gzip:   1.32 kB
 dist-jest/assets/tooltips-BGKpbHhI.js                       2.49 kB │ gzip:   1.19 kB
-dist-jest/assets/liveChallengePush-EBbZN9sg.js              2.49 kB │ gzip:   1.25 kB
+dist-jest/assets/liveChallengePush-Bwiurgia.js              2.49 kB │ gzip:   1.25 kB
 dist-jest/assets/accessibility-CvNNiUKA.js                  2.51 kB │ gzip:   1.11 kB
 dist-jest/assets/alerts-DGifcR-1.js                         2.53 kB │ gzip:   1.10 kB
 dist-jest/assets/tooltips-D5Ywc9Vk.js                       2.53 kB │ gzip:   1.13 kB
@@ -380,7 +390,7 @@ dist-jest/assets/errors-Bs_CAkn2.js                         3.85 kB │ gzip:   
 dist-jest/assets/errors-DbyX3VtS.js                         4.47 kB │ gzip:   1.54 kB
 dist-jest/assets/alerts-uYj0wuwT.js                         4.48 kB │ gzip:   1.38 kB
 dist-jest/assets/tooltips-BtUE9qRL.js                       4.66 kB │ gzip:   1.37 kB
-dist-jest/assets/firebase-DcJY1uX1.js                       4.94 kB │ gzip:   2.19 kB
+dist-jest/assets/firebase-BfqFeJiA.js                       5.00 kB │ gzip:   2.21 kB
 dist-jest/assets/race-DVnHnvQG.js                           5.37 kB │ gzip:   2.34 kB
 dist-jest/assets/race-B-4aEwX8.js                           5.55 kB │ gzip:   2.52 kB
 dist-jest/assets/race-D-N2Po4A.js                           5.58 kB │ gzip:   2.51 kB
@@ -393,7 +403,7 @@ dist-jest/assets/race-C4Xb28_N.js                           5.83 kB │ gzip:   
 dist-jest/assets/race-8LNDBVvW.js                           5.90 kB │ gzip:   2.58 kB
 dist-jest/assets/profile-D41XTaep.js                        5.94 kB │ gzip:   2.59 kB
 dist-jest/assets/profile-Cx0pRpKm.js                        5.96 kB │ gzip:   2.68 kB
-dist-jest/assets/validation-L5QhzI32.js                     6.01 kB │ gzip:   2.07 kB
+dist-jest/assets/validation-BD5xcf80.js                     6.01 kB │ gzip:   2.07 kB
 dist-jest/assets/race-C7MuG3JY.js                           6.04 kB │ gzip:   2.66 kB
 dist-jest/assets/profile-B5OfPl3A.js                        6.06 kB │ gzip:   2.78 kB
 dist-jest/assets/profile-Daqs-cvK.js                        6.07 kB │ gzip:   2.62 kB
@@ -407,40 +417,40 @@ dist-jest/assets/race-l726-z0c.js                           6.56 kB │ gzip:   
 dist-jest/assets/race-lCiY1qcj.js                           6.63 kB │ gzip:   2.72 kB
 dist-jest/assets/profile-BaD_0pJD.js                        6.75 kB │ gzip:   2.86 kB
 dist-jest/assets/profile-Bu5O4eN5.js                        7.07 kB │ gzip:   2.96 kB
-dist-jest/assets/firebaseServices-BveKTV2t.js               7.32 kB │ gzip:   2.78 kB
+dist-jest/assets/firebaseServices-CrYzc-XJ.js               7.32 kB │ gzip:   2.78 kB
 dist-jest/assets/profile-Mwanf_dW.js                        7.57 kB │ gzip:   2.86 kB
 dist-jest/assets/requestSchemas-mWakFd0b.js                 7.69 kB │ gzip:   2.24 kB
-dist-jest/assets/race-DRDcwSJZ.js                           7.81 kB │ gzip:   2.90 kB
 dist-jest/assets/race-BHGsUwRu.js                           8.00 kB │ gzip:   3.02 kB
 dist-jest/assets/vendor-three--DK9f_7z.js                   8.34 kB │ gzip:   2.85 kB
 dist-jest/assets/profile-Cp1G-NTZ.js                        8.70 kB │ gzip:   3.23 kB
-dist-jest/assets/bridge-CJrySTcf.js                         8.92 kB │ gzip:   2.92 kB
+dist-jest/assets/race-BZOW56sH.js                           8.84 kB │ gzip:   3.20 kB
+dist-jest/assets/bridge-BziQIBGq.js                         8.92 kB │ gzip:   2.92 kB
 dist-jest/assets/vendor-three-CqvblP5O.js                   9.76 kB │ gzip:   3.07 kB
 dist-jest/assets/race-CcKFQBW6.js                           9.81 kB │ gzip:   2.92 kB
 dist-jest/assets/vendor-three-ByJ-Rtdi.js                   9.91 kB │ gzip:   3.46 kB
 dist-jest/assets/profile-RYx2GXIC.js                       10.28 kB │ gzip:   3.07 kB
 dist-jest/assets/achievements-zb3HfsZa.js                  12.51 kB │ gzip:   3.20 kB
-dist-jest/assets/SolarSystem-CHrRUXrm.js                   12.80 kB │ gzip:   4.66 kB
+dist-jest/assets/SolarSystem-C7VLtbx5.js                   12.80 kB │ gzip:   4.66 kB
 dist-jest/assets/vendor-three-CkWfOPsS.js                  13.78 kB │ gzip:   4.55 kB
 dist-jest/assets/LiveRacePushConsent-wqSGb8TG.js           17.06 kB │ gzip:   6.77 kB
-dist-jest/assets/fakeServices-b-b2Rzyb.js                  20.68 kB │ gzip:   7.05 kB
+dist-jest/assets/fakeServices-D-n_pc0x.js                  20.68 kB │ gzip:   7.05 kB
 dist-jest/assets/vendor-three-Y1Z8nY45.js                  20.91 kB │ gzip:   4.78 kB
 dist-jest/assets/ReferralSharingCapability-Cvuoee97.js     32.90 kB │ gzip:  13.43 kB
-dist-jest/assets/RaceTo10Game-DTOjhOYc.js                  37.01 kB │ gzip:  12.36 kB
 dist-jest/assets/vendor-three-DsdThxkc.js                  37.04 kB │ gzip:  11.77 kB
-dist-jest/assets/GameModalView-ABXyVxW4.js                 51.39 kB │ gzip:  16.24 kB
+dist-jest/assets/RaceTo10Game-CakoD6jL.js                  37.49 kB │ gzip:  12.54 kB
+dist-jest/assets/GameModalView-CUDvrPXu.js                 51.39 kB │ gzip:  16.23 kB
 dist-jest/assets/vendor-three-B10rdh0-.js                  57.10 kB │ gzip:  14.92 kB
 dist-jest/assets/localeModules-MMD8qi_p.js                 57.34 kB │ gzip:   7.61 kB
 dist-jest/assets/vendor-three-BChfjRca.js                  65.48 kB │ gzip:  18.35 kB
 dist-jest/assets/vendor-three-j2n53szm.js                  74.63 kB │ gzip:  21.29 kB
 dist-jest/assets/vendor-three-CPNFdt8a.js                  78.40 kB │ gzip:  23.15 kB
-dist-jest/assets/sentry-B_-FHv_V.js                        90.02 kB │ gzip:  30.84 kB
+dist-jest/assets/sentry-DH5JwUYG.js                        90.02 kB │ gzip:  30.83 kB
 dist-jest/assets/raceSchemas-VGLErhH6.js                  107.84 kB │ gzip:  31.02 kB
 dist-jest/assets/vendor-three-D5TcQsOm.js                 192.57 kB │ gzip:  42.43 kB
 dist-jest/assets/vendor-react-BsJIBMEs.js                 219.00 kB │ gzip:  68.35 kB
-dist-jest/assets/jest-hUVv5HMy.js                         222.40 kB │ gzip:  67.03 kB
+dist-jest/assets/jest-CRc3y1Gt.js                         222.78 kB │ gzip:  67.08 kB
 dist-jest/assets/vendor-firebase-NTL0Yt-F.js              397.08 kB │ gzip: 118.60 kB
 
-✓ built in 2.09s
+✓ built in 2.16s
 $ node scripts/audit-jest-artifact.mjs
 Jest artifact audit passed: 408 files, 4.29 MB, 0.50 MB initial resources, relative entry paths, no native modules, external auth/ads, Google Analytics, install copy, secrets, source maps, or missing entry assets

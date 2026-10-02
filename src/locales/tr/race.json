@@ -120,6 +120,8 @@
     "INVITE_QUEUED": "Davet kaydedildi. Bildirimlerin iletilmesi oyuncunun bildirim ayarlarına bağlıdır.",
     "PUSH_ENABLE": "Meydan okuma bildirimlerini aç",
     "PUSH_DISABLE": "Meydan okuma bildirimlerini kapat",
-    "PUSH_UNAVAILABLE": "Tarayıcı bildirimleri burada kullanılamıyor. Davetleriniz çok oyunculu modda görünmeye devam edecek."
+    "PUSH_UNAVAILABLE": "Tarayıcı bildirimleri burada kullanılamıyor. Davetleriniz çok oyunculu modda görünmeye devam edecek.",
+    "LIVE_HISTORY_TITLE": "Son maçlar",
+    "LIVE_HISTORY_EMPTY": "Henüz tamamlanmış maç yok."
   }
 }

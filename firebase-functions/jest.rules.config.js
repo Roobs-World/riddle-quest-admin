@@ -39,6 +39,7 @@ module.exports = {
     "**/__tests__/race/redditTournament.it.test.ts",
     "**/__tests__/socialSafety.it.test.ts",
     "**/__tests__/race/liveRaceSafety.it.test.ts",
+    "**/__tests__/race/raceLiveHistory.it.test.ts",
     "**/__tests__/facebookContextRetention.it.test.ts",
     "**/__tests__/facebookIdentityNonceRetention.it.test.ts",
     "**/__tests__/facebookReferralRetention.it.test.ts",

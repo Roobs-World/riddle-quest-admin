@@ -1,0 +1,34 @@
+{
+  "transport": "injected local HTTP authority; not production latency",
+  "pushEnabled": false,
+  "samples": [
+    {
+      "viewport": 1280,
+      "pollWindowMs": 3250,
+      "pollCount": 6,
+      "pollIntervalsMs": [
+        500.5,
+        500.3999999985099,
+        500.40000000037253,
+        500.7000000011176,
+        500.2999999988824
+      ],
+      "opponentDisplayDelayMs": 213,
+      "commandWhilePollHeldMs": 93
+    },
+    {
+      "viewport": 390,
+      "pollWindowMs": 3250,
+      "pollCount": 6,
+      "pollIntervalsMs": [
+        500.2999999988824,
+        500.40000000037253,
+        500.30000000074506,
+        500.3999999985099,
+        500.40000000037253
+      ],
+      "opponentDisplayDelayMs": 363,
+      "commandWhilePollHeldMs": 102
+    }
+  ]
+}

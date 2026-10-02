@@ -72,6 +72,7 @@
     "test:challenge-notifications:browser": "node scripts/verify-challenge-notification-toggle-browser.mjs",
     "test:challenge-push:browser": "node scripts/verify-closed-game-challenge-push-browser.mjs",
     "test:race:live:browser": "node scripts/verify-live-race-browser.mjs",
+    "test:single-player:recovery:browser": "node scripts/verify-single-player-recovery-browser.mjs",
     "test:jest-multiplayer:live": "node scripts/verify-jest-multiplayer-live.mjs",
     "test:jest-payments:live": "node scripts/verify-jest-payments-live.mjs",
     "test:jest-subscription:live": "node scripts/verify-jest-subscription-live.mjs",

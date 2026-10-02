@@ -120,6 +120,8 @@
     "INVITE_QUEUED": "Einladung gespeichert. Push-Benachrichtigungen hängen von den Einstellungen des Spielers ab.",
     "PUSH_ENABLE": "Herausforderungsmitteilungen aktivieren",
     "PUSH_DISABLE": "Herausforderungsmitteilungen deaktivieren",
-    "PUSH_UNAVAILABLE": "Browser-Mitteilungen sind hier nicht verfügbar. Deine Einladungen erscheinen weiterhin im Mehrspielermodus."
+    "PUSH_UNAVAILABLE": "Browser-Mitteilungen sind hier nicht verfügbar. Deine Einladungen erscheinen weiterhin im Mehrspielermodus.",
+    "LIVE_HISTORY_TITLE": "Letzte Spiele",
+    "LIVE_HISTORY_EMPTY": "Noch keine abgeschlossenen Spiele."
   }
 }

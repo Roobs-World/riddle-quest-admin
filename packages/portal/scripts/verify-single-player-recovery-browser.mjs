@@ -16,6 +16,7 @@ const lifecyclePath = path.join(root, "src/play/useHostRiddleLifecycle.ts");
 const raceInputPath = path.join(root, "src/play/race/components/NativeAnswerInput.tsx");
 const playableInputPath = path.join(root, "src/playable/YouTubeNativeAnswerInput.tsx");
 const samples = [];
+const baselineFiles = new Set((process.env.SOLO_RECOVERY_BASELINE_FILES ?? "").split(",").filter(Boolean));
 const source = `
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -78,7 +79,8 @@ try {
     resolveId(id) {if (id.endsWith("preloadGameModals")) return "\0modal-preload-stub";},
     async load(id) {
       if (id === "\0modal-preload-stub") return "export const preloadGameModals=async()=>undefined;";
-      if (process.env.SOLO_RECOVERY_BASELINE_DIR && [completionPath, lifecyclePath, raceInputPath, playableInputPath].includes(id))
+      if (process.env.SOLO_RECOVERY_BASELINE_DIR && [completionPath, lifecyclePath, raceInputPath, playableInputPath].includes(id) &&
+        (!baselineFiles.size || baselineFiles.has(path.basename(id))))
         return readFile(path.join(process.env.SOLO_RECOVERY_BASELINE_DIR, path.basename(id)), "utf8");
     },
   }]});
@@ -166,6 +168,11 @@ try {
       assert.equal(await page.locator("output").innerText(), "A한");
       await page.keyboard.press("Enter");
       assert.equal(await page.evaluate(() => window.probe.submits), 1);
+      await input.evaluate(element => {
+        element.disabled = true;
+        element.dispatchEvent(new InputEvent("beforeinput", {bubbles: true, cancelable: true, inputType: "deleteContentBackward"}));
+      });
+      assert.equal(await page.evaluate(() => window.probe.backspaces), 2, "Disabled editors cannot accept software deletions");
     }
     assert.deepEqual(errors, []);
     samples.push({width, completionReconnectMs, startupReconnectMs,
