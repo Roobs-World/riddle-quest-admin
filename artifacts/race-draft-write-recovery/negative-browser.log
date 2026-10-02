@@ -1,0 +1,26 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: An unchanged live draft must persist after write access recovers
++ actual - expected
+
++ undefined
+- [
+-   'P',
+-   'I',
+-   '',
+-   '',
+-   ''
+- ]
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-draft-reload-browser.mjs:82:14 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [ 'P', 'I', '', '', '' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

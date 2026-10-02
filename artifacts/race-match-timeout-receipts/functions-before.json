@@ -1,0 +1,992 @@
+[
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/requestRaceHint",
+    "serviceConfig": {
+      "revision": "requestracehint-00008-zoj"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:30.635232413Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/readyRaceRun",
+    "serviceConfig": {
+      "revision": "readyracerun-00008-buj"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:31.901267061Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceAccess",
+    "serviceConfig": {
+      "revision": "getraceaccess-00008-haf"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:33.233019568Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/publishRaceChallenge",
+    "serviceConfig": {
+      "revision": "publishracechallenge-00008-fix"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:33.391066199Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/resumeRaceRun",
+    "serviceConfig": {
+      "revision": "resumeracerun-00008-pul"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:33.218618460Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRaceRiddle",
+    "serviceConfig": {
+      "revision": "skipraceriddle-00008-dib"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:32.681397006Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/reserveRaceInvite",
+    "serviceConfig": {
+      "revision": "reserveraceinvite-00008-yot"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:30.948844516Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/submitRaceGuess",
+    "serviceConfig": {
+      "revision": "submitraceguess-00008-wey"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:32.835573403Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/aggregatePresenceStatus",
+    "serviceConfig": {
+      "revision": "aggregatepresencestatus-00018-tas"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:31.137529458Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceEntry",
+    "serviceConfig": {
+      "revision": "getraceentry-00008-luj"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:33.184440331Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceCategories",
+    "serviceConfig": {
+      "revision": "listracecategories-00008-kag"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:30.809183134Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/startRaceRun",
+    "serviceConfig": {
+      "revision": "startracerun-00008-dec"
+    },
+    "state": "DEPLOYING",
+    "updateTime": "2026-10-01T11:21:07.646152941Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceOutcome",
+    "serviceConfig": {
+      "revision": "getraceoutcome-00008-hiz"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:32.612760591Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceChallenge",
+    "serviceConfig": {
+      "revision": "getracechallenge-00008-loz"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:32.853432914Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceInbox",
+    "serviceConfig": {
+      "revision": "listraceinbox-00008-res"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:31.901143528Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/abandonRaceRun",
+    "serviceConfig": {
+      "revision": "abandonracerun-00008-jof"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:29.594866941Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/cancelRaceInvite",
+    "serviceConfig": {
+      "revision": "cancelraceinvite-00008-zel"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:31.480750959Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/recordRaceAnalytics",
+    "serviceConfig": {
+      "revision": "recordraceanalytics-00008-xah"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:29.482442432Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/findRaceMatch",
+    "serviceConfig": {
+      "revision": "findracematch-00008-guz"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:30.452744193Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getFacebookClientConfiguration",
+    "serviceConfig": {
+      "revision": "getfacebookclientconfiguration-00018-mec"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:42.594252966Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/requestRaceHint",
+    "serviceConfig": {
+      "revision": "requestracehint-00039-qaq"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:14.637005889Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentDailyChallenge",
+    "serviceConfig": {
+      "revision": "getcurrentdailychallenge-00036-dux"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:18.389124772Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/readyRaceRun",
+    "serviceConfig": {
+      "revision": "readyracerun-00016-qiw"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:14.746513507Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestAvatar",
+    "serviceConfig": {
+      "revision": "syncjestavatar-00012-mod"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:09.519120088Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/acceptFacebookNotificationPermissionPrompt",
+    "serviceConfig": {
+      "revision": "acceptfacebooknotificationpermissionprompt-00018-quy"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:55.839284091Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceAccess",
+    "serviceConfig": {
+      "revision": "getraceaccess-00035-lap"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:28.870515437Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthCallback",
+    "serviceConfig": {
+      "revision": "yahoooauthcallback-00018-wuk"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:49.558441983Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/publishRaceChallenge",
+    "serviceConfig": {
+      "revision": "publishracechallenge-00037-jip"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:34.320644534Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentClassicRiddle",
+    "serviceConfig": {
+      "revision": "getcurrentclassicriddle-00035-hin"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:20.333992107Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRiddle",
+    "serviceConfig": {
+      "revision": "skipriddle-00032-wub"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:10.532104132Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockRival",
+    "serviceConfig": {
+      "revision": "blockrival-00018-qak"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:38.854185234Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createFacebookReferral",
+    "serviceConfig": {
+      "revision": "createfacebookreferral-00018-fit"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:39.512889019Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeRedditIdentity",
+    "serviceConfig": {
+      "revision": "exchangeredditidentity-00019-yak"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:50.174268935Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeJestIdentity",
+    "serviceConfig": {
+      "revision": "exchangejestidentity-00037-gon"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:28.427824373Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/resumeRaceRun",
+    "serviceConfig": {
+      "revision": "resumeracerun-00037-tub"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:23.865803888Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLeaderboard",
+    "serviceConfig": {
+      "revision": "getleaderboard-00030-may"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:22.953740060Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRaceRiddle",
+    "serviceConfig": {
+      "revision": "skipraceriddle-00038-yax"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:10.664563330Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reserveRaceInvite",
+    "serviceConfig": {
+      "revision": "reserveraceinvite-00020-jur"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:08.662946654Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionStatus",
+    "serviceConfig": {
+      "revision": "facebookdatadeletionstatus-00018-xed"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:41.128850483Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitRaceGuess",
+    "serviceConfig": {
+      "revision": "submitraceguess-00038-tew"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:24.381903116Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/confirmYahooStripeCheckout",
+    "serviceConfig": {
+      "revision": "confirmyahoostripecheckout-00019-guf"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:42.762046883Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinFacebookContext",
+    "serviceConfig": {
+      "revision": "joinfacebookcontext-00018-yuc"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:32.018451239Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionCallback",
+    "serviceConfig": {
+      "revision": "facebookdatadeletioncallback-00017-maq"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:30.139441137Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooStripeWebhook",
+    "serviceConfig": {
+      "revision": "yahoostripewebhook-00019-wej"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:43.556295820Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/verifyJestReferrals",
+    "serviceConfig": {
+      "revision": "verifyjestreferrals-00035-woj"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:19.317199406Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/leaveFacebookContext",
+    "serviceConfig": {
+      "revision": "leavefacebookcontext-00018-tij"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:45.624677298Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestSubscriptions",
+    "serviceConfig": {
+      "revision": "syncjestsubscriptions-00031-nod"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:08.596843830Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createYahooStripeCheckout",
+    "serviceConfig": {
+      "revision": "createyahoostripecheckout-00020-vor"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:49.752719969Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncBlockedRivalPresenceVisibility",
+    "serviceConfig": {
+      "revision": "syncblockedrivalpresencevisibility-00018-dig"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:33.401627391Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceEntry",
+    "serviceConfig": {
+      "revision": "getraceentry-00013-len"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:06.784723748Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/dailyChallengeScheduler",
+    "serviceConfig": {
+      "revision": "dailychallengescheduler-00030-cat"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:43.717016148Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncKnownRivalPresenceVisibility",
+    "serviceConfig": {
+      "revision": "syncknownrivalpresencevisibility-00018-ved"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:38.601024933Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthStart",
+    "serviceConfig": {
+      "revision": "yahoooauthstart-00018-rew"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:42.501543346Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/bindFacebookReferral",
+    "serviceConfig": {
+      "revision": "bindfacebookreferral-00018-fav"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:27.214221707Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceCategories",
+    "serviceConfig": {
+      "revision": "listracecategories-00036-nuc"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:26.549490214Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/startRaceRun",
+    "serviceConfig": {
+      "revision": "startracerun-00038-kuh"
+    },
+    "state": "DEPLOYING",
+    "updateTime": "2026-10-01T11:21:07.106764667Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retryJestAccountDeletion",
+    "serviceConfig": {
+      "revision": "retryjestaccountdeletion-00021-pay"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:12.501934421Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/settleRaceDeadlines",
+    "serviceConfig": {
+      "revision": "settleracedeadlines-00012-mih"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:42.834815320Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditStorage",
+    "serviceConfig": {
+      "revision": "redditstorage-00019-sis"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:48.247124349Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookTournament",
+    "serviceConfig": {
+      "revision": "recordfacebooktournament-00018-mok"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:36.635140041Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/completeGame",
+    "serviceConfig": {
+      "revision": "completegame-00033-tiq"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:22.490158403Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceOutcome",
+    "serviceConfig": {
+      "revision": "getraceoutcome-00036-tuz"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:45.791191314Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/setPresenceConsent",
+    "serviceConfig": {
+      "revision": "setpresenceconsent-00018-miy"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:29.311390413Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/claimFacebookNotificationPermissionPrompt",
+    "serviceConfig": {
+      "revision": "claimfacebooknotificationpermissionprompt-00018-qaz"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:45.740710216Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/monitorRaceRecoveryHealth",
+    "serviceConfig": {
+      "revision": "monitorracerecoveryhealth-00012-fig"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:48.790559615Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteAccount",
+    "serviceConfig": {
+      "revision": "deleteaccount-00027-vud"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:08.930371927Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getHint",
+    "serviceConfig": {
+      "revision": "gethint-00032-jaw"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:23.337336060Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRaceSettlementEvent",
+    "serviceConfig": {
+      "revision": "deliverracesettlementevent-00012-poj"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:42.354773147Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookTournament",
+    "serviceConfig": {
+      "revision": "listfacebooktournament-00018-cil"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:33.208720661Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateUsername",
+    "serviceConfig": {
+      "revision": "updateusername-00030-sav"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:09.913364746Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteRedditAccount",
+    "serviceConfig": {
+      "revision": "deleteredditaccount-00021-rid"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:52.093694188Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceChallenge",
+    "serviceConfig": {
+      "revision": "getracechallenge-00036-sov"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:13.275719601Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/grantJestPurchase",
+    "serviceConfig": {
+      "revision": "grantjestpurchase-00036-yon"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:16.806179676Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookContextBoard",
+    "serviceConfig": {
+      "revision": "listfacebookcontextboard-00018-zav"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:27.174529304Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportRival",
+    "serviceConfig": {
+      "revision": "reportrival-00018-xic"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:35.188357151Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRacePerformanceEvent",
+    "serviceConfig": {
+      "revision": "deliverraceperformanceevent-00012-wur"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:49:22.277920025Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceInbox",
+    "serviceConfig": {
+      "revision": "listraceinbox-00036-zir"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:29.506301576Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/abandonRaceRun",
+    "serviceConfig": {
+      "revision": "abandonracerun-00032-few"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:31.844043764Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitSinglePlayerGuess",
+    "serviceConfig": {
+      "revision": "submitsingleplayerguess-00022-mej"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:23.382386260Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditGameplay",
+    "serviceConfig": {
+      "revision": "redditgameplay-00023-yow"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:55.454161340Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookContextRun",
+    "serviceConfig": {
+      "revision": "recordfacebookcontextrun-00018-sof"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:45.081498284Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/cancelRaceInvite",
+    "serviceConfig": {
+      "revision": "cancelraceinvite-00013-gap"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:08.968041646Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/spendCoins",
+    "serviceConfig": {
+      "revision": "spendcoins-00031-cif"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:27.442012760Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getClassicRiddleBuffer",
+    "serviceConfig": {
+      "revision": "getclassicriddlebuffer-00019-fij"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:22.852247738Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/issueFacebookIdentityNonce",
+    "serviceConfig": {
+      "revision": "issuefacebookidentitynonce-00018-taw"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:36.805974909Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reconcileRaceMatchProjections",
+    "serviceConfig": {
+      "revision": "reconcileracematchprojections-00012-xij"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:51.536635535Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordRaceAnalytics",
+    "serviceConfig": {
+      "revision": "recordraceanalytics-00038-sas"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:34.749953393Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateAvatar",
+    "serviceConfig": {
+      "revision": "updateavatar-00030-pec"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:18.907319667Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/findRaceMatch",
+    "serviceConfig": {
+      "revision": "findracematch-00020-fum"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:41.259448134Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeFacebookIdentity",
+    "serviceConfig": {
+      "revision": "exchangefacebookidentity-00018-wum"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T01:48:23.071987357Z"
+  }
+]

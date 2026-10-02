@@ -4,7 +4,7 @@ import {getFirestore} from "firebase-admin/firestore";
 import {consumeFacebookIdentityNonce, consumeFacebookRequestQuota} from "../facebook/facebookEndpoints";
 
 /** Defines the project id value. */
-const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "demo-riddle-facebook-nonce";
 /** Renders the now interface. */
 const NOW = Date.UTC(2026, 7, 19);
 /** Provides nonce path behavior. */
@@ -13,6 +13,9 @@ const noncePath = (nonce: string) => `facebookIdentityNonces/${createHash("sha25
 let db: FirebaseFirestore.Firestore;
 
 beforeAll(async () => {
+  if (!PROJECT_ID.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "")) {
+    throw new Error("facebook-nonce-tests-require-local-demo-emulator");
+  }
   if (getApps().length === 0) initializeApp({projectId: PROJECT_ID});
   db = getFirestore();
   await Promise.all([

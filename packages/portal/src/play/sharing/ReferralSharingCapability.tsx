@@ -32,6 +32,12 @@ export type ReferralShareOutcome = "success" | "cancelled" | "error";
 export type ReferralSharingCapability = {
   /** Coin reward displayed beside supported referral actions. */
   rewardCoins: number;
+  /** Optional target copy for an invitation without an immediate reward claim. */
+  inviteLabel?: string;
+  /** Optional target copy for its native challenge dialog. */
+  raceShareLabel?: string;
+  /** Optional target instructions shown before publication. */
+  raceReadyText?: string;
   /** Shares a completed single-player result. */
   shareResult: (input: ReferralResultShareInput) => void;
   /** Shares an open invitation from the player profile. */

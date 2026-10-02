@@ -1,0 +1,11 @@
+{
+  "url": "https://developers.facebook.com/documentation/mcp/devtools-mcp?locale=en_US",
+  "sha256": "d3d88a588ce97c9408024aa10b9c75965a144c39536a404821c958e8968c116f",
+  "name": "Meta Social Technologies MCP",
+  "previousName": "Meta Developer Tools MCP",
+  "publicReferenceRead": true,
+  "fullDocumentRetainedInRepository": false,
+  "documentedToolCount": 11,
+  "writeAndTestWebhookToolsExcluded": true,
+  "runtimeApiReplacement": false
+}

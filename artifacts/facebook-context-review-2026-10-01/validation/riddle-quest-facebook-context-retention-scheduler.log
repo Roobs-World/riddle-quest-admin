@@ -1,0 +1,70 @@
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 10h ago)
+..                                       | Progress: resolved 1, reused 0, downloaded 0, added 0
+..                                       |   +1 +
+..                                       | Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 541ms using pnpm v11.21.0
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/prepare-deploy.js
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+$ cross-env NODE_OPTIONS="--experimental-vm-modules" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js --runInBand --runTestsByPath src/__tests__/facebookContextRetentionScheduler.test.ts
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+  console.error
+    ◇ injected env (12) from .env
+
+      1 | /* eslint-disable @typescript-eslint/no-require-imports */
+    > 2 | require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                   ^
+      3 |
+      4 | // Ensure Jest environment is properly detected by iapConfig
+      5 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:2:19)
+
+FAIL src/__tests__/facebookContextRetentionScheduler.test.ts
+  ● registers a bounded Facebook-only hourly server schedule without provider secrets
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "facebookContextRetentionScheduler", {"concurrency": 1, "maxInstances": 1, "memory": "256MiB", "region": "us-central1", "retryCount": 2, "schedule": "17 * * * *", "timeZone": "UTC", "timeoutSeconds": 120}, [Function facebookContextRetentionHandler]
+
+    Number of calls: 0
+
+      17 |
+      18 | it("registers a bounded Facebook-only hourly server schedule without provider secrets", () => {
+    > 19 |   expect(mockSchedule).toHaveBeenCalledWith("facebookContextRetentionScheduler",
+         |                        ^
+      20 |     {schedule: "17 * * * *", timeZone: "UTC", region: "us-central1", timeoutSeconds: 120,
+      21 |       memory: "256MiB", maxInstances: 1, concurrency: 1, retryCount: 2}, facebookContextRetentionHandler);
+      22 | });
+
+      at Object.<anonymous> (src/__tests__/facebookContextRetentionScheduler.test.ts:19:24)
+
+  ● applies one page using the current server clock and logs only the helper's aggregate result
+
+    Facebook context retention failed; inspect aggregate page evidence.
+
+      12 |     if (result.invalid > 0) throw new Error("facebook-context-retention-page-incomplete");
+      13 |   } catch {
+    > 14 |     throw new Error("Facebook context retention failed; inspect aggregate page evidence.");
+         |           ^
+      15 |   }
+      16 | }
+      17 |
+
+      at facebookContextRetentionHandler (src/race/facebookContextRetentionScheduler.ts:14:11)
+      at Object.<anonymous> (src/__tests__/facebookContextRetentionScheduler.test.ts:26:40)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 1 passed, 3 total
+Snapshots:   0 total
+Time:        0.3 s
+Ran all test suites within paths "src/__tests__/facebookContextRetentionScheduler.test.ts".
+[ELIFECYCLE] Test failed. See above for more details.

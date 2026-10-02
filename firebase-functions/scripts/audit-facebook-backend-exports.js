@@ -23,9 +23,11 @@ const EXPECTED_FACEBOOK_EXPORTS = Object.freeze([
   "leaveFacebookContext",
   "listFacebookContextBoard",
   "recordFacebookContextRun",
+  "facebookContextRetentionScheduler",
   "getFacebookClientConfiguration",
   "claimFacebookNotificationPermissionPrompt",
   "acceptFacebookNotificationPermissionPrompt",
+  "grantFacebookRewardedContinue",
 ]);
 
 function readExportNames(source) {

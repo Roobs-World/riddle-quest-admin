@@ -1,0 +1,13 @@
+# Prompt cancellation of retired matchmaking discovery
+
+Removing or replacing a provider previously left its stalled search busy until a result or the 30-second deadline arrived. Two baseline regressions failed; the active-gameplay control passed. The session now cancels that wait on its next tick, allowing final ownership cleanup to release the timer, journal and loading state. It does not call the replacement provider automatically.
+
+The tick captures the original wait and adapter before calling the optional live resolver, then rechecks its account/navigation generation. A resolver callback that starts another account's search cannot retarget cancellation into that new wait. Validated failure classification was extracted into the existing discovery helper to keep the session within its source-size limit, currently 498 equivalent lines.
+
+Four focused unit tests pass: removal, replacement, preservation of an active race and typed answer, and synchronous resolver reentrancy that creates a replacement account search. The full client suite passes 1,684 tests across 195 suites, with 101 tests and 13 suites skipped.
+
+Eight injected-browser cases verify desktop/mobile removal and replacement before any provider reply. Loading clears within the gate's 1.5-second observation budget; normal scheduling invokes the session tick every 50 ms. Subsequent late matched results and rejected promises cannot revive the old search. Replacement providers still require an explicit fresh search. Disabling tick cancellation in the test bundle fails the observation deadline, demonstrating that the gate distinguishes prompt cancellation from eventual delivery expiry.
+
+Forty-six retained browser cases pass across late provider responses, synchronous completion callbacks, denied journal observation and fallback rematches. All seven isolated builds, exact target dependency evidence, portal types, security and scalability pass. Global documentation and file-size checks still report concurrently edited files outside this focused change. Logs and hashes are in `artifacts/race-discovery-prompt-cancellation/verification-held.json`; the new manifest retains preceding gates and adds prompt cancellation, for 61 checks.
+
+This supersedes the earlier focused evidence's limitation that a removed provider always waits for the original deadline. The SDK promise itself may remain unresolved, but the session wait and timer are released. Suspended browser timers defer observation until scheduling or visibility resumes. Full-source dashboard recording remains pending during the other chat's work. No hosted Jest update, game publication or Firebase deployment occurred in this batch; the broader reliability audit remains active.

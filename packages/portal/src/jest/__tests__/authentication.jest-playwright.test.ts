@@ -1,3 +1,4 @@
+import {installJestSdkHarness} from "./authentication.jest-sdk-harness";
 import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
@@ -14,10 +15,18 @@ import {
   installJestSdkRequestRoute,
   verifyShortJestPreview,
   verifySlowStartupWatchdog,
+  verifyDelayedHostHandshake,
+  verifyOptionalProfileFailure,
+  verifyRetryableStartupScreen,
+  retryFailedStartup,
+  dismissDailyCompletionGuidance,
   verifyGuestStartupIdentity,
   openProfileAfterGuidance,
   solveFakeRace,
 } from "./authentication.jest-playwright.support";
+import {createFakeRaceServices} from "../../play/race/testing/fakeRaceServices";
+import {projectRaceOutcome} from "../../play/race/logic/racePresentation";
+import type {RaceRunView} from "@qwordly/core/race";
 import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
@@ -25,343 +34,6 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 let baseUrl: string;
 /** Provides shared race challenges behavior. */
 const sharedRaceChallenges = new Map<string, string>();
-/** Provides install jest sdk harness behavior. */
-const installJestSdkHarness = async (page: Page, scenario = "success") => {
-  await page.addInitScript((selectedScenario) => {
-    /** Provides state behavior. */
-    const state: AuthHarnessState = {
-      scenario: selectedScenario,
-      calls: [],
-      backendExchanges: [],
-      backendDeletionRetries: [],
-      firebaseTokens: [],
-      loginPayloads: [],
-      overlayOptions: [],
-      playerDataReads: 0,
-      preferenceWrites: [],
-      profileReads: 0,
-      notificationSchedules: [],
-      notificationRemovals: [],
-      referralShares: [],
-      referralSharesStartedFromProfileClick: [],
-    };
-    /** Provides once behavior. */
-    const once = (key: string) => {
-      /** Provides storage key behavior. */
-      const storageKey = `riddleQuest:jestAuthHarness:${key}`;
-      if (sessionStorage.getItem(storageKey) === "1") return false;
-      sessionStorage.setItem(storageKey, "1");
-      return true;
-    };
-    /** Provides params behavior. */
-    const params = new URLSearchParams(location.search);
-    /** Provides player behavior. */
-    const player = {
-      playerId: params.get("playerId") ?? "jest-auth-player-stable",
-      registered:
-        params.get("registered") === "1" || localStorage.getItem("riddleQuest:jestAuthHarness:registered") === "1",
-    };
-    /** Provides preferences behavior. */
-    const preferences: Record<string, unknown> =
-      selectedScenario === "returning-milestone"
-        ? {firstMilestoneMarked: true}
-        : selectedScenario === "returning-guest-two-wins"
-          ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2}
-          : {};
-    /** Provides overlay closed behavior. */
-    let overlayClosed = false;
-    /** Provides subscription active behavior. */
-    let subscriptionActive = false;
-    window.addEventListener("test:subscription-state", (event) => {
-      subscriptionActive = Boolean((event as CustomEvent).detail);
-    });
-    /** Mirrors the hosted loading overlay's effect, which rearms only for changed progress. */
-    let lastLoadingProgress = -1;
-    /** Provides loading watchdog behavior. */
-    let loadingWatchdog: ReturnType<typeof setTimeout> | undefined;
-    /** Provides sdk behavior. */
-    const sdk = {
-      init: async () => {
-        state.calls.push("sdk.init");
-        if (selectedScenario === "init-timeout") {
-          await new Promise<void>(() => undefined);
-        }
-        if (selectedScenario === "init-failure" || (selectedScenario === "init-once-failure" && once("initFailed"))) {
-          throw new Error("Mock Jest SDK initialization failed");
-        }
-      },
-      getPlayer: () => {
-        state.calls.push("sdk.getPlayer");
-        return {...player};
-      },
-      getPlayerSigned: async () => {
-        state.calls.push("sdk.getPlayerSigned");
-        if (selectedScenario === "loading-watchdog") {
-          await new Promise<void>((resolve) => setTimeout(resolve, 25_000));
-        }
-        if (selectedScenario === "signed-player-failure") {
-          throw new Error("Mock signed player request failed");
-        }
-        return {player: {...player}, playerSigned: `signed:${player.playerId}:${player.registered}`};
-      },
-      login: async (options?: {
-        /** Stores entry payload. */
-        /** Stores entry payload. */
-        entryPayload?: Record<string, string>;
-      }) => {
-        state.calls.push("sdk.login");
-        state.loginPayloads.push(structuredClone(options?.entryPayload ?? {}));
-        if (selectedScenario === "overlay-login-failure") {
-          throw new Error("Mock Jest login failed");
-        }
-        player.registered = true;
-        localStorage.setItem("riddleQuest:jestAuthHarness:registered", "1");
-      },
-      showRegistrationOverlay: (options: {
-        /** Stores theme. */
-        theme?: string;
-        /** Stores registration message. */
-        message?: string;
-        /** Stores entry payload. */
-        entryPayload?: {
-          /** Stores source. */
-          source?: string;
-          /** Stores campaign. */
-          campaign?: string;
-          /** Stores reference. */
-          reference?: string;
-          /** Stores acquisition reference. */
-          acquisition_reference?: string;
-          /** Stores invite kind. */
-          inviteKind?: string;
-          /** Stores inviter name. */
-          inviterName?: string;
-          /** Stores custom name. */
-          customName?: string;
-        };
-        /** Stores on close. */
-        onClose: () => void;
-      }) => {
-        state.calls.push("sdk.showRegistrationOverlay");
-        state.overlayOptions.push({
-          theme: options.theme,
-          message: options.message,
-          source: options.entryPayload?.source,
-          campaign: options.entryPayload?.campaign,
-          reference: options.entryPayload?.reference,
-          ...(options.entryPayload?.acquisition_reference
-            ? {acquisitionReference: options.entryPayload.acquisition_reference}
-            : {}),
-          ...(options.entryPayload?.inviteKind ? {inviteKind: options.entryPayload.inviteKind} : {}),
-          ...(options.entryPayload?.inviterName ? {inviterName: options.entryPayload.inviterName} : {}),
-          customName: options.entryPayload?.customName,
-        });
-        if (selectedScenario === "overlay-failure" || selectedScenario === "overlay-login-failure") {
-          throw new Error("Mock registration overlay failed");
-        }
-        overlayClosed = false;
-        /** Provides close behavior. */
-        const close = () => {
-          if (overlayClosed) return;
-          overlayClosed = true;
-          state.calls.push("sdk.registration.onClose");
-          options.onClose();
-          if (selectedScenario === "duplicate-close") options.onClose();
-        };
-        return {
-          loginButtonAction: () => {
-            state.calls.push("sdk.registration.loginButtonAction");
-            if (selectedScenario === "overlay-action-failure") {
-              throw new Error("Mock registration overlay login action failed");
-            }
-            player.registered = true;
-            localStorage.setItem("riddleQuest:jestAuthHarness:registered", "1");
-            close();
-          },
-          closeButtonAction: () => {
-            state.calls.push("sdk.registration.closeButtonAction");
-            close();
-          },
-        };
-      },
-      data: {
-        getAll: () => {
-          state.calls.push("sdk.data.getAll");
-          state.playerDataReads += 1;
-          return preferences;
-        },
-        set: (...args: unknown[]) => {
-          state.calls.push("sdk.data.set");
-          /** Provides update behavior. */
-          const update =
-            args.length === 2 && typeof args[0] === "string"
-              ? {[String(args[0])]: args[1]}
-              : (args[0] as Record<string, unknown>);
-          Object.assign(preferences, update);
-          state.preferenceWrites.push(update);
-        },
-        delete: (key: string) => {
-          state.calls.push(`sdk.data.delete:${key}`);
-          delete preferences[key];
-        },
-        flush: async () => {
-          state.calls.push("sdk.data.flush");
-        },
-      },
-      getEntryPayload: () => ({
-        ...(params.get("customName") ? {customName: params.get("customName"), campaign: "jest_onboarding"} : {}),
-        ...(params.get("inviteKind") ? {inviteKind: params.get("inviteKind")} : {}),
-        ...(params.get("campaign") ? {campaign: params.get("campaign")} : {}),
-        ...(params.get("reference") ? {reference: params.get("reference")} : {}),
-        ...(params.get("inviterName") ? {inviterName: params.get("inviterName")} : {}),
-        ...(params.get("gameMode") ? {gameMode: params.get("gameMode")} : {}),
-        ...(params.get("riddleId") ? {riddleId: params.get("riddleId")} : {}),
-        ...(params.get("challengeId") ? {challengeId: params.get("challengeId")} : {}),
-        ...(params.get("challengeDestination") ? {challengeDestination: params.get("challengeDestination")} : {}),
-      }),
-      social: {
-        getProfile: async () => {
-          state.calls.push("sdk.social.getProfile");
-          state.profileReads += 1;
-          if (selectedScenario === "profile-failure") throw new Error("Mock profile request failed");
-          return {
-            username: "Authenticated Solver",
-            avatarUrl: selectedScenario === "avatar-profile" ? "https://cdn.jest.com/mock-avatar.webp" : null,
-          };
-        },
-        setScreenshotProvider: () => {},
-      },
-      notifications: {
-        scheduleNotification: async (input: AuthHarnessState["notificationSchedules"][number]) => {
-          state.calls.push("sdk.notifications.scheduleNotification");
-          state.notificationSchedules.push(structuredClone(input));
-        },
-        unscheduleNotification: async ({
-          identifier,
-        }: {
-          /** Stores identifier. */
-          /** Stores identifier. */
-          identifier: string;
-        }) => {
-          state.calls.push("sdk.notifications.unscheduleNotification");
-          state.notificationRemovals.push(identifier);
-        },
-      },
-      referrals: {
-        listReferrals: async () => ({referralsSigned: "signed-referrals"}),
-        shareReferralLink: async (input: AuthHarnessState["referralShares"][number]) => {
-          state.calls.push("sdk.referrals.shareReferralLink");
-          state.referralSharesStartedFromProfileClick.push(
-            Boolean(
-              (
-                window as typeof window & {
-                  /** True only while the profile invite button's synchronous handler is running. */
-                  __RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean;
-                }
-              ).__RIDDLE_QUEST_PROFILE_INVITE_CLICK__,
-            ),
-          );
-          if (selectedScenario === "race-share-delay" && input.entryPayload?.inviteKind === "race") {
-            await new Promise((resolve) => window.setTimeout(resolve, 2_000));
-          }
-          state.referralShares.push(structuredClone(input));
-          return {canceled: selectedScenario === "race-share-cancel"};
-        },
-      },
-      payments: {
-        getProducts: async () => {
-          state.calls.push("sdk.payments.getProducts:start");
-          if (selectedScenario === "background-catalog-delay") {
-            await new Promise((resolve) => window.setTimeout(resolve, 10_000));
-          }
-          state.calls.push("sdk.payments.getProducts:end");
-          return [];
-        },
-        getIncompletePurchases: async () => {
-          state.calls.push("sdk.payments.getIncompletePurchases");
-          return {
-            purchases: [],
-            purchasesSigned: "signed-purchases",
-            hasMore: false,
-          };
-        },
-        completePurchase: async () => ({result: "success"}),
-        beginPurchase: async () => ({result: "cancel"}),
-        getSubscriptions: async () => {
-          state.calls.push("sdk.payments.getSubscriptions");
-          return {
-            subscriptions: player.registered
-              ? [
-                  {
-                    sku: "com.roobsworld.riddlequest.premium.monthly",
-                    displayName: "Riddle Quest Premium",
-                    displayDescription: "Premium membership",
-                    price: 4.99,
-                    currency: "USD",
-                    billingPeriod: "monthly",
-                    status: subscriptionActive ? "active" : "inactive",
-                    trialEligible: !subscriptionActive,
-                  },
-                ]
-              : [],
-            signed: subscriptionActive ? "mock.subscriptions.active.signed" : "mock.subscriptions.inactive.signed",
-          };
-        },
-        cancelSubscription: async ({
-          subscriptionSku,
-        }: {
-          /** Provider SKU selected by the shop. */
-          subscriptionSku: string;
-        }) => {
-          state.calls.push(`sdk.payments.cancelSubscription:${subscriptionSku}`);
-          if (state.scenario === "subscription-cancel-dismiss") return {result: "cancel"};
-          if (state.scenario === "subscription-cancel-error") return {result: "error", error: "internal_error"};
-          return {result: "success"};
-        },
-        beginSubscription: async ({
-          subscriptionSku,
-        }: {
-          /** Stores subscription sku. */
-          /** Stores subscription sku. */
-          subscriptionSku: string;
-        }) => {
-          state.calls.push("sdk.payments.beginSubscription");
-          subscriptionActive = true;
-          return {
-            result: "success",
-            subscription: {
-              sku: subscriptionSku,
-              displayName: "Riddle Quest Premium",
-              displayDescription: "Premium membership",
-              price: 4.99,
-              currency: "USD",
-              billingPeriod: "monthly",
-              status: "active",
-              trialEligible: false,
-            },
-            subscriptionSigned: "mock.subscription.active.signed",
-          };
-        },
-      },
-      markFirstMilestone: async () => {
-        state.calls.push("sdk.markFirstMilestone");
-        if (selectedScenario === "milestone-failure") throw new Error("Milestone unavailable");
-      },
-      setLoadingProgress: (progress: number) => {
-        state.calls.push(`sdk.progress:${progress}`);
-        if (selectedScenario !== "loading-watchdog" || progress === lastLoadingProgress) return;
-        lastLoadingProgress = progress;
-        clearTimeout(loadingWatchdog);
-        if (progress < 100) loadingWatchdog = setTimeout(() => state.calls.push("host.loadingTimeout"), 15_000);
-      },
-      markGameLoaded: () => state.calls.push("sdk.markGameLoaded"),
-    };
-    Object.assign(window, {
-      JestSDK: sdk,
-      __RIDDLE_QUEST_JEST_AUTH_TEST__: state,
-    });
-  }, scenario);
-};
 /** Gets harness state. */
 const getHarnessState = (page: Page) =>
   page.evaluate(
@@ -393,6 +65,10 @@ const openHarness = async (
     inviterName?: string;
     /** Stores game mode. */
     gameMode?: string;
+    /** Real load lifecycle with absent Daily supplied by the trusted fake authority. */
+    dailyUnavailable?: boolean;
+    /** Trusted fake authority confirms Daily completion before Classic entry. */
+    dailyCompleted?: boolean;
     /** Stores riddle id. */
     riddleId?: string;
     /** Stores challenge id. */
@@ -418,7 +94,9 @@ const openHarness = async (
     /** Whether late ghost guesses reproduce the production rejection. */
     raceRejectLateGuess?: boolean;
     /** Typed invitation adapter scenario injected before the game mounts. */
-    invitationRole?: "creator" | "recipient";
+    existingCompletedRun?: boolean;
+    /** Injected creator/recipient entry behavior for the browser invitation scenarios. */
+    invitationRole?: "creator" | "recipient" | "unavailable" | "public-creator" | "public-recipient";
   } = {},
 ) => {
   /** Provides context behavior. */
@@ -430,6 +108,37 @@ const openHarness = async (
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await installJestSdkRequestRoute(page, options.scenario);
   await installJestSdkHarness(page, options.scenario);
+  if (options.existingCompletedRun) {
+    /** Canonical fake authority run used to construct completed-entry recovery evidence. */
+    const initial = (await createFakeRaceServices().startRace({locale: "en", categoryId: "mixed", requestId: "played-fixture"})).run;
+    /** Canonical run fixture retains identity and competitive facts for recovery assertions. */
+    const run: RaceRunView = {...initial, challengeId: "played-entry", role: "challenger", status: "completed", correctCount: 10,
+      currentRiddle: null, wallElapsedMs: 60000, adjustedElapsedMs: 60000, opponent: {displayName: "Nova", adjustedFinishMs: 90000, events: []}};
+    /** Competitive result implied by the completed canonical fixture. */
+    const outcome = projectRaceOutcome(run, run.adjustedElapsedMs)!;
+    await page.addInitScript(({run, outcome}) => {
+      /** Original browser event delivery retained while the harness intercepts authority receipts. */
+      const dispatch = window.dispatchEvent.bind(window);
+      /** Observed bridge operations used to assert recovery without a second start. */
+      const calls: string[] = [];
+      Object.defineProperty(window, "__PLAYED_ENTRY_COMMANDS__", {get: () => calls});
+      window.dispatchEvent = event => {
+        /** Bridge envelope received by the injected authority interception. */
+        const detail = (event as CustomEvent).detail;
+        if (event.type === "riddle-quest:game-to-host" && detail?.type) calls.push(detail.type);
+        if (event.type === "riddle-quest:host-to-game") {
+          /** Correlated authority operation selected from the bridge receipt. */
+          const operation = detail?.payload?.operation;
+          if (operation === "raceEntry") detail.payload = {operation, ok: true, data: {status: "ready", viewerRole: "recipient", existingRunId: run.runId,
+            serverNowMs: Date.now(), challenge: {challengeId: "played-entry", locale: "en", creator: {displayName: "Nova"}, categoryId: "mixed", targetCorrect: 10,
+              adjustedTimeToBeatMs: 90000, rulesVersion: "race10_v1", expiresAtMs: Date.now() + 60000, status: "active"}}};
+          else if (operation === "raceResume") detail.payload = {operation, ok: true, data: {run}};
+          else if (operation === "raceOutcome") detail.payload = {operation, ok: true, data: outcome};
+        }
+        return dispatch(event);
+      };
+    }, {run, outcome});
+  }
   if (options.invitationRole) await page.addInitScript(role => {
     /** Authority adapter emits readiness facts for an opaque invitation. */
     const dispatch = window.dispatchEvent.bind(window);
@@ -442,6 +151,20 @@ const openHarness = async (
       /** Untrusted bridge envelope is replaced before any consumer parses it. */
       const detail = (event as CustomEvent).detail;
       if (event.type === "riddle-quest:host-to-game" && ["raceEntry", "raceInviteCancel"].includes(detail?.payload?.operation)) {
+        if (role === "unavailable") {
+          detail.payload = {operation: detail.payload.operation, ok: true, data: {
+            status: "unavailable", reason: "missing", serverNowMs: Date.now(),
+          }};
+          return dispatch(event);
+        }
+        if (role === "public-creator" || role === "public-recipient") {
+          detail.payload = {operation: detail.payload.operation, ok: true, data: {
+            status: "ready", viewerRole: role === "public-creator" ? "creator" : "recipient", serverNowMs: Date.now(),
+            challenge: {challengeId: "public-entry", locale: "en", creator: {displayName: "Nova"}, categoryId: "history",
+              targetCorrect: 10, adjustedTimeToBeatMs: 45000, rulesVersion: "race10_v1", expiresAtMs: Date.now() + 60000, status: "active"},
+          }};
+          return dispatch(event);
+        }
         if (detail.payload.operation === "raceEntry") reads++;
         else cancelled = true;
         detail.payload = {operation: detail.payload.operation, ok: true, data: {
@@ -461,6 +184,8 @@ const openHarness = async (
   if (options.reference) query.set("reference", options.reference);
   if (options.inviterName) query.set("inviterName", options.inviterName);
   if (options.gameMode) query.set("gameMode", options.gameMode);
+  if (options.dailyUnavailable) query.set("dailyUnavailable", "1");
+  if (options.dailyCompleted) query.set("dailyCompleted", "1");
   if (options.riddleId) query.set("riddleId", options.riddleId);
   if (options.challengeId) query.set("challengeId", options.challengeId);
   if (options.challengeDestination) query.set("challengeDestination", options.challengeDestination);
@@ -578,14 +303,43 @@ describeBrowser("Jest authentication integration", () => {
     await verifySlowStartupWatchdog(page, pageErrors);
   }, 60_000);
 
+  it("recovers unavailable Daily startup to playable Classic and keeps the reason visible", async () => {
+    /** Isolated browser context and captured page errors for this player pathway. */
+    const {context, page} = await openHarness(browser, {registered: true, gameMode: "challenge", dailyUnavailable: true});
+    try {
+      await enterRegisteredGame(page);
+      await page.getByRole("heading", {name: "What has keys but cannot open doors?", exact: true}).waitFor({timeout: 15000});
+      await page.getByRole("button", {name: "Settings", exact: true}).waitFor();
+      expect(await page.getByRole("button", {name: "Q", exact: true}).isEnabled()).toBe(true);
+      expect(await page.getByText("No daily challenge available at the moment.", {exact: true}).isVisible()).toBe(true);
+      expect(await page.getByText("Preparing your game…", {exact: true}).count()).toBe(0);
+    } finally { await context.close(); }
+  });
+
   it("keeps the riddle and controls usable in the short Jest phone preview", async () => {
     await verifyShortJestPreview((await openHarness(browser, {registered: true})).page);
   });
 
-  it("refreshes Config-panel subscription changes and cancels renewal from the shop", async () => {
+  it("localizes game-owned Shop copy in Arabic and preserves provider descriptions", async () => {
+    /** Isolated browser context and captured page errors for this player pathway. */
+    const {page} = await openHarness(browser, {registered: true, scenario: "localized-coin-catalog"});
+    await enterRegisteredGame(page);
+    await page.getByRole("button", {name: "Settings", exact: true}).click();
+    await page.getByRole("combobox", {name: "Language", exact: true}).selectOption("ar");
+    await page.getByRole("button", {name: "شراء العملات المعدنية", exact: true}).first().click();
+    await page.getByText("أفضل قيمة", {exact: true}).waitFor();
+    await page.getByText("أضف 7,000 عملة إلى رصيدك.", {exact: true}).waitFor();
+    await page.getByText("للمبتدئين", {exact: true}).waitFor();
+    await page.getByText("Provider custom description", {exact: true}).waitFor();
+    expect(await page.getByText("BEST VALUE", {exact: true}).count()).toBe(0);
+    expect(await page.locator("html").getAttribute("dir")).toBe("rtl");
+  });
+
+  it("refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile", async () => {
     /** Starts a registered wallet in the injected SDK harness. */
     const {page} = await openHarness(browser, {registered: true});
-    await enterRegisteredGame(page);
+    await enterRegisteredGame(page, /I speak without a mouth/i);
+    await page.locator(".game-mode-label").getByText(/daily/i).waitFor();
     await page
       .getByRole("button", {name: /buy coins/i})
       .first()
@@ -594,8 +348,12 @@ describeBrowser("Jest authentication integration", () => {
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: true})));
     /** Finds the active plan’s cancellation action. */
     const cancel = page.getByRole("button", {name: /cancel subscription/i});
-    await cancel.waitFor();
+    await page.getByText("Premium active", {exact: true}).waitFor();
+    expect(await cancel.count()).toBe(0);
     expect(await page.getByRole("button", {name: /start free trial|^subscribe$/i}).count()).toBe(0);
+    await page.getByRole("button", {name: "Close", exact: true}).click();
+    await openProfileAfterGuidance(page);
+    await cancel.waitFor();
     expect((await getHarnessState(page)).calls).not.toContain("sdk.payments.beginSubscription");
     for (const scenario of ["subscription-cancel-dismiss", "subscription-cancel-error", "success"]) {
       await page.evaluate((value) => {
@@ -617,6 +375,9 @@ describeBrowser("Jest authentication integration", () => {
     ).toHaveLength(3);
     await page.screenshot({path: "/tmp/riddle-subscription-cancelled.png"});
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: false})));
+    await cancel.waitFor({state: "hidden"});
+    await page.getByRole("button", {name: "Close", exact: true}).click();
+    await page.getByRole("button", {name: /buy coins/i}).first().click();
     await page.getByRole("button", {name: /start free trial/i}).waitFor();
   }, 30_000);
 
@@ -778,7 +539,7 @@ describeBrowser("Jest authentication integration", () => {
         currentStep,
       );
     }
-    await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
+    await dismissDailyCompletionGuidance(page);
     /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
@@ -1423,6 +1184,66 @@ describeBrowser("Jest authentication integration", () => {
     expect(await page.evaluate(() => localStorage.getItem("riddleQuest:raceRecovery"))).toBeNull();
     expect(pageErrors).toEqual([]);
     await context.close();
+  });
+
+  it("consumes an unavailable challenge on Close so Multiplayer reopens the normal lobby", async () => {
+    /** Isolated browser context and captured page errors for this player pathway. */
+    const {page, pageErrors} = await openHarness(browser, {
+      registered: true, dailyCompleted: true, harness: "race-auth", challengeId: "missing-entry", invitationRole: "unavailable",
+      inviteKind: "race", campaign: "race_to_10_v1",
+    });
+    await page.getByText("The race could not continue.", {exact: true}).waitFor();
+    await page.locator(".race-topbar").getByRole("button", {name: "Close Race to 10", exact: true}).click();
+    await enterRegisteredGame(page);
+    await page.locator(".game-mode-label").getByText(/classic/i).waitFor();
+    await page.getByRole("button", {name: "Multiplayer", exact: true}).click();
+    await page.getByRole("button", {name: /^History /}).waitFor();
+    expect(await page.getByText("The race could not continue.", {exact: true}).count()).toBe(0);
+    expect(pageErrors).toEqual([]);
+  });
+
+  it("reopens a completed recipient challenge to its result without a second start", async () => {
+    /** Isolated browser context and captured page errors for this player pathway. */
+    const {context, page, pageErrors} = await openHarness(browser, {registered: true, harness: "race-auth", challengeId: "played-entry", existingCompletedRun: true, inviteKind: "race"});
+    try {
+      await page.getByRole("heading", {name: "You win!", exact: true}).waitFor();
+      expect(await page.getByRole("button", {name: "Accept challenge", exact: true}).count()).toBe(0);
+      /** Observed bridge operations used to assert recovery without a second start. */
+      const calls = await page.evaluate(() => (window as typeof window & {
+        /** Observed completed-entry bridge operations retained for browser assertions. */
+      __PLAYED_ENTRY_COMMANDS__: string[]}).__PLAYED_ENTRY_COMMANDS__);
+      expect(calls).toContain("game:resumeRace");
+      expect(calls).not.toContain("game:startRace");
+      expect(pageErrors).toEqual([]);
+    } finally {await context.close();}
+  });
+
+  it("opens a public creator entry as recorded and routes Check results to Activity", async () => {
+    /** Isolated browser context and captured page errors for this player pathway. */
+    const {context, page, pageErrors} = await openHarness(browser, {
+      registered: true, harness: "race-auth", challengeId: "public-entry", invitationRole: "public-creator", inviteKind: "race",
+    });
+    try {
+      await page.getByRole("heading", {name: "Run recorded!", exact: true}).waitFor();
+      expect(await page.getByRole("button", {name: "Accept challenge", exact: true}).count()).toBe(0);
+      expect(await page.getByRole("button", {name: "Cancel invitation", exact: true}).count()).toBe(0);
+      await page.getByRole("button", {name: "Check results", exact: true}).click();
+      await page.getByRole("tab", {name: "Activity", exact: true}).waitFor();
+      expect(await page.getByRole("heading", {name: "Run recorded!", exact: true}).count()).toBe(0);
+      expect(pageErrors).toEqual([]);
+    } finally {await context.close();}
+  });
+
+  it("retains public recipient acceptance without exposing creator controls", async () => {
+    /** Isolated browser context and captured page errors for this player pathway. */
+    const {context, page} = await openHarness(browser, {
+      registered: true, harness: "race-auth", challengeId: "public-entry", invitationRole: "public-recipient", inviteKind: "race",
+    });
+    try {
+      await page.getByRole("button", {name: "Accept challenge", exact: true}).waitFor();
+      expect(await page.getByRole("button", {name: "Check results", exact: true}).count()).toBe(0);
+      expect(await page.getByRole("button", {name: "Cancel invitation", exact: true}).count()).toBe(0);
+    } finally {await context.close();}
   });
 
   it("suspends typed invitation polling while hidden and refreshes on visible recovery", async () => {
@@ -2221,6 +2042,31 @@ describeBrowser("Jest authentication integration", () => {
     await player.context.close();
   });
 
+  it("returns to the exhausted-attempt Continue prompt after closing the shop", async () => {
+    /** Isolated browser context and captured page errors for this player pathway. */
+    const {context, page, pageErrors} = await openHarness(browser, {registered: true, playerId: "loss-shop-return"});
+    try {
+      await enterRegisteredGame(page);
+      for (const wrong of ["X", "Z", "Q", "V", "B"]) {
+        for (let letter = 0; letter < 5; letter++) await page.locator(".keyboard").getByRole("button", {name: wrong, exact: true}).click();
+        await page.locator(".game-input-actions").getByRole("button", {name: /^submit$/i}).click();
+        if (wrong === "X") await page.getByRole("button", {name: /got it/i}).click();
+      }
+      await page.locator(".modal-continue").waitFor();
+      await page.locator(".loss-shop-action").click();
+      await page.locator(".modal-shop").waitFor();
+      await page.getByRole("button", {name: "Close", exact: true}).click();
+      await page.locator(".modal-continue").waitFor({timeout: 2000});
+      expect(await page.locator(".loss-continue-action").isEnabled()).toBe(true);
+      await page.locator(".loss-shop-action").click();
+      await page.locator(".modal-shop").waitFor();
+      await page.keyboard.press("Escape");
+      await page.locator(".modal-continue").waitFor({timeout: 2000});
+      expect(await page.locator(".loss-continue-action").isEnabled()).toBe(true);
+      expect(pageErrors).toEqual([]);
+    } finally {await context.close();}
+  });
+
   it("preserves a newer same-account resume hint when an older race completes or is abandoned", async () => {
     for (const action of ["complete", "abandon"]) {
       /** Each terminal path uses an independent authenticated race. */
@@ -2680,34 +2526,30 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page, pageErrors} = await openHarness(browser, {
       scenario,
     });
-    await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout: 15_000});
-    expect(await page.getByText(message).isVisible()).toBe(true);
-    expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
-    expect(pageErrors).toEqual([]);
+    await verifyRetryableStartupScreen(page, message, pageErrors, scenario === "init-timeout" ? 35_000 : 15_000);
     if (scenario === "identity-failure") {
       expect((await getHarnessState(page)).calls).not.toContain("sdk.payments.getIncompletePurchases");
     }
     await context.close();
   });
 
+  it("waits for a delayed host handshake before accessing player state and reaches playable UI", async () => {
+    /** Provides the browser context and delayed SDK handshake page. */
+    const harness = await openHarness(browser, {scenario: "init-delayed"});
+    await verifyDelayedHostHandshake(harness, () => getHarnessState(harness.page));
+  });
+
   it("keeps registered play available when the optional Jest social profile is unavailable", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {registered: true, scenario: "profile-failure"});
-    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
-    /** Provides state behavior. */
-    const state = await getHarnessState(page);
-    expect(state.profileReads).toBe(1);
-    expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:true"]);
-    expect(await page.getByRole("heading", {name: /startup failed/i}).count()).toBe(0);
+    await verifyOptionalProfileFailure(page, () => getHarnessState(page));
     await context.close();
   });
 
   it("recovers from a transient SDK initialization failure when Retry is pressed", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {scenario: "init-once-failure"});
-    await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout: 15_000});
-    await page.getByRole("button", {name: /retry/i}).click();
-    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+    await retryFailedStartup(page);
     expect((await getHarnessState(page)).backendExchanges).toHaveLength(1);
     await context.close();
   });

@@ -27,6 +27,8 @@ export function useRaceDialogFocus({
 }: RaceDialogFocusOptions): void {
   /** Handles keys using the latest dialog state without restarting the focus lifecycle. */
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    // Composition and an earlier control retain ownership of their keyboard event.
+    if (event.isComposing || event.defaultPrevented) return;
     if (event.key === "Escape") {
       event.preventDefault();
       if (quitConfirmationOpen) dismissQuitConfirmation();
@@ -43,12 +45,19 @@ export function useRaceDialogFocus({
         'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
       ),
     );
-    if (focusable.length === 0) return;
+    if (focusable.length === 0) {
+      event.preventDefault();
+      activeDialog.focus({preventScroll: true});
+      return;
+    }
     /** First focusable element in the active dialog. */
     const first = focusable[0];
     /** Last focusable element in the active dialog. */
     const last = focusable.at(-1)!;
-    if (event.shiftKey && document.activeElement === first) {
+    if (!activeDialog.contains(document.activeElement)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus({preventScroll: true});
+    } else if (event.shiftKey && document.activeElement === first) {
       event.preventDefault();
       last.focus();
     } else if (!event.shiftKey && document.activeElement === last) {
@@ -70,8 +79,18 @@ export function useRaceDialogFocus({
 
   useEffect(() => {
     if (!quitConfirmationOpen) return;
+    /** Gameplay control to restore when confirmation is dismissed. */
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     /** Frame used to focus the newly mounted confirmation dialog. */
     const frame = window.requestAnimationFrame(() => quitDialogRef.current?.focus());
-    return () => window.cancelAnimationFrame(frame);
-  }, [quitConfirmationOpen, quitDialogRef]);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      /** A live race can reclaim focus; a closing race leaves its outer restoration in charge. */
+      const raceDialog = dialogRef.current;
+      if (!raceDialog?.isConnected || quitDialogRef.current) return;
+      if (previousFocus?.isConnected && raceDialog.contains(previousFocus) &&
+        !previousFocus.matches(":disabled, [aria-disabled='true']")) previousFocus.focus({preventScroll: true});
+      else raceDialog.focus({preventScroll: true});
+    };
+  }, [dialogRef, quitConfirmationOpen, quitDialogRef]);
 }

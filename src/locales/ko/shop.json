@@ -9,12 +9,15 @@
     "PERIOD_YEARLY": "년",
     "START_TRIAL_BUTTON": "무료 체험 시작",
     "SUBSCRIBE_BUTTON": "구독",
-    "SUBSCRIBED_BUTTON": "구독 중",
     "CANCEL_SUBSCRIPTION": "구독 취소",
     "SUBSCRIPTION_CANCELLED_NOTICE": "갱신이 취소되었습니다. 현재 결제 기간이 끝날 때까지 프리미엄이 유지됩니다.",
     "SUBSCRIPTION_ACTIVE": "프리미엄 활성",
     "SUBSCRIPTION_ACTIVE_NOTICE": "프리미엄 구독이 활성화되었습니다.",
     "TITLE": "코인 상점",
-    "YOUR_BALANCE": "잔액"
+    "YOUR_BALANCE": "잔액",
+    "PACK_DESCRIPTION": "잔액에 코인 {coins}개를 추가하세요.",
+    "BADGE_STARTER": "스타터",
+    "BADGE_POPULAR": "인기",
+    "BADGE_BEST_VALUE": "최고의 혜택"
   }
 }

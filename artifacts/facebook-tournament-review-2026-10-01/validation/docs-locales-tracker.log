@@ -1,0 +1,18 @@
+$ node scripts/validate-facebook-progress.mjs
+Facebook progress tracker passed: 20/53 complete (38%), 2026-10-01T06:36:06+00:00
+✔ accepts the evidence-backed 53-task tracker (1.878518ms)
+✔ final gate rejects incomplete external work (0.695819ms)
+✔ rejects a falsely completed task without executed evidence (1.063444ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30.786715
+$ node scripts/audit-facebook-visible-copy.mjs
+Facebook visible-copy audit passed: 16 locales, 720 required translations
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys

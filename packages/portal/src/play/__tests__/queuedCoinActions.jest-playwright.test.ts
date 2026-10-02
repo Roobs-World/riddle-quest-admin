@@ -18,7 +18,9 @@ describeBrowser("queued coin actions", () => {
 
   beforeAll(async () => {
     /** Directory containing the built Jest artifact. */
-    const dist = path.resolve(__dirname, "../../../dist-jest");
+    const dist = process.env.PORTAL_JEST_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
+      : path.resolve(__dirname, "../../../dist-jest");
     /** Content types used to serve artifact resources. */
     const types: Record<string, string> = {
       ".html": "text/html",
@@ -66,7 +68,8 @@ describeBrowser("queued coin actions", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await page.goto(`${origin}/?harness=jest`);
+      // Paid Skip is Classic-only; start after the Daily challenge has been completed.
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
       await completeMockOnboarding(page);
       await page.getByText(/what has keys/i).waitFor();
       for (const wrongLetter of ["X", "Z", "Q", "V", "B"]) {
@@ -101,7 +104,7 @@ describeBrowser("queued coin actions", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await page.goto(`${origin}/?harness=jest`);
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
       await completeMockOnboarding(page);
       await page.getByText(/what has keys/i).waitFor();
       await page.evaluate(() => {
@@ -204,7 +207,7 @@ describeBrowser("queued coin actions", () => {
           localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
           sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
         });
-        await page.goto(`${origin}/?harness=jest`);
+        await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
         await completeMockOnboarding(page);
         await page.locator(".keyboard").getByRole("button", {name: /^C$/}).waitFor();
         await page.evaluate(() => {

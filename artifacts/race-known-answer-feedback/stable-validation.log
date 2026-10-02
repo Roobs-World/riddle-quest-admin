@@ -1,0 +1,2 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-private-command-ownership.json
+Recorded multiplayer:race-private-command-ownership for jest, facebook, reddit, youtube, netflix, yahoo, gamesnacks in the local dashboard.

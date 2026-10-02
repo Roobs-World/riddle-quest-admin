@@ -10,29 +10,24 @@ import {parseRedditPaymentHook} from "./redditPaymentOrder";
 import {attachRedditReferralEnvironment} from "./redditReferralRequest";
 import {REDDIT_RECOVERY_METADATA_KEY, redditCommerceRecoveryKey} from "./redditCommerceRecovery";
 import {recoverRedditCommerceOrders} from "./recoverRedditCommerce";
+import {ensureCanonicalPost} from "./canonicalPost";
 
 /** Provides app behavior. */
 const app = new Hono();
-/** Defines the canonical post key value. */
-const CANONICAL_POST_KEY = "riddle-quest:canonical-post:v1";
-/** Indicates whether is reddit post id. */
-const isRedditPostId = (value: string): value is `t3_${string}` => /^t3_[a-z0-9]{1,20}$/u.test(value);
-
 /** Ensures riddle quest post. */
 async function ensureRiddleQuestPost() {
-  /** Provides existing id behavior. */
-  const existingId = await redis.get(CANONICAL_POST_KEY);
-  if (existingId && isRedditPostId(existingId)) return reddit.getPostById(existingId);
-  if (existingId) await redis.del(CANONICAL_POST_KEY);
-  if (!context.subredditName) throw new Error("subreddit-context-required");
-  /** Provides post behavior. */
-  const post = await reddit.submitCustomPost({
-    subredditName: context.subredditName,
-    title: "Play Riddle Quest",
-    entry: "default",
+  /** Capture the installation scope before the asynchronous creation claim. */
+  const subredditName = context.subredditName;
+  if (!subredditName) throw new Error("subreddit-context-required");
+  return ensureCanonicalPost({
+    redis,
+    getPost: (id) => reddit.getPostById(id),
+    createPost: () => reddit.submitCustomPost({
+      subredditName,
+      title: "Play Riddle Quest",
+      entry: "default",
+    }),
   });
-  await redis.set(CANONICAL_POST_KEY, post.id);
-  return post;
 }
 
 /** Provides call firebase behavior. */

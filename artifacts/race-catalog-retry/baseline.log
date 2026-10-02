@@ -1,0 +1,72 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/race/__tests__/raceCatalogRetry.test.ts
+  ● Catalog retry independent of discovery policy › retries only categories after a terminal search and restores its guidance
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Array [
+    -   "game:listRaceCategories",
+    - ]
+    + Array []
+
+      23 |     /** Generic Retry targets the failed catalog, even with a ready provider retry. */
+      24 |     const before = h.commands.length; h.session.retry(); await settleMatch(h.session);
+    > 25 |     expect(h.commands.slice(before).map(command => command.type)).toEqual(["game:listRaceCategories"]);
+         |                                                                   ^
+      26 |     expect(requests).toHaveLength(0);
+      27 |     h.respond("raceCategories", await catalog());
+      28 |     expect(h.session.getSnapshot()).toMatchObject({error, pending: null, matchSearchStatus: "failed", matchFailure: failure});
+
+      at src/play/race/__tests__/raceCatalogRetry.test.ts:25:67
+
+  ● Catalog retry independent of discovery policy › retries only categories after a waiting search and restores its guidance
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Array [
+    -   "game:listRaceCategories",
+    - ]
+    + Array []
+
+      23 |     /** Generic Retry targets the failed catalog, even with a ready provider retry. */
+      24 |     const before = h.commands.length; h.session.retry(); await settleMatch(h.session);
+    > 25 |     expect(h.commands.slice(before).map(command => command.type)).toEqual(["game:listRaceCategories"]);
+         |                                                                   ^
+      26 |     expect(requests).toHaveLength(0);
+      27 |     h.respond("raceCategories", await catalog());
+      28 |     expect(h.session.getSnapshot()).toMatchObject({error, pending: null, matchSearchStatus: "failed", matchFailure: failure});
+
+      at src/play/race/__tests__/raceCatalogRetry.test.ts:25:67
+
+  ● Catalog retry independent of discovery policy › retries only categories after a ready search and restores its guidance
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 0
+    Received length: 1
+    Received array:  [{"locale": "en", "requestId": "original"}]
+
+      24 |     const before = h.commands.length; h.session.retry(); await settleMatch(h.session);
+      25 |     expect(h.commands.slice(before).map(command => command.type)).toEqual(["game:listRaceCategories"]);
+    > 26 |     expect(requests).toHaveLength(0);
+         |                      ^
+      27 |     h.respond("raceCategories", await catalog());
+      28 |     expect(h.session.getSnapshot()).toMatchObject({error, pending: null, matchSearchStatus: "failed", matchFailure: failure});
+      29 |     /** Completed catalog recovery cannot bypass terminal discovery policy or its deadline. */
+
+      at src/play/race/__tests__/raceCatalogRetry.test.ts:26:22
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 3 total
+Snapshots:   0 total
+Time:        0.256 s
+Ran all test suites matching src/play/race/__tests__/raceCatalogRetry.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/race/__tests__/raceCatalogRetry.test.ts

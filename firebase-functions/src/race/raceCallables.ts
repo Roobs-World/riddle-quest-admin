@@ -1,4 +1,5 @@
 import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "@qwordly/core/race";
+import {RaceEntryRequestSchema} from "@qwordly/core/race";
 import {getRaceEntryForUser, cancelRaceInviteForUser} from "./raceInvitation";
 import {
   AbandonRaceRunRequestSchema,
@@ -346,9 +347,9 @@ export const getRaceEntry = onCallWithSentry("getRaceEntry", jestWebCallableOpti
   /** Authenticated player opening or recovering an invitation. */
   const userId = await requireRaceUser(request);
   /** Answer-free direct-link intent. */
-  const input = validateCallableRequest(RaceChallengeIdRequestSchema, request.data, "getRaceEntry");
+  const input = validateCallableRequest(RaceEntryRequestSchema, request.data, "getRaceEntry");
   /** Independently validated claim and publication facts. */
-  const response = await getRaceEntryForUser(userId, input.challengeId, input.locale);
+  const response = await getRaceEntryForUser(userId, input.challengeId, input.locale, {includeViewerRole: input.includeViewerRole, includeExistingAttempt: input.includeExistingAttempt});
   return validateCallableResponse(RaceEntryResponseSchema, response, "getRaceEntry");
 });
 /** Creator-only cancellation never acts on reusable public challenges. */

@@ -1,0 +1,34 @@
+{
+  "project": "riddle-quest-ec2b2",
+  "functions": [
+    {
+      "function": "deliverRaceSettlementEvent",
+      "region": "us-central1",
+      "runtime": "nodejs22",
+      "state": "ACTIVE",
+      "previousRevision": "deliverracesettlementevent-00013-cat",
+      "servingRevision": "deliverracesettlementevent-00014-sef",
+      "servingPercent": 100
+    },
+    {
+      "function": "deliverRacePerformanceEvent",
+      "region": "us-central1",
+      "runtime": "nodejs22",
+      "state": "ACTIVE",
+      "previousRevision": "deliverraceperformanceevent-00013-poh",
+      "servingRevision": "deliverraceperformanceevent-00014-yac",
+      "servingPercent": 100
+    },
+    {
+      "function": "settleRaceDeadlines",
+      "region": "us-central1",
+      "runtime": "nodejs22",
+      "state": "ACTIVE",
+      "previousRevision": "settleracedeadlines-00015-kul",
+      "servingRevision": "settleracedeadlines-00016-nes",
+      "servingPercent": 100
+    }
+  ],
+  "runtimeSha256": "2ac6265669fb03f61923b799266e85ad22e37701d0a0ec9d9b23be23325486e2",
+  "compiledCodeVerified": true
+}

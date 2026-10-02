@@ -1,0 +1,13 @@
+# Multiplayer discovery completion callback ownership
+
+The preceding adapter check protected asynchronous provider responses, but completion persistence and external-store notifications could synchronously remove that provider after the response was accepted. Four baseline regressions reproduced stale matched, empty, failed and fallback continuations.
+
+Discovery now captures a predicate covering the account/navigation generation and the live provider selection. It rechecks that predicate after persistence and observable transitions, including failure persistence and the fallback loading transition. A retired search clears its owned recovery journal, resets its attribution and restores its original hub without continuing into a challenge or fallback start. Generation checks preserve replacement journeys. The existing cancellable 30-second delivery budget now lives in the focused discovery helper.
+
+Thirty focused unit tests pass, including previous account replacement, late provider completion, retry, fallback and deadline cases. The full client suite passes 1,680 tests across 194 suites, with 101 tests and 13 suites skipped.
+
+Sixteen injected-browser cases exercise actual local-storage completion callbacks and actual session loading notifications: removed/replaced providers, matched/fallback/empty/failed results, desktop/mobile. Retired journals are cleared, no race starts, and no retired challenge or error is published to observers. Replacement providers remain available for a subsequent explicit search with a fresh receipt. A negative bundle control removes provider ownership from the continuation predicate and fails because a retired challenge is transiently published, even though final cleanup would remove it.
+
+Thirty-two retained browser cases pass across late provider delivery, denied journal observation, fallback rematches and storage/account completion ownership. All seven isolated builds, exact dependency evidence, portal types, security and scalability pass. Global documentation and file-size checks report concurrent files outside this focused change. Evidence and hashes are held in `artifacts/race-discovery-callback-ownership/verification-held.json`; the manifest preserves preceding gates and adds this browser check, for 60 checks.
+
+The other user-owned chat remains in progress with its challenge-entry backend deployment and unpublished Jest draft verification. Full-source dashboard recording remains pending; concurrent backend changes require fresh backend validation for that receipt. This batch does not deploy Firebase, update a hosted Jest preview or publish the game. The broader reliability audit remains active.

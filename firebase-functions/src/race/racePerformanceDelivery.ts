@@ -5,46 +5,72 @@ import {admin} from "../shared/firebaseAdmin";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, racePerformanceSample, recordRacePerformance, recordRaceCompletion} from "./raceMatchPerformance";
 import {parseRunRecord, type Firestore} from "./raceSetupService";
 import {parseRacePerformanceEvent} from "./raceDeliveryRecords";
+import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "../facebook/facebookRaceReferralDelivery";
+import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 
 /** Idempotently folds a settled owner's performance into their language/category estimate. */
 export async function deliverRacePerformance(runId: string, db: Firestore = admin.firestore(), nowMs = Date.now()): Promise<boolean> {
   /** Provides event ref behavior. */
   const eventRef = db.doc(`racePerformanceOutbox/${runId}`);
-  return withRaceDeliveryReceipt(db, eventRef, nowMs, () => db.runTransaction(async (transaction) => {
-    /** Provides event behavior. */
-    const event = await transaction.get(eventRef);
-    if (!event.exists || event.data()?.delivered === true) return false;
-    /** Provides user id behavior. */
-    const receipt = parseRacePerformanceEvent(event.data(), runId);
-    if (receipt.nextAttemptAtMs !== undefined && receipt.nextAttemptAtMs > nowMs) return false;
-    /** Owner linkage comes from the validated server receipt and is rechecked against the source. */
-    const userId = receipt.userId;
-    /** Provides [source, owner, deletion] behavior. */
-    const [source, owner, deletion] = await Promise.all([transaction.get(db.doc(`raceRuns/${runId}`)),
-      transaction.get(db.doc(`users/${userId}`)), transaction.get(getJestAccountDeletionRef(db, userId))]);
-    if (!source.exists || !owner.exists || deletion.exists) {
-      transaction.update(eventRef, {delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: nowMs});
-      return false;
-    }
-    /** Provides run behavior. */
-    const run = parseRunRecord(source.data(), source.id);
-    if (run.runId !== runId || run.userId !== userId || !run.settledOutcome || run.settledAtMs === undefined || receipt.createdAtMs !== run.settledAtMs ||
-      run.finishedAtMs !== undefined && run.finishedAtMs > run.settledAtMs)
-      throw new HttpsError("data-loss", "Performance source is not settled.");
-    /** Provides ref behavior. */
-    const ref = db.doc(`users/${userId}/raceMatchProfiles/${run.locale}`);
-    /** Provides existing behavior. */
-    const existing = await transaction.get(ref);
-    /** Provides profile behavior. */
-    const profile = existing.exists ? RaceMatchProfileSchema.parse(existing.data()) : emptyRaceMatchProfile();
-    /** Provides sample behavior. */
-    const sample = racePerformanceSample(run);
-    /** Completion remains measurable even when idle losses supply no speed observation. */
-    const observedAtMs = run.finishedAtMs ?? run.settledAtMs;
-    /** Deadline recovery and delayed outbox delivery cannot make an old finish current. */
-    const completion = recordRaceCompletion(profile, run.role, run.categoryId, run.correctCount >= 10, observedAtMs);
-    transaction.set(ref, sample ? recordRacePerformance(completion, run.categoryId, sample, observedAtMs) : completion);
-    transaction.update(eventRef, {delivered: true, deliveryState: "delivered", deliveredAtMs: nowMs});
-    return true;
-  }));
+  return withRaceDeliveryReceipt(db, eventRef, nowMs, async observe => {
+    /** Facebook grants require a durable second stage after the owner projection commits. */
+    let referralUserId: string | undefined;
+    /** Records whether the primary projection was newly applied. */
+    const changed = await db.runTransaction(async (transaction) => {
+      referralUserId = undefined;
+      /** Provides event behavior. */
+      const event = await transaction.get(eventRef);
+      observe(event.data());
+      if (!event.exists || event.data()?.delivered === true) return false;
+      /** Provides user id behavior. */
+      const receipt = parseRacePerformanceEvent(event.data(), runId);
+      if (receipt.expiresAt.toMillis() <= nowMs) {
+        transaction.update(eventRef, {delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: nowMs});
+        return false;
+      }
+      if (receipt.nextAttemptAtMs !== undefined && receipt.nextAttemptAtMs > nowMs) return false;
+      /** Owner linkage comes from the validated server receipt and is rechecked against the source. */
+      const userId = receipt.userId;
+      /** Provides [source, owner, deletion] behavior. */
+      const [source, owner, deletion] = await Promise.all([transaction.get(db.doc(`raceRuns/${runId}`)),
+        transaction.get(db.doc(`users/${userId}`)), transaction.get(getJestAccountDeletionRef(db, userId))]);
+      /** Absent legacy retention remains supported; an explicit expired source cannot authorize effects. */
+      const sourceExpiry = source.data()?.expiresAt;
+      if (!source.exists || sourceExpiry instanceof admin.firestore.Timestamp && sourceExpiry.toMillis() <= nowMs || !owner.exists || deletion.exists) {
+        transaction.update(eventRef, {delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: nowMs});
+        return false;
+      }
+      /** Provides run behavior. */
+      const run = parseRunRecord(source.data(), source.id);
+      if (run.runId !== runId || run.userId !== userId || !run.settledOutcome || run.settledAtMs === undefined || receipt.createdAtMs !== run.settledAtMs ||
+        run.finishedAtMs !== undefined && run.finishedAtMs > run.settledAtMs)
+        throw new HttpsError("data-loss", "Performance source is not settled.");
+      if (needsFacebookRaceReferral(userId, run.settledOutcome.result === "player_win")) referralUserId = userId;
+      /** A retried Facebook reward must not fold the same performance sample twice. */
+      if (receipt.facebookPerformanceRecorded === true) {
+        if (!isFacebookFirebaseUid(userId) || run.settledOutcome.result !== "player_win")
+          throw new HttpsError("data-loss", "Facebook performance receipt is invalid.");
+        if (!referralUserId) transaction.update(eventRef, {delivered: true, deliveryState: "delivered", deliveredAtMs: nowMs});
+        return false;
+      }
+      /** Provides ref behavior. */
+      const ref = db.doc(`users/${userId}/raceMatchProfiles/${run.locale}`);
+      /** Provides existing behavior. */
+      const existing = await transaction.get(ref);
+      /** Provides profile behavior. */
+      const profile = existing.exists ? RaceMatchProfileSchema.parse(existing.data()) : emptyRaceMatchProfile();
+      /** Provides sample behavior. */
+      const sample = racePerformanceSample(run);
+      /** Completion remains measurable even when idle losses supply no speed observation. */
+      const observedAtMs = run.finishedAtMs ?? run.settledAtMs;
+      /** Deadline recovery and delayed outbox delivery cannot make an old finish current. */
+      const completion = recordRaceCompletion(profile, run.role, run.categoryId, run.correctCount >= 10, observedAtMs);
+      transaction.set(ref, sample ? recordRacePerformance(completion, run.categoryId, sample, observedAtMs) : completion);
+      transaction.update(eventRef, referralUserId ? {facebookPerformanceRecorded: true} :
+        {delivered: true, deliveryState: "delivered", deliveredAtMs: nowMs});
+      return true;
+    });
+    if (referralUserId) await finishFacebookRaceReferralDelivery(db, eventRef, referralUserId, nowMs);
+    return changed;
+  });
 }

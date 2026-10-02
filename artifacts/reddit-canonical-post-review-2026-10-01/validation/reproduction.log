@@ -1,0 +1,53 @@
+✖ overlapping install, upgrade and moderator calls submit only one canonical post (1.926208ms)
+✖ an ambiguous provider failure remains pending across retries (0.714583ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.604492
+
+✖ failing tests:
+
+test at packages/reddit-app/src/server/canonicalPost.test.ts:24:1
+✖ overlapping install, upgrade and moderator calls submit only one canonical post (1.926208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 1
+  
+      at TestContext.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/src/server/canonicalPost.test.ts:42:10)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/reddit-app/src/server/canonicalPost.test.ts:49:1
+✖ an ambiguous provider failure remains pending across retries (0.714583ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /canonical-post-creation-pending/. Input:
+  
+  'Error: provider-timeout'
+  
+      at async TestContext.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/src/server/canonicalPost.test.ts:58:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: provider-timeout
+        at Object.createPost (file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/src/server/canonicalPost.test.ts:56:74)
+        at ensureCanonicalPost (file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/src/server/canonicalPost.ts:19:28)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/src/server/canonicalPost.test.ts:58:3)
+        at async Test.run (node:internal/test_runner/test:1313:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:897:7),
+    expected: /canonical-post-creation-pending/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

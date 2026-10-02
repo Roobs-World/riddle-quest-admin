@@ -1,6 +1,7 @@
+import {ProfileSubscriptionContext} from "./ProfileSubscriptionContext";
 import chestUrl from "../../../../../../assets/images-web/chest-closed.png";
 import {useProviderProfile} from "../../ProviderProfileContext";
-import {useRef, useState} from "react";
+import {useContext, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
 import type {GameModal, GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
@@ -42,6 +43,8 @@ export function ProfileModalPage({
   const avatarUrl = providerProfile ? providerProfile.avatarUrl : profile?.avatarUrl;
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
+  /** Target-specific subscription management surface supplied to Profile. */
+  const subscriptionControls = useContext(ProfileSubscriptionContext);
   /** Recoverable avatar-selection error shown within the profile page. */
   const [avatarError, setAvatarError] = useState<string | null>(null);
   /** Whether the destructive account-deletion confirmation is visible. */
@@ -233,9 +236,10 @@ export function ProfileModalPage({
         </div>
       </dl>
       <div className="profile-links">
+        {subscriptionControls}
         {referralSharing ? (
           <button className="profile-invite-button" onClick={referralSharing.shareInvite}>
-            {tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
+            {referralSharing.inviteLabel ?? tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
           </button>
         ) : null}
         <button data-tooltip="profileStatistics" onClick={() => onOpenModal("statistics")}>

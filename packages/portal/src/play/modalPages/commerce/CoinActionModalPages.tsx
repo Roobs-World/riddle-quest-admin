@@ -2,6 +2,7 @@ import treasureChestUrl from "../../../../../../assets/images-web/chest-open.web
 import type {GameModal} from "../../gameSession";
 import {tr} from "../../i18n";
 import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "./commerceCosts";
+import {isFacebookWebTarget} from "../../../platform/webTargetEnvironment";
 
 /** Opens another modal without allowing the null/closed state. */
 type OpenModalHandler = (modal: Exclude<GameModal, null>) => void;
@@ -12,6 +13,12 @@ export type ContinueModalPageProps = {
   balance: number;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
+  /** Optional provider-funded attempt, composed only by Facebook. */
+  onRecoverAttempt?: () => void;
+  /** Disables competing choices while a continuation is in progress. */
+  pending?: boolean;
+  /** Provider requests wait for the final guess's authoritative confirmation. */
+  recoveryPending?: boolean;
   /** Requests a paid skip directly from the loss prompt. */
   onSkip: () => void;
   /** Stores on open modal. */
@@ -48,6 +55,9 @@ export type TreasureModalPageProps = {
 export function ContinueModalPage({
   balance,
   onContinue,
+  onRecoverAttempt,
+  pending = false,
+  recoveryPending = false,
   onSkip,
   onOpenModal,
   commerceAvailable = true,
@@ -63,19 +73,24 @@ export function ContinueModalPage({
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>
       </div>
-      <button className="play-primary loss-continue-action" disabled={!canAfford} onClick={() => onContinue(CONTINUE_COIN_COST)}>
+      {isFacebookWebTarget && onRecoverAttempt ? (
+        <button className="play-primary loss-video-action" disabled={pending || recoveryPending} aria-busy={pending} onClick={onRecoverAttempt}>
+          {tr("LossModal.VIDEO_EXTRA_GO_BUTTON")}
+        </button>
+      ) : null}
+      <button className="play-primary loss-continue-action" disabled={!canAfford || pending} onClick={() => onContinue(CONTINUE_COIN_COST)}>
         {tr("LossModal.USE_COINS_PREFIX")}
         {CONTINUE_COIN_COST}
         {tr("LossModal.USE_COINS_SUFFIX")}
       </button>
       {!canAfford ? <p>{tr("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
       {commerceAvailable && (
-        <button className="play-primary loss-shop-action" onClick={() => onOpenModal("shop")}>
+        <button className="play-primary loss-shop-action" disabled={pending} onClick={() => onOpenModal("shop")}>
           {tr("LossModal.OPEN_SHOP_BUTTON")}
         </button>
       )}
       {!canAffordSkip ? <p>{tr("GameScreenAlerts.SKIP_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
-      <button className="play-primary loss-skip-action" disabled={!canAffordSkip} onClick={onSkip}>
+      <button className="play-primary loss-skip-action" disabled={!canAffordSkip || pending} onClick={onSkip}>
         {tr("LossModal.SKIP_LEVEL_PREFIX")}
         {SKIP_COIN_COST}
         {tr("LossModal.SKIP_LEVEL_SUFFIX")}

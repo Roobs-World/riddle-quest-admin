@@ -1,0 +1,12 @@
+{
+  "status": {
+    "latestReadyRevisionName": "deliverracesettlementevent-00014-sef",
+    "traffic": [
+      {
+        "latestRevision": true,
+        "percent": 100,
+        "revisionName": "deliverracesettlementevent-00014-sef"
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+$ node --test scripts/image-size-security-patch.test.mjs scripts/ci-security.test.mjs && node scripts/audit-security-config.mjs && node scripts/ci-security.mjs
+✔ committed workflows satisfy the CI security contract (1.529527ms)
+✔ rejects mutable actions, privileged triggers, and persisted checkout credentials (0.148321ms)
+✔ rejects workflows without least privilege, timeouts, or lockfile enforcement (0.082517ms)
+✔ rejects additional workflow permissions and a timeout missing from any job (0.078639ms)
+✔ requires manual, branch-scoped, protected, non-cancelling deployments (0.130979ms)
+✔ the image-size audit exceptions stay bound to the reviewed patch (0.368448ms)
+✔ malformed HEIF, ICNS, and JXL inputs terminate without looping (45.957733ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74.622132
+Security configuration audit passed: production endpoints, CSP, and HSTS enforce encrypted transport.
+CI security audit passed: 3 workflows use least privilege and immutable dependencies.

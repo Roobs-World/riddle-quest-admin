@@ -1,0 +1,9 @@
+{
+  "filesRechecked": 333,
+  "changed": [
+    "firebase-functions/src/__tests__/completeGameTransaction.test.ts",
+    "firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts",
+    "firebase-functions/src/gameplay/completeGameLogic.ts",
+    "firebase-functions/src/gameplay/singlePlayerSession.ts"
+  ]
+}

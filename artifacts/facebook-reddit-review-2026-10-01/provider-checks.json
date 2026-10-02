@@ -1,0 +1,42 @@
+{
+  "devvitMcp": {
+    "name": "devvit",
+    "package": "@devvit/mcp@0.0.27",
+    "protocolVersion": "2024-11-05",
+    "initializePassed": true,
+    "listedTools": [
+      "devvit_search",
+      "devvit_logs"
+    ],
+    "documentationSearchPassed": true,
+    "hostedLogsVerified": false,
+    "logsFailure": "Request did not complete; direct bounded CLI stream returned no historical entries"
+  },
+  "metaMcp": {
+    "name": "facebook",
+    "url": "https://mcp.facebook.com/ads",
+    "registered": true,
+    "authenticated": false,
+    "oauthError": "invalid_client_metadata: Dynamic registration is not available for this client."
+  },
+  "redditHost": {
+    "proxyUnsignedProbe": "passed: signature-required JSON",
+    "privateInstall": "0.0.1.23",
+    "developerSettingsBrowser": "403",
+    "currentFetchApproval": "unverified",
+    "privacyUrl": "https://roobsworld.com/privacy",
+    "privacyStatus": 200,
+    "privacyIncludesReddit": true,
+    "termsUrl": "https://roobsworld.com/riddle-quest/terms",
+    "termsStatus": 200,
+    "termsIncludeRedditGold": true,
+    "gatewayFunctionsListed": [
+      "exchangeRedditIdentity",
+      "redditStorage",
+      "redditGameplay",
+      "deleteRedditAccount"
+    ],
+    "gatewayFunctionRegion": "us-central1",
+    "physicalClientEvidence": "missing"
+  }
+}

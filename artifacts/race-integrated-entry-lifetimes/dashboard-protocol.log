@@ -1,0 +1,12 @@
+✔ verified Facebook/itch completion creates reviewed rows and preserves external status (1.213969ms)
+✔ stale, incomplete, failed and duplicate verification cannot claim completion (0.223954ms)
+✔ publication replays safely and retries conflicts against current accepted head (0.301892ms)
+✔ refresh failure remains durable, visible and retryable without losing local evidence (7.186682ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38.46863

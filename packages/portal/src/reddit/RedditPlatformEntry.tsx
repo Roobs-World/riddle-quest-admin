@@ -45,7 +45,7 @@ type StartupState =
 export function RedditPlatformEntry() {
   useLocale();
   /** Provides [expanded] behavior. */
-  const [expanded] = useState(() => getWebViewMode() === "expanded");
+  const [expanded, setExpanded] = useState(() => getWebViewMode() === "expanded");
   /** Provides [startup, set startup] behavior. */
   const [startup, setStartup] = useState<StartupState>({state: "loading", progress: 5});
   /** Provides [presence enabled, set presence enabled] behavior. */
@@ -71,6 +71,13 @@ export function RedditPlatformEntry() {
 
   useEffect(() => {
     detectDeviceLanguage(readBrowserStorage("local", "appLanguage") ?? navigator.language);
+  }, []);
+
+  useEffect(() => {
+    /** Devvit signals a return to the inline post through focus, not a legacy mode listener. */
+    const focus = () => setExpanded(getWebViewMode() === "expanded");
+    window.addEventListener("focus", focus);
+    return () => window.removeEventListener("focus", focus);
   }, []);
 
   useEffect(() => {
@@ -130,7 +137,10 @@ export function RedditPlatformEntry() {
   useEffect(() => {
     if (startup.state !== "ready" || !startup.session.capabilities.presence) return;
     /** Provides presence behavior. */
-    const presence = new RedditPollingPresence(startup.session.capabilities.presence);
+    const presence = new RedditPollingPresence(startup.session.capabilities.presence, {
+      /** A visible inline post is not an active expanded game session. */
+      visibility: () => document.visibilityState === "visible" && getWebViewMode() === "expanded" ? "visible" : "hidden",
+    });
     presenceRef.current = presence;
     /** Provides enabled behavior. */
     const enabled = startup.session.initialPreferences?.presenceEnabled === true;
@@ -139,8 +149,10 @@ export function RedditPlatformEntry() {
     /** Provides visibility behavior. */
     const visibility = () => void presence.visibilityChanged().catch(() => undefined);
     document.addEventListener("visibilitychange", visibility);
+    window.addEventListener("focus", visibility);
     return () => {
       document.removeEventListener("visibilitychange", visibility);
+      window.removeEventListener("focus", visibility);
       presenceRef.current = null;
       void presence.stop().catch(() => undefined);
     };

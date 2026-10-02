@@ -1,0 +1,20 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Unreadable draft must never be overwritten by a blind write
++ actual - expected
+
++ '{"version":1,"ownerId":"owner-1","runId":"draft-reload-run","locale":"en","riddleId":"question-0","position":0,"guessesUsed":0,"pendingGuess":false,"letters":["C","L","","",""],"activeSlotIndex":2,"savedAtMs":1790861716346}'
+- '{"version":1,"ownerId":"owner-1","runId":"draft-reload-run","locale":"en","riddleId":"question-0","position":0,"guessesUsed":0,"pendingGuess":false,"letters":["P","I","","",""],"activeSlotIndex":3,"savedAtMs":1790861715506}'
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-draft-reload-browser.mjs:83:14 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '{"version":1,"ownerId":"owner-1","runId":"draft-reload-run","locale":"en","riddleId":"question-0","position":0,"guessesUsed":0,"pendingGuess":false,"letters":["C","L","","",""],"activeSlotIndex":2,"savedAtMs":1790861716346}',
+  expected: '{"version":1,"ownerId":"owner-1","runId":"draft-reload-run","locale":"en","riddleId":"question-0","position":0,"guessesUsed":0,"pendingGuess":false,"letters":["P","I","","",""],"activeSlotIndex":3,"savedAtMs":1790861715506}',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

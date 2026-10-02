@@ -21,6 +21,7 @@ export function RaceGameplay({
   letterStates,
   pending,
   allowTypingWhilePending,
+  requiresRunRefresh = false,
   onClose,
   onSelectSlot,
   onLetter,
@@ -54,6 +55,8 @@ export function RaceGameplay({
   letterStates: Record<string, Feedback>;
   /** Stores pending. */
   pending: boolean;
+  /** Keeps mutations disabled until uncertain delivery is reconciled. */
+  requiresRunRefresh?: boolean;
   /** Allows editing a projected next clue before the previous result arrives. */
   allowTypingWhilePending: boolean;
   /** Stores on close. */
@@ -127,7 +130,7 @@ export function RaceGameplay({
           </p>
         )}
         <div className="game-input-actions race-actions">
-          <button onClick={onHint} disabled={pending || !run.currentRiddle?.hintAvailable}>
+          <button onClick={onHint} disabled={pending || requiresRunRefresh || !run.currentRiddle?.hintAvailable}>
             <HintIcon />
             <span>
               {tr("RaceTo10.HINT_BUTTON")} <small>{tr("RaceTo10.HINT_PENALTY")}</small>
@@ -137,14 +140,14 @@ export function RaceGameplay({
             className="submit-action"
             onClick={onSubmit}
             disabled={
-              pending ||
+              pending || requiresRunRefresh ||
               currentLetters.length !== run.currentRiddle?.answerLength ||
               currentLetters.some((letter) => !letter)
             }
           >
             {tr("RaceTo10.SUBMIT")}
           </button>
-          <button onClick={onSkip} disabled={pending || !run.currentRiddle}>
+          <button onClick={onSkip} disabled={pending || requiresRunRefresh || !run.currentRiddle}>
             <ForwardIcon />
             <span>
               {tr("RaceTo10.SKIP_BUTTON")} <small>{tr("RaceTo10.SKIP_PENALTY")}</small>

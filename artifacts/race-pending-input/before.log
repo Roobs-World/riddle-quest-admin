@@ -1,0 +1,253 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionPendingInput
+FAIL src/play/race/__tests__/RaceSessionPendingInput.test.ts
+  ● Race Session pending same-question input recovery › retains the next typed attempt after a failed wrong-guess confirmation: applied
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 5
+    + Received  + 5
+
+    @@ -1,12 +1,12 @@
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "",
+    -     "",
+    -     "",
+    +     "z",
+    +     "z",
+    +     "z",
+    +     "z",
+    +     "z",
+        ],
+        "error": null,
+        "run": Object {
+          "currentRiddle": Object {
+            "guessesUsed": 1,
+
+      10 |     expect(h.session.getSnapshot().currentLetters).toEqual([..."zzzzz"]);
+      11 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 12 |     expect(h.session.getSnapshot()).toMatchObject({error:null,currentLetters:["p","i","","",""],run:{currentRiddle:{guessesUsed:commit === "applied" ? 1 : 0}}});
+         |                                     ^
+      13 |     expect(h.commands.filter(command=>command.type==="game:submitRaceGuess")).toHaveLength(1);
+      14 |   });
+      15 |   it("retains a deliberately emptied pending draft after canonical recovery",async()=>{
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:12:37
+
+  ● Race Session pending same-question input recovery › retains the next typed attempt after a failed wrong-guess confirmation: not-applied
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 5
+    + Received  + 5
+
+    @@ -1,12 +1,12 @@
+      Object {
+        "currentLetters": Array [
+    -     "p",
+    -     "i",
+    -     "",
+    -     "",
+    -     "",
+    +     "z",
+    +     "z",
+    +     "z",
+    +     "z",
+    +     "z",
+        ],
+        "error": null,
+        "run": Object {
+          "currentRiddle": Object {
+            "guessesUsed": 0,
+
+      10 |     expect(h.session.getSnapshot().currentLetters).toEqual([..."zzzzz"]);
+      11 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 12 |     expect(h.session.getSnapshot()).toMatchObject({error:null,currentLetters:["p","i","","",""],run:{currentRiddle:{guessesUsed:commit === "applied" ? 1 : 0}}});
+         |                                     ^
+      13 |     expect(h.commands.filter(command=>command.type==="game:submitRaceGuess")).toHaveLength(1);
+      14 |   });
+      15 |   it("retains a deliberately emptied pending draft after canonical recovery",async()=>{
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:12:37
+
+  ● Race Session pending same-question input recovery › retains a deliberately emptied pending draft after canonical recovery
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 5
+    + Received  + 5
+
+      Array [
+    -   "",
+    -   "",
+    -   "",
+    -   "",
+    -   "",
+    +   "z",
+    +   "z",
+    +   "z",
+    +   "z",
+    +   "z",
+      ]
+
+      17 |     const h=await racing();h.session.input("text","zzzzz");h.session.submit();h.session.input("text","p");h.session.input("backspace");
+      18 |     h.reject("raceGuess","Lost confirmation");h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 19 |     expect(h.session.getSnapshot().currentLetters).toEqual(["","","","",""]);
+         |                                                    ^
+      20 |   });
+      21 |   it.each([-1,1.5,Number.NaN,Number.POSITIVE_INFINITY,99])("ignores an invalid answer slot without corrupting the draft: %s",async slot=>{
+      22 |     /** Invalid focus input must not create sparse arrays or non-index properties. */
+
+      at Object.<anonymous> (src/play/race/__tests__/RaceSessionPendingInput.test.ts:19:52)
+
+  ● Race Session pending same-question input recovery › ignores an invalid answer slot without corrupting the draft: -1
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -1,8 +1,8 @@
+      Object {
+        "activeChallengeId": undefined,
+    -   "activeSlotIndex": 2,
+    +   "activeSlotIndex": -1,
+        "adjustedNow": 3480,
+        "allowTypingWhilePending": false,
+        "categories": Array [
+          Object {
+            "availableRiddleCount": 30,
+
+      24 |     /** The stable public snapshot proves the invalid selection publishes no state transition. */
+      25 |     const before=h.session.getSnapshot();h.session.input("slot",slot);
+    > 26 |     expect(h.session.getSnapshot()).toBe(before);
+         |                                     ^
+      27 |     h.session.input("letter","a");
+      28 |     expect(h.session.getSnapshot().currentLetters).toEqual(["p","i","a","",""]);
+      29 |   });
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:26:37
+
+  ● Race Session pending same-question input recovery › ignores an invalid answer slot without corrupting the draft: 1.5
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -1,8 +1,8 @@
+      Object {
+        "activeChallengeId": undefined,
+    -   "activeSlotIndex": 2,
+    +   "activeSlotIndex": 1.5,
+        "adjustedNow": 3480,
+        "allowTypingWhilePending": false,
+        "categories": Array [
+          Object {
+            "availableRiddleCount": 30,
+
+      24 |     /** The stable public snapshot proves the invalid selection publishes no state transition. */
+      25 |     const before=h.session.getSnapshot();h.session.input("slot",slot);
+    > 26 |     expect(h.session.getSnapshot()).toBe(before);
+         |                                     ^
+      27 |     h.session.input("letter","a");
+      28 |     expect(h.session.getSnapshot().currentLetters).toEqual(["p","i","a","",""]);
+      29 |   });
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:26:37
+
+  ● Race Session pending same-question input recovery › ignores an invalid answer slot without corrupting the draft: NaN
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -1,8 +1,8 @@
+      Object {
+        "activeChallengeId": undefined,
+    -   "activeSlotIndex": 2,
+    +   "activeSlotIndex": NaN,
+        "adjustedNow": 3480,
+        "allowTypingWhilePending": false,
+        "categories": Array [
+          Object {
+            "availableRiddleCount": 30,
+
+      24 |     /** The stable public snapshot proves the invalid selection publishes no state transition. */
+      25 |     const before=h.session.getSnapshot();h.session.input("slot",slot);
+    > 26 |     expect(h.session.getSnapshot()).toBe(before);
+         |                                     ^
+      27 |     h.session.input("letter","a");
+      28 |     expect(h.session.getSnapshot().currentLetters).toEqual(["p","i","a","",""]);
+      29 |   });
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:26:37
+
+  ● Race Session pending same-question input recovery › ignores an invalid answer slot without corrupting the draft: Infinity
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -1,8 +1,8 @@
+      Object {
+        "activeChallengeId": undefined,
+    -   "activeSlotIndex": 2,
+    +   "activeSlotIndex": Infinity,
+        "adjustedNow": 3480,
+        "allowTypingWhilePending": false,
+        "categories": Array [
+          Object {
+            "availableRiddleCount": 30,
+
+      24 |     /** The stable public snapshot proves the invalid selection publishes no state transition. */
+      25 |     const before=h.session.getSnapshot();h.session.input("slot",slot);
+    > 26 |     expect(h.session.getSnapshot()).toBe(before);
+         |                                     ^
+      27 |     h.session.input("letter","a");
+      28 |     expect(h.session.getSnapshot().currentLetters).toEqual(["p","i","a","",""]);
+      29 |   });
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:26:37
+
+  ● Race Session pending same-question input recovery › ignores an invalid answer slot without corrupting the draft: 99
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -1,8 +1,8 @@
+      Object {
+        "activeChallengeId": undefined,
+    -   "activeSlotIndex": 2,
+    +   "activeSlotIndex": 99,
+        "adjustedNow": 3480,
+        "allowTypingWhilePending": false,
+        "categories": Array [
+          Object {
+            "availableRiddleCount": 30,
+
+      24 |     /** The stable public snapshot proves the invalid selection publishes no state transition. */
+      25 |     const before=h.session.getSnapshot();h.session.input("slot",slot);
+    > 26 |     expect(h.session.getSnapshot()).toBe(before);
+         |                                     ^
+      27 |     h.session.input("letter","a");
+      28 |     expect(h.session.getSnapshot().currentLetters).toEqual(["p","i","a","",""]);
+      29 |   });
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:26:37
+
+Test Suites: 1 failed, 1 total
+Tests:       8 failed, 2 passed, 10 total
+Snapshots:   0 total
+Time:        0.266 s, estimated 1 s
+Ran all test suites matching RaceSessionPendingInput.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionPendingInput`
+Exit status 1

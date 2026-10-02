@@ -1,0 +1,26 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 23 production declarations are undocumented.
+- packages/core/src/validation/__tests__/dailyCalendar.test.ts:15 instant
+- packages/core/src/validation/dailyCalendar.ts:22 timeZone
+- packages/core/src/validation/dailyCalendar.ts:23 formatter
+- packages/core/src/validation/dailyCalendar.ts:36 parts
+- packages/core/src/validation/dailyCalendar.ts:42 date
+- packages/core/src/validation/dailyCalendar.ts:49 target
+- packages/core/src/validation/dailyCalendar.ts:50 instant
+- packages/core/src/validation/dailyCalendar.ts:52 parts
+- packages/core/src/validation/dailyCalendar.ts:53 wall
+- packages/core/src/validation/dailyCalendar.ts:54 correction
+- firebase-functions/src/__tests__/dailyChallenge.test.ts:724 result
+- firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts:267 request
+- firebase-functions/src/daily/dailyChallengeProgress.ts:23 completedDay
+- firebase-functions/src/daily/dailyChallengeProgress.ts:24 hasCompletedToday
+- firebase-functions/src/daily/dailyRiddleGeneration.ts:192 now
+- firebase-functions/src/daily/dailyRiddleGeneration.ts:193 groups
+- firebase-functions/src/daily/dailyRiddleGeneration.ts:195 day
+- firebase-functions/src/daily/dailyScheduler.ts:13 now
+- firebase-functions/src/daily/dailyScheduler.ts:14 groups
+- firebase-functions/src/daily/dailyScheduler.ts:17 day
+- firebase-functions/src/daily/dailyStreak.ts:82 date
+- firebase-functions/src/gameplay/completeGameLogic.ts:95 rollover
+- firebase-functions/src/gameplay/singlePlayerSession.ts:196 completedDate
+[ELIFECYCLE] Command failed with exit code 1.

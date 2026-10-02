@@ -60,7 +60,7 @@ describe("fanfare modal content", () => {
       ),
     ).toContain("achievement-unlock");
     expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />)).toContain("3");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />)).toContain(
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />)).not.toContain(
       "rank-emblem",
     );
     /** Provides victory without sharing behavior. */

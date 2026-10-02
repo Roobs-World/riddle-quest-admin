@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T08:36:14.199637+00:00",
+  "intent": "local-reddit-profile-field-retention-review",
+  "uploadEligible": false,
+  "source": {
+    "head": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+    "dirty": true,
+    "completeCleanSourceProof": false,
+    "selectedFiles": [
+      {
+        "file": "firebase-functions/src/reddit/redditProfileRetention.ts",
+        "sha256": "510d38651e105b4ae3c2150fe19c28907c1bbeafd3e68455fcf610f87b807d03"
+      },
+      {
+        "file": "firebase-functions/src/reddit/redditProfileRetentionScheduler.ts",
+        "sha256": "ae26ef1cba7d9a653b331daf0e238a44274b358b812972cd37a929833eda9b2c"
+      },
+      {
+        "file": "firebase-functions/scripts/reddit-profile-retention.js",
+        "sha256": "eecbd357a2dd8431ef85e717420fb04089e30752992abb109b882fb78fb00168"
+      },
+      {
+        "file": "firebase-functions/scripts/reddit-profile-retention.test.js",
+        "sha256": "b204c22e6cd83291b0fc88cfead09692353c5b0de4cef236b46cf540b803e7cc"
+      },
+      {
+        "file": "firebase-functions/src/__tests__/redditProfileRetention.it.test.ts",
+        "sha256": "03bbe77442c849b9dfd9f9cf63b3710b9b248915b6b71832f46cd3af8b46bb75"
+      },
+      {
+        "file": "firebase-functions/src/__tests__/redditProfileRetentionScheduler.test.ts",
+        "sha256": "14cf0ff58be504fb7106f45cfc90123ef9e01d25452046a9871356a6c7b346e2"
+      },
+      {
+        "file": "firebase-functions/src/index.ts",
+        "sha256": "8adb413b02448b90a0d005d5fcf056a29c5b880fe695339550a90e2f8ea91894"
+      },
+      {
+        "file": "firebase-functions/scripts/audit-reddit-backend-exports.js",
+        "sha256": "98a28b5fdca55bd81d2ae2c15496c86ba462c08ac048bfce2e97577bfc221052"
+      },
+      {
+        "file": "firebase-functions/firestore.indexes.json",
+        "sha256": "1ccb6fc5e39af660e5ff8ee1e1564bdb82c25ead4d3282c0f6eb5cd0d0c9e71b"
+      },
+      {
+        "file": "firebase-functions/package.json",
+        "sha256": "6b9843850797e9ff0494d3b26ee2b9d3e72deb417e19df41bf7b0b1819db4b09"
+      },
+      {
+        "file": "packages/reddit-app/scripts/reddit-hosted-evidence.mjs",
+        "sha256": "41e1ade3ae3a144e5ec6f7fd1d763fa8b1975f69b2fc8f748f377f65f41131ac"
+      },
+      {
+        "file": "packages/reddit-app/scripts/verify-reddit-promotion.test.mjs",
+        "sha256": "385c17aaee2ea9843d7cdb019b2b8abbf02710be66651070a47b22af4e836572"
+      },
+      {
+        "file": "docs/evidence/reddit-hosted-evidence.example.json",
+        "sha256": "b83f8dc709fd5bcf01f57d236490a9d332e5634888fe79d486fa54fd0921df0c"
+      },
+      {
+        "file": "docs/reddit-games-operations.md",
+        "sha256": "5ce3e3d283694e6d3a66ebc82606351585037bb0a77e65ed5cf9bee16d38e597"
+      },
+      {
+        "file": "docs/privacy-data-inventory.md",
+        "sha256": "9cc5ba19975411b2210a4cb3763b2117233e79b8e8869c3355cfe5b52b3206ce"
+      },
+      {
+        "file": "docs/reddit-games-progress.html",
+        "sha256": "c0db4e7aee9f09907bd9433027d7e02f9d15956afe9d02350085d7f99d0016d9"
+      },
+      {
+        "file": "docs/evidence/provider-backend-readiness-2026-10-01.md",
+        "sha256": "f8529174857d1c9caf652a20e4dbad167759fd2a3686dbf6f4f58522ffcf0af4"
+      },
+      {
+        "file": "docs/evidence/reddit-profile-retention-2026-10-01.md",
+        "sha256": "e5eb17bd9aec341515ac4f0dd2510ff32768e9ddf31b0c9f8e628cbe2a97407a"
+      }
+    ]
+  },
+  "checks": {
+    "backendNode": "22.23.1",
+    "backendUnitSuites": 117,
+    "backendUnitTests": 1401,
+    "realFirestoreEmulatorTests": 6,
+    "schedulerTests": 3,
+    "actualCliTests": 4,
+    "deploymentScriptTests": 53,
+    "redditExportCount": 5,
+    "redditHostedEvidenceRequiredFunctionCount": 5,
+    "redditPackageTests": 35,
+    "types": true,
+    "lint": true,
+    "backendBuild": true,
+    "tsdoc": true,
+    "sourceSizes": true,
+    "requiredTargetBuilds": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo"
+    ],
+    "artifactAudits": 6,
+    "redditDocumentationTests": 2,
+    "facebookTrackerTests": 3,
+    "facebookTrackerComplete": 20,
+    "facebookTrackerTotal": 53,
+    "redditTrackerComplete": 36,
+    "redditTrackerTotal": 49,
+    "diffWhitespace": true
+  },
+  "clientComparison": {
+    "reference": "artifacts/facebook-tournament-entry-review-2026-10-01/manifest.json",
+    "clientFiles": 41,
+    "sourceMismatches": [],
+    "artifactEntries": 399,
+    "artifactMismatches": [],
+    "unexpectedEntries": [],
+    "artifactMatches": true
+  },
+  "providerMetadata": {
+    "functions": "function-metadata.json",
+    "indexes": "index-metadata.json",
+    "schedulerDeployed": false,
+    "indexReadinessVerified": false,
+    "deployedSourceRevisionVerified": false
+  },
+  "mutations": {
+    "productionRowsRead": false,
+    "secretValuesAccessed": false,
+    "cleanupApplied": false,
+    "deployments": 0,
+    "uploads": 0,
+    "providerActivations": 0
+  },
+  "limitations": [
+    "Production composite index readiness is unverified; authenticated paginated metadata requests returned HTTP 400.",
+    "Scheduler deployment and actual physical cleanup remain outstanding.",
+    "Firestore rounds finer-than-microsecond timestamps down; initial one-nanosecond fixture corrected, initial and final logs retained.",
+    "Invalid legacy expiry fields and a capped backlog need operator inspection; no exact deletion-time guarantee.",
+    "Provider approvals, signed hosted acceptance, real contract fixtures and immutable clean-source release gates remain pending."
+  ],
+  "evidence": [
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/client-comparison.json",
+      "sha256": "045c92437e6cf4da7bbb13a67956363caab41ec28e5f31e40b4cfee9088cd0c3"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/function-metadata.json",
+      "sha256": "97902939e507cb4663533370e905015ed069eb073d6677aeeb60d23b28cacaa2"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/index-metadata.json",
+      "sha256": "4c7aec932e0cded78181491f37bda335edd935fac09963474d0d17484cf74565"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/backend-build.log",
+      "sha256": "062bc7bc351fa381152081183347ef6fb2cc9f3085e01c759bd456f03255d6db"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/backend-node22.log",
+      "sha256": "85bf43be8c8719037d396001ac3b463bdfb2d2dbd6b7bb933d7f4d048fe41439"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/build-netflix.log",
+      "sha256": "0ce8dfcee49ebf55c3ff7935437e5ddc9564315ebf424070d7b2b5111c882ebc"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/build-web.log",
+      "sha256": "ec5c236463c227d298516455fc89b6a543c7fa24d90ff73fbfb7ab7d5b7af411"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/build-yahoo.log",
+      "sha256": "2c662164c18527cc07aafae4d28fc9cb7fbc54de6637ea1474310d3f84c0d6f3"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/build-youtube.log",
+      "sha256": "eb20dc28b2c9d512710d73dce244a6230271f02781e1c0b3317440dfca4ddaf9"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/cli.log",
+      "sha256": "89211f1eda36028d53422740b5d3e6f314acb4e60bb661bb15e95bf44f2ac56c"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/deploy-environment.log",
+      "sha256": "65253fe697b4d7211e6b5365aed759006c0b31fe8bae93a0c2c7199f3d7778fc"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/deploy-scripts.log",
+      "sha256": "dc28bb94f8cdcc40e061b75a4c17af2b08d72d99b3b715039b08491cc0f55ffa"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/emulator-final-node22.log",
+      "sha256": "8f5903c5d9adf50141ff946860d4a17d6d0cc188bea3afe545dc0951dc420065"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/emulator-initial.log",
+      "sha256": "4741d030c97d0883f4df522dc2940b8f81375ca4667ec42e3e88245653658a52"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/emulator-node22.log",
+      "sha256": "4741d030c97d0883f4df522dc2940b8f81375ca4667ec42e3e88245653658a52"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/facebook-progress.log",
+      "sha256": "3de23b01cc0c843a0be7231d37ed9d28cef32b3deb85c3c06c26b2afca115ca5"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/facebook-tracker.log",
+      "sha256": "eda901d0ee3d2c7a7775d771b488c7d4c9d2f9642d6dcdabbb7dd1df0f4e77e3"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/lint-final.log",
+      "sha256": "df5d790ccc1ae9c5d0e77ed13bfe8324bd96617af34d72eb9bf5b9f0aa95f1a0"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/lint.log",
+      "sha256": "df5d790ccc1ae9c5d0e77ed13bfe8324bd96617af34d72eb9bf5b9f0aa95f1a0"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/reddit-docs.log",
+      "sha256": "197e8e66e944b5fb5264c700df0abe481b9470dd1f94f5a2d11f4d788c5ab6fb"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/reddit-exports.log",
+      "sha256": "874a388d27cfc5fe2e7a7a85af31b83bd725e2ddd405a47a554663e9df026f50"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/reddit-package-final-tests.log",
+      "sha256": "c309f53c173d82b03d4c9416e9ba21b14eb8860a84475850b5930157a2acacdd"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/reddit-package.log",
+      "sha256": "3403d246298a935f5e79a087a562877a53e0129d5f1a1390197b44191ec3b6b5"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/reddit-progress.log",
+      "sha256": "7123d2a01fd07f8c0f49aa96bff29743b29f8f439798e063cbb4a70c9b32c060"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/scheduler.log",
+      "sha256": "deebea3e4b749f248c53d279cf19b0174236a9eed7d3f170cfc2494728517d0d"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/source-size.log",
+      "sha256": "c1b5e5ef7f862080facd931ea650a28abc420a1cd6524b29d6b8f07d4a9154a1"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/tsdoc.log",
+      "sha256": "c9baa6308a3fa64f25c55b96cfa8aa90e9119d87ddae8c47ca23a27100078c6c"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/types-final.log",
+      "sha256": "d11052d8652adebcb1e8d8e74e9dfa35c93c00159a6fcfe6fd74172203605040"
+    },
+    {
+      "file": "artifacts/reddit-profile-retention-review-2026-10-01/validation/types.log",
+      "sha256": "ffb6bfdeb251837dc9baf0d227fc3f13c866cc200916bf3ad8c73fd7aee2eff3"
+    }
+  ]
+}

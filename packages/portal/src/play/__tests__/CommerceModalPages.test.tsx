@@ -65,14 +65,16 @@ describe("commerce modal pages", () => {
     expect(emptyHtml).toContain("No coin packs are available right now");
     expect(populatedHtml).toContain("1,250");
     expect(populatedHtml).toContain("Popular");
-    expect(populatedHtml).toContain("START FREE TRIAL");
-    expect(populatedHtml).toContain("SUBSCRIBED");
+    expect(populatedHtml).not.toContain("START FREE TRIAL");
+    expect(populatedHtml).not.toContain("SUBSCRIBED");
+    expect(populatedHtml).not.toContain("Cancel subscription");
     expect(populatedHtml).toContain("shop-subscription-card");
   });
 
   it("shows a cached subscription offer on the shop's first render", () => {
     /** Subscription actions activate the Jest shop refresh path. */
     const subscriptionActions = {
+      products,
       refresh: async () => undefined,
       cancel: async () => "success" as const,
     };

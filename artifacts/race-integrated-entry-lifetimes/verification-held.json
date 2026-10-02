@@ -1,0 +1,209 @@
+{
+  "taskId": "multiplayer:race-integrated-entry-lifetimes",
+  "status": "focused-integration-passed-global-source-gates-pending",
+  "verifiedAt": "2026-10-01T21:34:35.381375+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "clientTestsPassed": 1743,
+  "clientSuitesPassed": 205,
+  "clientTestsSkipped": 102,
+  "clientSuitesSkipped": 13,
+  "coreTestsPassed": 225,
+  "coreSuitesPassed": 26,
+  "browserGatesPassed": 57,
+  "browserGatesFailed": [],
+  "backendContractTestsPassed": 146,
+  "backendContractSuitesPassed": 3,
+  "backendFullTestsPassed": 1068,
+  "backendFullSuitesPassed": 72,
+  "backendCoverage": {
+    "lines": {
+      "total": 3609,
+      "covered": 3458,
+      "skipped": 0,
+      "pct": 95.81
+    },
+    "statements": {
+      "total": 4217,
+      "covered": 3941,
+      "skipped": 0,
+      "pct": 93.45
+    },
+    "functions": {
+      "total": 630,
+      "covered": 611,
+      "skipped": 0,
+      "pct": 96.98
+    },
+    "branches": {
+      "total": 3821,
+      "covered": 3433,
+      "skipped": 0,
+      "pct": 89.84
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": "Unknown"
+    }
+  },
+  "dashboardProtocolTestsPassed": 4,
+  "clientCapturedSourceComparison": {
+    "filesRechecked": 196,
+    "changed": [],
+    "added": [],
+    "removed": []
+  },
+  "backendCapturedSourceComparison": {
+    "filesRechecked": 334,
+    "changed": [],
+    "added": [],
+    "removed": []
+  },
+  "capturedSourceScope": "Client: multiplayer .ts/.tsx files and verify-race browser scripts. Backend: all src .ts files plus package.json, tsconfig.json, race coverage and emulator configs. Not an entire-worktree fingerprint.",
+  "checksPassed": [
+    "complete-client-suite",
+    "complete-core-suite",
+    "57-retained-browser-gates",
+    "node22-backend-preparation-build-and-operator-safeguards",
+    "node22-backend-types-and-module-cycle-audit",
+    "node22-backend-lint",
+    "node22-isolated-demo-race-emulator-coverage",
+    "backend-invitation-calibration-receipt-contracts",
+    "portal-types",
+    "seven-isolated-platform-builds",
+    "exact-target-dependency-evidence",
+    "security",
+    "scalability",
+    "dashboard-completion-protocol-tests"
+  ],
+  "sharedChecksPending": {
+    "documented-declarations": "86 undocumented declarations in concurrent source files.",
+    "file-size-limits": "Hosted authentication E2E has 1295 equivalent lines, limit 1200."
+  },
+  "fullVerificationRequiredChecks": 75,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdatedThisBatch": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformedThisBatch": false,
+  "remainingGate": "Continue reliability audit, let concurrent work finish and resolve global gates before guarded full-source dashboard completion.",
+  "logHashes": {
+    "race-prefetch-ownership-browser.log": "00db16728238ea141c7c276323a1da701a81eef751b80811d1b5b9207d9cb95a",
+    "backend-preparation.log": "f42f4694a1eb2a62fe51ac9309cd1472e29cb0fdee8efead201d477c78ac2b3a",
+    "race-private-creator-acceptance-browser.log": "61222c075b7300db92424427d7f6e4a00df766afed2e65a81fa49618129da5c8",
+    "race-waiting-selection-browser.log": "b0e4e765b2d6937ea4935691bfc6dc7651dffa19655c7b4ef36d2a0f51df90f8",
+    "injected-provider-record-deadline-browser.log": "a7db48370da884814b27608e961028a3cb213199a65af5d420d8ea12b78210c7",
+    "race-profile-refresh-development-strict-browser.log": "6bcd93d1a6e456e60a31aeb1199b76de76a8fdfb4224d30d16c8d8b50521a75b",
+    "race-prefetch-development-strict-browser.log": "6034c0b324f148c24901aa8a01b0f484c68498c5a6f637dd0a8199950e7c7b71",
+    "race-discovery-storage-ownership-browser.log": "1c6b08231abac75a51287baa51af5b77d80a02e7bbad56f8572bcd0ce4013546",
+    "race-provider-start-selection-browser.log": "dd2c8cae72b8123e4eba8f6fbde712ec21caea2b36f59ebc7b8ba10dc6fc6b73",
+    "race-draft-cleanup-browser.log": "7098a33f92b4bb606d2cd40c9155c217692ef83c2c38f2ad55e501f3ca951826",
+    "race-discovery-callback-ownership-browser.log": "b78c774f81cba4698296472dc152247d3b73505d67ff1dce9d7c7f4058fcc2ab",
+    "race-existing-attempt-authority-browser.log": "c2e7fb01448099110a53cb4bb56733987ae05a5848ccb8da81f66cd49c80eda0",
+    "race-quit-focus-recovery-browser.log": "0d3df05783a64a86ab361a04a13f4d3ac5a4ccdd8458dcd22b9e8e0f9a77c423",
+    "injected-timeout-reload-browser.log": "b4d35048adb4ebc1ffdc43cafa6221caecfe82e498a9fe77b079fceea03b26db",
+    "race-cancellation-receipt-browser.log": "a46b0eba930b1967c504001e1eba688dcb0a347ff7196e23d687d0b5e0fe271e",
+    "race-overlay-ownership-browser.log": "d2b4245f83b945defaaa074106d472659d4ab5c9a529b7452d45051b5d2348ea",
+    "race-resume-selection-browser.log": "f33e9977a4216c355880bb3a243793d8d8cfa7aaca7044e5ad08fb66525124bd",
+    "race-retirement-shared-journal-browser.log": "9f12ec606066b8d513f2faf4cb4eb0ed97e7c037ce223124b9a8307ceab6ac30",
+    "injected-private-outcome-browser.log": "c2e0a6f5979bc0344a3f30cfad5193625f4b3e31e1d40b5bc426eeb58fd8fc6b",
+    "race-dialog-adapter-development-strict-browser.log": "c53492b2c68119f0708f11d04f46f8a004491abdcecb02c2bb77085d1d843092",
+    "retained-rule-ownership-browser.log": "4c33923641f1d2d62cd5577dca89121f98ae02bda8e1e1942c7400d396854505",
+    "provider-confirmed-outcome-browser.log": "46ea0250ad4d56a32c6b140c2edeb5bb1e7861f4a255aa0b23e581b2e983dacf",
+    "scalability.log": "9440d71cb44b67c74a84d061c6abc7f3bae839d08c96e04e8b3cfc1329770ec3",
+    "tsdoc.log": "9b95c39b393c7de50b3f283c51a21da1120c81468c6d9625dbf9033658e21ec9",
+    "backend-coverage.log": "0b99ad3c425f70ae19ced1433b55cad8a46c83e2c3eac823916f8fdd6880dc8a",
+    "injected-provider-capability-recovery-browser.log": "47eed11a29a1a5fa74097a17c887b2bf1e0a5a42e122c9b0e75ea52b1fe27c73",
+    "race-visibility-retirement-development-strict-browser.log": "150c9b47f116a4d51cc5551ba054a0b12a56afb9b705638a558ca3023f932766",
+    "injected-event-aggregate-browser.log": "dc6ab8194a96738d141204a1faab21b25a51c10e2a127a499672c43d360ef355",
+    "race-keyboard-activation-browser.log": "b50e5b19fd29300f4d5aed70eda7a2d983ca026861433c31e210a0bc5a3170cb",
+    "race-dialog-adapter-ownership-browser.log": "83114ea8abbb33e1a9dec66dc45f58cd847fd05d5e6e780d56aea13ffa6c80c2",
+    "injected-first-resume-browser.log": "cc62b551b2ceab7b0f173da2d6bc21631b0f19ab7576dfbf962f5e0f491cb3f9",
+    "race-profile-refresh-browser.log": "75969d71c543c9cc395718fd4e29e2fec30272bf3be21a01d605fc3a70f0c7ed",
+    "race-discovery-prompt-cancellation-browser.log": "d9807fd4410b0cc48854f1bc8bd360aaa82bd69d63c31d39c36df19271b48b68",
+    "race-quit-focus-containment-browser.log": "6767b039130096720dfac75b239c247baa6c0133190e954b1ee9e01b9bf5177f",
+    "injected-paid-draft-checkpoints-browser.log": "0c2f84da0b929721722272a93a945698f142a71b1bb8149fabb5f6db9869f15f",
+    "injected-provider-record-recovery-browser.log": "98b8596f1ab2c9dd8a15846ad7c2088a6b8f1e89422bdf39eab3d22935e2fb73",
+    "abandoned-race-entry-browser.log": "6c9f64001761d8571b1255312225c86b72c162a52b8c71c027bac6b7c6203528",
+    "race-search-journal-observation-browser.log": "586c2790e7ad8fa1cf811218d2a6b5ab388f4b2cecedce790a96eb679f5a3c83",
+    "race-discovery-provider-ownership-browser.log": "aea47286ec7f661347077b204b940c16cbae4567410918aa342c499eb3daddc9",
+    "core-tests.log": "ec18c39ee6bc493188430095d70aabf8919a69d987ce67d926c5f92a2c652804",
+    "dependencies.log": "4ca111f9cf0418467d5f840dab845b9942704850b193c62d479ef165cf13e328",
+    "injected-answer-free-checkpoints-browser.log": "1b514116680af09a1f4653f15be0e393ba720113cc818531b94677489d51cb0e",
+    "race-resume-read-observation-browser.log": "f33e9977a4216c355880bb3a243793d8d8cfa7aaca7044e5ad08fb66525124bd",
+    "race-dialog-keyboard-ownership-browser.log": "b4d787fcfff73ee53acb7370a9d3a1f2f5874b9a21b1eaed86d72dd420613ba4",
+    "injected-known-answer-reveals-browser.log": "80b1ee46e51e13ec7d409bcc5b6c81f536779ed51b248729650ddf7edaab10a6",
+    "dashboard-protocol.log": "a8a90fb29bffd61d2377486822678392beda6ba2dbddd33023f254dd6d955baa",
+    "race-private-entry-selection-browser.log": "a68b171b394cbcb260bff319f5138a22ced4a33cb60de802dc3a87e0e42ddd52",
+    "security.log": "4859e7dab66156e3fb7299c6c24625df2236b45da3d3c718635a7fc6097345ba",
+    "race-entry-effect-ownership-browser.log": "2641641d02667b347c5ec0e858847745168082347eddd4129871ef7ac482940a",
+    "file-sizes.log": "45a562ebd3a99f7c178c05cd05913ac2386af50aa48550f946a7f977116a1462",
+    "backend-lint.log": "516f8e9a207722d0a3666dd11efa74c3b1eeb78e6999ddaeeab232cddd800d01",
+    "retained-checkpoint-isolation-browser.log": "c13ba5cbcd1f6b5fbdc1c46d3c8809ec510faf7f48acc3db741b85c919831dc5",
+    "client-tests.log": "32ca702f9aadd26ae99f2ffd3e8fca2c590e8cee8904119053d29aa808963c42",
+    "injected-private-command-ownership-browser.log": "d36369d5ebb806ae9132059e1148f5a149b5523c8f28733d718eb3984534c016",
+    "backend-types.log": "7a93327368e131e8c55ce7e56599d1cb544612823ecc626dc99f2cc03ae6e9d6",
+    "race-session-browser-resource-ownership.log": "bf4fb29b0e8c9e587192634e5010c14f2d7160cde2df507d1e30ce6c85ac523e",
+    "race-visibility-retirement-browser.log": "2c430599371cc929e94b10617efce6926da6e925ed763f840d52098be0e856fb",
+    "race-start-selection-authority-browser.log": "bb4ee6dc6caecdd49df6f610469ef0a3d1ef9318c873eb8a258542cae380003a",
+    "race-offline-delivery-browser.log": "23e8d0dd07c00f88c39948557b4449ad2954883d97792f15ac11dae1edf7245b",
+    "backend-contracts.log": "0b22474f4f0ca3e3ce5b8ffb58158932d1605df8cedc8a824fc1f90af86ea277",
+    "race-existing-opponent-authority-browser.log": "9a85d0d8dc167127b5d78d7dc06cd43982417182afe6a8773bbdb81c96e2a98e",
+    "injected-responsive-hub-navigation-browser.log": "ac039a920d949be7cf9d10e9b5c69858e55f18015364472fc81fc808f3190e7e",
+    "race-draft-reload-browser.log": "b0dc8fcf7b1b7b113228760274b8c0b970b3d7efff1b186ab9c9e76f6f9521e3",
+    "race-provider-rendered-cache-browser.log": "7e2ca0f6349a49f55cb6f2055ae898b77d73639c13a26ae69704a55aa9552cbf",
+    "race-matchmaking-removal-browser.log": "85b6446f1bf1179e2bf166dc43de80ce5d24eeb90500e00495a39d5178da827d",
+    "injected-known-answer-feedback-browser.log": "969868717ae377f4c87652e2d9e3a27ba100c2dc6b8641391c075d5abb09b087",
+    "injected-pending-answer-recovery-browser.log": "6a78e10ab83f9754e7117b10bf8bae4a92f5414715358e41482ef5f6076bd801",
+    "race-analytics-delivery-browser.log": "d4f0ba9588aaf7eca4a391005326d801dad033585c4c225709fe5e20efa8378e",
+    "client-types.log": "e874f85428a3230367682318ee66072a56c019edc0347d7b2aabaf6a59db078b",
+    "race-rendered-entry-ownership-browser.log": "9c604bc3dee97791feedcf838351a4f5ce186583b14ee3809fcdc834614533e8",
+    "race-retired-search-recovery-browser.log": "b81b4a94e06b71aacb0cd660c605d2ad5fb53d7e1afa9b255ae8f491380e468e",
+    "builds.log": "3732a0e62950fb0bac218b87ee888e2e935deb65ee81e40ac711431a6af3ebf0"
+  },
+  "sourceProofHashes": {
+    "backend-source-after.json": "f06d9b8bcc600ff8aa9fc20f1c083e49e3da90f87ea53c671da3954c44df17ed",
+    "client-source-before.json": "a564a9a4a7ab547c3560b122441afb54dd2001d212066f2613eaab35f9795597",
+    "backend-source-before.json": "f06d9b8bcc600ff8aa9fc20f1c083e49e3da90f87ea53c671da3954c44df17ed",
+    "client-source-comparison.json": "71030333c75a21e5d27edcbaba829d530ebc2f34772269dafeef278cd40ac699",
+    "backend-source-comparison.json": "4b557a2165c9eea3f584c96cfcb9e334876e1109071b431057fd6fab7b36968f",
+    "client-source-after.json": "a564a9a4a7ab547c3560b122441afb54dd2001d212066f2613eaab35f9795597"
+  },
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "cbae1bb8d15b1362df5de16828384dc23b7b6597660c164bff71a037beb19415"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "2474b075026c34a42ebcd069a26feaa0a4f894a3176c3f180f146ddcef5f4cde"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "915c0e060bf460566cab28e89d81aea14056d1ec8f5eb8166ae7d112302a7ea7"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "c61564ad23c9d8f4a91a92fdd7d19e7dacdfc71a29fd3e7cdebb2c30fcefa796"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "b7e7fdec4de74fa733917787140cd0ebe815ddca10767f706bdc02e7276a9cfb"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "fa47e7f3698e0669d1a68c281d70c1f7b4f3b223fcc32942ed3b5c222b26a537"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "17ba4a08e4dbfe50612a13880798b0ebfc92723fc2e61a73c07d7b4293d32d31"
+    }
+  ]
+}

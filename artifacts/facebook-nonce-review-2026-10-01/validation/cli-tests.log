@@ -1,0 +1,13 @@
+✔ nonce maintenance stays offline for missing/ambiguous/unknown operator options (9.692349ms)
+✔ defaults to dry-run and pages only the temporary Facebook nonce collection (1.187489ms)
+✔ applies only the confirmed project and accepts completed/missing/idempotent rows (1.479301ms)
+✔ malformed rows or outcomes fail the page without exposing provider diagnostics (0.912247ms)
+✔ query errors return a fixed failure instead of false completion or private details (0.483335ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 36.147541

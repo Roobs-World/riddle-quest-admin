@@ -4,6 +4,7 @@ import {captureBrowserException} from "../observability/browserErrorReporter";
 import {getHostErrorMessage} from "./hostMessageHandlers";
 import {GAME_TO_HOST_EVENT} from "./localBridge";
 import {createRequestId} from "./requestIds";
+import type {LifecycleCapability} from "../platform/types";
 
 /** Routes one untrusted local bridge value after schema validation. */
 type HostMessageRouter = (value: unknown) => Promise<GameToHostMessage>;
@@ -16,10 +17,12 @@ type HostBridgeLifecycleOptions = Readonly<{
   postToGame: (message: HostToGameMessage) => void;
   /** Updates the player-facing host notice. */
   setNotice: (notice: string | null) => void;
+  /** Optional target SDK lifecycle, including pauses while the document remains visible. */
+  lifecycle?: LifecycleCapability;
 }>;
 
 /** Owns stable local bridge routing and document visibility delivery for hosted targets. */
-export function useHostBridgeLifecycle({router, postToGame, setNotice}: HostBridgeLifecycleOptions): void {
+export function useHostBridgeLifecycle({router, postToGame, setNotice, lifecycle}: HostBridgeLifecycleOptions): void {
   /** Latest router, allowing one stable DOM subscription across host state changes. */
   const routerRef = useRef(router);
   /** Latest message sender used by the stable visibility subscription. */
@@ -48,9 +51,21 @@ export function useHostBridgeLifecycle({router, postToGame, setNotice}: HostBrid
     };
     window.addEventListener(GAME_TO_HOST_EVENT, handleLocalMessage);
     document.addEventListener("visibilitychange", handleVisibilityChange);
+    /** Detaches provider pause notifications when the host unmounts. */
+    const unsubscribePause = lifecycle?.onPause(() => {
+      postToGameRef.current({type: "host:pause", requestId: createRequestId("platform-pause"), payload: {}});
+    });
+    /** Detaches provider resume notifications when the host unmounts. */
+    const unsubscribeResume = lifecycle?.onResume?.(() => {
+      if (document.visibilityState !== "hidden") {
+        postToGameRef.current({type: "host:resume", requestId: createRequestId("platform-resume"), payload: {}});
+      }
+    });
     return () => {
       window.removeEventListener(GAME_TO_HOST_EVENT, handleLocalMessage);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      unsubscribePause?.();
+      unsubscribeResume?.();
     };
-  }, []);
+  }, [lifecycle]);
 }

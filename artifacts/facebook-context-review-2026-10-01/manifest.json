@@ -1,0 +1,36 @@
+{
+  "createdAt": "2026-10-01T05:18:57.484678+00:00",
+  "purpose": "Local Facebook context retention review; no live purge/deployment",
+  "sourceHead": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "dirtyWorkingTree": true,
+  "includesConcurrentWorkingTreeChanges": true,
+  "uploadEligible": false,
+  "selectedSourceSha256": {
+    "firebase-functions/src/race/facebookContextRetention.ts": "2f7184185294ec9e8566bd36a0cef387259226bffef7b51c0c359731bb7730af",
+    "firebase-functions/src/race/facebookContextRetentionScheduler.ts": "e19317d2e2ab05c09c3bdefe3e198db2762dea23a23af6667b1cff83ca1f6045",
+    "firebase-functions/src/__tests__/facebookContextRetention.it.test.ts": "bddccd9283cbaf187c50374925e84f5f171ab4eea6b5aba9483a88a8864d8903",
+    "firebase-functions/src/__tests__/facebookContextRetentionScheduler.test.ts": "7dcba06a936e9d501371a0d0315d8b5cf93e5a23c5602217c2b5a1ba649c398b",
+    "firebase-functions/scripts/facebook-context-retention.js": "8d3bf8310c9f820dac9506bfd6a48ccdccda6fd5d855058817122d3f8446ee5a",
+    "firebase-functions/scripts/facebook-context-retention.test.js": "f0cd652fec4293b8865c5c0a9effee5bfb4775b3eb8a7304204393a38f1a46eb",
+    "firebase-functions/scripts/audit-facebook-backend-exports.js": "a2de435b839579d3017d714b12c4dc4b5fda2be46ecf9b4c7a527be6087304fc",
+    "firebase-functions/src/index.ts": "c5b899ab8675e2c077f5e1a828818e47447a207bc6f982c346846bf9ed9fb91b",
+    "firebase-functions/package.json": "c632667c5b0656a8e79873ba07e750220cf204e10d1e95fddbf6f915d07dd10f"
+  },
+  "providerMetadata": {
+    "project": "riddle-quest-ec2b2",
+    "readOnly": true,
+    "schedulerDeployed": false,
+    "existingFacebookAndRedditExportsRuntime": "nodejs22",
+    "existingFacebookAndRedditExportsRegion": "us-central1"
+  },
+  "checks": {
+    "emulatorTests": 7,
+    "schedulerTests": 3,
+    "cliTests": 4,
+    "backendTests": 1382,
+    "backendNode22Tests": 1382,
+    "facebookExportSubset": 22,
+    "requiredIsolatedBuilds": 6
+  },
+  "physicalCleanupAcceptanceProven": false
+}

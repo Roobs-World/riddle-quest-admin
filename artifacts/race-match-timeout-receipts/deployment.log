@@ -1,0 +1,60 @@
+
+=== Deploying to 'riddle-quest-ec2b2'...
+
+i  deploying functions
+Running command: pnpm --dir firebase-functions run validate:deploy-env
+$ node scripts/validate-deploy-env.js
+Validated Firebase deployment environment: /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/.env.riddle-quest-ec2b2
+Running command: pnpm --dir firebase-functions run prepare:deploy
+$ node scripts/prepare-deploy.js
+.                                        | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+Running command: pnpm --dir firebase-functions run build
+$ node scripts/prepare-deploy.js && pnpm check:module-cycles
+.                                        | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+$ node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs
+TAP version 13
+# Subtest: accepts an acyclic runtime graph and ignores erased type-only edges
+ok 1 - accepts an acyclic runtime graph and ignores erased type-only edges
+  ---
+  duration_ms: 10.683146
+  type: 'test'
+  ...
+# Subtest: rejects a barrel-induced runtime cycle with deterministic module evidence
+ok 2 - rejects a barrel-induced runtime cycle with deterministic module evidence
+  ---
+  duration_ms: 4.18629
+  type: 'test'
+  ...
+# Subtest: excludes test modules from the production graph
+ok 3 - excludes test modules from the production graph
+  ---
+  duration_ms: 1.280777
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 195.513089
+Production module cycle audit passed (164 modules, 876 runtime references).
+$ rimraf lib && tsc -p tsconfig.json && rimraf lib/__tests__ lib/__mocks__
+✔  functions: Finished running predeploy script.
+i  functions: preparing codebase default for deployment
+i  functions: ensuring required API cloudfunctions.googleapis.com is enabled...
+i  functions: ensuring required API cloudbuild.googleapis.com is enabled...
+i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled...
+Error: Failed to load environment variables from .env.:
+- Error Key FIREBASE_API_KEY starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_ KIT_)
+- Error Key FIREBASE_APP_ID starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_ KIT_)
+- Error Key FIREBASE_AUTH_DOMAIN starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_ KIT_)
+- Error Key FIREBASE_MESSAGING_SENDER_ID starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_ KIT_)
+- Error Key FIREBASE_PROJECT_ID starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_ KIT_)
+- Error Key FIREBASE_STORAGE_BUCKET starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_ KIT_)

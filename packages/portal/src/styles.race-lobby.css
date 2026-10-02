@@ -90,9 +90,7 @@
   margin: 0 auto 14px;
 }
 .race-hub-tabs [role="tablist"] {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
+  display: flex;
   gap: 8px;
   padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -100,7 +98,12 @@
   background: rgba(2, 14, 20, 0.42);
 }
 .race-hub-tabs [role="tab"] {
+  flex: 1 1 auto;
+  min-width: 0;
   min-height: 44px;
+  padding: 8px 6px;
+  white-space: normal;
+  overflow-wrap: anywhere;
   color: #d9ece5;
   border: 0;
   border-radius: 12px;
@@ -166,6 +169,39 @@
 .race-panel > .race-secondary {
   width: 100%;
   margin-top: 14px;
+}
+.race-tournaments ol {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.race-tournaments li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid #c7d8d3;
+  border-radius: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.race-tournaments li[aria-current="true"] {
+  background: #edf7f3;
+}
+.race-tournaments > button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #247147;
+  border-radius: 12px;
+  color: #17252c;
+  background: #edf7f3;
+  font: inherit;
+  font-weight: 700;
+}
+.race-tournaments > button:focus-visible {
+  outline: 3px solid #247147;
+  outline-offset: 2px;
 }
 .race-result-score {
   display: grid;
@@ -272,6 +308,7 @@
   border-color: #247147;
 }
 .race-primary[aria-busy="true"]::after,
+.race-tournaments > button[aria-busy="true"]::after,
 .race-hub-social-actions button[aria-busy="true"]::after,
 .race-safety-actions button[aria-busy="true"]::after,
 .race-quit-confirm[aria-busy="true"]::after {

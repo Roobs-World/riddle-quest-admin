@@ -1,0 +1,111 @@
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js && node scripts/facebook-referral-retention.test.js && node scripts/facebook-context-retention.test.js && node scripts/facebook-nonce-retention.test.js && node scripts/reddit-profile-retention.test.js
+✔ requires an explicit Reddit sandbox-commerce gate (1.042184ms)
+✔ accepts only externally approval-gated Reddit capability activations (0.110169ms)
+✔ validates Reddit kill switches and rejects unknown or duplicate capabilities (0.082887ms)
+✔ accepts only the exact Reddit app and reviewed Firebase host (0.09994ms)
+✔ accepts the complete non-secret Facebook deployment contract (0.228232ms)
+✔ rejects absent or malformed Facebook deployment configuration (0.17446ms)
+✔ rejects unsafe origins, deletion URLs, and feature switches (0.116009ms)
+✔ accepts the production deployment contract (0.188517ms)
+✔ binds Firebase predeploy validation to the production project (0.119046ms)
+✔ keeps the tracked environment example deploy-valid (3.504987ms)
+✔ binds the Facebook backend command to the complete backend release unit (0.231979ms)
+✔ binds the Reddit backend command to the complete backend release unit (0.092715ms)
+✔ documents an unambiguous production Functions deploy command (0.117743ms)
+✔ requires the exact Jest game UUID (0.094338ms)
+✔ rejects a plaintext Jest origin (0.055776ms)
+✔ rejects a localhost Jest origin (0.04243ms)
+✔ rejects a untrusted Jest origin (0.04774ms)
+✔ rejects a non-origin URL Jest origin (0.043162ms)
+✔ requires the primary Jest origin (0.054102ms)
+✔ rejects incomplete, untrusted, or duplicated consumable configuration (0.040617ms)
+✔ rejects incomplete, untrusted, or duplicated consumable configuration (0.029336ms)
+✔ rejects incomplete, untrusted, or duplicated consumable configuration (0.030999ms)
+✔ rejects missing, untrusted, or duplicated subscription allowlists (0.040927ms)
+✔ rejects missing, untrusted, or duplicated subscription allowlists (0.024646ms)
+✔ rejects missing, untrusted, or duplicated subscription allowlists (0.022453ms)
+✔ rejects insecure or malformed Sentry transport (0.062158ms)
+✔ rejects insecure or malformed Sentry transport (0.056858ms)
+✔ allows Sentry to be deliberately disabled (0.045706ms)
+✔ fails closed when the project-specific environment file is absent (0.08973ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10.630361
+✔ accepts the complete Facebook Functions surface (0.753256ms)
+✔ rejects every omitted callable or trigger (0.710195ms)
+✔ rejects duplicate exports and understands aliases (0.173088ms)
+✔ accepts the repository entry point (0.115719ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4.491656
+✔ accepts the complete Reddit Functions surface (0.726506ms)
+✔ rejects every omitted Reddit endpoint (0.166055ms)
+✔ accepts the repository entry point (0.114788ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3.795527
+✔ referral retention stays offline without an explicit project or exact apply confirmation (3.088579ms)
+✔ defaults to dry-run and pages exclusively by an opaque token hash (0.692031ms)
+✔ writes only after matching project confirmation and reports failures without provider details (0.787351ms)
+✔ does not claim completion for oversized token fan-out (0.746644ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.473544
+✔ requires an explicit project and rejects malformed/unknown/duplicate flags offline (3.3902ms)
+✔ defaults to dry run using only the current server clock and fixed page limit (0.59114ms)
+✔ applies only with matching confirmation and retains incomplete page evidence (0.43317ms)
+✔ provider failures are sanitized without echoing context/member identifiers (0.493385ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.324852
+✔ nonce maintenance stays offline for missing/ambiguous/unknown operator options (4.308349ms)
+✔ defaults to dry-run and pages only the temporary Facebook nonce collection (0.700236ms)
+✔ applies only the confirmed project and accepts completed/missing/idempotent rows (1.41511ms)
+✔ malformed rows or outcomes fail the page without exposing provider diagnostics (0.94031ms)
+✔ query errors return a fixed failure instead of false completion or private details (0.48041ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10.076192
+✔ requires an explicit project and rejects malformed/unknown/duplicate flags offline (3.583045ms)
+✔ defaults to dry run using only the current server clock and fixed page limit (0.598694ms)
+✔ applies only with matching confirmation and retains incomplete page evidence (0.445513ms)
+✔ provider failures are sanitized without echoing profile/identity identifiers (0.494095ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.577049

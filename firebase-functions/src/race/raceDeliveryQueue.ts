@@ -33,7 +33,7 @@ export type RaceDeliveryQueueReport = {
 /** Rotates bounded retry pages so persistent failures cannot monopolize the oldest-first queue. */
 export async function processRaceDeliveryQueue(db: Firestore, collection: RaceDeliveryQueueName,
   deliver: (eventId: string) => Promise<boolean>, nowMs: number, limit = RACE_DELIVERY_PAGE_SIZE): Promise<RaceDeliveryQueueReport> {
-  if (!RACE_DELIVERY_QUEUES.includes(collection) || !Number.isInteger(limit) || limit < 1 || limit > RACE_DELIVERY_PAGE_SIZE)
+  if (!RACE_DELIVERY_QUEUES.includes(collection) || !Number.isSafeInteger(nowMs) || nowMs < 0 || nowMs > Number.MAX_SAFE_INTEGER - RACE_DELIVERY_LEASE_MS || !Number.isInteger(limit) || limit < 1 || limit > RACE_DELIVERY_PAGE_SIZE)
     throw new HttpsError("invalid-argument", "Invalid race delivery queue or page size.");
   /** Queue checkpoint contains no owner identity or copied provider payload. */
   const stateRef = db.doc(`raceMaintenance/${collection}Recovery`);
@@ -45,7 +45,8 @@ export async function processRaceDeliveryQueue(db: Firestore, collection: RaceDe
     const snapshot = await tx.get(stateRef);
     /** Malformed lease clocks cannot permanently lock a queue. */
     const current = snapshot.data();
-    if (Number.isFinite(current?.leaseUntilMs) && current!.leaseUntilMs > nowMs) return null;
+    if (typeof current?.leaseId === "string" && current.leaseId.trim().length > 0 && current.leaseId.length <= 160 &&
+      Number.isSafeInteger(current.leaseUntilMs) && current.leaseUntilMs > nowMs) return null;
     /** Invalid historical cursors safely restart a complete bounded page. */
     const raw = current?.cursor;
     /** Creation and ID are a complete indexed ordering key. */

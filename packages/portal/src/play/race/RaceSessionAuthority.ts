@@ -1,11 +1,43 @@
-import {RaceEntryResponseSchema, AbandonRaceRunResponseSchema, ListRaceCategoriesResponseSchema, ListRaceInboxResponseSchema, PublishRaceChallengeResponseSchema, RaceChallengePreviewSchema, RaceOutcomeSchema, RaceRunResponseSchema, RaceRunViewSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema, SubmitRaceGuessResponseSchema, type RaceRunView, type RaceOutcome} from "@qwordly/core/race";
+import {RaceEntryResponseSchema, AbandonRaceRunResponseSchema, ListRaceCategoriesResponseSchema, ListRaceInboxResponseSchema, PublishRaceChallengeResponseSchema, RaceChallengePreviewSchema, RaceOutcomeSchema, RaceRunResponseSchema, RaceRunViewSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema, SubmitRaceGuessResponseSchema, type RaceRunView, type RaceOutcome, type RaceMatchFailure} from "@qwordly/core/race";
+import {assertExistingRaceRun} from "./logic/raceEntrySelection";
 import {RacePlay} from "./RacePlay";
 import type {RaceSessionState} from "./RaceSession.types";
-import type {RaceOperation} from "./logic/raceOperations";
+import {raceOperationRequiresRefresh, type RaceOperation} from "./logic/raceOperations";
 import type {RaceLocale} from "@qwordly/core/race";
 import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, projectRaceOutcome} from "./logic/racePresentation";
 import {splitGraphemes} from "@qwordly/core/game";
 
+/** Authority diagnostics never become untranslated player-facing copy. */
+export const raceErrorKey = (error: string | null): string | null => error === null ? null
+  : ["RaceTo10.ERROR_GENERIC", "RaceTo10.ERROR_INVALID_RESPONSE", "RaceTo10.ERROR_LOCALE_MISMATCH", "RaceTo10.RESULTS_EMPTY"].includes(error)
+    ? error : "RaceTo10.ERROR_GENERIC";
+
+/** Local rollback keeps the authority barrier until a later validated run replaces it. */
+export const raceRejectedState = (error: string, operation: RaceOperation, requiresRunRefresh: boolean, allowTypingWhilePending: boolean):
+  Pick<RaceSessionState, "error" | "requiresRunRefresh" | "allowTypingWhilePending"> => ({
+    error: raceErrorKey(error), requiresRunRefresh: requiresRunRefresh || raceOperationRequiresRefresh(operation), allowTypingWhilePending,
+  });
+
+/** Converts validated matchmaking recovery reasons into the existing translated diagnostics. */
+export const raceMatchErrorKey = (failure: RaceMatchFailure): string =>
+  failure.reason === "invalid-response" ? "RaceTo10.ERROR_INVALID_RESPONSE" :
+    failure.reason === "temporarily-unavailable" || failure.reason === "projection-unavailable" ? "RaceTo10.MATCH_TEMPORARY" :
+    failure.reason === "search-budget-exceeded" || failure.reason === "eligibility-changed" ? "RaceTo10.MATCH_TRY_NEW" :
+    failure.reason === "intent-expired" ? "RaceTo10.MATCH_EXPIRED" :
+    failure.reason === "intent-consumed" ? "RaceTo10.MATCH_CONSUMED" : "RaceTo10.MATCH_UNAVAILABLE";
+
+/** Privately owns confirmed nested facts and retains immutable optional content omitted by compatible legacy views. */
+export const isolateConfirmedRace = (run: RaceRunView, owned: RaceRunView | null): RaceRunView => {
+  /** Retention is restricted to the same authority-owned run. */
+  const previous = owned?.runId === run.runId ? owned : null;
+  return structuredClone({...run,
+    preloadedRiddles: run.preloadedRiddles?.map((riddle, position) => ({...riddle,
+      hint: riddle.hint ?? previous?.preloadedRiddles?.[position].hint})) ?? previous?.preloadedRiddles,
+    currentRiddle: run.currentRiddle && {...run.currentRiddle,
+      evaluation: run.currentRiddle.evaluation ?? (run.currentRiddle.position === previous?.currentRiddle?.position ? previous.currentRiddle.evaluation : undefined)},
+    startsAtMs: run.startsAtMs ?? previous?.startsAtMs,
+    preparationExpiresAtMs: run.preparationExpiresAtMs ?? previous?.preparationExpiresAtMs});
+};
 /** Recreates input only when the authority actually changes the displayed question. */
 export const raceAttemptState = (run: RaceRunView): Pick<RaceSessionState, "currentLetters" | "activeSlotIndex" | "raceGuesses" | "feedback"> => ({
   currentLetters: createRaceAttempt(run.currentRiddle), activeSlotIndex: findFirstEditableRaceSlot(run.currentRiddle), raceGuesses: [], feedback: null,
@@ -24,6 +56,8 @@ const raceReveals = (prompt: RaceRunView["currentRiddle"]): Map<number, string> 
 };
 /** Checks immutable content and editable prompt coherence before any rollback checkpoint is consumed. */
 const raceSnapshot = (run: RaceRunView, previous?: RaceRunView | null): RaceRunView => {
+  // A creator records its own target; only challengers can race a recorded opponent.
+  if (run.role === "creator" && run.opponent) throw new Error("Unexpected creator opponent");
   // A compatible response can omit a known start, but cannot evade its clock relationship.
   if (run.startsAtMs === undefined && previous?.startsAtMs !== undefined)
     RaceRunViewSchema.parse({...run, startsAtMs: previous.startsAtMs});
@@ -89,8 +123,9 @@ const raceSnapshot = (run: RaceRunView, previous?: RaceRunView | null): RaceRunV
   const riddle = deck?.[prompt.position];
   if (riddle && (prompt.riddleId !== riddle.riddleId || prompt.text !== riddle.text || prompt.answerLength !== riddle.answerLength ||
     prompt.evaluation && (prompt.evaluation.answer !== riddle.evaluation.answer || prompt.evaluation.locale !== riddle.evaluation.locale))) throw new Error("Wrong race deck prompt");
-  /** A legacy current-answer payload must be internally coherent even without a complete deck. */
-  const evaluation = prompt.evaluation ?? riddle?.evaluation;
+  /** Omitted answers still constrain reveals when this exact question was privately confirmed. */
+  const evaluation = prompt.evaluation ?? riddle?.evaluation ??
+    (prompt.position === originalPrompt?.position ? originalPrompt.evaluation : undefined);
   if (evaluation) {
     /** Reveals must fix actual answer slots instead of silently changing local scoring. */
     const answer = splitGraphemes(evaluation.answer, run.locale);
@@ -99,14 +134,22 @@ const raceSnapshot = (run: RaceRunView, previous?: RaceRunView | null): RaceRunV
   }
   return run;
 };
+/** Binds run-scoped command identity to confirmed authority rather than retained rendering references. */
+export const bindRaceCommand = (payload: Record<string, unknown>, owned: RaceRunView | null): Record<string, unknown> => {
+  if (!owned || typeof payload.runId !== "string") return payload;
+  return {...payload, runId: owned.runId,
+    ...(typeof payload.riddleId === "string" && owned.currentRiddle ? {riddleId: owned.currentRiddle.riddleId} : {})};
+};
 /** Internal response application; only RaceSession crosses this implementation seam. */
 export function applyRaceAuthority(state: RaceSessionState, operation: RaceOperation, data: unknown, play: RacePlay, now: number, locale: RaceLocale, resumeDraft?: RaceResumeDraft | null, ownedSnapshot?: RaceRunView | null, confirmedOutcome?: RaceOutcome | null): Partial<RaceSessionState> {
   /** Rejects validly shaped payloads for a different owned attempt before checkpoint consumption. */
   const owned = (run: RaceRunView): RaceRunView => {
-    if (!state.run || run.runId !== state.run.runId || run.locale !== locale ||
-      run.role !== state.run.role || run.categoryId !== state.run.categoryId ||
-      run.challengeId !== state.run.challengeId || run.rivalryChallengeId !== state.run.rivalryChallengeId) throw new Error("Wrong race run");
-    return raceSnapshot(run, ownedSnapshot ?? state.run);
+    /** Run selection remains private even when consumers edit the displayed snapshot. */
+    const previous = ownedSnapshot ?? state.run;
+    if (!previous || run.runId !== previous.runId || run.locale !== locale ||
+      run.role !== previous.role || run.categoryId !== previous.categoryId ||
+      run.challengeId !== previous.challengeId || run.rivalryChallengeId !== previous.rivalryChallengeId) throw new Error("Wrong race run");
+    return raceSnapshot(run, previous);
   };
   /** Paid confirmations must include the original action's charge before consuming its checkpoint. */
   const paid = (run: RaceRunView, type: "hint" | "skip"): void => {
@@ -136,11 +179,13 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
     case "raceEntry": case "raceInviteCancel": {
       /** Only typed readiness determines waiting, terminal state and polling. */
       let entryStatus = RaceEntryResponseSchema.parse(data);
+      if (operation === "raceInviteCancel" && entryStatus.status !== "cancelled") throw new Error("Cancellation was not confirmed");
       if (entryStatus.status === "ready" && entryStatus.challenge.locale !== locale) throw new Error("Wrong entry locale");
       if (entryStatus.status === "ready" && entryStatus.challenge.challengeId !== state.activeChallengeId) throw new Error("Wrong entry challenge");
-      // A delayed pre-expiry read cannot revive this invitation lifetime.
-      if (operation === "raceEntry" && state.entryStatus?.status === "expired" && ["waiting", "ready"].includes(entryStatus.status)) entryStatus = state.entryStatus;
-      return {entryStatus, challenge: entryStatus.status === "ready" ? entryStatus.challenge : null};
+      // A delayed read cannot revive an expired or cancelled invitation lifetime.
+      if (operation === "raceEntry" && state.entryStatus && (state.entryStatus.status === "cancelled" ||
+        state.entryStatus.status === "expired" && ["waiting", "ready"].includes(entryStatus.status))) entryStatus = state.entryStatus;
+      return {entryStatus, activeChallengeId: state.activeChallengeId, challenge: entryStatus.status === "ready" ? entryStatus.challenge : null};
     }
     case "raceStart": case "raceResume": case "raceReady": {
       /** Prepared, scheduled, active or terminal authority snapshot. */
@@ -151,9 +196,10 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       /** Every editable authority snapshot must have a coherent reveal set before recovery can consume input. */
       const revealed = raceReveals(run.currentRiddle);
       if (operation === "raceReady" || operation === "raceResume" && state.run) owned(run);
+      if (operation === "raceResume") assertExistingRaceRun(state, run);
       if (operation === "raceStart" && state.activeChallengeId &&
         (run.challengeId !== state.activeChallengeId || run.role !== "challenger" || !run.opponent ||
-          state.challenge && (run.opponent.adjustedFinishMs !== state.challenge.adjustedTimeToBeatMs ||
+          state.challenge && (run.categoryId !== state.challenge.categoryId || run.opponent.adjustedFinishMs !== state.challenge.adjustedTimeToBeatMs ||
             run.opponent.displayName !== state.challenge.creator.displayName))) throw new Error("Wrong challenge run");
       /** Recovery preserves known input only for the same authority-owned question. */
       let attempt = raceAttemptState(run);
@@ -172,7 +218,8 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
           activeSlotIndex: revealed.has(draft.activeSlotIndex)
             ? findFirstEditableRaceSlot(run.currentRiddle) : draft.activeSlotIndex};
       }
-      return {run, receivedAtMs: now, adjustedNow: run.adjustedElapsedMs, ...attempt};
+      return {run, entryStatus: null, challenge: null, activeChallengeId: run.challengeId,
+        receivedAtMs: now, adjustedNow: run.adjustedElapsedMs, ...attempt};
     }
     case "raceAbandon": {
       /** Abandonment must never manufacture a scored result. */
@@ -205,7 +252,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       /** Invalid hint metadata must leave the original submission recoverable. */
       const revealed = raceReveals(result.run.currentRiddle);
       /** RacePlay retains the original submission even when successor input changes. */
-      const confirmation = play.confirmGuess(result, state.run, state.raceGuesses, state.currentLetters);
+      const confirmation = play.confirmGuess(result, state.run, state.raceGuesses, state.currentLetters, ownedSnapshot);
       /** Authority may include hints applied while this confirmation was in flight. */
       const currentLetters = [...state.currentLetters];
       for (const [index, letter] of revealed) currentLetters[index] = letter;
@@ -225,9 +272,18 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       paid(result.run, "hint");
       /** A hint confirms the same question even when its authority view contains additional hints. */
       const prompt = result.run.currentRiddle;
+      /** Question identity comes from confirmed ownership, independently of paid rendering. */
+      const original = ownedSnapshot ?? state.run;
+      /** A newly charged hint must reveal a previously unknown slot of its privately confirmed question. */
+      const question = original?.currentRiddle;
+      if (!question || result.index >= question.answerLength || raceReveals(question).has(result.index))
+        throw new Error("Unchanged hint reveal");
+      /** Terminal responses omit the prompt, so validate metadata against any already-known answer. */
+      const evaluation = question.evaluation ?? original?.preloadedRiddles?.[question.position]?.evaluation;
+      if (evaluation && splitGraphemes(evaluation.answer, locale)[result.index] !== result.revealedLetter.normalize("NFC"))
+        throw new Error("Wrong hint answer");
       if (!prompt) {
         /** Terminal hints still belong to the original paid question and recorded penalty event. */
-        const original = state.run?.currentRiddle;
         /** The final event proves that this hint caused the competitive deadline transition. */
         const event = result.run.events.at(-1);
         /** Only server-recorded competitive completion or timeout can omit the active question. */
@@ -235,24 +291,28 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
           result.run.status === "timed_out" && event.adjustedElapsedMs >= result.run.rules.maxAdjustedTimeMs ||
           result.run.status === "completed" && result.run.opponent && result.run.correctCount < result.run.rules.targetCorrect &&
             event.adjustedElapsedMs > result.run.opponent.adjustedFinishMs);
-        if (!original || result.index >= original.answerLength || event?.type !== "hint" ||
-          event.riddlePosition !== original.position || event.penaltyAddedMs !== result.run.rules.hintPenaltyMs ||
+        if (!question || result.index >= question.answerLength || event?.type !== "hint" ||
+          event.riddlePosition !== question.position || event.penaltyAddedMs !== result.run.rules.hintPenaltyMs ||
           event.correctCount !== result.run.correctCount || !ended) throw new Error("Invalid terminal hint confirmation");
         play.confirmPaid("raceHint", result.run);
         return {run: result.run, receivedAtMs: now, adjustedNow: result.run.adjustedElapsedMs,
           ...raceAttemptState(result.run), penaltyFlash: "RaceTo10.HINT_PENALTY"};
       }
-      if (result.run.status !== "active" || prompt.riddleId !== state.run?.currentRiddle?.riddleId ||
-        prompt.position !== state.run.currentRiddle.position || prompt.answerLength !== state.currentLetters.length) throw new Error("Wrong hint question");
+      if (result.run.status !== "active" || prompt.riddleId !== original?.currentRiddle?.riddleId ||
+        prompt.position !== original.currentRiddle.position || prompt.answerLength !== original.currentRiddle.answerLength) throw new Error("Wrong hint question");
       /** Every reveal must occupy a unique answer slot before the rollback checkpoint is consumed. */
       const revealed = raceReveals(prompt);
       if (revealed.get(result.index) !== result.revealedLetter) throw new Error("Inconsistent hint confirmation");
-      play.confirmPaid("raceHint", result.run);
+      /** The paid checkpoint owns every unrevealed letter and accepted historical row. */
+      const draft = play.confirmPaid("raceHint", result.run);
       /** Merge the complete authoritative reveal set and preserve all unrevealed draft letters. */
-      const currentLetters = [...state.currentLetters];
+      const currentLetters = [...(draft?.letters ?? state.currentLetters)];
+      /** Selection was fixed before paid delivery locked editing. */
+      const activeSlotIndex = draft?.activeSlotIndex ?? state.activeSlotIndex;
       for (const [index, letter] of revealed) currentLetters[index] = letter;
       return {run: result.run, receivedAtMs: now, currentLetters,
-        activeSlotIndex: revealed.has(state.activeSlotIndex) ? findFirstEditableRaceSlot(prompt) : state.activeSlotIndex,
+        activeSlotIndex: revealed.has(activeSlotIndex) ? findFirstEditableRaceSlot(prompt) : activeSlotIndex,
+        ...(draft ? {raceGuesses: draft.guesses} : {}),
         penaltyFlash: "RaceTo10.HINT_PENALTY"};
     }
     case "raceSkip": {
@@ -267,9 +327,9 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
     case "raceOutcome": {
       /** Wrong-run results cannot restore an earlier attempt or trigger provider effects. */
       const outcome = RaceOutcomeSchema.parse(data);
-      if (!state.run || outcome.runId !== state.run.runId || outcome.challengeId !== state.run.challengeId) throw new Error("Wrong outcome run");
       /** A projected deadline may be superseded by another tab; confirmed terminal facts cannot be. */
       const confirmed = ownedSnapshot ?? state.run;
+      if (!confirmed || outcome.runId !== confirmed.runId || outcome.challengeId !== confirmed.challengeId) throw new Error("Wrong outcome run");
       /** Repeated outcome reads may change reward presentation without changing the settled race. */
       const expected = confirmedOutcome ?? (["completed", "timed_out"].includes(confirmed.status)
         ? projectRaceOutcome(confirmed, confirmed.adjustedElapsedMs) : null);
@@ -293,19 +353,22 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
         outcome.result === "timed_out" && outcome.correctCount === confirmed.rules.targetCorrect ||
         expected && ["result", "correctCount", "wallFinishMs", "hintPenaltyMs", "skipPenaltyMs", "totalPenaltyMs", "adjustedFinishMs", "opponentAdjustedFinishMs"]
           .some(field => Reflect.get(outcome, field) !== Reflect.get(expected, field)) ||
-        (state.run.role === "creator" ? !["recorded", "timed_out"].includes(outcome.result) : outcome.result === "recorded") ||
-        ["recorded", "player_win", "tie"].includes(outcome.result) && outcome.correctCount !== state.run.rules.targetCorrect ||
-        outcome.publishable && (outcome.result !== "recorded" || outcome.correctCount !== state.run.rules.targetCorrect) ||
+        (confirmed.role === "creator" ? !["recorded", "timed_out"].includes(outcome.result) : outcome.result === "recorded") ||
+        ["recorded", "player_win", "tie"].includes(outcome.result) && outcome.correctCount !== confirmed.rules.targetCorrect ||
+        outcome.publishable && (outcome.result !== "recorded" || outcome.correctCount !== confirmed.rules.targetCorrect) ||
         outcome.rematchEligible && ["recorded", "timed_out"].includes(outcome.result)) throw new Error("Invalid race outcome");
-      return {outcome, run: applyRaceOutcome(state.run, outcome), stage: "result", receivedAtMs: now};
+      return {outcome, run: applyRaceOutcome(confirmed, outcome), stage: "result", receivedAtMs: now};
     }
     case "racePublish": {
       /** Only the current completed creator run may become a publication. */
       const published = PublishRaceChallengeResponseSchema.parse(data);
-      if (!state.run || state.run.status !== "completed" || state.run.role !== "creator" ||
-        published.challengeId !== published.preview.challengeId || published.preview.locale !== state.run.locale ||
-        published.preview.categoryId !== state.run.categoryId || published.preview.adjustedTimeToBeatMs !== state.outcome?.adjustedFinishMs) throw new Error("Invalid publication");
-      return {published, publishRequested: false};
+      /** Publication belongs to the private completed recording and its settled outcome. */
+      const confirmed = ownedSnapshot ?? state.run;
+      if (!confirmed || confirmed.status !== "completed" || confirmed.role !== "creator" ||
+        published.challengeId !== published.preview.challengeId || published.preview.locale !== confirmed.locale ||
+        published.preview.categoryId !== confirmed.categoryId || published.preview.adjustedTimeToBeatMs !== (confirmedOutcome ?? state.outcome)?.adjustedFinishMs) throw new Error("Invalid publication");
+      return {published, publishRequested: false, run: structuredClone(confirmed),
+        outcome: structuredClone(confirmedOutcome ?? state.outcome)};
     }
     case "raceBlock": case "raceReport": {
       /** Safety confirmations must carry their expected boolean acknowledgment. */

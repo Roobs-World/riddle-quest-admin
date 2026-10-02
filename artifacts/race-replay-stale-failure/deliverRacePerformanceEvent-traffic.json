@@ -1,0 +1,12 @@
+{
+  "status": {
+    "latestReadyRevisionName": "deliverraceperformanceevent-00014-yac",
+    "traffic": [
+      {
+        "latestRevision": true,
+        "percent": 100,
+        "revisionName": "deliverraceperformanceevent-00014-yac"
+      }
+    ]
+  }
+}

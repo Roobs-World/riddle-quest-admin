@@ -1,0 +1,11 @@
+# Waiting invitation selection and lifetime
+
+Seven baseline regressions reproduced public snapshot changes retargeting polling or retry, suppressing polling through entry erasure, extending invitation expiry, fabricating recipient cancellation capability, suppressing creator cancellation, or reviving an expired invitation through a delayed poll.
+
+Waiting and terminal entry responses omit challenge identity. Their accepted private facts now retain the original command selection alongside the snapshot lifetime. Authority response patches restore that original selection. Polling, visibility recovery, cancellation and retry use accepted identity and capability; expiry uses the accepted deadline. Correlated responses validate against a copied private entry view, preserving expiration even when public state is rewritten.
+
+The full client suite passes 1,725 tests across 202 suites, with 102 tests and 13 suites skipped. Sixteen injected-browser cases cover seven mutation paths and an unchanged polling control at desktop/mobile widths. Creator cancellation clicks the actual rendered button; fabricated recipient capability exposes no cancellation button. The browser clock is injected for deterministic deadline and backoff checks. Fifty retained browser cases pass across private entry facts, creator acceptance, entry callback ownership and existing attempt/opponent authority.
+
+All seven isolated builds, exact dependency evidence, portal types, security and scalability pass. Focused files pass documentation and size requirements; global concurrent documentation and hosted E2E size failures remain pending. The manifest preserves earlier checks and adds waiting selection, for 72 checks. Focused source, log and artifact hashes are retained in `artifacts/race-waiting-selection/verification-held.json`.
+
+Previously captured race backend files remain unchanged; four concurrent solo gameplay files differ from the earlier complete backend verification. No new complete-backend verification is claimed. No visible text, hosted draft update, Jest publication or Firebase deployment occurred in this batch. The other hosted E2E chat continues uninterrupted; dashboard completion and the broader multiplayer audit remain pending.

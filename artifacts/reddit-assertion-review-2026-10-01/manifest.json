@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T08:00:41.869025+00:00",
+  "intent": "local-reddit-assertion-expiry-review",
+  "uploadEligible": false,
+  "source": {
+    "head": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+    "dirty": true,
+    "selectedFiles": [
+      {
+        "file": "firebase-functions/src/reddit/redditSecurity.ts",
+        "sha256": "9344c385105239a28bc2110a3c22a9655bd7d24b39ad880e8a52da41ea1e6319"
+      },
+      {
+        "file": "firebase-functions/src/__tests__/redditSecurity.test.ts",
+        "sha256": "a28e10d778a98934afdf1187edcfccc8d30b30cb36549bfe6705a33c841a1b44"
+      },
+      {
+        "file": "firebase-functions/src/__tests__/redditGatewayReplay.it.test.ts",
+        "sha256": "e9bba225231b528bc8bc7948067401eb4af9fef4d898b3b80c5cc19eed1fa84a"
+      },
+      {
+        "file": "docs/reddit-games-operations.md",
+        "sha256": "355bea633e21b45aa991c6bc342be9f21263d204c525a5c59e7d2acab4feeea9"
+      },
+      {
+        "file": "docs/reddit-games-progress.html",
+        "sha256": "3013af97c1633cf24fb8b393d55b676e02ec703699af84722a83b879323482f0"
+      },
+      {
+        "file": "docs/evidence/reddit-assertion-expiry-2026-10-01.md",
+        "sha256": "a970c5c19e7b457f9a7881c85ad920336a234892a8c3c083c03a54eaf0454f4a"
+      }
+    ],
+    "completeCleanSourceProof": false
+  },
+  "checks": {
+    "initialRegressionFailures": 5,
+    "focusedTests": 32,
+    "node22Version": "22.23.1",
+    "backendSuites": 116,
+    "backendTests": 1398,
+    "emulatorTests": 4,
+    "emulatorProject": "demo-riddle-reddit-gateway",
+    "requiredTargetBuilds": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo"
+    ],
+    "artifactAudits": 6,
+    "redditPackageTests": 35,
+    "backendBuild": true,
+    "types": true,
+    "lint": true,
+    "moduleCycleAudit": true,
+    "tsdocDeclarations": 19114,
+    "tsdocFiles": 843,
+    "sourceSizeFiles": 914,
+    "redditDocumentationTests": 2,
+    "redditTrackerComplete": 36,
+    "redditTrackerTotal": 49,
+    "diffWhitespace": true
+  },
+  "clientComparison": {
+    "reference": "artifacts/facebook-tournament-entry-review-2026-10-01/manifest.json",
+    "selectedClientFiles": 41,
+    "sourceMismatches": [],
+    "artifactEntries": 399,
+    "artifactMatches": true
+  },
+  "validationLogs": [
+    {
+      "file": "validation/backend-build.log",
+      "sha256": "216d5a964933100dbb5c9a7eab827ccbffa51c083e4ce300e2c0140c11ac585e"
+    },
+    {
+      "file": "validation/backend-node22.log",
+      "sha256": "d3d93c916f188bddd82da14c92630a9567f070413685894b62d6e3822ca4027c"
+    },
+    {
+      "file": "validation/build-netflix.log",
+      "sha256": "4a37341d40e10ea6400128830ab307781b14c054f4072e5f598b5f9dc7adec24"
+    },
+    {
+      "file": "validation/build-web.log",
+      "sha256": "175bf2c4c320587f4d97bb8407deb741877340c4d2b1275bb46d0649b359f0a3"
+    },
+    {
+      "file": "validation/build-yahoo.log",
+      "sha256": "1e7f61a88ac4e5c4082e4009f4b0a895300c24c7c30084122e8029f049092807"
+    },
+    {
+      "file": "validation/build-youtube.log",
+      "sha256": "7b4160f774b0d874828f0697711dc495feb54cadcbfab5a531634e10c9850ea1"
+    },
+    {
+      "file": "validation/emulator-node22.log",
+      "sha256": "aef46e40b5b74fa3c324ec5494df91824998cb8d912a7d585bb95cc451df6b32"
+    },
+    {
+      "file": "validation/lint.log",
+      "sha256": "df5d790ccc1ae9c5d0e77ed13bfe8324bd96617af34d72eb9bf5b9f0aa95f1a0"
+    },
+    {
+      "file": "validation/reddit-docs.log",
+      "sha256": "2b8c06595c303117629194d3326b7809d863b1fa36af890e235b095c695d5709"
+    },
+    {
+      "file": "validation/reddit-package.log",
+      "sha256": "4f3b0d47345723558005f89d54bf2e5bf83496f9ca08d55103c0fd0dc731f278"
+    },
+    {
+      "file": "validation/reddit-tracker.log",
+      "sha256": "7123d2a01fd07f8c0f49aa96bff29743b29f8f439798e063cbb4a70c9b32c060"
+    },
+    {
+      "file": "validation/security-before.log",
+      "sha256": "dca627cf949f06387622e4b986a93f35e11386ff1c79fdbf86f6144009c9ba16"
+    },
+    {
+      "file": "validation/security-final.log",
+      "sha256": "5ff7b3dabffd56155a9636bae22f2cec9d8326574bb5a5051723972924fd5702"
+    },
+    {
+      "file": "validation/source-size.log",
+      "sha256": "e3127cca2499d22f6297bc2064822ad0d58320c149ded6b2afa124608d3001ea"
+    },
+    {
+      "file": "validation/tsdoc.log",
+      "sha256": "f563b3192089918bbd21e95319839365a20b4d3ec74280da543af43c768d94c3"
+    },
+    {
+      "file": "validation/types.log",
+      "sha256": "b42ff1064376501314d9850f3c1c447ffd62015bfad00343ddcc93d27ae05f6b"
+    },
+    {
+      "file": "validation/whitespace.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "providerMutations": {
+    "uploads": 0,
+    "installs": 0,
+    "deployments": 0,
+    "publishes": 0,
+    "payments": 0,
+    "messagesSent": 0,
+    "templatesActivated": 0,
+    "productionDatabaseWrites": 0
+  },
+  "remainingRequirements": {
+    "facebookIncomplete": 33,
+    "redditIncomplete": 13,
+    "source": "current repository trackers",
+    "providerAcceptanceProven": false
+  }
+}

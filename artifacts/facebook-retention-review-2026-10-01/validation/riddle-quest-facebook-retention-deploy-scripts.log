@@ -1,0 +1,82 @@
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 10h ago)
+..                                       | Progress: resolved 1, reused 0, downloaded 0, added 0
+..                                       |   +1 +
+..                                       | Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 537ms using pnpm v11.21.0
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js && node scripts/facebook-referral-retention.test.js
+✔ requires an explicit Reddit sandbox-commerce gate (1.037305ms)
+✔ accepts only externally approval-gated Reddit capability activations (0.108917ms)
+✔ validates Reddit kill switches and rejects unknown or duplicate capabilities (0.083718ms)
+✔ accepts only the exact Reddit app and reviewed Firebase host (0.0899ms)
+✔ accepts the complete non-secret Facebook deployment contract (0.235476ms)
+✔ rejects absent or malformed Facebook deployment configuration (0.174621ms)
+✔ rejects unsafe origins, deletion URLs, and feature switches (0.113846ms)
+✔ accepts the production deployment contract (0.188578ms)
+✔ binds Firebase predeploy validation to the production project (0.117503ms)
+✔ keeps the tracked environment example deploy-valid (0.366234ms)
+✔ binds the Facebook backend command to the complete backend release unit (0.194368ms)
+✔ binds the Reddit backend command to the complete backend release unit (0.483286ms)
+✔ documents an unambiguous production Functions deploy command (0.125749ms)
+✔ requires the exact Jest game UUID (0.097154ms)
+✔ rejects a plaintext Jest origin (0.060484ms)
+✔ rejects a localhost Jest origin (0.039304ms)
+✔ rejects a untrusted Jest origin (0.047941ms)
+✔ rejects a non-origin URL Jest origin (0.044254ms)
+✔ requires the primary Jest origin (0.059142ms)
+✔ rejects incomplete, untrusted, or duplicated consumable configuration (0.045767ms)
+✔ rejects incomplete, untrusted, or duplicated consumable configuration (0.03193ms)
+✔ rejects incomplete, untrusted, or duplicated consumable configuration (0.030758ms)
+✔ rejects missing, untrusted, or duplicated subscription allowlists (0.043493ms)
+✔ rejects missing, untrusted, or duplicated subscription allowlists (0.02634ms)
+✔ rejects missing, untrusted, or duplicated subscription allowlists (0.022873ms)
+✔ rejects insecure or malformed Sentry transport (0.056126ms)
+✔ rejects insecure or malformed Sentry transport (0.051046ms)
+✔ allows Sentry to be deliberately disabled (0.042791ms)
+✔ fails closed when the project-specific environment file is absent (0.08973ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.413704
+✔ accepts the complete Facebook Functions surface (0.739ms)
+✔ rejects every omitted callable or trigger (0.650783ms)
+✔ rejects duplicate exports and understands aliases (0.144925ms)
+✔ accepts the repository entry point (0.116341ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4.163668
+✔ accepts the complete Reddit Functions surface (0.721086ms)
+✔ rejects every omitted Reddit endpoint (0.161035ms)
+✔ accepts the repository entry point (0.107644ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6.822825
+✔ referral retention stays offline without an explicit project or exact apply confirmation (3.039638ms)
+✔ defaults to dry-run and pages exclusively by an opaque token hash (0.679968ms)
+✔ writes only after matching project confirmation and reports failures without provider details (0.822628ms)
+✔ does not claim completion for oversized token fan-out (0.754239ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.428552

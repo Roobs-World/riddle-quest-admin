@@ -4,10 +4,10 @@
     "COLOR_CORRECT": "Litera jest prawidłowa i znajduje się na właściwym miejscu",
     "COLOR_MISPLACED": "Litera znajduje się w słowie, ale w niewłaściwej pozycji",
     "COLOR_WRONG": "Litery w ogóle nie ma w słowie",
-    "GOAL_DESCRIPTION": "Odgadnij ukrytą zagadkę w 3 próbach, korzystając z kolorowych wskazówek.",
+    "GOAL_DESCRIPTION": "Odgadnij ukrytą zagadkę w 5 próbach, korzystając z kolorowych wskazówek.",
     "GOAL_TITLE": "Cel",
     "GOT_IT_BUTTON": "Rozumiem!",
-    "TIPS_DESCRIPTION": "Zacznij od typowych liter i skorzystaj z informacji o kolorze, aby zawęzić swoje domysły. Pamiętaj, masz tylko 3 próby!",
+    "TIPS_DESCRIPTION": "Zacznij od typowych liter i skorzystaj z informacji o kolorze, aby zawęzić swoje domysły. Pamiętaj, masz tylko 5 prób!",
     "TIPS_TITLE": "Wskazówki dotyczące sukcesu"
   },
   "WelcomeBackModal": {

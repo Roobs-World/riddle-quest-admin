@@ -1,0 +1,95 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/race/__tests__/raceColdSearchCatalog.test.ts
+  ● Cold discovery catalog recovery › loads the catalog after cancelled without erasing recovery guidance
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "game:listRaceCategories"
+    Received: undefined
+
+      20 |       recovery: {read: () => journal, save: record => {journal = record;}, clear: () => {journal = null;}}});
+      21 |     await settleMatch(h.session);
+    > 22 |     expect(h.last()?.type).toBe("game:listRaceCategories");
+         |                            ^
+      23 |     /** Loading categories must preserve the provider's failed/empty retry explanation. */
+      24 |     const before = h.session.getSnapshot();
+      25 |     expect(before.matchSearchStatus).toBe(mode === "cancelled" ? "idle" : mode === "empty" ? "empty" : "failed");
+
+      at src/play/race/__tests__/raceColdSearchCatalog.test.ts:22:28
+
+  ● Cold discovery catalog recovery › loads the catalog after failure without erasing recovery guidance
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "game:listRaceCategories"
+    Received: undefined
+
+      20 |       recovery: {read: () => journal, save: record => {journal = record;}, clear: () => {journal = null;}}});
+      21 |     await settleMatch(h.session);
+    > 22 |     expect(h.last()?.type).toBe("game:listRaceCategories");
+         |                            ^
+      23 |     /** Loading categories must preserve the provider's failed/empty retry explanation. */
+      24 |     const before = h.session.getSnapshot();
+      25 |     expect(before.matchSearchStatus).toBe(mode === "cancelled" ? "idle" : mode === "empty" ? "empty" : "failed");
+
+      at src/play/race/__tests__/raceColdSearchCatalog.test.ts:22:28
+
+  ● Cold discovery catalog recovery › loads the catalog after empty without erasing recovery guidance
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "game:listRaceCategories"
+    Received: undefined
+
+      20 |       recovery: {read: () => journal, save: record => {journal = record;}, clear: () => {journal = null;}}});
+      21 |     await settleMatch(h.session);
+    > 22 |     expect(h.last()?.type).toBe("game:listRaceCategories");
+         |                            ^
+      23 |     /** Loading categories must preserve the provider's failed/empty retry explanation. */
+      24 |     const before = h.session.getSnapshot();
+      25 |     expect(before.matchSearchStatus).toBe(mode === "cancelled" ? "idle" : mode === "empty" ? "empty" : "failed");
+
+      at src/play/race/__tests__/raceColdSearchCatalog.test.ts:22:28
+
+  ● Cold discovery catalog recovery › loads the catalog after saved-failure without erasing recovery guidance
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "game:listRaceCategories"
+    Received: undefined
+
+      20 |       recovery: {read: () => journal, save: record => {journal = record;}, clear: () => {journal = null;}}});
+      21 |     await settleMatch(h.session);
+    > 22 |     expect(h.last()?.type).toBe("game:listRaceCategories");
+         |                            ^
+      23 |     /** Loading categories must preserve the provider's failed/empty retry explanation. */
+      24 |     const before = h.session.getSnapshot();
+      25 |     expect(before.matchSearchStatus).toBe(mode === "cancelled" ? "idle" : mode === "empty" ? "empty" : "failed");
+
+      at src/play/race/__tests__/raceColdSearchCatalog.test.ts:22:28
+
+  ● Cold discovery catalog recovery › loads categories when the provider retires during a cold search
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "game:listRaceCategories"
+    Received: undefined
+
+      39 |       recovery: {read: saved, save: () => undefined, clear: () => undefined}});
+      40 |     selected = undefined; h.session.tick(); await settleMatch(h.session);
+    > 41 |     expect(h.last()?.type).toBe("game:listRaceCategories");
+         |                            ^
+      42 |     h.respond("raceCategories", await catalog()); expect(h.session.getSnapshot().categories.length).toBeGreaterThan(0);
+      43 |   });
+      44 | });
+
+      at Object.<anonymous> (src/play/race/__tests__/raceColdSearchCatalog.test.ts:41:28)
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 5 total
+Snapshots:   0 total
+Time:        0.233 s
+Ran all test suites matching src/play/race/__tests__/raceColdSearchCatalog.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/race/__tests__/raceColdSearchCatalog.test.ts

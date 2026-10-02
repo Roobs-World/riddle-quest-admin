@@ -1,0 +1,60 @@
+Command: pnpm build:web && pnpm build:youtube && pnpm build:netflix && pnpm build:yahoo
+Exit code: 0
+Selected output only (original tool output truncated):
+Warning: truncated output (original token count: 32301)
+$ node --test scripts/audit-facebook-commerce-activation.test.mjs && node scripts/audit-facebook-commerce-activation.mjs
+Facebook commerce-activation audit passed: unverified commerce remains unreachable.
+$ pnpm build:jest && pnpm build:facebook && pnpm build:reddit
+$ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+Web Target boundary audit passed (240 files, 978 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+$ node scripts/validate-jest-console-manifest.mjs
+✓ built in 1.63s
+$ node scripts/audit-reddit-artifact.mjs
+Reddit artifact audit passed: 412 regular files, 2 entry documents, 3.67 MB, 0.55 MB initial resources, isolated and same-origin only
+$ pnpm stage:client && pnpm build:server && pnpm validate
+$ node scripts/stage-client.mjs
+$ pnpm --filter @qwordly/core build
+$ tsc -p tsconfig.build.json
+$ vite build
+✓ built in 82ms
+$ pnpm check:types && pnpm test && node scripts/validate-package.mjs
+$ tsc6 -p tsconfig.json --noEmit
+$ node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs
+Devvit package contract passed: 413 regular files/7.17 MiB, isolated inline/game client, CJS server, Redis, and one gateway host
+$ pnpm --filter @qwordly/portal build:youtube
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YOUTUBE_BUILD=1 NODE_ENV=production vite build --mode youtube && pnpm audit:youtube-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+Web Target boundary audit passed (240 files, 978 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+$ node scripts/youtube-content-compile.js --check
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+✓ built in 886ms
+$ node scripts/audit-youtube-artifact.mjs
+YouTube artifact audit passed: 8 files, 1.05 MiB total and conservative initial transfer, 16 locale(s)
+$ pnpm --filter @qwordly/portal build:netflix
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+Web Target boundary audit passed (240 files, 978 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+$ node scripts/youtube-content-compile.js --check
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+✓ built in 868ms
+$ node scripts/audit-standalone-artifact.mjs netflix dist-netflix
+netflix artifact audit passed: 8 files, 1.05 MiB
+$ pnpm --filter @qwordly/portal build:yahoo
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+Web Target boundary audit passed (240 files, 978 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+$ node scripts/youtube-content-compile.js --check
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+✓ built in 881ms
+$ node scripts/audit-standalone-artifact.mjs yahoo dist-yahoo
+yahoo artifact audit passed: 8 files, 1.05 MiB

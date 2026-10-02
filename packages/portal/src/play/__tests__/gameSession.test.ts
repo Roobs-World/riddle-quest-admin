@@ -528,3 +528,25 @@ describe("game session reducer", () => {
     expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([]);
   });
 });
+
+
+it("returns from commerce to an unspent Continue boundary, but not a resolved loss or paid continue", () => {
+  /** Reducer state after applying the canonical content and gameplay transitions. */
+  let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  for (let attempt = 1; attempt <= 5; attempt++) state = resolveGuess(state, "xxxxx", attempt, {canContinue: attempt === 5});
+  /** Terminal reducer checkpoint preserved before late authority results are applied. */
+  const exhausted = state;
+  state = reduce(state, {type: "openModal", modal: "shop"});
+  state = reduce(state, {type: "closeModal"});
+  expect(state.modal).toBe("continue");
+  state = reduce(state, {type: "showAuxiliaryFanfare", fanfare: {id: "purchase", kind: "purchase", coinsAwarded: 250, totalCoins: 500, achievementIds: []}});
+  state = reduce(state, {type: "closeModal"});
+  expect(state.modal).toBe("continue");
+  expect(state.auxiliaryFanfare).toBeNull();
+  for (const action of [{type: "continueGranted"}, {type: "declineContinue"}] as const) {
+    /** Reducer result after a late response targets the terminal checkpoint. */
+    let resolved = reduce(exhausted, action);
+    resolved = reduce(resolved, {type: "openModal", modal: "shop"});
+    expect(reduce(resolved, {type: "closeModal"}).modal).toBeNull();
+  }
+});

@@ -1,0 +1,70 @@
+{
+  "taskId": "multiplayer:race-provider-capability-recovery",
+  "status": "focused-verification-passed-full-source-receipt-pending",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "clientRaceTests": 634,
+  "componentTests": 12,
+  "providerCapabilityBrowserScenarios": 8,
+  "retainedProviderBrowserScenarios": 12,
+  "hubNavigationLayouts": 108,
+  "fullVerificationRequiredChecks": 31,
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "17e783c8a4251dce80fee7ac5ea4c2edde99fb18c1150d1e0c7324c2d8e08751"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "b1b699d67281ca972b05281b574765730b9b6360ec6499fa21dc27761c2e40c4"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "bf9b72a9ac18a377c3928c68cd7113db258c48c7581c1c79d5ce85bd8ef3739b"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "ba0e6848146ea791e67b91111c6bbdf5431444af3efe638980c749c078656bea"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "8e78a4b7d1ebee3152819dc4b53acfad0c6f8599a06644e316dca8a624cfef31"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "3642ea903a2a801e209cc42c0bb7b99671decf2427f32ef754d038e6eaeebc26"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "fb106e880d54bd68904a9ed9a498a75ff9c66a3a7b97ef2868e52a9baaa0ffed"
+    }
+  ],
+  "productionFileHashes": {
+    "packages/portal/src/play/race/RaceProviderViews.ts": "ea1f644885347ef03c836c2f5b27a04ddf89982c756fb4f63e809ecda456498b",
+    "packages/portal/src/play/race/RaceTo10Game.tsx": "b730956faf1865a321d6b03024a2fb4a48034b8548d4e4f4d47b316a713c53b3",
+    "packages/portal/src/play/race/components/RaceHubTabs.tsx": "1cc6e51bea681f553199ecf632616cbccd7d31b1ff041ee40564d61a5983051a",
+    "packages/portal/src/styles.race-lobby.css": "8147bb5ab280821569bc0094d60083acdb3f5921fe6f918dceb2ce2970ab0f15"
+  },
+  "otherChecksPassed": [
+    "portal-types",
+    "documented-declarations",
+    "file-size-limits",
+    "security",
+    "scalability",
+    "target-dependency-evidence"
+  ],
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdated": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformed": false,
+  "nextActions": [
+    "Let the authorized hosted Jest E2E run finish before full-source verification, dashboard recording and unpublished draft promotion.",
+    "Reproduce the hosted typed-draft loss on reload against current source; current browser storage retains run identity and command intent, not unsent answer letters."
+  ]
+}

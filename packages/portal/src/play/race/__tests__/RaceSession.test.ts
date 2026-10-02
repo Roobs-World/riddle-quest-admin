@@ -19,6 +19,28 @@ const authorityClock = (view: RaceRunView): RaceRunView => ({
 });
 
 describe("Race Session ownership and authority orchestration", () => {
+  it("recovers the existing recipient run directly from authoritative entry facts", async () => {
+    /** Public Race Session harness records correlated entry and recovery commands. */
+    const h = harness({challengeId: "played"});
+    /** Canonical run fixture retains identity and competitive facts for recovery assertions. */
+    const run = {...await fixture(true), challengeId: "played", role: "challenger" as const};
+    h.respond("raceEntry", {status: "ready", challenge: preview("played"), viewerRole: "recipient", existingRunId: run.runId, serverNowMs: 1000});
+    expect(h.last()).toMatchObject({type: "game:resumeRace", payload: {runId: run.runId, includeEvaluation: true}});
+    h.respond("raceResume", {run});
+    expect(h.session.getSnapshot().run?.runId).toBe(run.runId);
+    expect(h.commands.filter(command => command.type === "game:startRace")).toHaveLength(0);
+  });
+  it("routes creator acceptance to Activity without issuing a race start", () => {
+    /** Public Race Session harness records correlated entry and recovery commands. */
+    const h = harness({challengeId: "own-public"});
+    h.respond("raceEntry", {status: "ready", challenge: preview("own-public"), viewerRole: "creator", serverNowMs: 1000});
+    expect(h.session.getSnapshot().entryStatus).toMatchObject({viewerRole: "creator"});
+    h.session.begin("mixed");
+    expect(h.session.getSnapshot()).toMatchObject({stage: "inbox", error: null});
+    expect(h.commands.filter(command => command.type === "game:startRace")).toHaveLength(0);
+    expect(h.last().type).toBe("game:listRaceInbox");
+  });
+
   it.each(["navigation", "rematch", "entry", "dispose", "begin"])("invalidates optional dialog ownership after %s even on the same screen", async transition => {
     /** Optional dialog originates in a fully loaded category visit. */
     const h = harness(); h.respond("raceCategories", await catalog());
@@ -457,11 +479,13 @@ describe("Race Session ownership and authority orchestration", () => {
     expect(h.timers.size).toBe(0); h.advance(60000);
     expect(h.session.getSnapshot()).toMatchObject({findingOpponent: false, stage: "challenge", error: null});
   });
-  it("binds failed startup-resume cleanup to the requested run", () => {
+  it("retains failed startup-resume selection until deliberate reset", () => {
     /** Stale startup hint may already have been replaced by another tab. */
     const h = harness({}, "older-run");
     h.reject("raceResume", "Run no longer exists.");
-    expect(h.clearCalls).toEqual([{ownerId: "owner-1", runId: "older-run"}]);
+    expect(h.clearCalls).toEqual([]);
+    h.session.retry();
+    expect(h.last()).toMatchObject({type: "game:resumeRace", payload: {runId: "older-run"}});
   });
   it("binds abandonment and completion cleanup to the exact owned run", async () => {
     /** Abandoned authority view must clear only its own hint. */
@@ -1005,7 +1029,7 @@ describe("Race Session ownership and authority orchestration", () => {
     Reflect.deleteProperty(successor.currentRiddle!, "hint");
     h.reject("raceGuess", "Temporary service failure.");
     if (intent === "input") h.session.input("letter", "z");
-    if (intent === "hint") {h.session.hint(); h.reject("raceHint", "Temporary service failure.");}
+    if (intent === "hint") {h.session.retry(); h.respond("raceResume", {run: h.run}); h.session.hint(); h.reject("raceHint", "Temporary service failure.");}
     if (intent === "rematch" || intent === "account") {
       if (intent === "account") {h.session.enter({ownerId: "owner-2", locale: "en"}); h.respond("raceCategories", await catalog());}
       else h.session.rematch();
@@ -1395,7 +1419,9 @@ describe("Race Session ownership and authority orchestration", () => {
     /** Different authority run that must be rejected. */
     const other = harness({}, "owned-run");
     other.respond("raceResume", {run});
-    expect(other.session.getSnapshot()).toMatchObject({run: null, stage: "categories", pending: "raceCategories"});
+    expect(other.session.getSnapshot()).toMatchObject({run: null, stage: "categories", pending: null, error: "RaceTo10.ERROR_INVALID_RESPONSE"});
+    other.session.retry();
+    expect(other.last()).toMatchObject({type: "game:resumeRace", payload: {runId: "owned-run"}});
   });
 });
 
@@ -1470,6 +1496,8 @@ it("retains exact search preferences and remaining retry delay across reload", a
   wall = 3000;
   /** New monotonic clock honors only the remaining persisted backoff. */
   const reloaded = harness({}, null, options);
+  expect(reloaded.last().type).toBe("game:listRaceCategories");
+  reloaded.respond("raceCategories", await catalog());
   expect(reloaded.session.getSnapshot().matchRetryReady).toBe(false);
   reloaded.session.retry();
   expect(find).toHaveBeenCalledTimes(1);

@@ -1,0 +1,13 @@
+# Paid-action draft ownership without optimistic projection
+
+Paid hint/skip checkpoint creation previously depended on a complete deck producing an immediate projection. Prompt-only and answer-free clients could therefore lose their draft/history on transport recovery. Successful hints also merged canonical reveals into mutable displayed input and selected slots rather than the captured pre-command draft, and compared question identity with the displayed projection.
+
+`RacePlay.projectPaid` now privately captures every active-question paid command before optionally returning a projection. Confirmation consumes that checkpoint and returns its captured draft. Hint reconciliation merges the complete canonical reveal set into those letters, restores accepted history and retains the captured selected slot unless it has become revealed. Active and terminal hint checks use privately confirmed question identity. Skip confirmation retains its fresh-question reset behavior; rejected hint/skip delivery restores the original question, draft, history and selection.
+
+Eighteen public-session tests exercise modern complete decks, current-answer-only prompts and answer-free payloads: hint/skip rollback, successful hint merging after retained draft/history/selection edits, canonical hints after public question identity edits, unedited hints and canonical skip resets. Before the fix, ten regressions failed while eight controls passed; all eighteen pass afterward. The full client multiplayer suite passes 616 tests in 53 suites; portal types and documented-declaration checks pass.
+
+The injected browser harness runs 36 journeys across 1280px and 390px. It establishes a previous wrong guess, types a partial draft, selects a slot, invokes the real Hint or Skip button, holds delivery and edits retained public references. Rejected deliveries recover through the actual Retry button without replaying the paid mutation. Canonical hints preserve captured draft/history/selection; skips reset them. A mobile answer-free hint confirmation screenshot was visually inspected. Logs and screenshots are under `artifacts/race-paid-draft-checkpoints/`.
+
+The task manifest retains the previous 25 verification gates and adds the paid draft browser harness for 26 total, including backend race coverage, structural checks, core/client suites and seven isolated builds. Full verification and dashboard completion recording are pending. Source-digest protection remains unchanged.
+
+Jest activation is authorized but publication remains on hold. Firebase Functions deployment is authorized; this client reconciliation change does not require a Functions deployment.

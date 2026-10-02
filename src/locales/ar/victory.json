@@ -15,6 +15,7 @@
     "SHARE_CLASSIC_MODE_LABEL": "الوضع الكلاسيكي",
     "SHARE_DAILY_CHALLENGE_LABEL": "التحدي اليومي",
     "SHARE_MESSAGE_TEMPLATE": "لقد قمت بحل مشكلة Riddle Quest {gameType} اليوم في {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nيمكنك التغلب على درجاتي؟\n\n#Riddle Quest #WordPuzzle #BrainGame",
-    "SHARE_RESULT_TITLE": "اطلع على نتيجة Riddle Quest الخاصة بي!"
+    "SHARE_RESULT_TITLE": "اطلع على نتيجة Riddle Quest الخاصة بي!",
+    "INVITE_FRIEND": "ادعُ صديقًا"
   }
 }

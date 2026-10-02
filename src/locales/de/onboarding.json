@@ -4,10 +4,10 @@
     "COLOR_CORRECT": "Der Buchstabe ist korrekt und an der richtigen Position",
     "COLOR_MISPLACED": "Der Buchstabe ist im Wort, aber an der falschen Position",
     "COLOR_WRONG": "Der Buchstabe ist nicht im Wort",
-    "GOAL_DESCRIPTION": "Erraten Sie das versteckte Raetsel in 3 Versuchen mithilfe der Farbhinweise.",
+    "GOAL_DESCRIPTION": "Erraten Sie das versteckte Raetsel in 5 Versuchen mithilfe der Farbhinweise.",
     "GOAL_TITLE": "Das Ziel",
     "GOT_IT_BUTTON": "Verstanden!",
-    "TIPS_DESCRIPTION": "Beginnen Sie mit haeufigen Buchstaben und nutzen Sie die Farbrueckmeldung. Denken Sie daran: Sie haben nur 3 Versuche!",
+    "TIPS_DESCRIPTION": "Beginnen Sie mit haeufigen Buchstaben und nutzen Sie die Farbrueckmeldung. Denken Sie daran: Sie haben nur 5 Versuche!",
     "TIPS_TITLE": "Tipps"
   },
   "WelcomeBackModal": {

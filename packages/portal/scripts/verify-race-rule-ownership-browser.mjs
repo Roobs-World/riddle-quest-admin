@@ -29,7 +29,7 @@ const prompt=position=>{const {hint,...content}=deck[position];return {...conten
 const activeView=runId=>{const now=Date.now();return {runId,role:'creator',status:'active',categoryId:'history',locale:'en',rules:RACE_RULES,
  correctCount:0,wallElapsedMs:1000,totalPenaltyMs:0,adjustedElapsedMs:1000,
  currentRiddle:prompt(0),preloadedRiddles:deck,
- events:[{sequence:0,type:'hint',riddlePosition:0,wallElapsedMs:1000,penaltyAddedMs:15000,totalPenaltyMs:0,adjustedElapsedMs:1000,correctCount:0}],
+ events:[],
  serverNowMs:now,startsAtMs:now-1000};};
 let view=activeView('old-owner-run'),owner='owner-1';window.commands=[];window.closeCount=0;
 function reply(message,operation,data,ok=true){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',

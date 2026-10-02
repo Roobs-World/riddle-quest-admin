@@ -104,6 +104,8 @@
     "MATCH_EXPIRED": "Lượt tìm đối thủ này đã hết hạn. Hãy thử lại.",
     "MATCH_CONSUMED": "Lượt tìm kiếm này đã được sử dụng. Hãy tìm đối thủ khác.",
     "MATCH_UNAVAILABLE": "Tài khoản này không thể tìm đối thủ.",
-    "MATCH_EMPTY": "Hiện chưa có đối thủ phù hợp. Hãy thử lại sau."
+    "MATCH_EMPTY": "Hiện chưa có đối thủ phù hợp. Hãy thử lại sau.",
+    "CHALLENGE_FRIEND": "Thách đấu bạn bè",
+    "SHARE_TOURNAMENT": "Chia sẻ giải đấu"
   }
 }

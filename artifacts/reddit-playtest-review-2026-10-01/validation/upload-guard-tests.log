@@ -1,0 +1,15 @@
+✔ playtest uploads reject missing, stable, malformed, and extra version arguments before running commands (0.636726ms)
+✔ a private upload retains uncertainty and blocks later versions before running commands (1.520209ms)
+✔ a failed package check leaves no attempted upload and can be corrected (0.384458ms)
+✔ accepted versions are immutable and explicit resolution preserves original failure evidence (0.878915ms)
+✔ separate processes cannot validate or transmit while another playtest owns the lock (14.506017ms)
+✔ process interruption preserves the lock and orphan attempt until explicit recovery (14.094759ms)
+✔ corrupt and orphaned journal evidence fails closed before validation (0.445444ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 58.912965

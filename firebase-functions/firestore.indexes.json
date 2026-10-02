@@ -1,6 +1,14 @@
 {
   "indexes": [
     {
+      "collectionGroup": "providerIdentities",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "provider", "order": "ASCENDING"},
+        {"fieldPath": "redditProfile.expiresAt", "order": "ASCENDING"}
+      ]
+    },
+    {
       "collectionGroup": "raceChallenges",
       "queryScope": "COLLECTION",
       "fields": [
@@ -720,6 +728,30 @@
     },
     {
       "collectionGroup": "raceBotOffers",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "facebookReferralTokens",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "facebookIdentityNonces",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "redditGatewayNonces",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "redditGatewayRateLimits",
       "fieldPath": "expiresAt",
       "ttl": true,
       "indexes": []

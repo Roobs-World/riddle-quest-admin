@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T09:03:19.307463+00:00",
+  "intent": "official-meta-social-technologies-mcp-registration",
+  "uploadEligible": false,
+  "source": {
+    "head": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+    "dirty": true,
+    "completeCleanSourceProof": false,
+    "selectedFiles": [
+      {
+        "file": "docs/facebook-instant-games-operations.md",
+        "sha256": "fb147d25e16de7c40d3803d70256f710e281e678bf1f61329a15b997625c49c8"
+      },
+      {
+        "file": "docs/evidence/facebook-sdk-followup-2026-10-01.md",
+        "sha256": "e8c33a794ee40bd1b7b0db596865a458441bf0a685a11792abcb29b5af148b11"
+      },
+      {
+        "file": "docs/evidence/meta-social-technologies-mcp-2026-10-01.md",
+        "sha256": "0e84947378dc4c7740c1049c78a4d31be758409c09663869399cc56bd44974a5"
+      }
+    ]
+  },
+  "mcp": {
+    "name": "facebook_devtools",
+    "registered": true,
+    "endpoint": "https://mcp.facebook.com/devtools",
+    "readToolAllowlist": 8,
+    "dynamicRegistrationSucceeded": true,
+    "authenticated": false,
+    "authorizationPendingUserApproval": true,
+    "liveAuthorizationProcess": false,
+    "authorizationWaitTimedOut": true,
+    "expiredTabClosed": true,
+    "appAccessGranted": false,
+    "authenticatedToolListVerified": false
+  },
+  "checks": {
+    "globalTomlValid": true,
+    "managementAndWebhookTestToolsExcluded": true,
+    "sixArtifactsMatchPrecedingVerification": true,
+    "facebookSecretBoundaryTests": 3,
+    "facebookTrackerTests": 3,
+    "facebookTrackerComplete": 20,
+    "facebookTrackerTotal": 53,
+    "redditDocumentationTests": 2,
+    "diffWhitespace": true,
+    "newRuntimeSourceChanges": false,
+    "newBuildsOrRuntimeTestsExecuted": false
+  },
+  "consentScreenshot": {
+    "path": "/home/craig-beswetherick/.codex/review-evidence/riddle-quest/meta-social-technologies-2026-10-01/connection-consent.jpg",
+    "mode": "0600",
+    "sha256": "21e04ee85181496e25bde6d6910d1a190ed74bb615c25815c45b63577fdd98cb",
+    "private": true,
+    "capturedBeforeAuthorizationWaitExpired": true
+  },
+  "evidence": [
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/artifact-comparison.json",
+      "sha256": "43a4e2373c03170bdfc553e483ec64e77196389d94a82a401e05a8948890926a"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/official-reference.json",
+      "sha256": "4359d8f4adf4db297f4e4b10eddf87c037eb5923677eb8b864d4ceeab69af046"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/registration.json",
+      "sha256": "da1813406cfeb2741ae089cd25a40b8e4028a754521c3ab99dcdcd20c639933f"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/registry.json",
+      "sha256": "015c4d950a95fec2013f31555dba71deceacca68221fae12580a008d4242bcc5"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/validation/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/validation/facebook-progress.log",
+      "sha256": "201e67194611ce6e0dfbf20652f09b407571ab8f7c45f285c015f1a0272077e3"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/validation/facebook-secrets.log",
+      "sha256": "5bf6d8181b8bede970dde614ae83cd0a02dfd5c0a88d13e0019978898e420fc3"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/validation/facebook-tracker.log",
+      "sha256": "390b402d1e6ee0d13844ed20c074c1f5119853125327221288e375f25179b463"
+    },
+    {
+      "file": "artifacts/meta-social-technologies-mcp-review-2026-10-01/validation/reddit-docs.log",
+      "sha256": "9941a893c17e48fd8b9a86cdbb9e8f613a17db3f9a21b9db7d43ce128178f1e2"
+    }
+  ],
+  "providerMutations": {
+    "connectorRegistered": 1,
+    "oauthClientRegistration": true,
+    "appAccessGranted": false,
+    "secretValuesAccessed": false,
+    "iamChanges": 0,
+    "gameAppSettingsChanged": 0,
+    "webhooksChanged": 0,
+    "webhookTestEventsSent": 0,
+    "deployments": 0,
+    "uploads": 0,
+    "publishes": 0,
+    "messagesSent": 0
+  },
+  "remaining": [
+    "User approval at the live consent step for Read-only access to Riddle Quest.",
+    "Fresh OAuth login and verification of selected app, granted scope and authenticated tools.",
+    "Actual bounded settings/review/compliance reads and existing full review-readiness gates."
+  ]
+}

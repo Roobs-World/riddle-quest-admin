@@ -1,0 +1,125 @@
+FAIL src/__tests__/race/raceMatchOfferRecord.test.ts
+  ● Console
+
+    console.error
+      ◇ injected env (12) from .env
+
+      1 | /* eslint-disable @typescript-eslint/no-require-imports */
+    > 2 | require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                   ^
+      3 |
+      4 | // Ensure Jest environment is properly detected by iapConfig
+      5 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:2:19)
+
+  ● reads a canonical timed-out receipt with 0 solved answers
+
+    Stored matchmaking offer is invalid.
+
+      68 |     return {...offer, locale: preferences.locale};
+      69 |   } catch {
+    > 70 |     throw new HttpsError("data-loss", "Stored matchmaking offer is invalid.");
+         |           ^
+      71 |   }
+      72 | }
+      73 |
+
+      at parseRaceMatchOffer (src/race/raceMatchOfferRecord.ts:70:11)
+      at src/__tests__/race/raceMatchOfferRecord.test.ts:44:29
+
+  ● reads a canonical timed-out receipt with 5 solved answers
+
+    Stored matchmaking offer is invalid.
+
+      68 |     return {...offer, locale: preferences.locale};
+      69 |   } catch {
+    > 70 |     throw new HttpsError("data-loss", "Stored matchmaking offer is invalid.");
+         |           ^
+      71 |   }
+      72 | }
+      73 |
+
+      at parseRaceMatchOffer (src/race/raceMatchOfferRecord.ts:70:11)
+      at src/__tests__/race/raceMatchOfferRecord.test.ts:44:29
+
+FAIL src/__tests__/race/raceMatchCalibration.test.ts
+  ● Console
+
+    console.error
+      ◇ injected env (12) from .env
+
+      1 | /* eslint-disable @typescript-eslint/no-require-imports */
+    > 2 | require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                   ^
+      3 |
+      4 | // Ensure Jest environment is properly detected by iapConfig
+      5 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:2:19)
+
+  ● counts a 0-answer timeout as terminal censored evidence
+
+    ZodError: [
+      {
+        "code": "invalid_value",
+        "values": [
+          "completed",
+          "abandoned"
+        ],
+        "path": [
+          "terminalStatus"
+        ],
+        "message": "Invalid option: expected one of \"completed\"|\"abandoned\""
+      }
+    ]
+
+      34 |   /** Schema-owned fields explicitly exclude identity, answer and mutable provider payloads. */
+      35 |   const allowed = Object.keys(RaceMatchMeasurementSchema.shape);
+    > 36 |   return RaceMatchMeasurementSchema.parse(Object.fromEntries(allowed.filter(key => value[key] !== undefined).map(key => [key, value[key]])));
+         |                                     ^
+      37 | }
+      38 | /** Validated offline comparisons require explicit canonical-eligibility attestation for the supplied sampled pool. */
+      39 | export const RacePolicyComparisonInputSchema = z.object({
+
+      at raceMatchMeasurement (src/race/raceMatchCalibration.ts:36:37)
+      at src/__tests__/race/raceMatchCalibration.test.ts:98:43
+
+  ● counts a 5-answer timeout as terminal censored evidence
+
+    ZodError: [
+      {
+        "code": "invalid_value",
+        "values": [
+          "completed",
+          "abandoned"
+        ],
+        "path": [
+          "terminalStatus"
+        ],
+        "message": "Invalid option: expected one of \"completed\"|\"abandoned\""
+      }
+    ]
+
+      34 |   /** Schema-owned fields explicitly exclude identity, answer and mutable provider payloads. */
+      35 |   const allowed = Object.keys(RaceMatchMeasurementSchema.shape);
+    > 36 |   return RaceMatchMeasurementSchema.parse(Object.fromEntries(allowed.filter(key => value[key] !== undefined).map(key => [key, value[key]])));
+         |                                     ^
+      37 | }
+      38 | /** Validated offline comparisons require explicit canonical-eligibility attestation for the supplied sampled pool. */
+      39 | export const RacePolicyComparisonInputSchema = z.object({
+
+      at raceMatchMeasurement (src/race/raceMatchCalibration.ts:36:37)
+      at src/__tests__/race/raceMatchCalibration.test.ts:98:43
+
+Test Suites: 2 failed, 2 total
+Tests:       4 failed, 41 passed, 45 total
+Snapshots:   0 total
+Time:        0.33 s, estimated 1 s
+Ran all test suites matching raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts.

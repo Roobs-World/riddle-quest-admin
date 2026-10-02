@@ -1,3 +1,4 @@
+import {deliverHostRaceResult} from "./hostRaceResultEffects";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
@@ -41,11 +42,13 @@ export function PlayHostApp({
     initialRaceChallengeId,
     initialRaceInbox,
     initialRaceLobby,
+    initialRaceTournamentLocale,
     raceLocalePolicy,
     onPresenceStateChange,
     referralSharing,
   },
   onPlayable,
+  onStartupUnavailable,
   onAuthoritativeGuessWin,
   onAuthoritativeComplete,
   onResultScreen,
@@ -57,6 +60,8 @@ export function PlayHostApp({
   session: HostedPlaySession;
   /** Stores on playable. */
   onPlayable?: () => void;
+  /** Reports that a recoverable startup error surface is ready to be shown. */
+  onStartupUnavailable?: () => void;
   /** Runs when a correct answer is confirmed before reward delivery. */
   onAuthoritativeGuessWin?: (input: {
     /** Stores riddle id. */
@@ -97,12 +102,6 @@ export function PlayHostApp({
   const [frameReady, setFrameReady] = useState(false);
   /** Provides [notice, set notice] behavior. */
   const [notice, setNotice] = useState<string | null>(configurationWarning);
-  useEffect(() => {
-    if (!notice || notice === configurationWarning) return;
-    /** Dismisses a transient host notice. */
-    const timer = window.setTimeout(() => setNotice(null), 4_000);
-    return () => window.clearTimeout(timer);
-  }, [notice, configurationWarning]);
   /** Loads ed user id ref. */
   const loadedUserIdRef = useRef<string | null>(null);
   /** Provides playable reported ref behavior. */
@@ -113,6 +112,12 @@ export function PlayHostApp({
     playableReportedRef.current = true;
     onPlayable?.();
   }, [onPlayable]);
+  /** Dismisses provider loading once an error surface is rendered, without claiming playable content. */
+  const reportStartupUnavailable = useCallback(() => {
+    if (playableReportedRef.current || !onStartupUnavailable) return;
+    playableReportedRef.current = true;
+    onStartupUnavailable();
+  }, [onStartupUnavailable]);
   /** Provides account deletion completed ref behavior. */
   const accountDeletionCompletedRef = useRef(false);
   /** Saves active game. */
@@ -136,6 +141,8 @@ export function PlayHostApp({
     bridgeUser,
     applyCoinBalance,
     replaceProfile,
+    ownsAccount,
+    captureAccount,
   } = useHostAuthSession({
     services: authority.identity,
     initialProfile: initialPlayerData?.profile,
@@ -209,8 +216,15 @@ export function PlayHostApp({
     configurationWarning,
     setNotice,
     onPlayable: reportPlayable,
+    onStartupUnavailable: reportStartupUnavailable,
     onRecoveryAttempt: sendRecoveryInit,
   });
+  useEffect(() => {
+    if (!startupComplete || !notice || notice === configurationWarning) return;
+    /** Dismisses a transient host notice. */
+    const timer = window.setTimeout(() => setNotice(null), 4_000);
+    return () => window.clearTimeout(timer);
+  }, [notice, configurationWarning, startupComplete]);
   /** Whether startup, server work, or the target lifecycle blocks interaction. */
   const serverInteractionActive = serverActivityActive || externalInteractionBlocked || !startupComplete;
   /** Sends the complete current host state to the game. */
@@ -262,6 +276,8 @@ export function PlayHostApp({
     raceLocalePolicy,
     applyCoinBalance,
     replaceProfile,
+    ownsAccount,
+    captureAccount,
     postToGame,
   });
   /** Handles authoritative complete. */
@@ -281,12 +297,11 @@ export function PlayHostApp({
     [onAuthoritativeComplete, onResultScreen],
   );
   /** Handles authoritative race result. */
+  const raceResultOwner = captureAccount(authSnapshot.user?.uid);
+  /** Both callback boundaries retain the originating authentication visit. */
   const handleAuthoritativeRaceResult = useCallback(
-    async (result: RaceOutcome) => {
-      await onAuthoritativeRaceResult?.(result);
-      await onResultScreen?.();
-    },
-    [onAuthoritativeRaceResult, onResultScreen],
+    (result: RaceOutcome) => deliverHostRaceResult(result, raceResultOwner, onAuthoritativeRaceResult, onResultScreen),
+    [onAuthoritativeRaceResult, onResultScreen, raceResultOwner],
   );
   /** Provides hosted-play command behavior. */
   const commands = useMemo(
@@ -335,7 +350,7 @@ export function PlayHostApp({
     ],
   );
   /** Stable local message routing and document visibility projection. */
-  useHostBridgeLifecycle({router: commands.execute, postToGame, setNotice});
+  useHostBridgeLifecycle({router: commands.execute, postToGame, setNotice, lifecycle: platformCapabilities?.lifecycle});
 
   useEffect(() => {
     if (!authSnapshot.user) {
@@ -378,6 +393,7 @@ export function PlayHostApp({
           initialRaceChallengeId={initialRaceChallengeId}
           initialRaceInbox={initialRaceInbox}
           initialRaceLobby={initialRaceLobby}
+          initialRaceTournamentLocale={platformCapabilities?.tournaments ? initialRaceTournamentLocale : undefined}
           raceFeatureEnabled={raceBuildEnabled}
           prefetchedRaceCategories={prefetchedRaceCategories}
           nativeSocial={platformCapabilities?.nativeSocial}
@@ -386,14 +402,15 @@ export function PlayHostApp({
           platformPlayerId={platformCapabilities?.overlay ? platformPlayerId : undefined}
           tournaments={platformCapabilities?.tournaments}
           contextBoard={platformCapabilities?.contextBoard}
+          attemptRecovery={platformCapabilities?.attemptRecovery}
           raceLocalePolicy={raceLocalePolicy}
           onPresenceStateChange={onPresenceStateChange}
         />
         {!startupComplete ? (
           <SpinningWheelLoader
             overlay
-            message={!startupComplete ? tr("WebPortal.STARTUP_GAME") : undefined}
-            progress={!startupComplete ? 88 : undefined}
+            message={notice ? getHostNoticeMessage(notice) : tr("WebPortal.STARTUP_GAME")}
+            progress={notice ? undefined : 88}
           />
         ) : null}
       </div>

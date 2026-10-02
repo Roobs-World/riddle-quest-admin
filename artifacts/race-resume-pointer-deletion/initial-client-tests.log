@@ -1,0 +1,127 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand
+FAIL src/play/race/__tests__/RaceSessionCleanupOwnership.test.ts
+  ● Race Session cleanup ownership › does not persist again into a replacement account after the old recovery callback
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 0
+
+      Array [
+        Object {
+          "ownerId": "owner-2",
+          "runId": "replacement-run",
+        },
+    -   Object {
+    -     "ownerId": "owner-2",
+    -     "runId": "replacement-run",
+    -   },
+      ]
+
+      70 |     h.respond("raceCategories", {categories}); h.session.begin("mixed");
+      71 |     armed = true; h.respond("raceStart", {run: original});
+    > 72 |     expect(writes).toEqual([{ownerId: "owner-2", runId: replacement.runId}, {ownerId: "owner-2", runId: replacement.runId}]);
+         |                    ^
+      73 |     expect(h.session.getSnapshot()).toMatchObject({run: {runId: replacement.runId}, error: null, pending: null});
+      74 |     expect(h.commands.filter(command => command.type === "game:readyRace")).toHaveLength(1);
+      75 |   });
+
+      at src/play/race/__tests__/RaceSessionCleanupOwnership.test.ts:72:20
+
+  ● Race Session cleanup ownership › does not persist again into a replacement account after the old read callback
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 0
+
+      Array [
+        Object {
+          "ownerId": "owner-2",
+          "runId": "replacement-run",
+        },
+    -   Object {
+    -     "ownerId": "owner-2",
+    -     "runId": "replacement-run",
+    -   },
+      ]
+
+      70 |     h.respond("raceCategories", {categories}); h.session.begin("mixed");
+      71 |     armed = true; h.respond("raceStart", {run: original});
+    > 72 |     expect(writes).toEqual([{ownerId: "owner-2", runId: replacement.runId}, {ownerId: "owner-2", runId: replacement.runId}]);
+         |                    ^
+      73 |     expect(h.session.getSnapshot()).toMatchObject({run: {runId: replacement.runId}, error: null, pending: null});
+      74 |     expect(h.commands.filter(command => command.type === "game:readyRace")).toHaveLength(1);
+      75 |   });
+
+      at src/play/race/__tests__/RaceSessionCleanupOwnership.test.ts:72:20
+
+
+Summary of all failing tests
+FAIL src/play/race/__tests__/RaceSessionCleanupOwnership.test.ts
+  ● Race Session cleanup ownership › does not persist again into a replacement account after the old recovery callback
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 0
+
+      Array [
+        Object {
+          "ownerId": "owner-2",
+          "runId": "replacement-run",
+        },
+    -   Object {
+    -     "ownerId": "owner-2",
+    -     "runId": "replacement-run",
+    -   },
+      ]
+
+      70 |     h.respond("raceCategories", {categories}); h.session.begin("mixed");
+      71 |     armed = true; h.respond("raceStart", {run: original});
+    > 72 |     expect(writes).toEqual([{ownerId: "owner-2", runId: replacement.runId}, {ownerId: "owner-2", runId: replacement.runId}]);
+         |                    ^
+      73 |     expect(h.session.getSnapshot()).toMatchObject({run: {runId: replacement.runId}, error: null, pending: null});
+      74 |     expect(h.commands.filter(command => command.type === "game:readyRace")).toHaveLength(1);
+      75 |   });
+
+      at src/play/race/__tests__/RaceSessionCleanupOwnership.test.ts:72:20
+
+  ● Race Session cleanup ownership › does not persist again into a replacement account after the old read callback
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 0
+
+      Array [
+        Object {
+          "ownerId": "owner-2",
+          "runId": "replacement-run",
+        },
+    -   Object {
+    -     "ownerId": "owner-2",
+    -     "runId": "replacement-run",
+    -   },
+      ]
+
+      70 |     h.respond("raceCategories", {categories}); h.session.begin("mixed");
+      71 |     armed = true; h.respond("raceStart", {run: original});
+    > 72 |     expect(writes).toEqual([{ownerId: "owner-2", runId: replacement.runId}, {ownerId: "owner-2", runId: replacement.runId}]);
+         |                    ^
+      73 |     expect(h.session.getSnapshot()).toMatchObject({run: {runId: replacement.runId}, error: null, pending: null});
+      74 |     expect(h.commands.filter(command => command.type === "game:readyRace")).toHaveLength(1);
+      75 |   });
+
+      at src/play/race/__tests__/RaceSessionCleanupOwnership.test.ts:72:20
+
+
+Test Suites: 1 failed, 13 skipped, 186 passed, 187 of 200 total
+Tests:       2 failed, 95 skipped, 1623 passed, 1720 total
+Snapshots:   0 total
+Time:        5.86 s, estimated 591 s
+Ran all test suites.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand`
+Exit status 1

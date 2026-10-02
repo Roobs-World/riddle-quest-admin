@@ -1,3 +1,6 @@
+import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {coerceToDate} from "../daily/dailyStreak";
+import {countCoinRewardAchievements} from "@qwordly/core/game";
 import {createHash, randomUUID} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {splitGraphemes} from "@qwordly/core/game";
@@ -182,20 +185,17 @@ function assertCurrentEntitlement(
     return;
   }
   /** Provides today behavior. */
-  const today = now.toISOString().slice(0, 10);
+  const today = getDailyDate(state.locale, now);
   if (state.challengeDate !== today) {
     throw new HttpsError("permission-denied", "This daily challenge is no longer current.");
   }
   /** Provides last completed behavior. */
   const lastCompleted = user.lastDailyChallengeCompletedAt;
   /** Completes d date. */
-  const completedDate =
-    typeof lastCompleted?.toDate === "function"
-      ? lastCompleted.toDate().toISOString().slice(0, 10)
-      : typeof lastCompleted === "number" || typeof lastCompleted === "string"
-        ? new Date(lastCompleted).toISOString().slice(0, 10)
-        : undefined;
-  if (completedDate === today || user.lastCompletedDailyChallengeKey === today) {
+  const completedAt = coerceToDate(lastCompleted);
+  /** Completion date resolved under the authoritative play session’s locale. */
+  const completedDate = user.lastCompletedDailyChallengeKey ?? (completedAt ? getDailyDate(state.locale, completedAt) : undefined);
+  if (completedDate && completedDate >= today) {
     throw new HttpsError("failed-precondition", "Today's daily challenge is already complete.");
   }
 }
@@ -303,13 +303,14 @@ export async function finalizeAuthoritativeSession(
   });
 }
 
-/** Atomically charges and grants the one paid extra attempt. */
+/** Atomically grants the one extra attempt; only a target-owned callable may waive its charge. */
 export async function grantAuthoritativeContinue(
   userId: string,
   gameMode: "classic" | "challenge",
   riddleId: string,
   requestId: string,
   sessionToken: string,
+  funding: "coins" | "facebook-rewarded" = "coins",
 ): Promise<number> {
   /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, sessionToken);
@@ -347,21 +348,23 @@ export async function grantAuthoritativeContinue(
     if (state.terminal || !state.awaitingContinue || state.hasUsedContinue) {
       throw new HttpsError("failed-precondition", "This riddle is not eligible for another attempt.");
     }
-    if (coins < CONTINUE_COST_COINS) {
+    const cost = funding === "facebook-rewarded" ? 0 : CONTINUE_COST_COINS;
+    if (coins < cost) {
       throw new HttpsError("failed-precondition", "Insufficient coins to continue.");
     }
     /** Provides new coins behavior. */
-    const newCoins = coins - CONTINUE_COST_COINS;
+    const newCoins = coins - cost;
     /** Provides continued state behavior. */
     const continuedState = {...state};
     delete continuedState.lastGuess;
     delete continuedState.lastGuessResult;
-    transaction.update(userRef, {coins: newCoins});
+    if (cost > 0) transaction.update(userRef, {coins: newCoins});
     transaction.set(sessionRef, {
       ...continuedState,
       hasUsedContinue: true,
       awaitingContinue: false,
       continueRequestHash: requestHash,
+      continueFunding: funding,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     return newCoins;
@@ -429,7 +432,7 @@ export async function purchaseAuthoritativeHint(
       {gameMode: request.gameMode, isCorrect: false, attempts: state.attempts, gameOver: false},
     );
     /** Provides achievement coins behavior. */
-    const achievementCoins = newAchievements.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+    const achievementCoins = countCoinRewardAchievements(newAchievements.map((entry) => entry.achievementId)) * ACHIEVEMENT_UNLOCK_COIN_REWARD;
     /** Provides new coins behavior. */
     const newCoins = coins - HINT_COST_COINS + achievementCoins;
     /** Provides result behavior. */

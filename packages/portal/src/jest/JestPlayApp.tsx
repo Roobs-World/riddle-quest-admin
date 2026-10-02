@@ -1,3 +1,5 @@
+import {JestProfileSubscriptions} from "./JestProfileSubscriptions";
+import {ProfileSubscriptionContext} from "../play/modalPages/profile/ProfileSubscriptionContext";
 import {completionPresentationKey} from "../play/completionPresentation";
 import {ProviderProfileContext} from "../play/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../play/modalPages/commerce/ShopSubscriptionContext";
@@ -49,7 +51,7 @@ import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode
 import {useJestFunnelTracking, useJestPlatformActivity} from "./useJestPlatformOperations";
 import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
-import {createHostedPlaySession} from "../play/HostedPlaySession";
+import {createJestHostedPlaySession} from "./JestHostedPlaySession";
 import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
@@ -219,6 +221,7 @@ export function JestPlayApp() {
   /** Supplies shop operations through the Jest adapter. */
   const subscriptionActions = useMemo(
     () => ({
+      products: jestProducts,
       refresh: refreshProducts,
       cancel: async (sku: string): Promise<"success" | "cancelled" | "error"> => {
         /** Waits for the provider cancellation confirmation. */
@@ -227,7 +230,7 @@ export function JestPlayApp() {
         return result.status === "success" || result.status === "cancelled" ? result.status : "error";
       },
     }),
-    [platform, refreshProducts, withPlatformActivity],
+    [platform, refreshProducts, withPlatformActivity, jestProducts],
   );
   /** Provides purchase product behavior. */
   const purchaseProduct = useJestPurchase({
@@ -576,8 +579,9 @@ export function JestPlayApp() {
         value={{username: session.profile?.username ?? null, avatarUrl: session.profile?.avatarUrl ?? null}}
       >
         <ShopSubscriptionContext.Provider value={subscriptionsEnabled ? subscriptionActions : null}>
+          <ProfileSubscriptionContext.Provider value={subscriptionsEnabled ? <JestProfileSubscriptions /> : null}>
           <PlayHostApp
-            session={createHostedPlaySession({
+            session={createJestHostedPlaySession({
               hostServices,
               hostConfigurationWarning,
               initialGameMode: session.entryIntent.gameMode,
@@ -600,11 +604,13 @@ export function JestPlayApp() {
               referralSharing,
             })}
             onPlayable={() => markJestPlayable(platform)}
+            onStartupUnavailable={() => markJestPlayable(platform)}
             onAuthoritativeGuessWin={handleAuthoritativeGuessWin}
             onAuthoritativeComplete={handleAuthoritativeComplete}
             onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
             onAccountDeleted={clearPlayerState}
           />
+          </ProfileSubscriptionContext.Provider>
         </ShopSubscriptionContext.Provider>
       </ProviderProfileContext.Provider>
     </>

@@ -1,0 +1,68 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-multiplayer", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 18550.
+i  Running script: pnpm exec jest --config jest.race-coverage.config.js --runInBand
+FAIL src/__tests__/race/raceCallables.test.ts
+  ● Race callable methods › authenticates and validates typed invitation reads and creator cancellation
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "player-1", "opaque-seat", "en"
+    Received: "player-1", "opaque-seat", "en", {"includeExistingAttempt": undefined, "includeViewerRole": undefined}
+
+    Number of calls: 1
+
+      203 |     mockGetRaceEntryForUser.mockResolvedValueOnce(waiting);
+      204 |     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en"}))).resolves.toEqual(waiting);
+    > 205 |     expect(mockGetRaceEntryForUser).toHaveBeenCalledWith(raceCallableUserId, "opaque-seat", "en");
+          |                                     ^
+      206 |     /** Stable cancellation receipt belongs to the authenticated creator. */
+      207 |     const cancellation = {challengeId: "opaque-seat", locale: "en", requestId: "cancel-seat-1"};
+      208 |     mockCancelRaceInviteForUser.mockResolvedValueOnce({status: "cancelled", serverNowMs: 10000});
+
+      at Object.<anonymous> (src/__tests__/race/raceCallables.test.ts:205:37)
+
+
+=============================== Coverage summary ===============================
+Statements   : 93.36% ( 3937/4217 )
+Branches     : 89.79% ( 3431/3821 )
+Functions    : 96.82% ( 610/630 )
+Lines        : 95.7% ( 3454/3609 )
+================================================================================
+
+Summary of all failing tests
+FAIL src/__tests__/race/raceCallables.test.ts
+  ● Race callable methods › authenticates and validates typed invitation reads and creator cancellation
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "player-1", "opaque-seat", "en"
+    Received: "player-1", "opaque-seat", "en", {"includeExistingAttempt": undefined, "includeViewerRole": undefined}
+
+    Number of calls: 1
+
+      203 |     mockGetRaceEntryForUser.mockResolvedValueOnce(waiting);
+      204 |     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en"}))).resolves.toEqual(waiting);
+    > 205 |     expect(mockGetRaceEntryForUser).toHaveBeenCalledWith(raceCallableUserId, "opaque-seat", "en");
+          |                                     ^
+      206 |     /** Stable cancellation receipt belongs to the authenticated creator. */
+      207 |     const cancellation = {challengeId: "opaque-seat", locale: "en", requestId: "cancel-seat-1"};
+      208 |     mockCancelRaceInviteForUser.mockResolvedValueOnce({status: "cancelled", serverNowMs: 10000});
+
+      at Object.<anonymous> (src/__tests__/race/raceCallables.test.ts:205:37)
+
+
+Test Suites: 1 failed, 71 passed, 72 total
+Tests:       1 failed, 1058 passed, 1059 total
+Snapshots:   0 total
+Time:        214.895 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.race-coverage.config.js --runInBand" exited with code 1

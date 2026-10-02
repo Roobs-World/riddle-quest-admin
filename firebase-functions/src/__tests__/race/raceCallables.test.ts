@@ -202,7 +202,8 @@ describe("Race callable methods", () => {
     const waiting = {status: "waiting", serverNowMs: 10000, invitation: {claimState: "claimed", publicationState: "pending", role: "recipient", canCancel: false, expiresAtMs: 20000}};
     mockGetRaceEntryForUser.mockResolvedValueOnce(waiting);
     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en"}))).resolves.toEqual(waiting);
-    expect(mockGetRaceEntryForUser).toHaveBeenCalledWith(raceCallableUserId, "opaque-seat", "en");
+    expect(mockGetRaceEntryForUser).toHaveBeenCalledWith(raceCallableUserId, "opaque-seat", "en",
+      {includeViewerRole: undefined, includeExistingAttempt: undefined});
     /** Stable cancellation receipt belongs to the authenticated creator. */
     const cancellation = {challengeId: "opaque-seat", locale: "en", requestId: "cancel-seat-1"};
     mockCancelRaceInviteForUser.mockResolvedValueOnce({status: "cancelled", serverNowMs: 10000});
@@ -211,6 +212,29 @@ describe("Race callable methods", () => {
     await expect(cancelRaceInvite(authenticatedRequest({challengeId: "opaque-seat", locale: "en"}))).rejects.toMatchObject({code: "invalid-argument"});
     await expect(getRaceEntry({auth: undefined, data: {challengeId: "opaque-seat", locale: "en"}} as CallableRequest<unknown>)).rejects.toMatchObject({code: "unauthenticated"});
     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", creatorId: "victim"}))).rejects.toMatchObject({code: "invalid-argument"});
+  });
+
+  it.each([
+    {includeViewerRole: true}, {includeViewerRole: false}, {includeExistingAttempt: true},
+    {includeExistingAttempt: false}, {includeViewerRole: true, includeExistingAttempt: true},
+  ])("forwards validated invitation recovery preferences with authenticated identity: %j", async preferences => {
+    /** Provider options do not alter the authenticated user bound to the entry lookup. */
+    const response = {status: "unavailable", reason: "missing", serverNowMs: 10000};
+    mockGetRaceEntryForUser.mockResolvedValueOnce(response);
+    await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", ...preferences}))).resolves.toEqual(response);
+    expect(mockGetRaceEntryForUser).toHaveBeenLastCalledWith(raceCallableUserId, "opaque-seat", "en", {
+      includeViewerRole: preferences.includeViewerRole, includeExistingAttempt: preferences.includeExistingAttempt,
+    });
+  });
+
+  it.each([
+    {includeViewerRole: "yes"}, {includeExistingAttempt: "foreign-run"},
+    {includeExistingAttempt: {runId: "foreign-run"}}, {includeExistingAttempt: true, runId: "foreign-run"},
+  ])("rejects malformed or client-selected recovery pointers before authority: %j", async preferences => {
+    mockGetRaceEntryForUser.mockClear();
+    await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", ...preferences})))
+      .rejects.toMatchObject({code: "invalid-argument"});
+    expect(mockGetRaceEntryForUser).not.toHaveBeenCalled();
   });
 
   it("rejects client-authored provider scope and player identity", async () => {

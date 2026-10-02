@@ -38,21 +38,33 @@ describe("dailyChallengeScheduler", () => {
     mockGenerateForDate.mockResolvedValue(undefined);
   });
 
-  it("pre-generates tomorrow's immutable locale set without running Classic bootstrap", async () => {
+  it("starts London and Lisbon at midnight while repairing locales still in their early hours", async () => {
+    jest.setSystemTime(new Date("2026-08-11T23:00:00Z"));
+    await scheduledTaskHandler(scheduledEvent);
+    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false, ["en", "es", "pt", "fr", "de", "ru", "tr", "ar", "it", "nl", "pl"]);
+  });
+
+  it("generates the regional date only for locales in their midnight window", async () => {
     await scheduledTaskHandler(scheduledEvent);
 
-    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false);
+    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false, ["hi", "ru", "tr", "ar"]);
     expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily set ready).", {
       challengeDate: "2026-08-12",
     });
   });
 
-  it("self-heals today's missing immutable locale slots during early UTC retries", async () => {
+  it("self-heals London and Lisbon before their regional repair window closes", async () => {
     jest.setSystemTime(new Date("2026-08-12T01:00:00.000Z"));
 
     await scheduledTaskHandler(scheduledEvent);
 
-    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false);
+    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false, ["en", "pt"]);
+  });
+
+  it("uses the scheduled instant for delayed dispatch at Tokyo midnight", async () => {
+    jest.setSystemTime(new Date("2026-08-12T01:00:00Z"));
+    await scheduledTaskHandler({...scheduledEvent, scheduleTime: "2026-08-11T15:00:00Z"});
+    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false, ["ja", "ko"]);
   });
 
   it("rethrows generation failures with bounded Cloud-log metadata", async () => {

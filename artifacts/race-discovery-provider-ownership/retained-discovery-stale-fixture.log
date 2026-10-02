@@ -1,0 +1,147 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    {
++     challenge: {
++       adjustedTimeToBeatMs: 60000,
++       categoryId: 'history',
++       challengeId: 'matched',
++       creator: {
++         displayName: 'Nova'
++       },
++       expiresAtMs: 1790884189026,
++       locale: 'en',
++       rulesVersion: 'race10_v1',
++       status: 'active',
++       targetCorrect: 10
++     },
++     changed: false,
+-     challenge: null,
+-     changed: true,
+      error: null,
++     pending: null,
++     search: 'matched',
++     stage: 'challenge'
+-     pending: 'raceCategories',
+-     search: 'idle',
+-     stage: 'categories'
+    },
+    {
+      challenge: null,
++     changed: false,
++     error: 'RaceTo10.MATCH_EMPTY',
++     pending: null,
++     search: 'empty',
+-     changed: true,
+-     error: null,
+-     pending: 'raceCategories',
+-     search: 'idle',
+      stage: 'categories'
+    },
+    {
+      challenge: null,
++     changed: false,
++     error: 'RaceTo10.MATCH_TEMPORARY',
++     pending: null,
++     search: 'failed',
+-     changed: true,
+-     error: null,
+-     pending: 'raceCategories',
+-     search: 'idle',
+      stage: 'categories'
+    },
+    {
+      challenge: null,
+      changed: true,
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-discovery-browser.mjs:94:12 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      changed: false,
+      stage: 'challenge',
+      pending: null,
+      error: null,
+      search: 'matched',
+      challenge: {
+        challengeId: 'matched',
+        creator: { displayName: 'Nova' },
+        categoryId: 'history',
+        locale: 'en',
+        targetCorrect: 10,
+        adjustedTimeToBeatMs: 60000,
+        rulesVersion: 'race10_v1',
+        expiresAtMs: 1790884189026,
+        status: 'active'
+      }
+    },
+    {
+      changed: false,
+      stage: 'categories',
+      pending: null,
+      error: 'RaceTo10.MATCH_EMPTY',
+      search: 'empty',
+      challenge: null
+    },
+    {
+      changed: false,
+      stage: 'categories',
+      pending: null,
+      error: 'RaceTo10.MATCH_TEMPORARY',
+      search: 'failed',
+      challenge: null
+    },
+    {
+      changed: true,
+      stage: 'categories',
+      pending: 'raceCategories',
+      error: null,
+      search: 'idle',
+      challenge: null
+    }
+  ],
+  expected: [
+    {
+      changed: true,
+      stage: 'categories',
+      pending: 'raceCategories',
+      error: null,
+      search: 'idle',
+      challenge: null
+    },
+    {
+      changed: true,
+      stage: 'categories',
+      pending: 'raceCategories',
+      error: null,
+      search: 'idle',
+      challenge: null
+    },
+    {
+      changed: true,
+      stage: 'categories',
+      pending: 'raceCategories',
+      error: null,
+      search: 'idle',
+      challenge: null
+    },
+    {
+      changed: true,
+      stage: 'categories',
+      pending: 'raceCategories',
+      error: null,
+      search: 'idle',
+      challenge: null
+    }
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

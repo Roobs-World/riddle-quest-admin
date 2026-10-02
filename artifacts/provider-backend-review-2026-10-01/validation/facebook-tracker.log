@@ -1,0 +1,13 @@
+✔ accepts the evidence-backed 53-task tracker (1.889508ms)
+✔ final gate rejects incomplete external work (0.703683ms)
+✔ rejects a falsely completed task without executed evidence (1.065758ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31.078796
+$ node scripts/validate-facebook-progress.mjs
+Facebook progress tracker passed: 20/53 complete (38%), 2026-10-01T08:12:13+00:00

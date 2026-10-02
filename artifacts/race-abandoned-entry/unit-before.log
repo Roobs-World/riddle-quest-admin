@@ -1,0 +1,89 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionAbandonedEntry.test.ts
+FAIL src/play/race/__tests__/RaceSessionAbandonedEntry.test.ts
+  ● abandoned entry returns to a usable multiplayer hub › loads missing categories after abandoned start recovery
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "activeChallengeId": undefined,
+        "error": null,
+    -   "pending": "raceCategories",
+    +   "pending": null,
+        "run": null,
+        "stage": "categories",
+      }
+
+      12 |     else if (operation === "ready") h.respond("raceResume", {run: {...run, status: "prepared", currentRiddle: (await fixture(true)).currentRiddle}});
+      13 |     h.respond(operation === "start" ? "raceStart" : operation === "ready" ? "raceReady" : "raceResume", {run});
+    > 14 |     expect(h.session.getSnapshot()).toMatchObject({stage: "categories", run: null, pending: "raceCategories", error: null, activeChallengeId: undefined});
+         |                                     ^
+      15 |     expect(h.last().type).toBe("game:listRaceCategories");
+      16 |     h.respond("raceCategories", await catalog());
+      17 |     expect(h.session.getSnapshot()).toMatchObject({pending: null, error: null});
+
+      at src/play/race/__tests__/RaceSessionAbandonedEntry.test.ts:14:37
+
+  ● abandoned entry returns to a usable multiplayer hub › loads missing categories after abandoned resume recovery
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "activeChallengeId": undefined,
+        "error": null,
+    -   "pending": "raceCategories",
+    +   "pending": null,
+        "run": null,
+        "stage": "categories",
+      }
+
+      12 |     else if (operation === "ready") h.respond("raceResume", {run: {...run, status: "prepared", currentRiddle: (await fixture(true)).currentRiddle}});
+      13 |     h.respond(operation === "start" ? "raceStart" : operation === "ready" ? "raceReady" : "raceResume", {run});
+    > 14 |     expect(h.session.getSnapshot()).toMatchObject({stage: "categories", run: null, pending: "raceCategories", error: null, activeChallengeId: undefined});
+         |                                     ^
+      15 |     expect(h.last().type).toBe("game:listRaceCategories");
+      16 |     h.respond("raceCategories", await catalog());
+      17 |     expect(h.session.getSnapshot()).toMatchObject({pending: null, error: null});
+
+      at src/play/race/__tests__/RaceSessionAbandonedEntry.test.ts:14:37
+
+  ● abandoned entry returns to a usable multiplayer hub › loads missing categories after abandoned ready recovery
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "activeChallengeId": undefined,
+        "error": null,
+    -   "pending": "raceCategories",
+    +   "pending": null,
+        "run": null,
+        "stage": "categories",
+      }
+
+      12 |     else if (operation === "ready") h.respond("raceResume", {run: {...run, status: "prepared", currentRiddle: (await fixture(true)).currentRiddle}});
+      13 |     h.respond(operation === "start" ? "raceStart" : operation === "ready" ? "raceReady" : "raceResume", {run});
+    > 14 |     expect(h.session.getSnapshot()).toMatchObject({stage: "categories", run: null, pending: "raceCategories", error: null, activeChallengeId: undefined});
+         |                                     ^
+      15 |     expect(h.last().type).toBe("game:listRaceCategories");
+      16 |     h.respond("raceCategories", await catalog());
+      17 |     expect(h.session.getSnapshot()).toMatchObject({pending: null, error: null});
+
+      at src/play/race/__tests__/RaceSessionAbandonedEntry.test.ts:14:37
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 2 passed, 5 total
+Snapshots:   0 total
+Time:        0.239 s
+Ran all test suites matching RaceSessionAbandonedEntry.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionAbandonedEntry.test.ts`
+Exit status 1

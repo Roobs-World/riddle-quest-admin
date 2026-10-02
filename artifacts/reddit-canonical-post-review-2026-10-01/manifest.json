@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T09:43:37.303691+00:00",
+  "intent": "local-reddit-canonical-post-concurrency-review",
+  "uploadEligible": false,
+  "source": {
+    "head": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+    "dirty": true,
+    "completeCleanSourceProof": false,
+    "selectedFiles": [
+      {
+        "file": "packages/reddit-app/src/server/canonicalPost.ts",
+        "sha256": "60a18fe5327a84f33a49082b0b9bca09cb80872cb261908782e959064e952a58"
+      },
+      {
+        "file": "packages/reddit-app/src/server/canonicalPost.test.ts",
+        "sha256": "a01373a9ecf63b9680245e31623cc7f4fb33b9fce7b06b1c1668863889627ae2"
+      },
+      {
+        "file": "packages/reddit-app/src/server/index.ts",
+        "sha256": "6fd01e82180eab7dcff91eb14c8c3c462f66f7cf5016e76acae8b6e3fc4aa7ad"
+      },
+      {
+        "file": "docs/reddit-games-operations.md",
+        "sha256": "44c610e4240f13191e2903f3f9e730877100fe792739ce32f68759e6c7b78ae7"
+      },
+      {
+        "file": "docs/reddit-games-progress.html",
+        "sha256": "647ef73689c920f3a8a0e7d09b141c2acbc570fc9d2605c501501cb0ebb1a02c"
+      },
+      {
+        "file": "docs/privacy-data-inventory.md",
+        "sha256": "a7d14b97396b00e8b67df5b0923a2c2fe52530f5a3c0b00ee32afa1884f00c27"
+      },
+      {
+        "file": "docs/evidence/reddit-canonical-post-2026-10-01.md",
+        "sha256": "55a9e312fa6fc57bf9ead1e36a802da553f4a733e21d1c7d43bde0093e182742"
+      }
+    ]
+  },
+  "sdk": {
+    "package": "@devvit/web",
+    "version": "0.14.6",
+    "redisVersion": "0.14.6",
+    "observedRedisSources": [
+      {
+        "file": "RedisClient.js",
+        "sha256": "21e871cbddfbeb99f587193834c61a8e4226178f3ca63ac7d42d430d52661f87"
+      },
+      {
+        "file": "types/redis.d.ts",
+        "sha256": "48ee19e306914037f5a8cacc6be0097e8c257b51638f6cf2f420f2d27db09e15"
+      },
+      {
+        "file": "test/mocks/RedisMock.js",
+        "sha256": "04c33702fc7a38f570fe30ede1ae97f566bdcdb57738da4c47ed0989ee79f894"
+      }
+    ]
+  },
+  "verification": {
+    "initialReproduction": "three provider submissions from three overlapping calls; ambiguous retry resubmitted",
+    "focusedTests": 7,
+    "redditPackageTests": 42,
+    "testedNodeVersions": [
+      "24.17.0",
+      "22.23.1"
+    ],
+    "allSixTargetBuildsPassed": true,
+    "allSixClientArtifactHashesMatch": true,
+    "facebookSelectedClientSourceFilesMatch": 41,
+    "backendChangedThisTurn": false,
+    "uiChanged": false,
+    "liveProviderTests": false
+  },
+  "externalEffects": {
+    "postsCreated": 0,
+    "productionRedisReadsOrWrites": 0,
+    "uploads": 0,
+    "deployments": 0,
+    "accountAccessGranted": false
+  },
+  "limitations": [
+    "ambiguous creation requires provider inspection and reviewed installation maintenance",
+    "old implementation cannot safely handle pending marker on rollback",
+    "hosted install/upgrade/moderator acceptance absent",
+    "Meta MCP account authorization pending",
+    "Reddit contracts and hosted evidence absent"
+  ],
+  "artifacts": [
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/artifact-comparison.json",
+      "sha256": "700d1a975bca5866add0def12cee07e6f2394361680185cdb6712ba46fc51a85",
+      "bytes": 1197
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/build-facebook.log",
+      "sha256": "8f7dca35747edd82e9751f0135a1774762e8ec2c328199b2147406a718980c78",
+      "bytes": 39041
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/build-jest.log",
+      "sha256": "c45129752d5618bb91d062c88aca7f35579f693205e334ab9e26562cd3e65b1c",
+      "bytes": 37107
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/build-netflix.log",
+      "sha256": "0f261e7a234bd91520927115d0c9ef6bfc8e0153a66d3a5a85d5f3e40ec60cbb",
+      "bytes": 3387
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/build-reddit.log",
+      "sha256": "5d4da3e09a8e587d456e151e50bb68a032e60fb69dd1c02aed5e184f1b579504",
+      "bytes": 38426
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/build-yahoo.log",
+      "sha256": "836d6c990acf6dd3a1935db4f84cbce47cf0ba7dd8154e5ea82f7f246176fd2f",
+      "bytes": 3359
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/build-youtube.log",
+      "sha256": "7c503a3dafe79d273107ec4283b8e961c2f57b8fb84294b524912ca64fbd01a0",
+      "bytes": 3419
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/canonical-post.log",
+      "sha256": "0d34d4a68f68217e2c9de576a32f910393185177989340352a8d2c6dec05a3ea",
+      "bytes": 749
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/reddit-docs.log",
+      "sha256": "261a86d73f7dfaa0679070eb772bcb1999940af3c9453c4c94a885e6ef7ccc7e",
+      "bytes": 401
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/reddit-node22.log",
+      "sha256": "d9f4906349969ae2e9d8bced9e304a776b361936ea565b3aeeaff4d4ec0c7db3",
+      "bytes": 9146
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/reddit-package.log",
+      "sha256": "7543840b17dcca5dc26977696c14b442ce51cd61326b34e562dc56c50561181f",
+      "bytes": 4920
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/reddit-progress.log",
+      "sha256": "7123d2a01fd07f8c0f49aa96bff29743b29f8f439798e063cbb4a70c9b32c060",
+      "bytes": 44
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/reproduction.log",
+      "sha256": "89ccf76e26791a7e945f53f0575208e2c6f5315d2fbbe126841bec070c5c2ddd",
+      "bytes": 2489
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/source-size.log",
+      "sha256": "092dff58f4997fa6c192cc7e962409c6e5112e6890279ad59fcaaed46066baa6",
+      "bytes": 78
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/tsdoc.log",
+      "sha256": "b3024986239b18da6622c21b8973419d045c5ead1d32fc9310c7b6ec9fc24ed8",
+      "bytes": 72
+    },
+    {
+      "file": "artifacts/reddit-canonical-post-review-2026-10-01/validation/types.log",
+      "sha256": "14db34dbb715d0a296cc19ce01ce2a2a157e7c63f285958cb3d981918aa74740",
+      "bytes": 173
+    }
+  ]
+}

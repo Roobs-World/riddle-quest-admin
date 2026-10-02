@@ -16,17 +16,6 @@ describe("Race Session unscored response recovery", () => {
     /** Rejection leaves all confirmed facts and persistence writes untouched. */
     const before = h.session.getSnapshot(), saved = h.saved.length, count = h.commands.length, command = h.last();
     h.respond(entry === "start" ? "raceStart" : entry === "resume" ? "raceResume" : "raceReady", {run: bad});
-    if (entry === "resume") {
-      // Invalid cold resume hints already recover through fresh category discovery.
-      expect(h.session.getSnapshot()).toMatchObject({error: null, pending: "raceCategories", run: null});
-      expect(h.saved).toHaveLength(saved); expect(h.cleared).toEqual(["owner-1"]);
-      h.respond("raceCategories", await catalog()); h.session.begin("mixed");
-      h.respond("raceStart", {run});
-      h.respond("raceReady", {run: {...run, status: "scheduled", startsAtMs: run.serverNowMs! + 3000}});
-      h.advance(3480);
-      expect(h.session.getSnapshot()).toMatchObject({error: null, stage: "racing", run: {runId: run.runId, currentRiddle: {guessesUsed: 0}}});
-      return;
-    }
     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", pending: null, run: before.run});
     expect(h.commands).toHaveLength(count); expect(h.saved).toHaveLength(saved);
     /** Duplicate corrupt receipts cannot clear the recoverable error. */

@@ -1,0 +1,37 @@
+Cancellation receipt passed: waiting at 1280px.
+Cancellation receipt passed: ready at 1280px.
+Cancellation receipt passed: expired at 1280px.
+Cancellation receipt passed: unavailable at 1280px.
+Cancellation receipt passed: revive-waiting at 1280px.
+Cancellation receipt passed: revive-ready at 1280px.
+Cancellation receipt passed: revive-expired at 1280px.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
++   error: 'RaceTo10.ERROR_INVALID_RESPONSE',
+-   error: null,
+    pending: null,
+    resumes: 0,
+    status: 'cancelled'
+  }
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs:40:57 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    status: 'cancelled',
+    error: 'RaceTo10.ERROR_INVALID_RESPONSE',
+    pending: null,
+    resumes: 0
+  },
+  expected: { status: 'cancelled', error: null, pending: null, resumes: 0 },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -17,8 +17,8 @@ const loadingHeartbeats = new WeakMap<
     progress: number;
   }
 >();
-/** Defines the jest sdk init timeout ms value. */
-export const JEST_SDK_INIT_TIMEOUT_MS = 12_000;
+/** Allows cold host hydration to finish the SDK handshake while retaining a bounded startup wait. */
+export const JEST_SDK_INIT_TIMEOUT_MS = 30_000;
 /** Defines the jest sdk init timeout message value. */
 export const JEST_SDK_INIT_TIMEOUT_MESSAGE = "Jest SDK initialization timed out.";
 

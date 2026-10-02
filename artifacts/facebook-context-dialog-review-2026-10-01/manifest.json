@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T10:01:45.138167+00:00",
+  "intent": "local-facebook-context-dialog-review",
+  "uploadEligible": false,
+  "source": {
+    "head": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+    "dirty": true,
+    "completeCleanSourceProof": false,
+    "selectedFiles": [
+      {
+        "file": "docs/evidence/facebook-context-dialog-2026-10-01.md",
+        "sha256": "2a6387842bf6b7cfe4005257f87e265b76d566548f7fc1952ea24fbe4b833614"
+      },
+      {
+        "file": "docs/facebook-instant-games-operations.md",
+        "sha256": "46791105d7c10754a21fffd9f8966fa54fd6955db7b3f19ed56a797cf2c7f5ef"
+      },
+      {
+        "file": "docs/facebook-instant-games-progress.html",
+        "sha256": "107799f4cb73e2ae0a341ed31779b23222c801945b65dd4961c67bed10410b6f"
+      },
+      {
+        "file": "packages/portal/src/facebook/FacebookPlatformBootstrap.ts",
+        "sha256": "663c049f77600e4503e56b8bb6fd81fcdf22f1deb63e28043d9cb2c5ed15be06"
+      },
+      {
+        "file": "packages/portal/src/facebook/FacebookPlatformEntry.tsx",
+        "sha256": "81ee8a03956b97bacd57908aea4cd8ff84aa149d2ba092c4af5576eae3e435c0"
+      },
+      {
+        "file": "packages/portal/src/facebook/FacebookSdkDialogGate.ts",
+        "sha256": "76338ce615c3f1893dca944fe549f80096f297a1b5916111b94b1a99e38b007b"
+      },
+      {
+        "file": "packages/portal/src/facebook/FacebookTournamentPresentation.ts",
+        "sha256": "e64fbbde76049a4183fe4f266cfe3ce3b3eb6355dc855c586e5075160963173a"
+      },
+      {
+        "file": "packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts",
+        "sha256": "6f7220ad8e984fc2b3ad16ef305c509c679ccc956bab2bda77458cc4a5e8880e"
+      },
+      {
+        "file": "packages/portal/src/facebook/__tests__/FacebookTournamentPresentation.test.ts",
+        "sha256": "6545e345c9641548c5a34497725cac84c86a6485f0f7f7dce6c8f19541928ede"
+      },
+      {
+        "file": "packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+        "sha256": "f9f0c382a296a28aba9b50fc1ecc865ce079649b414c5cd4405f44fc9c90a497"
+      },
+      {
+        "file": "packages/portal/src/facebook/__tests__/facebookTournamentEntry.test.ts",
+        "sha256": "4eccc3020268420bbcb830bc965d14265901325a06539812799fec2231dcb996"
+      },
+      {
+        "file": "packages/portal/src/facebook/__tests__/tournaments.jest-playwright.support.ts",
+        "sha256": "854018c4412a3affbd7fdd6ef3d8351f4cf0a4ee5624da9f7e64b4760dcff01a"
+      },
+      {
+        "file": "packages/portal/src/facebook/facebookTournamentEntry.ts",
+        "sha256": "97ba4ec1b2ff4104b35288d9f9d393c873f5ffba289470a8153c776cbeb46a13"
+      },
+      {
+        "file": "packages/portal/src/facebook/fbinstant.ts",
+        "sha256": "b2d2036d7df7d8fe589de1930747a12686cfec74f0569497adbfd9428dde40da"
+      },
+      {
+        "file": "packages/portal/src/facebook/referrals.ts",
+        "sha256": "bba4591ba874b2546a12bed9365b3924f417e87d193b6be0e69e77c60826bd3a"
+      },
+      {
+        "file": "packages/portal/src/platform/types.ts",
+        "sha256": "bf8f8c7febf52e98c3f870dd26cc0aae5d30bbb03261fba1742a7a2babe7ae33"
+      },
+      {
+        "file": "packages/portal/src/play/GameFrameApp.tsx",
+        "sha256": "d16017d1161b15da586d93540bfd11d06fd767a883c053dfc49ad8929b793516"
+      },
+      {
+        "file": "packages/portal/src/play/HostedPlaySession.ts",
+        "sha256": "cab116e99763064fb3bbf9da2c68bd59482e571d839ff1a8824087268048c8f9"
+      },
+      {
+        "file": "packages/portal/src/play/PlayHostApp.tsx",
+        "sha256": "2d3642ab9adc846e54e97cd30d226da15e3c05510f2723c4e853071fcb855cd7"
+      },
+      {
+        "file": "packages/portal/src/play/race/RaceSession.ts",
+        "sha256": "fb4084521e3029e49c2fd2fab4afacf67a86e3e83b7850740306b451cba1133a"
+      },
+      {
+        "file": "packages/portal/src/play/race/RaceSession.types.ts",
+        "sha256": "9a81d0e775bd89acd53b955be6e0d0453de99d5da00fcac4180c9a2076ac3d6b"
+      },
+      {
+        "file": "packages/portal/src/play/race/RaceTo10Game.tsx",
+        "sha256": "667b21c3b3ea028b1e56a2e7bbab9a7f7adab31fea1be2d118608401392b8cf3"
+      },
+      {
+        "file": "packages/portal/src/play/race/RaceTo10Game.types.ts",
+        "sha256": "1cce450e58ed8b3befab2c0b719f584c8cd24870c3b3d7f76868f42ab60498fb"
+      },
+      {
+        "file": "packages/portal/src/play/race/RaceTo10View.tsx",
+        "sha256": "26c29ba11d6858cad5e3440620c86815fa3c1ea93f570c9fa1556dc38231c837"
+      },
+      {
+        "file": "packages/portal/src/play/race/__tests__/RaceSessionTournamentEntry.test.ts",
+        "sha256": "9889bdc68fb54887280f5abb62c949850cea0b476085d6b7b0345b82f16a5584"
+      },
+      {
+        "file": "packages/portal/src/play/race/__tests__/raceComponents.test.tsx",
+        "sha256": "cc05eb1366d904d63a3ba90daa8ed300cdd696acb10944bc103a0199ac28d6ca"
+      },
+      {
+        "file": "packages/portal/src/play/race/components/RaceLobbyPanels.tsx",
+        "sha256": "6b3012aba44d0d2efad29d4196a976490493e7392d96f833e8f2a88742fb6533"
+      },
+      {
+        "file": "packages/portal/src/play/race/hooks/useRaceSession.ts",
+        "sha256": "537124d2037d5ed13078120631a5e8af3d8ff0520a58e9fd07e3c1c2706c2bce"
+      },
+      {
+        "file": "packages/portal/src/play/useGameSurfaceCoordination.ts",
+        "sha256": "47862fac5152d545d3478d0df03bd3288c328595ca8b49a92bc942d0d335ad0c"
+      },
+      {
+        "file": "packages/portal/src/styles.race-lobby.css",
+        "sha256": "f657caaa3dcbc7958ff2786fc54d7735cc91cdcc687c4c733411022f61d25b76"
+      },
+      {
+        "file": "scripts/audit-facebook-visible-copy.mjs",
+        "sha256": "074a255578aa3b1a209c23a8eba3d196b6f9b124a003965234a33ef79943b884"
+      },
+      {
+        "file": "scripts/facebook-progress-tracker.test.mjs",
+        "sha256": "3f44daf8d7110825585efa0780e1d5b44f23f81f559577f564da630bb5d873d6"
+      },
+      {
+        "file": "src/locales/ar/race.json",
+        "sha256": "79550951e80dfc2205d68fa53165979d52a00d0e44135d6e3e3d4af874478971"
+      },
+      {
+        "file": "src/locales/de/race.json",
+        "sha256": "82a6d506b1b37b9ab519e5220df6407736f83f0e78d93e1e3e18d0ed1c845e40"
+      },
+      {
+        "file": "src/locales/en/race.json",
+        "sha256": "ab530a6791f9f36e0493c42d2bf316077ebdc54756f908ada10191c582ecb009"
+      },
+      {
+        "file": "src/locales/es/race.json",
+        "sha256": "0bf0e1637e65529da6440088d3c1d2765b3e1a49b9e6204dcb1f5cc3d18ffc8c"
+      },
+      {
+        "file": "src/locales/fr/race.json",
+        "sha256": "2c110724bf0745bdae3668562f0862e74cc01762f862c1f66661dc0ac7a185e5"
+      },
+      {
+        "file": "src/locales/hi/race.json",
+        "sha256": "14f3f5e89fbe5d7b5810025015a4ff3620816dd620c5dece3c778093eda53c3e"
+      },
+      {
+        "file": "src/locales/id/race.json",
+        "sha256": "5e25cea9d050347fd1b0db100d01793cf4d931f359eef6e6cf609b2b7316c9db"
+      },
+      {
+        "file": "src/locales/it/race.json",
+        "sha256": "d815c33c00e7b8d6179874a0dfbbaa8911e2b10d0d1fbd8c8254b9afd2b1bb10"
+      },
+      {
+        "file": "src/locales/ja/race.json",
+        "sha256": "03f821e4cda4a524ad4f960ecfa249919d1c442f9e0be082d9f070cbb72b0433"
+      },
+      {
+        "file": "src/locales/ko/race.json",
+        "sha256": "5e6d4110d23c62788996814ee9b78d8469e2ebcb9d361871b8d2a24b22bd1bc2"
+      },
+      {
+        "file": "src/locales/nl/race.json",
+        "sha256": "ab54c94ce884f2ad00eec67b4e61a48a88d2bf72467591bdecd2d1ee8cb44049"
+      },
+      {
+        "file": "src/locales/pl/race.json",
+        "sha256": "21f0bc1174e01d7ce6b15d7986ce597f0a1ee7af6cc4a5faa2926e30ed08da0f"
+      },
+      {
+        "file": "src/locales/pt/race.json",
+        "sha256": "d256fb851c03720932af32ed2099046968a55f456b3e74e6f55bdf0775827fbe"
+      },
+      {
+        "file": "src/locales/ru/race.json",
+        "sha256": "7e0ee20b74d40098f03bbb8072286bdeab79312c92c23991088990d524f31965"
+      },
+      {
+        "file": "src/locales/tr/race.json",
+        "sha256": "6079d3194ad48880dba8eb278c6e6ba039ce1d8b053d41d5472578d35ab2a64c"
+      },
+      {
+        "file": "src/locales/vi/race.json",
+        "sha256": "c70e312aab61f391ed6eae940870d56d7e09414290e6877deb55fe6b8f22366b"
+      }
+    ]
+  },
+  "verification": {
+    "newOverlapAndReleaseCases": 5,
+    "portalSuites": 172,
+    "portalPassedTests": 1465,
+    "portalOptInSkippedTests": 95,
+    "injectedBrowserTests": {
+      "facebook": 1,
+      "jest": 1,
+      "reddit": 1
+    },
+    "allSixBuildsPassed": true,
+    "nonFacebookClientArtifactsUnchanged": true,
+    "redditServerSourceReference": "artifacts/reddit-canonical-post-review-2026-10-01/manifest.json",
+    "redditServerSelectedSources": 3,
+    "redditServerSourceMismatches": [],
+    "liveMetaAcceptance": false
+  },
+  "facebookArchive": {
+    "file": "artifacts/facebook-context-dialog-review-2026-10-01/riddle-quest-facebook-context-dialog-local-review.zip",
+    "sha256": "e908eb7f81d96084e9fec79f1a97d2cb0616242c2673fc57eb818f26071bd6cf",
+    "bytes": 2763182,
+    "entries": 399,
+    "permissionMode": "0400",
+    "localReviewOnly": true,
+    "uploadEligible": false
+  },
+  "providerGates": {
+    "metaMcpRegistered": true,
+    "metaAccountAccessGranted": false,
+    "approvalPending": true,
+    "commerceActivationAllowed": false,
+    "rewardedGrantActivationAllowed": false,
+    "hostedAcceptanceComplete": false
+  },
+  "externalEffects": {
+    "deployments": 0,
+    "uploads": 0,
+    "accountAccessGrants": 0
+  },
+  "artifacts": [
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/artifact-comparison.json",
+      "sha256": "65c8334caf8566a6d51150df66296f6a0bf63ea56409cc661f71055dd11031df",
+      "bytes": 228283
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/riddle-quest-facebook-context-dialog-local-review.zip",
+      "sha256": "e908eb7f81d96084e9fec79f1a97d2cb0616242c2673fc57eb818f26071bd6cf",
+      "bytes": 2763182
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/browser-facebook.log",
+      "sha256": "178fc4a15c38796d0eb2a1fadef5f6738bc6e7f1837ee5076bafa8185889047d",
+      "bytes": 57669
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/browser-jest.log",
+      "sha256": "2bdcd307243e5a4422e556ee860098618d10759637d1626417deeffba985ccc6",
+      "bytes": 930
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/browser-reddit.log",
+      "sha256": "fd5392e82d7131381049f4610f309109a3a15664749943bb1ab0f2a339128177",
+      "bytes": 661
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/build-facebook.log",
+      "sha256": "580d3e251232ad50f08e613df62cf273c0c31f5e3784fd1e8c09f1a1e8cc2b9b",
+      "bytes": 39045
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/build-jest.log",
+      "sha256": "5ccb506b889373f6501dae260132e2673a6fc47fd89dcec6efd3f3f41759f3ec",
+      "bytes": 37109
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/build-netflix.log",
+      "sha256": "7d00163d431c2a0c520ddb2b9e247c4a32ce1192fd526a8205b931acae8fc6bc",
+      "bytes": 3390
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/build-reddit.log",
+      "sha256": "15cb3826d9329862d78054b0ad5996615eafa697aa3c4dbe6721e50d6cc85b59",
+      "bytes": 38427
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/build-yahoo.log",
+      "sha256": "830bbb422059170596d37f3144a9374db2a7e5755a5199d3226efd1bbb8fafec",
+      "bytes": 3360
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/build-youtube.log",
+      "sha256": "6d512637bd4a3b88d8b9e10e0cd690a4f4779473cd570d6a6618622f02b25296",
+      "bytes": 3419
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/commerce-boundary.log",
+      "sha256": "4bb425d43d775a03636acf36944b7a891c01a3ffaa84f6f6008f620436daa81c",
+      "bytes": 569
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/facebook-progress.log",
+      "sha256": "adf45f2e46a5d09aba1d15b2ccd4bb70168d457544b886adfc851c24cb64d0d2",
+      "bytes": 82
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/facebook-tracker-tests.log",
+      "sha256": "187646889827509256aa0ddd06dff15d8c4bc10a812b19431518231415d7bda5",
+      "bytes": 310
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/focused.log",
+      "sha256": "b45979fb5494f6e67167367eb1334cdecbcee722bb8ec562e775cb2cc42d65df",
+      "bytes": 914
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/portal-unit.log",
+      "sha256": "629a2046bc9ad01d9b88381a18a3c77430e5ed7fe84ee270e75d30ab2a8395d1",
+      "bytes": 368
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/reproduction.log",
+      "sha256": "b8bffb54264c059d2f87aaeed83e6db51304d9ed3b7952100f08f74f3aa5b083",
+      "bytes": 3186
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/secret-boundary.log",
+      "sha256": "d5914f9389bc4a9dfbc02e94e8080b8d07eed8244a572a01494eb307a1cb35e0",
+      "bytes": 543
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/source-size.log",
+      "sha256": "092dff58f4997fa6c192cc7e962409c6e5112e6890279ad59fcaaed46066baa6",
+      "bytes": 78
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/tsdoc.log",
+      "sha256": "147a68ce968ccd493b06f44a235251509606315176e72796d9fd01c328adcb6c",
+      "bytes": 72
+    },
+    {
+      "file": "artifacts/facebook-context-dialog-review-2026-10-01/validation/types.log",
+      "sha256": "ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6",
+      "bytes": 172
+    }
+  ]
+}

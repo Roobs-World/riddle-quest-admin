@@ -1,0 +1,10 @@
+{
+  "buildConfig": {
+    "runtime": "nodejs22"
+  },
+  "serviceConfig": {
+    "revision": "settleracedeadlines-00017-zec"
+  },
+  "state": "ACTIVE",
+  "updateTime": "2026-10-01T15:01:27.578236756Z"
+}

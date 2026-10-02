@@ -1,0 +1,236 @@
+{
+  "sourceFileHash": "e4ed372c49ed6a6d7f98f583549f86f192b6b5eec9890fe92b721b59cdfe4ef1",
+  "translatorModel": "gpt-6.1-sol",
+  "criticModel": "gpt-6-astra",
+  "translations": {
+    "race:history:01": {
+      "canonicalRiddleId": "race:history:01",
+      "text": "Quelle ville antique était le centre d'un empire dirigé par des empereurs comme Auguste ?",
+      "answer": "Rome"
+    },
+    "race:history:02": {
+      "canonicalRiddleId": "race:history:02",
+      "text": "Quelle civilisation des Andes a construit le Machu Picchu ?",
+      "answer": "Inca"
+    },
+    "race:history:03": {
+      "canonicalRiddleId": "race:history:03",
+      "text": "Quel peuple d'Amérique centrale a fondé Tenochtitlan ?",
+      "answer": "Aztèque"
+    },
+    "race:history:04": {
+      "canonicalRiddleId": "race:history:04",
+      "text": "À quelle famille royale anglaise appartenaient Henri VIII et Élisabeth Ire ?",
+      "answer": "Tudor"
+    },
+    "race:history:05": {
+      "canonicalRiddleId": "race:history:05",
+      "text": "Quel nom donne-t-on aux marins scandinaves qui menaient des raids et faisaient du commerce à travers l'Europe ?",
+      "answer": "Viking"
+    },
+    "race:history:06": {
+      "canonicalRiddleId": "race:history:06",
+      "text": "Quel dirigeant romain a franchi le Rubicon en 49 avant J.-C. ?",
+      "answer": "César"
+    },
+    "race:history:07": {
+      "canonicalRiddleId": "race:history:07",
+      "text": "Quel leader de l'indépendance de l'Inde était connu pour sa résistance non violente ?",
+      "answer": "Gandhi"
+    },
+    "race:history:08": {
+      "canonicalRiddleId": "race:history:08",
+      "text": "Quelle cité-État grecque était célèbre pour sa société de guerriers ?",
+      "answer": "Sparte"
+    },
+    "race:history:09": {
+      "canonicalRiddleId": "race:history:09",
+      "text": "Quelle civilisation antique a construit les pyramides de Gizeh ?",
+      "answer": "Égypte"
+    },
+    "race:history:10": {
+      "canonicalRiddleId": "race:history:10",
+      "text": "Quel est le premier mot du nom latin de la charte scellée par le roi Jean en 1215 ?",
+      "answer": "Magna"
+    },
+    "race:history:v2:11": {
+      "canonicalRiddleId": "race:history:v2:11",
+      "text": "Quel célèbre paquebot a coulé après avoir heurté un iceberg en 1912 ?",
+      "answer": "Titanic"
+    },
+    "race:history:v2:12": {
+      "canonicalRiddleId": "race:history:v2:12",
+      "text": "Quelle ville allemande était divisée par un mur jusqu'en 1989 ?",
+      "answer": "Berlin"
+    },
+    "race:history:v2:13": {
+      "canonicalRiddleId": "race:history:v2:13",
+      "text": "Quelle ville marchande italienne est célèbre pour ses canaux et ses gondoles ?",
+      "answer": "Venise"
+    },
+    "race:history:v2:14": {
+      "canonicalRiddleId": "race:history:v2:14",
+      "text": "Quel support d'écriture fabriqué à partir de roseaux les anciens Égyptiens utilisaient-ils ?",
+      "answer": "Papyrus"
+    },
+    "race:history:v2:15": {
+      "canonicalRiddleId": "race:history:v2:15",
+      "text": "Quelle ville a accueilli les premiers Jeux olympiques modernes en 1896 ?",
+      "answer": "Athènes"
+    }
+  },
+  "critiques": {
+    "race:history:01": {
+      "canonicalRiddleId": "race:history:01",
+      "backTranslation": "Which ancient city was the centre of an empire ruled by emperors such as Augustus?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:02": {
+      "canonicalRiddleId": "race:history:02",
+      "backTranslation": "Which civilization of the Andes built Machu Picchu?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:03": {
+      "canonicalRiddleId": "race:history:03",
+      "backTranslation": "Which Central American people founded Tenochtitlan?",
+      "equivalentCanonical": false,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:04": {
+      "canonicalRiddleId": "race:history:04",
+      "backTranslation": "To which English royal family did Henry VIII and Elizabeth I belong?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:05": {
+      "canonicalRiddleId": "race:history:05",
+      "backTranslation": "What name is given to the Scandinavian seafarers who raided and traded across Europe?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:06": {
+      "canonicalRiddleId": "race:history:06",
+      "backTranslation": "Which Roman leader crossed the Rubicon in 49 BC?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:07": {
+      "canonicalRiddleId": "race:history:07",
+      "backTranslation": "Which leader of India's independence was known for his nonviolent resistance?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:08": {
+      "canonicalRiddleId": "race:history:08",
+      "backTranslation": "Which Greek city-state was famous for its society of warriors?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:09": {
+      "canonicalRiddleId": "race:history:09",
+      "backTranslation": "Which ancient civilization built the pyramids of Giza?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:10": {
+      "canonicalRiddleId": "race:history:10",
+      "backTranslation": "What is the first word of the Latin name of the charter sealed by King John in 1215?",
+      "equivalentCanonical": false,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:v2:11": {
+      "canonicalRiddleId": "race:history:v2:11",
+      "backTranslation": "Which famous passenger liner sank after hitting an iceberg in 1912?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:v2:12": {
+      "canonicalRiddleId": "race:history:v2:12",
+      "backTranslation": "Which German city was divided by a wall until 1989?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:v2:13": {
+      "canonicalRiddleId": "race:history:v2:13",
+      "backTranslation": "Which Italian trading city is famous for its canals and gondolas?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:v2:14": {
+      "canonicalRiddleId": "race:history:v2:14",
+      "backTranslation": "What writing medium made from reeds did the ancient Egyptians use?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    },
+    "race:history:v2:15": {
+      "canonicalRiddleId": "race:history:v2:15",
+      "backTranslation": "Which city hosted the first modern Olympic Games in 1896?",
+      "equivalentCanonical": true,
+      "clueLeak": false,
+      "prohibitedContent": false,
+      "categoryMatch": true,
+      "difficultyMatch": true
+    }
+  },
+  "critiqueTranslationHashes": {
+    "race:history:01": "b5793a0be7a945604230d92450b7d597a345f5ee957fcf742ceb35d81393e870",
+    "race:history:02": "3a7f8bf1b9c0ae6719d59ac52e78f58bd67b5a185bf414a0dac407d9b5405214",
+    "race:history:03": "6f15521ecfe1ba4e7aa511b755342e7cfcdf28c6f9202d585ef472cdf92e429d",
+    "race:history:04": "f774b6b3e9765e0e068151c9066ec918196fe9c294c64752b0cf61a0da5b3670",
+    "race:history:05": "3089d4670132d529c8bef598a161fd227e8d3e4e3296a4a944e87033e96b8a40",
+    "race:history:06": "cc63c601932ea44763bccd1519209f977f9454fcd0366555375f9500cd5763d0",
+    "race:history:07": "37a4a0f271f6bb5b939bad3e30cba18868125568e25b5e261b4dd9c6b252109f",
+    "race:history:08": "da8783b27528aeb9ad9b16b8aa0661a7aa72d464eeb8fce3e6935dab271ca681",
+    "race:history:09": "d1e81f2763547f6e6415023c4daa0966fafcefa5e7e6f7ae88ad8ab9cc8d49ae",
+    "race:history:10": "47d17424453859d933382520be30cd61d9e2f127841104880720a8cf339c586f",
+    "race:history:v2:11": "67ecb45dbbb07910ab3c83a38eb53d0dc6a1178c80a7d7367d3ca5367c85fec3",
+    "race:history:v2:12": "0a9842684638fc1c489e371b7055276f1887467a1086e298c21f011073101104",
+    "race:history:v2:13": "b991f39df55d0329e701f4858fb6f293f04ca8c4ac0641a1e9d929598a22c53e",
+    "race:history:v2:14": "830918a3430d0036fb6d9f6b0f343cfaa005d583eb778ad39e3eda81200e3458",
+    "race:history:v2:15": "744dd7f36dc3b052d618552846b6bdb40679551ffd4e8756559720c513b93bed"
+  }
+}

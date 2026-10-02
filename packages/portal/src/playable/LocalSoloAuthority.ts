@@ -1,3 +1,4 @@
+import {countCoinRewardAchievements} from "@qwordly/core/game";
 import {splitGraphemes} from "@qwordly/core/game";
 import {findNewYouTubeAchievements} from "./achievements";
 import {
@@ -339,7 +340,7 @@ export class LocalSoloAuthority {
         gameOver: false,
       });
       next.progression.unlockedAchievementIds.push(...unlocked);
-      next.progression.coins += unlocked.length * YOUTUBE_ACHIEVEMENT_COINS;
+      next.progression.coins += countCoinRewardAchievements(unlocked) * YOUTUBE_ACHIEVEMENT_COINS;
       return unlocked;
     });
   }

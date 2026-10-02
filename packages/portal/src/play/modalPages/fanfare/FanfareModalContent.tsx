@@ -2,7 +2,6 @@ import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
 import type {GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
 import {getRankForLevel} from "../../ranks";
-import {RankIcon} from "../../RankIcon";
 import {CoinAwardSequence} from "./CoinAwardSequence";
 import type {FanfareCoinAward, FanfareStep} from "./fanfareSequence";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
@@ -113,9 +112,6 @@ export function VictoryFanfareContent({
         </div>
       ) : activeStep.kind === "rank" ? (
         <div className="reward-summary">
-          <span className="rank-emblem large" style={{background: victoryRank.color}}>
-            <RankIcon name={victoryRank.icon} />
-          </span>
           <strong>{tr(victoryRank.nameKey)}</strong>
           <span>{tr("RankUpFanfare.SUBTITLE")}</span>
         </div>
@@ -157,7 +153,7 @@ export function VictoryFanfareContent({
                 })
               }
             >
-              {tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
+              {referralSharing.inviteLabel ?? tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
             </button>
           ) : null}
         </>

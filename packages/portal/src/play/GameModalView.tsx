@@ -24,6 +24,9 @@ export type GameModalViewProps = {
   onClose: () => void;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
+  /** Optional target-funded continuation and its exclusive operation lock. */
+  onRecoverAttempt?: () => void;
+  continuationPending?: boolean;
   /** Stores on purchase. */
   onPurchase: (productId: string) => void;
   /** Stores on next. */
@@ -54,6 +57,8 @@ export function GameModalView({
   state,
   onClose,
   onContinue,
+  onRecoverAttempt,
+  continuationPending = false,
   onPurchase,
   onNext,
   onOpenModal,
@@ -109,7 +114,7 @@ export function GameModalView({
         event.preventDefault();
         /** Provides collecting coins behavior. */
         const collectingCoins = modal?.querySelector("[data-coin-collection='pending']");
-        if (state.modal !== "victory" && !(state.modal === "continue" && state.guessPending) && !collectingCoins) {
+        if (state.modal !== "victory" && !(state.modal === "continue" && (state.guessPending || continuationPending)) && !collectingCoins) {
           onCloseRef.current();
         }
         return;
@@ -144,7 +149,7 @@ export function GameModalView({
         externalNotice.removeAttribute("aria-hidden");
       }
     };
-  }, [state.guessPending, state.lastRewards, state.modal]);
+  }, [state.guessPending, state.lastRewards, state.modal, continuationPending]);
 
   useEffect(() => {
     setVictoryStepIndex(0);
@@ -204,7 +209,7 @@ export function GameModalView({
   }
   /** Indicates whether is mandatory outcome. */
   const isMandatoryOutcome =
-    state.modal === "victory" || coinCollectionPending || (state.modal === "continue" && state.guessPending);
+    state.modal === "victory" || coinCollectionPending || (state.modal === "continue" && (state.guessPending || continuationPending));
   /** Provides advance victory fanfare behavior. */
   const advanceVictoryFanfare = () => {
     if (victoryStepIndex + 1 < victorySteps.length) {
@@ -280,6 +285,8 @@ export function GameModalView({
           state={state}
           onClose={onClose}
           onContinue={onContinue}
+          onRecoverAttempt={onRecoverAttempt}
+          continuationPending={continuationPending}
           onPurchase={onPurchase}
           onOpenModal={onOpenModal}
           onToggleMute={onToggleMute}

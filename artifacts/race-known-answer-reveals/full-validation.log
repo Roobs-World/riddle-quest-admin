@@ -1,0 +1,2 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-known-answer-reveals.json
+Recorded multiplayer:race-known-answer-reveals for jest, facebook, reddit, youtube, netflix, yahoo, gamesnacks in the local dashboard.

@@ -1,0 +1,22 @@
+{
+  "followUps": [
+    {
+      "topic": "Catalog transport failure after saved discovery failure",
+      "question": "Does generic catalog rejection retain a privately retryable catalog read independently of a terminal discovery policy or its unelapsed retry deadline?",
+      "files": [
+        "packages/portal/src/play/race/RaceSession.ts",
+        "packages/portal/src/play/race/RaceTo10Game.tsx"
+      ],
+      "status": "needs reproduction"
+    },
+    {
+      "topic": "Resolver callback replaces journey during current()",
+      "question": "Does provider lookup reentry invalidate generation after the resolver returns, before the continuation acts?",
+      "files": [
+        "packages/portal/src/play/race/RaceSession.ts",
+        "packages/portal/src/play/race/logic/raceMatchDiscovery.ts"
+      ],
+      "status": "needs reproduction"
+    }
+  ]
+}

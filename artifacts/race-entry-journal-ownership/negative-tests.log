@@ -1,0 +1,75 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionEntryJournalOwnership
+FAIL src/play/race/__tests__/RaceSessionEntryJournalOwnership.test.ts
+  ● Race Session challenge refresh journal ownership › preserves competing selection during retry reads
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  2
+    + Received  + 11
+
+    - ObjectContaining {
+    -   "id": "newer-journal",
+    + Object {
+    +   "expiresAtMs": 86401000,
+    +   "id": "raceRecovery-ae20f8bc-2bbb-483b-bf01-ca64e79101fa",
+    +   "intent": Object {
+    +     "challengeId": "old-challenge",
+    +     "kind": "challenge",
+    +   },
+    +   "locale": "en",
+    +   "ownerId": "owner-1",
+    +   "savedAtMs": 1000,
+    +   "version": 1,
+      }
+
+      20 |       expect(h.last()).toMatchObject({type: "game:getRaceEntry", payload: {challengeId: "old-challenge"}});
+      21 |       expect(h.commands).toHaveLength(2);
+    > 22 |       expect(journal).toEqual(mode === "removed" ? null : expect.objectContaining({id: "newer-journal"}));
+         |                       ^
+      23 |       h.respond("raceEntry", {status: "ready", serverNowMs: 10000, challenge: preview("old-challenge")});
+      24 |       expect(h.session.getSnapshot()).toMatchObject({entryStatus: {status: "ready"}, error: null});
+      25 |       expect(journal).toEqual(mode === "removed" ? null : expect.objectContaining({id: "newer-journal"}));
+
+      at src/play/race/__tests__/RaceSessionEntryJournalOwnership.test.ts:22:23
+
+  ● Race Session challenge refresh journal ownership › preserves competing selection during poll reads
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  2
+    + Received  + 11
+
+    - ObjectContaining {
+    -   "id": "newer-journal",
+    + Object {
+    +   "expiresAtMs": 86401000,
+    +   "id": "raceRecovery-e0b041d6-b228-4450-96bc-650064ba95c7",
+    +   "intent": Object {
+    +     "challengeId": "old-challenge",
+    +     "kind": "challenge",
+    +   },
+    +   "locale": "en",
+    +   "ownerId": "owner-1",
+    +   "savedAtMs": 1000,
+    +   "version": 1,
+      }
+
+      20 |       expect(h.last()).toMatchObject({type: "game:getRaceEntry", payload: {challengeId: "old-challenge"}});
+      21 |       expect(h.commands).toHaveLength(2);
+    > 22 |       expect(journal).toEqual(mode === "removed" ? null : expect.objectContaining({id: "newer-journal"}));
+         |                       ^
+      23 |       h.respond("raceEntry", {status: "ready", serverNowMs: 10000, challenge: preview("old-challenge")});
+      24 |       expect(h.session.getSnapshot()).toMatchObject({entryStatus: {status: "ready"}, error: null});
+      25 |       expect(journal).toEqual(mode === "removed" ? null : expect.objectContaining({id: "newer-journal"}));
+
+      at src/play/race/__tests__/RaceSessionEntryJournalOwnership.test.ts:22:23
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.231 s
+Ran all test suites matching RaceSessionEntryJournalOwnership.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionEntryJournalOwnership`
+Exit status 1

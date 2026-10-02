@@ -4,10 +4,10 @@
     "COLOR_CORRECT": "La lettera è corretta e nella giusta posizione",
     "COLOR_MISPLACED": "La lettera è nella parola ma nella posizione sbagliata",
     "COLOR_WRONG": "La lettera non è affatto nella parola",
-    "GOAL_DESCRIPTION": "Indovina l'enigma nascosto in 3 tentativi utilizzando gli indizi colorati come guida.",
+    "GOAL_DESCRIPTION": "Indovina l'enigma nascosto in 5 tentativi utilizzando gli indizi colorati come guida.",
     "GOAL_TITLE": "L'obiettivo",
     "GOT_IT_BUTTON": "Fatto!",
-    "TIPS_DESCRIPTION": "Inizia con lettere comuni e utilizza il feedback colorato per restringere le tue ipotesi. Ricorda, hai solo 3 tentativi!",
+    "TIPS_DESCRIPTION": "Inizia con lettere comuni e utilizza il feedback colorato per restringere le tue ipotesi. Ricorda, hai solo 5 tentativi!",
     "TIPS_TITLE": "Suggerimenti per il successo"
   },
   "WelcomeBackModal": {

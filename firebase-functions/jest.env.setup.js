@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-require("dotenv").config({path: __dirname + "/.env", override: true});
+/** Keeps real local demo-emulator runs independent of deployment credentials and project overrides. */
+const isDemoEmulatorTest = /^demo-/.test(process.env.GCLOUD_PROJECT || "") && /^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST || "");
+if (!isDemoEmulatorTest) require("dotenv").config({path: __dirname + "/.env", override: true});
 
 // Ensure Jest environment is properly detected by iapConfig
 process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";

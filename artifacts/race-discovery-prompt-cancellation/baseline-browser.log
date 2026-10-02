@@ -1,0 +1,11 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 1500ms exceeded.
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs:45:14 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

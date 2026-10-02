@@ -58,7 +58,8 @@ export type SinglePlayerSessionState = {
   /** Server-counted submitted guesses. */ attempts: number;
   /** Most recently accepted normalized guess. */ lastGuess?: string;
   /** Most recently returned result for semantic replay. */ lastGuessResult?: SubmitSinglePlayerGuessResponseData;
-  /** Indicates whether the paid extra attempt was granted. */ hasUsedContinue: boolean;
+  /** Indicates whether the one extra attempt was granted by either funding route. */ hasUsedContinue: boolean;
+  /** Server-only funding provenance; never accepted from a gameplay request. */ continueFunding?: "coins" | "facebook-rewarded";
   /** Indicates that the base attempt limit was reached. */ awaitingContinue: boolean;
   /** Indicates that no more guesses may be accepted. */ terminal: boolean;
   /** Canonical correctness of the terminal guess. */ isCorrect: boolean;

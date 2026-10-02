@@ -1,0 +1,82 @@
+{
+  "taskId": "multiplayer:race-search-journal-observation",
+  "status": "focused-verification-passed-full-source-receipt-pending",
+  "verifiedAt": "2026-10-01T16:26:10.898124+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "fullClientTestsPassed": 1611,
+  "fullClientTestsSkipped": 95,
+  "fullClientSuitesPassed": 183,
+  "fullClientSuitesSkipped": 13,
+  "newSessionTestsPassed": 4,
+  "injectedJournalScenariosPassed": 2,
+  "retainedObservationScenariosPassed": 2,
+  "retainedStartupRecoveryScenariosPassed": 12,
+  "baselineTestsFailed": 3,
+  "fullVerificationRequiredChecks": 45,
+  "productionFileHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "7fbb78eb7e1b050c64251ea19f8eee16c31ab8e0493d7d40c565c557b89cdbf9",
+    "packages/portal/src/play/race/logic/raceRecoveryStorage.ts": "4502993bc19d5920c2f241c279794e3ade9dce400d0acf435439f9c0fd691276",
+    "packages/portal/src/play/race/logic/raceOptionalStorage.ts": "2e7c569125e21601bb0099db5e6a1d38b0f6c0753cfe202beea991bfb9102954",
+    "packages/portal/src/play/race/__tests__/RaceSessionSearchJournalObservation.test.ts": "6c5a9b2fa99c96811975356726686ec89b705037021e7579e0eb87d061e4574f",
+    "packages/portal/src/play/race/__tests__/RaceSessionDiscoveryOwnership.test.ts": "f726978ad8366b64ba94dc111f604c571e222178a77e576159cead6e65ee71e8",
+    "packages/portal/scripts/verify-race-search-journal-observation-browser.mjs": "f80d23dcc7523167944db26a821102c33a0d6ea71aa95e1423fa23e244e3fc8d"
+  },
+  "baselineHashes": {
+    "prior-recovery-storage.ts": "6fa514e271709b6df61a98c43d78c46095537837f103f501f24f3bf4ed987df2",
+    "prior-session.ts": "4f8eb89ee3aeaa28500e85d4fb20efde9f1bac9aa5071c0f4c31d836212a25a2",
+    "prior-optional-storage.ts": "81cd561db9df7446b7b26a028ed234f7171d90a3a65239cef2813d666ad26020"
+  },
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "ecb85923f3a039fb437a06c0a63b136447119aaa00faf38cb8b656582c2e99c9"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "6cf42b12456fa6dc48e027d9655308ea488263b9ec6c535a0f553949002b4723"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "47a84a53eaff5b0a216a3d89b33dd35459804ab4c270dcdf9567f9e7e35ca627"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "ba0e6848146ea791e67b91111c6bbdf5431444af3efe638980c749c078656bea"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "8e78a4b7d1ebee3152819dc4b53acfad0c6f8599a06644e316dca8a624cfef31"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "3642ea903a2a801e209cc42c0bb7b99671decf2427f32ef754d038e6eaeebc26"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "fb106e880d54bd68904a9ed9a498a75ff9c66a3a7b97ef2868e52a9baaa0ffed"
+    }
+  ],
+  "otherChecksPassed": [
+    "portal-types",
+    "documented-declarations",
+    "file-size-limits",
+    "security",
+    "scalability",
+    "target-dependency-evidence"
+  ],
+  "functionsDeploymentPerformedThisBatch": false,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdated": false,
+  "jestPublicationPerformed": false,
+  "nextActions": [
+    "Let the active hosted Jest E2E chat finish before stable full-source verification and automatic dashboard completion recording.",
+    "Continue the multiplayer reliability audit, including explicit retry journal ownership."
+  ]
+}

@@ -3,6 +3,7 @@ import {chromium, type Browser} from "@playwright/test";
 import {createServer, type Server} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
+import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 
 /** Runs against the injected Jest harness in the built artifact. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
@@ -67,6 +68,8 @@ describeBrowser("instructions modal scrolling", () => {
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await page.goto(`${origin}/?harness=jest`);
+      // The platform's onboarding state takes precedence over browser-storage hints.
+      await completeMockOnboarding(page);
       await page.getByTestId("server-activity-loader").waitFor({state: "hidden"});
       await page.getByRole("button", {name: /^settings$/i}).click();
       await page.getByRole("button", {name: /^help/i}).evaluate((button: HTMLButtonElement) => button.click());

@@ -1,0 +1,11 @@
+$ node scripts/validate-reddit-contract-fixtures.mjs ../../docs/evidence/reddit-contracts
+file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/scripts/validate-reddit-contract-fixtures.mjs:23
+  if (missing.length) throw new Error(`missing-reddit-contract-fixtures:${missing.join(",")}`);
+                            ^
+
+Error: missing-reddit-contract-fixtures:auth,payment,refund,post-entry,realtime,notification
+    at validateRedditContractFixtureDirectory (file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/scripts/validate-reddit-contract-fixtures.mjs:23:29)
+    at async file:///home/craig-beswetherick/Documents/riddle-quest/packages/reddit-app/scripts/validate-reddit-contract-fixtures.mjs:29:18
+
+Node.js v24.17.0
+[ELIFECYCLE] Command failed with exit code 1.

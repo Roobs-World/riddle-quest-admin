@@ -16,10 +16,11 @@ coins, purchases, daily challenges, leaderboards, and multiplayer are unavailabl
 Log in through Reddit to use a saved game account. Guest coins or purchases never
 transfer because guest play does not grant them.
 
-The game includes 17 interface languages, right-to-left layout for Arabic,
+The game includes 16 interface languages, right-to-left layout for Arabic,
 reduced-motion and high-contrast preferences. The Reddit version contains no ads.
-Purchases and notifications remain unavailable unless their platform approvals and
-server configuration enable them.
+Gold purchases appear only when server configuration and Reddit approval permit
+them. Push notifications are not integrated and require Reddit's gated beta
+approval before activation.
 
 ## Community setup
 
@@ -89,10 +90,13 @@ sessions use isolated local classic play without an identity exchange.
 
 ### Current review status
 
-On September 27, 2026, the private installation remains at `0.0.1.23`, which
+On October 1, 2026, the private installation remains at `0.0.1.23`, which
 calls the previously denied Cloud Functions hostname. This source version calls
-`www.roobsworld.com`, but the public `/api/reddit-gateway/*` route is not yet
-deployed there. The current host's Reddit fetch approval has not been verified.
+`www.roobsworld.com`. Its public `/api/reddit-gateway/*` route now passes the
+unsigned-request check, rejecting it with JSON `signature-required`. This proves
+the proxy route is live; it does not prove authenticated forwarding or Reddit's
+fetch approval. The owner browser receives 403 for Developer Settings, so the
+current host's approval remains unverified.
 Run `pnpm check:hosted-gateway` before a private playtest upload; it requires an
 unsigned POST to receive the proxy's JSON `signature-required` response. A local
 build or a new upload does not establish fetch approval or hosted availability.
@@ -103,11 +107,12 @@ build or a new upload does not establish fetch approval or hosted availability.
 - Privacy policy: https://roobsworld.com/privacy
 - Data deletion requests: https://roobsworld.com/contact
 
-Both URLs are saved in the Reddit app details, verified through the authenticated
-app API on September 20, 2026. The currently linked Privacy page describes website
-account and analytics processing; it does not explain the Reddit game's identity,
-Firebase, progression, or Gold-receipt processing. A game-specific privacy notice
-and its operational details remain to be completed before reconsideration.
+Both URLs are saved in the Reddit app details, rechecked through the authenticated
+app API on October 1, 2026. Both public pages return HTTP 200. The Privacy page now
+covers the Reddit game's trusted context, Firebase processing, progress, Gold
+receipts, and deletion; Terms describe Reddit Gold fulfillment and refunds.
+Operational privacy claims and the requested fetch exception still need owner
+and Reddit review.
 A private playtest or upload must not be represented as policy approval.
 
 The Reddit package owns a target-specific third-party notice generated from its production dependency

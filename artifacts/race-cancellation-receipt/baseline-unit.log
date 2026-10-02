@@ -1,0 +1,158 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/race/__tests__/raceCancellationReceipt.test.ts
+  ● Invitation cancellation receipts › rejects a cancellation success carrying waiting
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "entryStatus": Object {
+          "status": "waiting",
+        },
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "pending": null,
+      }
+
+      13 |     h.session.cancelInvitation();
+      14 |     h.respond("raceInviteCancel", status === "ready" ? {status, challenge: preview("original"), serverNowMs: 10010} : {status, invitation, serverNowMs: 10010});
+    > 15 |     expect(h.session.getSnapshot()).toMatchObject({entryStatus: {status: "waiting"}, error: "RaceTo10.ERROR_INVALID_RESPONSE", pending: null});
+         |                                     ^
+      16 |   });
+      17 |   it.each(["waiting", "ready"] as const)("preserves cancelled state when a later read returns %s", status => {
+      18 |     /** Accepted cancellation is terminal for the selected invitation lifetime. */
+
+      at src/play/race/__tests__/raceCancellationReceipt.test.ts:15:37
+
+  ● Invitation cancellation receipts › rejects a cancellation success carrying ready
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        "entryStatus": Object {
+    -     "status": "waiting",
+    +     "status": "ready",
+        },
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "pending": null,
+      }
+
+      13 |     h.session.cancelInvitation();
+      14 |     h.respond("raceInviteCancel", status === "ready" ? {status, challenge: preview("original"), serverNowMs: 10010} : {status, invitation, serverNowMs: 10010});
+    > 15 |     expect(h.session.getSnapshot()).toMatchObject({entryStatus: {status: "waiting"}, error: "RaceTo10.ERROR_INVALID_RESPONSE", pending: null});
+         |                                     ^
+      16 |   });
+      17 |   it.each(["waiting", "ready"] as const)("preserves cancelled state when a later read returns %s", status => {
+      18 |     /** Accepted cancellation is terminal for the selected invitation lifetime. */
+
+      at src/play/race/__tests__/raceCancellationReceipt.test.ts:15:37
+
+  ● Invitation cancellation receipts › rejects a cancellation success carrying expired
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        "entryStatus": Object {
+    -     "status": "waiting",
+    +     "status": "expired",
+        },
+    -   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+    +   "error": null,
+        "pending": null,
+      }
+
+      13 |     h.session.cancelInvitation();
+      14 |     h.respond("raceInviteCancel", status === "ready" ? {status, challenge: preview("original"), serverNowMs: 10010} : {status, invitation, serverNowMs: 10010});
+    > 15 |     expect(h.session.getSnapshot()).toMatchObject({entryStatus: {status: "waiting"}, error: "RaceTo10.ERROR_INVALID_RESPONSE", pending: null});
+         |                                     ^
+      16 |   });
+      17 |   it.each(["waiting", "ready"] as const)("preserves cancelled state when a later read returns %s", status => {
+      18 |     /** Accepted cancellation is terminal for the selected invitation lifetime. */
+
+      at src/play/race/__tests__/raceCancellationReceipt.test.ts:15:37
+
+  ● Invitation cancellation receipts › preserves cancelled state when a later read returns waiting
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "challenge": null,
+        "entryStatus": Object {
+    -     "status": "cancelled",
+    +     "status": "waiting",
+        },
+        "error": null,
+        "pending": null,
+      }
+
+      23 |     h.session.retry();
+      24 |     h.respond("raceEntry", status === "ready" ? {status, challenge: preview("original"), existingRunId: "foreign-run", serverNowMs: 10020} : {status, invitation, serverNowMs: 10020});
+    > 25 |     expect(h.session.getSnapshot()).toMatchObject({entryStatus: {status: "cancelled"}, challenge: null, error: null, pending: null});
+         |                                     ^
+      26 |     expect(h.commands.filter(command => command.type === "game:resumeRace")).toHaveLength(0);
+      27 |   });
+      28 |   it("accepts a canonical cancelled receipt and does not poll it", () => {
+
+      at src/play/race/__tests__/raceCancellationReceipt.test.ts:25:37
+
+  ● Invitation cancellation receipts › preserves cancelled state when a later read returns ready
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  -  3
+    + Received  + 15
+
+      Object {
+    -   "challenge": null,
+    +   "challenge": Object {
+    +     "adjustedTimeToBeatMs": 60000,
+    +     "categoryId": "mixed",
+    +     "challengeId": "original",
+    +     "creator": Object {
+    +       "displayName": "Nova",
+    +     },
+    +     "expiresAtMs": 1790889383109,
+    +     "locale": "en",
+    +     "rulesVersion": "race10_v1",
+    +     "status": "active",
+    +     "targetCorrect": 10,
+    +   },
+        "entryStatus": Object {
+    -     "status": "cancelled",
+    +     "status": "ready",
+        },
+        "error": null,
+    -   "pending": null,
+    +   "pending": "raceResume",
+      }
+
+      23 |     h.session.retry();
+      24 |     h.respond("raceEntry", status === "ready" ? {status, challenge: preview("original"), existingRunId: "foreign-run", serverNowMs: 10020} : {status, invitation, serverNowMs: 10020});
+    > 25 |     expect(h.session.getSnapshot()).toMatchObject({entryStatus: {status: "cancelled"}, challenge: null, error: null, pending: null});
+         |                                     ^
+      26 |     expect(h.commands.filter(command => command.type === "game:resumeRace")).toHaveLength(0);
+      27 |   });
+      28 |   it("accepts a canonical cancelled receipt and does not poll it", () => {
+
+      at src/play/race/__tests__/raceCancellationReceipt.test.ts:25:37
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 2 passed, 7 total
+Snapshots:   0 total
+Time:        0.24 s
+Ran all test suites matching raceCancellationReceipt.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand raceCancellationReceipt

@@ -1,0 +1,56 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-unacknowledged-timeout-recovery.json
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: pnpm check:tsdoc
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 15 production declarations are undocumented.
+- packages/portal/src/facebook/__tests__/FacebookOverlayCapability.test.ts:95 harness
+- packages/portal/src/facebook/__tests__/FacebookOverlayCapability.test.ts:97 result
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:365 harness
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:366 resume
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:368 result
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:370 callback
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:371 unsubscribe
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:379 harness
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:382 result
+- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:132 previous
+- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:137 previous
+- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:326 previous
+- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:331 previous
+- packages/portal/src/play/useHostBridgeLifecycle.ts:54 unsubscribePause
+- packages/portal/src/play/useHostBridgeLifecycle.ts:57 unsubscribeResume
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at ChildProcess.exithandler (node:child_process:417:12)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+  code: 1,
+  killed: false,
+  signal: null,
+  cmd: 'pnpm check:tsdoc',
+  stdout: '[ELIFECYCLE] Command failed with exit code 1.\n',
+  stderr: '$ node scripts/audit-tsdoc.mjs\n' +
+    'TSDoc audit failed: 15 production declarations are undocumented.\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookOverlayCapability.test.ts:95 harness\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookOverlayCapability.test.ts:97 result\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:365 harness\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:366 resume\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:368 result\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:370 callback\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:371 unsubscribe\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:379 harness\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:382 result\n' +
+    '- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:132 previous\n' +
+    '- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:137 previous\n' +
+    '- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:326 previous\n' +
+    '- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:331 previous\n' +
+    '- packages/portal/src/play/useHostBridgeLifecycle.ts:54 unsubscribePause\n' +
+    '- packages/portal/src/play/useHostBridgeLifecycle.ts:57 unsubscribeResume\n'
+}
+
+Node.js v24.17.0
+[ELIFECYCLE] Command failed with exit code 1.

@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+Test Suites: 13 skipped, 166 passed, 166 of 179 total
+Tests:       95 skipped, 1395 passed, 1490 total
+Snapshots:   0 total
+Time:        5.136 s, estimated 539 s
+Ran all test suites.

@@ -1,0 +1,11 @@
+$ PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/reddit/__tests__/redditBrowser.jest-playwright.test.ts
+  console.info
+    Reddit: feedback 6.2ms; next draft survives confirmation
+
+      at verifyImmediateSoloFeedback (src/play/__tests__/instantFeedback.jest-playwright.support.ts:46:11)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        70.444 s
+Ran all test suites matching src/reddit/__tests__/redditBrowser.jest-playwright.test.ts.

@@ -7,7 +7,7 @@ import {createFakeRaceServices} from "../testing/fakeRaceServices";
 import {projectRaceOutcome} from "../logic/racePresentation";
 
 /** Deterministic transport, persistence and time adapters exercise the public session seam. */
-export const harness = (entry: Partial<RaceSessionEntry> = {}, resumeId: string | null = null, options: Pick<RaceSessionOptions, "recovery" | "persistence" | "wallNow" | "getMatchmaking" | "effect" | "postToHost"> = {}) => {
+export const harness = (entry: Partial<RaceSessionEntry> = {}, resumeId: string | null = null, options: Pick<RaceSessionOptions, "draftStorage" | "recovery" | "persistence" | "wallNow" | "getMatchmaking" | "effect" | "postToHost"> = {}) => {
   /** Monotonic time and unique receipts. */
   let now = 0, sequence = 0;
   /** Issued bridge commands. */
@@ -33,7 +33,7 @@ export const harness = (entry: Partial<RaceSessionEntry> = {}, resumeId: string 
   }>();
   /** Owned player journey. */
   const session = new RaceSession({locale: "en", ownerId: "owner-1", ...entry}, {
-    ...options, postToHost: message => {commands.push(message); options.postToHost?.(message);}, effect: effect => {effects.push(effect); return options.effect?.(effect);},
+    ...options, postToHost: message => {commands.push(message); return options.postToHost?.(message);}, effect: effect => {effects.push(effect); return options.effect?.(effect);},
     requestId: operation => `${operation}-${++sequence}`,
     random: () => 0.5,
     clock: {now: () => now, schedule: (callback, delay) => {

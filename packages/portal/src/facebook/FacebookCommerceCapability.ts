@@ -31,15 +31,15 @@ export function parseFacebookCatalog(value: unknown): FacebookInstantProduct[] {
           ? Number(item.priceAmount)
           : Number.NaN;
     /** Provides keys behavior. */
-    const keys = ["title", "productID", "description", "imageURI", "price", "priceCurrencyCode", "priceAmount"];
+    const keys = ["title", "productID", "description", "price", "priceCurrencyCode", "priceAmount"];
     if (
       !keys.every((key) => Object.hasOwn(item, key)) ||
-      Object.keys(item).some((key) => !keys.includes(key)) ||
+      Object.keys(item).some((key) => ![...keys, "imageURI"].includes(key)) ||
       !bounded(item.title, 512) ||
       !bounded(item.productID, 256) ||
       !FACEBOOK_PRODUCTS[item.productID] ||
       !bounded(item.description, 2_048) ||
-      !bounded(item.imageURI, 2_048) ||
+      (item.imageURI != null && item.imageURI !== "" && !bounded(item.imageURI, 2_048)) ||
       !bounded(item.price, 128) ||
       !bounded(item.priceCurrencyCode, 16) ||
       !Number.isFinite(priceAmount) ||

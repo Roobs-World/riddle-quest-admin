@@ -1,0 +1,7 @@
+$ PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts
+
+Test Suites: 5 passed, 5 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        71.37 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts|src/play/__tests__/profileTour.jest-playwright.test.ts|src/play/__tests__/queuedCoinActions.jest-playwright.test.ts|src/play/__tests__/musicStart.jest-playwright.test.ts|src/play/__tests__/coinCollection.jest-playwright.test.ts.

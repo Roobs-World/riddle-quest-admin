@@ -21,6 +21,7 @@
     "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
     "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
     "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
+    "packages/core/src/game/achievementRewards.ts",
     "packages/core/src/game/graphemes.ts",
     "packages/portal/src/gamesnacks/GameSnacksSdkPort.ts",
     "packages/portal/src/gamesnacks/main.tsx",
@@ -54,7 +55,7 @@
         "assets/rolldown-runtime.js"
       ],
       "dynamicImports": [],
-      "sha256": "48fd39e1c24b96373b0b291561ddc9677923f9899739333a58607f34c94a132e"
+      "sha256": "9810753ef962d59a41a581cf28d6d3586476fa05eeb58dc45901354a766adadc"
     },
     {
       "file": "assets/core-game.js",
@@ -64,7 +65,7 @@
         "assets/rolldown-runtime.js"
       ],
       "dynamicImports": [],
-      "sha256": "8a72474b3905324e3c21abac87c55b909b5da27164214714fbf09f75c63df64a"
+      "sha256": "39f10563353486e1dd116cea148c487cb520600587b4f028b586556c4c874c60"
     },
     {
       "file": "assets/rolldown-runtime.js",
@@ -88,7 +89,7 @@
   "files": [
     {
       "file": "assets/core-game.js",
-      "sha256": "8a72474b3905324e3c21abac87c55b909b5da27164214714fbf09f75c63df64a"
+      "sha256": "39f10563353486e1dd116cea148c487cb520600587b4f028b586556c4c874c60"
     },
     {
       "file": "assets/index.css",
@@ -96,7 +97,7 @@
     },
     {
       "file": "assets/index.js",
-      "sha256": "48fd39e1c24b96373b0b291561ddc9677923f9899739333a58607f34c94a132e"
+      "sha256": "9810753ef962d59a41a581cf28d6d3586476fa05eeb58dc45901354a766adadc"
     },
     {
       "file": "assets/rolldown-runtime.js",

@@ -1,0 +1,54 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
++   challenge: {
++     adjustedTimeToBeatMs: 60000,
++     categoryId: 'mixed',
++     challengeId: 'delayed-challenge',
++     creator: {
++       displayName: 'Nova'
++     },
++     expiresAtMs: 1790884082340,
++     locale: 'en',
++     rulesVersion: 'race10_v1',
++     status: 'active',
++     targetCorrect: 10
++   },
+-   challenge: null,
+    error: null,
++   stage: 'challenge',
++   status: 'matched'
+-   stage: 'categories',
+-   status: 'idle'
+  }
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-discovery-provider-browser.mjs:49:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    stage: 'challenge',
+    challenge: {
+      challengeId: 'delayed-challenge',
+      creator: { displayName: 'Nova' },
+      categoryId: 'mixed',
+      locale: 'en',
+      targetCorrect: 10,
+      adjustedTimeToBeatMs: 60000,
+      rulesVersion: 'race10_v1',
+      expiresAtMs: 1790884082340,
+      status: 'active'
+    },
+    status: 'matched',
+    error: null
+  },
+  expected: { stage: 'categories', challenge: null, status: 'idle', error: null },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

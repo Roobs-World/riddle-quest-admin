@@ -24,7 +24,11 @@ export async function installRaceContextDialogs(page: Page): Promise<void> {
     const sdk = window.FBInstant!;
     /** Preserve the capability inventory before enabling controlled context selection. */
     const supported = sdk.getSupportedAPIs.bind(sdk);
-    sdk.getSupportedAPIs = () => [...supported(), "context.chooseAsync", "context.matchPlayerAsync"];
+    sdk.getSupportedAPIs = () => [...supported(), "context.chooseAsync", "matchPlayerAsync"];
+    sdk.matchPlayerAsync = async (tag, switchContext, offlineMatch) => {
+      if (tag && !/^[A-Za-z0-9_]{1,100}$/u.test(tag)) throw new Error("Meta match tag rejected");
+      Reflect.set(window, "__matchPlayerRequest", {tag, switchContext, offlineMatch});
+    };
     Object.assign(window, {__contextDialogCalls: 0, __contextId: "context-old"});
     sdk.context = {
       getID: () => Reflect.get(window, "__contextId"),
@@ -38,7 +42,6 @@ export async function installRaceContextDialogs(page: Page): Promise<void> {
           });
         });
       },
-      matchPlayerAsync: async () => undefined,
     };
   });
 }
@@ -70,6 +73,8 @@ export async function verifyRaceContextDialogs(page: Page): Promise<void> {
   expect(await page.locator(".race-context-board").innerText()).not.toContain("0:09.0");
   expect(await page.evaluate(() => Reflect.get(window, "__contextDialogCalls"))).toBe(2);
   expect(await page.getByRole("alert").count()).toBe(0);
+  await page.waitForFunction(() => [...document.querySelectorAll<HTMLImageElement>(".race-coin-balance img")]
+    .every(image => image.complete && image.naturalWidth > 0));
   await page.screenshot({path: "/tmp/race-context-dialog-recovery.png"});
   await page.getByRole("tab").first().click();
 }

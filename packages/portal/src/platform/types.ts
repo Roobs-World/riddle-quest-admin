@@ -311,6 +311,8 @@ export type CommerceCapability = {
  * emulate an ad flow when this property is missing.
  */
 export type AdsCapability = {
+  /** True only when an independently gated opt-in video placement exists. */
+  rewardedAvailable?: boolean;
   /**
    * Shows a rewarded placement without granting value client-side.
    *
@@ -323,6 +325,13 @@ export type AdsCapability = {
    * @param placement - Target-defined, allowlisted placement identifier.
    */
   showInterstitial(placement: string): Promise<PlatformResult<void>>;
+};
+
+/** Target-owned recovery of one exhausted authoritative single-player attempt. */
+export type AttemptRecoveryCapability = {
+  /** Resolves only after the provider flow and authoritative continuation succeed. */
+  request(input: {gameMode: "classic" | "challenge"; riddleId: string; sessionToken: string}):
+    Promise<PlatformResult<{newCoins: number}>>;
 };
 
 /** Optional provider-owned notification permission and scheduling boundary. */
@@ -454,6 +463,8 @@ export type TournamentCapability = {
   list(locale: RaceLocale): Promise<ListFacebookTournamentResponse>;
   /** Records an idempotent completed run and returns refreshed standings. */
   record(runId: string, locale: RaceLocale): Promise<RecordFacebookTournamentRunResponse>;
+  /** Opens a provider-owned share dialog using its fresh authoritative current-player best. */
+  share?(locale: RaceLocale): Promise<PlatformResult<void>>;
 };
 
 /** Server-authoritative board for the currently active Facebook thread/group context. */
@@ -490,6 +501,8 @@ export type PlatformCapabilities = {
   commerce?: CommerceCapability;
   /** Target-approved rewarded/interstitial surfaces; Facebook-only in current builds. */
   ads?: AdsCapability;
+  /** Optional provider-funded extra attempt; supplied only by Facebook. */
+  attemptRecovery?: AttemptRecoveryCapability;
   /** Provider notification permission and scheduling surface. */
   notifications?: NotificationCapability;
   /** Provider-owned outbound sharing surface. */

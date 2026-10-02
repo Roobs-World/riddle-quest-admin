@@ -14,6 +14,8 @@ type HostRiddleLifecycleOptions = Readonly<{
   profile: AuthSnapshot["profile"];
   /** Initial mode selected by the release target. */
   initialGameMode: WebGameMode;
+  /** Exposes a rendered startup failure through the target’s loading overlay. */
+  onStartupUnavailable?: () => void;
   /** Current game locale. */
   locale: string;
   /** Target-specific host operations. */
@@ -67,6 +69,7 @@ export function useHostRiddleLifecycle({
   userId,
   profile,
   initialGameMode,
+  onStartupUnavailable,
   locale,
   services,
   withActivity,
@@ -145,13 +148,44 @@ export function useHostRiddleLifecycle({
           return true;
         } catch (error) {
           // A speculative Skip load is optional; the accepted Skip response will load its successor.
-          if (requestId?.startsWith("skip-preview-")) return false;
+          if (contextVersion !== contextVersionRef.current || requestId?.startsWith("skip-preview-")) return false;
           loadedRef.current = false;
-          captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
+          /** Server-confirmed completion is an expected routing outcome. */
+          const dailyCompleted = input.gameMode === "challenge" && typeof error === "object" &&
+            error !== null && "code" in error && error.code === "daily-completed";
+          if (!dailyCompleted) captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
           /** Safe player-facing failure notice. */
           const message = getHostErrorMessage(error);
           setNotice(message);
           postOperation(requestId, "loadRiddle", false, undefined, message);
+          // Only the server-confirmed completion of today’s Daily allows an automatic Classic launch.
+          // Outages remain on Daily and use the existing bounded recovery loop.
+          if (dailyCompleted && !requestId) {
+            gameModeRef.current = "classic";
+            setGameMode("classic");
+            try {
+              /** Canonical next question supplied by the current authority-owned content state. */
+              const riddle = await withActivity(() => services.loadRiddle({
+                gameMode: "classic", locale: input.locale, classicIndex: classicIndexRef.current,
+              }));
+              if (contextVersion !== contextVersionRef.current) return false;
+              loadedRef.current = true;
+              postToGame({type: "host:riddleLoaded", payload: {riddle, profile}});
+              setStartupComplete(true);
+              // Completion is an expected launch decision, not a failure notice.
+              setNotice(configurationWarning);
+              trackEvent("level_start", {game_mode: riddle.gameMode,
+                level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
+                level_number: riddle.index});
+              onPlayable?.();
+              return true;
+            } catch (fallbackError) {
+              if (contextVersion !== contextVersionRef.current) return false;
+              captureBrowserException(fallbackError, {component: "play_host", operation: "loadRiddle"});
+              setNotice(getHostErrorMessage(fallbackError));
+            }
+          }
+          onStartupUnavailable?.();
           scheduleRecoveryRef.current();
           return false;
         }
@@ -161,7 +195,7 @@ export function useHostRiddleLifecycle({
         if (loadInFlightRef.current === pending) loadInFlightRef.current = null;
       });
     },
-    [configurationWarning, onPlayable, postOperation, postToGame, profile, services, setNotice, withActivity],
+    [configurationWarning, onPlayable, onStartupUnavailable, postOperation, postToGame, profile, services, setNotice, withActivity],
   );
   /** Latest load implementation used by recovery timers. */
   const loadRiddleRef = useRef(loadRiddle);

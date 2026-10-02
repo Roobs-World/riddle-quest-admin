@@ -1,0 +1,23 @@
+{
+  "status": "scoped-verification-passed-global-receipt-held",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "tests": 1767,
+  "suites": 211,
+  "newBrowserCases": 12,
+  "retainedBrowserCases": 54,
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks"
+  ],
+  "sourceHashes": {
+    "packages/portal/src/play/race/RaceSessionAuthority.ts": "f69d6328ac6282c7466035291fc5545d450005e0149bb7fe0fc4a753c6dcf95e",
+    "packages/portal/src/play/race/__tests__/raceHintRevealEvidence.test.ts": "3769e6b14e050d6b027709f139e85669ca29308669da71ec469a849472c99df2",
+    "packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs": "b5af0de323c6845f47bed8b1bd6c414a5d52f750d08febcd11fcf9148ccd1176"
+  },
+  "reason": "Concurrent hosted E2E evidence updates prevent a stable whole-worktree receipt. Guard requirements remain unchanged."
+}

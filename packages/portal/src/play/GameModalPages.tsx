@@ -22,6 +22,9 @@ export type GameModalPagesProps = {
   onClose: () => void;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
+  /** Optional target-funded extra attempt; absent on unsupported targets. */
+  onRecoverAttempt?: () => void;
+  continuationPending?: boolean;
   /** Stores on purchase. */
   onPurchase: (productId: string) => void;
   /** Stores on open modal. */
@@ -49,6 +52,8 @@ export function GameModalPages({
   state,
   onClose,
   onContinue,
+  onRecoverAttempt,
+  continuationPending = false,
   onPurchase,
   onOpenModal,
   onToggleMute,
@@ -75,6 +80,9 @@ export function GameModalPages({
         <ContinueModalPage
           balance={balance}
           onContinue={onContinue}
+          onRecoverAttempt={onRecoverAttempt}
+          pending={continuationPending}
+          recoveryPending={state.guessPending}
           onSkip={onRequestSkip}
           onOpenModal={onOpenModal}
           commerceAvailable={commerceAvailable}

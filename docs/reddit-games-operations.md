@@ -12,25 +12,27 @@ Firebase secret to an environment file or repository. Its `playtest:upload` is a
 bootstrap artifact only; it is not an immutable production candidate or promotion
 receipt.
 
-Last updated: 2026-09-27
+Last updated: 2026-10-01
 
 ## Release state
 
 Reddit is a separate compile-time target packaged as a Devvit Web app. Private
 prerelease `0.0.1.23` is installed in `r/riddle_quest_dev`; it still calls the
 denied Cloud Functions hostname. The current local package calls the first-party
-`www.roobsworld.com` proxy, but that route is not live on the public domain.
-Run `pnpm --filter @qwordly/reddit-app check:hosted-gateway` after deploying the
-website route. Production approval and publication are not complete. HTTP-fetch
+`www.roobsworld.com` proxy. The public route now passes the unsigned-request
+check, returning JSON `signature-required`; authenticated forwarding and Reddit's
+host approval still require hosted evidence. Run
+`pnpm --filter @qwordly/reddit-app check:hosted-gateway` before a private upload.
+Production approval and publication are not complete. HTTP-fetch
 approval for the current host, payment eligibility, policy review, multi-role
 playtests, physical iOS/Android tests, hosted evidence, and exact-artifact release
 verification remain outstanding. Notifications remain disabled unless separately
-approved. See [the current review check](evidence/reddit-review-readiness-2026-09-27.md).
+approved. See [the current review check](evidence/facebook-reddit-review-followup-2026-10-01.md).
 
 The game Terms are now published at https://roobsworld.com/riddle-quest/terms.
 The Reddit app details contain that Terms URL and the general website Privacy
-Policy URL. The latter lacks the current Reddit game coverage on the live site;
-publication of the Terms does not establish Reddit approval. Current local Gold
+Policy URL. Both public pages now include Reddit game coverage and return HTTP
+200; publication does not establish Reddit approval. Current local Gold
 checkout coverage is recorded in [the currency verification](evidence/reddit-gold-2026-09-19.md).
 
 For another private bootstrap upload, choose an unused numeric prerelease version
@@ -48,6 +50,56 @@ it never retries an uncertain upload. Inspect that exact version with
 not update an existing installation: use `devvit install <test-subreddit>
 riddle-quest@<version>` to install the confirmed private version.
 
+The private uploader now holds `.reddit-release-receipts/playtest.lock` through
+validation and transmission. It persists an immutable attempt before invoking
+Devvit and retains the CLI outcome separately. An uncertain or interrupted attempt
+blocks every later version, and an attempted version is never reused. A failed
+local package check creates no attempt. These records are private bootstrap
+evidence, not an immutable production candidate or proof of installed bytes.
+
+After inspecting the exact provider version, record its authoritative outcome
+without uploading anything:
+
+```bash
+pnpm --filter @qwordly/reddit-app playtest:resolve <version> accepted --confirm-version <version>
+```
+
+Use `confirmed-absent` only when Reddit definitively confirms no such version was
+created; a timeout, authentication failure or unavailable dashboard does not prove
+absence. Resolution appends a separate immutable record and preserves the original
+attempt and uncertain outcome. Choose a new unused version for the next upload.
+If an interrupted process leaves the lock behind, inspect its recorded PID and
+confirm the owning process is terminal before removing only `playtest.lock`.
+The retained attempt still requires outcome resolution. Do not delete journal
+records to bypass the barrier; malformed or orphaned evidence needs investigation.
+See [private upload recovery evidence](evidence/reddit-playtest-recovery-2026-10-01.md).
+
+## Canonical game-post creation
+
+Install, upgrade and moderator requests share the installation-local Redis key
+`riddle-quest:canonical-post:v1`. Existing `t3_` references remain compatible. New
+creation atomically claims that key with `creation-pending:v1` using the real
+Devvit SDK's `set(..., {nx: true})`, then replaces the marker with Reddit's returned
+post ID after a successful submission. There is no process-local lock or expiry
+that could authorize a duplicate submission after a timeout.
+
+An overlapping request may fail temporarily while the winner is working; retrying
+after successful completion reuses the retained post. A pending or corrupt record,
+an unavailable retained post, or an ambiguous provider/Redis response does not
+authorize replacement. Inspect the exact installation and Reddit post outcome.
+For an uncertain submission, recover the confirmed existing `t3_` reference through
+a reviewed installation-scoped maintenance action. Clear a pending marker only
+after Reddit positively confirms no post was created and every original execution
+is terminal. An unavailable dashboard or a timeout does not prove absence. This
+repository exposes no automatic reset or public recovery endpoint; provider
+inspection and any maintenance action remain operator work. Never roll back to
+the old implementation while a pending marker exists: it deletes non-`t3_` values
+and can submit another post.
+
+The [canonical post test](evidence/reddit-canonical-post-2026-10-01.md) records the
+three-submission reproduction and local concurrency/failure checks. Hosted
+install/upgrade/moderator acceptance remains required before review.
+
 ## Trust and network boundary
 
 The webview contains only the Reddit adapter and calls same-origin `/api/*` routes.
@@ -56,6 +108,34 @@ or external browser endpoints. The request-scoped Devvit server obtains trusted
 `userId`, post, subreddit, and app context, then signs one-operation assertions to
 `www.roobsworld.com/api/reddit-gateway/*`. That exact hostname is the only
 external domain in `devvit.json`; Reddit approval of it is required before release.
+
+Gateway assertions must remain fresh through replay-record persistence. The
+[1 October verifier check](evidence/reddit-assertion-expiry-2026-10-01.md) rejects
+requests that expire while their nonce is being written. A successfully written
+nonce remains spent after that rejection; obtain a fresh server-signed request
+rather than reusing the old assertion. Physical nonce cleanup remains separate
+from the 60-second logical acceptance window.
+
+The exact signed `gameplay.presence.poll` operation now has a server-owned quota
+of 60 requests per user per UTC minute. This supports the required two-second race
+polling plus bounded state changes and consent revocation. Every other operation
+retains its 20-request limit. Requests are still signature-verified and replay
+checked before quota consumption, and the larger budget cannot be selected by a
+browser payload. The [presence quota check](evidence/reddit-presence-quota-2026-10-01.md)
+records the reproduced failure and passing emulator tests. This backend fix is
+prepared locally and needs the complete reviewed deployment unit before hosted
+testing can prove the behavior. Rolling back to the old 20-request implementation
+also requires handling any existing polling bucket above 20; the old validator
+rejects those records even after the minute boundary until they are removed.
+
+The [1 October backend metadata review](evidence/provider-backend-readiness-2026-10-01.md)
+found no deployed TTL on `redditGatewayNonces.expiresAt` or
+`redditGatewayRateLimits.expiresAt`. Both unindexed policies are now committed for
+the complete reviewed deployment unit. Nonce deadlines are 24 hours after issue;
+quota deadlines are 24 hours after the current one-minute reset. Verify policy
+activation and actual asynchronous deletion after rollout. The nested Reddit
+profile cache now has a prepared field-only cleanup scheduler; never apply a TTL
+to its enclosing `providerIdentities` record. See the profile cleanup runbook below.
 
 Firebase is the authoritative global identity, profile, economy, riddle, and race
 store. Devvit Redis may cache installation/post state but must never be the canonical
@@ -84,8 +164,12 @@ accounts on Reddit web and physical iOS and Android devices.
 
 ## Secrets and configuration
 
-Generate unrelated high-entropy values for `REDDIT_GATEWAY_SECRET` and
-`REDDIT_UID_SECRET`. Store both in Firebase Secret Manager. Store only the matching
+Only initial provisioning for a genuinely account-free app generates unrelated
+high-entropy values for `REDDIT_GATEWAY_SECRET` and `REDDIT_UID_SECRET`. Store both in Firebase Secret Manager. The UID key is fixed
+account identity material: current code has no key-version fallback or migration.
+Never rotate it in place for existing accounts or deleted-generation mappings.
+The setup wizard now checks existing UID metadata and preserves that key; initial
+provisioning requires a separately reviewed account-free setup. Store only the matching
 gateway value in the Devvit global secret setting `redditGatewaySecret`; the UID
 secret never leaves Firebase. Never reuse historical Meta/Jest credentials.
 Set the non-secret Devvit global setting `redditEnvironment` to exactly `sandbox`
@@ -105,7 +189,9 @@ requires `commerce` in `REDDIT_APPROVED_FEATURES`.
 ## Firebase deployment unit
 
 The Reddit gateway depends on `exchangeRedditIdentity`, `deleteRedditAccount`,
-`redditStorage`, and `redditGameplay`. Before uploading the Devvit package, run the
+`redditStorage`, and `redditGameplay`. The supporting
+`redditProfileRetentionScheduler` is the fifth required Reddit export. Its indexed
+field cleanup must ship with the complete reviewed backend release. Before uploading the Devvit package, run the
 full Functions type, lint, unit/integration, rules, and deployment preflight, set the
 two Reddit secrets, and deploy every new or changed Function in one reviewed release.
 Record the project, revision, source commit, command output, and post-deploy probes.
@@ -138,7 +224,7 @@ After an approved exact-byte ingestion path exists and the retained candidate ha
 been reviewed, populate `docs/evidence/reddit-hosted-evidence.json` from the adjacent
 example. `pnpm --filter @qwordly/reddit-app release:promotion` requires the immutable
 artifact hash/version/commit, proves the hash and commit match the gated receipt and
-read-only handoff, validates the complete four-Function and four-rules Firebase
+read-only handoff, validates the complete five-Function and four-rules Firebase
 deployment, fetch/payment/policy/security approvals, all four roles, all six critical
 journeys, and passing Reddit web plus physical iOS and Android evidence.
 
@@ -151,6 +237,39 @@ explicit start creates the next generation with 300 coins. Provider identity rec
 are server-readable only. Reddit ID and sanitized profile cache never enter browser
 responses; the profile cache expires after 24 hours and accepts only approved HTTPS
 Reddit image hosts. See `privacy-data-inventory.md` for retention caveats.
+
+## Reddit profile cleanup
+
+The [1 October retention evidence](evidence/reddit-profile-retention-2026-10-01.md)
+records the new cleanup and emulator verification. The scheduler is prepared locally
+and runs at minute 29 of each UTC hour after deployment. It selects at most 50
+expired Reddit caches, re-reads each mapping in a transaction, and removes only
+`redditProfile`. Concurrent refreshes, deleted mappings, account generation, raw
+provider identity, Firebase UID and every other provider remain intact.
+
+Before rollout, verify the `providerIdentities` composite index for ascending
+`provider` and ascending `redditProfile.expiresAt` is READY. The emulator does not
+prove production index readiness. Record the scheduler's deployed revision and
+actual field removal in the reviewed release receipt; the scheduler is absent
+from the 1 October deployed-function listing. The initial metadata index read was
+rejected; the follow-up using the API-supported default page size completed and
+confirmed the required index is absent. See the [access and index review](evidence/provider-iam-readiness-2026-10-01.md).
+
+The operator command defaults to a read-only dry run and requires an explicit
+project. Apply requires the same project confirmation and accepts no clock override:
+
+```bash
+pnpm --dir firebase-functions reddit:profiles:retention --project riddle-quest-ec2b2
+pnpm --dir firebase-functions reddit:profiles:retention --project riddle-quest-ec2b2 --apply --confirm-project riddle-quest-ec2b2 --limit 50
+```
+
+Only aggregate counts are emitted. An `invalid` count requires investigation of
+malformed state or failed transactions; do not discard a mapping to clear a cache.
+`complete: false` means the bounded page has a backlog or failure. Monitor those
+counts and repeat bounded apply pages as required. The 50-record hourly budget
+makes no exact physical deletion deadline; social reads already suppress the cache
+at its 24-hour logical expiry. Missing/malformed expiry fields need separate
+operator inspection. Never configure identity/account TTL or recreate missing rows.
 
 ## Release and retry barrier
 

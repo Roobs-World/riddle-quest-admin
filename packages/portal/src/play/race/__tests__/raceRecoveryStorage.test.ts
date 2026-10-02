@@ -16,6 +16,15 @@ jest.mock("../../playerPreferences", () => ({
   safeBrowserStorageSet: (_area: string, key: string, value: string) => {mockKey = key; mockSaved = value;},
   safeBrowserStorageRemove: () => {mockSaved = null;},
 }));
+jest.mock("../../../platform/browserStorage", () => ({
+  /** Observes a shared serialized journal before a competing tab changes it. */
+  observeBrowserStorage: () => {
+    /** Exact revision returned to the observing lifetime. */
+    const snapshot = mockSaved;
+    if (mockAfterRead !== undefined) {mockSaved = mockAfterRead; mockAfterRead = undefined;}
+    return snapshot;
+  },
+}));
 import {browserRaceRecovery, parseRaceRecovery, RACE_RECOVERY_KEY, RACE_RECOVERY_TTL_MS, type RaceRecovery} from "../logic/raceRecoveryStorage";
 /** Complete owner-bound search receipt with a bounded retry deadline. */
 const record: RaceRecovery = {version: 1, id: "revision-1", ownerId: "alice", locale: "en", savedAtMs: 1000,

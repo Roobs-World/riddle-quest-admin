@@ -1,0 +1,48 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/race/__tests__/raceComponents.test.tsx
+  ● race presentation components › renders identity-free, economy-free tournament standings
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "#1"
+    Received string:    "<div class=\"race-panel race-tournaments\" data-rewards-enabled=\"false\"><h2>Tournaments</h2><ol><li aria-current=\"true\"><strong dir=\"ltr\">#<!-- -->1</strong><span dir=\"ltr\">0:45.0</span></li></ol></div>"
+
+      165 |     expect(html).toContain('data-rewards-enabled="false"');
+      166 |     expect(html).toContain('aria-current="true"');
+    > 167 |     expect(html).toContain("#1");
+          |                  ^
+      168 |     expect(html).toContain('dir="ltr"');
+      169 |     expect(html).toContain("0:45.0");
+      170 |     expect(html).not.toContain("facebook_");
+
+      at Object.<anonymous> (src/play/race/__tests__/raceComponents.test.tsx:167:18)
+
+
+Summary of all failing tests
+FAIL src/play/race/__tests__/raceComponents.test.tsx
+  ● race presentation components › renders identity-free, economy-free tournament standings
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "#1"
+    Received string:    "<div class=\"race-panel race-tournaments\" data-rewards-enabled=\"false\"><h2>Tournaments</h2><ol><li aria-current=\"true\"><strong dir=\"ltr\">#<!-- -->1</strong><span dir=\"ltr\">0:45.0</span></li></ol></div>"
+
+      165 |     expect(html).toContain('data-rewards-enabled="false"');
+      166 |     expect(html).toContain('aria-current="true"');
+    > 167 |     expect(html).toContain("#1");
+          |                  ^
+      168 |     expect(html).toContain('dir="ltr"');
+      169 |     expect(html).toContain("0:45.0");
+      170 |     expect(html).not.toContain("facebook_");
+
+      at Object.<anonymous> (src/play/race/__tests__/raceComponents.test.tsx:167:18)
+
+
+Test Suites: 1 failed, 13 skipped, 169 passed, 170 of 183 total
+Tests:       1 failed, 95 skipped, 1444 passed, 1540 total
+Snapshots:   0 total
+Time:        4.996 s, estimated 589 s
+Ran all test suites.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand

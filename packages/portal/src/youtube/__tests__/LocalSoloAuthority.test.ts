@@ -200,7 +200,7 @@ describe("LocalSoloAuthority", () => {
     const authority = await createAuthority();
     await authority.start("classic");
     await expect(authority.requestHint()).resolves.toContain("hint_user");
-    expect(authority.getSnapshot().save.progression.coins).toBe(275);
+    expect(authority.getSnapshot().save.progression.coins).toBe(250);
     /** Provides hinted behavior. */
     const hinted = authority.getSnapshot().save.activeGame!;
     expect(authority.getSnapshot().displayLetters?.[hinted.hintRevealedIndices[0]]).toBe("r");
@@ -213,7 +213,7 @@ describe("LocalSoloAuthority", () => {
     }
     expect(authority.getSnapshot().save.activeGame).toMatchObject({awaitingContinue: true, attemptsUsed: 5});
     await authority.buyContinue();
-    expect(authority.getSnapshot().save.progression.coins).toBe(175);
+    expect(authority.getSnapshot().save.progression.coins).toBe(150);
     authority.setInput(["r", "x", "x", "x"], 3);
     await expect(authority.submitGuess()).resolves.toMatchObject({kind: "loss", attempts: 6});
     expect(authority.getSnapshot().save).toMatchObject({activeGame: null, progression: {gamesPlayed: 1}});

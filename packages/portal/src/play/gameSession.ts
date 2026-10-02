@@ -611,7 +611,9 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "closeModal":
       return {
         ...state,
-        modal: null,
+        // Commerce dismissal does not decide an unresolved paid-continue boundary.
+        modal: state.riddle && !state.lastOutcome && state.engineSnapshot?.attemptsUsed === 5 &&
+          !state.engineSnapshot.hasUsedContinue && !state.engineSnapshot.gameOver ? "continue" : null,
         auxiliaryFanfare: state.modal === "reward" ? null : state.auxiliaryFanfare,
       };
     case "setNotice":

@@ -55,3 +55,9 @@ export const getRaceCountdownStep = (value: number, runReady: boolean): RaceCoun
   }
   return {kind: "start", delayMs: RACE_GO_DISPLAY_MS};
 };
+/** Waiting invitations use bounded exponential backoff and jitter between authority reads. */
+export const nextRaceEntryPollAt = (attempt: number, now: number, random: () => number): number => {
+  /** At most thirty seconds between refreshes before the bounded jitter is applied. */
+  const delay = Math.min(30000, 1000 * 2 ** Math.min(attempt, 5));
+  return now + Math.min(30000, delay * (0.8 + Math.max(0, Math.min(1, random())) * 0.4));
+};

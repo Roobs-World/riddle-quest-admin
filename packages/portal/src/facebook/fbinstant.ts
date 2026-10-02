@@ -6,6 +6,12 @@ export interface FacebookPlayerData {
 
 /** Defines the contract for facebook instant player. */
 export interface FacebookInstantPlayer {
+  /** Checks whether Meta permits a game bot subscription prompt for this player. */
+  canSubscribeBotAsync?(): Promise<boolean>;
+  /** Reads the player's existing game bot subscription from Meta. */
+  isSubscribedBotAsync?(): Promise<boolean>;
+  /** Opens Meta's own game bot subscription prompt after an eligibility check. */
+  subscribeBotAsync?(): Promise<void>;
   /** Gets id. */
   getID(): string;
   /** Gets signed player info async. */
@@ -36,8 +42,6 @@ export interface FacebookInstantContext {
     /** Stores max size. */
     maxSize?: number;
   }): Promise<void>;
-  /** Provides match player async behavior. */
-  matchPlayerAsync(matchTag?: string, switchContextWhenMatched?: boolean, offlineMatch?: boolean): Promise<void>;
 }
 
 /** Defines the contract for facebook ad instance. */
@@ -56,8 +60,8 @@ export interface FacebookOverlayView {
   showAsync(): Promise<void>;
   /** Provides dismiss async behavior. */
   dismissAsync?(): Promise<void>;
-  /** Provides destroy overlay view behavior. */
-  destroyOverlayView(): Promise<void>;
+  /** Destroys the Meta v8 overlay and removes its provider iframe. */
+  destroyAsync(): Promise<void>;
 }
 
 /** Defines the contract for facebook overlay views. */
@@ -94,7 +98,7 @@ export interface FacebookInstantPurchase {
   /** Stores purchase price. */
   purchasePrice: unknown;
   /** Stores purchase time. */
-  purchaseTime: string;
+  purchaseTime: number | string;
   /** Stores purchase token. */
   purchaseToken: string;
   /** Stores signed request. */
@@ -110,7 +114,7 @@ export interface FacebookInstantProduct {
   /** Stores description. */
   description: string;
   /** Stores image uri. */
-  imageURI: string;
+  imageURI?: string | null;
   /** Stores price. */
   price: string;
   /** Stores price currency code. */
@@ -134,8 +138,71 @@ export interface FacebookInstantPayments {
   consumePurchaseAsync(purchaseToken: string): Promise<void>;
 }
 
+/** Native Meta share payload; entry data contains only game-owned opaque references. */
+export interface FacebookSharePayload {
+  /** Requested provider share surface. */
+  intent: "INVITE" | "CHALLENGE" | "SHARE";
+  /** Locally rendered PNG data URL. */
+  image: string;
+  /** Localized share text. */
+  text: string;
+  /** Bounded game entry data. */
+  data: Record<string, string>;
+  /** Keeps a share from changing the currently active race context. */
+  switchContext: false;
+}
+
+/** Meta's current native tournament getters, inspected in the public v8 SDK. */
+export interface FacebookInstantTournament {
+  /** Meta's opaque tournament identifier, never an official game ranking key. */
+  getID(): string;
+  /** Context selected by the native tournament. */
+  getContextID(): string;
+  /** Native expiration in Unix seconds. */
+  getEndTime(): number;
+  /** Untrusted developer presentation data returned by Meta. */
+  getPayload(): unknown;
+}
+
+/** Current v8 native tournament dialog and score APIs. */
+export interface FacebookInstantTournaments {
+  /** Creates a native presentation tournament through Meta's dialog. */
+  createAsync(payload: {
+    /** Server-derived adjusted milliseconds, never a browser-computed score. */
+    initialScore: number;
+    /** Lower-time native presentation and the official UTC deadline. */
+    config: {
+      /** Translated title. */
+      title: string;
+      /** Identity-free local PNG. */
+      image: string;
+      /** Lower adjusted milliseconds wins. */
+      sortOrder: "LOWER_IS_BETTER";
+      /** Milliseconds remain numeric to avoid an undocumented TIME unit conversion. */
+      scoreFormat: "NUMERIC";
+      /** Official window expiration in Unix seconds. */
+      endTime: number;
+    };
+    /** Bounded official-window presentation hints with no identity or authority. */
+    data: Record<string, string | number>;
+  }): Promise<FacebookInstantTournament>;
+  /** Shares the current tournament; v8 takes score/data, not a tournamentID field. */
+  shareAsync(payload: {
+    /** Fresh server-derived current best time. */
+    score: number;
+    /** Bounded official-window hints. */
+    data: Record<string, string | number>;
+  }): Promise<void>;
+  /** Updates presentation only; official ranks never read this leaderboard. */
+  postScoreAsync(score: number): Promise<void>;
+}
+
 /** Defines the contract for facebook instant sdk. */
 export interface FacebookInstantSdk {
+  /** Reads the current native tournament without opening a dialog. */
+  getTournamentAsync?(): Promise<FacebookInstantTournament>;
+  /** Optional native tournament APIs advertised by this host. */
+  tournament?: FacebookInstantTournaments;
   /** Provides initialize async behavior. */
   initializeAsync(): Promise<void>;
   /** Sets loading progress. */
@@ -144,10 +211,18 @@ export interface FacebookInstantSdk {
   startGameAsync(): Promise<void>;
   /** Gets supported ap is. */
   getSupportedAPIs(): string[];
+  /** Returns Meta's player locale after the game has started. */
+  getLocale?(): string | null;
+  /** Opens Meta's top-level matchmaking API and optionally switches the context. */
+  matchPlayerAsync?(matchTag?: string, switchContextWhenMatched?: boolean, offlineMatch?: boolean): Promise<void>;
+  /** Opens Meta's native share dialog after the game has started. */
+  shareAsync?(payload: FacebookSharePayload): Promise<void>;
   /** Gets entry point data. */
   getEntryPointData?(): unknown;
   /** Provides on pause behavior. */
   onPause(callback: () => void): void;
+  /** Registers the Meta v8 resume signal when the host supports it. */
+  onResume?(callback: () => void): void;
   /** Gets interstitial ad async. */
   getInterstitialAdAsync?(placementId: string): Promise<FacebookAdInstance>;
   /** Gets rewarded video async. */

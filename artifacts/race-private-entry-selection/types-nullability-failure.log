@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.json --noEmit
+src/play/race/RaceSession.ts(468,39): error TS2345: Argument of type '{ runId: string; challengeId?: string | undefined; rivalryChallengeId?: string | undefined; role: "challenger" | "creator"; status: "abandoned" | "active" | "completed" | "prepared" | "scheduled" | "timed_out"; ... 13 more ...; opponent?: { ...; } | undefined; } | null | undefined' is not assignable to parameter of type '{ runId: string; challengeId?: string | undefined; rivalryChallengeId?: string | undefined; role: "challenger" | "creator"; status: "abandoned" | "active" | "completed" | "prepared" | "scheduled" | "timed_out"; ... 13 more ...; opponent?: { ...; } | undefined; } | undefined'.
+  Type 'null' is not assignable to type '{ runId: string; challengeId?: string | undefined; rivalryChallengeId?: string | undefined; role: "challenger" | "creator"; status: "abandoned" | "active" | "completed" | "prepared" | "scheduled" | "timed_out"; ... 13 more ...; opponent?: { ...; } | undefined; } | undefined'.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 check:types: `tsc -p tsconfig.json --noEmit`
+Exit status 1

@@ -15,6 +15,7 @@ const requiredKeys = {
     "RaceTo10.HUB_PLAY",
     "RaceTo10.HUB_ACTIVITY",
     "RaceTo10.HUB_TOURNAMENTS",
+    "RaceTo10.SHARE_TOURNAMENT",
     "RaceTo10.MATCH_PLAYER",
     "RaceTo10.CHOOSE_CONTEXT",
     "RaceTo10.SAFETY_ACTIONS",

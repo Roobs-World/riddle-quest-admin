@@ -1,0 +1,43 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionDraftReload.test.ts
+FAIL src/play/race/__tests__/RaceSessionDraftReload.test.ts
+  ● server-confirmed multiplayer draft reload › recovers deferred terminal cleanup after temporary remove failure
+
+    expect(received).toBeNull()
+
+    Received: "{\"version\":1,\"ownerId\":\"owner-1\",\"runId\":\"fake-run-1\",\"locale\":\"en\",\"riddleId\":\"fake-race-1\",\"position\":0,\"guessesUsed\":0,\"pendingGuess\":false,\"letters\":[\"p\",\"i\",\"\",\"\",\"\"],\"activeSlotIndex\":3,\"savedAtMs\":100000}"
+
+      215 |     const attempts = store.removals(); for (let index = 0; index < 10; index++) h.advance(50);
+      216 |     expect(store.removals()).toBe(attempts); expect(store.read()).not.toBeNull();
+    > 217 |     store.deny(""); h.advance(1000); expect(store.read()).toBeNull(); h.session.dispose();
+          |                                                           ^
+      218 |   });
+      219 |   it.each(["replacement", "account", "disposed"])("cannot clear a %s journey during deferred terminal cleanup", async replacement => {
+      220 |     /** A terminal receipt cannot grant unbounded future storage cleanup permission. */
+
+      at src/play/race/__tests__/RaceSessionDraftReload.test.ts:217:59
+
+  ● server-confirmed multiplayer draft reload › recovers deferred terminal cleanup after temporary silent-remove failure
+
+    expect(received).toBeNull()
+
+    Received: "{\"version\":1,\"ownerId\":\"owner-1\",\"runId\":\"fake-run-1\",\"locale\":\"en\",\"riddleId\":\"fake-race-1\",\"position\":0,\"guessesUsed\":0,\"pendingGuess\":false,\"letters\":[\"p\",\"i\",\"\",\"\",\"\"],\"activeSlotIndex\":3,\"savedAtMs\":100000}"
+
+      215 |     const attempts = store.removals(); for (let index = 0; index < 10; index++) h.advance(50);
+      216 |     expect(store.removals()).toBe(attempts); expect(store.read()).not.toBeNull();
+    > 217 |     store.deny(""); h.advance(1000); expect(store.read()).toBeNull(); h.session.dispose();
+          |                                                           ^
+      218 |   });
+      219 |   it.each(["replacement", "account", "disposed"])("cannot clear a %s journey during deferred terminal cleanup", async replacement => {
+      220 |     /** A terminal receipt cannot grant unbounded future storage cleanup permission. */
+
+      at src/play/race/__tests__/RaceSessionDraftReload.test.ts:217:59
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 49 passed, 51 total
+Snapshots:   0 total
+Time:        0.312 s, estimated 1 s
+Ran all test suites matching RaceSessionDraftReload.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionDraftReload.test.ts`
+Exit status 1

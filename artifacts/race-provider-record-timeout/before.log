@@ -1,0 +1,36 @@
+{
+  "failures": [
+    {
+      "stage": "tournaments",
+      "writes": 1,
+      "reads": 2,
+      "ownedTimers": 0,
+      "message": "A lost provider completion must release its guard for an explicit view retry\n\n1 !== 2\n"
+    },
+    {
+      "stage": "inbox",
+      "writes": 1,
+      "reads": 2,
+      "ownedTimers": 0,
+      "message": "A lost provider completion must release its guard for an explicit view retry\n\n1 !== 2\n"
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Provider completion recovery must work after a lost reply
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/race-provider-record-timeout/reproduce.mjs:34:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

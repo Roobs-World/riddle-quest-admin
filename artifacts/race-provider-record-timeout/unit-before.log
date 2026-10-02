@@ -1,0 +1,164 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceProviderViews.test.ts
+FAIL src/play/race/__tests__/RaceProviderViews.test.ts
+  ● provider record delivery deadlines › releases a stalled tournaments write at the exact budget for an explicit retry
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      316 |     h.views.enter({locale: "en", [stage === "tournaments" ? "tournaments" : "contextBoard"]: {list: h.list, record}});
+      317 |     h.views.record("run-1"); h.advance(29999); h.views.record("run-1");
+    > 318 |     expect(record).toHaveBeenCalledTimes(1); expect(h.timers.size).toBe(1);
+          |                                                                    ^
+      319 |     h.advance(1); expect(record).toHaveBeenCalledTimes(1); expect(h.timers.size).toBe(0);
+      320 |     h.views.selectStage(stage); await settle(); expect(record).toHaveBeenCalledTimes(2);
+      321 |     h.views.record("run-1"); expect(record).toHaveBeenCalledTimes(2);
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:318:68
+
+  ● provider record delivery deadlines › releases a stalled inbox write at the exact budget for an explicit retry
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      316 |     h.views.enter({locale: "en", [stage === "tournaments" ? "tournaments" : "contextBoard"]: {list: h.list, record}});
+      317 |     h.views.record("run-1"); h.advance(29999); h.views.record("run-1");
+    > 318 |     expect(record).toHaveBeenCalledTimes(1); expect(h.timers.size).toBe(1);
+          |                                                                    ^
+      319 |     h.advance(1); expect(record).toHaveBeenCalledTimes(1); expect(h.timers.size).toBe(0);
+      320 |     h.views.selectStage(stage); await settle(); expect(record).toHaveBeenCalledTimes(2);
+      321 |     h.views.record("run-1"); expect(record).toHaveBeenCalledTimes(2);
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:318:68
+
+  ● provider record delivery deadlines › ignores the old success after a stalled write is replaced
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 2
+    Received number of calls: 1
+
+      337 |     h.views.enter({locale: "en", tournaments: {list: h.list, record}}); h.views.record("run-1");
+      338 |     h.advance(30000); h.views.selectStage("tournaments");
+    > 339 |     expect(record).toHaveBeenCalledTimes(2); expect(h.list).toHaveBeenCalledTimes(1);
+          |                    ^
+      340 |     if (ending === "success") resolve(recorded()); else reject(new Error("late-offline"));
+      341 |     await settle(); h.views.record("run-1");
+      342 |     expect(record).toHaveBeenCalledTimes(2); expect(h.list).toHaveBeenCalledTimes(1);
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:339:20
+
+  ● provider record delivery deadlines › ignores the old failure after a stalled write is replaced
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 2
+    Received number of calls: 1
+
+      337 |     h.views.enter({locale: "en", tournaments: {list: h.list, record}}); h.views.record("run-1");
+      338 |     h.advance(30000); h.views.selectStage("tournaments");
+    > 339 |     expect(record).toHaveBeenCalledTimes(2); expect(h.list).toHaveBeenCalledTimes(1);
+          |                    ^
+      340 |     if (ending === "success") resolve(recorded()); else reject(new Error("late-offline"));
+      341 |     await settle(); h.views.record("run-1");
+      342 |     expect(record).toHaveBeenCalledTimes(2); expect(h.list).toHaveBeenCalledTimes(1);
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:339:20
+
+  ● provider record delivery deadlines › cleans a completed recording deadline
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 0
+
+      356 |     const record = jest.fn(() => pending);
+      357 |     h.views.enter({locale: "en", tournaments: {list: h.list, record}, contextBoard: {list: h.list, record}});
+    > 358 |     h.views.record("run-1"); expect(h.timers.size).toBe(2);
+          |                                                    ^
+      359 |     if (ending === "completed") resolve(recorded());
+      360 |     else if (ending === "failed") reject(new Error("offline"));
+      361 |     else if (ending === "disposed") h.views.dispose();
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:358:52
+
+  ● provider record delivery deadlines › cleans a failed recording deadline
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 0
+
+      356 |     const record = jest.fn(() => pending);
+      357 |     h.views.enter({locale: "en", tournaments: {list: h.list, record}, contextBoard: {list: h.list, record}});
+    > 358 |     h.views.record("run-1"); expect(h.timers.size).toBe(2);
+          |                                                    ^
+      359 |     if (ending === "completed") resolve(recorded());
+      360 |     else if (ending === "failed") reject(new Error("offline"));
+      361 |     else if (ending === "disposed") h.views.dispose();
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:358:52
+
+  ● provider record delivery deadlines › cleans a disposed recording deadline
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 0
+
+      356 |     const record = jest.fn(() => pending);
+      357 |     h.views.enter({locale: "en", tournaments: {list: h.list, record}, contextBoard: {list: h.list, record}});
+    > 358 |     h.views.record("run-1"); expect(h.timers.size).toBe(2);
+          |                                                    ^
+      359 |     if (ending === "completed") resolve(recorded());
+      360 |     else if (ending === "failed") reject(new Error("offline"));
+      361 |     else if (ending === "disposed") h.views.dispose();
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:358:52
+
+  ● provider record delivery deadlines › cleans a replaced recording deadline
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 0
+
+      356 |     const record = jest.fn(() => pending);
+      357 |     h.views.enter({locale: "en", tournaments: {list: h.list, record}, contextBoard: {list: h.list, record}});
+    > 358 |     h.views.record("run-1"); expect(h.timers.size).toBe(2);
+          |                                                    ^
+      359 |     if (ending === "completed") resolve(recorded());
+      360 |     else if (ending === "failed") reject(new Error("offline"));
+      361 |     else if (ending === "disposed") h.views.dispose();
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:358:52
+
+  ● provider record delivery deadlines › cleans a context-changed recording deadline
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 0
+
+      356 |     const record = jest.fn(() => pending);
+      357 |     h.views.enter({locale: "en", tournaments: {list: h.list, record}, contextBoard: {list: h.list, record}});
+    > 358 |     h.views.record("run-1"); expect(h.timers.size).toBe(2);
+          |                                                    ^
+      359 |     if (ending === "completed") resolve(recorded());
+      360 |     else if (ending === "failed") reject(new Error("offline"));
+      361 |     else if (ending === "disposed") h.views.dispose();
+
+      at src/play/race/__tests__/RaceProviderViews.test.ts:358:52
+
+Test Suites: 1 failed, 1 total
+Tests:       9 failed, 27 passed, 36 total
+Snapshots:   0 total
+Time:        0.212 s, estimated 1 s
+Ran all test suites matching RaceProviderViews.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceProviderViews.test.ts`
+Exit status 1

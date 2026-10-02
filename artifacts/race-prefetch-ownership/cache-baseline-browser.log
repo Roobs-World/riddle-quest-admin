@@ -1,0 +1,198 @@
+Category prefetch passed: profile at 1280px, strict=false.
+Category prefetch passed: access at 1280px, strict=false.
+Category prefetch passed: catalog at 1280px, strict=false.
+Category prefetch passed: account-return at 1280px, strict=false.
+Category prefetch passed: unmount at 1280px, strict=false.
+Category prefetch FAILED: {"scenario":"cached-account","width":1280,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-return","width":1280,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-locale","width":1280,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"}
+Category prefetch passed: profile at 390px, strict=false.
+Category prefetch passed: access at 390px, strict=false.
+Category prefetch passed: catalog at 390px, strict=false.
+Category prefetch passed: account-return at 390px, strict=false.
+Category prefetch passed: unmount at 390px, strict=false.
+Category prefetch FAILED: {"scenario":"cached-account","width":390,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-return","width":390,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-locale","width":390,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"}
+Category prefetch passed: profile at 1280px, strict=true.
+Category prefetch passed: access at 1280px, strict=true.
+Category prefetch passed: catalog at 1280px, strict=true.
+Category prefetch passed: account-return at 1280px, strict=true.
+Category prefetch passed: unmount at 1280px, strict=true.
+Category prefetch FAILED: {"scenario":"cached-account","width":1280,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-return","width":1280,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-locale","width":1280,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"}
+Category prefetch passed: profile at 390px, strict=true.
+Category prefetch passed: access at 390px, strict=true.
+Category prefetch passed: catalog at 390px, strict=true.
+Category prefetch passed: account-return at 390px, strict=true.
+Category prefetch passed: unmount at 390px, strict=true.
+Category prefetch FAILED: {"scenario":"cached-account","width":390,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-return","width":390,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"}
+Category prefetch FAILED: {"scenario":"cached-locale","width":390,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: [{"scenario":"cached-account","width":1280,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-return","width":1280,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-locale","width":1280,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"},{"scenario":"cached-account","width":390,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-return","width":390,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-locale","width":390,"strict":false,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"},{"scenario":"cached-account","width":1280,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-return","width":1280,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-locale","width":1280,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"},{"scenario":"cached-account","width":390,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-2\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-return","width":390,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"en\",\"count\":0}]"},{"scenario":"cached-locale","width":390,"strict":true,"message":"a committed replacement frame exposed stale cached categories: [{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":1},{\"owner\":\"owner-1\",\"locale\":\"fr\",\"count\":0}]"}]
++ actual - expected
+
++ [
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]',
++     scenario: 'cached-account',
++     strict: false,
++     width: 1280
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]',
++     scenario: 'cached-return',
++     strict: false,
++     width: 1280
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]',
++     scenario: 'cached-locale',
++     strict: false,
++     width: 1280
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]',
++     scenario: 'cached-account',
++     strict: false,
++     width: 390
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]',
++     scenario: 'cached-return',
++     strict: false,
++     width: 390
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]',
++     scenario: 'cached-locale',
++     strict: false,
++     width: 390
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]',
++     scenario: 'cached-account',
++     strict: true,
++     width: 1280
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]',
++     scenario: 'cached-return',
++     strict: true,
++     width: 1280
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]',
++     scenario: 'cached-locale',
++     strict: true,
++     width: 1280
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]',
++     scenario: 'cached-account',
++     strict: true,
++     width: 390
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]',
++     scenario: 'cached-return',
++     strict: true,
++     width: 390
++   },
++   {
++     message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]',
++     scenario: 'cached-locale',
++     strict: true,
++     width: 390
++   }
++ ]
+- []
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-prefetch-browser.mjs:91:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      scenario: 'cached-account',
+      width: 1280,
+      strict: false,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-return',
+      width: 1280,
+      strict: false,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-locale',
+      width: 1280,
+      strict: false,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]'
+    },
+    {
+      scenario: 'cached-account',
+      width: 390,
+      strict: false,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-return',
+      width: 390,
+      strict: false,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-locale',
+      width: 390,
+      strict: false,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]'
+    },
+    {
+      scenario: 'cached-account',
+      width: 1280,
+      strict: true,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-return',
+      width: 1280,
+      strict: true,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-locale',
+      width: 1280,
+      strict: true,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]'
+    },
+    {
+      scenario: 'cached-account',
+      width: 390,
+      strict: true,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-2","locale":"en","count":1},{"owner":"owner-2","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-return',
+      width: 390,
+      strict: true,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"en","count":1},{"owner":"owner-1","locale":"en","count":0}]'
+    },
+    {
+      scenario: 'cached-locale',
+      width: 390,
+      strict: true,
+      message: 'a committed replacement frame exposed stale cached categories: [{"owner":"owner-1","locale":"fr","count":1},{"owner":"owner-1","locale":"fr","count":0}]'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

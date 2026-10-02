@@ -14,6 +14,7 @@ import {getApps, initializeApp} from "firebase-admin/app";
 if (getApps().length === 0) initializeApp();
 
 import {getHint, spendCoins, skipRiddle} from "./gameplay/gameLogic";
+import {grantFacebookRewardedContinue} from "./facebook/facebookRewardedContinueCallable";
 import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./daily/dailyChallenge";
 import {getClassicRiddleBuffer} from "./daily/classicRiddleBuffer";
 import {deleteAccount, syncJestAvatar, updateAvatar, updateUsername} from "./profile";
@@ -62,6 +63,7 @@ import {
   listFacebookContextBoard,
   recordFacebookContextRun,
 } from "./race/facebookContextCallables";
+import {facebookContextRetentionScheduler} from "./race/facebookContextRetentionScheduler";
 import {getFacebookClientConfiguration} from "./facebook/facebookClientConfigurationCallable";
 import {
   acceptFacebookNotificationPermissionPrompt,
@@ -70,6 +72,7 @@ import {
 import {deleteRedditAccount, exchangeRedditIdentity} from "./reddit/redditEndpoints";
 import {redditStorage} from "./reddit/redditStorageEndpoint";
 import {redditGameplay} from "./reddit/redditGameplayEndpoint";
+import {redditProfileRetentionScheduler} from "./reddit/redditProfileRetentionScheduler";
 import {yahooOAuthCallback, yahooOAuthStart} from "./yahoo/yahooOAuthEndpoints";
 import {
   confirmYahooStripeCheckout,
@@ -78,6 +81,7 @@ import {
 } from "./yahoo/yahooStripeEndpoints";
 export {
   spendCoins,
+  grantFacebookRewardedContinue,
   skipRiddle,
   getHint,
   getCurrentDailyChallenge,
@@ -90,6 +94,8 @@ export {
   completeGame,
   submitSinglePlayerGuess,
   dailyChallengeScheduler,
+  facebookContextRetentionScheduler,
+  redditProfileRetentionScheduler,
   getLeaderboard,
   listRaceCategories,
   listRaceInbox,

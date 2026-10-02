@@ -31,6 +31,7 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
   highContrast: "riddleQuest:highContrast",
   activeRace: "riddleQuest:activeRaceRun",
   raceRecovery: "riddleQuest:raceRecovery",
+  raceDraft: "riddleQuest:raceDraft",
 } as const;
 
 /** Local-storage prefixes containing app-owned tooltip state. */

@@ -1,0 +1,12 @@
+✔ requires an explicit project and rejects malformed/unknown/duplicate flags offline (3.85945ms)
+✔ defaults to dry run using only the current server clock and fixed page limit (0.684266ms)
+✔ applies only with matching confirmation and retains incomplete page evidence (4.045483ms)
+✔ provider failures are sanitized without echoing context/member identifiers (0.662284ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31.317402

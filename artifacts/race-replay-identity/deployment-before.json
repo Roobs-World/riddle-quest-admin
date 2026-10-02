@@ -1,0 +1,35 @@
+{
+  "deliverRaceSettlementEvent": {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "serviceConfig": {
+      "revision": "deliverracesettlementevent-00014-sef",
+      "service": "projects/riddle-quest-ec2b2/locations/us-central1/services/deliverracesettlementevent"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T14:23:26.799778493Z"
+  },
+  "deliverRacePerformanceEvent": {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "serviceConfig": {
+      "revision": "deliverraceperformanceevent-00014-yac",
+      "service": "projects/riddle-quest-ec2b2/locations/us-central1/services/deliverraceperformanceevent"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T14:23:24.976442527Z"
+  },
+  "settleRaceDeadlines": {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "serviceConfig": {
+      "revision": "settleracedeadlines-00016-nes",
+      "service": "projects/riddle-quest-ec2b2/locations/us-central1/services/settleracedeadlines"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T14:23:28.305570785Z"
+  }
+}

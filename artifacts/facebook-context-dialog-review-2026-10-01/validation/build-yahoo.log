@@ -1,0 +1,51 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.321874ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.831117ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.858958ms)
+✔ rejects imports between different target owners (1.473139ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.613412ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.860279ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.000164ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.753928ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.056791ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.650171ms)
+✔ aggregates violations in deterministic file and source order (1.649975ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 132.814398
+Web Target boundary audit passed (242 files, 993 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 42 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-yahoo/youtube-content-manifest.json          0.48 kB │ gzip:   0.29 kB
+dist-yahoo/index.html                             0.81 kB │ gzip:   0.41 kB
+dist-yahoo/third-party-licenses.txt               1.79 kB │ gzip:   0.90 kB
+dist-yahoo/assets/index-DhsmAOC4.css              6.92 kB │ gzip:   2.30 kB
+dist-yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:   0.14 kB
+dist-yahoo/assets/core-game-CbSzCw0b.js           0.51 kB │ gzip:   0.32 kB
+dist-yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip:  68.34 kB
+dist-yahoo/assets/index-bFwB5w8G.js             874.47 kB │ gzip: 290.37 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 450 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 866ms
+$ node scripts/audit-standalone-artifact.mjs yahoo dist-yahoo
+yahoo artifact audit passed: 8 files, 1.05 MiB

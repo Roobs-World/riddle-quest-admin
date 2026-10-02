@@ -1,0 +1,43 @@
+{
+  "createdAt": "2026-10-01T04:41:59.649268+00:00",
+  "purpose": "Local Facebook server retention review; no deployment or live backfill",
+  "sourceHead": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "dirtyWorkingTree": true,
+  "includesConcurrentWorkingTreeChanges": true,
+  "uploadEligible": false,
+  "selectedSourceSha256": {
+    "firebase-functions/firestore.indexes.json": "f97fca62fb104a02e6f159d5f22195a2c07e7b9d88c234e9dfab61f214ac473e",
+    "firebase-functions/package.json": "ce9306dad7729eb5a1b57188a222fa5071f9a2c5042a7ea17401f8b689dd037a",
+    "firebase-functions/src/facebook/facebookReferrals.ts": "ca8258f48852ed8499a61a6bce2ab536803420b41b7dafcc40738b8664ac2e8b",
+    "firebase-functions/src/facebook/facebookReferralRetention.ts": "c17e3a5fa0648a19c89c2b14009b8fd4d0f17833993d72a0557cec8337114ac1",
+    "firebase-functions/src/__tests__/facebookReferrals.test.ts": "bec6afdfb70eb7deef9d2d44f1a87219e1da26fe84368b7a7660ab1be7e998c6",
+    "firebase-functions/src/__tests__/facebookReferralRetention.it.test.ts": "a4815d2e0765bdeb23fbe492cc57652a7402369db3c698b54f022a779f31af53",
+    "firebase-functions/scripts/facebook-referral-retention.js": "79b81c749c8100f264899f43562a843ff68b7299a9d6577d2b84bf2aaef7dd13",
+    "firebase-functions/scripts/facebook-referral-retention.test.js": "5c8f9732c1dc48b3f87dd2af3f2c7c317a3de16f6388f1448a449f97c610f200"
+  },
+  "providerMetadata": {
+    "project": "riddle-quest-ec2b2",
+    "readOnly": true,
+    "localFacebookReferralTokenTtlConfigured": true,
+    "liveFacebookReferralTokenTtlFieldPolicyPresent": false,
+    "metaReadOnly": {
+      "appUnpublished": true,
+      "zeroPermissionReadyForTesting": true,
+      "productCount": 7,
+      "testPaymentModeEnabled": true,
+      "validPayoutAccountRequired": true,
+      "notificationTemplateCount": 0,
+      "audienceNetworkPropertyStatus": "Requesting ads",
+      "resultsPlacementStatus": "Idle"
+    }
+  },
+  "physicalTtlWorkerAcceptanceProven": false,
+  "livePlayerBackfillPerformed": false,
+  "checks": {
+    "backendUnitTests": 1379,
+    "backendNode22Tests": 1379,
+    "emulatorTests": 58,
+    "retentionCliTests": 4,
+    "isolatedRequiredPlatformBuilds": 6
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "taskId": "multiplayer:race-visibility-retirement",
+  "status": "focused-browser-verification-passed-whole-source-completion-pending",
+  "verifiedAt": "2026-10-01T20:15:42.034045+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "productionBrowserCasesPassed": 18,
+  "developmentStrictBrowserCasesPassed": 18,
+  "retiredProviderCasesPassed": 24,
+  "currentProviderControlsPassed": 12,
+  "developmentStrictLifetimeCountsRequired": {
+    "setups": 2,
+    "replayCleanups": 1
+  },
+  "productionLifetimeCountsRequired": {
+    "setups": 1,
+    "replayCleanups": 0
+  },
+  "negativeVisibilityRecoveryControlFailed": true,
+  "productionChangesMadeThisBatch": false,
+  "sourceHashesObservedAfterVerification": {
+    "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs": "dea3c59a7af6f0ae2ef1182ef7ca08db373700be6cc728e6f8173af457a6a8e1",
+    "packages/portal/src/play/race/hooks/useRaceSession.ts": "537124d2037d5ed13078120631a5e8af3d8ff0520a58e9fd07e3c1c2706c2bce",
+    "packages/portal/src/play/race/RaceSession.ts": "79e7467557b0986273962f877518015b82ace6f64a1fe89a9abce988bc7494be"
+  },
+  "logHashes": {
+    "browser.log": "2c430599371cc929e94b10617efce6926da6e925ed763f840d52098be0e856fb",
+    "baseline-browser.log": "c3234fe6afa55f2c3c4f51445a2f13f9578081862365afea013fbeb3d6692f8e",
+    "development-browser.log": "150c9b47f116a4d51cc5551ba054a0b12a56afb9b705638a558ca3023f932766"
+  },
+  "fullVerificationRequiredChecks": 65,
+  "previousClientAndBuildProof": "artifacts/race-retired-search-recovery/verification-held.json",
+  "freshCompleteClientSuiteRunThisBatch": false,
+  "freshIsolatedBuildsRunThisBatch": false,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdatedThisBatch": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformedThisBatch": false,
+  "limitations": [
+    "The harness injects visibility state and suppresses forwarding of 50ms interval callbacks; this is not an actual OS/background-tab suspension test.",
+    "Source hashes are observations after verification, not a guarded compilation digest.",
+    "Concurrent accepted-run recovery work prevents claiming stable whole-source completion from preceding proofs."
+  ],
+  "remainingGate": "Let user-owned hosted E2E/deployment chat finish before guarded full-source completion verification and automatic dashboard receipt."
+}

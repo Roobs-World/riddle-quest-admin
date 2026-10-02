@@ -24,7 +24,10 @@ export const useAnswerKeyboard = ({active, onLetter, onBackspace, onSubmit}: Ans
       const editing =
         target instanceof HTMLElement &&
         (target.isContentEditable || target.matches("input, textarea, select, [role='textbox']"));
-      if (event.ctrlKey || event.metaKey || event.altKey || editing) return;
+      if (event.defaultPrevented || event.isComposing || event.ctrlKey || event.metaKey || event.altKey || editing) return;
+      // Enter belongs to a focused control's native activation, including nested targets.
+      if (event.key === "Enter" && target instanceof Element &&
+        target.closest("button, a[href], summary, [role='button'], [role='link']")) return;
 
       if (/^[a-z]$/i.test(event.key)) {
         event.preventDefault();

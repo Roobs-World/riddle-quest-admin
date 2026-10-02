@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "kind": "unapproved_canonical_revision_proposal",
+  "importEligible": false,
+  "sourceFileHash": "e4ed372c49ed6a6d7f98f583549f86f192b6b5eec9890fe92b721b59cdfe4ef1",
+  "scope": "Three demonstrated or predictable conflicts only; not a complete 180-item replacement source.",
+  "reason": "Retain seven-letter gameplay while selecting concepts with shorter native answers. Candidate clues change canonical meaning and need new IDs and source review.",
+  "proposals": [
+    {
+      "original": {
+        "canonicalRiddleId": "race:geography:07",
+        "text": "Which is the largest country in South America by area?",
+        "answer": "brazil",
+        "categoryId": "geography",
+        "difficultyBand": "easy",
+        "qualityVersion": "reviewed_v1"
+      },
+      "constraintExample": {
+        "locale": "de",
+        "nativeAnswer": "Brasilien"
+      },
+      "candidate": {
+        "canonicalRiddleId": "race:candidate:multilingual:cuba",
+        "text": "Which country has Havana as its capital?",
+        "answer": "cuba",
+        "categoryId": "geography",
+        "difficultyBand": "easy"
+      },
+      "requiredReview": [
+        "English factual accuracy and difficulty",
+        "Natural native answers in all 16 non-English locales",
+        "Answer length, duplicates and clue leaks",
+        "Distinct-model translation critique",
+        "Approved source version before import"
+      ]
+    },
+    {
+      "original": {
+        "canonicalRiddleId": "race:geography:v2:17",
+        "text": "Which country has Berlin as its capital?",
+        "answer": "germany",
+        "categoryId": "geography",
+        "difficultyBand": "medium",
+        "qualityVersion": "reviewed_v2"
+      },
+      "constraintExample": {
+        "locale": "de",
+        "nativeAnswer": "Deutschland"
+      },
+      "candidate": {
+        "canonicalRiddleId": "race:candidate:multilingual:iran",
+        "text": "Which country has Tehran as its capital?",
+        "answer": "iran",
+        "categoryId": "geography",
+        "difficultyBand": "medium"
+      },
+      "requiredReview": [
+        "English factual accuracy and difficulty",
+        "Natural native answers in all 16 non-English locales",
+        "Answer length, duplicates and clue leaks",
+        "Distinct-model translation critique",
+        "Approved source version before import"
+      ]
+    },
+    {
+      "original": {
+        "canonicalRiddleId": "race:history:v2:20",
+        "text": "What is a fortified medieval home with walls and towers called?",
+        "answer": "castle",
+        "categoryId": "history",
+        "difficultyBand": "medium",
+        "qualityVersion": "reviewed_v2"
+      },
+      "constraintExample": {
+        "locale": "es",
+        "nativeAnswer": "castillo"
+      },
+      "candidate": {
+        "canonicalRiddleId": "race:candidate:multilingual:troy",
+        "text": "Which ancient city was entered using a wooden horse in Greek legend?",
+        "answer": "troy",
+        "categoryId": "history",
+        "difficultyBand": "medium"
+      },
+      "requiredReview": [
+        "English factual accuracy and difficulty",
+        "Natural native answers in all 16 non-English locales",
+        "Answer length, duplicates and clue leaks",
+        "Distinct-model translation critique",
+        "Approved source version before import"
+      ]
+    }
+  ]
+}

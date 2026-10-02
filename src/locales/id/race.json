@@ -104,6 +104,8 @@
     "MATCH_EXPIRED": "Pencarian lawan ini telah kedaluwarsa. Coba lagi.",
     "MATCH_CONSUMED": "Pencarian ini sudah digunakan. Cari lawan lain.",
     "MATCH_UNAVAILABLE": "Pencarian lawan tidak tersedia untuk akun ini.",
-    "MATCH_EMPTY": "Belum ada lawan yang cocok. Coba lagi nanti."
+    "MATCH_EMPTY": "Belum ada lawan yang cocok. Coba lagi nanti.",
+    "CHALLENGE_FRIEND": "Tantang teman",
+    "SHARE_TOURNAMENT": "Bagikan turnamen"
   }
 }

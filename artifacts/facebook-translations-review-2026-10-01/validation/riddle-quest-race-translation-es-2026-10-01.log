@@ -1,0 +1,7 @@
+es: translated 15/180
+es: critiqued 15/180
+es: translated 30/180
+es: critiqued 30/180
+Error: translation-critique-rejected:race:history:v2:20
+    at generateRaceTranslationBundle (/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/lib/race/raceTranslationGenerator.js:149:23)
+    at async /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/scripts/race-content-translate.js:177:22

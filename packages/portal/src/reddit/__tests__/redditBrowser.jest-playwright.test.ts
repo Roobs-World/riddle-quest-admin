@@ -37,11 +37,11 @@ declare global {
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 
 /** Provides inject devvit behavior. */
-const injectDevvit = async (page: Page, mode: 1 | 2) => {
-  await page.addInitScript((webViewMode) => {
+const injectDevvit = async (page: Page, mode: 1 | 2, origin: string) => {
+  await page.addInitScript(({webViewMode, origin}) => {
     globalThis.devvit = {
       context: {},
-      entrypoints: {game: "http://127.0.0.1:4182/game.html"},
+      entrypoints: {game: `${origin}/game.html`},
       token: "browser-test-token",
       webViewMode,
     };
@@ -49,7 +49,7 @@ const injectDevvit = async (page: Page, mode: 1 | 2) => {
     window.addEventListener("message", (event) => {
       if (event.data?.type === "devvit-internal") window.__redditEffects.push(event.data);
     });
-  }, mode);
+  }, {webViewMode: mode, origin});
 };
 
 describeBrowser("Reddit artifact with injected Devvit context", () => {
@@ -71,7 +71,9 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       });
     }
     /** Provides dist directory behavior. */
-    const distDirectory = path.join(packageRoot, "dist-reddit");
+    const distDirectory = process.env.PORTAL_REDDIT_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_REDDIT_BUILD_DIR)
+      : path.join(packageRoot, "dist-reddit");
     /** Provides server behavior. */
     const server = createServer(async (request, response) => {
       /** Requests url. */
@@ -104,13 +106,21 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
         response.writeHead(404).end();
       }
     });
-    await new Promise<void>((resolve) => server.listen(4182, "127.0.0.1", resolve));
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen(0, "127.0.0.1", resolve);
+    });
+    /** Ephemeral origin isolates this fixture from concurrent browser checks. */
+    const address = server.address();
+    if (!address || typeof address === "string") throw new Error("reddit-browser-server-address-missing");
+    /** SDK entry points and browser navigation use the same isolated server. */
+    const origin = `http://127.0.0.1:${address.port}`;
     /** Provides browser behavior. */
     const browser = await chromium.launch({headless: true});
     try {
       /** Provides inline behavior. */
       const inline = await browser.newPage({viewport: {width: 390, height: 844}});
-      await injectDevvit(inline, 1);
+      await injectDevvit(inline, 1, origin);
       await inline.addInitScript(() => window.localStorage.setItem("appLanguage", "ar"));
       await inline.route("**/api/session", (route) =>
         route.fulfill({
@@ -119,7 +129,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
           body: JSON.stringify({ok: true, authenticated: false}),
         }),
       );
-      await inline.goto("http://127.0.0.1:4182/reddit-inline.html");
+      await inline.goto(`${origin}/reddit-inline.html`);
       await inline.getByRole("button", {name: "العب"}).click();
       expect(await inline.locator("html").getAttribute("lang")).toBe("ar");
       expect(await inline.locator("html").getAttribute("dir")).toBe("rtl");
@@ -132,7 +142,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
 
       /** Provides locale smoke behavior. */
       const localeSmoke = await browser.newPage({viewport: {width: 390, height: 844}});
-      await injectDevvit(localeSmoke, 1);
+      await injectDevvit(localeSmoke, 1, origin);
       await localeSmoke.route("**/api/session", (route) =>
         route.fulfill({
           status: 200,
@@ -140,7 +150,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
           body: JSON.stringify({ok: true, authenticated: false}),
         }),
       );
-      await localeSmoke.goto("http://127.0.0.1:4182/reddit-inline.html");
+      await localeSmoke.goto(`${origin}/reddit-inline.html`);
       for (const locale of [
         "ar",
         "de",
@@ -169,7 +179,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
 
       /** Provides authenticated locale smoke behavior. */
       const authenticatedLocaleSmoke = await browser.newPage({viewport: {width: 390, height: 844}});
-      await injectDevvit(authenticatedLocaleSmoke, 2);
+      await injectDevvit(authenticatedLocaleSmoke, 2, origin);
       /** Saves d locale. */
       let savedLocale = "en";
       /** Enables checkout only for the dedicated commerce journey. */
@@ -264,7 +274,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
 
       ]) {
         savedLocale = locale;
-        await authenticatedLocaleSmoke.goto("http://127.0.0.1:4182/");
+        await authenticatedLocaleSmoke.goto(`${origin}/`);
         await authenticatedLocaleSmoke.getByText(`locale-riddle-${locale}`, {exact: true}).waitFor();
         await authenticatedLocaleSmoke.waitForFunction((value) => document.documentElement.lang === value, locale);
         expect(await authenticatedLocaleSmoke.locator("html").getAttribute("lang")).toBe(locale);
@@ -275,7 +285,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       try {
         commerceEnabled = true;
         savedLocale = "en";
-        await authenticatedLocaleSmoke.goto("http://127.0.0.1:4182/");
+        await authenticatedLocaleSmoke.goto(`${origin}/`);
         await authenticatedLocaleSmoke.getByText("locale-riddle-en", {exact: true}).waitFor();
         await authenticatedLocaleSmoke.getByTestId("server-activity-loader").waitFor({state: "hidden"});
         await authenticatedLocaleSmoke.getByRole("button", {name: /let's play/i}).click();
@@ -334,7 +344,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       const guest = await browser.newPage({viewport: {width: 390, height: 844}});
       /** Provides guest api requests behavior. */
       const guestApiRequests: string[] = [];
-      await injectDevvit(guest, 2);
+      await injectDevvit(guest, 2, origin);
       await guest.route("**/api/**", (route) => {
         guestApiRequests.push(new URL(route.request().url()).pathname);
         return route.fulfill({
@@ -343,7 +353,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
           body: JSON.stringify({ok: true, authenticated: false}),
         });
       });
-      await guest.goto("http://127.0.0.1:4182/");
+      await guest.goto(`${origin}/`);
       await guest.getByText("What has keys but cannot open doors?", {exact: true}).waitFor({timeout: 15_000});
       expect(guestApiRequests).toEqual(["/api/session"]);
       await guest.getByRole("button", {name: "Log in to save progress"}).click();
@@ -366,7 +376,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       let releaseOldTournament: (() => Promise<void>) | undefined;
       /** An expired read's late failure must not overwrite a recovered view. */
       let releaseLostTournament: (() => Promise<void>) | undefined;
-      await injectDevvit(expanded, 2);
+      await injectDevvit(expanded, 2, origin);
       await expanded.addInitScript(() => {
         // Seed the same locale as the authoritative preference fixture before the first session renders.
         window.localStorage.setItem("appLanguage", "ar");
@@ -565,7 +575,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
           body: JSON.stringify({ok: false, error: `unexpected ${pathname}`}),
         });
       });
-      await expanded.goto("http://127.0.0.1:4182/");
+      await expanded.goto(`${origin}/`);
       try {
         await expanded.getByText("What has keys but no locks?", {exact: true}).waitFor({timeout: 15_000});
       } catch (error) {
@@ -680,6 +690,21 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       expect(await expanded.locator('script[src*="firebase"]').count()).toBe(0);
       expect(await expanded.locator('script[src*="fbinstant"]').count()).toBe(0);
       expect(await expanded.locator('script[src*="cdn.jest.com"]').count()).toBe(0);
+      /** Devvit returns focus when expanded play closes, even while the document remains visible. */
+      const disconnected = expanded.waitForResponse(response => new URL(response.url()).pathname === "/api/game/presence.disconnect");
+      await expanded.evaluate(() => {
+        devvit.webViewMode = 1;
+        window.dispatchEvent(new Event("focus"));
+      });
+      await expanded.locator(".reddit-entry button").waitFor();
+      await disconnected;
+      expect(await expanded.locator(".game-bottom-navigation").count()).toBe(0);
+      await expanded.evaluate(() => {
+        devvit.webViewMode = 2;
+        window.dispatchEvent(new Event("focus"));
+      });
+      await expanded.getByText("What has keys but no locks?", {exact: true}).waitFor({timeout: 15_000});
+      expect(await expanded.locator(".reddit-entry").count()).toBe(0);
     } finally {
       await browser.close();
       await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));

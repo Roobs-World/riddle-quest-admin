@@ -1,3 +1,4 @@
+import {countCoinRewardAchievements} from "@qwordly/core/game";
 import {lowerCaseGraphemes, splitGraphemes, type Feedback} from "@qwordly/core/game";
 import {findNewYouTubeAchievements} from "./achievements";
 import {
@@ -206,7 +207,7 @@ export const completeYouTubeGame = (
   const achievements = findNewYouTubeAchievements(progress, {mode, isCorrect, attempts, gameOver: true});
   progress.unlockedAchievementIds.push(...achievements);
   /** Provides achievement coins behavior. */
-  const achievementCoins = isCorrect ? achievements.length * YOUTUBE_ACHIEVEMENT_COINS : 0;
+  const achievementCoins = isCorrect ? countCoinRewardAchievements(achievements) * YOUTUBE_ACHIEVEMENT_COINS : 0;
   progress.coins += achievementCoins;
   next.activeGame = null;
   return {

@@ -1,0 +1,17 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"locale":"en","width":320,"large":false,"enabled":true,"box":{"label":"Tournaments","left":210.328125,"right":294.984375,"height":44,"scrollWidth":124,"clientWidth":85,"scrollHeight":44,"clientHeight":44}}
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-hub-navigation-browser.mjs:60:5
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

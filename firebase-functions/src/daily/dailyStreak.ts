@@ -1,3 +1,4 @@
+import {getDailyDate, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
 /** Describes timestamp like. */
 type TimestampLike = {
   /** Stores to date. */
@@ -76,11 +77,20 @@ export function getYesterdayUtcDayString(now: Date = new Date()): string {
   return yesterday.toISOString().split("T")[0];
 }
 
+/** Reads a legacy completion timestamp in the authoritative session’s regional clock. */
+export function getCompletionDay(value: unknown, locale: string): string | null {
+  /** Legacy completion timestamp parsed before regional calendar conversion. */
+  const date = coerceToDate(value);
+  return date ? getDailyDate(locale, date) : null;
+}
+
 /** Computes next daily win streak. */
 export function computeNextDailyWinStreak(
   currentWinStreak: number,
   lastDailyChallengeCompletedAt: unknown,
   now: Date = new Date(),
+  locale = "UTC",
+  lastCompletedKey?: string,
 ): number {
-  return getUtcDayString(lastDailyChallengeCompletedAt) === getYesterdayUtcDayString(now) ? currentWinStreak + 1 : 1;
+  return (lastCompletedKey ?? getCompletionDay(lastDailyChallengeCompletedAt, locale)) === shiftDailyDate(getDailyDate(locale, now), -1) ? currentWinStreak + 1 : 1;
 }

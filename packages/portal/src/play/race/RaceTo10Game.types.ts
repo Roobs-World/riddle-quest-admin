@@ -16,12 +16,14 @@ export type RaceTo10GameProps = Readonly<{
   challengeId?: string;
   /** Stores open inbox. */
   openInbox?: boolean;
+  /** Incoming native tournament language; ignored without the target tournament capability. */
+  tournamentLocale?: RaceLocale;
   /** Stores coins. */
   coins: number;
   /** Authenticated game account that owns persisted race runs. */
   ownerId?: string;
   /** Stores post to host. */
-  postToHost: (message: GameToHostMessage) => void;
+  postToHost: (message: GameToHostMessage) => void | Promise<void>;
   /** Stores on close. */
   onClose: () => void;
   /** Stores initial categories. */

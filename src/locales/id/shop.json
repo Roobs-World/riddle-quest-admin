@@ -9,12 +9,15 @@
     "PERIOD_YEARLY": "tahun",
     "START_TRIAL_BUTTON": "MULAI UJI COBA GRATIS",
     "SUBSCRIBE_BUTTON": "BERLANGGANAN",
-    "SUBSCRIBED_BUTTON": "BERLANGGANAN",
     "CANCEL_SUBSCRIPTION": "Batalkan langganan",
     "SUBSCRIPTION_CANCELLED_NOTICE": "Perpanjangan dibatalkan. Premium tetap aktif hingga akhir periode penagihan Anda.",
     "SUBSCRIPTION_ACTIVE": "Premium aktif",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Langganan premium Anda aktif.",
     "TITLE": "TOKO KOIN",
-    "YOUR_BALANCE": "Saldo Anda"
+    "YOUR_BALANCE": "Saldo Anda",
+    "PACK_DESCRIPTION": "Tambahkan {coins} koin ke saldo Anda.",
+    "BADGE_STARTER": "PEMULA",
+    "BADGE_POPULAR": "POPULER",
+    "BADGE_BEST_VALUE": "PALING HEMAT"
   }
 }

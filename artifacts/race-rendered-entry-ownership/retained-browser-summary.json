@@ -1,0 +1,77 @@
+[
+  {
+    "name": "startup-recovery",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/startup-recovery.log"
+  },
+  {
+    "name": "paid-draft-checkpoints",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/paid-draft-checkpoints.log"
+  },
+  {
+    "name": "pending-input",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/pending-input.log"
+  },
+  {
+    "name": "keyboard-activation",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/keyboard-activation.log"
+  },
+  {
+    "name": "quit-focus-recovery",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/quit-focus-recovery.log"
+  },
+  {
+    "name": "quit-focus-containment",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/quit-focus-containment.log"
+  },
+  {
+    "name": "provider-capability",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/provider-capability.log"
+  },
+  {
+    "name": "provider-confirmed-outcome",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/provider-confirmed-outcome.log"
+  },
+  {
+    "name": "provider-record-recovery",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/provider-record-recovery.log"
+  },
+  {
+    "name": "provider-record-timeout",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/provider-record-timeout.log"
+  },
+  {
+    "name": "analytics-delivery",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/analytics-delivery.log"
+  },
+  {
+    "name": "offline-delivery",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/offline-delivery.log"
+  },
+  {
+    "name": "overlay-ownership",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/overlay-ownership.log"
+  },
+  {
+    "name": "dialog-keyboard-ownership",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/dialog-keyboard-ownership.log"
+  },
+  {
+    "name": "hub-navigation",
+    "exitCode": 0,
+    "log": "artifacts/race-rendered-entry-ownership/hub-navigation.log"
+  }
+]

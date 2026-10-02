@@ -21,6 +21,13 @@ type ViewEntry = Readonly<{
 type ViewRequest = {
   /** Cancels the owned delivery deadline. */ timer: number;
 };
+/** Provider screen scopes a retry to the destination of its original completion. */
+type RecordKind = "tournaments" | "inbox";
+/** Delivery guard persists after success; only pending writes retain a timer. */
+type RecordDelivery = {
+  /** Provider destination determines context-switch cleanup. */ kind: RecordKind;
+  /** Active completion deadline, absent after terminal delivery. */ timer: number | null;
+};
 /** Owns optional provider reads through navigation, delivery expiry and account replacement. */
 export class RaceProviderViews {
   /** Observable caches and loading state remain immutable between notifications. */
@@ -29,12 +36,21 @@ export class RaceProviderViews {
   private listeners = new Set<() => void>();
   /** Current target adapters and locale, absent after disposal. */
   private entry: ViewEntry | null = null;
+  /** Reentrant account replacement or disposal supersedes the outer requested entry. */
+  private generation = 0;
   /** Actual Race Session screen, including screens without provider views. */
   private stage: RaceStage | null = null;
   /** At most one view read belongs to the selected screen. */
   private request: ViewRequest | null = null;
   /** Recording guards belong to an exact adapter lifetime and delivery, never just a reused run ID. */
-  private recordings = new Map<string, object>();
+  private recordings = new Map<string, RecordDelivery>();
+  /** Rejected completions await an explicit visit to their corresponding view. */
+  private failedRecordings = new Map<string, {
+    /** Original view destination. */ kind: RecordKind;
+    /** Canonical completed run. */ runId: string;
+  }>();
+  /** A confirmed context switch invalidates old context write callbacks and retries. */
+  private contextOwner = {};
   /** Browser or deterministic timer adapter. */
   private clock: Pick<RacePlayClock, "schedule" | "cancel">;
   /** Reports existing translated error keys only for the owned request. */
@@ -67,36 +83,75 @@ export class RaceProviderViews {
   }
   /** Replaces all cache ownership before any new delivery can be issued. */
   enter = (entry: ViewEntry): void => {
+    /** The cleanup call owns one generation unless its notification supersedes this entry. */
+    const generation = this.generation + 1;
     this.dispose();
-    this.entry = entry;
+    if (this.generation === generation) this.entry = entry;
   };
   /** Disposes timers and invalidates late replies without touching competitive state. */
   dispose = (): void => {
+    this.generation++;
     this.cancel(); this.entry = null; this.stage = null;
-    this.recordings.clear();
+    for (const receipt of this.recordings.values()) this.cancelRecording(receipt);
+    this.recordings.clear(); this.failedRecordings.clear(); this.contextOwner = {};
     this.update(this.empty());
   };
+  /** Cancels only the pending delivery budget while retaining its duplicate guard. */
+  private cancelRecording(receipt: RecordDelivery): void {
+    if (receipt.timer !== null) this.clock.cancel(receipt.timer);
+    receipt.timer = null;
+  }
   /** Delivers an already-confirmed run independently to each optional projection adapter. */
   record = (runId: string): void => {
     /** Record effects use the captured account/locale adapters even if React props change. */
     const entry = this.entry;
     if (!entry) return;
-    for (const [kind, adapter] of [["tournament", entry.tournaments], ["context", entry.contextBoard]] as const) {
-      if (this.entry !== entry) return;
-      /** Same run may contribute to both provider views, once per adapter lifetime. */
-      const key = `${kind}:${runId}`;
-      if (!adapter || this.recordings.has(key)) continue;
-      /** A late failure must never remove a new account's guard for this key. */
-      const receipt = {};
-      this.recordings.set(key, receipt);
-      /** Failure releases only its exact delivery for an explicit later retry. */
-      const failed = () => {if (this.entry === entry && this.recordings.get(key) === receipt) this.recordings.delete(key);};
-      try {void adapter.record(runId, entry.locale).catch(failed);} catch {failed();}
-    }
+    for (const kind of ["tournaments", "inbox"] as const) this.deliverRecord(kind, runId, entry);
   };
+  /** Retries only the originally owned projection and refreshes reads that predate its successful write. */
+  private deliverRecord(kind: RecordKind, runId: string, entry: ViewEntry): void {
+    if (this.entry !== entry) return;
+    /** Optional target adapter owns the provider destination. */
+    const adapter = kind === "tournaments" ? entry.tournaments : entry.contextBoard;
+    /** Same run contributes once per destination and exact account lifetime. */
+    const key = `${kind}:${runId}`;
+    if (!adapter || this.recordings.has(key)) return;
+    /** Context changes must not redirect a failed write to a different provider room. */
+    const contextOwner = this.contextOwner;
+    /** Late completions cannot affect a replacement delivery with the same identifier. */
+    const receipt: RecordDelivery = {kind, timer: null};
+    this.recordings.set(key, receipt); this.failedRecordings.delete(key);
+    /** Both account and provider-context ownership survive asynchronous callbacks. */
+    const owned = () => this.entry === entry && this.recordings.get(key) === receipt &&
+      (kind !== "inbox" || this.contextOwner === contextOwner);
+    /** Rejection permits explicit view recovery without repeating race settlement. */
+    const failed = () => {
+      if (!owned()) return;
+      this.cancelRecording(receipt);
+      this.recordings.delete(key); this.failedRecordings.set(key, {kind, runId});
+    };
+    /** An earlier read cannot overwrite standings after the write becomes visible. */
+    const completed = () => {
+      if (!owned()) return;
+      this.cancelRecording(receipt);
+      if (this.stage === kind) this.cancel();
+      this.update(kind === "tournaments" ? {tournament: null} : {contextBoard: null});
+      if (owned() && this.stage === kind) this.refresh(kind);
+    };
+    receipt.timer = this.clock.schedule(failed, 30000);
+    if (!owned()) return;
+    try {
+      void adapter.record(runId, entry.locale).then(completed, failed).catch(() => {
+        // Presentation notification failure must not repeat a successful provider write.
+      });
+    } catch {failed();}
+  }
   /** A confirmed provider context change invalidates its old standings and any owned read. */
   contextChanged = (): void => {
     if (!this.entry) return;
+    this.contextOwner = {};
+    for (const receipt of this.recordings.values()) if (receipt.kind === "inbox") this.cancelRecording(receipt);
+    for (const [key, record] of this.failedRecordings) if (record.kind === "inbox") this.failedRecordings.delete(key);
     if (this.stage === "inbox") this.cancel();
     this.update({contextBoard: null, contextBoardLoading: false});
     if (this.stage === "inbox") this.refresh("inbox");
@@ -114,7 +169,12 @@ export class RaceProviderViews {
     /** Capture adapters and locale for this exact lifetime before issuing the request. */
     const entry = this.entry;
     if (!(stage === "tournaments" && entry.tournaments || stage === "inbox" && entry.contextBoard)) return;
+    for (const record of [...this.failedRecordings.values()]) {
+      if (record.kind === stage) this.deliverRecord(record.kind, record.runId, entry);
+    }
+    if (this.entry !== entry || this.stage !== stage || this.request) return;
     if (this.state.failed) this.reportError(null);
+    if (this.entry !== entry || this.stage !== stage || this.request) return;
     /** Unique request ownership is separate from the adapter/account lifetime. */
     const request: ViewRequest = {timer: 0};
     this.request = request;

@@ -8,6 +8,8 @@ import {
   writePrivateFacebookJson,
 } from "./facebook-release-artifact.mjs";
 
+import {assertFacebookHandoffsSettled, withFacebookReleaseLock} from "./facebook-release-state.mjs";
+
 const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL("../../../", import.meta.url));
 const buildDirectory = path.join(packageDirectory, "dist-facebook");
@@ -23,31 +25,34 @@ const run = (command, args, options = {}) => {
   return result.stdout?.trim() ?? "";
 };
 
-run(process.execPath, [path.join(repositoryDirectory, "scripts/audit-facebook-secret-boundary.mjs")]);
-run(process.execPath, [path.join(packageDirectory, "scripts/audit-facebook-artifact.mjs"), buildDirectory]);
-rmSync(archivePath, {force: true});
-run("/usr/bin/zip", ["-qrX", archivePath, "."], {cwd: buildDirectory});
-chmodSync(archivePath, 0o444);
-const entries = run("/usr/bin/unzip", ["-Z1", archivePath], {capture: true}).split("\n").filter(Boolean);
-if (!entries.includes("index.html") || entries.some((entry) =>
-  entry.startsWith("/") || /^[a-z]:/iu.test(entry) || entry.split(/[\\/]/u).includes(".."))) {
-  throw new Error("Facebook archive does not have a safe root index.html");
-}
-const contents = readFileSync(archivePath);
-if (contents.byteLength > 200 * 1024 * 1024) throw new Error("Facebook ZIP exceeds 200 MB");
-const sourceCommit = run("/usr/bin/git", ["rev-parse", "HEAD"], {capture: true});
-if (!/^[0-9a-f]{40}$/u.test(sourceCommit)) throw new Error("Unable to bind Facebook artifact to Git HEAD");
-const sourceDirty = Boolean(run("/usr/bin/git", ["status", "--porcelain=v1", "--untracked-files=all"], {capture: true}));
-const sha256 = facebookArtifactSha256(contents);
-await writePrivateFacebookJson(receiptPath, createFacebookArtifactRecord({
-  archiveBytes: contents.byteLength,
-  archiveEntries: entries.length,
-  archivePath,
-  archiveSha256: sha256,
-  sourceCommit,
-  sourceDirty,
-}));
-console.log(`Gated Facebook ZIP: ${contents.byteLength} bytes, ${entries.length} entries, sha256 ${sha256}`);
-console.log(`Source: ${sourceCommit}${sourceDirty ? " (dirty; upload blocked)" : " (clean)"}`);
-console.log(`Receipt: ${receiptPath}`);
-console.log("Preflight stopped before any Meta network transmission.");
+await withFacebookReleaseLock(receiptDirectory, async () => {
+  await assertFacebookHandoffsSettled(receiptDirectory);
+  run(process.execPath, [path.join(repositoryDirectory, "scripts/audit-facebook-secret-boundary.mjs")]);
+  run(process.execPath, [path.join(packageDirectory, "scripts/audit-facebook-artifact.mjs"), buildDirectory]);
+  rmSync(archivePath, {force: true});
+  run("/usr/bin/zip", ["-qrX", archivePath, "."], {cwd: buildDirectory});
+  chmodSync(archivePath, 0o444);
+  const entries = run("/usr/bin/unzip", ["-Z1", archivePath], {capture: true}).split("\n").filter(Boolean);
+  if (!entries.includes("index.html") || entries.some((entry) =>
+    entry.startsWith("/") || /^[a-z]:/iu.test(entry) || entry.split(/[\\/]/u).includes(".."))) {
+    throw new Error("Facebook archive does not have a safe root index.html");
+  }
+  const contents = readFileSync(archivePath);
+  if (contents.byteLength > 200 * 1024 * 1024) throw new Error("Facebook ZIP exceeds 200 MB");
+  const sourceCommit = run("/usr/bin/git", ["rev-parse", "HEAD"], {capture: true});
+  if (!/^[0-9a-f]{40}$/u.test(sourceCommit)) throw new Error("Unable to bind Facebook artifact to Git HEAD");
+  const sourceDirty = Boolean(run("/usr/bin/git", ["status", "--porcelain=v1", "--untracked-files=all"], {capture: true}));
+  const sha256 = facebookArtifactSha256(contents);
+  await writePrivateFacebookJson(receiptPath, createFacebookArtifactRecord({
+    archiveBytes: contents.byteLength,
+    archiveEntries: entries.length,
+    archivePath,
+    archiveSha256: sha256,
+    sourceCommit,
+    sourceDirty,
+  }));
+  console.log(`Gated Facebook ZIP: ${contents.byteLength} bytes, ${entries.length} entries, sha256 ${sha256}`);
+  console.log(`Source: ${sourceCommit}${sourceDirty ? " (dirty; upload blocked)" : " (clean)"}`);
+  console.log(`Receipt: ${receiptPath}`);
+  console.log("Preflight stopped before any Meta network transmission.");
+});

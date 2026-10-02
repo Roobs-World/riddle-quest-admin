@@ -1,6 +1,6 @@
+import {getDailyDate, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import {getUser} from "../gameplay/firestoreService";
 import {getSinglePlayerCompletionKey} from "../gameplay/singlePlayerAnswerPolicy";
-import {DAILY_COMPLETION_ROLLOVER_GRACE_MS} from "../gameplay/completeGameLogic";
 import {recoverPendingAuthoritativeCompletion} from "../gameplay/singlePlayerTerminalRecovery";
 
 /** Recovers a just-finished previous-day win when local resume data was lost. */
@@ -8,23 +8,17 @@ export async function reconcilePreviousDailyBinding(
   userId: string,
   user: NonNullable<Awaited<ReturnType<typeof getUser>>>,
   isAnonymous: boolean,
+  locale = "UTC",
 ): Promise<NonNullable<Awaited<ReturnType<typeof getUser>>>> {
   /** Provides now behavior. */
   const now = new Date();
   /** Provides today behavior. */
-  const today = now.toISOString().slice(0, 10);
-  /** Provides today start behavior. */
-  const todayStart = new Date(`${today}T00:00:00.000Z`);
-  if (
-    now.getTime() - todayStart.getTime() > DAILY_COMPLETION_ROLLOVER_GRACE_MS ||
-    user.lastDailyChallengeAttemptedKey === today
-  )
-    return user;
-  /** Provides previous date behavior. */
-  const previousDate = new Date(todayStart);
-  previousDate.setUTCDate(previousDate.getUTCDate() - 1);
-  /** Provides challenge date behavior. */
-  const challengeDate = previousDate.toISOString().slice(0, 10);
+  const today = getDailyDate(locale, now);
+  // The authority checks the saved session's locale and grace window. A newly
+  // selected locale must not discard a valid terminal from another clock.
+  if (user.lastDailyChallengeAttemptedKey === today) return user;
+  /** Previous calendar day rather than a fixed 24-hour subtraction across DST. */
+  const challengeDate = shiftDailyDate(today, -1);
   /** Provides recovered behavior. */
   const recovered = await recoverPendingAuthoritativeCompletion(
     userId,

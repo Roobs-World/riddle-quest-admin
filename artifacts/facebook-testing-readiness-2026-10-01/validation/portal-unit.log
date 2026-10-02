@@ -1,0 +1,8 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand
+
+Test Suites: 13 skipped, 162 passed, 162 of 175 total
+Tests:       94 skipped, 1331 passed, 1425 total
+Snapshots:   0 total
+Time:        4.778 s, estimated 19 s
+Ran all test suites.

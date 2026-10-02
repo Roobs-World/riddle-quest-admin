@@ -469,6 +469,7 @@ describe("legacy terminal race grants", () => {
 
 describe("legacy ghost deadline grants", () => {
   it("retains ghost expiry when the earlier opponent deadline was already rewarded", () => {
+    /** Existing reward marker preserves the earlier immutable opponent deadline. */
     /** Legacy opponent-deadline award which preceded the maximum duration. */
     const granted = createRun({
       achievementProgressRecordedAtMs: STARTED_AT + 20001,

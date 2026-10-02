@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: playtest uploads reject missing, stable, malformed, and extra version arguments before running commands
+ok 1 - playtest uploads reject missing, stable, malformed, and extra version arguments before running commands
+  ---
+  duration_ms: 0.80214
+  type: 'test'
+  ...
+# Subtest: a private upload retains uncertainty and blocks later versions before running commands
+ok 2 - a private upload retains uncertainty and blocks later versions before running commands
+  ---
+  duration_ms: 1.904597
+  type: 'test'
+  ...
+# Subtest: a failed package check leaves no attempted upload and can be corrected
+ok 3 - a failed package check leaves no attempted upload and can be corrected
+  ---
+  duration_ms: 0.482664
+  type: 'test'
+  ...
+# Subtest: accepted versions are immutable and explicit resolution preserves original failure evidence
+ok 4 - accepted versions are immutable and explicit resolution preserves original failure evidence
+  ---
+  duration_ms: 0.983974
+  type: 'test'
+  ...
+# Subtest: separate processes cannot validate or transmit while another playtest owns the lock
+ok 5 - separate processes cannot validate or transmit while another playtest owns the lock
+  ---
+  duration_ms: 15.66321
+  type: 'test'
+  ...
+# Subtest: process interruption preserves the lock and orphan attempt until explicit recovery
+ok 6 - process interruption preserves the lock and orphan attempt until explicit recovery
+  ---
+  duration_ms: 13.64716
+  type: 'test'
+  ...
+# Subtest: corrupt and orphaned journal evidence fails closed before validation
+ok 7 - corrupt and orphaned journal evidence fails closed before validation
+  ---
+  duration_ms: 0.490069
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38.702721

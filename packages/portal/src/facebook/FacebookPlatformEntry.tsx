@@ -7,11 +7,15 @@ import {FacebookPlatformBootstrap} from "./FacebookPlatformBootstrap";
 import {authenticateFacebook} from "./authenticate";
 import {requireFacebookInstant} from "./fbinstant";
 import {captureBrowserException} from "../observability/browserErrorReporter";
-import {bindFacebookEntryReferral} from "./referrals";
+import {bindFacebookEntryReferral, facebookLaunchFromEntryData} from "./referrals";
+import {createFacebookReferralSharing} from "./FacebookReferralSharing";
+import {createFacebookTournamentPresentation} from "./FacebookTournamentPresentation";
 import {FacebookContextCoordinator} from "./contexts";
-import {parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
+import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
+import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
 import {FacebookNotificationPromptCoordinator} from "./FacebookNotificationPromptCoordinator";
+import {createFacebookNotificationCapability} from "./FacebookNotificationCapability";
 import {LocalAccountDeletionGate} from "../play/LocalAccountDeletionGate";
 import {
   applyPlayerPreferences,
@@ -40,6 +44,10 @@ type StartupState =
       session: PlatformSession; /** Stores player data. */
       /** Stores player data. */
       playerData: PlayerData | null;
+      /** Target-owned native sharing, absent when Meta or the server disallows it. */
+      referralSharing?: import("../play/sharing/ReferralSharingCapability").ReferralSharingCapability;
+      /** Bounded launch hints; competitive authority remains on the server. */
+      launch: ReturnType<typeof facebookLaunchFromEntryData>;
     }
   | {
       /** Stores status. */
@@ -101,10 +109,13 @@ export function FacebookPlatformEntry() {
         const userId = await authenticateFacebook(sdk);
         /** Provides ads behavior. */
         let ads = undefined;
+        let attemptRecovery: import("../platform/types").AttemptRecoveryCapability | undefined;
         /** Provides tournaments behavior. */
         let tournaments = undefined;
         /** Provides notifications enabled behavior. */
         let notificationsEnabled = false;
+        /** Meta-owned subscription capability, composed only after authenticated server gates. */
+        let notifications = undefined;
         /** Provides referrals enabled behavior. */
         let referralsEnabled = false;
         /** Provides matchmaking enabled behavior. */
@@ -143,12 +154,14 @@ export function FacebookPlatformEntry() {
             recordFacebookContextRun,
             claimFacebookNotificationPermissionPrompt,
             acceptFacebookNotificationPermissionPrompt,
+            grantFacebookRewardedContinue,
           } = await import("./firebaseClient");
           /** Provides client configuration behavior. */
           const clientConfiguration = (await getFacebookClientConfiguration()).data;
           configurationLoaded = true;
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
+            notifications = createFacebookNotificationCapability(sdk);
             notificationLeaseApi = {
               claim: async () => (await claimFacebookNotificationPermissionPrompt()).data,
               accept: acceptFacebookNotificationPermissionPrompt,
@@ -174,13 +187,27 @@ export function FacebookPlatformEntry() {
               rewardedEnabled: clientConfiguration.rewardedAdsEnabled,
               adFree: clientConfiguration.removeInterstitialAds,
             });
+            attemptRecovery = createFacebookRewardedContinue({ads,
+              isActive: () => active && deletionGateRef.current.isOpen(),
+              claim: input => deletionGateRef.current.run(async () => (await grantFacebookRewardedContinue(input)).data),
+            });
           }
           if (ageCategory === "13_plus" && clientConfiguration.tournamentsEnabled) {
+            /** Native standings remain an optional presentation of the official server board. */
+            const presentation = createFacebookTournamentPresentation({sdk, enabled: true, ageCategory,
+              isActive: () => active && deletionGateRef.current.isOpen(), getLocale: getCurrentLocale,
+              list: async locale => (await listFacebookTournament({locale})).data,
+              reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
             tournaments = {
               list: async (locale: import("@qwordly/core/race").RaceLocale) =>
                 (await listFacebookTournament({locale})).data,
-              record: async (runId: string, locale: import("@qwordly/core/race").RaceLocale) =>
-                (await recordFacebookTournament({runId, locale})).data,
+              record: async (runId: string, locale: import("@qwordly/core/race").RaceLocale) => {
+                /** Official success is returned independently of provider score delivery. */
+                const result = (await recordFacebookTournament({runId, locale})).data;
+                if (presentation) void presentation.projectRecord(result);
+                return result;
+              },
+              share: presentation?.share,
             };
           }
         } catch (configurationError) {
@@ -196,6 +223,14 @@ export function FacebookPlatformEntry() {
             captureBrowserException(referralError, {component: "facebook_referral", operation: "bind_entry"});
           }
         }
+        /** Outbound referrals use Meta's native dialog and the canonical Facebook token issuer. */
+        const referralSharing = createFacebookReferralSharing({
+          sdk, enabled: referralsEnabled, ageCategory,
+          isActive: () => active && deletionGateRef.current.isOpen(),
+          reportFailure: (error) => captureBrowserException(error, {component: "facebook_referral", operation: "native_share"}),
+        });
+        /** Untrusted entry data can select a destination but cannot supply race results. */
+        const launch = facebookLaunchFromEntryData(sdk.getEntryPointData?.());
         /** Provides restored preferences behavior. */
         const restoredPreferences = await session.storage.readPreferences();
         if (!active) return;
@@ -251,11 +286,10 @@ export function FacebookPlatformEntry() {
               }
             : undefined;
         /** Provides base capabilities behavior. */
-        const baseCapabilities = {
-          ...session.capabilities,
-          ...(matchmakingEnabled ? {} : {nativeSocial: undefined}),
-          ...(configurationLoaded ? {} : {overlay: undefined}),
-        };
+        const baseCapabilities = gateFacebookSessionCapabilities(session.capabilities, {
+          matchmakingEnabled,
+          configurationLoaded,
+        });
         /** Provides synchronized session behavior. */
         const synchronizedSession = contextCoordinator
           ? {
@@ -264,6 +298,8 @@ export function FacebookPlatformEntry() {
                 ...baseCapabilities,
                 nativeSocial: contextCoordinator,
                 ...(ads ? {ads} : {}),
+                ...(attemptRecovery ? {attemptRecovery} : {}),
+                ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
                 ...(contextBoard ? {contextBoard} : {}),
               },
@@ -273,6 +309,8 @@ export function FacebookPlatformEntry() {
               capabilities: {
                 ...baseCapabilities,
                 ...(ads ? {ads} : {}),
+                ...(attemptRecovery ? {attemptRecovery} : {}),
+                ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
               },
             };
@@ -353,7 +391,7 @@ export function FacebookPlatformEntry() {
               }),
           }),
         );
-        if (active) setStartup({status: "ready", session: synchronizedSession, playerData});
+        if (active) setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, launch});
       } catch {
         if (active) setStartup({status: "error"});
       }
@@ -519,6 +557,8 @@ export function FacebookPlatformEntry() {
         platformCapabilities: startup.session.capabilities,
         platformPlayerId: startup.session.playerId,
         initialPlayerData: startup.playerData,
+        ...startup.launch,
+        referralSharing: startup.referralSharing,
         onPlayerDataChange: (update) => void writePlayerData(update),
         accountDeletionServiceGate: deletionGateRef.current,
         presenceEnabled,

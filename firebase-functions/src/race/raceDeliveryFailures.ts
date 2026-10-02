@@ -16,8 +16,12 @@ export function raceDeliveryRetryAt(eventId: string, attempts: number, nowMs: nu
 
 /** Permanent canonical corruption is quarantined; infrastructure failures remain pending for retry. */
 export async function withRaceDeliveryReceipt(db: Firestore, eventRef: FirebaseFirestore.DocumentReference,
-  nowMs: number, operation: () => Promise<boolean>): Promise<boolean> {
-  try { return await operation(); }
+  nowMs: number, operation: (observe: (receipt: FirebaseFirestore.DocumentData | undefined) => void) => Promise<boolean>): Promise<boolean> {
+  /** Failure ownership follows the last transactional receipt read, including transaction retries. */
+  let observed = false;
+  /** Legacy receipts retain their replay clock while new replays also carry an opaque identity. */
+  let replayedAt: unknown, replayId: unknown;
+  try { return await operation(receipt => {observed = true; replayedAt = receipt?.replayedAtMs; replayId = receipt?.replayId;}); }
   catch (error) {
     /** Provides permanent behavior. */
     const permanent = (error instanceof HttpsError && (error.code === "data-loss" ||
@@ -28,6 +32,10 @@ export async function withRaceDeliveryReceipt(db: Firestore, eventRef: FirebaseF
       /** Provides current behavior. */
       const current = await transaction.get(eventRef);
       if (!current.exists || current.data()?.delivered === true) return false;
+      /** An operator replay supersedes failures from an older invocation, including permanent corruption. */
+      const replayedAtMs = current.data()?.replayedAtMs;
+      if (observed ? current.data()?.replayId !== replayId || !Object.is(replayedAtMs, replayedAt) :
+        Number.isSafeInteger(replayedAtMs) && replayedAtMs > nowMs) return false;
       if (!permanent) {
         if (current.data()!.nextAttemptAtMs > nowMs) return false;
         /** Invalid historical counters cannot produce unbounded exponentiation. */

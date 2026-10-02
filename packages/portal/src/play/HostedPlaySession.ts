@@ -1,3 +1,4 @@
+import type {RaceLocale} from "@qwordly/core/race";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
@@ -35,6 +36,8 @@ export type HostedPlaySession = Readonly<{
   initialRaceInbox: boolean;
   /** Opens category selection for an incoming multiplayer invitation. */
   initialRaceLobby?: boolean;
+  /** Incoming tournament destination; availability remains target-owned. */
+  initialRaceTournamentLocale?: RaceLocale;
   /** Stores presence enabled. */
   presenceEnabled?: boolean;
   /** Stores on toggle presence. */

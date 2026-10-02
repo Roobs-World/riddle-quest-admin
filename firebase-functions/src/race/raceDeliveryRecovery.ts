@@ -1,3 +1,4 @@
+import {randomUUID} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {parseRunRecord, type Firestore} from "./raceSetupService";
@@ -23,6 +24,8 @@ export async function replayRaceDelivery(db: Firestore, collection: RaceDelivery
     throw new HttpsError("invalid-argument", "Invalid race delivery replay target.");
   /** Receipt reset and source validation share one transaction. */
   const eventRef = db.doc(`${collection}/${eventId}`);
+  /** Each actual replay release gets a clock-independent identity, stable across transaction retries. */
+  const replayId = randomUUID();
   await db.runTransaction(async transaction => {
     /** Missing or expired authority cannot be reconstructed from diagnostics. */
     const [event, source] = await Promise.all([transaction.get(eventRef), transaction.get(db.doc(`raceRuns/${eventId}`))]);
@@ -60,7 +63,7 @@ export async function replayRaceDelivery(db: Firestore, collection: RaceDelivery
     }
     if (options.dryRun) return;
     transaction.update(eventRef, {delivered: false, deliveryState: "pending", deliveryAttempts: 0,
-      nextAttemptAtMs: nowMs, replayedAtMs: nowMs, quarantined: admin.firestore.FieldValue.delete(),
+      nextAttemptAtMs: nowMs, replayedAtMs: nowMs, replayId, quarantined: admin.firestore.FieldValue.delete(),
       quarantinedAtMs: admin.firestore.FieldValue.delete(), failureCode: admin.firestore.FieldValue.delete(),
       lastFailureCode: admin.firestore.FieldValue.delete(), lastFailureAtMs: admin.firestore.FieldValue.delete()});
   });

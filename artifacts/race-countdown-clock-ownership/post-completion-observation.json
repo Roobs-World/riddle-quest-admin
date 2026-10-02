@@ -1,0 +1,9 @@
+{
+  "completionSourceDigest": "07e53bffbd49ed8670ee7535a450bf211c62074cc57bbbf71014c7e3e6388794",
+  "sourceChangedAfterCompletion": [
+    "packages/portal/src/play/__tests__/viewportFit.jest-playwright.test.ts",
+    "packages/portal/src/play/game/hooks/useViewportFit.ts"
+  ],
+  "dashboardRows": 7,
+  "artifactHashesVerified": 7
+}

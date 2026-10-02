@@ -1,0 +1,42 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-private-command-ownership.json
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: pnpm check:tsdoc
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 8 production declarations are undocumented.
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:58 rivals
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:58 userId
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:58 state
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:60 rivals
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:60 userId
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:60 state
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:91 rivals
+- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:93 rivals
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at ChildProcess.exithandler (node:child_process:417:12)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+  code: 1,
+  killed: false,
+  signal: null,
+  cmd: 'pnpm check:tsdoc',
+  stdout: '[ELIFECYCLE] Command failed with exit code 1.\n',
+  stderr: '$ node scripts/audit-tsdoc.mjs\n' +
+    'TSDoc audit failed: 8 production declarations are undocumented.\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:58 rivals\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:58 userId\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:58 state\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:60 rivals\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:60 userId\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:60 state\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:91 rivals\n' +
+    '- packages/portal/src/reddit/__tests__/RedditPollingPresence.test.ts:93 rivals\n'
+}
+
+Node.js v24.17.0
+[ELIFECYCLE] Command failed with exit code 1.

@@ -89,3 +89,25 @@ it("keeps observed experiment arms and allocation revisions distinct without exp
   }) => arm.arm)).toEqual(["control", "variant"]);
   expect(RaceMatchMeasurementSchema.safeParse({...row, matchExperiment: {...assignment, salt: "private"}}).success).toBe(false);
 });
+
+it.each([0, 5])("counts a %i-answer timeout as terminal censored evidence", correctCount => {
+  /** Timeout measurements are canonical non-finishes, distinct from still-running races. */
+  const timeout = {...row, acceptedAtMs: 200, startsAtMs: 250, terminalStatus: "timed_out", terminalAtMs: 400,
+    correctCount, finishedTen: false, actualPerformanceMs: null, predictionLogError: null, finishTimeDeltaMs: null};
+  /** Allowlisted receipts retain timeout status while removing account and answer data. */
+  const measurement = raceMatchMeasurement({...timeout, userId: "private-player", answer: "private-answer"});
+  expect(measurement).toEqual(timeout);
+  /** One full finish and one timeout produce a half-completed terminal cohort. */
+  const report = summarizeRaceMatches([measurement, {...row, acceptedAtMs: 200, startsAtMs: 250,
+    terminalStatus: "completed", terminalAtMs: 350, correctCount: 10, finishedTen: true,
+    actualPerformanceMs: 10000, predictionLogError: 0, finishTimeDeltaMs: 1000}], 1000);
+  expect(report.cohorts[0]).toMatchObject({accepted: 2, started: 2, terminal: 2, acceptedPendingTerminal: 0,
+    finishedTen: 1, completionMeasuredTerminal: 2, completionMeasurementMissing: 0, completionRateAmongTerminal: 0.5,
+    abandoned: 0, actualPerformanceMs: {count: 1}, absolutePredictionLogError: {count: 1}, absoluteFinishGapMs: {count: 1}});
+});
+
+it.each([{finishedTen: true, correctCount: 10}, {actualPerformanceMs: 12000}, {predictionLogError: 0}, {finishTimeDeltaMs: 0}])(
+  "keeps timeout finish measurements censored: %j", patch => {
+    expect(RaceMatchMeasurementSchema.safeParse({...row, acceptedAtMs: 200, startsAtMs: 250,
+      terminalStatus: "timed_out", terminalAtMs: 400, correctCount: 5, finishedTen: false, ...patch}).success).toBe(false);
+  });

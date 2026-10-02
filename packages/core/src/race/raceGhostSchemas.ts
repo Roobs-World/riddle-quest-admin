@@ -48,6 +48,10 @@ export const RaceGhostEventSchema = z
         input: event,
       });
     }
+    if (event.totalPenaltyMs < event.penaltyAddedMs) {
+      context.issues.push({code: "custom", message: "Cumulative penalty must include this event's charge",
+        path: ["totalPenaltyMs"], input: event});
+    }
   });
 /** One authoritative event in a multiplayer ghost timeline. */
 export type RaceGhostEvent = z.infer<typeof RaceGhostEventSchema>;

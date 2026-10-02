@@ -1,0 +1,11 @@
+{
+  "capturedAt": "2026-10-01T07:49:28.010062+00:00",
+  "reference": "artifacts/facebook-tournament-entry-review-2026-10-01/manifest.json",
+  "selectedClientFiles": 41,
+  "selectedClientMismatches": [],
+  "expectedArtifactEntries": 399,
+  "actualArtifactEntries": 399,
+  "missing": [],
+  "extra": [],
+  "changed": []
+}

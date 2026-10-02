@@ -5,9 +5,11 @@ import {
   selectMigratableGuestPreferences,
 } from "../RedditPlatformBootstrap";
 import {purchase} from "@devvit/payments/client";
+import {getWebViewMode} from "@devvit/client";
 import {raceMatchFailure} from "@qwordly/core/race";
 
 jest.mock("@devvit/payments/client", () => ({purchase: jest.fn()}));
+jest.mock("@devvit/client", () => ({getWebViewMode: jest.fn(() => "expanded")}));
 
 /** Provides reply behavior. */
 const reply = (payload: unknown, ok = true) => Promise.resolve({ok, json: async () => payload}) as Promise<Response>;
@@ -42,7 +44,7 @@ const enabledFeatures = {
 };
 
 beforeAll(() => {
-  Object.defineProperty(globalThis, "window", {value: {localStorage}, configurable: true});
+  Object.defineProperty(globalThis, "window", {value: {localStorage, addEventListener: jest.fn(), removeEventListener: jest.fn()}, configurable: true});
   Object.defineProperty(globalThis, "document", {
     value: {visibilityState: "visible", addEventListener: jest.fn(), removeEventListener: jest.fn()},
     configurable: true,
@@ -52,6 +54,9 @@ beforeAll(() => {
 beforeEach(() => {
   window.localStorage.clear();
   jest.restoreAllMocks();
+  jest.mocked(getWebViewMode).mockReturnValue("expanded");
+  jest.mocked(window.addEventListener).mockClear();
+  jest.mocked(document.removeEventListener).mockClear();
 });
 
 it.each([
@@ -95,6 +100,34 @@ it("classifies a legacy HTTP quota failure as same-intent backoff", async () => 
 
 afterEach(() => {
   jest.useRealTimers();
+});
+
+it("reads Devvit mode on focus and cleans up lifecycle listeners", async () => {
+  global.fetch = jest.fn(() => reply({ok: true, authenticated: false}));
+  /** A real adapter session owns its provider lifecycle listeners. */
+  const result = await new RedditPlatformBootstrap().initialize(() => undefined);
+  if (result.status !== "success") throw new Error("expected-reddit-session");
+  /** Host callbacks observe expanded-to-inline transitions while visibility stays visible. */
+  const pause = jest.fn();
+  /** Returning to expanded mode resumes only the active game. */
+  const resume = jest.fn();
+  /** Unsubscribes the exact listener registered with Devvit's browser lifecycle. */
+  const unsubscribePause = result.value.capabilities.lifecycle!.onPause(pause);
+  /** Resume listeners must also be removable on game teardown. */
+  const unsubscribeResume = result.value.capabilities.lifecycle!.onResume(resume);
+  /** Provider focus callbacks are driven independently of document visibility. */
+  const focusListeners = jest.mocked(window.addEventListener).mock.calls.filter(([event]) => event === "focus");
+  jest.mocked(getWebViewMode).mockReturnValue("inline");
+  for (const [, listener] of focusListeners) (listener as EventListener)(new Event("focus"));
+  expect(pause).toHaveBeenCalledTimes(1);
+  expect(resume).not.toHaveBeenCalled();
+  jest.mocked(getWebViewMode).mockReturnValue("expanded");
+  for (const [, listener] of focusListeners) (listener as EventListener)(new Event("focus"));
+  expect(pause).toHaveBeenCalledTimes(1);
+  expect(resume).toHaveBeenCalledTimes(1);
+  unsubscribePause();
+  unsubscribeResume();
+  for (const [, listener] of focusListeners) expect(window.removeEventListener).toHaveBeenCalledWith("focus", listener);
 });
 
 it.each([

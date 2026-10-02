@@ -6,7 +6,7 @@ import {createFacebookOverlayCapability} from "../FacebookOverlayCapability";
 const view = (): FacebookOverlayView => ({
   showAsync: jest.fn(async () => undefined),
   dismissAsync: jest.fn(async () => undefined),
-  destroyOverlayView: jest.fn(async () => undefined),
+  destroyAsync: jest.fn(async () => undefined),
 });
 
 /** Provides connected surface behavior. */
@@ -66,8 +66,8 @@ describe("Facebook overlay capability", () => {
     expect(harness.name.showAsync).toHaveBeenCalledTimes(1);
     await result.value();
     await result.value();
-    expect(harness.picture.destroyOverlayView).toHaveBeenCalledTimes(1);
-    expect(harness.name.destroyOverlayView).toHaveBeenCalledTimes(1);
+    expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
+    expect(harness.name.destroyAsync).toHaveBeenCalledTimes(1);
   });
 
   test("rejects another player and cleans a partially-created overlay after failure", async () => {
@@ -88,6 +88,20 @@ describe("Facebook overlay capability", () => {
       status: "retryable-failure",
       message: "overlay-name-failed",
     });
-    expect(harness.picture.destroyOverlayView).toHaveBeenCalledTimes(1);
+    expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
+  });
+
+  test("destroys both provider views even when dismissal fails", async () => {
+    /** Isolated provider views used to exercise dismissal failures. */
+    const harness = sdk();
+    harness.picture.dismissAsync = jest.fn(async () => {throw new Error("dismiss-failed");});
+    /** Overlay initialization result whose cleanup is exercised. */
+    const result = await createFacebookOverlayCapability(harness.value)!.renderPlayer({
+      playerId: "player-1", surface: connectedSurface(),
+    });
+    if (result.status !== "success") throw new Error("overlay failed");
+    await result.value();
+    expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
+    expect(harness.name.destroyAsync).toHaveBeenCalledTimes(1);
   });
 });

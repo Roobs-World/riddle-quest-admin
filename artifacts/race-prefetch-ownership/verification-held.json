@@ -1,0 +1,127 @@
+{
+  "taskId": "multiplayer:race-prefetch-ownership",
+  "status": "focused-verification-passed-shared-source-gates-pending",
+  "verifiedAt": "2026-10-01T18:40:41.230730+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "fileHashes": {
+    "packages/portal/src/play/useHostAuthSession.ts": "87b0d81f2fdaef277f83893b696ab4553a87b639e2cf85bf25bc5f9a0a035696",
+    "packages/portal/src/play/useHostRaceCoordination.ts": "11c002ab5ac4d070318f84cff1ba2a9ceb730f78910969f6997f81fa464e29e9",
+    "packages/portal/src/play/__tests__/useHostAuthSession.test.ts": "3e6630c1198f34890d5bab4cc121f230b58ee44fc49f8f7fac9ec80bb06845d2",
+    "packages/portal/scripts/verify-race-prefetch-browser.mjs": "a07175f72ee4150a9f8df9faa6113d5bf0e30eeb04106872823a312956871745",
+    "packages/portal/scripts/verify-race-profile-refresh-browser.mjs": "66a637d99e9c2465c67e5180d5ae876f6b232fdefc12693a0d5b110c38f65f26"
+  },
+  "baseline": {
+    "browserCasesFailed": 12,
+    "browserControlsPassed": 8,
+    "reproduced": [
+      "same-account profile notifications repeat access loading and clear cached categories",
+      "late access after account replacement starts a stale catalog request",
+      "late access after a batched switch away and back starts a stale catalog request"
+    ],
+    "log": "artifacts/race-prefetch-ownership/baseline-browser.log"
+  },
+  "prefetchBrowserCasesPassed": 48,
+  "retainedProfileBrowserCasesPassed": 20,
+  "viewports": [
+    1280,
+    390
+  ],
+  "reactModes": [
+    "normal",
+    "StrictMode"
+  ],
+  "fullClientTestsPassed": 1651,
+  "fullClientSuitesPassed": 192,
+  "fullClientTestsSkipped": 97,
+  "fullClientSuitesSkipped": 13,
+  "checksPassed": [
+    "portal-types",
+    "security",
+    "scalability",
+    "isolated-platform-builds",
+    "exact-target-dependency-evidence"
+  ],
+  "sharedChecksPending": {
+    "documented-declarations": "17 declarations in the other chat active subscription/E2E/game-surface files; see tsdoc.log.",
+    "file-size-limits": "Other chat authentication hosted E2E file has 1218 equivalent lines versus its 1200 limit; see file-sizes.log."
+  },
+  "fullVerificationRequiredChecks": 49,
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "df6b1c502496fab0aa1e682c1b4d9f79f7928f43078435a0422363b7e5d73633"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "b7fb149afc3af39cf77fde11929d557ff2af36620471e5d9aaee81d2f974e7e6"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "6b25ffc1a3abfe2813cdd0bf71474eac4ae2c83087940118401cb9d38fcaa108"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "ba0e6848146ea791e67b91111c6bbdf5431444af3efe638980c749c078656bea"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "8e78a4b7d1ebee3152819dc4b53acfad0c6f8599a06644e316dca8a624cfef31"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "3642ea903a2a801e209cc42c0bb7b99671decf2427f32ef754d038e6eaeebc26"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "fb106e880d54bd68904a9ed9a498a75ff9c66a3a7b97ef2868e52a9baaa0ffed"
+    }
+  ],
+  "currentBackendVerification": "artifacts/race-current-backend-verification/verification-held.json",
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdated": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformedThisBatch": false,
+  "remainingGate": "Let the user-owned hosted E2E chat finish before guarded full-source verification and automatic dashboard receipt.",
+  "cacheBaseline": {
+    "browserCasesFailed": 12,
+    "browserControlsPassed": 20,
+    "reproduced": [
+      "first committed replacement-account frame exposes populated previous catalog",
+      "first committed same-UID return frame exposes retired-visit catalog",
+      "first committed replacement-locale frame exposes prior-locale catalog"
+    ],
+    "log": "artifacts/race-prefetch-ownership/cache-baseline-browser.log"
+  },
+  "cacheOwnership": "Accepted catalog stores its prefetch selection identity; render returns categories only for the exact current selection and still-owned account visit, independently of passive cleanup timing.",
+  "currentLogs": [
+    "cache-browser.log",
+    "cache-profile-regression.log",
+    "cache-client-tests.log",
+    "cache-types.log",
+    "cache-builds.log",
+    "cache-target-dependencies.log",
+    "cache-security.log",
+    "cache-scalability.log",
+    "cache-tsdoc.log",
+    "cache-file-sizes.log"
+  ],
+  "logHashes": {
+    "cache-browser.log": "e1f4514581ae3ae3cc79c009dab5069ba69545873cd4be29980645505578fbc4",
+    "cache-profile-regression.log": "211eff0f5b9aefb237c137b6ee7189165bbfb623c97c6a304c9f8d79ed88d982",
+    "cache-client-tests.log": "d3aefbdc0f5c1a9ed7e8455a0d4e99ec2e0a9e0472ac049f0c2b11cde0bee9a2",
+    "cache-types.log": "ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6",
+    "cache-builds.log": "968c87489ccf77334083a2402dc9cb56a544914eaad4fc1cda153298abe6886d",
+    "cache-target-dependencies.log": "4ca111f9cf0418467d5f840dab845b9942704850b193c62d479ef165cf13e328",
+    "cache-security.log": "debbc549693748133b59e1b49ae31741346546bb7d106530a6a6cf3edbfd5cff",
+    "cache-scalability.log": "9440d71cb44b67c74a84d061c6abc7f3bae839d08c96e04e8b3cfc1329770ec3",
+    "cache-tsdoc.log": "fea59f5943463f9908a916017ce950d6c0f844aa09cb8f7ee7b0183362b79f45",
+    "cache-file-sizes.log": "658863aac01d4ea971703bd9a10c47504d1542d15eb29821cf0ae26ac90c28b9"
+  }
+}

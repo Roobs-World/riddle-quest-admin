@@ -6,6 +6,7 @@ import type {
   RecordFacebookContextRunRequest,
 } from "@qwordly/core/race";
 import {firebaseFunctions} from "../firebase";
+import {SpendCoinsResponseSchema} from "@qwordly/core/validation/requestSchemas";
 import {
   parseFacebookClientConfiguration,
   parseFacebookNotificationPromptAcceptance,
@@ -15,6 +16,16 @@ import {
   parseFacebookTournamentRecordResponse,
   parseFacebookTournamentResponse,
 } from "./facebookCallableResponses";
+
+/** Facebook-only extra-attempt boundary; it never accepts a grant amount. */
+const grantFacebookRewardedContinueRaw = httpsCallable<{
+  gameMode: "classic" | "challenge"; riddleId: string; sessionToken: string; requestId: string;
+}, unknown>(firebaseFunctions, "grantFacebookRewardedContinue");
+/** Rejects malformed responses before the game can resume. */
+export const grantFacebookRewardedContinue = async (input: Parameters<typeof grantFacebookRewardedContinueRaw>[0]) => {
+  const result = await grantFacebookRewardedContinueRaw(input);
+  return {...result, data: SpendCoinsResponseSchema.parse(result.data)};
+};
 
 /** Provides claim facebook notification permission prompt raw behavior. */
 const claimFacebookNotificationPermissionPromptRaw = httpsCallable<Record<string, never>, unknown>(

@@ -104,6 +104,8 @@
     "MATCH_EXPIRED": "Cette recherche d’adversaire a expiré. Réessayez.",
     "MATCH_CONSUMED": "Cette recherche a déjà été utilisée. Trouvez un autre adversaire.",
     "MATCH_UNAVAILABLE": "La recherche d’adversaire est indisponible pour ce compte.",
-    "MATCH_EMPTY": "Aucun adversaire adapté n’est disponible pour le moment. Réessayez plus tard."
+    "MATCH_EMPTY": "Aucun adversaire adapté n’est disponible pour le moment. Réessayez plus tard.",
+    "CHALLENGE_FRIEND": "Défier un ami",
+    "SHARE_TOURNAMENT": "Partager le tournoi"
   }
 }

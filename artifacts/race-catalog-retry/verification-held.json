@@ -1,0 +1,34 @@
+{
+  "status": "scoped-verification-passed-global-receipt-held",
+  "taskId": "multiplayer:race-catalog-retry",
+  "baseline": "Three failed recovery scenarios before production changes.",
+  "scopedEvidence": {
+    "clientTests": 1814,
+    "clientSuites": 220,
+    "skippedTests": 103,
+    "focusedTests": 21,
+    "newBrowserCases": 6,
+    "retainedColdCatalogCases": 10,
+    "retainedPolicyCases": 14,
+    "retainedResolverCases": 8,
+    "directTargetBundles": 7,
+    "artifactAudits": 6,
+    "gamesnacksPackage": "passed",
+    "dependencyEvidenceTargets": 7,
+    "fileSizes": "passed",
+    "security": "passed",
+    "scalability": "passed"
+  },
+  "globalLimitations": [
+    "Normal target builds and types fail on concurrent core dailyCalendar.ts zh/SupportedLocale mismatch.",
+    "Global TSDoc reports 23 declarations from concurrent Daily/backend additions.",
+    "Direct bundling is supplemental evidence, not a normal-build or all-source dashboard receipt."
+  ],
+  "rootSourceHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "042584e2429eaebc412bde5071d3030ca103360cc9bcd7ba009c8a31888506f9",
+    "packages/portal/src/play/race/logic/raceDiscoveryRecovery.ts": "248e540c7bbc19e6d3fb0b595d50cb331cb7206a8a0915588b99f690bafe7183",
+    "packages/portal/src/play/race/RaceTo10Game.tsx": "ab51712e6a271fe21d55dc0741245353e11f756437324b3a6e8dc4c1c4ecc680",
+    "packages/portal/src/play/race/__tests__/raceCatalogRetry.test.ts": "0cc4e7218d8370e9ab2d4dba99004c99c44077b79ec308be6cb4dc7cafd0ac69",
+    "packages/portal/scripts/verify-race-catalog-retry-browser.mjs": "ec7b3f880e6195dbb6f75ca4583be754ce84c130db4c6441ddcd56fa3baa145b"
+  }
+}

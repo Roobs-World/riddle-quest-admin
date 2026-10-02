@@ -1,0 +1,95 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionSearchRetryJournal
+FAIL src/play/race/__tests__/RaceSessionSearchRetryJournal.test.ts
+  ● Race Session search retry journal ownership › does not reclaim shared recovery during a replacement retry
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  2
+    + Received  + 11
+
+    - ObjectContaining {
+    -   "id": "newer-tab-journal",
+    + Object {
+    +   "expiresAtMs": 86401000,
+    +   "id": "raceRecovery-7b1a8002-f910-4004-a3d2-821f428dbb88",
+    +   "intent": Object {
+    +     "challengeId": "challenge-1",
+    +     "kind": "challenge",
+    +   },
+    +   "locale": "en",
+    +   "ownerId": "owner-1",
+    +   "savedAtMs": 1000,
+    +   "version": 1,
+      }
+
+      21 |     saved = mode === "removed" ? null : {...saved!, id: "newer-tab-journal", intent: {kind: "challenge", challengeId: "newer-challenge"}};
+      22 |     denied = mode === "denied"; h.advance(1000); h.session.retry(); await settleMatch(h.session);
+    > 23 |     expect(saved).toEqual(mode === "removed" ? null : expect.objectContaining({id: "newer-tab-journal"}));
+         |                   ^
+      24 |     expect(requests).toHaveLength(2); expect(requests[1].requestId).toBe(requests[0].requestId);
+      25 |     expect(h.session.getSnapshot()).toMatchObject({stage: "challenge", matchSearchStatus: "matched", findingOpponent: false});
+      26 |   });
+
+      at src/play/race/__tests__/RaceSessionSearchRetryJournal.test.ts:23:19
+
+  ● Race Session search retry journal ownership › does not reclaim shared recovery during a denied retry
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  2
+    + Received  + 14
+
+    - ObjectContaining {
+    -   "id": "newer-tab-journal",
+    + Object {
+    +   "expiresAtMs": 86401000,
+    +   "id": "raceRecovery-9c72d156-60e4-41c2-b9f7-f70392081790",
+    +   "intent": Object {
+    +     "kind": "search",
+    +     "request": Object {
+    +       "locale": "en",
+    +       "requestId": "raceMatch-3",
+    +     },
+    +   },
+    +   "locale": "en",
+    +   "ownerId": "owner-1",
+    +   "savedAtMs": 1000,
+    +   "version": 1,
+      }
+
+      21 |     saved = mode === "removed" ? null : {...saved!, id: "newer-tab-journal", intent: {kind: "challenge", challengeId: "newer-challenge"}};
+      22 |     denied = mode === "denied"; h.advance(1000); h.session.retry(); await settleMatch(h.session);
+    > 23 |     expect(saved).toEqual(mode === "removed" ? null : expect.objectContaining({id: "newer-tab-journal"}));
+         |                   ^
+      24 |     expect(requests).toHaveLength(2); expect(requests[1].requestId).toBe(requests[0].requestId);
+      25 |     expect(h.session.getSnapshot()).toMatchObject({stage: "challenge", matchSearchStatus: "matched", findingOpponent: false});
+      26 |   });
+
+      at src/play/race/__tests__/RaceSessionSearchRetryJournal.test.ts:23:19
+
+  ● Race Session search retry journal ownership › does not reclaim shared recovery during a removed retry
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: null
+    Received: {"expiresAtMs": 86401000, "id": "raceRecovery-48bc0f32-54a2-4626-a682-308a7e71dc66", "intent": {"challengeId": "challenge-1", "kind": "challenge"}, "locale": "en", "ownerId": "owner-1", "savedAtMs": 1000, "version": 1}
+
+      21 |     saved = mode === "removed" ? null : {...saved!, id: "newer-tab-journal", intent: {kind: "challenge", challengeId: "newer-challenge"}};
+      22 |     denied = mode === "denied"; h.advance(1000); h.session.retry(); await settleMatch(h.session);
+    > 23 |     expect(saved).toEqual(mode === "removed" ? null : expect.objectContaining({id: "newer-tab-journal"}));
+         |                   ^
+      24 |     expect(requests).toHaveLength(2); expect(requests[1].requestId).toBe(requests[0].requestId);
+      25 |     expect(h.session.getSnapshot()).toMatchObject({stage: "challenge", matchSearchStatus: "matched", findingOpponent: false});
+      26 |   });
+
+      at src/play/race/__tests__/RaceSessionSearchRetryJournal.test.ts:23:19
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 3 total
+Snapshots:   0 total
+Time:        0.235 s
+Ran all test suites matching RaceSessionSearchRetryJournal.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionSearchRetryJournal`
+Exit status 1

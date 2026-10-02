@@ -13,7 +13,7 @@ const Timestamp = z.custom<FirebaseFirestore.Timestamp>(value => value instanceo
 const Receipt = z.looseObject({runId: Id, userId: Id, createdAtMs: Ms, expiresAt: Timestamp,
   delivered: z.boolean(), deliveryState: z.enum(["pending", "delivered", "suppressed", "quarantined"]).optional(),
   deliveryAttempts: z.number().int().min(0).max(20).optional(), nextAttemptAtMs: Ms.optional(),
-  deliveredAtMs: Ms.optional(), lastFailureAtMs: Ms.optional(), quarantinedAtMs: Ms.optional(), replayedAtMs: Ms.optional(),
+  deliveredAtMs: Ms.optional(), lastFailureAtMs: Ms.optional(), quarantinedAtMs: Ms.optional(), replayedAtMs: Ms.optional(), replayId: Id.optional(),
   quarantined: z.boolean().optional(), suppressed: z.boolean().optional(),
 }).superRefine((receipt, context) => {
   if (receipt.deliveryState !== undefined && receipt.delivered !== (receipt.deliveryState !== "pending") ||
@@ -23,6 +23,8 @@ const Receipt = z.looseObject({runId: Id, userId: Id, createdAtMs: Ms, expiresAt
 /** Creator-facing projection metadata is validated before any identity/reward writes. */
 const Settlement = Receipt.safeExtend({creatorId: Id, challengeId: Id, categoryId: RaceCategoryIdSchema,
   result: z.enum(["win", "loss", "tie"]), adjustedDeltaMs: z.number().int()});
+/** A Facebook reward retry can retain an already-committed owner projection. */
+const Performance = Receipt.safeExtend({facebookPerformanceRecorded: z.literal(true).optional()});
 
 /** Rejects corrupt creator receipts with generic answer-free diagnostics. */
 export function parseRaceSettlementEvent(value: unknown, eventId: string) {
@@ -35,7 +37,7 @@ export function parseRaceSettlementEvent(value: unknown, eventId: string) {
 /** Rejects corrupt owner-performance receipts before updating rating evidence. */
 export function parseRacePerformanceEvent(value: unknown, eventId: string) {
   /** Popular recording replays cannot attribute evidence to another owner. */
-  const parsed = Receipt.safeParse(value);
+  const parsed = Performance.safeParse(value);
   if (!parsed.success || parsed.data.runId !== eventId) throw new HttpsError("data-loss", "Stored race performance receipt is invalid.");
   return parsed.data;
 }

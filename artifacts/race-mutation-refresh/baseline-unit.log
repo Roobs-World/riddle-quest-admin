@@ -1,0 +1,65 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionMutationRefresh.test.ts
+FAIL src/play/race/__tests__/RaceSessionMutationRefresh.test.ts
+  ● Race mutation recovery barrier › requires a canonical read before another mutation after lost submit delivery
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 4
+    Received array:  [{"payload": {"locale": "en"}, "requestId": "raceCategories-1", "type": "game:listRaceCategories"}, {"payload": {"categoryId": "mixed", "includeEvaluation": true, "locale": "en", "prepare": true, "requestId": "raceStart-3"}, "requestId": "raceStart-3", "type": "game:startRace"}, {"payload": {"guess": "zzzzz", "includeEvaluation": true, "requestId": "raceGuess-5", "riddleId": "fake-race-1", "runId": "fake-run-1"}, "requestId": "raceGuess-5", "type": "game:submitRaceGuess"}, {"payload": {"guess": "zzzzz", "includeEvaluation": true, "requestId": "raceGuess-8", "riddleId": "fake-race-1", "runId": "fake-run-1"}, "requestId": "raceGuess-8", "type": "game:submitRaceGuess"}]
+
+      10 |     const sent = h.commands.length;
+      11 |     h.session.submit(); h.session.hint(); h.session.skip();
+    > 12 |     expect(h.commands).toHaveLength(sent);
+         |                        ^
+      13 |     expect(h.session.getSnapshot()).toMatchObject({requiresRunRefresh: true, pending: null});
+      14 |     h.session.retry(); expect(h.last().type).toBe("game:resumeRace");
+      15 |     h.reject("raceResume", "offline");
+
+      at src/play/race/__tests__/RaceSessionMutationRefresh.test.ts:12:24
+
+  ● Race mutation recovery barrier › requires a canonical read before another mutation after lost hint delivery
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 4
+    Received array:  [{"payload": {"locale": "en"}, "requestId": "raceCategories-1", "type": "game:listRaceCategories"}, {"payload": {"categoryId": "mixed", "includeEvaluation": true, "locale": "en", "prepare": true, "requestId": "raceStart-3"}, "requestId": "raceStart-3", "type": "game:startRace"}, {"payload": {"includeEvaluation": true, "requestId": "raceHint-5", "riddleId": "fake-race-1", "runId": "fake-run-1"}, "requestId": "raceHint-5", "type": "game:requestRaceHint"}, {"payload": {"guess": "zzzzz", "includeEvaluation": true, "requestId": "raceGuess-7", "riddleId": "fake-race-1", "runId": "fake-run-1"}, "requestId": "raceGuess-7", "type": "game:submitRaceGuess"}]
+
+      10 |     const sent = h.commands.length;
+      11 |     h.session.submit(); h.session.hint(); h.session.skip();
+    > 12 |     expect(h.commands).toHaveLength(sent);
+         |                        ^
+      13 |     expect(h.session.getSnapshot()).toMatchObject({requiresRunRefresh: true, pending: null});
+      14 |     h.session.retry(); expect(h.last().type).toBe("game:resumeRace");
+      15 |     h.reject("raceResume", "offline");
+
+      at src/play/race/__tests__/RaceSessionMutationRefresh.test.ts:12:24
+
+  ● Race mutation recovery barrier › requires a canonical read before another mutation after lost skip delivery
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 4
+    Received array:  [{"payload": {"locale": "en"}, "requestId": "raceCategories-1", "type": "game:listRaceCategories"}, {"payload": {"categoryId": "mixed", "includeEvaluation": true, "locale": "en", "prepare": true, "requestId": "raceStart-3"}, "requestId": "raceStart-3", "type": "game:startRace"}, {"payload": {"includeEvaluation": true, "requestId": "raceSkip-5", "riddleId": "fake-race-1", "runId": "fake-run-1"}, "requestId": "raceSkip-5", "type": "game:skipRaceRiddle"}, {"payload": {"guess": "zzzzz", "includeEvaluation": true, "requestId": "raceGuess-7", "riddleId": "fake-race-1", "runId": "fake-run-1"}, "requestId": "raceGuess-7", "type": "game:submitRaceGuess"}]
+
+      10 |     const sent = h.commands.length;
+      11 |     h.session.submit(); h.session.hint(); h.session.skip();
+    > 12 |     expect(h.commands).toHaveLength(sent);
+         |                        ^
+      13 |     expect(h.session.getSnapshot()).toMatchObject({requiresRunRefresh: true, pending: null});
+      14 |     h.session.retry(); expect(h.last().type).toBe("game:resumeRace");
+      15 |     h.reject("raceResume", "offline");
+
+      at src/play/race/__tests__/RaceSessionMutationRefresh.test.ts:12:24
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 1 passed, 4 total
+Snapshots:   0 total
+Time:        0.242 s
+Ran all test suites matching RaceSessionMutationRefresh.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionMutationRefresh.test.ts`
+Exit status 1

@@ -752,10 +752,8 @@
   .game-content .riddle-card h1 {
     font-size: 20px;
   }
-  .game-content .guess-board .cell {
-    max-height: 38px;
-    aspect-ratio: auto;
-    height: 38px;
-    border-radius: 12px;
+  /* Limit both cell dimensions together, preserving circles and touch keys. */
+  .game-content .guess-board {
+    max-width: min(100%, calc(var(--answer-length) * 42px - 4px));
   }
 }

@@ -9,8 +9,12 @@ const attempt = <T>(operation: () => T, fallback: T): T => {
 
 /** Keeps denied or broken selection storage from interrupting an owned journey. */
 export const isolateRaceRecovery = (adapter: RaceRecoveryPersistence): RaceRecoveryPersistence => ({
-  /** Unavailable selection hints behave like an empty optional store. */
-  read: (...args) => attempt(() => parseRaceRecovery(adapter.read(...args), ...args), null),
+  /** Preserve failed observations while allowing independent in-memory and resume recovery. */
+  read: (...args) => attempt(() => {
+    /** Unavailable journals cannot authorize completion replacement writes. */
+    const saved = adapter.read(...args);
+    return saved === undefined ? undefined : parseRaceRecovery(saved, ...args);
+  }, undefined),
   /** Failed optional writes leave the current in-memory mutation receipt intact. */
   save: (...args) => {attempt(() => adapter.save(...args), undefined);},
   /** Cleanup failure cannot undo a confirmed authority transition or prevent close. */
@@ -19,8 +23,12 @@ export const isolateRaceRecovery = (adapter: RaceRecoveryPersistence): RaceRecov
 
 /** Isolates account-bound resume hints while retaining adapter method receivers. */
 export const isolateRaceResume = (adapter: NonNullable<RaceSessionOptions["persistence"]>): NonNullable<RaceSessionOptions["persistence"]> => ({
-  /** Failed reads cannot hide an independently valid selection-recovery receipt. */
-  read: (...args) => attempt(() => parseActiveRaceRunId(adapter.read(...args)), null),
+  /** Failed reads remain distinguishable from empty hints without blocking independent recovery. */
+  read: (...args) => attempt(() => {
+    /** Preserve an unavailable observation through the isolated adapter. */
+    const saved = adapter.read(...args);
+    return saved === undefined ? undefined : parseActiveRaceRunId(saved);
+  }, undefined),
   /** Accepted gameplay continues even if optional reload persistence is unavailable. */
   save: (...args) => {attempt(() => adapter.save(...args), undefined);},
   /** A failed hint removal never rolls back server-confirmed abandonment. */

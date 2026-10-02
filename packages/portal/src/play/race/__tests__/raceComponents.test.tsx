@@ -90,6 +90,13 @@ describe("race presentation components", () => {
       expect(selected).toHaveLength(4);
     } finally {ref.mockRestore();}
   });
+  it("retains a keyboard entry point when the selected tournament capability disappears", () => {
+    /** A provider update can remove the tab before its parent navigation effect runs. */
+    const html = renderToString(<RaceHubTabs active="tournaments" onPlay={noop} onActivity={noop} />);
+    expect(html.match(/tabindex="0"/g)).toHaveLength(1);
+    expect(html).toMatch(/aria-selected="true"[^>]*>Play</);
+    expect(html).not.toContain("Tournaments");
+  });
   it("renders capability-appropriate accessible hub tabs", () => {
     /** Provides jest html behavior. */
     const jestHtml = renderToString(<RaceHubTabs active="play" onPlay={noop} onActivity={noop} />);
@@ -164,9 +171,25 @@ describe("race presentation components", () => {
     expect(html).toContain("Tournaments");
     expect(html).toContain('data-rewards-enabled="false"');
     expect(html).toContain('aria-current="true"');
-    expect(html).toContain("<strong>#");
+    expect(html.replaceAll("<!-- -->", "")).toContain("#1");
+    expect(html).toContain('dir="ltr"');
     expect(html).toContain("0:45.0");
     expect(html).not.toContain("facebook_");
+    expect(html).not.toContain("Share tournament");
+  });
+
+  it("exposes the native tournament share control only for a current-player score and target capability", () => {
+    /** An identity-free score is required before offering native publication. */
+    const currentPlayer = {rank: 1, adjustedTimeMs: 45000, isCurrentPlayer: true};
+    /** A target without share support continues to render the same standings. */
+    const tournament = {tournamentId: "facebook-race10-en-2026-08-19", locale: "en" as const, startsAtMs: 1, endsAtMs: 2,
+      sortOrder: "LOWER_IS_BETTER" as const, rewardsEnabled: false as const, standings: [currentPlayer], currentPlayer};
+    /** Native-dialog occupancy is visible as a disabled, accessible button. */
+    const html = renderToString(<RaceTournamentPanel loading={false} tournament={tournament} sharing={true} onShare={noop} />);
+    expect(html).toContain("Share tournament");
+    expect(html).toContain('disabled=""');
+    expect(renderToString(<RaceTournamentPanel loading={false} tournament={{...tournament, standings: [], currentPlayer: undefined}} onShare={noop} />))
+      .not.toContain("Share tournament");
   });
 
   it("renders an identity-free context board inside Activity", () => {
@@ -299,6 +322,34 @@ describe("race presentation components", () => {
     expect(
       renderToString(<RaceChallengePanel challenge={{...challenge, status: "expired"}} onAccept={noop} />),
     ).toContain('role="alert"');
+  });
+
+  it("does not offer acceptance while recovering an existing recipient attempt", () => {
+    /** Canonical preview used to render recipient or creator challenge controls. */
+    const challenge: RaceChallengePreview = {challengeId: "played", locale: "en", creator: {displayName: "Nova"},
+      categoryId: "history", targetCorrect: 10, adjustedTimeToBeatMs: 45000, rulesVersion: "race10_v1",
+      expiresAtMs: 1800000100000, status: "active"};
+    /** Negotiated entry facts determine the card's acceptance and results actions. */
+    const entry = {status: "ready" as const, challenge, viewerRole: "recipient" as const, existingRunId: "completed-run", serverNowMs: 1800000000000};
+    /** Rendered challenge markup verifies the actual translated control selection. */
+    const html = renderToString(<RaceChallengePanel challenge={challenge} entryStatus={entry} onAccept={noop} />);
+    expect(html).not.toContain("Accept challenge");
+    expect(html).toContain("Loading challenge");
+  });
+
+  it("does not offer a creator their own public challenge", () => {
+    /** Canonical preview used to render recipient or creator challenge controls. */
+    const challenge: RaceChallengePreview = {challengeId: "own-public", locale: "en", creator: {displayName: "Nova"},
+      categoryId: "history", targetCorrect: 10, adjustedTimeToBeatMs: 45000, rulesVersion: "race10_v1",
+      expiresAtMs: 1800000100000, status: "active"};
+    /** Negotiated entry facts determine the card's acceptance and results actions. */
+    const entry = {status: "ready" as const, challenge, viewerRole: "creator" as const, serverNowMs: 1800000000000};
+    /** Rendered challenge markup verifies the actual translated control selection. */
+    const html = renderToString(<RaceChallengePanel challenge={challenge} entryStatus={entry} onAccept={noop} />);
+    expect(html).not.toContain("Accept challenge");
+    expect(html).not.toContain("challenged you");
+    expect(html).toContain("Run recorded!");
+    expect(html).not.toContain("Cancel invitation");
   });
 
   it("binds selected category ids to lobby and result actions", async () => {
@@ -619,6 +670,11 @@ describe("race presentation components", () => {
       "race-category-grid",
     );
     expect(renderToString(<RaceTo10Game {...commonProps} openInbox />)).toContain("race-inbox");
+    expect(renderToString(<RaceTo10Game {...commonProps} tournamentLocale="en" />)).not.toContain("race-tournaments");
+    expect(renderToString(<RaceTo10Game {...commonProps} tournamentLocale="en" tournaments={{
+      list: async () => {throw new Error("SSR must not read provider authority");},
+      record: async () => {throw new Error("SSR must not mutate provider authority");},
+    }} />)).toContain("race-tournaments");
     expect(renderToString(<RaceTo10Game {...commonProps} challengeId="challenge-1" />)).toContain(
       "race-challenge-card",
     );

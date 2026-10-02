@@ -1,0 +1,13 @@
+{
+  "followUps": [
+    {
+      "topic": "Provider response property access during schema parsing",
+      "question": "Can a provider-supplied getter replace the journey during response parsing before an offer or challenge hint is written?",
+      "status": "needs reproduction",
+      "files": [
+        "packages/portal/src/play/race/RaceSession.ts",
+        "packages/portal/src/play/race/logic/raceMatchDiscovery.ts"
+      ]
+    }
+  ]
+}

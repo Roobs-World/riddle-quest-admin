@@ -1,0 +1,89 @@
+{
+  "taskId": "multiplayer:race-matchmaking-removal",
+  "status": "focused-verification-passed-shared-source-gates-pending",
+  "verifiedAt": "2026-10-01T19:43:02.420232+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "baselineUnitTestsFailed": 1,
+  "baselineUnitControlsPassed": 6,
+  "browserCasesPassed": 4,
+  "retainedSearchJournalBrowserCasesPassed": 2,
+  "fullClientTestsPassed": 1659,
+  "fullClientSuitesPassed": 193,
+  "fullClientTestsSkipped": 99,
+  "fullClientSuitesSkipped": 13,
+  "fileHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "c913f2b1896c5907ef81fb7f75b37fecfae76dd28e4805a470501f1563c327e8",
+    "packages/portal/src/play/race/__tests__/raceFallback.test.ts": "13b07a1b6e5a24b366c0f51df04cb0a21bab9fac3612b5a68a0a750e16de3ab8",
+    "packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs": "c913531ea9eb8f92337db783a8eb32ddabe5c8677a7dc9cabd55a54e5af55d4c"
+  },
+  "logHashes": {
+    "retained-search.log": "586c2790e7ad8fa1cf811218d2a6b5ab388f4b2cecedce790a96eb679f5a3c83",
+    "browser.log": "85b6446f1bf1179e2bf166dc43de80ce5d24eeb90500e00495a39d5178da827d",
+    "baseline-unit.log": "861ce57266493894248cebbd406e7062dadce115f7bee90f52316a8464467cd0",
+    "scalability.log": "9440d71cb44b67c74a84d061c6abc7f3bae839d08c96e04e8b3cfc1329770ec3",
+    "tsdoc.log": "cc3033990319658d0db5175eef3ab24caca36fbacb279ed98ebe279c17607d99",
+    "types.log": "ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6",
+    "dependencies.log": "4ca111f9cf0418467d5f840dab845b9942704850b193c62d479ef165cf13e328",
+    "security.log": "68cfb06768aa7fc05c526e253f2d8f462fc0e640c079540c38cb85fae7771739",
+    "client-tests.log": "cfabb5f93a3616c6d135e987c0da0e7cdd8aa8958f4b016e6d96ee04c16a7da0",
+    "sizes.log": "4ad7db4c91432651371b14d313a314d2d9f16c59624bb2353788ccacbbc82cc4",
+    "builds.log": "99df3d5a1fc1e59657e83a1934245d8f7beb3ad8c50cb01fd94037faa2ef2d7e"
+  },
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "595f50c028de65dba0695ad12a85303ed9275e27225879fc291fd427cbd6c7b8"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "91892431b4490d8e9c6a64a97bdf798c1e58c821817dd8cd9a48344500851671"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "b5f40ae3e7cf60bca2301320685bfb26f96fc84af285187146c930e04d461a13"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "ba0e6848146ea791e67b91111c6bbdf5431444af3efe638980c749c078656bea"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "8e78a4b7d1ebee3152819dc4b53acfad0c6f8599a06644e316dca8a624cfef31"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "3642ea903a2a801e209cc42c0bb7b99671decf2427f32ef754d038e6eaeebc26"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "fb106e880d54bd68904a9ed9a498a75ff9c66a3a7b97ef2868e52a9baaa0ffed"
+    }
+  ],
+  "checksPassed": [
+    "complete-client-suite",
+    "portal-types",
+    "security",
+    "scalability",
+    "seven-isolated-platform-builds",
+    "exact-target-dependency-evidence",
+    "matchmaking-removal-browser",
+    "retained-search-journal-browser"
+  ],
+  "sharedChecksPending": {
+    "documented-declarations": "32 declarations in concurrently edited subscription, solo lifecycle and hosted E2E files; none in this focused change.",
+    "file-size-limits": "Concurrent authentication.jest-playwright.test.ts is 1243 equivalent lines, limit1200."
+  },
+  "fullVerificationRequiredChecks": 57,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdated": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformedThisBatch": false,
+  "remainingGate": "Let user-owned hosted E2E chat finish before guarded full-source completion verification and automatic dashboard receipt."
+}

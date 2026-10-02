@@ -1,0 +1,26 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (39.035 s)
+  ● Jest authentication integration › consumes an unavailable challenge on Close so Multiplayer reopens the normal lobby
+
+    locator.click: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Multiplayer', exact: true })[22m
+
+      1194 |     await enterRegisteredGame(page, /I speak without a mouth/i);
+      1195 |     await page.locator(".game-mode-label").getByText(/daily/i).waitFor();
+    > 1196 |     await page.getByRole("button", {name: "Multiplayer", exact: true}).click();
+           |                                                                        ^
+      1197 |     await page.getByRole("button", {name: /^History /}).waitFor();
+      1198 |     expect(await page.getByText("The race could not continue.", {exact: true}).count()).toBe(0);
+      1199 |     expect(pageErrors).toEqual([]);
+
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:1196:72)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 64 skipped, 4 passed, 69 total
+Snapshots:   0 total
+Time:        39.145 s
+Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "reopens a completed recipient|opens a public creator|consumes an unavailable challenge|refreshes subscription changes|starts a guest through signed".
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts '--testNamePattern=reopens a completed recipient|opens a public creator|consumes an unavailable challenge|refreshes subscription changes|starts a guest through signed'

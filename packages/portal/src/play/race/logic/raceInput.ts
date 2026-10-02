@@ -9,9 +9,13 @@ export type RaceInputState = {
   activeSlotIndex: number;
 };
 
+/** Valid answer positions are integer indexes within the fixed prompt shape. */
+const isRaceSlotInBounds = (riddle: RaceRiddlePrompt, index: number): boolean =>
+  Number.isInteger(index) && index >= 0 && index < riddle.answerLength;
+
 /** Returns whether a slot can be edited without overriding a server hint. */
 export const isRaceSlotEditable = (riddle: RaceRiddlePrompt, index: number): boolean =>
-  !riddle.revealedLetters.some((revealedLetter) => revealedLetter.index === index);
+  isRaceSlotInBounds(riddle, index) && !riddle.revealedLetters.some((revealedLetter) => revealedLetter.index === index);
 
 /** Inserts a letter and advances to the next empty, editable answer slot. */
 export const insertRaceLetter = (riddle: RaceRiddlePrompt, state: RaceInputState, letter: string): RaceInputState => {
@@ -55,6 +59,7 @@ export const insertRaceText = (riddle: RaceRiddlePrompt, state: RaceInputState, 
 
 /** Deletes the active letter or the nearest previous editable letter. */
 export const deleteRaceLetter = (riddle: RaceRiddlePrompt, state: RaceInputState): RaceInputState => {
+  if (!isRaceSlotInBounds(riddle, state.activeSlotIndex)) return state;
   /** Server-revealed positions excluded from deletion. */
   const revealedIndexes = new Set(riddle.revealedLetters.map(({index}) => index));
   /** Updated answer attempt from which one letter will be removed. */
@@ -73,4 +78,13 @@ export const deleteRaceLetter = (riddle: RaceRiddlePrompt, state: RaceInputState
 
   letters[targetIndex] = "";
   return {letters, activeSlotIndex: targetIndex};
+};
+
+/** Applies only bounded answer edits, preserving state identity for ignored input. */
+export const editRaceInput = (riddle: RaceRiddlePrompt, draft: RaceInputState,
+  kind: "letter" | "text" | "backspace" | "slot", value: string | number): RaceInputState => {
+  if (kind === "slot") return typeof value === "number" && isRaceSlotEditable(riddle, value)
+    ? {...draft, activeSlotIndex: value} : draft;
+  return kind === "backspace" ? deleteRaceLetter(riddle, draft) : kind === "text"
+    ? insertRaceText(riddle, draft, String(value)) : insertRaceLetter(riddle, draft, String(value));
 };

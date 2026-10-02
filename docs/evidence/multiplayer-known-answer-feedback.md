@@ -1,0 +1,13 @@
+# Privately confirmed answer feedback
+
+Guess confirmation used the public response or projection checkpoint to find its answer. Compatible responses can omit optional evaluation and preload data, and retained public snapshots can be edited before submission. Both paths could remove or replace previously confirmed scoring evidence.
+
+`RaceSessionAuthority` now supplies its private confirmed run to `RacePlay.confirmGuess`. Run ownership, submitted-question identity, locale and exact positional scoring use that confirmed content. Pending checkpoints still retain the submitted letters, while displayed successor drafts retain their existing reconciliation behavior. If no answer was ever confirmed, legacy feedback still receives shape, echo and correctness validation without inventing exact color evidence.
+
+Before the fix, five negative regressions failed and two positive controls passed (`artifacts/race-known-answer-feedback/before.log`). All seven focused cases pass afterward. Tests cover known answers from current evaluation, preload or both, optional omissions, edited public evaluation with genuine and changed feedback, and genuinely answer-free legacy compatibility.
+
+The injected browser harness covers five answer sources/delivery conditions and two feedback variants at 1280px and 390px: 20 journeys. It types and submits through the rendered game. Rejected confirmations recover through the actual Retry button with one guess mutation; genuine confirmations remain accepted. The mobile recovery screenshot was visually inspected. Logs and screenshots are under `artifacts/race-known-answer-feedback/`.
+
+The full client multiplayer suite passes 580 tests in 50 suites. Portal types and documented-declaration checks pass. The combined private command ownership task now includes 23 gates, retaining the previous ownership, outcome, recovery and build checks. All 23 full-verification commands passed in the first run, including backend emulator coverage, core/client tests, structural checks, browser regressions and seven isolated builds. The completion recorder then refused the write because source changed during verification (`artifacts/race-known-answer-feedback/full-validation.log`). Completion recording remains pending; a new verification attempt is required against the current source. Source-digest recording must remain tied to unchanged source; concurrent edits must not be excluded to obtain a receipt.
+
+Jest activation is authorized, but publication remains on hold. Firebase Functions deployment is authorized; this batch changes client reconciliation and its verification, and has not deployed Functions.

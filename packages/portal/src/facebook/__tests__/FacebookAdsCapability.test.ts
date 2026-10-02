@@ -7,7 +7,9 @@ const sdkWithAd = () => {
   const ad = {loadAsync: jest.fn(async () => undefined), showAsync: jest.fn(async () => undefined)};
   /** Gets interstitial ad async. */
   const getInterstitialAdAsync = jest.fn(async () => ad);
-  return {ad, getInterstitialAdAsync, sdk: {getInterstitialAdAsync} as unknown as FacebookInstantSdk};
+  return {ad, getInterstitialAdAsync, sdk: {
+    getInterstitialAdAsync, getSupportedAPIs: () => ["getInterstitialAdAsync"],
+  } as unknown as FacebookInstantSdk};
 };
 
 /** Provides SDK with an opt-in rewarded video placement. */
@@ -16,10 +18,23 @@ const sdkWithRewardedAd = () => {
   const ad = {loadAsync: jest.fn(async () => undefined), showAsync: jest.fn(async () => undefined)};
   /** Gets rewarded video async. */
   const getRewardedVideoAsync = jest.fn(async () => ad);
-  return {ad, getRewardedVideoAsync, sdk: {getRewardedVideoAsync} as unknown as FacebookInstantSdk};
+  return {ad, getRewardedVideoAsync, sdk: {
+    getRewardedVideoAsync, getSupportedAPIs: () => ["getRewardedVideoAsync"],
+  } as unknown as FacebookInstantSdk};
 };
 
 describe("Facebook ads capability", () => {
+  it("does not expose formats that the current Meta host fails to advertise", () => {
+    /** SDK methods may exist for formats that are unavailable on this platform. */
+    const harness = sdkWithAd();
+    harness.sdk.getSupportedAPIs = () => [];
+    expect(createFacebookAdsCapability({sdk: harness.sdk, placementId: "result", adFree: false})).toBeUndefined();
+    /** Rewarded availability must be advertised independently. */
+    const rewarded = sdkWithRewardedAd();
+    rewarded.sdk.getSupportedAPIs = () => ["getInterstitialAdAsync"];
+    expect(createFacebookAdsCapability({sdk: rewarded.sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})).toBeUndefined();
+  });
+
   it("loads then shows only at a result and records only a successful impression", async () => {
     /** Provides harness behavior. */
     const harness = sdkWithAd();
@@ -83,6 +98,7 @@ describe("Facebook ads capability", () => {
     /** Provides both behavior. */
     const both = sdkWithAd();
     (both.sdk as FacebookInstantSdk).getRewardedVideoAsync = rewarded.getRewardedVideoAsync;
+    both.sdk.getSupportedAPIs = () => ["getInterstitialAdAsync", "getRewardedVideoAsync"];
     /** Provides combined behavior. */
     const combined = createFacebookAdsCapability({
       sdk: both.sdk,

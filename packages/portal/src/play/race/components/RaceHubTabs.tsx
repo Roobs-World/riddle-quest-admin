@@ -37,6 +37,8 @@ export function RaceHubTabs({
       ? [{id: "tournaments" as const, label: tr("RaceTo10.HUB_TOURNAMENTS"), onSelect: onTournaments}]
       : []),
   ];
+  /** Capability removal must leave a reachable supported tab before parent navigation settles. */
+  const selected = active === "tournaments" && !onTournaments ? "play" : active;
   /** Provides tab refs behavior. */
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   /** Handles tab key. */
@@ -64,8 +66,8 @@ export function RaceHubTabs({
             }}
             type="button"
             role="tab"
-            aria-selected={active === tab.id}
-            tabIndex={active === tab.id ? 0 : -1}
+            aria-selected={selected === tab.id}
+            tabIndex={selected === tab.id ? 0 : -1}
             onClick={tab.onSelect}
             onKeyDown={(event) => handleTabKey(event, index)}
           >

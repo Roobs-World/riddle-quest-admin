@@ -1,0 +1,47 @@
+[
+  {
+    "name": "provider-rendered-cache",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/provider-rendered-cache.log"
+  },
+  {
+    "name": "rendered-entry",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/rendered-entry.log"
+  },
+  {
+    "name": "provider-capability",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/provider-capability.log"
+  },
+  {
+    "name": "provider-confirmed-outcome",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/provider-confirmed-outcome.log"
+  },
+  {
+    "name": "provider-record-recovery",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/provider-record-recovery.log"
+  },
+  {
+    "name": "provider-record-timeout",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/provider-record-timeout.log"
+  },
+  {
+    "name": "analytics-delivery",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/analytics-delivery.log"
+  },
+  {
+    "name": "hub-navigation",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/hub-navigation.log"
+  },
+  {
+    "name": "dialog-keyboard-ownership",
+    "exitCode": 0,
+    "log": "artifacts/race-dialog-adapter-ownership/dialog-keyboard-ownership.log"
+  }
+]

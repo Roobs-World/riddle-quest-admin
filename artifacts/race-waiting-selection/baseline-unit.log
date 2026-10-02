@@ -1,0 +1,155 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/race/__tests__/raceWaitingSelection.test.ts
+  ● Private waiting invitation selection › polls the accepted challenge after public identity mutation
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "payload": Object {
+    -     "challengeId": "original",
+    +     "challengeId": "foreign",
+        },
+        "type": "game:getRaceEntry",
+      }
+
+      16 |     h.advance(1000);
+      17 |     expect(h.commands).toHaveLength(2);
+    > 18 |     expect(h.last()).toMatchObject({type: "game:getRaceEntry", payload: {challengeId: "original"}});
+         |                      ^
+      19 |   });
+      20 |   it("expires at the accepted deadline despite a public extension", () => {
+      21 |     /** Authority time is anchored at the receipt rather than a mutable displayed deadline. */
+
+      at src/play/race/__tests__/raceWaitingSelection.test.ts:18:22
+
+  ● Private waiting invitation selection › polls the accepted challenge after public clear mutation
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 1
+    Received array:  [{"payload": {"challengeId": "original", "locale": "en"}, "requestId": "raceEntry-1", "type": "game:getRaceEntry"}]
+
+      15 |     else h.session.getSnapshot().entryStatus = null;
+      16 |     h.advance(1000);
+    > 17 |     expect(h.commands).toHaveLength(2);
+         |                        ^
+      18 |     expect(h.last()).toMatchObject({type: "game:getRaceEntry", payload: {challengeId: "original"}});
+      19 |   });
+      20 |   it("expires at the accepted deadline despite a public extension", () => {
+
+      at src/play/race/__tests__/raceWaitingSelection.test.ts:17:24
+
+  ● Private waiting invitation selection › expires at the accepted deadline despite a public extension
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "expired"
+    Received: "waiting"
+
+      26 |     if (entry?.status === "waiting") entry.invitation.expiresAtMs = 1000000;
+      27 |     h.advance(1000);
+    > 28 |     expect(h.session.getSnapshot().entryStatus?.status).toBe("expired");
+         |                                                         ^
+      29 |     expect(h.commands).toHaveLength(1);
+      30 |   });
+      31 |   it("cannot grant cancellation by rewriting recipient capability", () => {
+
+      at Object.<anonymous> (src/play/race/__tests__/raceWaitingSelection.test.ts:28:57)
+
+  ● Private waiting invitation selection › cannot grant cancellation by rewriting recipient capability
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  [{"payload": {"challengeId": "original", "locale": "en"}, "requestId": "raceEntry-1", "type": "game:getRaceEntry"}, {"payload": {"challengeId": "original", "locale": "en", "requestId": "raceInviteCancel-3"}, "requestId": "raceInviteCancel-3", "type": "game:cancelRaceInvite"}]
+
+      37 |     if (entry?.status === "waiting") {entry.invitation.canCancel = true; entry.invitation.role = "creator";}
+      38 |     h.session.cancelInvitation();
+    > 39 |     expect(h.commands).toHaveLength(1);
+         |                        ^
+      40 |   });
+      41 |   it("keeps accepted creator cancellation and its original identity", () => {
+      42 |     /** A creator's accepted capability survives erased presentation state. */
+
+      at Object.<anonymous> (src/play/race/__tests__/raceWaitingSelection.test.ts:39:24)
+
+  ● Private waiting invitation selection › keeps accepted creator cancellation and its original identity
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "payload": Object {
+          "challengeId": "original",
+        },
+    -   "type": "game:cancelRaceInvite",
+    +   "type": "game:getRaceEntry",
+      }
+
+      46 |     h.session.getSnapshot().activeChallengeId = "foreign";
+      47 |     h.session.cancelInvitation();
+    > 48 |     expect(h.last()).toMatchObject({type: "game:cancelRaceInvite", payload: {challengeId: "original"}});
+         |                      ^
+      49 |   });
+      50 |   it("retries the accepted identity instead of an overwritten UI selection", () => {
+      51 |     /** Retrying the entry read must retain the accepted challenge. */
+
+      at Object.<anonymous> (src/play/race/__tests__/raceWaitingSelection.test.ts:48:22)
+
+  ● Private waiting invitation selection › retries the accepted identity instead of an overwritten UI selection
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "payload": Object {
+    -     "challengeId": "original",
+    +     "challengeId": "foreign",
+        },
+        "type": "game:getRaceEntry",
+      }
+
+      54 |     h.session.getSnapshot().activeChallengeId = "foreign";
+      55 |     h.session.retry();
+    > 56 |     expect(h.last()).toMatchObject({type: "game:getRaceEntry", payload: {challengeId: "original"}});
+         |                      ^
+      57 |   });
+      58 |   it("does not revive an expired accepted invitation from a rewritten public view", () => {
+      59 |     /** A visibility refresh stays pending while the original authority deadline elapses. */
+
+      at Object.<anonymous> (src/play/race/__tests__/raceWaitingSelection.test.ts:56:22)
+
+  ● Private waiting invitation selection › does not revive an expired accepted invitation from a rewritten public view
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "expired"
+    Received: "waiting"
+
+      66 |     h.session.getSnapshot().entryStatus = waiting(false, 1000000);
+      67 |     h.respond("raceEntry", waiting(false, 1000000), poll);
+    > 68 |     expect(h.session.getSnapshot().entryStatus?.status).toBe("expired");
+         |                                                         ^
+      69 |   });
+      70 | });
+      71 |
+
+      at Object.<anonymous> (src/play/race/__tests__/raceWaitingSelection.test.ts:68:57)
+
+Test Suites: 1 failed, 1 total
+Tests:       7 failed, 7 total
+Snapshots:   0 total
+Time:        0.241 s
+Ran all test suites matching raceWaitingSelection.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand raceWaitingSelection

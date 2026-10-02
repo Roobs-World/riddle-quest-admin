@@ -7,6 +7,28 @@ import {parseRaceRecovery, type RaceRecovery} from "../logic/raceRecoveryStorage
 const fallback = {status: "empty" as const, locale: "en" as const, fallback: {offerId: "a".repeat(64), categoryId: "mixed" as const}};
 
 describe("Empty multiplayer fallback", () => {
+  it.each(["removed", "replaced"] as const)("resolves the current adapter after a fallback race when matchmaking is %s", async mode => {
+    /** Retired provider must not become a fallback for an explicitly unavailable capability. */
+    const oldFind = jest.fn<MatchmakingCapability["find"]>().mockResolvedValue({status: "success", value: fallback});
+    /** Replacement provider reports cancellation without starting another race in this fixture. */
+    const newFind = jest.fn<MatchmakingCapability["find"]>().mockResolvedValue({status: "cancelled"});
+    /** Live resolver may explicitly remove or replace the selected provider. */
+    let selected: MatchmakingCapability | undefined = {find: oldFind};
+    /** The production host always provides its live capability resolver. */
+    const h = harness({}, null, {getMatchmaking: () => selected});
+    h.respond("raceCategories", await catalog());
+    await h.session.findOpponent(selected!);
+    /** Canonical fallback challenger permits a player-requested rival rematch. */
+    const run = {...await fixture(), role: "challenger" as const, challengeId: undefined,
+      opponent: {displayName: "Nova", adjustedFinishMs: 120000, events: []}};
+    h.respond("raceStart", {run});
+    selected = mode === "replaced" ? {find: newFind} : undefined;
+    h.session.rematch("mixed");
+    await Promise.resolve(); await Promise.resolve();
+    expect(oldFind).toHaveBeenCalledTimes(1);
+    expect(newFind).toHaveBeenCalledTimes(mode === "replaced" ? 1 : 0);
+    if (mode === "removed") expect(h.session.getSnapshot()).toMatchObject({stage: "categories", findingOpponent: false});
+  });
   it("starts an offered rival through normal preparation without showing an empty-pool message", async () => {
     /** Provider-owned journey retains the fallback receipt through start recovery. */
     const h = harness(); h.respond("raceCategories", await catalog());

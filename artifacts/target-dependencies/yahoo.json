@@ -21,6 +21,7 @@
     "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
     "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
     "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
+    "packages/core/src/game/achievementRewards.ts",
     "packages/core/src/game/graphemes.ts",
     "packages/portal/src/playable/LocalSoloAuthority.contract.ts",
     "packages/portal/src/playable/LocalSoloAuthority.ts",
@@ -45,26 +46,26 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-bFwB5w8G.js",
+      "file": "assets/index-cmnrtHvF.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
         "assets/vendor-react-CzolT8tg.js",
-        "assets/core-game-CbSzCw0b.js",
+        "assets/core-game-mef9IOwv.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "af6dd4ffd335add70ab77032f6165d9b74ca9f57423dde840e4935c42dc5feb9"
+      "sha256": "9143dc3dbde0d75636a5ca342bc1b7ef94522d72c124a1e2c26f150f3e17973f"
     },
     {
-      "file": "assets/core-game-CbSzCw0b.js",
+      "file": "assets/core-game-mef9IOwv.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "7c28b1a52eabdefbff7197a7fea69623b0952e4a7e0796343e22e7707bfbbd45"
+      "sha256": "75a99dcb9bf6dbed081f97e943809925178887127918abf65219a9762cd5e3bf"
     },
     {
       "file": "assets/rolldown-runtime-Czjbc987.js",
@@ -87,16 +88,16 @@
   ],
   "files": [
     {
-      "file": "assets/core-game-CbSzCw0b.js",
-      "sha256": "7c28b1a52eabdefbff7197a7fea69623b0952e4a7e0796343e22e7707bfbbd45"
+      "file": "assets/core-game-mef9IOwv.js",
+      "sha256": "75a99dcb9bf6dbed081f97e943809925178887127918abf65219a9762cd5e3bf"
     },
     {
       "file": "assets/index-DhsmAOC4.css",
       "sha256": "838a7feff2b201fe61bd0afd5e7a216ca355ba0b7386d1adc94780b097dc1be0"
     },
     {
-      "file": "assets/index-bFwB5w8G.js",
-      "sha256": "af6dd4ffd335add70ab77032f6165d9b74ca9f57423dde840e4935c42dc5feb9"
+      "file": "assets/index-cmnrtHvF.js",
+      "sha256": "9143dc3dbde0d75636a5ca342bc1b7ef94522d72c124a1e2c26f150f3e17973f"
     },
     {
       "file": "assets/rolldown-runtime-Czjbc987.js",
@@ -108,7 +109,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "bbf65bd2b599a8f16fa10996cfb2640ba765fd18762aeb9277bdaea5df7f4f1a"
+      "sha256": "c13eba47fddc59cdf4236ef3bf336a7074735d47d0e0d4623410b3d372f15f72"
     },
     {
       "file": "third-party-licenses.txt",

@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it} from "@jest/globals";
-import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../browserStorage";
+import {observeBrowserStorage, readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../browserStorage";
 
 /** Stores the environment descriptor restored after each storage scenario. */
 const originalLocalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
@@ -23,6 +23,7 @@ describe("browser storage", () => {
     });
 
     expect(readBrowserStorage("local", "player-state")).toBeNull();
+    expect(observeBrowserStorage("local", "player-state")).toBeUndefined();
     expect(writeBrowserStorage("local", "player-state", "saved")).toBe(false);
     expect(removeBrowserStorage("local", "player-state")).toBe(false);
   });
@@ -39,8 +40,10 @@ describe("browser storage", () => {
       },
     });
 
+    expect(observeBrowserStorage("local", "player-state")).toBeNull();
     expect(writeBrowserStorage("local", "player-state", "saved")).toBe(true);
     expect(readBrowserStorage("local", "player-state")).toBe("saved");
+    expect(observeBrowserStorage("local", "player-state")).toBe("saved");
     expect(removeBrowserStorage("local", "player-state")).toBe(true);
     expect(readBrowserStorage("local", "player-state")).toBeNull();
   });
@@ -62,6 +65,7 @@ describe("browser storage", () => {
     });
 
     expect(readBrowserStorage("session", "scenario")).toBeNull();
+    expect(observeBrowserStorage("session", "scenario")).toBeUndefined();
     expect(writeBrowserStorage("session", "scenario", "failed-once")).toBe(false);
     expect(removeBrowserStorage("session", "scenario")).toBe(false);
   });

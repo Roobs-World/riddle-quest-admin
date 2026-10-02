@@ -30,6 +30,12 @@ export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstan
       "purchaseToken",
       "signedRequest",
     ];
+    /** Meta v8 returns Unix seconds as a number; legacy responses may use decimal strings. */
+    const purchaseTime = typeof item.purchaseTime === "number"
+      ? item.purchaseTime
+      : typeof item.purchaseTime === "string" && /^\d{1,16}$/u.test(item.purchaseTime)
+        ? Number(item.purchaseTime)
+        : Number.NaN;
     if (
       !required.every((key) => keys.includes(key)) ||
       keys.some((key) => ![...required, "developerPayload"].includes(key)) ||
@@ -38,8 +44,8 @@ export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstan
       !bounded(item.paymentID, 1_024) ||
       !bounded(item.productID, 256) ||
       !bounded(item.purchasePlatform, 32) ||
-      !bounded(item.purchaseTime, 64) ||
-      !/^\d+$/u.test(item.purchaseTime) ||
+      !Number.isSafeInteger(purchaseTime) ||
+      purchaseTime <= 0 ||
       !bounded(item.purchaseToken, 8_192) ||
       !bounded(item.signedRequest, 8_192) ||
       (item.developerPayload != null && !bounded(item.developerPayload, 1_024))

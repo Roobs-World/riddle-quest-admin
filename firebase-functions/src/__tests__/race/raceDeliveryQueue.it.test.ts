@@ -186,3 +186,82 @@ it("propagates health query failure rather than reporting a healthy empty queue"
   jest.spyOn(db, "collection").mockImplementationOnce(() => {throw new Error("health-unavailable");});
   await expect(readRaceRecoveryHealth(db, 1000000)).rejects.toThrow("health-unavailable");
 });
+
+
+it.each([
+  ["missing owner", undefined, 301000], ["cleared owner", null, 301000],
+  ["invalid owner", 42, 301000], ["empty owner", "", 301000],
+  ["unsafe deadline", "worker", 1e30], ["fractional deadline", "worker", 301000.5],
+])("recovers pending delivery after a malformed %s lease", async (_label, leaseId, leaseUntilMs) => {
+  /** Recovery cannot wait indefinitely for a lease without a usable worker identity or clock. */
+  await db.doc(statePath).set({...leaseId === undefined ? {} : {leaseId}, leaseUntilMs});
+  await db.doc(`${collection}/pending`).set({delivered: false, createdAtMs: 0});
+  /** Actual delivery is observable without inventing an economy grant. */
+  const deliver = jest.fn(async () => false);
+  expect(await processRaceDeliveryQueue(db, collection, deliver, 1000)).toMatchObject({status: "processed", scanned: 1});
+  expect(deliver).toHaveBeenCalledWith("pending");
+  expect((await db.doc(statePath).get()).data()).toMatchObject({leaseId: null, leaseUntilMs: 0});
+});
+
+
+it.each([-1, 1.5, Infinity, Number.MAX_SAFE_INTEGER])("rejects an invalid queue clock before changing a lease: %s", async nowMs => {
+  /** Invalid internal/operator input cannot persist an unrecoverable lease deadline. */
+  await expect(processRaceDeliveryQueue(db, collection, async () => true, nowMs)).rejects.toMatchObject({code: "invalid-argument"});
+  expect((await db.doc(statePath).get()).exists).toBe(false);
+});
+
+
+it.each(["permanent", "transient"])("preserves a replayed receipt when an older %s delivery fails", async kind => {
+  /** A delayed failure may belong to the receipt before operator repair/replay. */
+  const ref = db.doc(`${collection}/replayed`);
+  await ref.set(pendingRaceDelivery(1000));
+  /** Only the old worker's failure is held; Firestore receipt updates remain real. */
+  let reject!: (error: Error) => void;
+  /** An in-flight delivery survives until after the repaired receipt is released. */
+  const pending = new Promise<boolean>((_resolve, no) => {reject = no;});
+  /** The original worker owns its original invocation clock. */
+  const old = withRaceDeliveryReceipt(db, ref, 1000, () => pending);
+  await ref.update({...pendingRaceDelivery(2000), replayedAtMs: 2000});
+  /** Snapshot of the repair/replay revision, not a copied economy grant. */
+  const replayed = (await ref.get()).data();
+  reject(kind === "permanent" ? Object.assign(new Error("corrupt old source"), {name: "ZodError"}) : new Error("old infrastructure failure"));
+  if (kind === "permanent") expect(await old).toBe(false);
+  else await expect(old).rejects.toThrow("old infrastructure failure");
+  expect((await ref.get()).data()).toEqual(replayed);
+  /** A current failure at the replay clock must still quarantine genuine corruption. */
+  await withRaceDeliveryReceipt(db, ref, 2000, async () => {throw Object.assign(new Error("still corrupt"), {name: "ZodError"});});
+  expect((await ref.get()).data()).toMatchObject({delivered: true, deliveryState: "quarantined", quarantinedAtMs: 2000});
+});
+
+
+it.each([[900, "permanent"], [1000, "permanent"], [900, "transient"], [1000, "transient"]] as const)(
+  "keeps a replacement replay identity with clock %s and %s failure", async (replayAtMs, kind) => {
+  /** One old failure must not quarantine a fresh replay, even if its clock is equal or earlier. */
+  const ref = db.doc(`${collection}/replay-clock`);
+  await ref.set({...pendingRaceDelivery(1000), replayedAtMs: 1000, replayId: "old-replay"});
+  /** Barrier ensures the failed worker really observed the prior receipt. */
+  let observed!: () => void;
+  /** Snapshot read has completed before operator replacement. */
+  const observation = new Promise<void>(resolve => {observed = resolve;});
+  /** Delayed failure of the source validation belonging to the old replay. */
+  let reject!: (error: Error) => void;
+  /** Independent worker promise deliberately remains unsettled during the replay. */
+  const operation = new Promise<boolean>((_resolve, no) => {reject = no;});
+  /** Optional observer permits this regression to execute against the prior public implementation. */
+  const old = withRaceDeliveryReceipt(db, ref, 1000, async (observe?: (value: FirebaseFirestore.DocumentData | undefined) => void) => {
+    observe?.((await ref.get()).data()); observed(); return operation;
+  });
+  await observation;
+  await ref.update({...pendingRaceDelivery(replayAtMs), replayedAtMs: replayAtMs, replayId: "fresh-replay"});
+  /** Current revision includes no new economy effects. */
+  const fresh = (await ref.get()).data();
+  reject(kind === "permanent" ? Object.assign(new Error("old corruption"), {name: "ZodError"}) : new Error("old infrastructure failure"));
+  if (kind === "permanent") expect(await old).toBe(false);
+  else await expect(old).rejects.toThrow("old infrastructure failure");
+  expect((await ref.get()).data()).toEqual(fresh);
+  /** A worker observing the replacement still quarantines actual current corruption. */
+  await withRaceDeliveryReceipt(db, ref, 1000, async (observe?: (value: FirebaseFirestore.DocumentData | undefined) => void) => {
+    observe?.((await ref.get()).data()); throw Object.assign(new Error("current corruption"), {name: "ZodError"});
+  });
+  expect((await ref.get()).data()).toMatchObject({deliveryState: "quarantined", replayId: "fresh-replay"});
+});

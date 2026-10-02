@@ -1,0 +1,523 @@
+[
+  {
+    "id": "retained-rule-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 4.44,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-rule-ownership-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-event-aggregate-browser",
+    "exitCode": 0,
+    "durationSeconds": 4.46,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-event-aggregate-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-timeout-reload-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.0,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-timeout-recovery-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-first-resume-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.45,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-startup-recovery-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-private-outcome-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.98,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-outcome-isolation-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-private-command-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 3.5,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-command-ownership-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-pending-answer-recovery-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.55,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-pending-input-browser.mjs"
+    ]
+  },
+  {
+    "id": "retained-checkpoint-isolation-browser",
+    "exitCode": 0,
+    "durationSeconds": 13.62,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-known-answer-reveals-browser",
+    "exitCode": 0,
+    "durationSeconds": 4.84,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-known-answer-feedback-browser",
+    "exitCode": 0,
+    "durationSeconds": 6.18,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-answer-free-checkpoints-browser",
+    "exitCode": 0,
+    "durationSeconds": 5.61,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-provider-record-recovery-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.52,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-provider-record-deadline-browser",
+    "exitCode": 0,
+    "durationSeconds": 3.15,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-paid-draft-checkpoints-browser",
+    "exitCode": 0,
+    "durationSeconds": 12.13,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-responsive-hub-navigation-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.1,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-hub-navigation-browser.mjs"
+    ]
+  },
+  {
+    "id": "injected-provider-capability-recovery-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.87,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-provider-capability-browser.mjs"
+    ]
+  },
+  {
+    "id": "abandoned-race-entry-browser",
+    "exitCode": 0,
+    "durationSeconds": 15.41,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-abandoned-entry-browser.mjs"
+    ]
+  },
+  {
+    "id": "provider-confirmed-outcome-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.39,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-keyboard-activation-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.66,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-keyboard-activation-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-draft-cleanup-browser",
+    "exitCode": 0,
+    "durationSeconds": 15.28,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-draft-cleanup-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-overlay-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.83,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-overlay-ownership-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-dialog-keyboard-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.1,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-quit-focus-recovery-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.76,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-quit-focus-containment-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.81,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-resume-selection-browser",
+    "exitCode": 0,
+    "durationSeconds": 0.69,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-resume-selection-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-resume-read-observation-browser",
+    "exitCode": 0,
+    "durationSeconds": 0.7,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-resume-read-observation-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-search-journal-observation-browser",
+    "exitCode": 0,
+    "durationSeconds": 0.75,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-search-journal-observation-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-analytics-delivery-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.31,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-analytics-delivery-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-offline-delivery-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.7,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-offline-delivery-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-profile-refresh-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.72,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-profile-refresh-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-prefetch-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 5.26,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-prefetch-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-draft-reload-browser",
+    "exitCode": 0,
+    "durationSeconds": 58.97,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-draft-reload-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-rendered-entry-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 4.17,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-rendered-entry-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-provider-rendered-cache-browser",
+    "exitCode": 0,
+    "durationSeconds": 5.45,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-prefetch-development-strict-browser",
+    "exitCode": 0,
+    "durationSeconds": 6.6,
+    "command": [
+      "env",
+      "RACE_REACT_DEVELOPMENT=1",
+      "node",
+      "packages/portal/scripts/verify-race-prefetch-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-dialog-adapter-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 10.24,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-dialog-adapter-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-profile-refresh-development-strict-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.26,
+    "command": [
+      "env",
+      "RACE_REACT_DEVELOPMENT=1",
+      "node",
+      "packages/portal/scripts/verify-race-profile-refresh-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-session-browser-resource-ownership",
+    "exitCode": 0,
+    "durationSeconds": 5.85,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-session-resources-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-dialog-adapter-development-strict-browser",
+    "exitCode": 0,
+    "durationSeconds": 10.85,
+    "command": [
+      "env",
+      "RACE_REACT_DEVELOPMENT=1",
+      "node",
+      "packages/portal/scripts/verify-race-dialog-adapter-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-matchmaking-removal-browser",
+    "exitCode": 0,
+    "durationSeconds": 4.35,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-discovery-storage-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 0.79,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-discovery-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-discovery-callback-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.88,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-discovery-callback-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-discovery-provider-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 4.6,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-discovery-provider-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-discovery-prompt-cancellation-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.31,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-retired-search-recovery-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.78,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-retired-search-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-visibility-retirement-browser",
+    "exitCode": 0,
+    "durationSeconds": 5.29,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-visibility-retirement-development-strict-browser",
+    "exitCode": 0,
+    "durationSeconds": 5.74,
+    "command": [
+      "env",
+      "RACE_REACT_DEVELOPMENT=1",
+      "node",
+      "packages/portal/scripts/verify-race-visibility-retirement-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-existing-attempt-authority-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.41,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-existing-attempt-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-private-entry-selection-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.44,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-private-entry-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-retirement-shared-journal-browser",
+    "exitCode": 0,
+    "durationSeconds": 14.98,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-retirement-journal-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-existing-opponent-authority-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.81,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-existing-opponent-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-private-creator-acceptance-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.79,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-private-creator-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-entry-effect-ownership-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.23,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-entry-effect-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-waiting-selection-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.0,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-waiting-selection-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-cancellation-receipt-browser",
+    "exitCode": 0,
+    "durationSeconds": 2.6,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-start-selection-authority-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.6,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-start-selection-browser.mjs"
+    ]
+  },
+  {
+    "id": "race-provider-start-selection-browser",
+    "exitCode": 0,
+    "durationSeconds": 1.63,
+    "command": [
+      "node",
+      "packages/portal/scripts/verify-race-provider-start-browser.mjs"
+    ]
+  }
+]

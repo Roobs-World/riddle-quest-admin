@@ -1,3 +1,5 @@
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {getDailyDate, isDailyGenerationDue} from "@qwordly/core/validation/dailyCalendar";
 import {type ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {DailyGenerationIncompleteError, generateLocalizedDailyChallengeForDate} from "./dailyRiddleGeneration";
 import * as functions from "firebase-functions";
@@ -8,52 +10,54 @@ import {getSafeErrorMetadata} from "../shared/errorMetadata";
 // Export the handler function for testing first
 /** Provides scheduled task handler behavior. */
 export const scheduledTaskHandler = async (context: ScheduledEvent) => {
-  void context;
-  functions.logger.info("Daily scheduler started (target: immutable localized documents).");
-  /** Provides current date behavior. */
-  const currentDate = new Date();
-  /** Provides target date behavior. */
-  const targetDate = new Date(currentDate);
-  if (currentDate.getUTCHours() >= 21) targetDate.setUTCDate(targetDate.getUTCDate() + 1);
-  /** Provides target date string behavior. */
-  const targetDateString = targetDate.toISOString().slice(0, 10);
+  /** One captured generation instant shared across locale grouping. */
+  const now = context.scheduleTime ? new Date(context.scheduleTime) : new Date();
+  /** Supported locales grouped by the regional Daily date they currently require. */
+  const groups = new Map<string, SupportedLocale[]>();
+  for (const locale of SUPPORTED_LOCALES) {
+    if (!isDailyGenerationDue(locale, now)) continue;
+    /** Regional Daily date selected for this locale’s generation group. */
+    const day = getDailyDate(locale, now);
+    groups.set(day, [...(groups.get(day) ?? []), locale]);
+  }
+  for (const [targetDateString, locales] of groups) {
 
-  try {
-    functions.logger.info(`Starting immutable localized daily riddle generation for ${targetDateString}.`);
+    try {
+      functions.logger.info(`Starting immutable localized daily riddle generation for ${targetDateString}.`);
 
-    // Generate or validate the selected day's localized riddle set. Repeated
-    // schedules safely retry only missing or invalid immutable documents.
-    await generateLocalizedDailyChallengeForDate(targetDateString, false);
+      // Generate or validate the selected day's localized riddle set. Repeated
+      // schedules safely retry only missing or invalid immutable documents.
+      await generateLocalizedDailyChallengeForDate(targetDateString, false, locales);
 
-    functions.logger.info("Daily scheduler finished successfully (localized daily set ready).", {
-      challengeDate: targetDateString,
-    });
-  } catch (error) {
-    functions.logger.error("Daily scheduler failed while preparing immutable daily riddles.", {
-      challengeDate: targetDateString,
-      ...getSafeErrorMetadata(error),
-    });
-    captureException(error, {
-      functionName: "dailyChallengeScheduler",
-      phase: "scheduled_generation",
-      challengeDate: targetDateString,
-      ...(error instanceof DailyGenerationIncompleteError
-        ? {failedLocales: error.failedLocales, attemptCount: error.attemptCount}
-        : {}),
-    });
-    throw error; // Re-throw to ensure proper error reporting
+      functions.logger.info("Daily scheduler finished successfully (localized daily set ready).", {
+        challengeDate: targetDateString,
+      });
+    } catch (error) {
+      functions.logger.error("Daily scheduler failed while preparing immutable daily riddles.", {
+        challengeDate: targetDateString,
+        ...getSafeErrorMetadata(error),
+      });
+      captureException(error, {
+        functionName: "dailyChallengeScheduler",
+        phase: "scheduled_generation",
+        challengeDate: targetDateString,
+        ...(error instanceof DailyGenerationIncompleteError
+          ? {failedLocales: error.failedLocales, attemptCount: error.attemptCount}
+          : {}),
+      });
+      throw error; // Re-throw to ensure proper error reporting
+    }
   }
 };
 
 /**
- * Scheduled function to prepare immutable daily riddles. It pre-generates the
- * next day before rollover, then retries today's missing locale slots during
- * the first UTC hours. Existing playable dated documents are never overwritten.
+ * Starts generation at each regional midnight, with half-hour repairs for the
+ * first three local hours. India’s half-hour offset and DST use the shared IANA clocks.
  */
 export const dailyChallengeScheduler = onScheduleWithSentry(
   "dailyChallengeScheduler",
   {
-    schedule: "0 0-2,21-23 * * *",
+    schedule: "0,30 * * * *",
     timeZone: "UTC",
     timeoutSeconds: 900,
     memory: "512MiB",

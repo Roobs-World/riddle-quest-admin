@@ -1,0 +1,12 @@
+✔ referral retention stays offline without an explicit project or exact apply confirmation (3.5264ms)
+✔ defaults to dry-run and pages exclusively by an opaque token hash (0.822829ms)
+✔ writes only after matching project confirmation and reports failures without provider details (4.457895ms)
+✔ does not claim completion for oversized token fan-out (0.539913ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31.436071

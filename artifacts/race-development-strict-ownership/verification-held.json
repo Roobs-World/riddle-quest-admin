@@ -1,0 +1,55 @@
+{
+  "taskId": "multiplayer:race-development-strict-ownership",
+  "status": "focused-verification-passed-full-source-dashboard-receipt-pending",
+  "verifiedAt": "2026-10-01T19:21:21.782123+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "productionRuntimeCasesPassed": 88,
+  "developmentRuntimeCasesPassed": 88,
+  "developmentStrictModeCasesWithVerifiedEffectReplayPassed": 44,
+  "runtimeSetupAssertions": {
+    "productionNormalAndStrictWrapper": {
+      "setups": 1,
+      "cleanupsBeforeUnmount": 0,
+      "liveSubscriptions": 1
+    },
+    "developmentNormal": {
+      "setups": 1,
+      "cleanupsBeforeUnmount": 0,
+      "liveSubscriptions": 1
+    },
+    "developmentStrictMode": {
+      "setups": 2,
+      "cleanupsBeforeUnmount": 1,
+      "liveSubscriptions": 1
+    },
+    "explicitUnmount": {
+      "liveSubscriptions": 0
+    }
+  },
+  "caseCounts": {
+    "prefetch-development.log": 68,
+    "profile-refresh-development.log": 20,
+    "prefetch-production.log": 68,
+    "profile-refresh-production.log": 20
+  },
+  "fileHashes": {
+    "packages/portal/scripts/verify-race-prefetch-browser.mjs": "f773fd043f5987a73cace98dc439094ac13fe65b20d5d976f29b28d961bd51ec",
+    "packages/portal/scripts/verify-race-profile-refresh-browser.mjs": "d32ec2759f34575ae42bb43556a4cc187cf50fab4df52db08f6c7d769340332f",
+    "packages/portal/src/play/useHostRaceCoordination.ts": "1c0f3b80677f77072efe48da40789b231e8b3442c1ec6b495a925bdd90deb6e6",
+    "packages/portal/src/play/useHostAuthSession.ts": "87b0d81f2fdaef277f83893b696ab4553a87b639e2cf85bf25bc5f9a0a035696"
+  },
+  "logHashes": {
+    "prefetch-development.log": "6034c0b324f148c24901aa8a01b0f484c68498c5a6f637dd0a8199950e7c7b71",
+    "profile-refresh-development.log": "6bcd93d1a6e456e60a31aeb1199b76de76a8fdfb4224d30d16c8d8b50521a75b",
+    "prefetch-production.log": "00db16728238ea141c7c276323a1da701a81eef751b80811d1b5b9207d9cb95a",
+    "profile-refresh-production.log": "75969d71c543c9cc395718fd4e29e2fec30272bf3be21a01d605fc3a70f0c7ed"
+  },
+  "productionModulesUnchangedFromPriorFocusedVerification": true,
+  "priorFocusedVerification": "artifacts/race-prefetch-failure-isolation/verification-held.json",
+  "fullVerificationRequiredChecks": 54,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdated": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformedThisBatch": false,
+  "remainingGate": "The user-owned hosted E2E chat remains confirmed live; let it finish before guarded full-source verification and automatic dashboard receipt."
+}

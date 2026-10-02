@@ -1,0 +1,150 @@
+{
+  "observedAt": "2026-10-01T17:40:12.016203+00:00",
+  "project": "riddle-quest-ec2b2",
+  "window": "one hour before each query",
+  "requestFilter": "Cloud Run revision request logs whose service name contains race",
+  "requestLimit": 5000,
+  "requestLimitReached": false,
+  "errorLimit": 500,
+  "errorLimitReached": false,
+  "requestsObserved": 3304,
+  "errorSeverityLogsObserved": 0,
+  "services": {
+    "getraceaccess": {
+      "requests": 1618,
+      "statusCounts": {
+        "200": 1205,
+        "204": 412,
+        "401": 1
+      },
+      "sampleP95Ms": 171.07430000000002,
+      "maxMs": 1120.4154859999999
+    },
+    "listracecategories": {
+      "requests": 1602,
+      "statusCounts": {
+        "200": 1194,
+        "204": 408
+      },
+      "sampleP95Ms": 251.99025200000003,
+      "maxMs": 505.09586799999994
+    },
+    "monitorracerecoveryhealth": {
+      "requests": 12,
+      "statusCounts": {
+        "200": 12
+      },
+      "sampleP95Ms": 1017.0829299999999,
+      "maxMs": 1017.0829299999999
+    },
+    "reconcileracematchprojections": {
+      "requests": 12,
+      "statusCounts": {
+        "200": 12
+      },
+      "sampleP95Ms": 21614.501425,
+      "maxMs": 21614.501425
+    },
+    "settleracedeadlines": {
+      "requests": 60,
+      "statusCounts": {
+        "200": 60
+      },
+      "sampleP95Ms": 1682.445882,
+      "maxMs": 2080.867958
+    }
+  },
+  "deadlineFunction": {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "serviceConfig": {
+      "revision": "settleracedeadlines-00017-zec"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-01T15:01:27.578236756Z"
+  },
+  "scope": "Read-only sampled request logs; not the Cloud Monitoring alert-policy metric or a test of every provider route.",
+  "projectionReportsObserved": 12,
+  "projectionStatuses": {
+    "processed": 12
+  },
+  "projectionRecordsScanned": 192,
+  "projectionUnavailableRecords": 0,
+  "projectionChangedRecords": 0,
+  "projectionWorkerConfiguredTimeoutSeconds": 120,
+  "projectionWorkerConfiguredRecordLimit": 100,
+  "projectionWorkerConfiguredScheduleMinutes": 5,
+  "evidenceSha256": {
+    "errors.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "deadline-function.json": "8757df4d9e713b99b8505250697326c911917a41b3c5654bf09071da4e7f348d",
+    "projection-reports.json": "bd26bd97d422a90fbeae0509d19315725403cf83e4149e385046e03fb32490ca",
+    "requests.json": "c972993e45daa9befc3b2ccd4b08014e48643fd2a1df452e6079d475780c0b0f",
+    "recovery-health.json": "4f1c6e2e79214ffe779cf1231f87c7d2ec1eaf8ce8b54541fe944f486e46dc6e"
+  },
+  "recoveryHealthCheckedAt": "2026-10-01T17:44:14.496771+00:00",
+  "recoveryHealthReportsObserved": 12,
+  "recoveryWarningCounts": {},
+  "latestRecoveryHealth": {
+    "jsonPayload": {
+      "deadlines": {
+        "deferredInSample": 0,
+        "due": {
+          "capped": false,
+          "lowerBound": 0
+        },
+        "oldestOriginalDeadlineAgeInSampleMs": 0,
+        "oldestWakeDelayMs": 0,
+        "quarantined": {
+          "capped": false,
+          "lowerBound": 0
+        },
+        "retried": {
+          "capped": false,
+          "lowerBound": 0
+        }
+      },
+      "observedAtMs": 1790876461940,
+      "outboxes": {
+        "racePerformanceOutbox": {
+          "invalidEnqueueTimesInSample": 0,
+          "oldestPendingAgeMs": 0,
+          "pending": {
+            "capped": false,
+            "lowerBound": 0
+          },
+          "quarantined": {
+            "capped": false,
+            "lowerBound": 0
+          },
+          "recoveryStale": false
+        },
+        "raceSettlementOutbox": {
+          "invalidEnqueueTimesInSample": 0,
+          "oldestPendingAgeMs": 0,
+          "pending": {
+            "capped": false,
+            "lowerBound": 0
+          },
+          "quarantined": {
+            "capped": false,
+            "lowerBound": 0
+          },
+          "recoveryStale": false
+        }
+      },
+      "projections": {
+        "enabled": true,
+        "lastCycleAgeMs": 117911,
+        "lastPageAgeMs": 117911,
+        "pageFailed": false,
+        "recoveryStale": false,
+        "unavailableInCurrentCycle": 0,
+        "unavailableInLastCycle": 0
+      },
+      "warnings": []
+    },
+    "severity": "INFO",
+    "timestamp": "2026-10-01T17:41:02.659247Z"
+  }
+}

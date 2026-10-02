@@ -1,0 +1,29 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand src/facebook/__tests__/FacebookReferralSharing.test.ts src/facebook/__tests__/referrals.test.ts src/jest/__tests__/screenshots.test.ts
+FAIL src/facebook/__tests__/FacebookReferralSharing.test.ts
+  ● reads native share labels in the current restored or changed locale
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Inviter un ami"
+    Received: "Invite a friend"
+
+      79 |   const capability = createFacebookReferralSharing(options)!;
+      80 |   setLocale("fr");
+    > 81 |   expect(capability.inviteLabel).toBe("Inviter un ami");
+         |                                  ^
+      82 |   expect(capability.raceShareLabel).toBe("Défier un ami");
+      83 |   setLocale("en");
+      84 |   expect(capability.inviteLabel).toBe("Invite a friend");
+
+      at Object.<anonymous> (src/facebook/__tests__/FacebookReferralSharing.test.ts:81:34)
+
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 24 passed, 25 total
+Snapshots:   0 total
+Time:        0.305 s, estimated 1 s
+Ran all test suites matching src/facebook/__tests__/FacebookReferralSharing.test.ts|src/facebook/__tests__/referrals.test.ts|src/jest/__tests__/screenshots.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand src/facebook/__tests__/FacebookReferralSharing.test.ts src/facebook/__tests__/referrals.test.ts src/jest/__tests__/screenshots.test.ts`
+Exit status 1

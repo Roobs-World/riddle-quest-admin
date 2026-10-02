@@ -205,7 +205,8 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:jest-guest", "seen");
       });
-      await page.goto(`${hostedBrowserUrl}/?harness=jest`);
+      // Classic scenarios start after Daily completion; the dedicated Daily page below stays unseeded.
+      await page.goto(`${hostedBrowserUrl}/?harness=jest&dailyCompleted=1`);
       await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       expect(await page.locator("main").count()).toBe(1);
       expect(await page.locator("main main").count()).toBe(0);
@@ -696,6 +697,9 @@ describeBrowser("standalone Jest browser game", () => {
       /** Report feedback is immediate while the server response remains deliberately held. */
       const reportOpponent = page.getByRole("button", {name: /^report opponent$/i});
       await reportOpponent.click();
+      // React commits pending UI on the next render; the held server response
+      // keeps it observable without assuming click completion is a render fence.
+      await page.locator('button[aria-busy="true"]').filter({hasText: /^report opponent$/i}).waitFor({timeout: 2_000});
       expect(await reportOpponent.getAttribute("aria-busy")).toBe("true");
       expect(await page.getByRole("button", {name: /^block opponent$/i}).isDisabled()).toBe(true);
       await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
@@ -831,7 +835,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await compactPage.goto(`${hostedBrowserUrl}/?harness=jest`);
+      await compactPage.goto(`${hostedBrowserUrl}/?harness=jest&dailyCompleted=1`);
       await completeMockOnboarding(compactPage);
       await compactPage.locator(".game-bottom-navigation").waitFor({timeout: 15_000});
       await compactPage.waitForFunction(
@@ -1492,7 +1496,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await lowEndPage.goto(`${hostedBrowserUrl}/?harness=jest`);
+      await lowEndPage.goto(`${hostedBrowserUrl}/?harness=jest&dailyCompleted=1`);
       await completeMockOnboarding(lowEndPage);
       await lowEndPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await lowEndPage.waitForTimeout(3_000);
@@ -1635,7 +1639,7 @@ describeBrowser("standalone Jest browser game", () => {
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       // Recovery is tested for an existing account; the guest registration flow has its own scenarios.
-      await bufferedPage.goto(`${hostedBrowserUrl}/?harness=jest&registered=1`);
+      await bufferedPage.goto(`${hostedBrowserUrl}/?harness=jest&registered=1&dailyCompleted=1`);
       await completeMockOnboarding(bufferedPage);
       await bufferedPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await bufferedPage.evaluate(() => {
@@ -1708,7 +1712,7 @@ describeBrowser("standalone Jest browser game", () => {
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       // Recovery is tested for an existing account; the guest registration flow has its own scenarios.
-      await rejectedPage.goto(`${hostedBrowserUrl}/?harness=jest&registered=1`);
+      await rejectedPage.goto(`${hostedBrowserUrl}/?harness=jest&registered=1&dailyCompleted=1`);
       await completeMockOnboarding(rejectedPage);
       await rejectedPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await rejectedPage.evaluate(() => {
@@ -1777,7 +1781,7 @@ describeBrowser("standalone Jest browser game", () => {
           true,
         );
       });
-      await reloadPage.goto(`${hostedBrowserUrl}/?harness=jest`);
+      await reloadPage.goto(`${hostedBrowserUrl}/?harness=jest&dailyCompleted=1`);
       await completeMockOnboarding(reloadPage);
       await reloadPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await reloadPage.evaluate(() => {
@@ -1822,7 +1826,7 @@ describeBrowser("standalone Jest browser game", () => {
       await iframePage.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       await iframePage.addInitScript(() => Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true}));
       await iframePage.setContent(
-        `<iframe title="Jest host" style="width:390px;height:844px;border:0" src="${hostedBrowserUrl}/?harness=jest"></iframe>`,
+        `<iframe title="Jest host" style="width:390px;height:844px;border:0" src="${hostedBrowserUrl}/?harness=jest&dailyCompleted=1"></iframe>`,
       );
       await iframePage
         .frameLocator('iframe[title="Jest host"]')
@@ -1834,7 +1838,7 @@ describeBrowser("standalone Jest browser game", () => {
       // The SDK is injected by this mock harness; avoid an unrelated external startup request.
       await registeredPage.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       await registeredPage.addInitScript(() => Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true}));
-      await registeredPage.goto(`${hostedBrowserUrl}/?harness=jest&registered=1`);
+      await registeredPage.goto(`${hostedBrowserUrl}/?harness=jest&registered=1&dailyCompleted=1`);
       await registeredPage.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       await completeOnboardingAndTours(registeredPage);
       await registeredPage

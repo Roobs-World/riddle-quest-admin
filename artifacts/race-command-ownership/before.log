@@ -1,0 +1,216 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionCommandOwnership
+FAIL src/play/race/__tests__/RaceSessionCommandOwnership.test.ts
+  ● Race Session private command ownership › recovers the original run after a public runId edit
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "payload": Object {
+    -     "runId": "fake-run-1",
+    +     "runId": "another-run",
+        },
+        "type": "game:resumeRace",
+      }
+
+      18 |     const h=await racing();
+      19 |     mutate(h.session.getSnapshot().run!,field);h.session.retry();
+    > 20 |     expect(h.last()).toMatchObject({type:"game:resumeRace",payload:{runId:h.run.runId}});
+         |                      ^
+      21 |     h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+      22 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed",locale:"en"}});
+      23 |     expect(h.session.getSnapshot().run!.challengeId).toBeUndefined();
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:20:22
+
+  ● Race Session private command ownership › recovers the original run after a public role edit
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "error": null,
+    +   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+        "run": Object {
+          "categoryId": "mixed",
+          "locale": "en",
+    -     "role": "creator",
+    +     "role": "challenger",
+          "runId": "fake-run-1",
+        },
+      }
+
+      20 |     expect(h.last()).toMatchObject({type:"game:resumeRace",payload:{runId:h.run.runId}});
+      21 |     h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed",locale:"en"}});
+         |                                     ^
+      23 |     expect(h.session.getSnapshot().run!.challengeId).toBeUndefined();
+      24 |     expect(h.session.getSnapshot().run!.rivalryChallengeId).toBeUndefined();
+      25 |     expect(h.commands.filter(command=>command.type==="game:startRace")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:22:37
+
+  ● Race Session private command ownership › recovers the original run after a public categoryId edit
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "error": null,
+    +   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+        "run": Object {
+    -     "categoryId": "mixed",
+    +     "categoryId": "history",
+          "locale": "en",
+          "role": "creator",
+          "runId": "fake-run-1",
+        },
+      }
+
+      20 |     expect(h.last()).toMatchObject({type:"game:resumeRace",payload:{runId:h.run.runId}});
+      21 |     h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed",locale:"en"}});
+         |                                     ^
+      23 |     expect(h.session.getSnapshot().run!.challengeId).toBeUndefined();
+      24 |     expect(h.session.getSnapshot().run!.rivalryChallengeId).toBeUndefined();
+      25 |     expect(h.commands.filter(command=>command.type==="game:startRace")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:22:37
+
+  ● Race Session private command ownership › recovers the original run after a public challengeId edit
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -1,7 +1,7 @@
+      Object {
+    -   "error": null,
+    +   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+        "run": Object {
+          "categoryId": "mixed",
+          "locale": "en",
+          "role": "creator",
+          "runId": "fake-run-1",
+
+      20 |     expect(h.last()).toMatchObject({type:"game:resumeRace",payload:{runId:h.run.runId}});
+      21 |     h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed",locale:"en"}});
+         |                                     ^
+      23 |     expect(h.session.getSnapshot().run!.challengeId).toBeUndefined();
+      24 |     expect(h.session.getSnapshot().run!.rivalryChallengeId).toBeUndefined();
+      25 |     expect(h.commands.filter(command=>command.type==="game:startRace")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:22:37
+
+  ● Race Session private command ownership › recovers the original run after a public rivalryChallengeId edit
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -1,7 +1,7 @@
+      Object {
+    -   "error": null,
+    +   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+        "run": Object {
+          "categoryId": "mixed",
+          "locale": "en",
+          "role": "creator",
+          "runId": "fake-run-1",
+
+      20 |     expect(h.last()).toMatchObject({type:"game:resumeRace",payload:{runId:h.run.runId}});
+      21 |     h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 22 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed",locale:"en"}});
+         |                                     ^
+      23 |     expect(h.session.getSnapshot().run!.challengeId).toBeUndefined();
+      24 |     expect(h.session.getSnapshot().run!.rivalryChallengeId).toBeUndefined();
+      25 |     expect(h.commands.filter(command=>command.type==="game:startRace")).toHaveLength(1);
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:22:37
+
+  ● Race Session private command ownership › rejects a response matching the edited public role rather than the private contract
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "RaceTo10.ERROR_INVALID_RESPONSE"
+    Received: null
+
+      30 |     mutate(h.session.getSnapshot().run!,field);mutate(forged,field);h.session.retry();
+      31 |     h.respond("raceResume",{run:forged});
+    > 32 |     expect(h.session.getSnapshot().error).toBe("RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      33 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+      34 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed"}});
+      35 |   });
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:32:43
+
+  ● Race Session private command ownership › rejects a response matching the edited public categoryId rather than the private contract
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "RaceTo10.ERROR_INVALID_RESPONSE"
+    Received: null
+
+      30 |     mutate(h.session.getSnapshot().run!,field);mutate(forged,field);h.session.retry();
+      31 |     h.respond("raceResume",{run:forged});
+    > 32 |     expect(h.session.getSnapshot().error).toBe("RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      33 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+      34 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed"}});
+      35 |   });
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:32:43
+
+  ● Race Session private command ownership › rejects a response matching the edited public challengeId rather than the private contract
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "RaceTo10.ERROR_INVALID_RESPONSE"
+    Received: null
+
+      30 |     mutate(h.session.getSnapshot().run!,field);mutate(forged,field);h.session.retry();
+      31 |     h.respond("raceResume",{run:forged});
+    > 32 |     expect(h.session.getSnapshot().error).toBe("RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      33 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+      34 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed"}});
+      35 |   });
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:32:43
+
+  ● Race Session private command ownership › rejects a response matching the edited public rivalryChallengeId rather than the private contract
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "RaceTo10.ERROR_INVALID_RESPONSE"
+    Received: null
+
+      30 |     mutate(h.session.getSnapshot().run!,field);mutate(forged,field);h.session.retry();
+      31 |     h.respond("raceResume",{run:forged});
+    > 32 |     expect(h.session.getSnapshot().error).toBe("RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      33 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+      34 |     expect(h.session.getSnapshot()).toMatchObject({error:null,run:{runId:h.run.runId,role:"creator",categoryId:"mixed"}});
+      35 |   });
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:32:43
+
+Test Suites: 1 failed, 1 total
+Tests:       9 failed, 1 passed, 10 total
+Snapshots:   0 total
+Time:        0.253 s
+Ran all test suites matching RaceSessionCommandOwnership.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionCommandOwnership`
+Exit status 1

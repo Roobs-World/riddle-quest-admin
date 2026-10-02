@@ -1,0 +1,131 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionDiscoveryCallbacks.test.ts
+FAIL src/play/race/__tests__/RaceSessionDiscoveryCallbacks.test.ts
+  ● Matchmaking completion callback ownership › drops matched completion after its callback removes the provider
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  -  3
+    + Received  + 15
+
+      Object {
+    -   "challenge": null,
+    +   "challenge": Object {
+    +     "adjustedTimeToBeatMs": 60000,
+    +     "categoryId": "mixed",
+    +     "challengeId": "challenge-1",
+    +     "creator": Object {
+    +       "displayName": "Nova",
+    +     },
+    +     "expiresAtMs": 1790884372721,
+    +     "locale": "en",
+    +     "rulesVersion": "race10_v1",
+    +     "status": "active",
+    +     "targetCorrect": 10,
+    +   },
+        "error": null,
+        "findingOpponent": false,
+        "matchFailure": null,
+    -   "matchSearchStatus": "idle",
+    -   "stage": "categories",
+    +   "matchSearchStatus": "matched",
+    +   "stage": "challenge",
+      }
+
+      34 |     expect(changed).toBe(true);
+      35 |     expect(h.commands.filter(command => command.type === "game:startRace")).toHaveLength(0);
+    > 36 |     expect(h.session.getSnapshot()).toMatchObject({stage: "categories", challenge: null, error: null,
+         |                                     ^
+      37 |       findingOpponent: false, matchSearchStatus: "idle", matchFailure: null});
+      38 |     expect(journal).toBeNull();
+      39 |   });
+
+      at src/play/race/__tests__/RaceSessionDiscoveryCallbacks.test.ts:36:37
+
+  ● Matchmaking completion callback ownership › drops empty completion after its callback removes the provider
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        "challenge": null,
+    -   "error": null,
+    +   "error": "RaceTo10.MATCH_EMPTY",
+        "findingOpponent": false,
+        "matchFailure": null,
+    -   "matchSearchStatus": "idle",
+    +   "matchSearchStatus": "empty",
+        "stage": "categories",
+      }
+
+      34 |     expect(changed).toBe(true);
+      35 |     expect(h.commands.filter(command => command.type === "game:startRace")).toHaveLength(0);
+    > 36 |     expect(h.session.getSnapshot()).toMatchObject({stage: "categories", challenge: null, error: null,
+         |                                     ^
+      37 |       findingOpponent: false, matchSearchStatus: "idle", matchFailure: null});
+      38 |     expect(journal).toBeNull();
+      39 |   });
+
+      at src/play/race/__tests__/RaceSessionDiscoveryCallbacks.test.ts:36:37
+
+  ● Matchmaking completion callback ownership › drops failure completion after its callback removes the provider
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 7
+
+      Object {
+        "challenge": null,
+    -   "error": null,
+    +   "error": "RaceTo10.MATCH_TEMPORARY",
+        "findingOpponent": false,
+    -   "matchFailure": null,
+    -   "matchSearchStatus": "idle",
+    +   "matchFailure": Object {
+    +     "reason": "temporarily-unavailable",
+    +     "recovery": "same-intent",
+    +     "retryAfterMs": 1000,
+    +   },
+    +   "matchSearchStatus": "failed",
+        "stage": "categories",
+      }
+
+      34 |     expect(changed).toBe(true);
+      35 |     expect(h.commands.filter(command => command.type === "game:startRace")).toHaveLength(0);
+    > 36 |     expect(h.session.getSnapshot()).toMatchObject({stage: "categories", challenge: null, error: null,
+         |                                     ^
+      37 |       findingOpponent: false, matchSearchStatus: "idle", matchFailure: null});
+      38 |     expect(journal).toBeNull();
+      39 |   });
+
+      at src/play/race/__tests__/RaceSessionDiscoveryCallbacks.test.ts:36:37
+
+  ● Matchmaking completion callback ownership › drops fallback completion after its callback removes the provider
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 0
+    Received length: 1
+    Received array:  [{"payload": {"categoryId": "mixed", "fallbackOfferId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "includeEvaluation": true, "locale": "en", "prepare": true, "requestId": "raceStart-5"}, "requestId": "raceStart-5", "type": "game:startRace"}]
+
+      33 |     unsubscribe();
+      34 |     expect(changed).toBe(true);
+    > 35 |     expect(h.commands.filter(command => command.type === "game:startRace")).toHaveLength(0);
+         |                                                                             ^
+      36 |     expect(h.session.getSnapshot()).toMatchObject({stage: "categories", challenge: null, error: null,
+      37 |       findingOpponent: false, matchSearchStatus: "idle", matchFailure: null});
+      38 |     expect(journal).toBeNull();
+
+      at src/play/race/__tests__/RaceSessionDiscoveryCallbacks.test.ts:35:77
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 4 total
+Snapshots:   0 total
+Time:        0.278 s
+Ran all test suites matching RaceSessionDiscoveryCallbacks.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionDiscoveryCallbacks.test.ts`
+Exit status 1

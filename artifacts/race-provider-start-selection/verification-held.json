@@ -1,0 +1,109 @@
+{
+  "taskId": "multiplayer:race-provider-start-selection",
+  "status": "focused-verification-passed-global-source-gates-pending",
+  "verifiedAt": "2026-10-01T21:28:19.618812+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "baselineTestsFailed": 1,
+  "baselineScope": "Public active challenge ID retargeted provider default acceptance before dispatch. Name/time contradictions, valid provider match and explicit different recording already behaved correctly.",
+  "browserCasesPassed": 10,
+  "retainedBrowserCasesPassed": 40,
+  "clientTestsPassed": 1743,
+  "clientSuitesPassed": 205,
+  "clientTestsSkipped": 102,
+  "clientSuitesSkipped": 13,
+  "fileHashes": {
+    "packages/portal/src/play/race/logic/raceEntrySelection.ts": "29d4397ee336945ffbee07ea92d9a397dbb7f9b2c5e3f1b91c69c599ebbe8ca7",
+    "packages/portal/src/play/race/__tests__/raceProviderStartSelection.test.ts": "6e9ec07c003da62fc6b878fde4131710efd43b9d78db9f65c428673474d8bc01",
+    "packages/portal/scripts/verify-race-provider-start-browser.mjs": "81da177d7a0b78ee102854230b9be1001d970ae52319d658f6ea3f938eefe8cb",
+    "docs/development-tasks/race-provider-start-selection.json": "5975cc64ea234e6bf2e48eaa8cdea11b01ac4a06ef594c004c3b69118cc6dba2"
+  },
+  "logHashes": {
+    "retained-start-selection.log": "bb4ee6dc6caecdd49df6f610469ef0a3d1ef9318c873eb8a258542cae380003a",
+    "retained-matchmaking-removal.log": "85b6446f1bf1179e2bf166dc43de80ce5d24eeb90500e00495a39d5178da827d",
+    "browser.log": "dd2c8cae72b8123e4eba8f6fbde712ec21caea2b36f59ebc7b8ba10dc6fc6b73",
+    "baseline-unit.log": "7e69d88bcd7c97516e877aa050973fedef60e0c88c9dfdca6774754ca85ee48b",
+    "scalability.log": "9440d71cb44b67c74a84d061c6abc7f3bae839d08c96e04e8b3cfc1329770ec3",
+    "tsdoc.log": "9b95c39b393c7de50b3f283c51a21da1120c81468c6d9625dbf9033658e21ec9",
+    "types.log": "e874f85428a3230367682318ee66072a56c019edc0347d7b2aabaf6a59db078b",
+    "dependencies.log": "4ca111f9cf0418467d5f840dab845b9942704850b193c62d479ef165cf13e328",
+    "retained-private-creator.log": "61222c075b7300db92424427d7f6e4a00df766afed2e65a81fa49618129da5c8",
+    "security.log": "cddad60a5117ef785acd6820cd64ce0fb7c9a42958a53141c06ee3917a1c8b9f",
+    "file-sizes.log": "58555ade3fd0b158e33059598337d5e6551394569982420baad8368ab071aa3b",
+    "client-tests.log": "5a66a328ad46cd70c3887ee19c9705ce0808225fdcdf0c90c9166a8237bb2e0d",
+    "retained-waiting-selection.log": "b0e4e765b2d6937ea4935691bfc6dc7651dffa19655c7b4ef36d2a0f51df90f8",
+    "builds.log": "a4e2819b28e65d27bb25a836bc715115ecb34bcd415f809dc060099f9aa99dc5"
+  },
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "cbae1bb8d15b1362df5de16828384dc23b7b6597660c164bff71a037beb19415"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "2474b075026c34a42ebcd069a26feaa0a4f894a3176c3f180f146ddcef5f4cde"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "915c0e060bf460566cab28e89d81aea14056d1ec8f5eb8166ae7d112302a7ea7"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "c61564ad23c9d8f4a91a92fdd7d19e7dacdfc71a29fd3e7cdebb2c30fcefa796"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "b7e7fdec4de74fa733917787140cd0ebe815ddca10767f706bdc02e7276a9cfb"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "fa47e7f3698e0669d1a68c281d70c1f7b4f3b223fcc32942ed3b5c222b26a537"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "17ba4a08e4dbfe50612a13880798b0ebfc92723fc2e61a73c07d7b4293d32d31"
+    }
+  ],
+  "backendPreviouslyVerifiedSourceRecheck": {
+    "filesRechecked": 333,
+    "changed": [
+      "firebase-functions/src/__tests__/completeGameTransaction.test.ts",
+      "firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts",
+      "firebase-functions/src/gameplay/completeGameLogic.ts",
+      "firebase-functions/src/gameplay/singlePlayerSession.ts"
+    ]
+  },
+  "backendProof": "artifacts/race-current-integration/verification-held.json",
+  "backendProofScope": "Earlier full backend coverage is retained evidence; four concurrently edited solo gameplay files have changed since that run. Captured race files are unchanged. No fresh backend coverage claim.",
+  "checksPassed": [
+    "complete-client-suite",
+    "portal-types",
+    "security",
+    "scalability",
+    "seven-isolated-platform-builds",
+    "exact-target-dependency-evidence",
+    "provider-start-selection-browser",
+    "retained-start-selection-browser",
+    "retained-private-creator-browser",
+    "retained-waiting-selection-browser",
+    "retained-matchmaking-removal-browser"
+  ],
+  "sharedChecksPending": {
+    "documented-declarations": "86 declarations outside focused files.",
+    "file-size-limits": "Concurrent hosted authentication E2E has 1295 equivalent lines, limit 1200."
+  },
+  "fullVerificationRequiredChecks": 75,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdatedThisBatch": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformedThisBatch": false,
+  "remainingGate": "Let ongoing E2E work finish, resolve global gates and run guarded full-source verification before dashboard recording; continue multiplayer reliability audit.",
+  "baselineControlsPassed": 4,
+  "verificationRepairs": []
+}

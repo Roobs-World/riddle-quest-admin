@@ -11,6 +11,8 @@ import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
 import {resolveFacebookCapabilityVisibility, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookOverlayCapability} from "./FacebookOverlayCapability";
 import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
+import {LANGUAGE_OPTIONS} from "../play/i18n";
+import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 
 /** Defines the preferences key value. */
 const PREFERENCES_KEY = "riddleQuestPreferences";
@@ -125,7 +127,17 @@ class FacebookStorage implements PlatformStorage {
   async readPreferences(): Promise<PlatformPreferences> {
     /** Provides data behavior. */
     const data = await this.afterPendingOperations(() => this.sdk.player.getDataAsync([PREFERENCES_KEY]));
-    return parsePreferences(data[PREFERENCES_KEY]);
+    /** Saved preferences normalized before applying the provider locale fallback. */
+    const preferences = parsePreferences(data[PREFERENCES_KEY]);
+    if (!LANGUAGE_OPTIONS.some(({code}) => code === preferences.locale)) {
+      /** Language component reported by the Facebook SDK. */
+      const facebookLocale = this.sdk.getLocale?.()?.split(/[-_]/u)[0]?.toLowerCase();
+      /** Supported locale matching the provider language. */
+      const locale = LANGUAGE_OPTIONS.find(({code}) => code === facebookLocale)?.code;
+      if (locale) preferences.locale = locale;
+      else delete preferences.locale;
+    }
+    return preferences;
   }
 
   /** Provides write preferences behavior. */
@@ -159,7 +171,7 @@ class FacebookStorage implements PlatformStorage {
   }
 }
 
-/** Owns Facebook's strict initialize/read/start ordering behind the shared boundary. */
+/** Starts the Meta SDK before reading player identity or cloud data. */
 export class FacebookPlatformBootstrap implements PlatformBootstrap {
   /** Stores get sdk. */
   private readonly getSdk: () => FacebookInstantSdk;
@@ -180,6 +192,11 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
       await sdk.initializeAsync();
       sdk.setLoadingProgress(30);
       reportProgress(30);
+      sdk.setLoadingProgress(70);
+      reportProgress(70);
+      sdk.setLoadingProgress(100);
+      await sdk.startGameAsync();
+      reportProgress(100);
       /** Provides player id behavior. */
       const playerId = sdk.player.getID();
       if (!playerId || playerId.length > 256) {
@@ -188,11 +205,6 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
       /** Provides storage behavior. */
       const storage = new FacebookStorage(sdk);
       await storage.readPreferences();
-      sdk.setLoadingProgress(70);
-      reportProgress(70);
-      await sdk.startGameAsync();
-      sdk.setLoadingProgress(100);
-      reportProgress(100);
       /** Provides supported apis behavior. */
       const supportedApis = new Set(sdk.getSupportedAPIs());
       /** Provides visibility behavior. */
@@ -205,7 +217,8 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
           nativeSocial:
             Boolean(sdk.context) &&
             supportedApis.has("context.chooseAsync") &&
-            supportedApis.has("context.matchPlayerAsync"),
+            typeof sdk.matchPlayerAsync === "function" &&
+            supportedApis.has("matchPlayerAsync"),
         },
       });
       /** Provides native social behavior. */
@@ -218,24 +231,28 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
               },
               /** Provides choose context behavior. */
               async chooseContext() {
-                try {
-                  await sdk.context!.chooseAsync({minSize: 2, maxSize: 50});
-                  return facebookContextResult(sdk);
-                } catch (error) {
-                  return facebookSocialFailure(error);
-                }
+                return runFacebookSdkDialog(sdk, async () => {
+                  try {
+                    await sdk.context!.chooseAsync({minSize: 2, maxSize: 50});
+                    return facebookContextResult(sdk);
+                  } catch (error) {
+                    return facebookSocialFailure(error);
+                  }
+                });
               },
               /** Provides match player behavior. */
               async matchPlayer(tag?: string) {
-                try {
-                  if (tag !== undefined && (tag.length === 0 || tag.length > 100)) {
-                    return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
-                  }
-                  await sdk.context!.matchPlayerAsync(tag, true, true);
-                  return facebookContextResult(sdk);
-                } catch (error) {
-                  return facebookSocialFailure(error);
+                if (tag !== undefined && !/^[A-Za-z0-9_]{1,100}$/u.test(tag)) {
+                  return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
                 }
+                return runFacebookSdkDialog(sdk, async () => {
+                  try {
+                    await sdk.matchPlayerAsync!(tag, true, true);
+                    return facebookContextResult(sdk);
+                  } catch (error) {
+                    return facebookSocialFailure(error);
+                  }
+                });
               },
             }
           : undefined;
@@ -266,6 +283,10 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
             onResume(callback) {
               /** Provides active behavior. */
               let active = true;
+              if (sdk.onResume) {
+                sdk.onResume(() => {if (active) void callback();});
+                return () => {active = false;};
+              }
               /** Handles visibility. */
               const handleVisibility = () => {
                 if (active && document.visibilityState === "visible") void callback();

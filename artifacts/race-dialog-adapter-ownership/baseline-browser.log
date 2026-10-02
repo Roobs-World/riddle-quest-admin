@@ -1,0 +1,630 @@
+Dialog adapter ownership FAILED: {"mode":"context","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"context","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"context","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"context","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"context","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"context","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"context","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"context","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"match","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"tournament","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+Dialog adapter ownership FAILED: {"mode":"referral","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: [{"mode":"context","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"context","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"success","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"failure","width":1280,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"context","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"context","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"success","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"failure","width":390,"strict":false,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"context","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"context","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"success","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"failure","width":1280,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"context","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"context","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"match","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"tournament","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"success","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"},{"mode":"referral","ending":"failure","width":390,"strict":true,"message":"retired provider dialog kept replacement control disabled\n\ntrue !== false\n"}]
++ actual - expected
+
++ [
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: false,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: false,
++     width: 390
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: true,
++     width: 1280
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: true,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'context',
++     strict: true,
++     width: 390
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: true,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'match',
++     strict: true,
++     width: 390
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: true,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'tournament',
++     strict: true,
++     width: 390
++   },
++   {
++     ending: 'success',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: true,
++     width: 390
++   },
++   {
++     ending: 'failure',
++     message: 'retired provider dialog kept replacement control disabled\n' +
++       '\n' +
++       'true !== false\n',
++     mode: 'referral',
++     strict: true,
++     width: 390
++   }
++ ]
+- []
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-dialog-adapter-browser.mjs:85:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      mode: 'context',
+      ending: 'success',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'context',
+      ending: 'failure',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'success',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'failure',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'success',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'failure',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'success',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'failure',
+      width: 1280,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'context',
+      ending: 'success',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'context',
+      ending: 'failure',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'success',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'failure',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'success',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'failure',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'success',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'failure',
+      width: 390,
+      strict: false,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'context',
+      ending: 'success',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'context',
+      ending: 'failure',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'success',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'failure',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'success',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'failure',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'success',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'failure',
+      width: 1280,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'context',
+      ending: 'success',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'context',
+      ending: 'failure',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'success',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'match',
+      ending: 'failure',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'success',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'tournament',
+      ending: 'failure',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'success',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    },
+    {
+      mode: 'referral',
+      ending: 'failure',
+      width: 390,
+      strict: true,
+      message: 'retired provider dialog kept replacement control disabled\n' +
+        '\n' +
+        'true !== false\n'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

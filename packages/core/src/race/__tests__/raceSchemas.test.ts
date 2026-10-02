@@ -176,7 +176,10 @@ describe("Race to 10 contracts", () => {
       totalPenaltyMs: (sequence + 1) * RACE_HINT_PENALTY_MS,
       adjustedElapsedMs: hintEvent.wallElapsedMs + (sequence + 1) * RACE_HINT_PENALTY_MS,
     }));
-    expect(RaceRunViewSchema.safeParse({...run, events: repeatedHints}).success).toBe(true);
+    /** The capacity fixture accounts for all recorded charges in its containing clock. */
+    const longRun = {...run, totalPenaltyMs: repeatedHints.at(-1)!.totalPenaltyMs,
+      adjustedElapsedMs: run.wallElapsedMs + repeatedHints.at(-1)!.totalPenaltyMs};
+    expect(RaceRunViewSchema.safeParse({...longRun, events: repeatedHints}).success).toBe(true);
     expect(RaceRunViewSchema.safeParse({...run, events: Array.from({length: 121}, (_, index) => ({
       ...repeatedHints[0], sequence: index,
     }))}).success).toBe(false);

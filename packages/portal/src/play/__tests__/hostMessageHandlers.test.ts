@@ -47,7 +47,7 @@ const createHarness = (
   /** Loads and post riddle. */
   const loadAndPostRiddle = jest.fn(async () => true);
   /** Provides sync race achievement progress behavior. */
-  const syncRaceAchievementProgress = jest.fn(async () => undefined);
+  const syncRaceAchievementProgress = jest.fn(async (): Promise<boolean | void> => undefined);
   /** Persists a locally projected achievement. */
   const persistAchievementProjection = jest.fn((_achievementIds: string[]) => undefined);
   /** Sets frame ready. */
@@ -294,6 +294,20 @@ describe("play host message handlers", () => {
     const request = harness.handlers.getRaceOutcome({type: "game:getRaceOutcome", requestId: "outcome-fast", payload: {runId: "run-1"}}).then(() => { delivered = true; });
     await new Promise(resolve => setImmediate(resolve));
     try { expect(delivered).toBe(true); } finally { finish(); await request; }
+  });
+
+  it.each([false, true, undefined])("honors optional multiplayer follow-up ownership=%s", async owned => {
+    /** Canonical result is delivered independently of optional platform work. */
+    const services = createFakeHostServices();
+    jest.spyOn(services, "getRaceOutcome").mockResolvedValue({runId: "run-1", result: "recorded", correctCount: 10,
+      wallFinishMs: 40000, hintPenaltyMs: 0, skipPenaltyMs: 0, totalPenaltyMs: 0, adjustedFinishMs: 40000,
+      publishable: true, rematchEligible: false, newlyUnlockedAchievementIds: [], achievementCoinsAwarded: 0});
+    /** Callback must be suppressed only after explicit ownership loss. */
+    const raceResult = jest.fn(async () => undefined), harness = createHarness(services, undefined, undefined, undefined, raceResult);
+    harness.syncRaceAchievementProgress.mockResolvedValue(owned);
+    await harness.handlers.getRaceOutcome({type: "game:getRaceOutcome", requestId: "owned-outcome", payload: {runId: "run-1"}});
+    await new Promise(resolve => setImmediate(resolve));
+    expect(raceResult).toHaveBeenCalledTimes(owned === false ? 0 : 1);
   });
 
   it("notifies the platform only after authoritative single-player and race results", async () => {

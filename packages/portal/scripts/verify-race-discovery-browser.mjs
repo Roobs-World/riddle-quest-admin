@@ -50,10 +50,10 @@ render(owner);
 window.probeStorage=async()=>{
  const results=[];
  for(const mode of ['matched','empty','failure','cancelled']) {
-  const commands=[];let armed=false,changed=false,session;
+  const commands=[];let armed=false,changed=false,session,journal=null;
   const replace=()=>{if(armed&&!changed){changed=true;session.enter({locale:'en',ownerId:'replacement'});}};
   session=new RaceSession({locale:'en',ownerId:'original'},{postToHost:message=>commands.push(message),
-   persistence:{read:()=>null,save:()=>{},clear:()=>{}},recovery:{read:()=>null,save:replace,clear:replace}});
+   persistence:{read:()=>null,save:()=>{},clear:()=>{}},recovery:{read:()=>journal,save:record=>{journal=record;replace();},clear:replace}});
   session.enter();session.receive({type:'host:operationResult',requestId:commands.at(-1).requestId,
    payload:{operation:'raceCategories',ok:true,data:await catalog.listRaceCategories('en')}});
   await session.findOpponent({find:async()=>{

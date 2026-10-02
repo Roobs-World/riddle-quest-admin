@@ -1,0 +1,52 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-unacknowledged-timeout-recovery.json
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: pnpm check:tsdoc
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 13 production declarations are undocumented.
+- packages/core/src/race/raceSchemas.ts:137 run
+- packages/portal/src/facebook/FacebookCapabilityPolicy.ts:32 matchmakingEnabled
+- packages/portal/src/facebook/FacebookCapabilityPolicy.ts:32 configurationLoaded
+- packages/portal/src/facebook/FacebookPlatformBootstrap.ts:129 preferences
+- packages/portal/src/facebook/FacebookPlatformBootstrap.ts:131 facebookLocale
+- packages/portal/src/facebook/FacebookPlatformBootstrap.ts:132 locale
+- packages/portal/src/facebook/__tests__/FacebookCapabilityPolicy.test.ts:7 capabilities
+- packages/portal/src/facebook/__tests__/FacebookCapabilityPolicy.test.ts:13 disabled
+- packages/portal/src/facebook/__tests__/FacebookCapabilityPolicy.test.ts:18 failed
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:101 harness
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:103 result
+- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:119 harness
+- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:498 tooltip
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at ChildProcess.exithandler (node:child_process:417:12)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+  code: 1,
+  killed: false,
+  signal: null,
+  cmd: 'pnpm check:tsdoc',
+  stdout: '[ELIFECYCLE] Command failed with exit code 1.\n',
+  stderr: '$ node scripts/audit-tsdoc.mjs\n' +
+    'TSDoc audit failed: 13 production declarations are undocumented.\n' +
+    '- packages/core/src/race/raceSchemas.ts:137 run\n' +
+    '- packages/portal/src/facebook/FacebookCapabilityPolicy.ts:32 matchmakingEnabled\n' +
+    '- packages/portal/src/facebook/FacebookCapabilityPolicy.ts:32 configurationLoaded\n' +
+    '- packages/portal/src/facebook/FacebookPlatformBootstrap.ts:129 preferences\n' +
+    '- packages/portal/src/facebook/FacebookPlatformBootstrap.ts:131 facebookLocale\n' +
+    '- packages/portal/src/facebook/FacebookPlatformBootstrap.ts:132 locale\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookCapabilityPolicy.test.ts:7 capabilities\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookCapabilityPolicy.test.ts:13 disabled\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookCapabilityPolicy.test.ts:18 failed\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:101 harness\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:103 result\n' +
+    '- packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:119 harness\n' +
+    '- packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:498 tooltip\n'
+}
+
+Node.js v24.17.0
+[ELIFECYCLE] Command failed with exit code 1.

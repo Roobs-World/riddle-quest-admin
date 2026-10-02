@@ -1,0 +1,12 @@
+[Node v22.23.1] TypeScript
+[Node v22.23.1] ESLint
+[Node v22.23.1] Jest unit suite
+(node:479614) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Test Suites: 116 passed, 116 total
+Tests:       1392 passed, 1392 total
+Snapshots:   0 total
+Time:        20.256 s
+Ran all test suites.
+Firebase Functions Node 22 compatibility verification passed on v22.23.1.

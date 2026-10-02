@@ -108,9 +108,15 @@ export function getOnboardingTotalSteps(): number {
   return 2;
 }
 
-/** Returns the main tour, omitting the unavailable skip action in challenge mode. */
-export function getGameTour(gameMode: GameSessionState["gameMode"]): TooltipId[] {
-  return gameMode === "challenge" ? GAME_TOUR.filter((id) => id !== "gameSkip") : [...GAME_TOUR];
+/** Omits actions unavailable in the current mode or platform's commerce capability. */
+export function getGameTour(gameMode: GameSessionState["gameMode"], commerceAvailable = true): TooltipId[] {
+  return GAME_TOUR.filter((id) =>
+    (gameMode !== "challenge" || id !== "gameSkip") && (commerceAvailable || id !== "gameCoins"));
+}
+
+/** Avoids advertising a coin shop when the active provider has no checkout. */
+export function getProfileTour(commerceAvailable = true): TooltipId[] {
+  return PROFILE_TOUR.filter((id) => commerceAvailable || id !== "profileTreasure");
 }
 
 /** Returns contextual tooltip candidates in their display priority order. */

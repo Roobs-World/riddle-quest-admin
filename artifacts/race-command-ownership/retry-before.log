@@ -1,0 +1,66 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionCommandOwnership
+FAIL src/play/race/__tests__/RaceSessionCommandOwnership.test.ts
+  ● Race Session private command ownership › retains the original abandon mutation receipt after a public run-ID edit and failed delivery
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+        "payload": Object {
+    -     "requestId": "raceAbandon-5",
+    +     "includeEvaluation": true,
+          "runId": "fake-run-1",
+        },
+    -   "requestId": "raceAbandon-5",
+    -   "type": "game:abandonRace",
+    +   "requestId": "raceResume-7",
+    +   "type": "game:resumeRace",
+      }
+
+      34 |     expect(original.payload).toMatchObject({runId:h.run.runId});
+      35 |     h.reject(operation === "publish" ? "racePublish" : "raceAbandon","Temporary delivery failure");h.session.retry();
+    > 36 |     expect(h.last()).toEqual(original);
+         |                      ^
+      37 |   });
+      38 |   it.each(["role","categoryId","challengeId","rivalryChallengeId"])("rejects a response matching the edited public %s rather than the private contract",async field=>{
+      39 |     /** Both the UI edit and response must remain outside the confirmed authority boundary. */
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:36:22
+
+  ● Race Session private command ownership › retains the original publish mutation receipt after a public run-ID edit and failed delivery
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "payload": Object {
+          "runId": "fake-run-1",
+        },
+    -   "requestId": "raceOutcome-7",
+    +   "requestId": "raceOutcome-10",
+        "type": "game:getRaceOutcome",
+      }
+
+      34 |     expect(original.payload).toMatchObject({runId:h.run.runId});
+      35 |     h.reject(operation === "publish" ? "racePublish" : "raceAbandon","Temporary delivery failure");h.session.retry();
+    > 36 |     expect(h.last()).toEqual(original);
+         |                      ^
+      37 |   });
+      38 |   it.each(["role","categoryId","challengeId","rivalryChallengeId"])("rejects a response matching the edited public %s rather than the private contract",async field=>{
+      39 |     /** Both the UI edit and response must remain outside the confirmed authority boundary. */
+
+      at src/play/race/__tests__/RaceSessionCommandOwnership.test.ts:36:22
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 10 passed, 12 total
+Snapshots:   0 total
+Time:        0.258 s, estimated 1 s
+Ran all test suites matching RaceSessionCommandOwnership.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionCommandOwnership`
+Exit status 1

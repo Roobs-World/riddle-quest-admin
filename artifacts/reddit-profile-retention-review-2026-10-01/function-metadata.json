@@ -1,0 +1,11 @@
+{
+  "capturedAt": "2026-10-01T08:32:13.908Z",
+  "projectId": "riddle-quest-ec2b2",
+  "source": "Firebase MCP functions_list_functions",
+  "readOnly": true,
+  "functionCount": 90,
+  "redditProfileRetentionSchedulerPresent": false,
+  "sourceRevisionVerified": false,
+  "productionRowsRead": false,
+  "mutations": 0
+}

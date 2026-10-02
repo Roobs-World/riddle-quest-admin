@@ -104,6 +104,8 @@
     "MATCH_EXPIRED": "이 상대 검색이 만료되었습니다. 다시 시도하세요.",
     "MATCH_CONSUMED": "이 검색은 이미 사용되었습니다. 다른 상대를 찾으세요.",
     "MATCH_UNAVAILABLE": "이 계정에서는 상대를 검색할 수 없습니다.",
-    "MATCH_EMPTY": "아직 적합한 상대가 없습니다. 나중에 다시 시도하세요."
+    "MATCH_EMPTY": "아직 적합한 상대가 없습니다. 나중에 다시 시도하세요.",
+    "CHALLENGE_FRIEND": "친구에게 도전",
+    "SHARE_TOURNAMENT": "토너먼트 공유"
   }
 }

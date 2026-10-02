@@ -70,6 +70,64 @@ describe("Race Invitation transactional lifecycle", () => {
     expect(JSON.stringify(recipient)).not.toContain("creatorId");
     expect(JSON.stringify(recipient)).not.toContain("recipientId");
   });
+  it("negotiates creator facts for public recordings without changing legacy responses or reserving a seat", async () => {
+    /** Private reservation supplies the original recording used by public-entry recovery tests. */
+    const reserved = await reserve();
+    await record(reserved.challengeId);
+    /** Validated stored recording copied into a reusable public challenge fixture. */
+    const stored = (await db.doc(`raceChallenges/${reserved.challengeId}`).get()).data()!;
+    /** Public recording identity selected independently of the private reservation. */
+    const challengeId = "public-owner-recovery";
+    await db.doc(`raceChallenges/${challengeId}`).set({...stored, challengeId, scope: "public"});
+    /** Negotiated creator entry proves results access without claiming the recipient seat. */
+    const creator = await getRaceEntryForUser("creator", challengeId, "en", {db, nowMs: NOW + 13000, includeViewerRole: true});
+    expect(creator).toMatchObject({status: "ready", viewerRole: "creator"});
+    expect(creator).not.toHaveProperty("invitation");
+    /** Negotiated recipient entry verifies public challenge acceptance context. */
+    const recipient = await getRaceEntryForUser("recipient", challengeId, "en", {db, nowMs: NOW + 13000, includeViewerRole: true});
+    expect(recipient).toMatchObject({status: "ready", viewerRole: "recipient"});
+    expect(recipient).not.toHaveProperty("invitation");
+    /** Legacy entry response must omit unrequested negotiated recovery fields. */
+    const legacy = await getRaceEntryForUser("creator", challengeId, "en", {db, nowMs: NOW + 13000});
+    expect(legacy).toMatchObject({status: "ready"});
+    expect(legacy).not.toHaveProperty("viewerRole");
+    expect(JSON.stringify(creator)).not.toContain("creatorId");
+    expect((await db.doc(`raceInviteLobbies/${challengeId}`).get()).exists).toBe(false);
+    await expect(startRaceRunForUser("creator", {locale: "en", challengeId, requestId: "self-accept-rejected"}, {db, nowMs: NOW + 13000}))
+      .rejects.toMatchObject({code: "failed-precondition"});
+  });
+  it("exposes an accepted run only to its owner and only when recovery is requested", async () => {
+    /** Private reservation supplies the original recording used by public-entry recovery tests. */
+    const reserved = await reserve();
+    await record(reserved.challengeId);
+    /** Validated stored recording copied into a reusable public challenge fixture. */
+    const stored = (await db.doc(`raceChallenges/${reserved.challengeId}`).get()).data()!;
+    /** Public recording identity selected independently of the private reservation. */
+    const challengeId = "public-played-recovery";
+    await db.doc(`raceChallenges/${challengeId}`).set({...stored, challengeId, scope: "public"});
+    /** Server-authoritative accepted attempt provides the owner-bound recovery pointer. */
+    const started = await startRaceRunForUser("recipient", {locale: "en", challengeId, requestId: "accepted-once"}, {db, nowMs: NOW + 13000});
+    /** Explicit authority clock and negotiated fields for accepted-attempt recovery. */
+    const options = {db, nowMs: NOW + 14000, includeViewerRole: true, includeExistingAttempt: true};
+    await expect(getRaceEntryForUser("recipient", challengeId, "en", options)).resolves.toMatchObject({status: "ready", existingRunId: started.run.runId, viewerRole: "recipient"});
+    /** Legacy entry response must omit unrequested negotiated recovery fields. */
+    const legacy = await getRaceEntryForUser("recipient", challengeId, "en", {db, nowMs: NOW + 14000, includeViewerRole: true});
+    expect(legacy).not.toHaveProperty("existingRunId");
+    /** Another recipient's entry must not expose the first player's accepted run. */
+    const other = await getRaceEntryForUser("stranger", challengeId, "en", options);
+    expect(other).toMatchObject({status: "ready"});
+    expect(other).not.toHaveProperty("existingRunId");
+    for (let index = 0; index < 10; index++) {
+      /** Canonical run fixture retains identity and competitive facts for recovery assertions. */
+      const run = (await db.doc(`raceRuns/${started.run.runId}`).get()).data()!;
+      /** Canonical next question supplied by the current authority-owned content state. */
+      const riddle = run.riddles[run.currentPosition];
+      await submitRaceGuessForUser("recipient", {runId: started.run.runId, riddleId: riddle.riddleId, guess: riddle.answer, requestId: `played-${index}`}, {db, nowMs: NOW + 14000 + index * 500});
+    }
+    await expect(getRaceEntryForUser("recipient", challengeId, "en", {...options, nowMs: NOW + 26000})).resolves.toMatchObject({status: "ready", existingRunId: started.run.runId});
+    await db.doc(`raceRuns/${started.run.runId}`).update({userId: "stranger"});
+    await expect(getRaceEntryForUser("recipient", challengeId, "en", options)).resolves.toMatchObject({status: "unavailable", reason: "invalid"});
+  });
   it("allows exactly one concurrent recipient and retains the seat on recovery", async () => {
     /** Exclusive two-seat invitation. */
     const reserved = await reserve();

@@ -1,5 +1,5 @@
 import {expect} from "@jest/globals";
-import type {Page} from "@playwright/test";
+import type {Page, BrowserContext} from "@playwright/test";
 
 /** Describes auth harness state. */
 export type AuthHarnessState = {
@@ -289,4 +289,78 @@ export const verifyGuestStartupIdentity = (state: {
     expect(state.calls).not.toContain("sdk.social.getProfile");
     expect(state.calls.filter((call) => call === "sdk.data.getAll")).toHaveLength(2);
     expect(state.notificationSchedules).toEqual([]);
+};
+
+/** Verifies a delayed host handshake stays pending past the old deadline without accessing identity. */
+export const verifyDelayedHostHandshake = async (harness: {
+  /** Provides the delayed SDK browser page. */
+  page: Page;
+  /** Provides its isolated browser context. */
+  context: BrowserContext;
+  /** Captures browser errors. */
+  pageErrors: unknown[];
+}, readState: () => Promise<{
+  /** Captures SDK calls. */
+  calls: string[];
+  /** Captures identity exchanges. */
+  backendExchanges: string[];
+}>) => {
+  /** Provides the delayed SDK page. */
+  const {page} = harness;
+  await page.waitForTimeout(13_000);
+  /** Captures calls while SDK initialization is pending. */
+  const waiting = await readState();
+  expect(waiting.calls).toContain("sdk.init");
+  expect(waiting.calls).not.toContain("sdk.getPlayer");
+  expect(waiting.backendExchanges).toEqual([]);
+  expect(await page.getByRole("heading", {name: /startup failed/i}).count()).toBe(0);
+  await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 25_000});
+  expect(harness.pageErrors).toEqual([]);
+  await harness.context.close();
+};
+
+/** Verifies optional social-profile failure does not prevent registered play. */
+export const verifyOptionalProfileFailure = async (page: Page, readState: () => Promise<{
+  /** Captures social profile reads. */
+  profileReads: number;
+  /** Captures identity exchange. */
+  backendExchanges: string[];
+}>) => {
+    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+    /** Reads identity observations after startup is ready. */
+    const state = await readState();
+    expect(state.profileReads).toBe(1);
+    expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:true"]);
+    expect(await page.getByRole("heading", {name: /startup failed/i}).count()).toBe(0);
+};
+
+/** Verifies startup failures expose a retry without browser errors. */
+export const verifyRetryableStartupScreen = async (page: Page, message: RegExp, pageErrors: unknown[], timeout: number) => {
+  await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout});
+  expect(await page.getByText(message).isVisible()).toBe(true);
+  expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
+  expect(pageErrors).toEqual([]);
+};
+
+/** Retries a transient SDK failure and waits for the playable entry screen. */
+export const retryFailedStartup = async (page: Page) => {
+    await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout: 15_000});
+    await page.getByRole("button", {name: /retry/i}).click();
+    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+};
+
+/** Dismisses optional completion guidance, including cards scheduled after the reward modal closes. */
+export const dismissDailyCompletionGuidance = async (page: Page) => {
+  for (let step = 0; step < 8; step += 1) {
+    /** Provides the next optional completion guidance card. */
+    const tooltip = page.locator(".tooltip-backdrop");
+    try {
+      await tooltip.waitFor({state: "visible", timeout: 2_000});
+    } catch (error) {
+      if (error instanceof Error && error.name === "TimeoutError") return;
+      throw error;
+    }
+    await tooltip.getByRole("button", {name: /^got it$/i}).click();
+  }
+  throw new Error("Daily completion guidance did not finish within eight cards.");
 };

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T05:34:42Z",
+  "uploadEligible": false,
+  "importEligible": false,
+  "humanReviewed": false,
+  "translatorModel": "gpt-6.1-sol",
+  "criticModel": "gpt-6-astra",
+  "authenticationProbe": {
+    "authenticated": true,
+    "bothModelsAvailable": true,
+    "credentialValuesRetained": false
+  },
+  "source": {
+    "file": "firebase-functions/content/race-en-reviewed-v2.json",
+    "sha256": "e4ed372c49ed6a6d7f98f583549f86f192b6b5eec9890fe92b721b59cdfe4ef1",
+    "riddles": 180,
+    "changed": false
+  },
+  "checkpoints": [
+    {
+      "locale": "de",
+      "translations": 30,
+      "critiques": 30,
+      "rejectedCanonicalIds": [],
+      "checkpoint": "artifacts/facebook-translations-review-2026-10-01/checkpoints/race-de.checkpoint.json",
+      "sha256": "60fdf8fc0619dadf8f52fe86d9130fc0af362458cc6ca8e58e39a5925ba2da51",
+      "sourceAndCritiqueHashesValidated": true
+    },
+    {
+      "locale": "es",
+      "translations": 30,
+      "critiques": 30,
+      "rejectedCanonicalIds": [
+        "race:history:v2:20"
+      ],
+      "checkpoint": "artifacts/facebook-translations-review-2026-10-01/checkpoints/race-es.checkpoint.json",
+      "sha256": "9f651d4a25af50c49e167bf62f97ef4d92eb358475378b84b4dfd33177c4ec2e",
+      "sourceAndCritiqueHashesValidated": true
+    },
+    {
+      "locale": "fr",
+      "translations": 15,
+      "critiques": 15,
+      "rejectedCanonicalIds": [],
+      "checkpoint": "artifacts/facebook-translations-review-2026-10-01/checkpoints/race-fr.checkpoint.json",
+      "sha256": "3c7d570c09f3ebf91511d4e0d0b11e2d8aa99ea7077ef3d7c6426a7309c96728",
+      "sourceAndCritiqueHashesValidated": true
+    },
+    {
+      "locale": "it",
+      "translations": 15,
+      "critiques": 15,
+      "rejectedCanonicalIds": [],
+      "checkpoint": "artifacts/facebook-translations-review-2026-10-01/checkpoints/race-it.checkpoint.json",
+      "sha256": "76c5551a0c4cfbfbd9982328809ea1fdef330c9ccc4e28151ff768ab8a3556ef",
+      "sourceAndCritiqueHashesValidated": true
+    }
+  ],
+  "totalDrafts": 90,
+  "totalAcceptedCritiques": 89,
+  "eligibleLocaleBundles": 0,
+  "requiredLocaleBundles": 16,
+  "requiredTranslations": 2880,
+  "matrixAudit": {
+    "exitCode": 1,
+    "reason": "Missing complete locale bundle; partial checkpoints are not import bundles"
+  },
+  "proposal": "canonical-revision-proposal.json",
+  "effects": {
+    "liveImports": 0,
+    "runtimeChanges": false,
+    "answerLimitChanged": false,
+    "providerUploads": 0
+  }
+}

@@ -59,6 +59,21 @@ const payments = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe("Facebook commerce capability", () => {
+  test.each([undefined, null, ""])("accepts Meta catalogs without deprecated images (%p)", async (imageURI) => {
+    /** Meta no longer supports IAP catalog images. */
+    const products = catalog().map(entry => {
+      /** Preserves the required catalog fields while varying only the legacy image. */
+      const product = {...entry, imageURI};
+      if (imageURI === undefined) Reflect.deleteProperty(product, "imageURI");
+      return product;
+    });
+    await expect(new FacebookCommerceCapability(payments({getCatalogAsync: async () => products}), jest.fn()).listProducts())
+      .resolves.toMatchObject({status: "success"});
+  });
+
+  test.each([123, false, {}, "x".repeat(2049)])("rejects malformed legacy image %p", imageURI => {
+    expect(() => parseFacebookCatalog(catalog().map(entry => ({...entry, imageURI})))).toThrow("facebook-product-invalid");
+  });
   test("accepts documented decimal-string catalog amounts and preserves localized display prices", async () => {
     /** Catalog using the SDK-documented decimal string format. */
     const products = catalog().map((entry) => ({...entry, priceAmount: String(entry.priceAmount)}));

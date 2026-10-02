@@ -1,0 +1,33 @@
+{
+  "taskId": "multiplayer:race-cold-search-retirement",
+  "status": "scoped-verification-passed-global-receipt-held",
+  "guardedChecksCompletedBeforeFailure": [
+    "node22-backend-build-and-operator-safeguards",
+    "node22-isolated-backend-race-coverage",
+    "backend-types",
+    "client-race-recovery",
+    "backend-lint",
+    "isolated-platform-builds",
+    "target-dependency-evidence",
+    "security",
+    "scalability",
+    "file-size-limits"
+  ],
+  "failedGate": "documented-declarations",
+  "failure": "Two declarations in another chat\u2019s new JestHostedPlaySession.test.ts were undocumented during the guarded run. That chat remains active; its source is left untouched.",
+  "clientTestsIndependent": 1804,
+  "clientSuitesIndependent": 218,
+  "newBrowserCases": 8,
+  "retainedBrowserGates": [
+    "resolver failure",
+    "shared journal ownership",
+    "retry policy"
+  ],
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "sourceHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "2574b9daf62991d3215ec4b210bfdb56fcd182d4f6b3c8e059d4a2bc81f1a552",
+    "packages/portal/src/play/race/logic/raceDiscoveryRecovery.ts": "52ef8e7e9e058d19227d163e023f56a540e7d754d26f1ad51dec8b7ef2214de6",
+    "packages/portal/src/play/race/__tests__/raceColdSearchRetirement.test.ts": "ecfa2b4f268e767c9895d3e4c282309007e2c94b7a0af0521ee6f754fc955559",
+    "packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs": "485dea559b9443d4705349ebf84fdd8ba14d3137df39d1751961a27e3b8b6fe1"
+  }
+}

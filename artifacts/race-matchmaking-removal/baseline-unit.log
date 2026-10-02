@@ -1,0 +1,28 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=raceFallback.test.ts
+FAIL src/play/race/__tests__/raceFallback.test.ts
+  ● Empty multiplayer fallback › resolves the current adapter after a fallback race when matchmaking is removed
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 1
+    Received number of calls: 2
+
+      26 |     h.session.rematch("mixed");
+      27 |     await Promise.resolve(); await Promise.resolve();
+    > 28 |     expect(oldFind).toHaveBeenCalledTimes(1);
+         |                     ^
+      29 |     expect(newFind).toHaveBeenCalledTimes(mode === "replaced" ? 1 : 0);
+      30 |     if (mode === "removed") expect(h.session.getSnapshot()).toMatchObject({stage: "categories", findingOpponent: false});
+      31 |   });
+
+      at src/play/race/__tests__/raceFallback.test.ts:28:21
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 6 passed, 7 total
+Snapshots:   0 total
+Time:        0.246 s, estimated 1 s
+Ran all test suites matching raceFallback.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=raceFallback.test.ts`
+Exit status 1

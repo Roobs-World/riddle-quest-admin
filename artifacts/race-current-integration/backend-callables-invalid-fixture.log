@@ -1,0 +1,112 @@
+  console.error
+    ◇ injected env (12) from .env
+
+      2 | /** Keeps real local demo-emulator runs independent of deployment credentials and project overrides. */
+      3 | const isDemoEmulatorTest = /^demo-/.test(process.env.GCLOUD_PROJECT || "") && /^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST || "");
+    > 4 | if (!isDemoEmulatorTest) require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                                            ^
+      5 |
+      6 | // Ensure Jest environment is properly detected by iapConfig
+      7 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:4:44)
+
+FAIL src/__tests__/race/raceCallables.test.ts
+  ● Race callable methods › forwards validated invitation recovery preferences with authenticated identity: {"includeViewerRole":true}
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Invalid response payload from getRaceEntry: reason: Invalid option: expected one of "missing"|"claimed"|"blocked"|"deleted"|"locale"|"inactive"|"invalid"]
+
+      222 |     const response = {status: "unavailable", serverNowMs: 10000};
+      223 |     mockGetRaceEntryForUser.mockResolvedValueOnce(response);
+    > 224 |     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", ...preferences}))).resolves.toEqual(response);
+          |           ^
+      225 |     expect(mockGetRaceEntryForUser).toHaveBeenLastCalledWith(raceCallableUserId, "opaque-seat", "en", {
+      226 |       includeViewerRole: preferences.includeViewerRole, includeExistingAttempt: preferences.includeExistingAttempt,
+      227 |     });
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceCallables.test.ts:224:11
+
+  ● Race callable methods › forwards validated invitation recovery preferences with authenticated identity: {"includeViewerRole":false}
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Invalid response payload from getRaceEntry: reason: Invalid option: expected one of "missing"|"claimed"|"blocked"|"deleted"|"locale"|"inactive"|"invalid"]
+
+      222 |     const response = {status: "unavailable", serverNowMs: 10000};
+      223 |     mockGetRaceEntryForUser.mockResolvedValueOnce(response);
+    > 224 |     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", ...preferences}))).resolves.toEqual(response);
+          |           ^
+      225 |     expect(mockGetRaceEntryForUser).toHaveBeenLastCalledWith(raceCallableUserId, "opaque-seat", "en", {
+      226 |       includeViewerRole: preferences.includeViewerRole, includeExistingAttempt: preferences.includeExistingAttempt,
+      227 |     });
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceCallables.test.ts:224:11
+
+  ● Race callable methods › forwards validated invitation recovery preferences with authenticated identity: {"includeExistingAttempt":true}
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Invalid response payload from getRaceEntry: reason: Invalid option: expected one of "missing"|"claimed"|"blocked"|"deleted"|"locale"|"inactive"|"invalid"]
+
+      222 |     const response = {status: "unavailable", serverNowMs: 10000};
+      223 |     mockGetRaceEntryForUser.mockResolvedValueOnce(response);
+    > 224 |     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", ...preferences}))).resolves.toEqual(response);
+          |           ^
+      225 |     expect(mockGetRaceEntryForUser).toHaveBeenLastCalledWith(raceCallableUserId, "opaque-seat", "en", {
+      226 |       includeViewerRole: preferences.includeViewerRole, includeExistingAttempt: preferences.includeExistingAttempt,
+      227 |     });
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceCallables.test.ts:224:11
+
+  ● Race callable methods › forwards validated invitation recovery preferences with authenticated identity: {"includeExistingAttempt":false}
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Invalid response payload from getRaceEntry: reason: Invalid option: expected one of "missing"|"claimed"|"blocked"|"deleted"|"locale"|"inactive"|"invalid"]
+
+      222 |     const response = {status: "unavailable", serverNowMs: 10000};
+      223 |     mockGetRaceEntryForUser.mockResolvedValueOnce(response);
+    > 224 |     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", ...preferences}))).resolves.toEqual(response);
+          |           ^
+      225 |     expect(mockGetRaceEntryForUser).toHaveBeenLastCalledWith(raceCallableUserId, "opaque-seat", "en", {
+      226 |       includeViewerRole: preferences.includeViewerRole, includeExistingAttempt: preferences.includeExistingAttempt,
+      227 |     });
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceCallables.test.ts:224:11
+
+  ● Race callable methods › forwards validated invitation recovery preferences with authenticated identity: {"includeViewerRole":true,"includeExistingAttempt":true}
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Invalid response payload from getRaceEntry: reason: Invalid option: expected one of "missing"|"claimed"|"blocked"|"deleted"|"locale"|"inactive"|"invalid"]
+
+      222 |     const response = {status: "unavailable", serverNowMs: 10000};
+      223 |     mockGetRaceEntryForUser.mockResolvedValueOnce(response);
+    > 224 |     await expect(getRaceEntry(authenticatedRequest({challengeId: "opaque-seat", locale: "en", ...preferences}))).resolves.toEqual(response);
+          |           ^
+      225 |     expect(mockGetRaceEntryForUser).toHaveBeenLastCalledWith(raceCallableUserId, "opaque-seat", "en", {
+      226 |       includeViewerRole: preferences.includeViewerRole, includeExistingAttempt: preferences.includeExistingAttempt,
+      227 |     });
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceCallables.test.ts:224:11
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 92 passed, 97 total
+Snapshots:   0 total
+Time:        0.494 s, estimated 1 s
+Ran all test suites matching raceCallables.test.ts.

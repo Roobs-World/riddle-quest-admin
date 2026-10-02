@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-10-01T08:33:51+00:00",
+  "projectId": "riddle-quest-ec2b2",
+  "readOnly": true,
+  "productionRowsRead": false,
+  "complete": false,
+  "readFailed": true,
+  "status": 400,
+  "ready": null,
+  "sourceRevisionVerified": false,
+  "note": "Authenticated paginated metadata listing was rejected. Index presence and readiness remain unverified; no absence claim."
+}

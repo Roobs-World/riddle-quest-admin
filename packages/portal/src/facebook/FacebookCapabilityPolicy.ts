@@ -1,3 +1,5 @@
+import type {PlatformCapabilities} from "../platform/types";
+
 /** Describes facebook age category. */
 export type FacebookAgeCategory = "13_plus" | "unknown";
 
@@ -23,6 +25,23 @@ export type FacebookCapabilityVisibility = FacebookOptionalCapabilityAvailabilit
 /** Accepts only the explicit verified 13+ build value; every other value is unknown. */
 export const parseFacebookAgeCategory = (value: string | undefined): FacebookAgeCategory =>
   value === "13_plus" ? "13_plus" : "unknown";
+
+/** Applies authenticated server gates to the SDK capabilities without affecting core play. */
+export function gateFacebookSessionCapabilities(
+  capabilities: PlatformCapabilities,
+  {matchmakingEnabled, configurationLoaded}: {
+    /** Whether the authenticated configuration permits matchmaking. */
+    matchmakingEnabled: boolean;
+    /** Whether authenticated configuration loaded successfully. */
+    configurationLoaded: boolean;
+  },
+): PlatformCapabilities {
+  return {
+    ...capabilities,
+    ...(!matchmakingEnabled ? {nativeSocial: undefined, matchmaking: undefined} : {}),
+    ...(!configurationLoaded ? {overlay: undefined} : {}),
+  };
+}
 
 /** Fails optional monetization/social features closed without ever disabling core play. */
 export function resolveFacebookCapabilityVisibility({

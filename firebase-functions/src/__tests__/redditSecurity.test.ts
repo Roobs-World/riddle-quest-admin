@@ -41,6 +41,8 @@ const verify = (value: unknown = assertion, signature = sign(assertion), overrid
   });
 
 describe("Reddit gateway security", () => {
+  afterEach(() => jest.restoreAllMocks());
+
   it("keeps the cross-runtime canonical signature fixture byte-exact", () => {
     expect(canonicalRedditGatewayAssertion(assertion)).toBe(
       '[1,"riddle-quest","riddle-quest:t5_subreddit","t5_subreddit","t3_post","t2_reddit-user","identity.exchange",1750000000000,"nonce_0123456789abcdefghijklmnop","44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"]',
@@ -89,6 +91,54 @@ describe("Reddit gateway security", () => {
       !consumed.has(value.nonce) && Boolean(consumed.add(value.nonce));
     await expect(verify(assertion, sign(assertion), {consumeNonce})).resolves.toEqual(assertion);
     await expect(verify(assertion, sign(assertion), {consumeNonce})).rejects.toThrow("reddit-gateway-replay");
+  });
+
+  it("rejects an assertion that expires while its replay record is being persisted", async () => {
+    /** The initial check is fresh; persistence completes outside the allowed age. */
+    let nowMs = assertion.issuedAtMs;
+    jest.spyOn(Date, "now").mockImplementation(() => nowMs);
+    /** Successful persistence spends this assertion even when verification later fails. */
+    const consumeNonce = jest.fn(async () => {nowMs += 60_001; return true;});
+    await expect(verify(assertion, sign(assertion), {nowMs: undefined, consumeNonce})).rejects.toThrow(
+      "stale-reddit-gateway-assertion",
+    );
+    expect(consumeNonce).toHaveBeenCalledTimes(1);
+  });
+
+  it("accepts the exact maximum age after persistence and honors a custom maximum", async () => {
+    /** Both reads use the real production clock seam rather than a fixed test timestamp. */
+    let nowMs = assertion.issuedAtMs;
+    jest.spyOn(Date, "now").mockImplementation(() => nowMs);
+    await expect(verify(assertion, sign(assertion), {
+      nowMs: undefined,
+      consumeNonce: async () => {nowMs += 60_000; return true;},
+    })).resolves.toEqual(assertion);
+    nowMs = assertion.issuedAtMs;
+    await expect(verify(assertion, sign(assertion), {
+      nowMs: undefined, maxAgeMs: 1_000,
+      consumeNonce: async () => {nowMs += 1_001; return true;},
+    })).rejects.toThrow("stale-reddit-gateway-assertion");
+  });
+
+  it.each([assertion.issuedAtMs - 1, Number.NaN, Number.MAX_SAFE_INTEGER + 1])(
+    "rejects a later invalid or backward clock: %p", async (laterTime) => {
+      /** Time changes only after the verified signature reaches persistence. */
+      let nowMs = assertion.issuedAtMs;
+      jest.spyOn(Date, "now").mockImplementation(() => nowMs);
+      await expect(verify(assertion, sign(assertion), {
+        nowMs: undefined,
+        consumeNonce: async () => {nowMs = laterTime; return true;},
+      })).rejects.toThrow("invalid-reddit-gateway-time");
+    },
+  );
+
+  it("rejects a stale initial assertion before spending its nonce", async () => {
+    /** Invalid requests must not create replay records. */
+    const consumeNonce = jest.fn(async () => true);
+    await expect(verify(assertion, sign(assertion), {
+      nowMs: assertion.issuedAtMs + 60_001, consumeNonce,
+    })).rejects.toThrow("stale-reddit-gateway-assertion");
+    expect(consumeNonce).not.toHaveBeenCalled();
   });
 });
 

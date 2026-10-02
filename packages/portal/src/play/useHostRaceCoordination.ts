@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 import {trackEvent} from "../analytics/events";
@@ -33,9 +33,13 @@ type HostRaceCoordinationOptions = Readonly<{
   /** Locale eligibility policy supplied by the active target. */
   raceLocalePolicy: "english-only" | "all";
   /** Applies an authoritative balance to authenticated host state. */
-  applyCoinBalance: (coins?: number) => void;
+  applyCoinBalance: (coins?: number, ownerId?: string) => void;
   /** Replaces authenticated host profile state after a refresh. */
-  replaceProfile: (profile: BridgeProfile | null) => void;
+  replaceProfile: (profile: BridgeProfile | null, ownerId?: string) => void;
+  /** Immediate subscription ownership, independent of queued React rendering. */
+  ownsAccount?: (ownerId: string) => boolean;
+  /** Captures the account visit before asynchronous reward work begins. */
+  captureAccount?: (ownerId?: string) => () => boolean;
   /** Delivers a protocol message to the embedded game. */
   postToGame: (message: HostToGameMessage) => void;
 }>;
@@ -47,7 +51,7 @@ export type HostRaceCoordination = Readonly<{
   /** Categories loaded ahead of opening the multiplayer flow. */
   prefetchedCategories: ListRaceCategoriesResponse["categories"];
   /** Reconciles authoritative multiplayer rewards with host state. */
-  syncProgress: (result: RaceProgressResult) => Promise<void>;
+  syncProgress: (result: RaceProgressResult) => Promise<boolean>;
 }>;
 
 /** Owns multiplayer rollout, category preloading, and profile reconciliation. */
@@ -61,6 +65,8 @@ export function useHostRaceCoordination({
   raceLocalePolicy,
   applyCoinBalance,
   replaceProfile,
+  ownsAccount,
+  captureAccount,
   postToGame,
 }: HostRaceCoordinationOptions): HostRaceCoordination {
   /** Stable race rollout decision for the lifetime of this host. */
@@ -72,23 +78,46 @@ export function useHostRaceCoordination({
       }),
     [],
   );
-  /** Categories available before the multiplayer view opens. */
-  const [prefetchedCategories, setPrefetchedCategories] = useState<ListRaceCategoriesResponse["categories"]>([]);
+  /** Catalog selection identity changes before passive effect cleanup can clear stale data. */
+  const prefetchScope = useMemo(() => ({}), [authSnapshot.user?.uid, captureAccount, enabled, initialRaceChallengeId, locale, race, raceLocalePolicy]);
+  /** Categories remain attached to the account, locale and authority that loaded them. */
+  const [prefetched, setPrefetched] = useState<{
+    /** Exact selection lifetime under which access and categories were fetched. */
+    scope: typeof prefetchScope;
+    /** Catalog accepted from the selected race authority. */
+    categories: ListRaceCategoriesResponse["categories"];
+  } | null>(null);
 
+  /** Reward reconciliation belongs to one account and identity-loader lifetime. */
+  const lifetime = useMemo(() => ({active: true, sequence: 0}), [authSnapshot.user?.uid, identity.loadProfile]);
+  /** Render-time ownership invalidates old callbacks before effect cleanup runs. */
+  const currentOwner = useRef({lifetime, user: bridgeUser, ownsAccount});
+  currentOwner.current = {lifetime, user: bridgeUser, ownsAccount};
+  useEffect(() => {
+    lifetime.active = true;
+    return () => {lifetime.active = false; lifetime.sequence++;};
+  }, [lifetime]);
+
+  /** This rendered account visit cannot survive a switch away and back before React commits. */
+  const accountScope = captureAccount?.(authSnapshot.user?.uid);
   useEffect(() => {
     /** Prevents stale requests from updating a changed session or locale. */
     let cancelled = false;
-    setPrefetchedCategories([]);
-    if (!enabled || !race || !authSnapshot.user || (raceLocalePolicy === "english-only" && locale !== "en")) return;
+    setPrefetched(null);
+    if (!enabled || !race || !authSnapshot.user || accountScope?.() === false || (raceLocalePolicy === "english-only" && locale !== "en")) return;
 
-    void race
-      .getRaceAccess()
+    void Promise.resolve()
+      .then(() => {
+        // Optional providers may throw before returning a promise; retired effects issue no read.
+        if (cancelled || accountScope?.() === false) return {enabled: false};
+        return race.getRaceAccess();
+      })
       .then(async (access) => {
-        if (!access.enabled || cancelled || initialRaceChallengeId) return;
+        if (!access.enabled || cancelled || accountScope?.() === false || initialRaceChallengeId) return;
         try {
           /** Categories returned for the current locale. */
           const response = await race.listRaceCategories(locale);
-          if (!cancelled) setPrefetchedCategories(response.categories);
+          if (!cancelled && accountScope?.() !== false) setPrefetched({scope: prefetchScope, categories: response.categories});
         } catch (error) {
           console.warn("[riddle-quest-race-prefetch] Unable to preload categories", error);
         }
@@ -100,34 +129,47 @@ export function useHostRaceCoordination({
     return () => {
       cancelled = true;
     };
-  }, [authSnapshot.user, enabled, initialRaceChallengeId, locale, race, raceLocalePolicy]);
+  }, [prefetchScope]);
 
   /** Reconciles multiplayer rewards and refreshes the authoritative profile. */
   const syncProgress = useCallback(
     async (result: RaceProgressResult) => {
-      applyCoinBalance(result.newCoins);
+      /** Account returned by the original authoritative operation. */
+      const user = authSnapshot.user;
+      if (!user || accountScope?.() === false || !lifetime.active || currentOwner.current.lifetime !== lifetime || currentOwner.current.ownsAccount?.(user.uid) === false) return false;
+      /** A newer reward refresh supersedes an older profile request for the same account. */
+      const sequence = ++lifetime.sequence;
+      /** Independent completed runs retain their provider follow-up while this account remains current. */
+      const accountOwned = () => accountScope?.() !== false && lifetime.active && currentOwner.current.lifetime === lifetime && currentOwner.current.ownsAccount?.(user.uid) !== false;
+      /** Only the newest refresh may replace profile state for that same account. */
+      const owned = () => accountOwned() && lifetime.sequence === sequence;
+      applyCoinBalance(result.newCoins, user.uid);
+      if (!owned()) return accountOwned();
       for (const achievementId of result.newlyUnlockedAchievementIds ?? []) {
         trackEvent("unlock_achievement", {achievement_id: achievementId, source: "multiplayer"});
+        if (!owned()) return accountOwned();
       }
 
-      /** User whose profile owns the authoritative multiplayer result. */
-      const user = authSnapshot.user;
-      if (!user) return;
       try {
         /** Fresh profile after the server applies all rewards. */
         const profile = await identity.loadProfile(user.uid);
-        replaceProfile(profile);
+        if (!owned()) return accountOwned();
+        replaceProfile(profile, user.uid);
+        if (!owned()) return accountOwned();
         postToGame({
           type: "host:authState",
           requestId: createRequestId("race-profile"),
-          payload: {user: bridgeUser, profile},
+          payload: {user: currentOwner.current.user, profile},
         });
       } catch (error) {
         console.warn("[riddle-quest-race-achievements] Profile refresh failed", error);
       }
+      return accountOwned();
     },
-    [applyCoinBalance, authSnapshot.user, bridgeUser, identity, postToGame, replaceProfile],
+    [accountScope, applyCoinBalance, authSnapshot.user, identity, lifetime, postToGame, replaceProfile],
   );
 
+  /** Never expose a previous catalog during the replacement render before effects run. */
+  const prefetchedCategories = prefetched?.scope === prefetchScope && accountScope?.() !== false ? prefetched.categories : [];
   return {enabled, prefetchedCategories, syncProgress};
 }

@@ -1,3 +1,4 @@
+import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "../riddles/openaiService";
@@ -32,32 +33,34 @@ export class DailyGenerationIncompleteError extends Error {
   }
 }
 
-/** Validates and normalizes an immutable UTC daily-content key. */
-function assertUtcDateKey(value: string): string {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("A YYYY-MM-DD UTC challenge date is required.");
+/** Validates and normalizes an immutable calendar daily-content key. */
+function assertDailyDateKey(value: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("A YYYY-MM-DD challenge date is required.");
   /** Parses d. */
   const parsed = new Date(`${value}T00:00:00.000Z`);
   if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
-    throw new Error("A valid UTC challenge date is required.");
+    throw new Error("A valid challenge date is required.");
   }
   return value;
 }
 
 /**
- * Generates immutable localized daily documents for one UTC date.
+ * Generates immutable localized daily documents for one regional calendar date.
  *
- * The scheduler runs this before rollover. A failure never overwrites playable
+ * The scheduler runs this at regional midnight. A failure never overwrites playable
  * content for another date, and later scheduled retries only fill missing or
  * invalid locale documents.
  */
 export async function generateLocalizedDailyChallengeForDate(
   targetDate: string,
   forceGenerate: boolean = false,
+  locales: readonly SupportedLocale[] = SUPPORTED_LOCALES,
 ): Promise<void> {
   /** Provides challenge date behavior. */
-  const challengeDate = assertUtcDateKey(targetDate);
+  const challengeDate = assertDailyDateKey(targetDate);
   /** Provides daily index behavior. */
   const dailyIndex = Math.floor(new Date(`${challengeDate}T00:00:00.000Z`).getTime() / 86_400_000);
+  if (locales.length === 0) return;
   if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY environment variable is required");
 
   /** Provides total attempt count behavior. */
@@ -150,9 +153,9 @@ export async function generateLocalizedDailyChallengeForDate(
     throw new Error("Locale generation attempt budget exhausted.");
   };
 
-  for (let index = 0; index < SUPPORTED_LOCALES.length; index += DAILY_LOCALE_CONCURRENCY) {
+  for (let index = 0; index < locales.length; index += DAILY_LOCALE_CONCURRENCY) {
     /** Provides locale batch behavior. */
-    const localeBatch = SUPPORTED_LOCALES.slice(index, index + DAILY_LOCALE_CONCURRENCY);
+    const localeBatch = locales.slice(index, index + DAILY_LOCALE_CONCURRENCY);
     /** Sets tled. */
     const settled = await Promise.allSettled(localeBatch.map(generateForLocale));
     settled.forEach((result, resultIndex) => {
@@ -167,7 +170,7 @@ export async function generateLocalizedDailyChallengeForDate(
   if (failures.length > 0) {
     logger.error("Immutable daily generation finished with missing locales.", {
       challengeDate,
-      generatedLocaleCount: SUPPORTED_LOCALES.length - failures.length,
+      generatedLocaleCount: locales.length - failures.length,
       failedLocaleCount: failures.length,
       failedLocales: failures.map((entry) => entry.locale),
       attemptCount: totalAttemptCount,
@@ -179,12 +182,21 @@ export async function generateLocalizedDailyChallengeForDate(
   }
   logger.info("Immutable localized daily generation completed.", {
     challengeDate,
-    localeCount: SUPPORTED_LOCALES.length,
+    localeCount: locales.length,
     attemptCount: totalAttemptCount,
   });
 }
 
 /** Backwards-compatible wrapper used by manual tooling and older tests. */
 export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
-  return generateLocalizedDailyChallengeForDate(new Date().toISOString().slice(0, 10), forceGenerate);
+  /** One captured generation instant shared across locale grouping. */
+  const now = new Date();
+  /** Supported locales grouped by the regional Daily date they currently require. */
+  const groups = new Map<string, SupportedLocale[]>();
+  for (const locale of SUPPORTED_LOCALES) {
+    /** Regional Daily date selected for this locale’s generation group. */
+    const day = getDailyDate(locale, now);
+    groups.set(day, [...(groups.get(day) ?? []), locale]);
+  }
+  for (const [day, locales] of groups) await generateLocalizedDailyChallengeForDate(day, forceGenerate, locales);
 }

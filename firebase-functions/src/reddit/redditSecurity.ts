@@ -155,17 +155,34 @@ export async function verifyRedditGatewayAssertion(
   if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
     throw new Error("invalid-reddit-gateway-signature");
   }
-  /** Provides now ms behavior. */
-  const nowMs = options.nowMs ?? Date.now();
   /** Provides max age ms behavior. */
   const maxAgeMs = options.maxAgeMs ?? 60_000;
-  if (!Number.isSafeInteger(nowMs) || nowMs < 0 || !Number.isSafeInteger(maxAgeMs) || maxAgeMs < 1) {
+  if (!Number.isSafeInteger(maxAgeMs) || maxAgeMs < 1) {
     throw new Error("invalid-reddit-gateway-time");
   }
-  if (assertion.issuedAtMs > nowMs + 5_000 || nowMs - assertion.issuedAtMs > maxAgeMs) {
-    throw new Error("stale-reddit-gateway-assertion");
+  /** Reads fresh server time; a fixed test clock retains the existing options contract. */
+  const readNowMs = () => {
+    /** Every observation must remain a safe nonnegative millisecond timestamp. */
+    const value = options.nowMs ?? Date.now();
+    if (!Number.isSafeInteger(value) || value < 0) throw new Error("invalid-reddit-gateway-time");
+    return value;
+  };
+  /** Enforces the same inclusive age and future-skew limits at each verification boundary. */
+  const assertFresh = (nowMs: number) => {
+    if (assertion.issuedAtMs - nowMs > 5_000 || nowMs - assertion.issuedAtMs > maxAgeMs) {
+      throw new Error("stale-reddit-gateway-assertion");
+    }
+  };
+  /** Initial validation must reject stale requests before creating their replay record. */
+  const startedAtMs = readNowMs();
+  assertFresh(startedAtMs);
+  if (options.consumeNonce) {
+    if (!(await options.consumeNonce(assertion))) throw new Error("reddit-gateway-replay");
+    /** Persisting the replay record may outlast the assertion's acceptance window. */
+    const completedAtMs = readNowMs();
+    if (completedAtMs < startedAtMs) throw new Error("invalid-reddit-gateway-time");
+    assertFresh(completedAtMs);
   }
-  if (options.consumeNonce && !(await options.consumeNonce(assertion))) throw new Error("reddit-gateway-replay");
   return assertion;
 }
 

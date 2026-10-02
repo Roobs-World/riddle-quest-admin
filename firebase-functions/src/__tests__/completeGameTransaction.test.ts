@@ -92,7 +92,13 @@ jest.mock("../gameplay/firestoreService", () => ({
   ensureUserDocumentComplete: jest.fn(),
   getUser: async (userId: string) => mockDocuments.get(`users/${userId}`),
 }));
-jest.mock("../gameplay/achievements", () => ({findNewAchievements: () => []}));
+/** Deterministic achievement adapter isolates grants from completion/hint transaction assertions. */
+const mockFindNewAchievements = jest.fn((..._args: unknown[]): Array<{
+  /** Canonical achievement identity returned by the test grant adapter. */
+achievementId: string;
+  /** Server-owned unlock timestamp returned by the test grant adapter. */
+unlockedAt: number}> => []);
+jest.mock("../gameplay/achievements", () => ({findNewAchievements: (...args: unknown[]) => mockFindNewAchievements(...args)}));
 jest.mock("../gameplay/leaderboard", () => ({
   updateLeaderboardEntry: (...args: unknown[]) => mockUpdateLeaderboardEntry(...args),
 }));
@@ -153,6 +159,7 @@ describe("atomic authoritative completion", () => {
   beforeEach(() => {
     mockDocuments.clear();
     jest.clearAllMocks();
+    mockFindNewAchievements.mockReturnValue([]);
     mockDocuments.set(`users/${USER_ID}`, user());
     mockFinalizeAuthoritativeSession.mockResolvedValue({
       attempts: 2,
@@ -204,6 +211,19 @@ describe("atomic authoritative completion", () => {
     expect(afterFirst).toMatchObject({coins: 325, progress: {classicIndex: 2}, stats: {gamesPlayed: 1, wins: 1}});
     expect(mockDocuments.get(completionBindingPath("classic:1"))).toEqual(newerPointer);
     expect(mockDocuments.get(completionReceiptPath("classic:1"))).not.toHaveProperty("expiresAt");
+  });
+
+  it("pays ordinary badges but not hint badges discovered during completion", async () => {
+    mockFindNewAchievements.mockReturnValue(["hint_user", "hints_10", "hints_25", "first_win"].map((achievementId) => ({achievementId, unlockedAt: 1})));
+    /** Original correlated authority request used to verify transaction replay behavior. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    /** First committed authority response whose grant behavior is compared with replay. */
+    const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    expect(first.coinsEarned).toBe(50);
+    expect(first.newlyUnlockedAchievementIds).toEqual(["hint_user", "hints_10", "hints_25", "first_win"]);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(350);
+    expect(await completeAuthoritativeGame(request, {uid: USER_ID})).toEqual(first);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(350);
   });
 
   it("adds the idempotent Facebook first-win referral to the returned authoritative balance", async () => {
@@ -394,12 +414,12 @@ describe("atomic authoritative completion", () => {
   });
 
   it("receipts a prior-day parallel Daily loss as a replay-safe no-op after a rollover win", async () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T00:05:00.000Z"));
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T23:05:00.000Z"));
     mockFinalizeAuthoritativeSession.mockResolvedValue({
       attempts: 2,
       lastGuess: "piano",
       terminal: true,
-      terminalAt: {toDate: () => new Date("2026-08-11T23:59:00.000Z")},
+      terminalAt: {toDate: () => new Date("2026-08-11T22:59:00.000Z")},
       answer: "piano",
       locale: "en",
       completionKey: "challenge:2026-08-11",
@@ -481,8 +501,8 @@ describe("atomic authoritative completion", () => {
     expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(before);
   });
 
-  it("recovers a server-proven 23:59 Daily win just after UTC rollover", async () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T00:05:00.000Z"));
+  it("recovers a server-proven 23:59 Daily win just after London rollover", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T23:05:00.000Z"));
     mockDocuments.set(`users/${USER_ID}`, {
       ...user(),
       lastDailyChallengeCompletedAt: {toDate: () => new Date("2026-08-10T12:00:00.000Z")},
@@ -493,7 +513,7 @@ describe("atomic authoritative completion", () => {
       attempts: 2,
       lastGuess: "piano",
       terminal: true,
-      terminalAt: {toDate: () => new Date("2026-08-11T23:59:00.000Z")},
+      terminalAt: {toDate: () => new Date("2026-08-11T22:59:00.000Z")},
       answer: "piano",
       locale: "en",
       completionKey: "challenge:2026-08-11",
@@ -509,13 +529,13 @@ describe("atomic authoritative completion", () => {
     expect(result).toMatchObject({isCorrect: true, newWinStreak: 2});
     expect(mockDocuments.get(`users/${USER_ID}`)).toMatchObject({
       lastCompletedDailyChallengeKey: "2026-08-11",
-      lastDailyChallengeCompletedAt: "2026-08-11T12:00:00.000Z",
+      lastDailyChallengeCompletedAt: "2026-08-10T23:00:00.000Z",
       progress: {dailyChallengeIndex: 1},
     });
   });
 
   it("rejects rollover recovery after a newer Daily entitlement was attempted", async () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T00:05:00.000Z"));
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T23:05:00.000Z"));
     mockDocuments.set(`users/${USER_ID}`, {
       ...user(),
       lastDailyChallengeAttemptedKey: "2026-08-12",
@@ -524,7 +544,7 @@ describe("atomic authoritative completion", () => {
       attempts: 1,
       lastGuess: "piano",
       terminal: true,
-      terminalAt: {toDate: () => new Date("2026-08-11T23:59:00.000Z")},
+      terminalAt: {toDate: () => new Date("2026-08-11T22:59:00.000Z")},
       answer: "piano",
       locale: "en",
       completionKey: "challenge:2026-08-11",

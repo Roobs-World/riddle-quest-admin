@@ -18,6 +18,16 @@ jest.mock("../../playerPreferences", () => ({
   safeBrowserStorageRemove: () => { mockSaved = null; },
 }));
 
+jest.mock("../../../platform/browserStorage", () => ({
+  /** Observes the same shared snapshot through the strict browser read adapter. */
+  observeBrowserStorage: () => {
+    /** Value returned before a competing tab writes its replacement. */
+    const snapshot = mockSaved;
+    if (mockAfterRead !== undefined) {mockSaved = mockAfterRead; mockAfterRead = undefined;}
+    return snapshot;
+  },
+}));
+
 import {readActiveRace, saveActiveRace, clearActiveRace} from "../logic/activeRaceStorage";
 
 it("preserves a newer hint for the same account when an older race is cleared", () => {

@@ -21,7 +21,7 @@ describe("Race Session submitted feedback ownership", () => {
     h.respond("raceGuess", response);
     expect(h.session.getSnapshot()).toMatchObject({error: "RaceTo10.ERROR_INVALID_RESPONSE", currentLetters: [...guess], run: {correctCount: 0, currentRiddle: {position: 0}}});
     h.session.retry();h.respond("raceResume", await h.authority.resumeRace(h.run.runId));
-    expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: corruption === "wrong-yellow" ? [...guess] : ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
+    expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: ["c", "l", "o", "", ""], run: {correctCount: corruption === "wrong-yellow" ? 0 : 1}});
     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
   });
   it.each(["short", "letter", "valid"])("validates answer-free legacy feedback without requiring a local answer: %s", async corruption => {

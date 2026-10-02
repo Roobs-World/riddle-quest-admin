@@ -44,6 +44,11 @@ class TestElement {
     return this.focusable;
   }
 
+  /** Models containment for the dialog and its interactive descendants. */
+  public contains(element: TestElement | null): boolean {
+    return element === this || (element !== null && this.focusable.includes(element));
+  }
+
   /** Gets bounding client rect. */
   public getBoundingClientRect() {
     return this.rect;
@@ -231,7 +236,7 @@ describe("useRaceDialogFocus", () => {
     expect(middleTab.preventDefault).not.toHaveBeenCalled();
   });
 
-  it("ignores unrelated keys and dialogs without focusable controls", () => {
+  it("ignores unrelated keys and retains focus in dialogs without controls", () => {
     /** Provides harness behavior. */
     const harness = install();
     effects[0]();

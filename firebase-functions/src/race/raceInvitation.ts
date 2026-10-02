@@ -4,7 +4,7 @@ import {ReserveRaceInviteResponseSchema, RaceEntryResponseSchema, RACE_CHALLENGE
 import {HttpsError} from "firebase-functions/v2/https";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {assertRaceInteractionAllowed} from "./raceRunMutation";
-import {challengePreview, dbOrDefault, parseChallengeRecord, requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
+import {challengePreview, dbOrDefault, parseChallengeRecord, parseRunRecord, requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
 import {parseRaceInvitation, assertRaceInvitationOpen, type RaceInvitationRecord} from "./raceInvitationRecord";
 import {raceProviderScope} from "./raceEligibility";
 import {bindRaceRequest, assertRaceRequestReplay, rejectRaceRequestReuse} from "./raceRequestBinding";
@@ -13,6 +13,8 @@ import {bindRaceRequest, assertRaceRequestReplay, rejectRaceRequestReuse} from "
 type InvitationOptions = {
   /** Authoritative Firestore adapter. */ db?: Firestore;
   /** Deterministic wall-clock adapter. */ nowMs?: number;
+  /** Negotiated response field; legacy clients retain their exact contract. */ includeViewerRole?: boolean;
+  /** Opt-in recovery pointer visible only to the attempt owner. */ includeExistingAttempt?: boolean;
 };
 /** Removes all private identities from the independent lifecycle facts. */
 const invitationView = (invitation: RaceInvitationRecord, userId: string): RaceInvitationView => ({
@@ -155,13 +157,32 @@ export async function getRaceEntryForUser(userId: string, challengeId: string, l
     if (invitation?.cancelledAtMs !== undefined) return {status: "cancelled", invitation: invitationView(invitation, userId), serverNowMs};
     if (invitation && invitation.expiresAtMs <= serverNowMs || challenge && challenge.expiresAtMs <= serverNowMs) return RaceEntryResponseSchema.parse(stripUndefined({status: "expired", invitation: invitation && invitationView(invitation, userId), serverNowMs}));
     if (challenge && challenge.status !== "active") return {status: "unavailable", reason: "inactive", serverNowMs};
+    /** Recover the one accepted attempt rather than advertising a forbidden second start. */
+    let existingRunId: string | undefined;
+    if (options.includeExistingAttempt && challenge && creatorId !== userId) {
+      /** Account-bound acceptance record selected by challenge and authenticated player. */
+      const attempt = await transaction.get(db.doc(`raceAttempts/${requestDocumentId(challengeId, userId)}`));
+      if (attempt.exists) {
+        /** Stored acceptance identity is checked before looking up its referenced run. */
+        const data = attempt.data();
+        if (data?.playerId !== userId || data.challengeId !== challengeId || typeof data.runId !== "string" || !/^[a-zA-Z0-9_-]+$/.test(data.runId)) return {status: "unavailable", reason: "invalid", serverNowMs};
+        /** Stored run referenced by the validated accepted-attempt pointer. */
+        const recordedRun = await transaction.get(db.doc(`raceRuns/${data.runId}`));
+        if (!recordedRun.exists) return {status: "unavailable", reason: "missing", serverNowMs};
+        /** Validated owner-bound run must agree with the accepted challenge and recipient. */
+        let run;
+        try {run = parseRunRecord(recordedRun.data(), data.runId);} catch {return {status: "unavailable", reason: "invalid", serverNowMs};}
+        if (run.userId !== userId || run.challengeId !== challengeId || run.role !== "challenger" || run.locale !== locale) return {status: "unavailable", reason: "invalid", serverNowMs};
+        existingRunId = run.runId;
+      }
+    }
     if (invitation && userId !== invitation.creatorId && !invitation.recipientId) {
       invitation = {...invitation, recipientId: userId, claimState: "claimed"};
       transaction.update(reservation.ref, {recipientId: userId, claimState: "claimed", publicationState: invitation.publicationState,
         status: invitation.publicationState === "published" ? "published" : "claimed", claimedAtMs: serverNowMs});
     }
     if (!challenge) return {status: "waiting", invitation: invitationView(invitation!, userId), serverNowMs};
-    return RaceEntryResponseSchema.parse(stripUndefined({status: "ready", challenge: challengePreview(challenge, serverNowMs), invitation: invitation && invitationView(invitation, userId), serverNowMs}));
+    return RaceEntryResponseSchema.parse(stripUndefined({status: "ready", challenge: challengePreview(challenge, serverNowMs), existingRunId, viewerRole: options.includeViewerRole ? (creatorId === userId ? "creator" : "recipient") : undefined, invitation: invitation && invitationView(invitation, userId), serverNowMs}));
   });
 }
 

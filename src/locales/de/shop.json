@@ -9,12 +9,15 @@
     "PERIOD_YEARLY": "Jahr",
     "START_TRIAL_BUTTON": "GRATIS TESTEN",
     "SUBSCRIBE_BUTTON": "ABONNIEREN",
-    "SUBSCRIBED_BUTTON": "ABONNIERT",
     "CANCEL_SUBSCRIPTION": "Abonnement kündigen",
     "SUBSCRIPTION_CANCELLED_NOTICE": "Verlängerung gekündigt. Premium bleibt bis zum Ende des Abrechnungszeitraums aktiv.",
     "SUBSCRIPTION_ACTIVE": "Premium aktiv",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Dein Premium-Abo ist aktiv.",
     "TITLE": "MUENZENSHOP",
-    "YOUR_BALANCE": "Ihr Guthaben"
+    "YOUR_BALANCE": "Ihr Guthaben",
+    "PACK_DESCRIPTION": "Füge deinem Guthaben {coins} Münzen hinzu.",
+    "BADGE_STARTER": "EINSTIEG",
+    "BADGE_POPULAR": "BELIEBT",
+    "BADGE_BEST_VALUE": "BESTES ANGEBOT"
   }
 }

@@ -5,6 +5,7 @@ import {
   createTooltipTourStorageKey,
   getContextualTooltipCandidates,
   getGameTour,
+  getProfileTour,
   getOnboardingTotalSteps,
   getTooltipPanelStyle,
   PROFILE_TOUR,
@@ -26,6 +27,10 @@ describe("guidance configuration", () => {
     expect(getOnboardingTotalSteps()).toBe(2);
     expect(getGameTour("classic")).toEqual(["gameCoins", "gameHint", "submitAnswer", "gameSkip"]);
     expect(getGameTour("challenge")).toEqual(["gameCoins", "gameHint", "submitAnswer"]);
+    expect(getGameTour("classic", false)).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
+    expect(getGameTour("challenge", false)).toEqual(["gameHint", "submitAnswer"]);
+    expect(getProfileTour()).toEqual(PROFILE_TOUR);
+    expect(getProfileTour(false)).toEqual(PROFILE_TOUR.filter(id => id !== "profileTreasure"));
   });
 
   it("shows ranks immediately after achievements in the profile tour", () => {

@@ -19,9 +19,10 @@ it("accepts legacy receipts and complete supported delivery states", () => {
 it.each([
   {runId: "another-run"}, {userId: "unsafe/path"}, {createdAtMs: -1}, {createdAtMs: NaN},
   {expiresAt: {seconds: 1000}}, {deliveryAttempts: 21}, {deliveryAttempts: 0.5},
-  {nextAttemptAtMs: Infinity}, {replayedAtMs: -1}, {deliveryState: "unknown"},
+  {replayId: ""}, {replayId: "unsafe/path"}, {replayId: 42}, {nextAttemptAtMs: Infinity}, {replayedAtMs: -1}, {deliveryState: "unknown"},
   {deliveryState: "delivered", delivered: false}, {deliveryState: "pending", delivered: true},
   {quarantined: true}, {suppressed: true}, {quarantined: "yes"},
+  {facebookPerformanceRecorded: "yes"}, {facebookPerformanceRecorded: false},
 ])("rejects malformed owner receipts with answer-free errors: %j", overrides => {
   expect(() => parseRacePerformanceEvent({...receipt(), ...overrides}, "run-1"))
     .toThrow("Stored race performance receipt is invalid.");

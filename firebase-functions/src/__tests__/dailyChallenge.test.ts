@@ -305,25 +305,7 @@ describe("Daily Challenge Functions", () => {
     mockCompleteAuthoritativeGame.mockReset();
     mockRecoverPendingAuthoritativeCompletion.mockReset().mockResolvedValue(false);
 
-    // Mock Date.now globally and Date constructor
-    /** Provides mock date behavior. */
-    const mockDate = new Date("2023-01-01T10:00:00.000Z");
-    /** Renders the original date interface. */
-    const OriginalDate = Date;
-
-    Date.now = jest.fn(() => mockDate.getTime());
-
-    // Create a smarter Date constructor mock
-    global.Date = jest.fn((dateArg?: any) => {
-      if (dateArg === undefined) {
-        // new Date() - return mocked current date
-        return mockDate;
-      } else {
-        // new Date(timestamp) - return actual date for that timestamp
-        return new OriginalDate(dateArg);
-      }
-    }) as any;
-    global.Date.now = jest.fn(() => mockDate.getTime());
+    jest.useFakeTimers().setSystemTime(new Date("2023-01-01T10:00:00.000Z"));
 
     // Import the module to get the functions
     /** Provides daily challenge module behavior. */
@@ -372,6 +354,7 @@ describe("Daily Challenge Functions", () => {
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     jest.restoreAllMocks();
   });
 
@@ -502,6 +485,42 @@ describe("Daily Challenge Functions", () => {
       const mockDailyChallenge = createCurrentDailyRiddleDoc();
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
+        data: () => mockDailyChallenge,
+      } as MockDocumentSnapshot<any>);
+
+      /** Provides mock request behavior. */
+      const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
+      /** Provides result behavior. */
+      const result = await getCurrentDailyChallenge(mockRequest);
+
+      expect(result.challenge).toBeUndefined();
+      expect(result.error).toBe("Today's daily challenge is already complete.");
+      expect(result.hasCompletedToday).toBe(true); // Player completed today
+      expect(result.currentQuestion).toBe(1);
+      expect(result.questionsCompleted).toBe(1);
+    });
+
+    it("recognizes today’s completion even while Daily content is unavailable", async () => {
+      /** Provides mock user id behavior. */
+      const mockUserId = "testUserToday";
+      /** Provides today timestamp behavior. */
+      const todayTimestamp = Date.now(); // Use the mocked Date.now
+      /** Provides mock player behavior. */
+      const mockPlayer = getDefaultPlayer(mockUserId, {
+        lastDailyChallengeCompletedAt: todayTimestamp,
+        progress: {
+          classicIndex: 0,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 1, // Completed today's single question
+        },
+      });
+
+      mockGetUser.mockResolvedValue(mockPlayer);
+
+      /** Provides mock daily challenge behavior. */
+      const mockDailyChallenge = createCurrentDailyRiddleDoc();
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: false,
         data: () => mockDailyChallenge,
       } as MockDocumentSnapshot<any>);
 
@@ -696,6 +715,16 @@ describe("Daily Challenge Functions", () => {
       /** Provides mock request behavior. */
       const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
       await expect(getCurrentDailyChallenge(mockRequest)).rejects.toMatchObject({code: "not-found"});
+    });
+
+    it("issues Tokyo's new Daily date before UTC rollover", async () => {
+      jest.setSystemTime(new Date("2023-01-01T15:01:00Z"));
+      mockGetUser.mockResolvedValue(getDefaultPlayer("tokyoMidnight"));
+      mockAdminFirestoreGet.mockResolvedValue({exists: true, data: () => ({...createCurrentDailyRiddleDoc(), challengeKey: "2023-01-02"})});
+      /** Authority response proving Tokyo Daily selection follows its local date. */
+      const result = await getCurrentDailyChallenge({auth: {uid: "tokyoMidnight"}, data: {locale: "ja"}});
+      expect(result.challenge?.date).toBe("2023-01-02");
+      expect(mockEnsureAuthoritativeSession).toHaveBeenCalledWith("tokyoMidnight", "challenge", "current", "ja", expect.any(String), "challenge:2023-01-02", "answer", {challengeDate: "2023-01-02"});
     });
 
     it("binds a requested non-English locale into the private play session", async () => {

@@ -1,0 +1,71 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionPendingInput
+FAIL src/play/race/__tests__/RaceSessionPendingInput.test.ts
+  ● Race Session pending same-question input recovery › does not discard recovery input after an ignored invalid-slot event
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 5
+    + Received  + 5
+
+      Array [
+    -   "p",
+    -   "i",
+    -   "",
+    -   "",
+    -   "",
+    +   "z",
+    +   "z",
+    +   "z",
+    +   "z",
+    +   "z",
+      ]
+
+      33 |     if(event === "invalid-slot")h.session.input("slot",99);else h.session.input("text"," ");
+      34 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 35 |     expect(h.session.getSnapshot().currentLetters).toEqual(["p","i","","",""]);
+         |                                                    ^
+      36 |   });
+      37 |   it("keeps the submitted attempt when no pending draft edit occurred",async()=>{
+      38 |     /** A failed submission still restores its original answer when the player did not change it. */
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:35:52
+
+  ● Race Session pending same-question input recovery › does not discard recovery input after an ignored ignored-text event
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 5
+    + Received  + 5
+
+      Array [
+    -   "p",
+    -   "i",
+    -   "",
+    -   "",
+    -   "",
+    +   "z",
+    +   "z",
+    +   "z",
+    +   "z",
+    +   "z",
+      ]
+
+      33 |     if(event === "invalid-slot")h.session.input("slot",99);else h.session.input("text"," ");
+      34 |     h.session.retry();h.respond("raceResume",await h.authority.resumeRace(h.run.runId));
+    > 35 |     expect(h.session.getSnapshot().currentLetters).toEqual(["p","i","","",""]);
+         |                                                    ^
+      36 |   });
+      37 |   it("keeps the submitted attempt when no pending draft edit occurred",async()=>{
+      38 |     /** A failed submission still restores its original answer when the player did not change it. */
+
+      at src/play/race/__tests__/RaceSessionPendingInput.test.ts:35:52
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 10 passed, 12 total
+Snapshots:   0 total
+Time:        0.256 s, estimated 1 s
+Ran all test suites matching RaceSessionPendingInput.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionPendingInput`
+Exit status 1

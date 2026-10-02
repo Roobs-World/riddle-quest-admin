@@ -35,3 +35,17 @@ it("checks the physical receipt identifier and explicit category preference", ()
   expect(() => parseRaceMatchOffer(legacy, "invalid")).toThrow("Stored matchmaking offer is invalid.");
   expect(() => parseRaceMatchOffer({...current, fingerprint: JSON.stringify({locale: "en", categoryId: "science"})}, documentId)).toThrow();
 });
+
+it.each([0, 5])("reads a canonical timed-out receipt with %i solved answers", correctCount => {
+  /** Timeout is a settled non-finish and retains explicit censored measurements. */
+  const timeout = {...current, acceptedRunId: "run", acceptedAtMs: 2000, startsAtMs: 3000,
+    terminalStatus: "timed_out", terminalAtMs: 303000, result: "timed_out", correctCount, finishedTen: false,
+    actualPerformanceMs: null, predictionLogError: null, finishTimeDeltaMs: null};
+  expect(parseRaceMatchOffer(timeout, documentId)).toMatchObject(timeout);
+});
+
+it.each([{finishedTen: true, correctCount: 10}, {actualPerformanceMs: 12000}, {predictionLogError: 0}, {finishTimeDeltaMs: 0}])(
+  "rejects full-finish evidence on a timed-out receipt: %j", patch => {
+    expect(() => parseRaceMatchOffer({...current, acceptedRunId: "run", acceptedAtMs: 2000, startsAtMs: 3000,
+      terminalStatus: "timed_out", terminalAtMs: 303000, correctCount: 5, finishedTen: false, ...patch}, documentId)).toThrow("Stored matchmaking offer is invalid.");
+  });

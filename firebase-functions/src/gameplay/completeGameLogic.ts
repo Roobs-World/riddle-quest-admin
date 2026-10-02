@@ -1,3 +1,5 @@
+import {getDailyDate, getDailyMidnight, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {countCoinRewardAchievements} from "@qwordly/core/game";
 import * as functions from "firebase-functions";
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
@@ -21,7 +23,7 @@ import {
   getLevelFromXp,
 } from "../shared/constants";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
-import {computeNextDailyWinStreak, getUtcDayString} from "../daily/dailyStreak";
+import {computeNextDailyWinStreak, getCompletionDay} from "../daily/dailyStreak";
 import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
 import {lowerCaseGraphemes} from "@qwordly/core/game";
 import {finalizeAuthoritativeSession} from "./singlePlayerSession";
@@ -51,13 +53,13 @@ export type AuthoritativeCompleteGameData = CompleteGameRequestData & {
   locale: SupportedLocale;
   /** Classic entitlement index immutably bound to the session. */
   classicIndex?: number;
-  /** Daily UTC entitlement date immutably bound to the session. */
+  /** Daily regional entitlement date immutably bound to the session. */
   challengeDate?: string;
-  /** Server-committed terminal time used only for bounded UTC rollover recovery. */
+  /** Server-committed terminal time used only for bounded regional rollover recovery. */
   terminalAt?: Date;
 };
 
-/** Narrow recovery window around UTC midnight for a committed terminal win. */
+/** Narrow recovery window around regional midnight for a committed terminal win. */
 export const DAILY_COMPLETION_ROLLOVER_GRACE_MS = 15 * 60 * 1_000;
 /** Retains loss replay receipts beyond the longest valid private session. */
 export const LOSS_COMPLETION_RECEIPT_TTL_MS = 45 * 24 * 60 * 60 * 1_000;
@@ -81,16 +83,17 @@ export function isDailyCompletionDateEligible(
   isCorrect: boolean,
   terminalAt: Date | undefined,
   now = new Date(),
+  locale = "UTC",
 ): boolean {
   if (!challengeDate) return false;
   /** Provides today behavior. */
-  const today = now.toISOString().slice(0, 10);
+  const today = getDailyDate(locale, now);
   if (challengeDate === today) return true;
   if (!isCorrect || !terminalAt) return false;
   /** Provides rollover behavior. */
-  const rollover = new Date(`${challengeDate}T00:00:00.000Z`);
-  if (Number.isNaN(rollover.getTime())) return false;
-  rollover.setUTCDate(rollover.getUTCDate() + 1);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(challengeDate)) return false;
+  /** Authoritative next regional midnight used to validate terminal Daily recovery. */
+  const rollover = getDailyMidnight(locale, shiftDailyDate(challengeDate, 1));
   /** Provides rollover ms behavior. */
   const rolloverMs = rollover.getTime();
   return (
@@ -283,18 +286,18 @@ async function commitAuthoritativeCompletion(
       const lastCompletedKey =
         typeof user.lastCompletedDailyChallengeKey === "string"
           ? user.lastCompletedDailyChallengeKey
-          : getUtcDayString(user.lastDailyChallengeCompletedAt);
+          : getCompletionDay(user.lastDailyChallengeCompletedAt, data.locale);
       /** Provides last attempted key behavior. */
       const lastAttemptedKey =
         typeof user.lastDailyChallengeAttemptedKey === "string" ? user.lastDailyChallengeAttemptedKey : undefined;
       if (!data.isCorrect && lastCompletedKey && data.challengeDate && lastCompletedKey >= data.challengeDate) {
         supersededCompletion = true;
       } else {
-        if (!isDailyCompletionDateEligible(data.challengeDate, data.isCorrect, data.terminalAt, now)) {
+        if (!isDailyCompletionDateEligible(data.challengeDate, data.isCorrect, data.terminalAt, now, data.locale)) {
           throw new HttpsError("permission-denied", "This daily challenge is no longer current.");
         }
         if (
-          data.challengeDate !== now.toISOString().slice(0, 10) &&
+          data.challengeDate !== getDailyDate(data.locale, now) &&
           lastAttemptedKey &&
           lastAttemptedKey > data.challengeDate!
         ) {
@@ -359,7 +362,9 @@ async function commitAuthoritativeCompletion(
         newWinStreak = computeNextDailyWinStreak(
           currentStats.winStreak,
           user.lastDailyChallengeCompletedAt,
-          new Date(`${data.challengeDate}T12:00:00.000Z`),
+          getDailyMidnight(data.locale, data.challengeDate!),
+          data.locale,
+          user.lastCompletedDailyChallengeKey,
         );
         stats.winStreak = newWinStreak;
         stats.bestStreak = Math.max(stats.bestStreak, newWinStreak);
@@ -396,7 +401,7 @@ async function commitAuthoritativeCompletion(
     /** Provides newly unlocked achievement ids behavior. */
     const newlyUnlockedAchievementIds = newAchievements.map((entry) => entry.achievementId);
     /** Provides achievement bonus behavior. */
-    const achievementBonus = data.isCorrect ? newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD : 0;
+    const achievementBonus = data.isCorrect ? countCoinRewardAchievements(newlyUnlockedAchievementIds) * ACHIEVEMENT_UNLOCK_COIN_REWARD : 0;
     /** Provides coins earned behavior. */
     const coinsEarned = data.isCorrect ? baseWinCoins + dailyStreakBonus + levelUpBonus + achievementBonus : 0;
     /** Provides new balance behavior. */
@@ -435,9 +440,9 @@ async function commitAuthoritativeCompletion(
       ...(data.gameMode === "challenge" && data.isCorrect
         ? {
             lastDailyChallengeCompletedAt:
-              data.challengeDate === new Date().toISOString().slice(0, 10)
+              data.challengeDate === getDailyDate(data.locale)
                 ? admin.firestore.FieldValue.serverTimestamp()
-                : admin.firestore.Timestamp.fromDate(new Date(`${data.challengeDate}T12:00:00.000Z`)),
+                : admin.firestore.Timestamp.fromDate(getDailyMidnight(data.locale, data.challengeDate!)),
             lastCompletedDailyChallengeKey: data.challengeDate ?? data.completionKey,
           }
         : {}),

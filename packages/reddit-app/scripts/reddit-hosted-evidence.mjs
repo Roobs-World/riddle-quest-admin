@@ -2,7 +2,7 @@ const CLIENTS = ["web", "ios", "android"];
 const ROLES = ["developer", "moderator", "regular", "anonymous"];
 const JOURNEYS = ["inline-expanded", "login-reload", "visibility", "payments", "deletion", "recovery"];
 const APPROVALS = ["fetch", "payments", "policy", "security"];
-const FUNCTIONS = ["exchangeRedditIdentity", "deleteRedditAccount", "redditStorage", "redditGameplay"];
+const FUNCTIONS = ["exchangeRedditIdentity", "deleteRedditAccount", "redditStorage", "redditGameplay", "redditProfileRetentionScheduler"];
 const RULES = ["firestore", "firestore-indexes", "realtime-database", "storage"];
 const exact = (actual, expected) => Array.isArray(actual) && actual.length === expected.length &&
   [...actual].sort().join("\0") === [...expected].sort().join("\0");

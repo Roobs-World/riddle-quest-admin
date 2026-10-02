@@ -1,0 +1,262 @@
+TAP version 13
+# Subtest: the trusted Reddit server builds Core before resolving its generated package exports
+ok 1 - the trusted Reddit server builds Core before resolving its generated package exports
+  ---
+  duration_ms: 0.367175
+  type: 'test'
+  ...
+# Subtest: workspace build and verification assemble the trusted Reddit package from the isolated client
+ok 2 - workspace build and verification assemble the trusted Reddit package from the isolated client
+  ---
+  duration_ms: 0.08471
+  type: 'test'
+  ...
+# Subtest: the Reddit server build replaces its target directory instead of retaining stale release files
+ok 3 - the Reddit server build replaces its target directory instead of retaining stale release files
+  ---
+  duration_ms: 88.792785
+  type: 'test'
+  ...
+# Subtest: direct Devvit mutations fail closed in favor of the immutable release handoff
+ok 4 - direct Devvit mutations fail closed in favor of the immutable release handoff
+  ---
+  duration_ms: 0.531397
+  type: 'test'
+  ...
+# Subtest: the package release mutations exit non-zero without invoking Devvit
+ok 5 - the package release mutations exit non-zero without invoking Devvit
+  ---
+  duration_ms: 488.387811
+  type: 'test'
+  ...
+# Subtest: redacts credentials, provider IDs, profiles and URL query data
+ok 6 - redacts credentials, provider IDs, profiles and URL query data
+  ---
+  duration_ms: 1.229789
+  type: 'test'
+  ...
+# Subtest: rejects unknown types, invalid provenance, residual sensitive values and oversized input
+ok 7 - rejects unknown types, invalid provenance, residual sensitive values and oversized input
+  ---
+  duration_ms: 1.517985
+  type: 'test'
+  ...
+# Subtest: source digests are stable and byte-sensitive
+ok 8 - source digests are stable and byte-sensitive
+  ---
+  duration_ms: 0.769608
+  type: 'test'
+  ...
+# Subtest: accepts only complete hosted deployment, immutable artifact, approval and device evidence
+ok 9 - accepts only complete hosted deployment, immutable artifact, approval and device evidence
+  ---
+  duration_ms: 1.355277
+  type: 'test'
+  ...
+# Subtest: gate binds clean source provenance and exact package bytes
+ok 10 - gate binds clean source provenance and exact package bytes
+  ---
+  duration_ms: 4.597536
+  type: 'test'
+  ...
+# Subtest: release preparation checks clean source before building and requires both entrypoints
+ok 11 - release preparation checks clean source before building and requires both entrypoints
+  ---
+  duration_ms: 0.607751
+  type: 'test'
+  ...
+# Subtest: handoff is immutable, single-link, and hash verified
+ok 12 - handoff is immutable, single-link, and hash verified
+  ---
+  duration_ms: 1.518215
+  type: 'test'
+  ...
+# Subtest: exclusive retry barrier preserves ambiguous outcomes
+ok 13 - exclusive retry barrier preserves ambiguous outcomes
+  ---
+  duration_ms: 2.465178
+  type: 'test'
+  ...
+# Subtest: concurrent barrier transitions serialize
+ok 14 - concurrent barrier transitions serialize
+  ---
+  duration_ms: 1.03493
+  type: 'test'
+  ...
+# Subtest: playtest uploads reject missing, stable, malformed, and extra version arguments before running commands
+ok 15 - playtest uploads reject missing, stable, malformed, and extra version arguments before running commands
+  ---
+  duration_ms: 1.246179
+  type: 'test'
+  ...
+# Subtest: a private upload retains uncertainty and blocks later versions before running commands
+ok 16 - a private upload retains uncertainty and blocks later versions before running commands
+  ---
+  duration_ms: 2.206298
+  type: 'test'
+  ...
+# Subtest: a failed package check leaves no attempted upload and can be corrected
+ok 17 - a failed package check leaves no attempted upload and can be corrected
+  ---
+  duration_ms: 0.444161
+  type: 'test'
+  ...
+# Subtest: accepted versions are immutable and explicit resolution preserves original failure evidence
+ok 18 - accepted versions are immutable and explicit resolution preserves original failure evidence
+  ---
+  duration_ms: 0.979234
+  type: 'test'
+  ...
+# Subtest: separate processes cannot validate or transmit while another playtest owns the lock
+ok 19 - separate processes cannot validate or transmit while another playtest owns the lock
+  ---
+  duration_ms: 20.045189
+  type: 'test'
+  ...
+# Subtest: process interruption preserves the lock and orphan attempt until explicit recovery
+ok 20 - process interruption preserves the lock and orphan attempt until explicit recovery
+  ---
+  duration_ms: 16.168328
+  type: 'test'
+  ...
+# Subtest: corrupt and orphaned journal evidence fails closed before validation
+ok 21 - corrupt and orphaned journal evidence fails closed before validation
+  ---
+  duration_ms: 0.505297
+  type: 'test'
+  ...
+# Subtest: requires sanitized provenance-bound fixtures for every hosted contract
+ok 22 - requires sanitized provenance-bound fixtures for every hosted contract
+  ---
+  duration_ms: 5.286621
+  type: 'test'
+  ...
+# Subtest: promotion evidence is bound to the retained read-only candidate
+ok 23 - promotion evidence is bound to the retained read-only candidate
+  ---
+  duration_ms: 9.477678
+  type: 'test'
+  ...
+# Subtest: overlapping install, upgrade and moderator calls submit only one canonical post
+ok 24 - overlapping install, upgrade and moderator calls submit only one canonical post
+  ---
+  duration_ms: 1.979228
+  type: 'test'
+  ...
+# Subtest: an ambiguous provider failure remains pending across retries
+ok 25 - an ambiguous provider failure remains pending across retries
+  ---
+  duration_ms: 0.326858
+  type: 'test'
+  ...
+# Subtest: Redis claim failure never reaches the provider creation boundary
+ok 26 - Redis claim failure never reaches the provider creation boundary
+  ---
+  duration_ms: 0.188767
+  type: 'test'
+  ...
+# Subtest: ambiguous post persistence preserves pending or accepted state without resubmitting
+ok 27 - ambiguous post persistence preserves pending or accepted state without resubmitting
+  ---
+  duration_ms: 0.178508
+  type: 'test'
+  ...
+# Subtest: missing retained posts and malformed records never authorize replacement
+ok 28 - missing retained posts and malformed records never authorize replacement
+  ---
+  duration_ms: 0.189379
+  type: 'test'
+  ...
+# Subtest: a losing claim reads the winner's completed post without submitting again
+ok 29 - a losing claim reads the winner's completed post without submitting again
+  ---
+  duration_ms: 0.086845
+  type: 'test'
+  ...
+# Subtest: invalid provider identifiers remain pending and are never cached as acceptance
+ok 30 - invalid provider identifiers remain pending and are never cached as acceptance
+  ---
+  duration_ms: 0.103546
+  type: 'test'
+  ...
+# Subtest: identity kill switch degrades to guest core play only for the exact disabled response
+ok 31 - identity kill switch degrades to guest core play only for the exact disabled response
+  ---
+  duration_ms: 1.320371
+  type: 'test'
+  ...
+# Subtest: matches the Firebase verifier canonical signature fixture byte-for-byte
+ok 32 - matches the Firebase verifier canonical signature fixture byte-for-byte
+  ---
+  duration_ms: 0.527469
+  type: 'test'
+  ...
+# Subtest: recovers only matching account and environment orders across bounded pages
+ok 33 - recovers only matching account and environment orders across bounded pages
+  ---
+  duration_ms: 1.027465
+  type: 'test'
+  ...
+# Subtest: fails closed on oversized pages, cursor replay and grant failure
+ok 34 - fails closed on oversized pages, cursor replay and grant failure
+  ---
+  duration_ms: 0.24317
+  type: 'test'
+  ...
+# Subtest: derives stable isolated opaque recovery keys
+ok 35 - derives stable isolated opaque recovery keys
+  ---
+  duration_ms: 0.735362
+  type: 'test'
+  ...
+# Subtest: rejects malformed scope and weak secrets
+ok 36 - rejects malformed scope and weak secrets
+  ---
+  duration_ms: 0.133943
+  type: 'test'
+  ...
+# Subtest: projects exact paid and reverted Reddit orders
+ok 37 - projects exact paid and reverted Reddit orders
+  ---
+  duration_ms: 0.761361
+  type: 'test'
+  ...
+# Subtest: rejects forged identity, lifecycle, environment, price, SKU, accounting and bundles
+ok 38 - rejects forged identity, lifecycle, environment, price, SKU, accounting and bundles
+  ---
+  duration_ms: 0.164451
+  type: 'test'
+  ...
+# Subtest: projects only paid or delivered orders carrying one exact opaque account tag
+ok 39 - projects only paid or delivered orders carrying one exact opaque account tag
+  ---
+  duration_ms: 0.362737
+  type: 'test'
+  ...
+# Subtest: accepts only HTTPS Reddit-owned avatar delivery hosts
+ok 40 - accepts only HTTPS Reddit-owned avatar delivery hosts
+  ---
+  duration_ms: 0.697
+  type: 'test'
+  ...
+# Subtest: injects only the server environment into exact referral requests
+ok 41 - injects only the server environment into exact referral requests
+  ---
+  duration_ms: 0.937054
+  type: 'test'
+  ...
+# Subtest: rejects client environment, extra fields, malformed bodies and invalid deployment configuration
+ok 42 - rejects client environment, extra fields, malformed bodies and invalid deployment configuration
+  ---
+  duration_ms: 0.150084
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 517.723844

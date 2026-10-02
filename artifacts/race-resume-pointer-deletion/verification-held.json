@@ -1,0 +1,78 @@
+{
+  "taskId": "multiplayer:race-resume-pointer-deletion",
+  "status": "focused-verification-passed-full-source-receipt-pending",
+  "verifiedAt": "2026-10-01T16:40:31.047045+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "fullClientTestsPassed": 1626,
+  "fullClientTestsSkipped": 95,
+  "fullClientSuitesPassed": 187,
+  "fullClientSuitesSkipped": 13,
+  "newSessionTestsPassed": 4,
+  "retainedSelectionScenariosPassed": 2,
+  "retainedStartupRecoveryScenariosPassed": 12,
+  "baselineTestsFailed": 3,
+  "fullVerificationRequiredChecks": 45,
+  "productionFileHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "935d57fc1c4cd38f0592967435c91ea13b33d96429f38393cbafedd51390a098",
+    "packages/portal/src/play/race/logic/activeRaceStorage.ts": "4ec0712c6d7656a73a0794211a27868bf0420148c8c4f1b6fed9b4c2f7c346a7",
+    "packages/portal/src/play/race/__tests__/RaceSessionResumePointerDeletion.test.ts": "9948ce51188a9bcc8bf9fcec20e89e82d93c676eeb1e1dca80f1a463a3cbe412",
+    "packages/portal/src/play/race/__tests__/RaceSessionCleanupOwnership.test.ts": "3f1d21c2ebce07776ecf6dc95c675c6150dbb2a741c88609362663860e07d8a8"
+  },
+  "baselineHashes": {
+    "prior-active-storage.ts": "33fa392e4a94d87eafec211b11a12b0b5a537a47de0b2919d0705362e98e185d",
+    "prior-session.ts": "13e4489d7c487e1f31e2156867dadfe882b22ef78abbfbb340dc816ddd1f5e98"
+  },
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "86040164ce45d25e5dfc921dcbc976b751afaed5f69c9aaf1a74a8636a5e98dd"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "660aee2992f70df61f627d79e6ef3d458f441ca538cf5a1f0a650c063adaf038"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "ddc5635d1dbbc057d1982313b5b853e78962b2e9a100b8756bc0959ade196dad"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "ba0e6848146ea791e67b91111c6bbdf5431444af3efe638980c749c078656bea"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "8e78a4b7d1ebee3152819dc4b53acfad0c6f8599a06644e316dca8a624cfef31"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "3642ea903a2a801e209cc42c0bb7b99671decf2427f32ef754d038e6eaeebc26"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "fb106e880d54bd68904a9ed9a498a75ff9c66a3a7b97ef2868e52a9baaa0ffed"
+    }
+  ],
+  "otherChecksPassed": [
+    "portal-types",
+    "documented-declarations",
+    "file-size-limits",
+    "security",
+    "scalability",
+    "target-dependency-evidence"
+  ],
+  "functionsDeploymentPerformedThisBatch": false,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdated": false,
+  "jestPublicationPerformed": false,
+  "nextActions": [
+    "Let the active hosted Jest E2E chat finish before stable full-source verification and automatic dashboard completion recording.",
+    "Continue the multiplayer reliability audit."
+  ]
+}

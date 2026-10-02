@@ -152,7 +152,7 @@ export type CreateHostMessageHandlersOptions = {
     newlyUnlockedAchievementIds?: string[];
     /** Stores new coins. */
     newCoins?: number;
-  }) => Promise<void>;
+  }) => Promise<boolean | void>;
   /** Writes an optimistic achievement projection only to target-owned local storage. */
   persistAchievementProjection: (achievementIds: string[]) => void;
   /** Stores on playable. */
@@ -547,8 +547,7 @@ export const createPlayHostMessageHandlers = ({
       // Present the confirmed outcome while optional profile and platform work finishes.
       void Promise.resolve()
         .then(async () => {
-          await syncRaceAchievementProgress(result);
-          await onAuthoritativeRaceResult?.(result);
+          if (await syncRaceAchievementProgress(result) !== false) await onAuthoritativeRaceResult?.(result);
         })
         .catch((error) => reportHostOperationError(error, "raceOutcome"));
       return result;

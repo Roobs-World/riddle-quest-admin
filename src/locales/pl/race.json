@@ -104,6 +104,8 @@
     "MATCH_EXPIRED": "To wyszukiwanie przeciwnika wygasło. Spróbuj ponownie.",
     "MATCH_CONSUMED": "To wyszukiwanie zostało już użyte. Znajdź innego przeciwnika.",
     "MATCH_UNAVAILABLE": "Wyszukiwanie przeciwników jest niedostępne dla tego konta.",
-    "MATCH_EMPTY": "Nie ma jeszcze odpowiednich przeciwników. Spróbuj ponownie później."
+    "MATCH_EMPTY": "Nie ma jeszcze odpowiednich przeciwników. Spróbuj ponownie później.",
+    "CHALLENGE_FRIEND": "Rzuć wyzwanie znajomemu",
+    "SHARE_TOURNAMENT": "Udostępnij turniej"
   }
 }

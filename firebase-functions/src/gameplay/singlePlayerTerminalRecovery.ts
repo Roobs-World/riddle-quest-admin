@@ -29,6 +29,7 @@ export async function recoverPendingAuthoritativeCompletion(
       bound.state.isCorrect,
       trustedTerminalDate(bound.state.terminalAt),
       now,
+      bound.state.locale,
     )
   )
     return false;

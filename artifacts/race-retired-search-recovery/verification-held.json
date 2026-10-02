@@ -1,0 +1,105 @@
+{
+  "taskId": "multiplayer:race-retired-search-recovery",
+  "status": "focused-verification-passed-shared-source-gates-pending",
+  "verifiedAt": "2026-10-01T20:08:18.362864+00:00",
+  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "baselineUnitTestsFailed": 8,
+  "browserCasesPassed": 8,
+  "retainedBrowserCasesPassed": 54,
+  "focusedUnitTestsPassed": 42,
+  "fullClientTestsPassed": 1692,
+  "fullClientSuitesPassed": 196,
+  "fullClientTestsSkipped": 101,
+  "fullClientSuitesSkipped": 13,
+  "fileHashes": {
+    "packages/portal/src/play/race/RaceSession.ts": "a10bf751ac1cdcea558d3c1bed61ef95e43d7caef7909f09dfe6437f285df943",
+    "packages/portal/src/play/race/logic/raceInitialState.ts": "203633030090363443376960a872fd8cc1db07e9a2801de7321ca02289784fe5",
+    "packages/portal/src/play/race/__tests__/RaceSessionRetiredSearchRecovery.test.ts": "4538ada7595f81fb2ddb5c4fb5b602879b63bda958f6ef58cc31b1de62697930",
+    "packages/portal/scripts/verify-race-retired-search-browser.mjs": "7da6416d8f38aef93abbe46436bb9f09021e7af45fc612f57cb5623effb6b646",
+    "packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs": "815f1848a5d6a7cdcbc74c45467c22a0d66c3a438ce55d1eb558de6057bc6653"
+  },
+  "logHashes": {
+    "retained-search.log": "586c2790e7ad8fa1cf811218d2a6b5ab388f4b2cecedce790a96eb679f5a3c83",
+    "browser.log": "b81b4a94e06b71aacb0cd660c605d2ad5fb53d7e1afa9b255ae8f491380e468e",
+    "baseline-unit.log": "fbf2f6c8ea28dcb66d45b38ab4d0a49170ba022ba046009f31644861144df1cc",
+    "scalability.log": "9440d71cb44b67c74a84d061c6abc7f3bae839d08c96e04e8b3cfc1329770ec3",
+    "tsdoc.log": "f627d0d24c2b1ade55cd76e5b6881a8c57c423e60876766ff35b7f115fa37aed",
+    "types.log": "ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6",
+    "retained-rematch.log": "85b6446f1bf1179e2bf166dc43de80ce5d24eeb90500e00495a39d5178da827d",
+    "dependencies.log": "4ca111f9cf0418467d5f840dab845b9942704850b193c62d479ef165cf13e328",
+    "security.log": "fdc56c5905cace5619c562573fb2c28ed8d698989dc282b3ce26fd03d20c3ec5",
+    "retained-callback.log": "b78c774f81cba4698296472dc152247d3b73505d67ff1dce9d7c7f4058fcc2ab",
+    "client-tests.log": "524a1c861b732c246c23d57e2f2a7c648416ba317f0c853f136218e84c48ed8a",
+    "focused-unit.log": "50463373075a95b46047bc2f0debf9e37b4908011d35149ae11ede7e15296498",
+    "retained-provider.log": "aea47286ec7f661347077b204b940c16cbae4567410918aa342c499eb3daddc9",
+    "sizes.log": "d82a69cf3267d7da84206dc25c6127264b081a827f637428264ad33f2dce9eed",
+    "retained-cancel.log": "d9807fd4410b0cc48854f1bc8bd360aaa82bd69d63c31d39c36df19271b48b68",
+    "builds.log": "ed1adaa79de29be82a3b3687381774806b32713d34ba614f459b37722efc4ec1"
+  },
+  "buildArtifacts": [
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "sha256": "e3b44381144e8aec1547c520b88769d375a9ca895be860019507a9f60a23d478"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "sha256": "107d51a29d9c61879a204567e2d6f93c2975d42b9b780161005ba1d1e48d2078"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "sha256": "60115f8c33c1b9efeab3ba6ab71a73ca4e78e1b85936197c67cd5bd719910849"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "sha256": "ba0e6848146ea791e67b91111c6bbdf5431444af3efe638980c749c078656bea"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "sha256": "8e78a4b7d1ebee3152819dc4b53acfad0c6f8599a06644e316dca8a624cfef31"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "sha256": "3642ea903a2a801e209cc42c0bb7b99671decf2427f32ef754d038e6eaeebc26"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "sha256": "fb106e880d54bd68904a9ed9a498a75ff9c66a3a7b97ef2868e52a9baaa0ffed"
+    }
+  ],
+  "checksPassed": [
+    "complete-client-suite",
+    "portal-types",
+    "security",
+    "scalability",
+    "seven-isolated-platform-builds",
+    "exact-target-dependency-evidence",
+    "retired-search-recovery-browser",
+    "retained-prompt-cancellation-browser",
+    "retained-discovery-provider-browser",
+    "retained-discovery-callback-browser",
+    "retained-search-journal-browser",
+    "retained-rematch-browser"
+  ],
+  "sharedChecksPending": {
+    "documented-declarations": "45 declarations in concurrently edited files outside the focused change; see tsdoc.log.",
+    "file-size-limits": "Concurrent authentication.jest-playwright.test.ts is 1266 equivalent lines, limit1200."
+  },
+  "fullVerificationRequiredChecks": 62,
+  "dashboardCompletionRecorded": false,
+  "hostedPreviewUpdatedThisBatch": false,
+  "jestPublicationPerformed": false,
+  "functionsDeploymentPerformedThisBatch": false,
+  "limitations": [
+    "Provider retirement is observed on a session tick; suspended browser timers defer observation until scheduling or visibility resumes.",
+    "Focused source hashes and artifact hashes do not establish whole-source dashboard completion.",
+    "Concurrent backend edits require fresh backend verification before any whole-source completion claim."
+  ],
+  "remainingGate": "Let user-owned hosted E2E/deployment chat finish before guarded full-source completion verification and automatic dashboard receipt."
+}

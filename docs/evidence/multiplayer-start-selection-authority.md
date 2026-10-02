@@ -1,0 +1,11 @@
+# Challenge start response selection
+
+Four baseline regressions showed rewritten public challenge identity, opponent name or recorded target authorizing contradictory start receipts, and an injected public challenge ID rejecting a valid creator start. Opponent fixtures include the required event history so these exercise competitive selection rather than schema rejection.
+
+Start response validation now reconstructs challenge identity from the private issued command and checks its accepted preview from private snapshot ownership. Creator starts retain no challenge selection. Direct entry and provider preview patches are cloned before observer publication and carried through unrelated snapshots. Validation gets a copied preview only when its identity matches the requested challenge; another explicit selection cannot inherit it. Exact requested challenge identity is also checked directly against the returned run.
+
+The full client suite passes 1,738 tests across 204 suites, with 102 tests and 13 suites skipped. Ten injected-browser cases exercise actual challenge acceptance, public identity/name/time mutations, valid challenge starts and creator controls at desktop/mobile widths. Thirty-six retained cases pass across private entry selection, existing attempt authority and waiting invitation selection.
+
+All seven isolated builds, exact dependency evidence, portal types, security and scalability pass. Type checking caught an absent-preview branch returning undefined; the explicit existence guard was corrected and full client, browser, type and build checks were rerun. Initial failed type/build logs remain retained. Focused files pass documentation and size requirements; global concurrent failures remain. The manifest retains earlier gates and adds start selection, for 74 checks. Focused source, log and artifact hashes are held in `artifacts/race-start-selection-authority/verification-held.json`.
+
+Captured race backend files remain unchanged; four concurrent solo gameplay files differ from earlier complete-backend verification. This batch changes no backend production code, visible text or locale keys and performs no hosted draft update, Jest publication or Firebase deployment. The other E2E chat remains uninterrupted. Dashboard completion and the wider multiplayer audit remain pending.

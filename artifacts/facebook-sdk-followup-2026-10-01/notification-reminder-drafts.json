@@ -1,0 +1,234 @@
+{
+  "appId": "1748953042991569",
+  "status": "review-only-not-saved-to-meta",
+  "delivery": "Meta dashboard event-based after last play; not a Jest or browser scheduler",
+  "machineTranslation": false,
+  "sendTimeStrategy": "Predicted Best Time",
+  "templates": [
+    {
+      "label": "riddlequest_d1",
+      "type": "Event-based",
+      "timeAfterLastPlay": {
+        "value": 1,
+        "unit": "Day"
+      },
+      "payload": {},
+      "translations": {
+        "ar_AR": {
+          "title": "Riddle Quest",
+          "body": "لغز اليوم جاهز. تعال وحلّه."
+        },
+        "de_DE": {
+          "title": "Riddle Quest",
+          "body": "Das heutige Rätsel ist bereit. Komm und löse es."
+        },
+        "en_US": {
+          "title": "Riddle Quest",
+          "body": "Today's riddle is ready. Come and solve it."
+        },
+        "es_ES": {
+          "title": "Riddle Quest",
+          "body": "El acertijo de hoy está listo. Ven a resolverlo."
+        },
+        "fr_FR": {
+          "title": "Riddle Quest",
+          "body": "L’énigme du jour est prête. Viens la résoudre."
+        },
+        "hi_IN": {
+          "title": "Riddle Quest",
+          "body": "आज की पहेली तैयार है। आओ और इसे सुलझाओ।"
+        },
+        "id_ID": {
+          "title": "Riddle Quest",
+          "body": "Teka-teki hari ini sudah siap. Ayo pecahkan."
+        },
+        "it_IT": {
+          "title": "Riddle Quest",
+          "body": "L’enigma di oggi è pronto. Vieni a risolverlo."
+        },
+        "ja_JP": {
+          "title": "Riddle Quest",
+          "body": "今日のなぞなぞが待っています。解いてみましょう。"
+        },
+        "ko_KR": {
+          "title": "Riddle Quest",
+          "body": "오늘의 수수께끼가 준비됐어요. 풀어 보세요."
+        },
+        "nl_NL": {
+          "title": "Riddle Quest",
+          "body": "Het raadsel van vandaag staat klaar. Kom het oplossen."
+        },
+        "pl_PL": {
+          "title": "Riddle Quest",
+          "body": "Dzisiejsza zagadka jest gotowa. Przyjdź i ją rozwiąż."
+        },
+        "pt_BR": {
+          "title": "Riddle Quest",
+          "body": "O enigma de hoje está pronto. Venha resolvê-lo."
+        },
+        "ru_RU": {
+          "title": "Riddle Quest",
+          "body": "Сегодняшняя загадка готова. Приходи её решить."
+        },
+        "tr_TR": {
+          "title": "Riddle Quest",
+          "body": "Bugünün bilmecesi hazır. Gel ve çöz."
+        },
+        "vi_VN": {
+          "title": "Riddle Quest",
+          "body": "Câu đố hôm nay đã sẵn sàng. Hãy đến giải nhé."
+        }
+      }
+    },
+    {
+      "label": "riddlequest_d3",
+      "type": "Event-based",
+      "timeAfterLastPlay": {
+        "value": 3,
+        "unit": "Day"
+      },
+      "payload": {},
+      "translations": {
+        "ar_AR": {
+          "title": "Riddle Quest",
+          "body": "هل أنت مستعد للغز آخر؟ تابع من حيث توقفت."
+        },
+        "de_DE": {
+          "title": "Riddle Quest",
+          "body": "Bereit für ein weiteres Rätsel? Mach dort weiter, wo du aufgehört hast."
+        },
+        "en_US": {
+          "title": "Riddle Quest",
+          "body": "Ready for another riddle? Pick up where you left off."
+        },
+        "es_ES": {
+          "title": "Riddle Quest",
+          "body": "¿Listo para otro acertijo? Continúa donde lo dejaste."
+        },
+        "fr_FR": {
+          "title": "Riddle Quest",
+          "body": "Prêt pour une autre énigme ? Reprends là où tu t’es arrêté."
+        },
+        "hi_IN": {
+          "title": "Riddle Quest",
+          "body": "एक और पहेली के लिए तैयार हो? जहाँ छोड़ा था, वहीं से शुरू करो।"
+        },
+        "id_ID": {
+          "title": "Riddle Quest",
+          "body": "Siap untuk teka-teki lain? Lanjutkan dari terakhir kali bermain."
+        },
+        "it_IT": {
+          "title": "Riddle Quest",
+          "body": "Pronto per un altro enigma? Riprendi da dove avevi lasciato."
+        },
+        "ja_JP": {
+          "title": "Riddle Quest",
+          "body": "次のなぞなぞに挑戦しますか？続きから遊べます。"
+        },
+        "ko_KR": {
+          "title": "Riddle Quest",
+          "body": "다른 수수께끼를 풀 준비가 됐나요? 이어서 플레이하세요."
+        },
+        "nl_NL": {
+          "title": "Riddle Quest",
+          "body": "Klaar voor nog een raadsel? Ga verder waar je gebleven was."
+        },
+        "pl_PL": {
+          "title": "Riddle Quest",
+          "body": "Gotowy na kolejną zagadkę? Wróć do miejsca, w którym skończyłeś."
+        },
+        "pt_BR": {
+          "title": "Riddle Quest",
+          "body": "Pronto para outro enigma? Continue de onde parou."
+        },
+        "ru_RU": {
+          "title": "Riddle Quest",
+          "body": "Готов к новой загадке? Продолжи с того места, где остановился."
+        },
+        "tr_TR": {
+          "title": "Riddle Quest",
+          "body": "Yeni bir bilmeceye hazır mısın? Kaldığın yerden devam et."
+        },
+        "vi_VN": {
+          "title": "Riddle Quest",
+          "body": "Sẵn sàng cho câu đố tiếp theo? Tiếp tục từ nơi bạn đã dừng."
+        }
+      }
+    },
+    {
+      "label": "riddlequest_d7",
+      "type": "Event-based",
+      "timeAfterLastPlay": {
+        "value": 7,
+        "unit": "Day"
+      },
+      "payload": {},
+      "translations": {
+        "ar_AR": {
+          "title": "Riddle Quest",
+          "body": "اختبر مهاراتك في حل الألغاز مع Riddle Quest."
+        },
+        "de_DE": {
+          "title": "Riddle Quest",
+          "body": "Teste deine Rätselkünste mit Riddle Quest."
+        },
+        "en_US": {
+          "title": "Riddle Quest",
+          "body": "Put your puzzle skills to the test with Riddle Quest."
+        },
+        "es_ES": {
+          "title": "Riddle Quest",
+          "body": "Pon a prueba tu ingenio con Riddle Quest."
+        },
+        "fr_FR": {
+          "title": "Riddle Quest",
+          "body": "Mets tes talents à l’épreuve avec Riddle Quest."
+        },
+        "hi_IN": {
+          "title": "Riddle Quest",
+          "body": "Riddle Quest के साथ पहेलियाँ सुलझाने का हुनर आज़माओ।"
+        },
+        "id_ID": {
+          "title": "Riddle Quest",
+          "body": "Uji kemampuan memecahkan teka-teki dengan Riddle Quest."
+        },
+        "it_IT": {
+          "title": "Riddle Quest",
+          "body": "Metti alla prova il tuo ingegno con Riddle Quest."
+        },
+        "ja_JP": {
+          "title": "Riddle Quest",
+          "body": "Riddle Questで、なぞなぞを解く力を試しましょう。"
+        },
+        "ko_KR": {
+          "title": "Riddle Quest",
+          "body": "Riddle Quest에서 수수께끼 실력을 시험해 보세요."
+        },
+        "nl_NL": {
+          "title": "Riddle Quest",
+          "body": "Test je puzzelvaardigheden met Riddle Quest."
+        },
+        "pl_PL": {
+          "title": "Riddle Quest",
+          "body": "Sprawdź swoje umiejętności w Riddle Quest."
+        },
+        "pt_BR": {
+          "title": "Riddle Quest",
+          "body": "Teste sua habilidade de resolver enigmas com Riddle Quest."
+        },
+        "ru_RU": {
+          "title": "Riddle Quest",
+          "body": "Проверь своё умение решать загадки в Riddle Quest."
+        },
+        "tr_TR": {
+          "title": "Riddle Quest",
+          "body": "Riddle Quest ile bilmece çözme becerini sına."
+        },
+        "vi_VN": {
+          "title": "Riddle Quest",
+          "body": "Thử tài giải đố của bạn với Riddle Quest."
+        }
+      }
+    }
+  ]
+}

@@ -629,6 +629,69 @@ it("returns a retryable failure when SDK initialization never settles", async ()
   expect(platform.loaded).toBe(false);
 });
 
+it("waits for a healthy delayed host handshake without reading player state before SDK readiness", async () => {
+  jest.useFakeTimers();
+  /** Provides the delayed or unresponsive host platform. */
+  const platform = new MockJestPlatform();
+  /** Tracks player reads before SDK readiness. */
+  const getPlayer = jest.spyOn(platform, "getPlayer");
+  platform.init = () => new Promise((resolve) => {
+    setTimeout(() => resolve({status: "success", value: undefined}), 18_000);
+  });
+  /** Tracks identity exchange after the handshake. */
+  const exchangeIdentity = jest.fn(async () => ({customToken: "firebase", uid: "uid"}));
+  /** Tracks Firebase authentication after the handshake. */
+  const authenticate = jest.fn(async () => undefined);
+  try {
+    /** Captures startup while the host handshake is pending. */
+    const pending = startJestSession(
+      platform,
+      {exchangeIdentity} as never,
+      {reconcile: async () => ({status: "success", value: 0})} as never,
+      authenticate,
+    );
+    await jest.advanceTimersByTimeAsync(13_000);
+    expect(getPlayer).not.toHaveBeenCalled();
+    expect(exchangeIdentity).not.toHaveBeenCalled();
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(platform.progress).toEqual([]);
+    expect(platform.loaded).toBe(false);
+
+    await jest.advanceTimersByTimeAsync(5_000);
+    await expect(pending).resolves.toMatchObject({status: "success", value: {firebaseAuthenticated: true}});
+    expect(platform.progress[0]).toBe(5);
+    expect(platform.loaded).toBe(false);
+    markJestPlayable(platform);
+    expect(platform.loaded).toBe(true);
+  } finally {
+    stopJestLoadingHeartbeat(platform);
+    jest.useRealTimers();
+  }
+});
+
+it("keeps the default SDK handshake allowance bounded and fails closed when the host never replies", async () => {
+  jest.useFakeTimers();
+  /** Provides the delayed or unresponsive host platform. */
+  const platform = new MockJestPlatform();
+  platform.init = () => new Promise(() => undefined);
+  /** Tracks identity exchange after the handshake. */
+  const exchangeIdentity = jest.fn();
+  /** Tracks Firebase authentication after the handshake. */
+  const authenticate = jest.fn();
+  try {
+    /** Captures startup while the host handshake is pending. */
+    const pending = startJestSession(platform, {exchangeIdentity} as never, {} as never, authenticate);
+    await jest.advanceTimersByTimeAsync(30_001);
+    await expect(pending).resolves.toEqual({status: "retryable-failure", message: "Jest SDK initialization timed out."});
+    expect(exchangeIdentity).not.toHaveBeenCalled();
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(platform.progress).toEqual([]);
+    expect(platform.loaded).toBe(false);
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
 it("returns platform initialization and purchase reconciliation failures unchanged", async () => {
   /** Provides initialization failure behavior. */
   const initializationFailure = new MockJestPlatform();

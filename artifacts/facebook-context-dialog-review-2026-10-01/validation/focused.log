@@ -1,0 +1,8 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand src/facebook/__tests__/FacebookPlatformBootstrap.test.ts src/facebook/__tests__/FacebookAdsCapability.test.ts src/facebook/__tests__/FacebookNotificationCapability.test.ts src/facebook/__tests__/FacebookReferralSharing.test.ts src/facebook/__tests__/FacebookTournamentPresentation.test.ts
+
+Test Suites: 5 passed, 5 total
+Tests:       52 passed, 52 total
+Snapshots:   0 total
+Time:        0.367 s, estimated 1 s
+Ran all test suites matching src/facebook/__tests__/FacebookPlatformBootstrap.test.ts|src/facebook/__tests__/FacebookAdsCapability.test.ts|src/facebook/__tests__/FacebookNotificationCapability.test.ts|src/facebook/__tests__/FacebookReferralSharing.test.ts|src/facebook/__tests__/FacebookTournamentPresentation.test.ts.

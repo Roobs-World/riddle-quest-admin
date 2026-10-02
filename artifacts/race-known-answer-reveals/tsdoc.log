@@ -1,0 +1,9 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 6 production declarations are undocumented.
+- packages/portal/src/play/race/__tests__/RaceSessionKnownAnswerReveals.test.ts:31 bad
+- packages/portal/src/play/race/__tests__/RaceSessionKnownAnswerReveals.test.ts:42 bad
+- packages/portal/src/play/race/__tests__/RaceSessionKnownAnswerReveals.test.ts:50 response
+- packages/portal/src/play/race/__tests__/RaceSessionKnownAnswerReveals.test.ts:58 next
+- packages/portal/src/play/race/__tests__/RaceSessionKnownAnswerReveals.test.ts:59 response
+- packages/portal/src/play/race/__tests__/RaceSessionKnownAnswerReveals.test.ts:66 response
+[ELIFECYCLE] Command failed with exit code 1.

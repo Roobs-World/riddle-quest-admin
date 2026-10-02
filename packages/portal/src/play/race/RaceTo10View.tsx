@@ -82,12 +82,18 @@ export type RaceTo10ViewProps = {
   published: PublishRaceChallengeResponse | null;
   /** Referral reward displayed only when this target can share a published challenge. */
   sharingRewardCoins?: number;
+  /** Target-owned native share button text. */
+  sharingLabel?: string;
+  /** Target-owned share instructions. */
+  sharingReadyText?: string;
   /** Whether a publish intent is queued or in flight. */
   publishRequested: boolean;
   /** Whether the provider share flow is opening or active. */
   sharing: boolean;
   /** Stores pending. */
   pending: RaceOperation | null;
+  /** Keeps gameplay mutations behind canonical recovery. */
+  requiresRunRefresh?: boolean;
   /** Stores adjusted now. */
   adjustedNow: number;
   /** Stores ghost correct. */
@@ -134,6 +140,8 @@ export type RaceTo10ViewProps = {
   onShowInbox: () => void;
   /** Opens the optional platform tournament view. */
   onShowTournaments?: () => void;
+  /** Opens the target's native tournament dialog from the optional standings surface. */
+  onShareTournament?: () => void;
   /** Stores on choose category. */
   onChooseCategory: () => void;
   /** Stores on select category. */
@@ -208,9 +216,11 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     outcome,
     published,
     sharingRewardCoins,
+    sharingLabel,
+    sharingReadyText,
     publishRequested,
     sharing,
-    pending,
+    pending, requiresRunRefresh = false,
     adjustedNow,
     ghostCorrect,
     feedback,
@@ -234,6 +244,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     onRequestClose,
     onShowInbox,
     onShowTournaments,
+    onShareTournament,
     onChooseCategory,
     onSelectCategory,
     onInboxRematch,
@@ -317,8 +328,9 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onChooseCategory={onChooseCategory}
         />
       )}
-      {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading} />}
-      {stage === "challenge" && <RaceChallengePanel challenge={challenge} entryStatus={entryStatus} onAccept={onSelectCategory} onCancel={onCancelInvitation} busy={Boolean(pending)} />}
+      {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading}
+        sharing={sharing} onShare={onShareTournament} />}
+      {stage === "challenge" && <RaceChallengePanel challenge={challenge} entryStatus={entryStatus} onShowResults={onShowInbox} onAccept={onSelectCategory} onCancel={onCancelInvitation} busy={Boolean(pending)} />}
       {stage === "countdown" && (
         <RaceCountdown
           countdown={countdown}
@@ -343,6 +355,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           guesses={raceGuesses}
           letterStates={letterStates}
           pending={Boolean(pending)}
+          requiresRunRefresh={requiresRunRefresh}
           allowTypingWhilePending={allowTypingWhilePending}
           onClose={onRequestClose}
           onSelectSlot={onSelectSlot}
@@ -367,6 +380,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           publishing={publishRequested || pending === "racePublish"}
           sharing={sharing}
           sharingRewardCoins={sharingRewardCoins}
+          sharingLabel={sharingLabel} sharingReadyText={sharingReadyText}
           onPublish={onPublish}
           onShare={onShare}
           onRematch={onRematch}

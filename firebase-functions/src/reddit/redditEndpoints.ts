@@ -24,6 +24,8 @@ const RATE_LIMIT_RETENTION_MS = 24 * 60 * 60 * 1_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 /** Defines the rate limit max value. */
 const RATE_LIMIT_MAX = 20;
+/** Allows thirty two-second race polls plus bounded state/consent transitions per minute. */
+const PRESENCE_POLL_RATE_LIMIT_MAX = 60;
 /** Defines the max body bytes value. */
 const MAX_BODY_BYTES = 4_096;
 /** Defines the reddit profile ttl ms value. */
@@ -327,6 +329,11 @@ export async function consumeRedditRequestQuota(
   ) {
     return false;
   }
+  /** Callers construct this key from the verified app, user and signed operation. */
+  const keyParts = key.split("\0");
+  /** Only the exact authenticated polling operation receives the larger server-owned budget. */
+  const maxRequests = keyParts.length === 3 && keyParts[0] === REDDIT_APP_NAME && keyParts[1] &&
+    keyParts[2] === "gameplay.presence.poll" ? PRESENCE_POLL_RATE_LIMIT_MAX : RATE_LIMIT_MAX;
   /** Provides id behavior. */
   const id = createHmac("sha256", secret).update("riddle-quest-reddit-rate-v1\0").update(key).digest("hex");
   /** Provides ref behavior. */
@@ -344,14 +351,14 @@ export async function consumeRedditRequestQuota(
       snapshot.exists &&
       (!Number.isSafeInteger(count) ||
         (count as number) < 1 ||
-        (count as number) > RATE_LIMIT_MAX ||
+        (count as number) > maxRequests ||
         !Number.isSafeInteger(resetAtMs) ||
         (resetAtMs as number) < 1 ||
         timestampMs(value?.expiresAt) !== (resetAtMs as number) + RATE_LIMIT_RETENTION_MS)
     )
       throw new Error("invalid-reddit-rate-limit-record");
     if (snapshot.exists && (resetAtMs as number) > nowMs) {
-      if ((count as number) >= RATE_LIMIT_MAX) return false;
+      if ((count as number) >= maxRequests) return false;
       transaction.update(ref, {count: (count as number) + 1});
       return true;
     }

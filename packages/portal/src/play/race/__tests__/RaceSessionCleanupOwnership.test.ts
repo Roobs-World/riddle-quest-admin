@@ -53,6 +53,8 @@ describe("Race Session cleanup ownership", () => {
       /** Account receiving this actual storage write. */ ownerId: string | undefined;
       /** Authority run retained for recovery. */ runId: string;
     }> = [];
+    /** Observed hints follow actual writes for each authenticated owner. */
+    const selected = new Map<string | undefined, string>();
     /** Arm replacement only during the original run's acceptance. */
     let h: ReturnType<typeof harness>, armed = false;
     /** Nested valid authority responses fully establish the replacement account's run. */
@@ -65,8 +67,8 @@ describe("Race Session cleanup ownership", () => {
       if (armed && ownerId === "owner-1" && boundary === "recovery") replace();
     }}, persistence: {read: ownerId => {
       if (armed && ownerId === "owner-1" && boundary === "read") replace();
-      return null;
-    }, save: (ownerId, runId) => {writes.push({ownerId, runId});}, clear: () => {}}});
+      return selected.get(ownerId) ?? null;
+    }, save: (ownerId, runId) => {selected.set(ownerId, runId); writes.push({ownerId, runId});}, clear: () => {}}});
     h.respond("raceCategories", {categories}); h.session.begin("mixed");
     armed = true; h.respond("raceStart", {run: original});
     expect(writes).toEqual([{ownerId: "owner-2", runId: replacement.runId}, {ownerId: "owner-2", runId: replacement.runId}]);

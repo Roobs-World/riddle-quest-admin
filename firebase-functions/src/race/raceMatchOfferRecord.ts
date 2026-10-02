@@ -27,7 +27,7 @@ const Offer = z.looseObject({
   lookupCandidateDocumentsRead: Count.optional(), lookupCandidateQueries: Count.optional(), lookupDocumentReadAttempts: Count.optional(),
   lookupTransactionAttempts: Count.optional(), lookupSelectionDurationMs: z.number().finite().nonnegative().optional(),
   acceptedRunId: Id.optional(), acceptedAtMs: Count.optional(), preparationRequested: z.boolean().optional(), offerExpiredAtAcceptance: z.boolean().optional(),
-  startsAtMs: Count.optional(), readinessAcceptedAtMs: Count.optional(), terminalStatus: z.enum(["completed", "abandoned"]).optional(), terminalAtMs: Count.optional(),
+  startsAtMs: Count.optional(), readinessAcceptedAtMs: Count.optional(), terminalStatus: z.enum(["completed", "timed_out", "abandoned"]).optional(), terminalAtMs: Count.optional(),
   result: z.enum(["player_win", "ghost_win", "tie", "timed_out", "recorded"]).nullable().optional(), correctCount: z.number().int().min(0).max(10).optional(),
   finishedTen: z.boolean().optional(), actualPerformanceMs: z.number().finite().min(1000).max(300000).nullable().optional(),
   predictionLogError: z.number().finite().nullable().optional(), finishTimeDeltaMs: z.number().finite().nullable().optional(),

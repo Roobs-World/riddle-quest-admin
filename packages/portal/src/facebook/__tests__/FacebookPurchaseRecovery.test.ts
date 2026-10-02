@@ -16,6 +16,15 @@ const purchase = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe("Facebook purchase recovery", () => {
+  test.each([1787220000, "1787220000"])("accepts Meta Unix-second purchase times %p", (purchaseTime) => {
+    expect(parseFacebookUnconsumedPurchases([purchase({purchaseTime})])[0].purchaseTime).toBe(purchaseTime);
+  });
+
+  test.each([0, -1, 1.5, Number.NaN, Infinity, Number.MAX_SAFE_INTEGER + 1, "0", "-1", "1.5", "1e9", " ", true, null])(
+    "rejects invalid Meta purchase time %p before granting or consuming", (purchaseTime) => {
+      expect(() => parseFacebookUnconsumedPurchases([purchase({purchaseTime})])).toThrow("facebook-purchase-invalid");
+    },
+  );
   test("recovers receipts with Meta's deprecated null developerPayload", async () => {
     /** Provider fixture returns the documented nullable legacy field. */
     const payments = {

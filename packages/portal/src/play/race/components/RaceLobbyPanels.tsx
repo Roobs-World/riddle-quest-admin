@@ -56,11 +56,17 @@ export function RaceCategoriesPanel({
 export function RaceTournamentPanel({
   tournament,
   loading,
+  sharing = false,
+  onShare,
 }: {
   /** Stores tournament. */
   tournament: ListFacebookTournamentResponse | null;
   /** Stores loading. */
   loading: boolean;
+  /** One player-requested native share is pending. */
+  sharing?: boolean;
+  /** Present only when the target exposes a real native tournament dialog. */
+  onShare?: () => void;
 }) {
   return (
     <div className="race-panel race-tournaments" data-rewards-enabled="false">
@@ -76,11 +82,16 @@ export function RaceTournamentPanel({
               key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`}
               aria-current={standing.isCurrentPlayer || undefined}
             >
-              <strong>#{standing.rank}</strong>
-              <span>{formatRaceTime(standing.adjustedTimeMs)}</span>
+              <strong dir="ltr">#{standing.rank}</strong>
+              <span dir="ltr">{formatRaceTime(standing.adjustedTimeMs)}</span>
             </li>
           ))}
         </ol>
+      )}
+      {!loading && tournament?.currentPlayer && onShare && (
+        <button className="race-secondary" disabled={sharing} aria-busy={sharing} onClick={onShare}>
+          {tr("RaceTo10.SHARE_TOURNAMENT")}
+        </button>
       )}
     </div>
   );
@@ -227,6 +238,7 @@ export function RaceChallengePanel({
   busy = false,
   onCancel,
   onAccept,
+  onShowResults,
 }: {
   /** Stores challenge. */
   challenge: RaceChallengePreview | null;
@@ -238,21 +250,26 @@ export function RaceChallengePanel({
   onCancel?: () => void;
   /** Stores on accept. */
   onAccept: (categoryId: RaceCategoryId) => void;
+  /** Opens the creator’s results without starting another attempt. */
+  onShowResults?: () => void;
 }) {
+  /** Accepted viewer role determines whether the challenge card offers results or acceptance. */
+  const isCreator = entryStatus?.status === "ready" && (entryStatus.viewerRole === "creator" || entryStatus.invitation?.role === "creator");
   return (
     <div className="race-panel race-challenge-card">
-      {challenge ? (
+      {entryStatus?.status === "ready" && entryStatus.existingRunId ? <p role="status">{tr("RaceTo10.LOADING_CHALLENGE")}</p> : challenge ? (
         <>
-          <h2>{tr("RaceTo10.CHALLENGED_BY", {name: challenge.creator.displayName})}</h2>
+          <h2>{isCreator ? tr("RaceTo10.RESULT_RECORDED") : tr("RaceTo10.CHALLENGED_BY", {name: challenge.creator.displayName})}</h2>
           <p>{tr("RaceTo10.TIME_TO_BEAT", {time: formatRaceTime(challenge.adjustedTimeToBeatMs)})}</p>
           <p>{tr("RaceTo10.FIRST_TO_TEN")} · {tr("RaceTo10.HINT_BUTTON")} {tr("RaceTo10.HINT_PENALTY")} · {tr("RaceTo10.SKIP_BUTTON")} {tr("RaceTo10.SKIP_PENALTY")}</p>
-          {challenge.status === "active" && !(entryStatus?.status === "ready" && entryStatus.invitation?.role === "creator") ? (
+          {challenge.status === "active" && !isCreator ? (
             <button className="race-primary" onClick={() => onAccept(challenge.categoryId)}>
               {tr("RaceTo10.ACCEPT_CHALLENGE")}
             </button>
           ) : challenge.status !== "active" ? (
             <p role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>
           ) : null}
+          {isCreator && onShowResults && <button className="race-primary" onClick={onShowResults}>{tr("RaceTo10.CHECK_RESULTS")}</button>}
         </>
       ) : (
         <p role="status">{tr(entryStatus?.status === "waiting" ? "RaceTo10.WAITING_PUBLICATION" : entryStatus?.status === "cancelled" ? "RaceTo10.INVITATION_CANCELLED" : entryStatus?.status === "expired" ? "RaceTo10.INVITATION_EXPIRED" : entryStatus?.status === "unavailable" ? "RaceTo10.ERROR_GENERIC" : "RaceTo10.LOADING_CHALLENGE")}</p>

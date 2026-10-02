@@ -4,10 +4,10 @@
     "COLOR_CORRECT": "文字は正しく、正しい位置にあります",
     "COLOR_MISPLACED": "文字は単語内にありますが位置が違います",
     "COLOR_WRONG": "文字は単語にありません",
-    "GOAL_DESCRIPTION": "色のヒントを使って3回の挑戦で隠れたなぞなぞを当てましょう。",
+    "GOAL_DESCRIPTION": "色のヒントを使って5回の挑戦で隠れたなぞなぞを当てましょう。",
     "GOAL_TITLE": "目標",
     "GOT_IT_BUTTON": "わかった！",
-    "TIPS_DESCRIPTION": "よく使われる文字から始めて、色のフィードバックで絞り込みましょう。チャンスは3回だけです！",
+    "TIPS_DESCRIPTION": "よく使われる文字から始めて、色のフィードバックで絞り込みましょう。チャンスは5回だけです！",
     "TIPS_TITLE": "コツ"
   },
   "WelcomeBackModal": {

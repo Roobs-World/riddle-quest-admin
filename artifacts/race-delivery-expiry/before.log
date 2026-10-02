@@ -1,0 +1,68 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-multiplayer", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 18550.
+i  Running script: pnpm exec jest --config jest.race-coverage.config.js --coverage=false --runInBand --testPathPatterns=raceSettlement.it.test.ts --testNamePattern=normal\|unexpired
+  console.error
+    ◇ injected env (12) from .env
+
+      1 | /* eslint-disable @typescript-eslint/no-require-imports */
+    > 2 | require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                   ^
+      3 |
+      4 | // Ensure Jest environment is properly detected by iapConfig
+      5 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:2:19)
+
+FAIL src/__tests__/race/raceSettlement.it.test.ts
+  ● suppresses expired normal raceSettlementOutbox delivery before Firestore TTL deletion
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      560 |       const users = (await db.collection("users").get()).docs.map(document => document.data());
+      561 |       const deliver = collection === "raceSettlementOutbox" ? deliverRaceSettlement : deliverRacePerformance;
+    > 562 |       expect(await deliver(runId, db, deliveryAt)).toBe(false);
+          |                                                    ^
+      563 |       expect((await ref.get()).data()).toMatchObject({delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: deliveryAt});
+      564 |       expect((await db.collection("users/creator-1/raceInbox").get()).empty).toBe(true);
+      565 |       expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).exists).toBe(false);
+
+      at src/__tests__/race/raceSettlement.it.test.ts:562:52
+
+  ● suppresses expired normal racePerformanceOutbox delivery before Firestore TTL deletion
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      560 |       const users = (await db.collection("users").get()).docs.map(document => document.data());
+      561 |       const deliver = collection === "raceSettlementOutbox" ? deliverRaceSettlement : deliverRacePerformance;
+    > 562 |       expect(await deliver(runId, db, deliveryAt)).toBe(false);
+          |                                                    ^
+      563 |       expect((await ref.get()).data()).toMatchObject({delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: deliveryAt});
+      564 |       expect((await db.collection("users/creator-1/raceInbox").get()).empty).toBe(true);
+      565 |       expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).exists).toBe(false);
+
+      at src/__tests__/race/raceSettlement.it.test.ts:562:52
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 55 skipped, 2 passed, 59 total
+Snapshots:   0 total
+Time:        1.251 s, estimated 47 s
+Ran all test suites matching raceSettlement.it.test.ts with tests matching "normal|unexpired".
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.race-coverage.config.js --coverage=false --runInBand --testPathPatterns=raceSettlement.it.test.ts --testNamePattern=normal\|unexpired" exited with code 1

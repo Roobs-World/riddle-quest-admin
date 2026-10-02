@@ -7,7 +7,7 @@ import {
   getContextualTooltipCandidates,
   getGameTour,
   getOnboardingTotalSteps,
-  PROFILE_TOUR,
+  getProfileTour,
   TOOLTIP_KEYS,
   TOOLTIP_SELECTORS,
   type TooltipId,
@@ -36,12 +36,16 @@ export type GuidanceOverlayProps = {
   registrationInviterName?: string;
   /** Prevents an obscured guidance surface from taking or handling focus. */
   interactionBlocked?: boolean;
+  /** Preserves pending guidance while multiplayer owns presentation and focus. */
+  suspended?: boolean;
 };
 /** Coordinates onboarding, feature tours, and contextual guidance tooltips. */
-export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false}: GuidanceOverlayProps) {
+export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false, suspended = false}: GuidanceOverlayProps) {
   useLocale();
   /** Provides r id. */
   const userId = state.user?.uid;
+  /** Provider checkout availability also controls purchase guidance. */
+  const commerceAvailable = state.products.length > 0;
   /** Provides [onboarding step, set onboarding step] behavior. */
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
   /** Provides [welcome only, set welcome only] behavior. */
@@ -63,7 +67,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   /** Provides active tooltip behavior. */
   const activeTooltip = sequenceName === "profileTour" && modal !== "profile" ? undefined : sequence[sequenceIndex];
   /** Provides guidance active behavior. */
-  const guidanceActive = onboardingStep !== null || Boolean(activeTooltip);
+  const guidanceActive = !suspended && (onboardingStep !== null || Boolean(activeTooltip));
 
   useEffect(() => {
     if (modal === "victory" && (state.lastRewards?.newlyUnlockedAchievementIds.length ?? 0) > 0) {
@@ -197,11 +201,11 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       return;
     }
     if (safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) !== "seen") {
-      setSequence(getGameTour(state.gameMode));
+      setSequence(getGameTour(state.gameMode, commerceAvailable));
       setSequenceName("gameTour");
       setSequenceIndex(0);
     }
-  }, [onboardingStep, sequence.length, state.gameMode, state.riddle, userId]);
+  }, [commerceAvailable, onboardingStep, sequence.length, state.gameMode, state.riddle, userId]);
 
   useEffect(() => {
     if (
@@ -212,14 +216,14 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     ) {
       /** Provides timer behavior. */
       const timer = window.setTimeout(() => {
-        setSequence([...PROFILE_TOUR]);
+        setSequence(getProfileTour(commerceAvailable));
         setSequenceName("profileTour");
         setSequenceIndex(0);
       }, 350);
       return () => window.clearTimeout(timer);
     }
     return undefined;
-  }, [modal, onboardingStep, sequence.length, userId]);
+  }, [commerceAvailable, modal, onboardingStep, sequence.length, userId]);
 
   useEffect(() => {
     if (
@@ -287,7 +291,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   ]);
 
   useLayoutEffect(() => {
-    if (!activeTooltip) {
+    if (!activeTooltip || suspended) {
       setTargetRect(null);
       return;
     }
@@ -324,7 +328,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       window.removeEventListener("resize", updateRect);
       window.removeEventListener("scroll", updateRect, true);
     };
-  }, [activeTooltip]);
+  }, [activeTooltip, suspended]);
   /** Provides tooltip content behavior. */
   const tooltipContent = useMemo(() => {
     if (!activeTooltip) {
@@ -349,6 +353,8 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     setSequenceName(null);
     setSequenceIndex(0);
   };
+
+  if (suspended) return null;
 
   if (onboardingStep !== null) {
     /** Indicates whether is welcome. */

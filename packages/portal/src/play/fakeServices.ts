@@ -101,9 +101,15 @@ const leaderboardRows: BridgeLeaderboardEntry[] = [
 /** Creates fake host services. */
 export const createFakeHostServices = ({
   initiallyAuthenticated = true,
+  dailyUnavailable = false,
+  dailyCompleted = false,
 }: {
   /** Stores initially authenticated. */
   initiallyAuthenticated?: boolean;
+  /** Trusted browser harness simulates the real absent Daily response. */
+  dailyUnavailable?: boolean;
+  /** Trusted browser authority confirms today's Daily was completed before this visit. */
+  dailyCompleted?: boolean;
 } = {}): HostServices => {
   /** Provides products behavior. */
   const products = toProductSummaries(cloneProductPricingCatalog());
@@ -184,6 +190,8 @@ export const createFakeHostServices = ({
     },
     /** Loads riddle. */
     async loadRiddle({gameMode, classicIndex}) {
+      if (dailyCompleted && gameMode === "challenge") throw Object.assign(new Error("Today's daily challenge is already complete."), {code: "daily-completed"});
+      if (dailyUnavailable && gameMode === "challenge") throw new Error("No daily challenge available at the moment.");
       /** Provides mode riddles behavior. */
       const modeRiddles = fakeRiddles.filter((entry) => entry.gameMode === gameMode);
       /** Provides index behavior. */

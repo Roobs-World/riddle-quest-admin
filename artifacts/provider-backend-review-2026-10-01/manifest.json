@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T08:13:29.228317+00:00",
+  "intent": "provider-backend-rollout-and-reddit-ttl-review",
+  "uploadEligible": false,
+  "source": {
+    "head": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+    "dirty": true,
+    "selectedFiles": [
+      {
+        "file": "firebase-functions/firestore.indexes.json",
+        "sha256": "61c86e6f6bce4e01f329dbe11d4b97d1fff762cdd6b2284bfd50fb84630708e7"
+      },
+      {
+        "file": "docs/privacy-data-inventory.md",
+        "sha256": "5c463ff82649612aa0bc3fd96340ac38d4fb5803e8994c375c854e8da87a4be3"
+      },
+      {
+        "file": "docs/facebook-instant-games-operations.md",
+        "sha256": "2b14f475a9a9b539c030328952c5ece4ae97c802ca15c5dc9d8bda7fca703748"
+      },
+      {
+        "file": "docs/reddit-games-operations.md",
+        "sha256": "e290c22c304be75817808edd5e0b7af52e7e6fb3e6b3bfa58777b93b217be131"
+      },
+      {
+        "file": "docs/facebook-instant-games-progress.html",
+        "sha256": "c60b818e7f98f1b47f005da73ddd57268c1ccfe481a7ec2ec9cee0a237f20b5a"
+      },
+      {
+        "file": "docs/reddit-games-progress.html",
+        "sha256": "f874e7cdacc5866aceaf56a2734492233230b0095500997ac6ec306cd6822b9b"
+      },
+      {
+        "file": "scripts/facebook-progress-tracker.test.mjs",
+        "sha256": "6117477691ff514c0ab5018398811a904f2b19f647e98fd48c2001df07cbd1bc"
+      },
+      {
+        "file": "docs/evidence/provider-backend-readiness-2026-10-01.md",
+        "sha256": "55ee86637a7c8d32736974bc28360a1b7d2c04d8a1795859e1942861d444415c"
+      }
+    ],
+    "completeCleanSourceProof": false
+  },
+  "checks": {
+    "targetDeployEnvironmentValidation": true,
+    "deploymentScriptTests": 49,
+    "facebookExportCount": 22,
+    "redditExportCount": 4,
+    "localTtlPolicyValidation": true,
+    "redditEmulatorNode22Tests": 4,
+    "requiredTargetBuilds": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo"
+    ],
+    "artifactAudits": 6,
+    "redditPackageTests": 35,
+    "facebookSecretBoundaryTests": 3,
+    "facebookTrackerTests": 3,
+    "redditDocumentationTests": 2,
+    "facebookTrackerComplete": 20,
+    "facebookTrackerTotal": 53,
+    "redditTrackerComplete": 36,
+    "redditTrackerTotal": 49,
+    "diffWhitespace": true
+  },
+  "clientComparison": {
+    "reference": "artifacts/facebook-tournament-entry-review-2026-10-01/manifest.json",
+    "clientFiles": 41,
+    "sourceMismatches": [],
+    "artifactEntries": 399,
+    "artifactMatches": true
+  },
+  "runtimeRegressionReference": {
+    "manifest": "artifacts/reddit-assertion-review-2026-10-01/manifest.json",
+    "backendTests": 1398,
+    "backendSuites": 116,
+    "runtime": "22.23.1",
+    "selectedRuntimeSourceHashesMatch": true,
+    "runtimeSourceChangedThisFollowup": false
+  },
+  "providerEvidence": {
+    "configuration": "deployed-configuration.json",
+    "additionalBindings": "additional-secret-bindings.json",
+    "retentionBeforeLocalPolicy": "retention-before-local-policy.json",
+    "functionList": "function-list.json",
+    "exportComparison": "export-deployment-comparison.json",
+    "secretValuesAccessed": false,
+    "productionRowsRead": false,
+    "detailedVersionMetadataInRepository": false,
+    "ownerPrivateEvidenceDirectory": "/home/craig-beswetherick/.codex/review-evidence/riddle-quest/provider-backend-2026-10-01-0803",
+    "liveSourceRevisionVerified": false
+  },
+  "validationLogs": [
+    {
+      "file": "validation/build-netflix.log",
+      "sha256": "4b6ee3d05d50c1e2ca88cd579cf072863442ed72063858503526b5bb57807188"
+    },
+    {
+      "file": "validation/build-web.log",
+      "sha256": "90f39748be7a140445e4d1291f55248bae90f595fb2e5278cca1ed33e9518435"
+    },
+    {
+      "file": "validation/build-yahoo.log",
+      "sha256": "eaff014de867092151a2aaf278944ae77b80d54f5aa7a769e234f5743fd9ec7a"
+    },
+    {
+      "file": "validation/build-youtube.log",
+      "sha256": "85a2417281764118253ed1d319cc56d75f50783039f869f90628ce18e2dba856"
+    },
+    {
+      "file": "validation/deploy-environment.log",
+      "sha256": "65253fe697b4d7211e6b5365aed759006c0b31fe8bae93a0c2c7199f3d7778fc"
+    },
+    {
+      "file": "validation/deploy-scripts.log",
+      "sha256": "2f2b134ec1470ed70d09a12538fe33f4658ba2e3ace434c146f72c138ad691ad"
+    },
+    {
+      "file": "validation/facebook-exports.log",
+      "sha256": "69d1014c94e43a9022cc8ba4230828f334a273c636b15034bd44bac0806adee8"
+    },
+    {
+      "file": "validation/facebook-secrets.log",
+      "sha256": "73d6db225bbed2acffad7b19e775f29073765213f5cf3f2c48297387de4a54b4"
+    },
+    {
+      "file": "validation/facebook-tracker.log",
+      "sha256": "a07ad3614fe7b69f376b74b67f45e8de69d0548973372b9e56b0c9c38cb2d071"
+    },
+    {
+      "file": "validation/local-ttl-policy.json",
+      "sha256": "b3c00981680628e9cb9182ab596e797796abffc74e22918f2edc7fe76a84f58c"
+    },
+    {
+      "file": "validation/reddit-docs.log",
+      "sha256": "455a4e8a039b308ddadd2ca759b6ecafdee7b087f918098df414d6c34a338b90"
+    },
+    {
+      "file": "validation/reddit-emulator-node22.log",
+      "sha256": "9a8145e3559f8a7a9f0aa71e533b6c2b27043e0b8666e1aa9a2e1e56c8602ecf"
+    },
+    {
+      "file": "validation/reddit-exports.log",
+      "sha256": "a588f679ba69c0d43a934d1f91a30ddbf0624dacf165bf1b68964ac1de579903"
+    },
+    {
+      "file": "validation/reddit-package.log",
+      "sha256": "10631d6463ac0309ab12f62e54235337ba21baf137b619ed799b049da8515e9f"
+    },
+    {
+      "file": "validation/reddit-tracker.log",
+      "sha256": "7123d2a01fd07f8c0f49aa96bff29743b29f8f439798e063cbb4a70c9b32c060"
+    },
+    {
+      "file": "validation/whitespace.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "providerMutations": {
+    "uploads": 0,
+    "installs": 0,
+    "deployments": 0,
+    "publishes": 0,
+    "payments": 0,
+    "messagesSent": 0,
+    "templatesActivated": 0,
+    "ttlPoliciesActivated": 0,
+    "secretVersionsChanged": 0,
+    "productionDatabaseWrites": 0
+  }
+}

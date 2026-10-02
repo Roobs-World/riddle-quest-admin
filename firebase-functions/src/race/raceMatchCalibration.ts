@@ -13,7 +13,7 @@ export const RaceMatchMeasurementSchema = z.object({
   matchExperiment: RaceMatchExperimentAssignmentSchema.optional(),
   performanceConfidence: z.number().min(0).max(1).optional(), expectedPerformanceMs: z.number().finite().positive().optional(),
   acceptedAtMs: z.number().int().nonnegative().optional(), startsAtMs: z.number().int().nonnegative().optional(),
-  terminalStatus: z.enum(["completed", "abandoned"]).optional(), terminalAtMs: z.number().int().nonnegative().optional(),
+  terminalStatus: z.enum(["completed", "timed_out", "abandoned"]).optional(), terminalAtMs: z.number().int().nonnegative().optional(),
   correctCount: z.number().int().min(0).max(10).optional(), finishedTen: z.boolean().optional(),
   actualPerformanceMs: z.number().finite().min(1000).max(300000).nullable().optional(),
   predictionLogError: z.number().finite().nullable().optional(), finishTimeDeltaMs: z.number().finite().nullable().optional(),

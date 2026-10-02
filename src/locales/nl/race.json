@@ -104,6 +104,8 @@
     "MATCH_EXPIRED": "Deze zoekopdracht naar een tegenstander is verlopen. Probeer het opnieuw.",
     "MATCH_CONSUMED": "Deze zoekopdracht is al gebruikt. Zoek een andere tegenstander.",
     "MATCH_UNAVAILABLE": "Tegenstanders zoeken is niet beschikbaar voor dit account.",
-    "MATCH_EMPTY": "Er zijn nog geen geschikte tegenstanders beschikbaar. Probeer het later opnieuw."
+    "MATCH_EMPTY": "Er zijn nog geen geschikte tegenstanders beschikbaar. Probeer het later opnieuw.",
+    "CHALLENGE_FRIEND": "Daag een vriend uit",
+    "SHARE_TOURNAMENT": "Toernooi delen"
   }
 }

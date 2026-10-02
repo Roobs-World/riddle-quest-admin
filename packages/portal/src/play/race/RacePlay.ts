@@ -2,7 +2,7 @@ import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {computeFeedback, lowerCaseGraphemes, type ScoredGuess} from "@qwordly/core/game";
 import type {RaceRunView, SubmitRaceGuessResponse} from "@qwordly/core/race";
 import {createRequestId} from "../requestIds";
-import {raceOperationRequiresReceipt, type RaceOperation} from "./logic/raceOperations";
+import {raceOperationRequiresRefresh, raceOperationRequiresReceipt, type RaceOperation} from "./logic/raceOperations";
 import {
   createRaceAttempt,
   findFirstEditableRaceSlot,
@@ -33,6 +33,8 @@ type GuessProjection = {
   history: ScoredGuess[];
   /** Stores submitted. */
   submitted: string[];
+  /** Evaluation-backed rendering permits draft edits while confirmation is pending. */
+  canEditDraft: boolean;
   /** Stores projected riddle id. */
   projectedRiddleId: string | null;
   /** Original authority receipt time retained during rollback. */
@@ -62,9 +64,17 @@ export class RacePlay {
   /** Delivery expiry belongs to the same receipt as its pending operation. */ private responseTimer: number | undefined;
   /** Session recovery receives expiry or a throwing adapter as a correlated transport failure. */
   private readonly onDeliveryFailure?: (requestId: string, operation: RaceOperation) => void;
+  /** Lost gameplay confirmation remains private until canonical run recovery. */
+  private refreshRequired = false;
+  /** Exposes only a copy of the private authority recovery decision. */
+  get requiresRunRefresh(): boolean {return this.refreshRequired;}
+  /** An accepted validated run establishes canonical progress again. */
+  confirmRunRefresh(): void {this.refreshRequired = false;}
   /** Initial guess-loader receipt time. */ private loadingStarted = 0;
   /** Terminal guess hands its loader over to outcome reconciliation. */ private awaitingOutcome = false;
   /** Original input and history survive provisional successor typing. */ private guess: GuessProjection | null = null;
+  /** Deliberate edits made after the submitted attempt was projected. */
+  private draftEdited = false;
   /** Paid race mutations retain their own original authoritative view. */ private paid: {
     /** Stores operation. */
     operation: "raceHint" | "raceSkip";
@@ -74,7 +84,7 @@ export class RacePlay {
     receivedAt: number;
     /** Original draft retained independently of hint/skip projection. */ draft?: PaidDraft;
   } | null = null;
-  /** Host command delivery seam. */ private readonly post: (message: GameToHostMessage) => void;
+  /** Host command delivery seam. */ private readonly post: (message: GameToHostMessage) => void | Promise<void>;
   /** Deterministic receipt/time seams. */ private readonly clock: RacePlayClock;
   /** Idempotent request identifier factory. */ private readonly requestId: (operation: string) => string;
   /** Creates one mounted race owner with browser defaults or deterministic adapters. */
@@ -88,7 +98,7 @@ export class RacePlay {
     requestId = createRequestId,
     onDeliveryFailure,
   }: {
-    /** Host delivery adapter. */ postToHost: (message: GameToHostMessage) => void;
+    /** Host delivery adapter. */ postToHost: (message: GameToHostMessage) => void | Promise<void>;
     /** Optional time adapter. */ clock?: RacePlayClock;
     /** Optional receipt adapter. */ requestId?: (operation: string) => string;
     /** Optional delivery-failure adapter; expiry never automatically repeats a mutation. */ onDeliveryFailure?: (requestId: string, operation: RaceOperation) => void;
@@ -106,8 +116,10 @@ export class RacePlay {
   /** Reads public operation state. */ getSnapshot = (): RaceDeliveryState => this.state;
   /** Indicates whether successor input may be edited during guess reconciliation. */
   get typingWhilePending(): boolean {
-    return this.guess !== null;
+    return this.guess?.canEditDraft ?? false;
   }
+  /** Records a new answer intent only while a guess checkpoint owns pending input. */
+  noteDraftEdit(): void {if (this.guess) this.draftEdited = true;}
   /** Publishes a state transition. */
   private update(state: RaceDeliveryState): void {
     this.state = state;
@@ -139,11 +151,15 @@ export class RacePlay {
       }, 30000);
     }
     try {
-      this.post({
+      /** Asynchronous adapters retain this same delivery ownership receipt. */
+      const result = this.post({
         type,
         requestId: id,
         payload: raceOperationRequiresReceipt(operation) ? {...payload, requestId: id} : payload,
       } as GameToHostMessage);
+      if (result) void Promise.resolve(result).catch(() => {
+        if (this.expected === delivery) this.onDeliveryFailure?.(id, operation);
+      });
     } catch (error) {
       // A synchronous confirmation can already have consumed this receipt and issued its successor.
       if (this.expected !== delivery) return;
@@ -198,27 +214,33 @@ export class RacePlay {
     if (this.timer !== undefined) this.clock.cancel(this.timer);
     this.timer = undefined;
     this.expected = null;
+    this.refreshRequired = false;
     this.guess = null;
+    this.draftEdited = false;
     this.paid = null;
     this.awaitingOutcome = false;
     this.update({pending: null, raceGuessLoading: false});
   };
-  /** Creates immediate feedback and retains the complete original question checkpoint. */
+  /** Retains every submission checkpoint and creates immediate feedback when evaluation is available. */
   projectGuess(run: RaceRunView, letters: string[], history: ScoredGuess[], receivedAt: number) {
-    if (!run.currentRiddle?.evaluation) return null;
+    if (!run.currentRiddle) return null;
     /** Provides feedback behavior. */
-    const feedback = computeFeedback(letters.join(""), run.currentRiddle.evaluation.answer, run.locale);
+    const feedback = run.currentRiddle.evaluation
+      ? computeFeedback(letters.join(""), run.currentRiddle.evaluation.answer, run.locale) : null;
     /** Provides correct behavior. */
-    const correct = feedback.every((status) => status === "green");
+    const correct = feedback?.every((status) => status === "green") ?? false;
     /** Provides next behavior. */
     const next = correct ? projectInstantCorrectGuess(run) : null;
+    this.draftEdited = false;
     this.guess = structuredClone({
       run,
       history: [...history],
       submitted: [...letters],
+      canEditDraft: feedback !== null,
       projectedRiddleId: next?.currentRiddle?.riddleId ?? null,
       receivedAt,
     });
+    if (!feedback) return null;
     /** Provides projected behavior. */
     const projected = next
       ? {
@@ -243,14 +265,16 @@ export class RacePlay {
     currentRun: RaceRunView | null,
     history: ScoredGuess[],
     letters: string[],
+    confirmedOriginal?: RaceRunView | null,
   ) {
     /** Provides projection behavior. */
     const projection = this.guess;
-    if ((projection?.run ?? currentRun)?.runId !== result.run.runId && (projection || currentRun)) {
+    /** Private confirmed content survives optional wire omissions and public snapshot edits. */
+    const original = confirmedOriginal ?? projection?.run ?? currentRun;
+    if (original && original.runId !== result.run.runId) {
       throw new Error("Guess confirmation belongs to a different race run");
     }
     /** Feedback belongs to the submitted attempt, never input already typed into its successor. */
-    const original = projection?.run ?? currentRun;
     if (!original?.currentRiddle) throw new Error("Missing submitted question");
     /** Answer-free legacy callers still retain their exact pending input. */
     const submitted = projection?.submitted ?? letters;
@@ -274,11 +298,12 @@ export class RacePlay {
     const sameQuestion = (left: RaceRunView["currentRiddle"] | undefined, right: RaceRunView["currentRiddle"]): boolean =>
       Boolean(left && right && left.riddleId === right.riddleId && left.position === right.position && left.answerLength === right.answerLength);
     /** Guess history belongs to the submitted question, independently of the displayed draft. */
-    const changed = !sameQuestion(projection?.run.currentRiddle ?? currentRun?.currentRiddle, result.run.currentRiddle);
+    const changed = !sameQuestion(original.currentRiddle, result.run.currentRiddle);
     /** Preserve only input already displayed for this exact confirmed question and answer shape. */
-    const preserveDraft = Boolean(projection && sameQuestion(currentRun?.currentRiddle, result.run.currentRiddle) &&
+    const preserveDraft = Boolean(projection?.canEditDraft && sameQuestion(currentRun?.currentRiddle, result.run.currentRiddle) &&
       letters.length === result.run.currentRiddle?.answerLength);
     this.guess = null;
+    this.draftEdited = false;
     return {
       resetAttempt: !preserveDraft,
       guesses: changed
@@ -289,33 +314,41 @@ export class RacePlay {
           ],
     };
   }
-  /** Projects a paid action and privately retains its original authoritative view. */
+  /** Captures every paid draft and projects immediately when its immutable deck is available. */
   projectPaid(operation: "raceHint" | "raceSkip", run: RaceRunView, receivedAt = this.clock.now(), draft?: PaidDraft): RaceRunView | null {
+    if (run.status !== "active" || !run.currentRiddle) return null;
     /** Provides projected behavior. */
     const projected = operation === "raceHint" ? projectInstantRaceHint(run) : projectInstantRaceSkip(run);
-    if (!projected) return null;
     this.paid = structuredClone({operation, run, receivedAt, ...(draft ? {draft} : {})});
+    if (!projected) return null;
     /** Advance solving time before the rendering adapter anchors the projection. */
     const elapsed = run.status === "active" ? Math.max(0, this.clock.now() - receivedAt) : 0;
     return {...projected, wallElapsedMs: run.wallElapsedMs + elapsed,
       adjustedElapsedMs: projected.adjustedElapsedMs + elapsed};
   }
-  /** Removes a confirmed paid-action checkpoint. */
-  confirmPaid(operation: "raceHint" | "raceSkip", confirmedRun?: RaceRunView): void {
+  /** Consumes confirmed paid ownership and returns the privately captured draft for hint merging. */
+  confirmPaid(operation: "raceHint" | "raceSkip", confirmedRun?: RaceRunView): PaidDraft | undefined {
     if (this.paid?.operation !== operation) return;
     if (confirmedRun && confirmedRun.runId !== this.paid.run.runId) {
       throw new Error("Paid action confirmation belongs to a different race run");
     }
+    /** Locked pending input retains the pre-command letters, history and selection. */
+    const draft = this.paid.draft;
     this.paid = null;
+    return draft;
   }
   /** The same rollback applies to authority rejection and malformed receipts. */
   rejectProjection(operation: RaceOperation) {
+    this.refreshRequired ||= raceOperationRequiresRefresh(operation);
     if (operation === "raceGuess" && this.guess) {
       /** Provides projection behavior. */
       const projection = this.guess;
       this.guess = null;
+      /** Recovery separates newly edited input from the original submission rollback. */
+      const draftEdited = this.draftEdited;
+      this.draftEdited = false;
       return {
-        kind: "guess" as const,
+        kind: "guess" as const, draftEdited, draftRun: projection.run,
         run: projection.projectedRiddleId ? projection.run : null,
         guesses: projection.history,
         letters: projection.submitted,

@@ -1,0 +1,11 @@
+{
+  "buildConfig": {
+    "runtime": "nodejs22"
+  },
+  "serviceConfig": {
+    "revision": "deliverracesettlementevent-00014-sef",
+    "service": "projects/riddle-quest-ec2b2/locations/us-central1/services/deliverracesettlementevent"
+  },
+  "state": "ACTIVE",
+  "updateTime": "2026-10-01T14:23:26.799778493Z"
+}

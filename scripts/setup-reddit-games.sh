@@ -240,31 +240,33 @@ env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app playtest:u
 say "Run this in a second terminal and wait for Playtest ready before continuing:"
 say "env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit playtest $REDDIT_TEST_SUBREDDIT --show-timestamps"
 pause "Confirm the private version is installed and its exact version identifier is recorded."
-say "Use two newly generated, unrelated base64 values of at least 32 decoded bytes."
-ask_secret REDDIT_GATEWAY_SECRET "Paste the new gateway secret:"
-ask_secret REDDIT_UID_SECRET "Paste the independent UID secret:"
-if [[ "$REDDIT_GATEWAY_SECRET" == "$REDDIT_UID_SECRET" ]]; then
-  warn "The two secrets must be different."
+# BEGIN guarded Reddit secrets
+say "The existing REDDIT_UID_SECRET is permanent account identity material. This wizard never replaces it."
+if ! env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --dir firebase-functions exec firebase functions:secrets:get REDDIT_UID_SECRET --project riddle-quest-ec2b2 >/dev/null 2>&1; then
+  warn "UID secret metadata is unavailable. Stop and verify project access and existing identity setup."
+  warn "Initial provisioning belongs to a separately reviewed account-free setup; do not rotate a live UID key."
   exit 1
 fi
-for value in "$REDDIT_GATEWAY_SECRET" "$REDDIT_UID_SECRET"; do
-  decoded_bytes=$(printf '%s' "$value" | base64 --decode 2>/dev/null | wc -c)
-  if (( decoded_bytes < 32 )); then
-    warn "Each secret must be valid base64 containing at least 32 bytes."
-    exit 1
-  fi
-done
-confirm "Write new Secret Manager versions and the matching Devvit gateway setting?" || exit 1
+open_url "https://console.cloud.google.com/security/secret-manager/secret/REDDIT_UID_SECRET/versions?project=riddle-quest-ec2b2"
+step "Confirm the existing UID version is enabled and matches the deployed identity/deletion Functions. Keep its value unchanged."
+confirm "Verified the existing enabled UID key without replacing it?" || exit 1
+say "Use a newly generated base64 gateway value of at least 32 decoded bytes, independent of the existing UID key."
+ask_secret REDDIT_GATEWAY_SECRET "Paste the new gateway secret:"
+decoded_bytes=$(printf '%s' "$REDDIT_GATEWAY_SECRET" | base64 --decode 2>/dev/null | wc -c)
+if (( decoded_bytes < 32 )); then
+  warn "The gateway secret must be valid base64 containing at least 32 bytes."
+  exit 1
+fi
+confirm "Write a new gateway version and the matching Devvit setting, keeping the UID key unchanged?" || exit 1
 printf '%s' "$REDDIT_GATEWAY_SECRET" | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --dir firebase-functions exec firebase functions:secrets:set REDDIT_GATEWAY_SECRET --project riddle-quest-ec2b2 --data-file=- >/dev/null 2>&1
 say "Firebase gateway secret stored."
-printf '%s' "$REDDIT_UID_SECRET" | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --dir firebase-functions exec firebase functions:secrets:set REDDIT_UID_SECRET --project riddle-quest-ec2b2 --data-file=- >/dev/null 2>&1
-say "Firebase UID secret stored."
 printf '%s\n' "$REDDIT_GATEWAY_SECRET" | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit settings set redditGatewaySecret >/dev/null 2>&1
 say "Devvit gateway secret stored."
 printf 'sandbox\n' | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit settings set redditEnvironment >/dev/null 2>&1
 say "Devvit sandbox environment stored."
-unset REDDIT_GATEWAY_SECRET REDDIT_UID_SECRET
-say "Secrets were sent directly to their providers and were not written to a file."
+unset REDDIT_GATEWAY_SECRET
+say "The gateway value was sent directly to providers and was not written to a file. The UID key was preserved."
+# END guarded Reddit secrets
 
 stage "Deploy the sandbox Firebase release unit"
 say "This deploys every changed/new Function together with Firestore, RTDB, Storage rules, and indexes."

@@ -138,7 +138,7 @@ describe("Race play module", () => {
     const projection = play.projectGuess(original, [..."nope"], [], 0)!;
     expect(projection.feedback).toBe("incorrect");
     expect(projection.run).toBeNull();
-    expect(play.rejectProjection("raceGuess")).toEqual({kind: "guess", run: null, guesses: [], letters: [..."nope"], receivedAt: 0});
+    expect(play.rejectProjection("raceGuess")).toEqual({kind: "guess", draftEdited: false, draftRun: original, run: null, guesses: [], letters: [..."nope"], receivedAt: 0});
     play.projectPaid("raceHint", original);
     play.confirmPaid("raceSkip");
     expect(play.rejectProjection("raceSkip")).toBeNull();
@@ -236,6 +236,8 @@ describe("Race play module", () => {
     expect(nextDraft).toHaveLength(4);
     expect(play.rejectProjection("raceGuess")).toEqual({
       kind: "guess",
+      draftEdited: false,
+      draftRun: original,
       run: original,
       guesses: [],
       letters: [..."test"],

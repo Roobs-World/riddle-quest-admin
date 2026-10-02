@@ -1,5 +1,6 @@
 {
   "LossModal": {
+    "VIDEO_EXTRA_GO_BUTTON": "動画を見てもう一度挑戦",
     "COIN_EXTRA_GO_BUTTON": "{coins}コインで追加の1回",
     "EXTRA_GO_PROMPT": "挑戦回数がなくなりました。追加の1回を得るか、このパズルをスキップできます。",
     "OPEN_SHOP_BUTTON": "ショップを開く",

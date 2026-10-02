@@ -10,7 +10,7 @@
     "check:types": "tsc -p tsconfig.json --noEmit",
     "check:module-cycles": "node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs",
     "pretest": "node scripts/prepare-deploy.js",
-    "test:deploy-scripts": "node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js",
+    "test:deploy-scripts": "node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js && node scripts/facebook-referral-retention.test.js && node scripts/facebook-context-retention.test.js && node scripts/facebook-nonce-retention.test.js && node scripts/reddit-profile-retention.test.js",
     "audit:facebook-exports": "node scripts/audit-facebook-backend-exports.js",
     "audit:reddit-exports": "node scripts/audit-reddit-backend-exports.js",
     "validate:deploy-env": "node scripts/validate-deploy-env.js",
@@ -50,7 +50,11 @@
     "leaderboard:privacy:purge-orphans": "pnpm build && node scripts/run-with-functions-node.js scripts/purge-orphan-leaderboard-rows.js",
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "usernames:migrate": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/migrate-username-reservations.js",
-    "test:race:rules": "pnpm build && firebase emulators:exec --only firestore,storage,database \"pnpm jest --config jest.rules.config.js --runInBand\""
+    "test:race:rules": "pnpm build && firebase emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm jest --config jest.rules.config.js --runInBand\"",
+    "facebook:referrals:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-referral-retention.js",
+    "facebook:contexts:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-context-retention.js",
+    "facebook:nonces:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-nonce-retention.js",
+    "reddit:profiles:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/reddit-profile-retention.js"
   },
   "engines": {
     "node": "22"

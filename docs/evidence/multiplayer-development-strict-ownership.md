@@ -1,0 +1,11 @@
+# Multiplayer development StrictMode ownership verification
+
+Earlier browser harnesses rendered `React.StrictMode` wrappers using production React. Those wrappers test ordinary production behavior, but do not prove development effect replay. The prefetch and profile/reward ownership harnesses now explicitly select development React with `RACE_REACT_DEVELOPMENT=1` and instrument authentication setup, cleanup and live subscription counts.
+
+Every development StrictMode case asserts two subscription setups, one intervening cleanup and exactly one live subscription. Normal development and both production wrapper forms assert one setup and one live subscription. Explicit unmount cases assert no live subscription remains. These runtime assertions would fail if the requested development bundle silently used production React or failed to exercise effect replay.
+
+All 88 development cases and 88 production cases pass. Forty-four development cases verify actual StrictMode effect replay. All previous behavior assertions remain: account replacement, same-UID round trips, profile response ordering, retained stale callbacks, pre-render auth changes, unmount, provider follow-up ownership, catalog/profile retention, cache invalidation, optional synchronous/asynchronous failures and queued account retirement. The work strengthens verification without changing production hooks.
+
+The production hook hashes still match their prior focused verification. That preceding batch passed 1,652 client tests and seven isolated builds; this verifier-only batch does not claim a new full client/build run. Logs and hashes are in `artifacts/race-development-strict-ownership/verification-held.json`. The new manifest retains previous gates and adds two development-runtime checks, for fifty-four checks.
+
+The user-owned hosted E2E chat was confirmed live during this verification. Its source and evidence remain untouched, and guarded full-source dashboard recording remains pending as requested. No hosted Jest update/publication or Firebase deployment occurred. The broader multiplayer reliability audit remains active; this evidence covers the host hooks, not development effect replay of every multiplayer view.

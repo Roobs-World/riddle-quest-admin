@@ -1,0 +1,37 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm build:web && pnpm build:youtube && pnpm build:netflix && pnpm build:yahoo && pnpm build:gamesnacks
+$ pnpm build:jest && pnpm build:facebook && pnpm build:reddit
+$ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (16.144465ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.038176ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (7.910015ms)
+✔ rejects imports between different target owners (3.62653ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.747977ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.056511ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.233267ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.811007ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.250028ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.749119ms)
+✔ aggregates violations in deterministic file and source order (0.89734ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.290687
+Web Target boundary audit passed (254 files, 1046 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+Third-party notices are current (107162 bytes)
+$ node scripts/validate-jest-console-manifest.mjs
+Jest Developer Console manifest passed; owner-approved publisher and privacy values are present.
+../core/src/validation/dailyCalendar.ts(6,60): error TS2353: Object literal may only specify known properties, and 'zh' does not exist in type 'Readonly<Record<"ar" | "de" | "en" | "es" | "fr" | "hi" | "id" | "it" | "ja" | "ko" | "nl" | "pl" | "pt" | "ru" | "tr" | "vi", string>>'.
+[ELIFECYCLE] Command failed with exit code 1.
+[ELIFECYCLE] Command failed with exit code 1.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 build:all-targets: `pnpm build:web && pnpm build:youtube && pnpm build:netflix && pnpm build:yahoo && pnpm build:gamesnacks`
+Exit status 1

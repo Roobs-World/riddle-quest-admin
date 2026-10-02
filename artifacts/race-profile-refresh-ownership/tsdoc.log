@@ -1,0 +1,20 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 17 production declarations are undocumented.
+- packages/portal/src/jest/JestProfileSubscriptions.tsx:6 {products, pending, cancelled, error, cancel}
+- packages/portal/src/jest/JestProfileSubscriptions.tsx:7 active
+- packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts:604 {page}
+- packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts:1468 {page, pageErrors}
+- packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx:19 local
+- packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx:20 badgeKeys
+- packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx:35 {loading}
+- packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx:36 hasActiveSubscription
+- packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx:37 visibleProducts
+- packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx:48 copy
+- packages/portal/src/play/modalPages/commerce/useSubscriptionManagement.ts:8 refreshCatalog
+- packages/portal/src/play/modalPages/profile/ProfileModalPage.tsx:46 subscriptionControls
+- packages/portal/src/play/useGameSurfaceCoordination.ts:43 raceInbox
+- packages/portal/src/play/useGameSurfaceCoordination.ts:44 raceTournamentLocale
+- packages/portal/src/play/useGameSurfaceCoordination.ts:75 [dismissedEntry, setDismissedEntry]
+- packages/portal/src/play/useGameSurfaceCoordination.ts:76 entryAvailable
+- packages/portal/src/play/useGameSurfaceCoordination.ts:77 setRaceOpen
+[ELIFECYCLE] Command failed with exit code 1.

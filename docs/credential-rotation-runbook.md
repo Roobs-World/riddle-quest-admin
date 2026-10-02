@@ -42,14 +42,13 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set JEST_SHARED_SECRET --proje
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project riddle-quest-ec2b2
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set FACEBOOK_APP_SECRET --project riddle-quest-ec2b2
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_GATEWAY_SECRET --project riddle-quest-ec2b2
-pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --project riddle-quest-ec2b2
 ```
 
-   - Do **not** replace `FACEBOOK_UID_SECRET` in place for an app with existing
+   - Do **not** replace `FACEBOOK_UID_SECRET` or `REDDIT_UID_SECRET` in place for an app with existing
      provider records. The current implementation accepts one key only and has
      no key version, previous-key fallback, or UID migration. Changing the key
-     makes existing Facebook identity exchange and deletion fail their persisted
-     UID/provider-scope checks. If this key is exposed, disable Facebook identity,
+     makes existing Facebook or Reddit identity exchange and deletion fail their persisted
+     UID/provider-scope checks. If a UID key is exposed, disable the affected provider identity,
      preserve the existing value only inside the controlled incident boundary,
      and keep the target disabled until a reviewed dual-key or migration release
      has moved every provider mapping and deletion path. Initial provisioning for
@@ -90,8 +89,11 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
      and deletion fixtures, then revoke the superseded app-secret version. Do not
      rotate the independent UID HMAC key in place; use the disabled-identity
      migration procedure above if that key is exposed.
-   - Reddit: generate new independent gateway and UID HMAC values. Put the UID
-     secret only in Firebase Secret Manager. Put the gateway value in both
+   - Reddit: rotate only the gateway value during an ordinary cutover. Preserve
+     the existing UID HMAC key; if it is exposed, disable Reddit identity until a
+     reviewed dual-key/migration release covers existing and deleted generations.
+     Initial UID provisioning for a genuinely account-free app is separate. Put
+     the gateway value in both
      Firebase Secret Manager and the Devvit global secret setting
      `redditGatewaySecret`; never expose either value to the webview.
    - Google/Firebase: disable exposed service-account keys, revoke sandbox debug
@@ -106,18 +108,45 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
      and Sentry error reporting.
    - Confirm Facebook nonce/exchange, App Check, generation-based deletion and
      signed deletion callback before enabling any additional capability.
-   - When a Facebook UID-key migration is required, also verify an existing
+   - When a Facebook or Reddit UID-key migration is required, also verify an existing
      account, a fresh account, in-game deletion, signed callback deletion, lost-
      response retry, and post-deletion fresh generation against the migrated
      provider records before re-enabling identity.
    - Confirm the Reddit gateway rejects signature, operation, app, subject,
      account-generation, timestamp, and nonce mismatches; then verify identity,
      storage, gameplay, and deletion through the same-origin Devvit route.
-   - Build and inspect all four exact artifacts again; none may contain a private
+   - Build and inspect all six required isolated artifacts again; none may contain a private
      token, service-account material, debug token, or source map.
    - Retain the `pnpm check:facebook-secrets` result with the deployment receipt;
      it proves source bindings and absence from browser inputs, not the age,
      uniqueness, IAM policy, or value of the deployed secret versions.
+
+## Runtime access review
+
+The [1 October read-only review](evidence/provider-iam-readiness-2026-10-01.md)
+found one runtime service account shared by sampled Facebook, Reddit and Jest
+Functions. Each of the four Facebook/Reddit secrets grants that account
+`roles/secretmanager.secretAccessor`, so exact environment bindings do not isolate
+runtime IAM access by provider. The account also holds project `roles/editor`;
+Editor alone is not a Secret Manager payload-access role. No public principal or
+project-level owner/Secret Manager accessor/admin role was found for that account
+in the inspected policies. Folder/organization inheritance and effective custom
+permissions remain unverified.
+
+Before claiming least privilege, review separate runtime identities for the
+Facebook identity/deletion functions, Reddit gateway functions and other/shared
+functions. Grant each only its actual secret resources and tested Auth/Firestore/
+Storage/RTDB dependencies; retain existing Jest behavior during the cutover. The
+shared in-game deletion callable still needs its actual Facebook UID-key binding.
+Create/review replacement identities and grants before changing function runtime
+configuration, then verify existing identity, deletion retries and all six isolated
+artifacts. Revoke old grants only after an inventory proves no remaining consumer
+needs them. Do not remove the shared account's project role or secrets access as a
+shortcut; no IAM changes have been made by this review.
+
+Raw principal/policy metadata is retained in an owner-private directory outside
+source control; the repository stores sanitized role/count/function summaries.
+No payload access, key rotation, role mutation or service-account creation occurred.
 
 ## Completion Evidence
 

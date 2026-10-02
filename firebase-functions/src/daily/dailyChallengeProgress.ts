@@ -1,5 +1,6 @@
 import type {Player} from "../validation/firestoreSchemas";
-import {getUtcDayString} from "./dailyStreak";
+import {coerceToDate} from "./dailyStreak";
+import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 
 /** Defines the contract for daily challenge progress. */
 export interface DailyChallengeProgress {
@@ -11,22 +12,18 @@ export interface DailyChallengeProgress {
   questionsCompleted: number;
 }
 
-/** Indicates whether is completed today. */
-function isCompletedToday(lastCompletedAt: unknown): boolean {
-  /** Provides last completed day behavior. */
-  const lastCompletedDay = getUtcDayString(lastCompletedAt);
-  if (!lastCompletedDay) return false;
-  return lastCompletedDay === new Date().toISOString().split("T")[0];
-}
-
-/** Resolves daily progress without a database-wide reset at UTC midnight. */
-export function resolveDailyChallengeProgress(user: Player | undefined, questionCount: number): DailyChallengeProgress {
+/** Resolves daily progress without a database-wide reset at regional midnight. */
+export function resolveDailyChallengeProgress(user: Player | undefined, questionCount: number, locale = "en"): DailyChallengeProgress {
   if (!user) {
     return {currentQuestion: 0, hasCompletedToday: false, questionsCompleted: 0};
   }
 
   /** Indicates whether has completed today. */
-  const hasCompletedToday = isCompletedToday(user.lastDailyChallengeCompletedAt);
+  const completedAt = coerceToDate(user.lastDailyChallengeCompletedAt);
+  /** Stored completion date or legacy timestamp interpreted in the requested locale. */
+  const completedDay = user.lastCompletedDailyChallengeKey ?? (completedAt ? getDailyDate(locale, completedAt) : undefined);
+  /** Whether stored completion already covers the current regional Daily date. */
+  const hasCompletedToday = !!completedDay && completedDay >= getDailyDate(locale);
   /** Stores d question. */
   const storedQuestion = user.progress?.dailyChallengeCurrentQuestion ?? 0;
   return {

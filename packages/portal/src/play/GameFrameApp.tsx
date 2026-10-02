@@ -43,9 +43,11 @@ import {
   useViewportFit,
 } from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
-import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
+import type {ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {useGameSurfaceCoordination} from "./useGameSurfaceCoordination";
+import {useAttemptRecovery} from "./game/hooks/useAttemptRecovery";
+import type {AttemptRecoveryCapability} from "../platform/types";
 
 /** Renders the solar system interface. */
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
@@ -62,6 +64,7 @@ export function GameFrameApp({
   initialRaceChallengeId,
   initialRaceInbox = false,
   initialRaceLobby = false,
+  initialRaceTournamentLocale,
   raceFeatureEnabled = false,
   prefetchedRaceCategories = [],
   nativeSocial,
@@ -70,6 +73,7 @@ export function GameFrameApp({
   platformPlayerId,
   tournaments,
   contextBoard,
+  attemptRecovery,
   raceLocalePolicy = "english-only",
   onPresenceStateChange,
 }: {
@@ -93,6 +97,8 @@ export function GameFrameApp({
   initialRaceInbox?: boolean;
   /** Opens the multiplayer lobby for an incoming platform invitation. */
   initialRaceLobby?: boolean;
+  /** Incoming native tournament language; never changes the selected content locale. */
+  initialRaceTournamentLocale?: RaceLocale;
   /** Stores race feature enabled. */
   raceFeatureEnabled?: boolean;
   /** Stores prefetched race categories. */
@@ -109,6 +115,8 @@ export function GameFrameApp({
   tournaments?: TournamentCapability;
   /** Stores context board. */
   contextBoard?: ContextBoardCapability;
+  /** Optional target-owned continuation; never supplied to non-Facebook builds. */
+  attemptRecovery?: AttemptRecoveryCapability;
   /** Stores race locale policy. */
   raceLocalePolicy?: "english-only" | "all";
   /** Stores on presence state change. */
@@ -127,7 +135,7 @@ export function GameFrameApp({
   /** Provides [animated coin balance, set animated coin balance] behavior. */
   const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
   /** Overlay lifecycle, multiplayer eligibility, analytics, and presence coordination. */
-  const {raceLocale, raceEnabled, raceOpen, setRaceOpen, guidanceActive, setGuidanceActive} =
+  const {raceLocale, raceEnabled, raceOpen, setRaceOpen, raceChallengeId, raceInbox, raceTournamentLocale, guidanceActive, setGuidanceActive} =
     useGameSurfaceCoordination({
       session: state,
       raceFeatureEnabled,
@@ -135,6 +143,7 @@ export function GameFrameApp({
       initialRaceChallengeId,
       initialRaceInbox,
       initialRaceLobby,
+      initialRaceTournamentLocale: tournaments ? initialRaceTournamentLocale : undefined,
       onPresenceStateChange,
     });
   /** Provides offline dialog ref behavior. */
@@ -142,6 +151,7 @@ export function GameFrameApp({
   /** Provides state ref behavior. */
   const stateRef = useRef(state);
   stateRef.current = state;
+  const recovery = useAttemptRecovery({capability: isFacebookWebTarget ? attemptRecovery : undefined, stateRef, dispatch});
 
   useOfflineDialog(online, offlineDialogRef);
 
@@ -390,20 +400,22 @@ export function GameFrameApp({
         {state.paused && <div className="pause-banner">{tr("WebPortal.PAUSED")}</div>}
       </div>
       <div className="game-overlay-surfaces" inert={!online ? true : undefined}>
-        {state.modal && (
+        {state.modal && !raceOpen && (
           <Suspense fallback={<SpinningWheelLoader overlay className="game-modal-loading" />}>
             <GameModalView
               state={state}
               onCoinBalancePreview={setAnimatedCoinBalance}
-              onClose={() => dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"})}
-              onContinue={requestContinue}
+              onClose={() => {if (!recovery.isPending()) dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
+              onContinue={(amount) => {if (!recovery.isPending()) requestContinue(amount);}}
+              onRecoverAttempt={isFacebookWebTarget && attemptRecovery ? recovery.request : undefined}
+              continuationPending={recovery.pending || Boolean(state.pendingCoinSpend)}
               onPurchase={requestPurchase}
               onNext={requestRiddle}
               onOpenModal={(modal) => dispatch({type: "openModal", modal})}
               onToggleMute={() => dispatch({type: "toggleMute"})}
               commerceAvailable={state.products.length > 0}
               onRequestHint={requestHint}
-              onRequestSkip={requestSkip}
+              onRequestSkip={() => {if (!recovery.isPending()) requestSkip();}}
               onRequestLeaderboard={requestLeaderboard}
               onUpdateUsername={updateUsername}
               onUpdateAvatar={updateAvatar}
@@ -414,6 +426,7 @@ export function GameFrameApp({
         <GuidanceOverlay
           state={state}
           modal={state.modal}
+          suspended={raceOpen}
           onActiveChange={setGuidanceActive}
           registrationName={registrationName}
           registrationInviterName={registrationInviterName}
@@ -425,8 +438,9 @@ export function GameFrameApp({
               key={raceOwnerId}
               ownerId={raceOwnerId}
               locale={raceLocale ?? "en"}
-              challengeId={initialRaceChallengeId}
-              openInbox={initialRaceInbox}
+              challengeId={raceChallengeId}
+              openInbox={raceInbox}
+              tournamentLocale={tournaments ? raceTournamentLocale : undefined}
               initialCategories={prefetchedRaceCategories}
               coins={state.profile?.coins ?? 0}
               postToHost={postToHost}

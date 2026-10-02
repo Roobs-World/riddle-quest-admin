@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-01T10:26:44.133179+00:00",
+  "intent": "readiness-requirement-and-retained-evidence-audit",
+  "uploadEligible": false,
+  "providerAcceptanceComplete": false,
+  "sourceHead": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
+  "dirty": true,
+  "checks": [
+    {
+      "name": "facebook-tracker-tests",
+      "exitCode": 0
+    },
+    {
+      "name": "facebook-progress",
+      "exitCode": 0
+    },
+    {
+      "name": "reddit-progress",
+      "exitCode": 0
+    },
+    {
+      "name": "reddit-docs",
+      "exitCode": 0
+    },
+    {
+      "name": "diff-check",
+      "exitCode": 0
+    }
+  ],
+  "expectedMissingEvidenceChecks": [
+    {
+      "name": "reddit-contracts",
+      "exitCode": 1,
+      "missing": [
+        "auth",
+        "payment",
+        "refund",
+        "post-entry",
+        "realtime",
+        "notification"
+      ]
+    },
+    {
+      "name": "reddit-hosted",
+      "exitCode": 1,
+      "reason": "reddit-hosted-evidence-missing"
+    }
+  ],
+  "externalEffects": {
+    "accountAccessGrants": 0,
+    "productionWrites": 0,
+    "deployments": 0,
+    "uploads": 0
+  },
+  "files": [
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/requirements.json",
+      "sha256": "14b2b8c2c42d1990abc8a14734ef434b356d682357a06421b691bc0303e49235",
+      "bytes": 130483
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/facebook-progress.log",
+      "sha256": "7a51f78fbe622a5554d5bcd7ead56d42af517b2a411d975bfd7604e27f41b722",
+      "bytes": 82
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/facebook-tracker-tests.log",
+      "sha256": "56c0c4e232a6fd9bd77c15172f4acbe0a396e8e54c9d450327ab55829c57d4bc",
+      "bytes": 311
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/mcp-status.json",
+      "sha256": "c4f745f0cbd61ae94b12262aecc077e25860addc1ac969380113e27bfed1921e",
+      "bytes": 506
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/oauth-process-count.json",
+      "sha256": "509a6782fe0d8e7a8be342c8ce5b022e0218457e77323a8edcc505cbdc167d13",
+      "bytes": 41
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/reddit-contracts.log",
+      "sha256": "c742d0de062b26ec1c23c34b0c6faafbb62978a5770d055e9739e7938e9c5f9c",
+      "bytes": 1162
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/reddit-docs.log",
+      "sha256": "e230e47557417fcfd7234a7cc66d91ecf69a27e04f5eec8da4a088846e0db95d",
+      "bytes": 401
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/reddit-hosted.log",
+      "sha256": "55ff52a6b67d8ed5baddb8e327dec7c00e27d19d48de1b766c8655074bad834b",
+      "bytes": 886
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/validation/reddit-progress.log",
+      "sha256": "7123d2a01fd07f8c0f49aa96bff29743b29f8f439798e063cbb4a70c9b32c060",
+      "bytes": 44
+    },
+    {
+      "file": "artifacts/facebook-reddit-readiness-audit-2026-10-01/verification.json",
+      "sha256": "ee5f67bf51bd06f5b6681d351728d2d52c834a2c3b49ce8af00b09ca02150064",
+      "bytes": 11781
+    },
+    {
+      "file": "docs/evidence/facebook-reddit-readiness-audit-2026-10-01.md",
+      "sha256": "770fd83d9c0a7a7d08c2f664caf0e4c9f3b72bd321552b1e411e79466fc7166f",
+      "bytes": 5601
+    },
+    {
+      "file": "docs/facebook-instant-games-progress.html",
+      "sha256": "fdd39018bd92c77c181e790893b33a25f814b3cd46b80f7cbdc42edaae6bf201",
+      "bytes": 74809
+    },
+    {
+      "file": "scripts/facebook-progress-tracker.test.mjs",
+      "sha256": "b3e0fb4aa68e6feb6981ed6027e62a03c718d5650d00000e13f6c0d63e018630",
+      "bytes": 1168
+    }
+  ]
+}

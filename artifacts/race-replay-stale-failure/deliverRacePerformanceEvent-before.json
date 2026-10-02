@@ -1,0 +1,11 @@
+{
+  "buildConfig": {
+    "runtime": "nodejs22"
+  },
+  "serviceConfig": {
+    "revision": "deliverraceperformanceevent-00013-poh",
+    "service": "projects/riddle-quest-ec2b2/locations/us-central1/services/deliverraceperformanceevent"
+  },
+  "state": "ACTIVE",
+  "updateTime": "2026-10-01T11:39:41.938696007Z"
+}

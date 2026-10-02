@@ -16,6 +16,7 @@ import {
 } from "@qwordly/core/race";
 import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "@qwordly/core/pricing/redditCatalog";
 import {purchase} from "@devvit/payments/client";
+import {getWebViewMode} from "@devvit/client";
 import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
 import {raceMatchmakingFailureResult} from "../platform/raceMatchmakingFailure";
 
@@ -293,16 +294,28 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
             if (document.visibilityState === "hidden") void callback();
           };
           document.addEventListener("visibilitychange", listener);
-          return () => document.removeEventListener("visibilitychange", listener);
+          /** Collapsing Devvit's expanded view can leave document visibility unchanged. */
+          const focus = () => {
+            if (getWebViewMode() !== "expanded") void callback();
+          };
+          window.addEventListener("focus", focus);
+          return () => {
+            document.removeEventListener("visibilitychange", listener);
+            window.removeEventListener("focus", focus);
+          };
         },
         /** Provides on resume behavior. */
         onResume(callback: () => void | Promise<void>) {
           /** Lists ener. */
           const listener = () => {
-            if (document.visibilityState === "visible") void callback();
+            if (document.visibilityState === "visible" && getWebViewMode() === "expanded") void callback();
           };
           document.addEventListener("visibilitychange", listener);
-          return () => document.removeEventListener("visibilitychange", listener);
+          window.addEventListener("focus", listener);
+          return () => {
+            document.removeEventListener("visibilitychange", listener);
+            window.removeEventListener("focus", listener);
+          };
         },
       };
       reportProgress(100);

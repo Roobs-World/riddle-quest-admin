@@ -96,7 +96,13 @@ const mockFirestore = Object.assign(
 );
 
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}}));
-jest.mock("../gameplay/achievements", () => ({findNewAchievements: () => []}));
+/** Deterministic achievement adapter isolates grants from completion/hint transaction assertions. */
+const mockFindNewAchievements = jest.fn((..._args: unknown[]): Array<{
+  /** Canonical achievement identity returned by the test grant adapter. */
+achievementId: string;
+  /** Server-owned unlock timestamp returned by the test grant adapter. */
+unlockedAt: number}> => []);
+jest.mock("../gameplay/achievements", () => ({findNewAchievements: (...args: unknown[]) => mockFindNewAchievements(...args)}));
 
 import {
   ensureAuthoritativeSession,
@@ -154,6 +160,7 @@ describe("single-player session transactions", () => {
   beforeEach(() => {
     mockDocuments.clear();
     jest.clearAllMocks();
+    mockFindNewAchievements.mockReturnValue([]);
     mockDocuments.set(userPath, baseUser());
   });
 
@@ -234,6 +241,38 @@ describe("single-player session transactions", () => {
       await scenario.mutate();
       expect(mockDocuments.get(sessionPath())?.expiresAt).toBe(fixedExpiry);
     }
+  });
+
+  it.each(["hint_user", "hints_10", "hints_25"])("keeps %s badges without granting coins for a hint or its replay", async (achievementId) => {
+    mockDocuments.set(sessionPath(), baseSession());
+    mockFindNewAchievements.mockReturnValue([{achievementId, unlockedAt: 1}]);
+    /** Original correlated authority request used to verify transaction replay behavior. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN,
+      requestId: "hint-no-reward", currentAttempt: ["p", "i", "z", "z", "z"]};
+    /** First committed authority response whose grant behavior is compared with replay. */
+    const first = await purchaseAuthoritativeHint(USER_ID, request);
+    /** Replayed request response must retain committed state without granting again. */
+    const replay = await purchaseAuthoritativeHint(USER_ID, {...request, requestId: "hint-no-reward-replay"});
+    expect(first).toMatchObject({newCoins: 250, coinsCost: 50, newlyUnlockedAchievementIds: [achievementId]});
+    expect(replay).toEqual(first);
+    expect(mockDocuments.get(userPath)?.coins).toBe(250);
+    expect(mockDocuments.get(userPath)?.stats.totalHintsUsed).toBe(1);
+    expect(mockDocuments.get(userPath)?.unlockedAchievements).toEqual([{achievementId, unlockedAt: 1}]);
+  });
+
+  it("accepts a Tokyo Daily hint only before its bound locale midnight", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T15:01:00Z"));
+    try {
+      mockDocuments.set(sessionPath(), baseSession({gameMode: "challenge", locale: "ja", riddleId: "daily-2026-08-12", challengeDate: "2026-08-12", completionKey: "challenge:2026-08-12"}));
+      /** Correlated hint request bound to the Tokyo Daily session and original receipt. */
+      const request = {riddleId: "daily-2026-08-12", gameMode: "challenge" as const, sessionToken: TOKEN, requestId: "tokyo-hint-0001", currentAttempt: ["p", "i", "z", "z", "z"]};
+      expect(await purchaseAuthoritativeHint(USER_ID, request)).toMatchObject({newCoins: 250});
+      // Receipt replay remains free after rollover; a fresh spend must still fail closed.
+      mockDocuments.set(sessionPath(), baseSession({gameMode: "challenge", locale: "ja", riddleId: "daily-2026-08-12", challengeDate: "2026-08-12", completionKey: "challenge:2026-08-12", expiresAt: {toDate: () => new Date("2026-08-14T00:00:00Z")} as never}));
+      jest.setSystemTime(new Date("2026-08-12T15:01:00Z"));
+      await expect(purchaseAuthoritativeHint(USER_ID, {...request, requestId: "tokyo-hint-0002"})).rejects.toThrow("no longer current");
+      expect(mockDocuments.get(userPath)?.coins).toBe(250);
+    } finally { jest.useRealTimers(); }
   });
 
   it("charges one hint once and semantically recovers a dropped response with a fresh request id", async () => {
@@ -332,6 +371,32 @@ describe("single-player session transactions", () => {
         guess: "crane",
       }),
     ).resolves.toMatchObject({attempts: 6, isCorrect: false, gameOver: true});
+  });
+
+  it("grants one rewarded extra try with zero coins and cannot stack it with paid continue", async () => {
+    mockDocuments.set(userPath, {...baseUser(), coins: 0});
+    mockDocuments.set(sessionPath(), baseSession({attempts: 5, awaitingContinue: true}));
+    await expect(grantAuthoritativeContinue(USER_ID, "classic", "classic-1", "rewarded-continue-1", TOKEN, "facebook-rewarded")).resolves.toBe(0);
+    expect(mockDocuments.get(userPath)?.coins).toBe(0);
+    expect(mockDocuments.get(sessionPath())).toMatchObject({hasUsedContinue: true, awaitingContinue: false, continueFunding: "facebook-rewarded"});
+    await expect(grantAuthoritativeContinue(USER_ID, "classic", "classic-1", "paid-continue-retry", TOKEN)).resolves.toBe(0);
+    await expect(submitAuthoritativeGuess(USER_ID, {riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN,
+      requestId: "rewarded-sixth-guess", guess: "crane"})).resolves.toMatchObject({attempts: 6, gameOver: true});
+    await expect(grantAuthoritativeContinue(USER_ID, "classic", "classic-1", "rewarded-seventh-try", TOKEN, "facebook-rewarded"))
+      .rejects.toMatchObject({code: "failed-precondition"});
+  });
+
+  it("rejects rewarded recovery before exhaustion, for stale bindings, and after expiry", async () => {
+    mockDocuments.set(sessionPath(), baseSession());
+    await expect(grantAuthoritativeContinue(USER_ID, "classic", "classic-1", "rewarded-before-loss", TOKEN, "facebook-rewarded"))
+      .rejects.toMatchObject({code: "failed-precondition"});
+    mockDocuments.set(sessionPath(), baseSession({attempts: 5, awaitingContinue: true}));
+    await expect(grantAuthoritativeContinue(USER_ID, "classic", "other-riddle", "rewarded-wrong-riddle", TOKEN, "facebook-rewarded"))
+      .rejects.toMatchObject({code: "permission-denied"});
+    mockDocuments.set(sessionPath(), baseSession({attempts: 5, awaitingContinue: true,
+      expiresAt: {toDate: () => new Date(0)} as never}));
+    await expect(grantAuthoritativeContinue(USER_ID, "classic", "classic-1", "rewarded-expired-session", TOKEN, "facebook-rewarded"))
+      .rejects.toMatchObject({code: "failed-precondition"});
   });
 
   it("fails every authoritative boundary closed for an expired private session", async () => {

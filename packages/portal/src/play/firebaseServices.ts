@@ -1,5 +1,7 @@
+import {getDailyDate} from "@qwordly/core/validation";
+import {mapRiddleResponse} from "./riddleResponse";
 import {getRaceEntry, cancelRaceInvite} from "../firebase";
-import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
+import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {
   auth,
@@ -56,28 +58,6 @@ const toBridgeUser = (user: typeof auth.currentUser): BridgeUser | null => {
   };
 };
 
-/** Maps riddle response. */
-const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "classic" | "challenge"): BridgeRiddle => {
-  /** Provides question behavior. */
-  const question = response.challenge?.questions[0];
-  if (!question || response.error) {
-    throw new Error(response.error || "No riddle was returned.");
-  }
-
-  return {
-    riddleId: question.riddleId,
-    text: question.text,
-    answerLength: question.answerLength,
-    ...(question.evaluation ? {evaluation: question.evaluation} : {}),
-    sessionToken: question.sessionToken,
-    gameMode,
-    index: question.questionNumber,
-    attemptsUsed: question.attemptsUsed,
-    hasUsedContinue: question.hasUsedContinue,
-    awaitingContinue: question.awaitingContinue,
-  };
-};
-
 /** Creates firebase host services. */
 export const createFirebaseHostServices = (): HostServices => {
   /** Provides latest snapshot behavior. */
@@ -94,23 +74,25 @@ export const createFirebaseHostServices = (): HostServices => {
     /** Requested content locale. */ locale: string;
     /** Pending response. */ promise: Promise<ClassicRiddleBufferResponse>;
   } | null = null;
-  /** Daily response retained until progress changes or the UTC day rolls over. */
+  /** Daily response retained until progress changes or the regional day rolls over. */
   let dailyPreload: {
     /** Player owning the Daily session. */ uid: string;
     /** Requested content locale. */ locale: string;
-    /** UTC challenge day. */ day: string;
+    /** Regional challenge day. */ day: string;
     /** Pending or completed response. */ promise: Promise<CurrentRiddleResponse>;
   } | null = null;
-  /** Returns the current UTC challenge day. */
-  const utcDay = () => new Date().toISOString().slice(0, 10);
-  /** Loads the Daily session once for this player, locale, and UTC day. */
+  /** Loads the Daily session once for this player, locale, and regional day. */
   const preloadDaily = (uid: string, locale: string): Promise<CurrentRiddleResponse> => {
-    /** UTC day associated with the cached Daily response. */
-    const day = utcDay();
+    /** regional day associated with the cached Daily response. */
+    const day = getDailyDate(locale);
     if (dailyPreload?.uid === uid && dailyPreload.locale === locale && dailyPreload.day === day)
       return dailyPreload.promise;
     /** Request shared by concurrent callers. */
-    const promise = getCurrentDailyChallenge({locale, includeEvaluation: true}).then(({data}) => data).catch((error: unknown) => {
+    const promise = getCurrentDailyChallenge({locale, includeEvaluation: true}).then(({data}) => {
+      // Unavailable content must be fetched again on recovery; only a confirmed completion is durable for the day.
+      if (data.error && data.hasCompletedToday !== true && dailyPreload?.promise === promise) dailyPreload = null;
+      return data;
+    }).catch((error: unknown) => {
       if (dailyPreload?.promise === promise) dailyPreload = null;
       throw error;
     });
@@ -393,7 +375,7 @@ export const createFirebaseHostServices = (): HostServices => {
       return (await publishRaceChallenge(input)).data;
     },
     /** Gets race challenge. */
-    async getRaceEntry(challengeId, locale) {return (await getRaceEntry({challengeId, locale})).data;},
+    async getRaceEntry(challengeId, locale) {return (await getRaceEntry({challengeId, locale, includeViewerRole: true, includeExistingAttempt: true})).data;},
     /** Delivers creator cancellation through authenticated Firebase. */
     async cancelRaceInvite(input) {return (await cancelRaceInvite(input)).data;},
     /** Reads a legacy public preview. */

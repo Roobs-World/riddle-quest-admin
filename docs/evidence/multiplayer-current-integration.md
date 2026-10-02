@@ -1,0 +1,13 @@
+# Current multiplayer integration verification
+
+Fresh integration verification includes the shared accepted-run recovery changes. The full client suite passes 1,694 tests across 196 suites, with 102 tests and 13 suites skipped. Core passes 223 tests across 25 suites. All 48 retained injected-browser gates pass, and all seven isolated target builds and exact artifact dependency audits pass.
+
+The initial backend coverage run passed 1,058 tests but failed one invitation callable assertion: the service call now forwards optional viewer-role and existing-attempt settings, while its test expected only three arguments. The test now asserts the exact optional settings, authenticated identity, five valid opt-in/opt-out preference combinations and four malformed or client-selected recovery pointer rejections before authority. The first new fixture omitted the required unavailable-response reason; its failed log is preserved and the fixture was corrected. No production implementation change was needed.
+
+The repaired Node22 backend coverage run passes all 1,068 tests across 72 suites. Coverage is 93.45% statements, 89.84% branches, 96.98% functions and 95.81% lines. Backend preparation/operator safeguards, types and lint also pass. The isolated demo Firestore emulator shut down successfully after the run; no production data or functions were changed.
+
+Before/after fingerprints capture 333 backend source/configuration files, with no changed, removed or added captured files during the successful run. This scope includes `firebase-functions/src/**/*.ts` and four selected configuration files; it does not establish whole-worktree, all dependency or all configuration stability. Both the initial failing run and the repaired run retain their own source snapshots and logs.
+
+Security, scalability and four dashboard receipt protocol tests pass. The development manifest retains preceding gates and adds the explicit callable contract check, for 66 checks. Whole-source completion is still held: global TSDoc reports 76 declarations in concurrent edits, and hosted authentication E2E is 1,295 equivalent lines against its 1,200 limit. The repaired callable test is absent from the documentation failures. Those active files were left untouched.
+
+Evidence, coverage and artifact hashes are in `artifacts/race-current-integration/verification-held.json`. These integration results are held evidence, not an accepted-revision dashboard receipt. Full-source recording remains pending until concurrent work finishes and its required gates pass. No hosted Jest update, game publication or Firebase deployment occurred in this batch. The broader multiplayer reliability audit remains active.

@@ -23,12 +23,31 @@ export function useViewportFit() {
       animationFrame = window.requestAnimationFrame(() => {
         /** Provides available height behavior. */
         const availableHeight = shell.clientHeight;
-        /** Provides natural height behavior. */
-        const naturalHeight = content.scrollHeight;
-        /** Provides scale behavior. */
-        const scale = availableHeight > 0 && naturalHeight > availableHeight ? availableHeight / naturalHeight : 1;
-        /** Provides next scale behavior. */
-        const nextScale = Math.min(1, scale);
+        if (availableHeight <= 0) return;
+        // Measure intrinsic content, without the previous fitted minimum height.
+        // Width changes wrapping and circular-cell height, so solve the final
+        // layout within this frame instead of feeding each fit into the next.
+        content.style.minHeight = "0";
+        /** Measures the height produced by one candidate width and scale. */
+        const scaledHeight = (scale: number) => {
+          content.style.width = `${100 / scale}%`;
+          return content.scrollHeight * scale;
+        };
+        /** Largest scale whose final layout fits the available height. */
+        let nextScale = 1;
+        if (scaledHeight(1) > availableHeight) {
+          /** Lower fitting scale bound. */
+          let lower = 0;
+          /** Upper overflowing scale bound. */
+          let upper = 1;
+          for (let iteration = 0; iteration < 12; iteration += 1) {
+            /** Candidate scale for the current intrinsic layout. */
+            const candidate = (lower + upper) / 2;
+            if (scaledHeight(candidate) <= availableHeight) lower = candidate;
+            else upper = candidate;
+          }
+          nextScale = Math.max(lower, 1 / 4096);
+        }
         /** Provides next width behavior. */
         const nextWidth = `${100 / nextScale}%`;
         /** Provides next transform behavior. */
@@ -36,6 +55,8 @@ export function useViewportFit() {
 
         if (content.style.width !== nextWidth) content.style.width = nextWidth;
         if (content.style.transform !== nextTransform) content.style.transform = nextTransform;
+        // Let the grid distribute spare space inside the fitted viewport.
+        content.style.minHeight = `${availableHeight / nextScale}px`;
         shell.style.overflowY = "hidden";
         content.dataset.viewportScale = nextScale.toFixed(4);
       });

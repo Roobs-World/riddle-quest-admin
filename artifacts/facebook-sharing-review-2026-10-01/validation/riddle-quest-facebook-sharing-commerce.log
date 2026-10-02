@@ -1,0 +1,13 @@
+$ node --test scripts/audit-facebook-commerce-activation.test.mjs && node scripts/audit-facebook-commerce-activation.mjs
+✔ accepts staged commerce that is unavailable and unexposed (0.805887ms)
+✔ rejects runtime imports, verifier endpoints, or enabled availability (0.146768ms)
+✔ rejects direct capability exposure even when availability remains false (0.103697ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26.516271
+Facebook commerce-activation audit passed: unverified commerce remains unreachable.

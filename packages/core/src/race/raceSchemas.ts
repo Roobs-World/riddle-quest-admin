@@ -97,7 +97,11 @@ export const RaceOpponentSchema = z
     adjustedFinishMs: MillisecondsSchema,
     events: z.array(RaceGhostEventSchema).max(RACE_DECK_SIZE * (RACE_MAX_HINTS_PER_RIDDLE + 1)),
   })
-  .strict();
+  .strict()
+  .superRefine((opponent, context) => {
+    if (opponent.events.some(event => event.adjustedElapsedMs > opponent.adjustedFinishMs))
+      context.addIssue({code: "custom", message: "Opponent history cannot extend beyond its recorded finish."});
+  });
 /** Answer-free opponent identity and ghost playback data. */
 export type RaceOpponent = z.infer<typeof RaceOpponentSchema>;
 
@@ -130,8 +134,11 @@ export const RaceRunViewSchema = z
   })
   .strict()
   .check((context) => {
-    /** Validated authoritative projection whose cross-field invariants are checked below. */
+    /** Canonical run containing the event aggregates being validated. */
     const run = context.value;
+    if (run.events.some(event => event.correctCount > run.correctCount || event.totalPenaltyMs > run.totalPenaltyMs ||
+      run.status === "active" && event.wallElapsedMs > run.wallElapsedMs))
+      context.issues.push({code: "custom", input: run, message: "Known events cannot exceed their containing run's progress or clock."});
     /** Editable questions retain the fixed attempt budget and exact remaining hint capacity. */
     const prompt = run.currentRiddle;
     if (prompt) {
@@ -404,6 +411,9 @@ export const RaceChallengeIdRequestSchema = z
   })
   .strict();
 
+/** Opt-in viewer facts keep strict legacy responses compatible. */
+export const RaceEntryRequestSchema = RaceChallengeIdRequestSchema.extend({includeViewerRole: z.boolean().optional(), includeExistingAttempt: z.boolean().optional()}).strict();
+
 /** Answer-free invitation facts; exclusive seat identity never crosses this seam. */
 export const RaceInvitationViewSchema = z.object({
   claimState: z.enum(["unclaimed", "claimed"]),
@@ -414,7 +424,7 @@ export const RaceInvitationViewSchema = z.object({
 }).strict();
 /** Typed challenge readiness shared by direct links and reserved invitations. */
 export const RaceEntryResponseSchema = z.discriminatedUnion("status", [
-  z.object({status: z.literal("ready"), challenge: RaceChallengePreviewSchema, invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
+  z.object({status: z.literal("ready"), challenge: RaceChallengePreviewSchema, viewerRole: z.enum(["creator", "recipient"]).optional(), existingRunId: OpaqueIdSchema.optional(), invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
   z.object({status: z.literal("waiting"), invitation: RaceInvitationViewSchema, serverNowMs: MillisecondsSchema}).strict(),
   z.object({status: z.literal("expired"), invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
   z.object({status: z.literal("cancelled"), invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),

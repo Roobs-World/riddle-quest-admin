@@ -12,7 +12,9 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 describeBrowser("classic coin collection", () => {
   it("enables Next Level when coin meter animation fails", async () => {
     /** Provides dist dir behavior. */
-    const distDir = path.resolve(__dirname, "../../../dist-jest");
+    const distDir = process.env.PORTAL_JEST_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
+      : path.resolve(__dirname, "../../../dist-jest");
     if (!existsSync(path.join(distDir, "index.html"))) {
       execFileSync("pnpm", ["build:jest"], {cwd: path.resolve(__dirname, "../../.."), stdio: "inherit"});
     }
@@ -69,7 +71,8 @@ describeBrowser("classic coin collection", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await page.goto(`http://127.0.0.1:${address.port}/?harness=jest`);
+      // Seed the supported post-Daily Classic fallback for this Classic-only scenario.
+      await page.goto(`http://127.0.0.1:${address.port}/?harness=jest&dailyCompleted=1`);
       await completeMockOnboarding(page);
       await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
       for (const letter of "PIANO") {

@@ -1,0 +1,6 @@
+$ PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts
+Test Suites: 1 passed, 1 total
+Tests:       62 passed, 62 total
+Snapshots:   0 total
+Time:        430.206 s
+Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts.

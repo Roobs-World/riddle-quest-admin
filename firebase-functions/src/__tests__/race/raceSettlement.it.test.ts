@@ -10,6 +10,10 @@ import {deliverRacePerformance} from "../../race/racePerformanceDelivery";
 import {processRaceDeadline, replayRaceDeadline} from "../../race/raceDeadlineRecovery";
 import {replayRaceDelivery} from "../../race/raceDeliveryRecovery";
 import {emptyRaceMatchProfile} from "../../race/raceMatchPerformance";
+import {parseRaceMatchOffer} from "../../race/raceMatchOfferRecord";
+import {readRaceMatchOffer} from "../../race/raceMatchOffer";
+import {parseRunRecord} from "../../race/raceSetupService";
+import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebook/facebookReferrals";
 
 /** Independent demo-project database; these tests never contact production. */
 let db: FirebaseFirestore.Firestore;
@@ -31,14 +35,86 @@ beforeAll(() => {
   db = getFirestore();
 });
 beforeEach(async () => {
-  await Promise.all(["raceRuns", "users", "raceSettlementOutbox", "racePerformanceOutbox", "raceDeadlineFailures", "raceMatchOffers", "raceMaintenance", "jestAccountDeletionTombstones"].map(
+  await Promise.all(["raceRuns", "users", "raceSettlementOutbox", "racePerformanceOutbox", "raceDeadlineFailures", "raceMatchOffers", "raceMaintenance", "jestAccountDeletionTombstones",
+    "facebookReferralTokens", "facebookReferralBindings", "facebookReferralSettlements", "facebookReferralDailyCaps"].map(
     (name) => db.recursiveDelete(db.collection(name)),
   ));
   await db.doc("users/player-1").set({displayName: "Challenger", coins: 0});
   await db.doc("users/creator-1").set({displayName: "Creator", coins: 0});
   /** Provides run behavior. */
   const run = fixture();
-  await db.doc("raceRuns/run-1").set({...run, deadlineAtMs: raceDeadlineAtMs(run), expiresAt: Timestamp.fromMillis(1_000_000)});
+  await db.doc("raceRuns/run-1").set({...run, ...(run.status === "active" ? {deadlineAtMs: raceDeadlineAtMs(run)} : {}), expiresAt: Timestamp.fromMillis(1_000_000)});
+});
+
+it.each(["owner", "creator"] as const)("delivers a Facebook %s first-win referral once across concurrent race delivery", async role => {
+  /** The referral binds before any solo or multiplayer progress is established. */
+  const invitee = `facebook_${"b".repeat(40)}`;
+  /** Stores inviter for this isolated provider verification. */
+  const inviter = `facebook_${"a".repeat(40)}`;
+  await db.doc(`users/${inviter}`).set({coins: 300, hasPurchasedApp: false, stats: {gamesPlayed: 1, wins: 1}});
+  await db.doc(`users/${invitee}`).set({coins: 300, hasPurchasedApp: false, stats: {gamesPlayed: 0, wins: 0}});
+  /** Stores token for this isolated provider verification. */
+  const {token} = await issueFacebookReferralToken(inviter, 100, () => "t".repeat(43), db);
+  await bindFacebookReferralToken(invitee, token, 101, db);
+  /** Stores ownerId for this isolated provider verification. */
+  const ownerId = role === "owner" ? invitee : "player-1";
+  /** Stores run for this isolated provider verification. */
+  const run = fixture({userId: ownerId,
+    opponent: {subjectUserId: role === "creator" ? invitee : "creator-1", displayName: "Opponent", adjustedFinishMs: 10_000, events: []},
+    ...(role === "owner" ? {status: "completed", result: "player_win", correctCount: 10, currentPosition: 9, wallFinishMs: 9000, finishedAtMs: 10000} : {})});
+  await db.doc("raceRuns/run-1").set({...run, ...(run.status === "active" ? {deadlineAtMs: raceDeadlineAtMs(run)} : {}), expiresAt: Timestamp.fromMillis(1_000_000)});
+  await getRaceOutcomeForUser(ownerId, "run-1", {db, nowMs: role === "owner" ? 10001 : 12000});
+  /** Stores delivery for this isolated provider verification. */
+  const delivery = role === "owner" ? deliverRacePerformance : deliverRaceSettlement;
+  /** Stores before for this isolated provider verification. */
+  const before = (await db.doc(`users/${invitee}`).get()).data()!.coins;
+  await Promise.all([delivery("run-1", db, 12001), delivery("run-1", db, 12001)]);
+  /** Stores after for this isolated provider verification. */
+  const after = (await db.doc(`users/${invitee}`).get()).data()!;
+  expect(after.stats.multiplayerWins).toBe(1);
+  expect(after.coins).toBeGreaterThanOrEqual(before + 100);
+  expect((await db.doc(`users/${inviter}`).get()).data()?.coins).toBe(400);
+  expect((await db.collection("facebookReferralSettlements").get()).size).toBe(1);
+  await delivery("run-1", db, 12002);
+  expect((await db.doc(`users/${invitee}`).get()).data()).toEqual(after);
+  if (role === "owner") expect((await db.doc(`users/${invitee}/raceMatchProfiles/en`).get()).data()?.overall.evidence).toBe(1);
+});
+
+it.each(["grant", "acknowledgement"] as const)("recovers a Facebook referral %s failure without duplicating race performance or coins", async stage => {
+  /** Stores invitee for this isolated provider verification. */
+  const invitee = `facebook_${"b".repeat(40)}`;
+  /** Stores inviter for this isolated provider verification. */
+  const inviter = `facebook_${"a".repeat(40)}`;
+  await db.doc(`users/${inviter}`).set({coins: 300, hasPurchasedApp: false, stats: {gamesPlayed: 1, wins: 1}});
+  await db.doc(`users/${invitee}`).set({coins: 300, hasPurchasedApp: false, stats: {gamesPlayed: 0, wins: 0}});
+  /** Stores token for this isolated provider verification. */
+  const {token} = await issueFacebookReferralToken(inviter, 100, () => "t".repeat(43), db);
+  await bindFacebookReferralToken(invitee, token, 101, db);
+  /** Stores run for this isolated provider verification. */
+  const run = fixture({userId: invitee, status: "completed", result: "player_win", correctCount: 10, currentPosition: 9,
+    wallFinishMs: 9000, finishedAtMs: 10000});
+  await db.doc("raceRuns/run-1").set({...run, ...(run.status === "active" ? {deadlineAtMs: raceDeadlineAtMs(run)} : {}), expiresAt: Timestamp.fromMillis(1_000_000)});
+  await getRaceOutcomeForUser(invitee, "run-1", {db, nowMs: 10001});
+  /** Stores before for this isolated provider verification. */
+  const before = (await db.doc(`users/${invitee}`).get()).data()!.coins;
+  /** Stores realTransaction for this isolated provider verification. */
+  const realTransaction = db.runTransaction.bind(db);
+  /** Stores failure for this isolated provider verification. */
+  const failure = jest.spyOn(db, "runTransaction").mockImplementationOnce(realTransaction);
+  if (stage === "acknowledgement") failure.mockImplementationOnce(realTransaction);
+  failure.mockRejectedValueOnce(new Error("temporary-referral-storage-failure"));
+  await expect(deliverRacePerformance("run-1", db, 10002)).rejects.toThrow("temporary-referral-storage-failure");
+  failure.mockRestore();
+  /** Stores receipt for this isolated provider verification. */
+  const receipt = (await db.doc("racePerformanceOutbox/run-1").get()).data()!;
+  expect(receipt).toMatchObject({delivered: false, facebookPerformanceRecorded: true, deliveryState: "pending", deliveryAttempts: 1});
+  await deliverRacePerformance("run-1", db, receipt.nextAttemptAtMs - 1);
+  expect((await db.doc("racePerformanceOutbox/run-1").get()).data()?.delivered).toBe(false);
+  await Promise.all([deliverRacePerformance("run-1", db, receipt.nextAttemptAtMs), deliverRacePerformance("run-1", db, receipt.nextAttemptAtMs)]);
+  expect((await db.doc("racePerformanceOutbox/run-1").get()).data()?.delivered).toBe(true);
+  expect((await db.doc(`users/${invitee}/raceMatchProfiles/en`).get()).data()?.overall.evidence).toBe(1);
+  expect((await db.doc(`users/${invitee}`).get()).data()?.coins).toBe(before + 100);
+  expect((await db.doc(`users/${inviter}`).get()).data()?.coins).toBe(400);
 });
 
 it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("backs off transient %s failures and delivers exactly once when due", async collection => {
@@ -83,7 +159,11 @@ it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("validates r
   /** Provides results behavior. */
   const results = await Promise.all(Array.from({length: 6}, () => replayRaceDelivery(db, collection, "run-1", 10004)));
   expect(results.filter(Boolean)).toHaveLength(1);
+  /** Concurrent and repeated replay invocations retain the identity of the actual release. */
+  const replayId = (await ref.get()).data()?.replayId;
+  expect(replayId).toMatch(/^[0-9a-f-]{36}$/);
   expect(await replayRaceDelivery(db, collection, "run-1", 10005)).toBe(false);
+  expect((await ref.get()).data()?.replayId).toBe(replayId);
   expect((await ref.get()).data()).toMatchObject({deliveryState: "delivered", createdAtMs: original.createdAtMs});
   expect((await ref.get()).data()?.expiresAt.toMillis()).toBe(original.expiresAt.toMillis());
   if (collection === "raceSettlementOutbox") expect((await db.collection("users/creator-1/raceInbox").get()).size).toBe(1);
@@ -444,4 +524,65 @@ it("rejects a mismatched canonical run identity before settling or overwriting a
   expect((await db.collection("raceRuns").get()).docs.map(document => document.data())).toEqual(before);
   expect((await db.collection("raceSettlementOutbox").get()).empty).toBe(true);
   expect((await db.collection("racePerformanceOutbox").get()).empty).toBe(true);
+});
+
+
+it("round-trips a genuinely timed-out matchmaking receipt through later attribution reads", async () => {
+  /** A canonical accepted offer links the timeout to one recorded search receipt. */
+  const offerId = "b".repeat(64);
+  await db.doc(`raceMatchOffers/${offerId}`).set({userId: "player-1", challengeId: "challenge-1", acceptedRunId: "run-1",
+    acceptedAtMs: 1000, startsAtMs: 1000, createdAtMs: 0, expiresAtMs: 60000,
+    fingerprint: JSON.stringify({locale: "en", categoryId: null}), expectedPerformanceMs: 12000});
+  await db.doc("raceRuns/run-1").update({matchOfferId: offerId, opponent: FieldValue.delete()});
+  /** Maximum adjusted time produces the actual stored timed_out engine state. */
+  const outcome = await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 301000});
+  expect(outcome.result).toBe("timed_out");
+  /** Settlement's writer must produce a receipt accepted by its own reader. */
+  const receipt = (await db.doc(`raceMatchOffers/${offerId}`).get()).data()!;
+  expect(parseRaceMatchOffer(receipt, offerId)).toMatchObject({terminalStatus: "timed_out", terminalAtMs: 301000,
+    correctCount: 0, finishedTen: false, actualPerformanceMs: null, predictionLogError: null, finishTimeDeltaMs: null});
+  /** Later canonical attribution reads retain the valid receipt instead of logging corruption and dropping it. */
+  const source = await db.doc("raceRuns/run-1").get();
+  /** Independently revalidated attribution remains linked to its physical receipt. */
+  const reread = await db.runTransaction(transaction => readRaceMatchOffer(transaction, db, parseRunRecord(source.data(), source.id)));
+  expect(reread?.id).toBe(offerId);
+  await getRaceOutcomeForUser("player-1", "run-1", {db, nowMs: 302000});
+  expect((await db.doc(`raceMatchOffers/${offerId}`).get()).data()).toEqual(receipt);
+});
+
+it.each((["raceSettlementOutbox", "racePerformanceOutbox"] as const).flatMap(collection =>
+  (["receipt", "source"] as const).flatMap(target => [12001, 12002].map(deliveryAt => [collection, target, deliveryAt] as const))))(
+  "suppresses expired normal %s %s delivery at %i before Firestore TTL deletion", async (collection, target, deliveryAt) => {
+    /** Every expiration boundary has an independent canonical fixture and transaction. */
+    const runId = "run-1";
+    await getRaceOutcomeForUser("player-1", runId, {db, nowMs: 12000});
+    /** TTL may leave expired documents physically readable to a later trigger/recovery worker. */
+    const ref = db.doc(`${collection}/${runId}`);
+    await db.doc(target === "receipt" ? `${collection}/${runId}` : `raceRuns/${runId}`).update({expiresAt: Timestamp.fromMillis(12001)});
+    /** Settlement already occurred; deferred delivery must not add downstream account effects. */
+    const users = (await db.collection("users").get()).docs.map(document => document.data());
+    /** Both independently delivered queues obey the same retention boundary. */
+    const deliver = collection === "raceSettlementOutbox" ? deliverRaceSettlement : deliverRacePerformance;
+    expect(await deliver(runId, db, deliveryAt)).toBe(false);
+    expect((await ref.get()).data()).toMatchObject({delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: deliveryAt});
+    expect((await db.collection("users/creator-1/raceInbox").get()).empty).toBe(true);
+    expect((await db.doc("users/player-1/raceMatchProfiles/en").get()).exists).toBe(false);
+    expect((await db.collection("users/creator-1/knownRivals").get()).empty).toBe(true);
+    expect((await db.collection("users").get()).docs.map(document => document.data())).toEqual(users);
+    expect(await deliver(runId, db, deliveryAt + 1)).toBe(false);
+  });
+
+it.each(["raceSettlementOutbox", "racePerformanceOutbox"] as const)("delivers unexpired %s and supports source records without a historical expiry", async collection => {
+  /** Existing optional legacy source retention does not invent an expiry on absent metadata. */
+  const deliver = collection === "raceSettlementOutbox" ? deliverRaceSettlement : deliverRacePerformance;
+  for (const legacy of [false, true]) {
+    /** Different challenge identity prevents an earlier creator inbox item from masking the control. */
+    const runId = `unexpired-${collection}-${legacy}`;
+    await db.doc(`raceRuns/${runId}`).set({...fixture({runId, challengeId: `challenge-${runId}`}),
+      ...(legacy ? {} : {expiresAt: Timestamp.fromMillis(12001)})});
+    await getRaceOutcomeForUser("player-1", runId, {db, nowMs: 12000});
+    await db.doc(`${collection}/${runId}`).update({expiresAt: Timestamp.fromMillis(12001)});
+    expect(await deliver(runId, db, 12000)).toBe(true);
+    expect((await db.doc(`${collection}/${runId}`).get()).data()).toMatchObject({delivered: true, deliveryState: "delivered"});
+  }
 });

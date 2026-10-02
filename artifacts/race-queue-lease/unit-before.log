@@ -1,0 +1,163 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-multiplayer", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 18550.
+i  Running script: pnpm exec jest --config jest.race-coverage.config.js --coverage=false --runInBand --testPathPatterns=raceDeliveryQueue.it.test.ts
+FAIL src/__tests__/race/raceDeliveryQueue.it.test.ts
+  ● recovers pending delivery after a malformed missing owner lease
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "scanned": 1,
+    -   "status": "processed",
+    +   "scanned": 0,
+    +   "status": "leased",
+      }
+
+      199 |   /** Actual delivery is observable without inventing an economy grant. */
+      200 |   const deliver = jest.fn(async () => false);
+    > 201 |   expect(await processRaceDeliveryQueue(db, collection, deliver, 1000)).toMatchObject({status: "processed", scanned: 1});
+          |                                                                         ^
+      202 |   expect(deliver).toHaveBeenCalledWith("pending");
+      203 |   expect((await db.doc(statePath).get()).data()).toMatchObject({leaseId: null, leaseUntilMs: 0});
+      204 | });
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:201:73
+
+  ● recovers pending delivery after a malformed cleared owner lease
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "scanned": 1,
+    -   "status": "processed",
+    +   "scanned": 0,
+    +   "status": "leased",
+      }
+
+      199 |   /** Actual delivery is observable without inventing an economy grant. */
+      200 |   const deliver = jest.fn(async () => false);
+    > 201 |   expect(await processRaceDeliveryQueue(db, collection, deliver, 1000)).toMatchObject({status: "processed", scanned: 1});
+          |                                                                         ^
+      202 |   expect(deliver).toHaveBeenCalledWith("pending");
+      203 |   expect((await db.doc(statePath).get()).data()).toMatchObject({leaseId: null, leaseUntilMs: 0});
+      204 | });
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:201:73
+
+  ● recovers pending delivery after a malformed invalid owner lease
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "scanned": 1,
+    -   "status": "processed",
+    +   "scanned": 0,
+    +   "status": "leased",
+      }
+
+      199 |   /** Actual delivery is observable without inventing an economy grant. */
+      200 |   const deliver = jest.fn(async () => false);
+    > 201 |   expect(await processRaceDeliveryQueue(db, collection, deliver, 1000)).toMatchObject({status: "processed", scanned: 1});
+          |                                                                         ^
+      202 |   expect(deliver).toHaveBeenCalledWith("pending");
+      203 |   expect((await db.doc(statePath).get()).data()).toMatchObject({leaseId: null, leaseUntilMs: 0});
+      204 | });
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:201:73
+
+  ● recovers pending delivery after a malformed empty owner lease
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "scanned": 1,
+    -   "status": "processed",
+    +   "scanned": 0,
+    +   "status": "leased",
+      }
+
+      199 |   /** Actual delivery is observable without inventing an economy grant. */
+      200 |   const deliver = jest.fn(async () => false);
+    > 201 |   expect(await processRaceDeliveryQueue(db, collection, deliver, 1000)).toMatchObject({status: "processed", scanned: 1});
+          |                                                                         ^
+      202 |   expect(deliver).toHaveBeenCalledWith("pending");
+      203 |   expect((await db.doc(statePath).get()).data()).toMatchObject({leaseId: null, leaseUntilMs: 0});
+      204 | });
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:201:73
+
+  ● recovers pending delivery after a malformed unsafe deadline lease
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "scanned": 1,
+    -   "status": "processed",
+    +   "scanned": 0,
+    +   "status": "leased",
+      }
+
+      199 |   /** Actual delivery is observable without inventing an economy grant. */
+      200 |   const deliver = jest.fn(async () => false);
+    > 201 |   expect(await processRaceDeliveryQueue(db, collection, deliver, 1000)).toMatchObject({status: "processed", scanned: 1});
+          |                                                                         ^
+      202 |   expect(deliver).toHaveBeenCalledWith("pending");
+      203 |   expect((await db.doc(statePath).get()).data()).toMatchObject({leaseId: null, leaseUntilMs: 0});
+      204 | });
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:201:73
+
+  ● recovers pending delivery after a malformed fractional deadline lease
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "scanned": 1,
+    -   "status": "processed",
+    +   "scanned": 0,
+    +   "status": "leased",
+      }
+
+      199 |   /** Actual delivery is observable without inventing an economy grant. */
+      200 |   const deliver = jest.fn(async () => false);
+    > 201 |   expect(await processRaceDeliveryQueue(db, collection, deliver, 1000)).toMatchObject({status: "processed", scanned: 1});
+          |                                                                         ^
+      202 |   expect(deliver).toHaveBeenCalledWith("pending");
+      203 |   expect((await db.doc(statePath).get()).data()).toMatchObject({leaseId: null, leaseUntilMs: 0});
+      204 | });
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:201:73
+
+Test Suites: 1 failed, 1 total
+Tests:       6 failed, 21 passed, 27 total
+Snapshots:   0 total
+Time:        1.517 s
+Ran all test suites matching raceDeliveryQueue.it.test.ts.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.race-coverage.config.js --coverage=false --runInBand --testPathPatterns=raceDeliveryQueue.it.test.ts" exited with code 1

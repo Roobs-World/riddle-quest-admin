@@ -10,8 +10,20 @@ const effects: Array<{
 }> = [];
 /** Identifies each effect in hook order for the current render. */
 let effectIndex = 0;
+/** Ref cells remain stable across simulated parent renders. */
+const refs: Array<{
+  /** Value retained by the hook lifetime. */
+  current: unknown;
+}> = [];
+/** Current ref position follows the hook call order. */
+let refIndex = 0;
 
 jest.mock("react", () => ({
+  useRef: (initial: unknown) => {
+    /** Reuses the exact ref cell retained during the first mounted render. */
+    const index = refIndex++;
+    return refs[index] ?? (refs[index] = {current: initial});
+  },
   useCallback: <T>(callback: T) => callback,
   useMemo: <T>(factory: () => T) => factory(),
   useState: <T>(initial: T) => [initial, jest.fn()],
@@ -30,7 +42,7 @@ import {useHostAuthSession} from "../useHostAuthSession";
 
 beforeEach(() => {
   effects.splice(0).forEach((effect) => effect.cleanup?.());
-  effectIndex = 0;
+  effectIndex = 0; refIndex = 0; refs.splice(0);
 });
 
 it("keeps one auth subscription when parent renders replace the commerce/service wrapper", () => {
@@ -48,7 +60,7 @@ it("keeps one auth subscription when parent renders replace the commerce/service
   /** Unused profile loader in the reconstructed authority wrapper. */
   const loadProfile: HostServices["loadProfile"] = async () => null;
   for (let render = 0; render < 5; render += 1) {
-    effectIndex = 0;
+    effectIndex = 0; refIndex = 0;
     useHostAuthSession({services: {auth, loadProfile}, platformRegistered: false, postToGame});
   }
   expect(subscribe).toHaveBeenCalledTimes(1);
@@ -56,8 +68,43 @@ it("keeps one auth subscription when parent renders replace the commerce/service
 
   /** A genuinely different identity provider must still replace the listener. */
   const replacement = jest.fn(() => jest.fn());
-  effectIndex = 0;
+  effectIndex = 0; refIndex = 0;
   useHostAuthSession({services: {auth: {subscribe: replacement}, loadProfile}, platformRegistered: false, postToGame});
   expect(unsubscribe).toHaveBeenCalledTimes(1);
   expect(replacement).toHaveBeenCalledTimes(1);
+});
+
+
+it("changes ownership before rendering and ignores a disposed subscription callback", () => {
+  /** Delayed notifications use the subscription's originally installed listener. */
+  let listener: (snapshot: AuthSnapshot) => void = () => {};
+  /** Stable auth adapter publishes the first account synchronously. */
+  const auth = {subscribe: (next: typeof listener) => {
+    listener = next; next({user: {uid: "owner-1", isAnonymous: false}, profile: null}); return () => {};
+  }};
+  /** Public ownership check reads subscription state without a subsequent React render. */
+  const host = useHostAuthSession({services: {auth}, postToGame: jest.fn()});
+  expect(host.ownsAccount("owner-1")).toBe(true);
+  effectIndex = 0; refIndex = 0;
+  /** The rendered account visit follows the synchronous initial subscription. */
+  const renderedHost = useHostAuthSession({services: {auth}, postToGame: jest.fn()});
+  /** Exact account visit stays valid through same-owner profile notifications only. */
+  const original = renderedHost.captureAccount("owner-1");
+  listener({user: {uid: "owner-1", isAnonymous: false}, profile: {level: 2, wins: 1, winStreak: 1}});
+  expect(original()).toBe(true);
+  listener({user: {uid: "owner-2", isAnonymous: false}, profile: null});
+  expect(host.ownsAccount("owner-1")).toBe(false);
+  expect(host.ownsAccount("owner-2")).toBe(true);
+  expect(original()).toBe(false);
+  listener({user: {uid: "owner-1", isAnonymous: false}, profile: null});
+  expect(original()).toBe(false);
+  expect(renderedHost.captureAccount("owner-1")()).toBe(false);
+  effectIndex = 0; refIndex = 0;
+  /** A new render can capture the replacement visit of the same UID. */
+  const returnedHost = useHostAuthSession({services: {auth}, postToGame: jest.fn()});
+  expect(returnedHost.captureAccount("owner-1")()).toBe(true);
+  effects.splice(0).forEach(effect => effect.cleanup?.());
+  listener({user: {uid: "owner-1", isAnonymous: false}, profile: null});
+  expect(host.ownsAccount("owner-1")).toBe(false);
+  expect(host.ownsAccount("owner-2")).toBe(false);
 });

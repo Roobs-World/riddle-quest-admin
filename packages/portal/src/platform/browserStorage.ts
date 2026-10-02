@@ -15,14 +15,20 @@ const getBrowserStorage = (area: BrowserStorageArea): Storage | undefined => {
   }
 };
 
-/** Reads a value, treating unavailable browser persistence as empty. */
-export const readBrowserStorage = (area: BrowserStorageArea, key: string): string | null => {
+/** Observes a revision, distinguishing an empty key from unavailable storage. */
+export const observeBrowserStorage = (area: BrowserStorageArea, key: string): string | null | undefined => {
   try {
-    return getBrowserStorage(area)?.getItem(key) ?? null;
+    /** Only a successful read can authorize an observed-revision mutation. */
+    const storage = getBrowserStorage(area);
+    return storage ? storage.getItem(key) : undefined;
   } catch {
-    return null;
+    return undefined;
   }
 };
+
+/** Reads a value, treating unavailable browser persistence as empty. */
+export const readBrowserStorage = (area: BrowserStorageArea, key: string): string | null =>
+  observeBrowserStorage(area, key) ?? null;
 
 /** Writes a value and reports whether browser persistence accepted it. */
 export const writeBrowserStorage = (area: BrowserStorageArea, key: string, value: string): boolean => {

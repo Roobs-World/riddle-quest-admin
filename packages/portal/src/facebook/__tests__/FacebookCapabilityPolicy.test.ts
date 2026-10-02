@@ -1,7 +1,29 @@
 import {describe, expect, test} from "@jest/globals";
-import {parseFacebookAgeCategory, resolveFacebookCapabilityVisibility} from "../FacebookCapabilityPolicy";
+import {gateFacebookSessionCapabilities, parseFacebookAgeCategory, resolveFacebookCapabilityVisibility} from "../FacebookCapabilityPolicy";
+import type {PlatformCapabilities} from "../../platform/types";
 
 describe("Facebook optional capability visibility", () => {
+  test("removes context and matchmaking together when the authenticated server gate is closed", () => {
+    /** SDK capabilities before authenticated server gating. */
+    const capabilities: PlatformCapabilities = {
+      nativeSocial: {currentContext: jest.fn(), chooseContext: jest.fn(), matchPlayer: jest.fn()},
+      matchmaking: {find: jest.fn()},
+      overlay: {renderPlayer: jest.fn()},
+      lifecycle: {onPause: jest.fn()},
+    };
+    /** Capabilities with matchmaking disabled by server configuration. */
+    const disabled = gateFacebookSessionCapabilities(capabilities, {matchmakingEnabled: false, configurationLoaded: true});
+    expect(disabled.nativeSocial).toBeUndefined();
+    expect(disabled.matchmaking).toBeUndefined();
+    expect(disabled.overlay).toBe(capabilities.overlay);
+    expect(disabled.lifecycle).toBe(capabilities.lifecycle);
+    /** Capabilities after configuration loading fails. */
+    const failed = gateFacebookSessionCapabilities(capabilities, {matchmakingEnabled: false, configurationLoaded: false});
+    expect(failed.overlay).toBeUndefined();
+    expect(failed.matchmaking).toBeUndefined();
+    expect(gateFacebookSessionCapabilities(capabilities, {matchmakingEnabled: true, configurationLoaded: true})).toEqual(capabilities);
+    expect(capabilities.matchmaking).toBeDefined();
+  });
   test("parses only an explicit verified 13+ category", () => {
     expect(parseFacebookAgeCategory("13_plus")).toBe("13_plus");
     expect(parseFacebookAgeCategory("unknown")).toBe("unknown");

@@ -1,0 +1,120 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionOutcomeIsolation
+FAIL src/play/race/__tests__/RaceSessionOutcomeIsolation.test.ts
+  ● Race Session privately confirmed result isolation › pins the final clock across canonical repeated outcome delivery
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: null
+    Received: "RaceTo10.ERROR_INVALID_RESPONSE"
+
+      11 |     visible.wallFinishMs += 1;visible.adjustedFinishMs += 1;
+      12 |     h.session.retry();h.respond("raceOutcome", delivery === "canonical" ? canonical : {...visible});
+    > 13 |     expect(h.session.getSnapshot().error).toBe(delivery === "canonical" ? null : "RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      14 |     if (delivery === "matching-public-edit") {h.session.retry();h.respond("raceOutcome", canonical);}
+      15 |     expect(h.session.getSnapshot()).toMatchObject({error: null, outcome: canonical,
+      16 |       run: {wallElapsedMs: canonical.wallFinishMs, adjustedElapsedMs: canonical.adjustedFinishMs}});
+
+      at src/play/race/__tests__/RaceSessionOutcomeIsolation.test.ts:13:43
+
+  ● Race Session privately confirmed result isolation › pins the final clock across matching-public-edit repeated outcome delivery
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "RaceTo10.ERROR_INVALID_RESPONSE"
+    Received: null
+
+      11 |     visible.wallFinishMs += 1;visible.adjustedFinishMs += 1;
+      12 |     h.session.retry();h.respond("raceOutcome", delivery === "canonical" ? canonical : {...visible});
+    > 13 |     expect(h.session.getSnapshot().error).toBe(delivery === "canonical" ? null : "RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      14 |     if (delivery === "matching-public-edit") {h.session.retry();h.respond("raceOutcome", canonical);}
+      15 |     expect(h.session.getSnapshot()).toMatchObject({error: null, outcome: canonical,
+      16 |       run: {wallElapsedMs: canonical.wallFinishMs, adjustedElapsedMs: canonical.adjustedFinishMs}});
+
+      at src/play/race/__tests__/RaceSessionOutcomeIsolation.test.ts:13:43
+
+  ● Race Session privately confirmed result isolation › keeps provider completion callback edits out of the confirmed result baseline
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+    @@ -1,10 +1,10 @@
+      Object {
+    -   "error": null,
+    +   "error": "RaceTo10.ERROR_INVALID_RESPONSE",
+        "outcome": Object {
+          "achievementCoinsAwarded": 0,
+    -     "adjustedFinishMs": 60000,
+    +     "adjustedFinishMs": 60001,
+          "challengeId": undefined,
+          "correctCount": 10,
+          "hintPenaltyMs": 0,
+          "newlyUnlockedAchievementIds": Array [],
+          "opponentAdjustedFinishMs": undefined,
+    @@ -12,8 +12,8 @@
+          "rematchEligible": false,
+          "result": "recorded",
+          "runId": "fake-run-1",
+          "skipPenaltyMs": 0,
+          "totalPenaltyMs": 0,
+    -     "wallFinishMs": 60000,
+    +     "wallFinishMs": 60001,
+        },
+      }
+
+      25 |     const canonical = projectRaceOutcome(h.session.getSnapshot().run!,60000)!;
+      26 |     h.session.retry();h.respond("raceOutcome",canonical);
+    > 27 |     expect(h.session.getSnapshot()).toMatchObject({error:null,outcome:canonical});
+         |                                     ^
+      28 |     expect(h.effects.filter(effect => effect.kind === "outcome")).toHaveLength(1);
+      29 |   });
+      30 |   it.each(["canonical", "matching-public-edit"])("checks publication against confirmed time for %s response", async delivery => {
+
+      at Object.<anonymous> (src/play/race/__tests__/RaceSessionOutcomeIsolation.test.ts:27:37)
+
+  ● Race Session privately confirmed result isolation › checks publication against confirmed time for canonical response
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: null
+    Received: "RaceTo10.ERROR_INVALID_RESPONSE"
+
+      36 |     const publication = {challengeId:"published",preview:{...preview("published"),adjustedTimeToBeatMs:canonical.adjustedFinishMs+(delivery === "canonical" ? 0 : 1)}};
+      37 |     h.respond("racePublish",publication);
+    > 38 |     expect(h.session.getSnapshot().error).toBe(delivery === "canonical" ? null : "RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      39 |     expect(h.effects.filter(effect => effect.kind === "publication")).toHaveLength(delivery === "canonical" ? 1 : 0);
+      40 |     if(delivery === "matching-public-edit") {
+      41 |       h.session.retry();h.respond("racePublish",{...publication,preview:{...publication.preview,adjustedTimeToBeatMs:canonical.adjustedFinishMs}});
+
+      at src/play/race/__tests__/RaceSessionOutcomeIsolation.test.ts:38:43
+
+  ● Race Session privately confirmed result isolation › checks publication against confirmed time for matching-public-edit response
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "RaceTo10.ERROR_INVALID_RESPONSE"
+    Received: null
+
+      36 |     const publication = {challengeId:"published",preview:{...preview("published"),adjustedTimeToBeatMs:canonical.adjustedFinishMs+(delivery === "canonical" ? 0 : 1)}};
+      37 |     h.respond("racePublish",publication);
+    > 38 |     expect(h.session.getSnapshot().error).toBe(delivery === "canonical" ? null : "RaceTo10.ERROR_INVALID_RESPONSE");
+         |                                           ^
+      39 |     expect(h.effects.filter(effect => effect.kind === "publication")).toHaveLength(delivery === "canonical" ? 1 : 0);
+      40 |     if(delivery === "matching-public-edit") {
+      41 |       h.session.retry();h.respond("racePublish",{...publication,preview:{...publication.preview,adjustedTimeToBeatMs:canonical.adjustedFinishMs}});
+
+      at src/play/race/__tests__/RaceSessionOutcomeIsolation.test.ts:38:43
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 1 passed, 6 total
+Snapshots:   0 total
+Time:        0.253 s
+Ran all test suites matching RaceSessionOutcomeIsolation.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionOutcomeIsolation`
+Exit status 1

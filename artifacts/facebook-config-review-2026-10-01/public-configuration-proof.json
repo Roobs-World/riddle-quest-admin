@@ -1,0 +1,20 @@
+{
+  "capturedAt": "2026-10-01T07:51:21.244354+00:00",
+  "readOnlyProviderInspection": true,
+  "source": "Firebase MCP firebase_list_apps(web) and firebase_get_sdk_config",
+  "projectId": "riddle-quest-ec2b2",
+  "appId": "1:329028367192:web:9b535c8edb2639f8b7eb2d",
+  "displayName": "Riddle Quest Facebook",
+  "state": "ACTIVE",
+  "clientAndBackendAppIdsMatch": true,
+  "localNonsecretBackendConfiguration": {
+    "FACEBOOK_APP_ID": "1748953042991569",
+    "FACEBOOK_FIREBASE_APP_ID": "1:329028367192:web:9b535c8edb2639f8b7eb2d",
+    "FACEBOOK_GAME_ORIGINS": "https://www.facebook.com,https://apps.facebook.com,https://apps-1748953042991569.apps.fbsbx.com",
+    "FACEBOOK_DELETION_STATUS_BASE_URL": "https://facebookdatadeletionstatus-h5dplxxwha-uc.a.run.app",
+    "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads"
+  },
+  "apiKeyIncluded": false,
+  "secretsIncluded": false,
+  "deployedConfigurationVerified": false
+}

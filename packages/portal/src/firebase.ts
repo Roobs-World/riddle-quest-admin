@@ -474,6 +474,9 @@ type GetHintOutput = {
 /** Reads lifecycle-aware readiness for public recordings and private reservations. */
 export const getRaceEntry = httpsCallable<{
     /** Incoming challenge. */ challengeId: string;
-    /** Content language. */ locale: RaceLocale}, RaceEntryResponse>(raceFunctions, "getRaceEntry");
+    /** Content language. */ locale: RaceLocale;
+    /** Negotiates the viewer role without changing legacy responses. */ includeViewerRole?: boolean;
+    /** Requests the authenticated recipient's previously accepted run pointer for recovery. */
+    includeExistingAttempt?: boolean}, RaceEntryResponse>(raceFunctions, "getRaceEntry");
 /** Cancels only a creator-owned reservation, preserving reusable public challenges. */
 export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntryResponse>(raceFunctions, "cancelRaceInvite");

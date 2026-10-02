@@ -1,0 +1,2 @@
+$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-paid-draft-checkpoints.json
+Recorded multiplayer:race-paid-draft-checkpoints for jest, facebook, reddit, youtube, netflix, yahoo, gamesnacks in the local dashboard.

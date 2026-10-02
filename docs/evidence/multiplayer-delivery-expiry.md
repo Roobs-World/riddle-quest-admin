@@ -1,0 +1,13 @@
+# Outbox delivery expiry before asynchronous TTL deletion
+
+Normal creator-settlement and owner-performance delivery checked source existence, account deletion and blocking, but did not enforce receipt/source retention clocks. Firestore TTL deletion can lag behind expiry, so an expired yet physically readable source could still authorize downstream inbox, known-rival, achievement, profile and referral work. Guarded administrator replay already rejected expired data; normal trigger and queue recovery needed the same boundary.
+
+Both delivery transactions now acknowledge expired receipts as suppressed before retry/source work. After reading canonical source metadata, they also suppress an explicitly expired source before parsing or writing downstream account effects. Timestamp-less historical sources retain their existing compatibility; no deadline is invented. Existing receipt schema validation, deletion/block checks, canonical-source validation, idempotency and referral handling remain enforced. Duplicate suppressed delivery returns false.
+
+The real Firestore emulator has eight independent regressions: both queues, receipt versus source expiry, and exact-boundary versus after-boundary delivery. All eight failed before the fix while two positive control tests passed. All ten tests now pass. The controls cover delivery just before expiry and historical sources without expiry metadata. Suppression assertions compare full account snapshots and verify empty creator inbox, known-rival and owner-profile projections, plus repeated delivery acknowledgements. Logs are under `artifacts/race-delivery-expiry/`. Backend types and documented-declaration checks pass.
+
+The task retains all 27 verification commands, including the complete backend coverage suite which executes the new expiry cases, earlier client/browser regressions, focused timeout receipt/calibration contracts and seven isolated builds. Full validation and dashboard completion recording are pending; source-digest protection remains unchanged.
+
+The subsequent server review confirms normal delivery and administrator replay share the retention boundary while preserving account deletion, bidirectional blocking and deterministic receipt identities. The larger multiplayer reliability audit remains active.
+
+Jest activation is authorized but publication remains on hold. Firebase Functions deployment is authorized. After successful full validation, only the two delivery triggers and deadline/recovery scheduler need this backend fix. The previously used isolated compiled deployment snapshot avoids the local base environment's reserved Firebase client keys without changing checkout environment files.

@@ -1,3 +1,4 @@
+import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import * as functions from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
@@ -37,7 +38,7 @@ const trustedSessionDate = (value: unknown): Date | undefined => {
 /**
  * Ensures a usable "current" daily challenge document exists for today.
  *
- * @returns Fresh challenge snapshot plus today's UTC date string.
+ * @returns Fresh challenge snapshot plus today's regional date string.
  */
 async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
   /** Stores daily challenge doc. */
@@ -46,7 +47,7 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
   todayDateString: string;
 }> {
   /** Provides today date string behavior. */
-  const todayDateString = new Date().toISOString().split("T")[0];
+  const todayDateString = getDailyDate(locale);
   /** Provides safe locale behavior. */
   const safeLocale = locale || "en";
   /** Provides localized riddle collection behavior. */
@@ -109,7 +110,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       /** Provides resume behavior. */
       const resume = parseSinglePlayerResumeFields(request.data);
       /** Provides today date string behavior. */
-      const todayDateString = new Date().toISOString().slice(0, 10);
+      const todayDateString = getDailyDate(locale);
       if (resume) {
         /** Provides resumed behavior. */
         const resumed = await getIssuedAuthoritativeSession(
@@ -125,6 +126,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
             resumed.challengeDate,
             resumed.isCorrect,
             trustedSessionDate(resumed.terminalAt),
+            new Date(), resumed.locale,
           )
         ) {
           await completeAuthoritativeGame(
@@ -142,6 +144,32 @@ export const getCurrentDailyChallenge = onCallWithSentry(
           request.auth.uid,
           authenticatedUser,
           request.auth.token?.firebase?.sign_in_provider === "anonymous",
+          locale,
+        );
+      }
+
+      /** Provides completion key behavior. */
+      const completionKey = getSinglePlayerCompletionKey("challenge", todayDateString);
+      /** Provides progress behavior. */
+      let progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT, locale);
+      if (
+        !progress.hasCompletedToday &&
+        (await recoverPendingAuthoritativeCompletion(
+          request.auth.uid,
+          "challenge",
+          completionKey,
+          request.auth.token?.firebase?.sign_in_provider === "anonymous",
+        ))
+      ) {
+        authenticatedUser = await getUser(request.auth.uid);
+        if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
+        progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT, locale);
+      }
+      if (progress.hasCompletedToday) {
+        return validateCallableResponse(
+          GetCurrentDailyChallengeResponseSchema,
+          {...progress, error: "Today's daily challenge is already complete."},
+          "getCurrentDailyChallenge",
         );
       }
 
@@ -171,7 +199,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       /** Provides challenge date behavior. */
       let challengeDate: string | undefined = todayDateString;
       if (allData.timestamp && typeof allData.timestamp === "object" && "toDate" in allData.timestamp) {
-        challengeDate = allData.timestamp.toDate().toISOString().split("T")[0];
+        challengeDate = getDailyDate(locale, allData.timestamp.toDate());
       }
       /** Provides canonical challenge date behavior. */
       const canonicalChallengeDate = typeof allData.challengeKey === "string" ? allData.challengeKey : challengeDate;
@@ -184,30 +212,6 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       }
       challengeDate = canonicalChallengeDate;
 
-      /** Provides completion key behavior. */
-      const completionKey = getSinglePlayerCompletionKey("challenge", todayDateString);
-      /** Provides progress behavior. */
-      let progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
-      if (
-        !progress.hasCompletedToday &&
-        (await recoverPendingAuthoritativeCompletion(
-          request.auth.uid,
-          "challenge",
-          completionKey,
-          request.auth.token?.firebase?.sign_in_provider === "anonymous",
-        ))
-      ) {
-        authenticatedUser = await getUser(request.auth.uid);
-        if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
-        progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
-      }
-      if (progress.hasCompletedToday) {
-        return validateCallableResponse(
-          GetCurrentDailyChallengeResponseSchema,
-          {...progress, error: "Today's daily challenge is already complete."},
-          "getCurrentDailyChallenge",
-        );
-      }
       /** Provides riddle id behavior. */
       const riddleId = allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID;
       /** Provides canonical riddle behavior. */
@@ -238,6 +242,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
           boundSession.challengeDate,
           boundSession.isCorrect,
           trustedSessionDate(boundSession.terminalAt),
+          new Date(), boundSession.locale,
         )
       ) {
         await completeAuthoritativeGame(
@@ -250,7 +255,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         authenticatedUser = await getUser(request.auth.uid);
         if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
         /** Provides reconciled progress behavior. */
-        const reconciledProgress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
+        const reconciledProgress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT, locale);
         if (reconciledProgress.hasCompletedToday) {
           return validateCallableResponse(
             GetCurrentDailyChallengeResponseSchema,

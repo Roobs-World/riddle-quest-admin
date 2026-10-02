@@ -11,6 +11,8 @@ export function RaceResultPanel({
   publishing,
   sharing = false,
   sharingRewardCoins,
+  sharingLabel,
+  sharingReadyText,
   onPublish,
   onShare,
   onRematch,
@@ -29,6 +31,10 @@ export function RaceResultPanel({
   sharing?: boolean;
   /** Stores sharing reward coins. */
   sharingRewardCoins?: number;
+  /** Target-owned native share button text. */
+  sharingLabel?: string;
+  /** Target-owned share instructions. */
+  sharingReadyText?: string;
   /** Stores on publish. */
   onPublish: () => void;
   /** Stores on share. */
@@ -75,7 +81,7 @@ export function RaceResultPanel({
           <strong>{formatRaceTime(outcome.adjustedFinishMs)}</strong>
         </span>
       </div>
-      {sharingRewardCoins !== undefined && outcome.publishable ? <p>{tr("RaceTo10.CHALLENGE_READY")}</p> : null}
+      {sharingRewardCoins !== undefined && outcome.publishable ? <p>{sharingReadyText ?? tr("RaceTo10.CHALLENGE_READY")}</p> : null}
       {sharingRewardCoins !== undefined && outcome.publishable && !publication ? (
         <button className="race-primary" onClick={onPublish} disabled={publishing} aria-busy={publishing}>
           {tr("RaceTo10.CREATE_CHALLENGE")}
@@ -83,7 +89,7 @@ export function RaceResultPanel({
       ) : null}
       {sharingRewardCoins !== undefined && publication ? (
         <button className="race-primary" onClick={onShare} disabled={sharing} aria-busy={sharing}>
-          {tr("RaceTo10.SHARE_CHALLENGE", {coins: sharingRewardCoins})}
+          {sharingLabel ?? tr("RaceTo10.SHARE_CHALLENGE", {coins: sharingRewardCoins})}
         </button>
       ) : null}
       {outcome.rematchEligible && run && (

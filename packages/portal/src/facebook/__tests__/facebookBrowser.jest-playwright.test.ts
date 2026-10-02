@@ -1,5 +1,6 @@
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
+import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry} from "./tournaments.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
 
@@ -11,6 +12,8 @@ declare global {
     __facebookEvents: string[];
     /** Stores facebook pause. */
     __facebookPause?: () => void;
+    /** Stored callbacks from Meta's resume event registration. */
+    __facebookResume?: () => void;
     /** Stores riddle quest browser test. */
     __RIDDLE_QUEST_BROWSER_TEST__?: boolean;
   }
@@ -37,9 +40,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
     const path = await import("node:path");
     /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
-    // The canonical artifact deliberately fails age-gated capabilities closed.
-    // This harness owns a separate 13+ fixture so reusing release builds cannot
-    // silently disable the profile-overlay lifecycle under test.
+    // This harness owns a separate explicit 13+ fixture so reusing other release
+    // builds cannot silently disable the platform capabilities under test.
     /** Provides dist directory behavior. */
     const distDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-"));
     execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:facebook"], {
@@ -76,6 +78,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
                 ? "text/javascript"
                 : extension === ".css"
                   ? "text/css"
+                  : extension === ".svg"
+                    ? "image/svg+xml"
                   : "application/octet-stream",
         });
         response.end(body);
@@ -83,7 +87,12 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         response.writeHead(404).end();
       }
     });
-    await new Promise<void>((resolve) => server.listen(4181, "127.0.0.1", resolve));
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+    /** This harness owns its ephemeral port independently of other platform verification. */
+    const address = server.address();
+    if (!address || typeof address === "string") throw new Error("Facebook browser fixture did not bind a TCP port");
+    /** Both provider journeys use the same isolated build origin. */
+    const origin = `http://127.0.0.1:${address.port}`;
     /** Provides browser behavior. */
     const browser = await chromium.launch({headless: true});
     try {
@@ -127,7 +136,15 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           },
           /** Provides on pause behavior. */
           onPause(callback) {
-            window.__facebookPause = callback;
+            /** Previously registered provider callback retained by this fixture. */
+            const previous = window.__facebookPause;
+            window.__facebookPause = () => {previous?.(); callback();};
+          },
+          /** Registers the provider resume callback. */
+          onResume(callback) {
+            /** Previously registered provider callback retained by this fixture. */
+            const previous = window.__facebookResume;
+            window.__facebookResume = () => {previous?.(); callback();};
           },
           player: {
             /** Gets id. */
@@ -156,17 +173,17 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           },
         };
       });
-      await page.goto("http://127.0.0.1:4181/");
+      await page.goto(origin);
       await page.getByRole("alert").getByRole("heading").waitFor({timeout: 15_000});
       expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
       expect(await page.evaluate(() => window.__facebookEvents)).toEqual([
         "initialize",
         "progress:30",
+        "progress:70",
+        "progress:100",
+        "start",
         "player",
         "read:riddleQuestPreferences",
-        "progress:70",
-        "start",
-        "progress:100",
         `signed:${FAILURE_NONCE}`,
         "player",
       ]);
@@ -178,6 +195,10 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       successPage.setDefaultTimeout(5_000);
       /** Provides success requests behavior. */
       const successRequests: string[] = [];
+      /** Cross-device prompt lease state simulated by the authenticated backend boundary. */
+      let notificationAccepted = false;
+      /** Count server-authorized prompt attempts independently of SDK dialogs. */
+      let notificationClaims = 0;
       /** Provides configuration request behavior. */
       let configurationRequest: {
         /** Stores authorization. */
@@ -188,6 +209,22 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         body?: string;
       };
       successPage.on("request", (request) => successRequests.push(request.url()));
+      /** The native share issuer receives authenticated, App Check-protected requests only. */
+      const referralRequests: {
+        /** Firebase authorization captured at the callable boundary. */
+        authorization?: string;
+        /** Custom App Check captured at the callable boundary. */
+        appCheck?: string;
+        /** Exact game-owned request envelope. */
+        body: string;
+      }[] = [];
+      await successPage.route("**/createFacebookReferral", async route => {
+        /** Stores headers for this isolated provider verification. */
+        const headers = await route.request().allHeaders();
+        referralRequests.push({authorization: headers.authorization, appCheck: headers["x-firebase-appcheck"], body: route.request().postData() ?? ""});
+        await route.fulfill({status: 200, contentType: "application/json",
+          body: JSON.stringify({data: {token: "t".repeat(43), expiresAtMs: Date.now() + 60_000}})});
+      });
       await successPage.route("https://connect.facebook.net/en_US/fbinstant.8.0.js", (route) =>
         route.fulfill({status: 200, contentType: "text/javascript", body: "/* injected by browser contract test */"}),
       );
@@ -277,22 +314,34 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           contentType: "application/json",
           body: JSON.stringify({
             data: {
-              interstitialsEnabled: false,
-              notificationsEnabled: false,
+              interstitialsEnabled: true,
+              notificationsEnabled: true,
               commerceEnabled: false,
               rewardedAdsEnabled: false,
-              referralsEnabled: false,
+              referralsEnabled: true,
               matchmakingEnabled: true,
-              tournamentsEnabled: false,
+              tournamentsEnabled: new URL(route.request().frame().url()).searchParams.get("tournaments") !== "off",
               presenceEnabled: false,
               removeInterstitialAds: false,
             },
           }),
         });
       });
+      await successPage.route("**/claimFacebookNotificationPermissionPrompt", route => {
+        notificationClaims += 1;
+        return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({
+          data: notificationAccepted ? {granted: false} : {granted: true, claimedAtMs: Date.now()},
+        })});
+      });
+      await successPage.route("**/acceptFacebookNotificationPermissionPrompt", route => {
+        notificationAccepted = true;
+        return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {accepted: true}})});
+      });
       await successPage.addInitScript(() => {
         window.__facebookEvents = [];
         window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
+        /** Meta fixture controls subscription state independently of game preferences. */
+        let botSubscribed = false;
         window.FBInstant = {
           /** Provides initialize async behavior. */
           async initializeAsync() {
@@ -311,11 +360,42 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             return [
               "overlayViews.createProfilePictureOverlayViewAsync",
               "overlayViews.createProfileNameOverlayViewAsync",
+              "player.canSubscribeBotAsync",
+              "player.isSubscribedBotAsync",
+              "player.subscribeBotAsync",
+              "getInterstitialAdAsync",
+              "shareAsync",
             ];
+          },
+          /** Captures Meta-native sharing without granting currency or switching context. */
+          async shareAsync(payload) {
+            /** Stores previous for this isolated provider verification. */
+            const previous = Reflect.get(window, "__facebookShares") ?? [];
+            Reflect.set(window, "__facebookShares", [...previous, payload]);
+            window.__facebookEvents.push(`share:${payload.intent}`);
+            if (previous.length === 0) throw {code: "USER_INPUT"};
           },
           /** Provides on pause behavior. */
           onPause(callback) {
-            window.__facebookPause = callback;
+            /** Previously registered provider callback retained by this fixture. */
+            const previous = window.__facebookPause;
+            window.__facebookPause = () => {previous?.(); callback();};
+          },
+          /** Registers the provider resume callback. */
+          onResume(callback) {
+            /** Previously registered provider callback retained by this fixture. */
+            const previous = window.__facebookResume;
+            window.__facebookResume = () => {previous?.(); callback();};
+          },
+          /** Captures the actual configured Meta result placement. */
+          async getInterstitialAdAsync(placementId) {
+            window.__facebookEvents.push(`ads:interstitial:${placementId}`);
+            return {
+              /** Models Meta's required load before display. */
+              async loadAsync() {window.__facebookEvents.push("ads:load");},
+              /** Models a completed provider impression. */
+              async showAsync() {window.__facebookEvents.push("ads:show");},
+            };
           },
           overlayViews: {
             /** Creates profile picture overlay view async. */
@@ -331,7 +411,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
                   window.__facebookEvents.push("overlay:picture:dismiss");
                 },
                 /** Provides destroy overlay view behavior. */
-                async destroyOverlayView() {
+                async destroyAsync() {
                   window.__facebookEvents.push("overlay:picture:destroy");
                 },
               };
@@ -349,13 +429,19 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
                   window.__facebookEvents.push("overlay:name:dismiss");
                 },
                 /** Provides destroy overlay view behavior. */
-                async destroyOverlayView() {
+                async destroyAsync() {
                   window.__facebookEvents.push("overlay:name:destroy");
                 },
               };
             },
           },
           player: {
+            /** Checks eligibility through Meta rather than another provider. */
+            async canSubscribeBotAsync() {window.__facebookEvents.push("notifications:eligible"); return true;},
+            /** Returns current provider subscription consent. */
+            async isSubscribedBotAsync() {return botSubscribed;},
+            /** Simulates accepting Meta's own subscription UI. */
+            async subscribeBotAsync() {window.__facebookEvents.push("notifications:subscribe"); botSubscribed = true;},
             /** Gets id. */
             getID() {
               window.__facebookEvents.push("player");
@@ -393,7 +479,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         };
       });
       await installRaceContextDialogs(successPage);
-      await successPage.goto("http://127.0.0.1:4181/?harness=race");
+      await installTournamentPresentation(successPage);
+      await successPage.goto(`${origin}/?harness=race`);
       try {
         await successPage.waitForFunction(
           () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
@@ -481,9 +568,6 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           ru: '"Noto Sans"',
         },
       });
-      await successPage.evaluate(() =>
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen"),
-      );
       /** Provides onboarding action behavior. */
       const onboardingAction = successPage.locator(".onboarding-card .play-primary");
       await onboardingAction.waitFor({timeout: 5_000});
@@ -494,6 +578,16 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await onboardingAction.waitFor({state: "detached", timeout: 5_000});
       expect(await successPage.locator(".onboarding-card").count()).toBe(0);
       expect(await successPage.locator(".onboarding-registration-actions").count()).toBe(0);
+      // A provider with disabled checkout must never advertise purchasing in its tour.
+      await successPage.locator('.tooltip-backdrop[data-tooltip-id="gameHint"]').waitFor();
+      expect(await successPage.locator('[data-tooltip="gameCoins"]').count()).toBe(0);
+      for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
+        /** Current tour step whose acknowledgement advances the provider-safe guidance. */
+        const tooltip = successPage.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
+        await tooltip.waitFor();
+        await tooltip.locator("button").click();
+      }
+      await successPage.locator(".tooltip-backdrop").waitFor({state: "detached"});
       try {
         await successPage.locator(".multiplayer-navigation-action").click({timeout: 5_000});
         await successPage.locator(".race-hub-tabs").waitFor({timeout: 5_000});
@@ -540,8 +634,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       }
       /** Provides facebook hub tabs behavior. */
       const facebookHubTabs = successPage.getByRole("tab");
-      expect(await facebookHubTabs.count()).toBe(2);
-      expect(await successPage.getByRole("tab", {name: /^tournois$/i}).count()).toBe(0);
+      expect(await facebookHubTabs.count()).toBe(3);
+      expect(await successPage.getByRole("tab", {name: /^tournois$/i}).count()).toBe(1);
       await facebookHubTabs.first().focus();
       await facebookHubTabs.first().press("ArrowRight");
       expect(await facebookHubTabs.nth(1).getAttribute("aria-selected")).toBe("true");
@@ -574,6 +668,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await successPage.evaluate(() => window.__facebookEvents.filter((event) => event.endsWith(":destroy")).sort()),
       ).toEqual(["overlay:name:destroy", "overlay:picture:destroy"]);
       await verifyRaceContextDialogs(successPage);
+      await verifyTournamentPresentation(successPage);
       /** Provides mobile hub box behavior. */
       const mobileHubBox = await successPage.locator(".race-hub-tabs").boundingBox();
       expect(mobileHubBox).not.toBeNull();
@@ -587,8 +682,46 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(desktopHubBox!.x + desktopHubBox!.width).toBeLessThanOrEqual(1280);
       await successPage.locator(".race-close").click();
       await verifyImmediateSoloFeedback(successPage, "Facebook");
+      expect(notificationClaims).toBe(0);
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("ads:show"))).toBe(false);
       await successPage.evaluate(() => window.__facebookPause?.());
       await successPage.waitForFunction(() => window.__facebookEvents.includes("flush"));
+      await successPage.locator(".game-app.paused").waitFor();
+      expect(await successPage.evaluate(() => document.visibilityState)).toBe("visible");
+      await successPage.evaluate(() => window.__facebookResume?.());
+      await successPage.locator(".game-app.paused").waitFor({state: "detached"});
+      // The prior feedback check left the next draft at P. Complete the fixture's
+      // PIANO answer through the UI so only an authoritative win can cause a prompt.
+      for (const letter of "IANO") {
+        await successPage.locator(".keyboard").getByRole("button", {name: new RegExp(`^${letter}$`)}).click();
+      }
+      /** Waits for the authenticated acceptance boundary, not only the SDK dialog. */
+      const notificationAcceptance = successPage.waitForResponse("**/acceptFacebookNotificationPermissionPrompt");
+      await successPage.locator(".submit-action").click();
+      await successPage.waitForFunction(() => window.__facebookEvents.includes("notifications:subscribe"));
+      await notificationAcceptance;
+      expect(notificationAccepted).toBe(true);
+      expect(notificationClaims).toBe(1);
+      expect(await successPage.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length)).toBe(1);
+      await successPage.waitForFunction(() => window.__facebookEvents.includes("ads:show"));
+      /** The post-result ad follows subscription consent, uses Meta's configured ID, and loads before showing. */
+      const providerEvents = await successPage.evaluate(() => window.__facebookEvents);
+      expect(providerEvents).toContain("ads:interstitial:1748953042991569_1765481644672042");
+      expect(providerEvents.indexOf("notifications:subscribe")).toBeLessThan(providerEvents.indexOf("ads:load"));
+      expect(providerEvents.indexOf("ads:load")).toBeLessThan(providerEvents.indexOf("ads:show"));
+      /** Dismissing Meta sharing leaves the result available for a later explicit retry. */
+      const resultShare = successPage.locator(".fanfare-content .play-secondary");
+      await resultShare.click();
+      await successPage.waitForFunction(() => Reflect.get(window, "__facebookShares")?.length === 1);
+      await resultShare.click();
+      await successPage.waitForFunction(() => Reflect.get(window, "__facebookShares")?.length === 2);
+      expect(await successPage.evaluate(() => Reflect.get(window, "__facebookShares").map((payload: import("../fbinstant").FacebookSharePayload) =>
+        ({intent: payload.intent, switchContext: payload.switchContext, data: payload.data, png: payload.image.startsWith("data:image/png;base64,")}))))
+        .toEqual([{intent: "SHARE", switchContext: false, data: {gameMode: "classic", referralToken: "t".repeat(43)}, png: true},
+          {intent: "SHARE", switchContext: false, data: {gameMode: "classic", referralToken: "t".repeat(43)}, png: true}]);
+      expect(referralRequests).toEqual(Array.from({length: 2}, () => ({authorization: `Bearer ${firebaseIdToken}`, appCheck: appCheckToken,
+        body: JSON.stringify({data: {}})})));
       await successPage.reload();
       await successPage.waitForFunction(
         () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
@@ -611,6 +744,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         'riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest', 'seen'));
       await successPage.locator('.game-bottom-navigation button').last().click();
       await successPage.locator('.profile-page').waitFor();
+      await successPage.locator('.profile-invite-button').click();
+      await successPage.waitForFunction(() => window.__facebookEvents.includes("share:INVITE"));
+      expect(await successPage.locator('.profile-invite-button').innerText()).not.toMatch(/100|Jest/);
       expect(await successPage.locator('.profile-avatar-input').count()).toBe(0);
       await successPage.locator('.profile-identity .play-text-button').click();
       await successPage.locator('.username-form input').fill('FacebookTester');
@@ -620,6 +756,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-delete-dialog .profile-delete-account-button').click();
       await successPage.locator('.profile-page').waitFor({state: 'detached'});
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
+      await verifyTournamentEntry(successPage, origin);
     } finally {
       await browser.close();
       try {

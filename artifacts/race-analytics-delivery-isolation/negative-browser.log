@@ -1,0 +1,32 @@
+Analytics delivery isolation passed: sync at 1280px.
+Analytics delivery isolation passed: sync at 390px.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Telemetry failure must not escape into browser errors
++ actual - expected
+
++ [
++   'analytics unavailable',
++   'analytics unavailable',
++   'analytics unavailable'
++ ]
+- []
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-analytics-delivery-browser.mjs:63:68
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'analytics unavailable',
+    'analytics unavailable',
+    'analytics unavailable'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

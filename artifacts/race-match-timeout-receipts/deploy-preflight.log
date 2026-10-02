@@ -1,0 +1,2 @@
+$ node scripts/validate-deploy-env.js
+Validated Firebase deployment environment: /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/.env.riddle-quest-ec2b2

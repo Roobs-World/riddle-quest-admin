@@ -1,5 +1,6 @@
 import type {AdsCapability, PlatformResult} from "../platform/types";
 import type {FacebookInstantSdk} from "./fbinstant";
+import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 import {
   canShowFacebookInterstitial,
   createFacebookInterstitialState,
@@ -40,16 +41,19 @@ export function createFacebookAdsCapability({
   const normalizedPlacement = placementId.trim();
   /** Provides normalized rewarded placement behavior. */
   const normalizedRewardedPlacement = rewardedPlacementId.trim();
+  /** Each ad format must be supported by this host, even if both SDK methods exist. */
+  const supportedApis = new Set(sdk.getSupportedAPIs());
   /** Provides interstitial available behavior. */
   const interstitialAvailable = Boolean(
-    normalizedPlacement && normalizedPlacement.length <= 256 && sdk.getInterstitialAdAsync,
+    normalizedPlacement && normalizedPlacement.length <= 256 &&
+      supportedApis.has("getInterstitialAdAsync") && typeof sdk.getInterstitialAdAsync === "function",
   );
   /** Provides rewarded available behavior. */
   const rewardedAvailable = Boolean(
     rewardedEnabled &&
       normalizedRewardedPlacement &&
       normalizedRewardedPlacement.length <= 256 &&
-      sdk.getRewardedVideoAsync,
+      supportedApis.has("getRewardedVideoAsync") && typeof sdk.getRewardedVideoAsync === "function",
   );
   if (!interstitialAvailable && !rewardedAvailable) return undefined;
   /** Provides state behavior. */
@@ -62,6 +66,7 @@ export function createFacebookAdsCapability({
   let interstitialsDisabled = false;
 
   return {
+    rewardedAvailable,
     /** Provides show interstitial behavior. */
     async showInterstitial(placement) {
       /** Starts ed at ms. */
@@ -75,6 +80,7 @@ export function createFacebookAdsCapability({
         interstitialsDisabled ||
         !interstitialAvailable ||
         showingInterstitial ||
+        showingRewarded ||
         placement !== "result" ||
         !canShowFacebookInterstitial(state, "result", startedAtMs)
       ) {
@@ -83,56 +89,59 @@ export function createFacebookAdsCapability({
       showingInterstitial = true;
       /** Provides impression displayed behavior. */
       let impressionDisplayed = false;
-      try {
-        /** Provides ad behavior. */
-        const ad = await sdk.getInterstitialAdAsync!(normalizedPlacement);
-        await ad.loadAsync();
-        await ad.showAsync();
-        impressionDisplayed = true;
-        /** Completes d at ms. */
-        const completedAtMs = now();
-        if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
-          throw new Error("facebook-interstitial-clock-invalid");
+      return runFacebookSdkDialog(sdk, async () => {
+        try {
+          /** Provides ad behavior. */
+          const ad = await sdk.getInterstitialAdAsync!(normalizedPlacement);
+          await ad.loadAsync();
+          await ad.showAsync();
+          impressionDisplayed = true;
+          /** Completes d at ms. */
+          const completedAtMs = now();
+          if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
+            throw new Error("facebook-interstitial-clock-invalid");
+          }
+          state = recordFacebookInterstitialShown(state, completedAtMs);
+          return {status: "success", value: undefined};
+        } catch (error) {
+          // Meta may have displayed the impression even when local bookkeeping became unsafe.
+          // Suppress the rest of the session instead of risking a frequency-policy violation.
+          if (impressionDisplayed) interstitialsDisabled = true;
+          return failure(error);
         }
-        state = recordFacebookInterstitialShown(state, completedAtMs);
-        return {status: "success", value: undefined};
-      } catch (error) {
-        // Meta may have displayed the impression even when local bookkeeping became unsafe.
-        // Suppress the rest of the session instead of risking a frequency-policy violation.
-        if (impressionDisplayed) interstitialsDisabled = true;
-        return failure(error);
-      } finally {
-        showingInterstitial = false;
-      }
+      }).finally(() => {showingInterstitial = false;});
     },
     /** Provides show rewarded behavior. */
     async showRewarded(placement) {
-      if (!rewardedAvailable || showingRewarded || placement !== "continue") {
+      if (!rewardedAvailable || showingRewarded || showingInterstitial || placement !== "continue") {
         return {status: "unavailable", message: "facebook-rewarded-unavailable"};
       }
       showingRewarded = true;
-      try {
-        /** Provides started at ms behavior. */
-        const startedAtMs = now();
-        if (!Number.isSafeInteger(startedAtMs) || startedAtMs < 0) {
-          return {status: "unavailable", message: "facebook-rewarded-clock-invalid"};
+      return runFacebookSdkDialog(sdk, async () => {
+        try {
+          /** Provides started at ms behavior. */
+          const startedAtMs = now();
+          if (!Number.isSafeInteger(startedAtMs) || startedAtMs < 0) {
+            return {status: "unavailable", message: "facebook-rewarded-clock-invalid"};
+          }
+          /** Provides ad behavior. */
+          const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
+          await ad.loadAsync();
+          await ad.showAsync();
+          /** Provides completed at ms behavior. */
+          const completedAtMs = now();
+          if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
+            throw new Error("facebook-rewarded-clock-invalid");
+          }
+          state = recordFacebookRewardedShown(state, completedAtMs);
+          return {status: "success", value: undefined};
+        } catch (error) {
+          if (typeof error === "object" && error !== null && "code" in error && error.code === "USER_INPUT") {
+            return {status: "cancelled"};
+          }
+          return failure(error);
         }
-        /** Provides ad behavior. */
-        const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
-        await ad.loadAsync();
-        await ad.showAsync();
-        /** Provides completed at ms behavior. */
-        const completedAtMs = now();
-        if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
-          throw new Error("facebook-rewarded-clock-invalid");
-        }
-        state = recordFacebookRewardedShown(state, completedAtMs);
-        return {status: "success", value: undefined};
-      } catch (error) {
-        return failure(error);
-      } finally {
-        showingRewarded = false;
-      }
+      }).finally(() => {showingRewarded = false;});
     },
   };
 }

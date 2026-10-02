@@ -1,5 +1,6 @@
 {
   "LossModal": {
+    "VIDEO_EXTRA_GO_BUTTON": "Tonton video untuk mendapatkan satu percobaan tambahan",
     "COIN_EXTRA_GO_BUTTON": "{coins} Koin untuk Kesempatan Ekstra",
     "EXTRA_GO_PROMPT": "Kesempatan habis. Dapatkan satu kesempatan ekstra atau lewati teka-teki ini.",
     "OPEN_SHOP_BUTTON": "Buka Toko",

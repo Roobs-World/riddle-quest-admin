@@ -8,6 +8,8 @@ import {onRequestWithSentry} from "../shared/sentryHandlers";
 import {facebookFirebaseUid, MAX_FACEBOOK_ACCOUNT_GENERATION, verifyFacebookSignedPlayer} from "./facebookSecurity";
 import {createReservedFacebookUser} from "./facebookUser";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
+import {FACEBOOK_NONCE_COLLECTION as NONCE_COLLECTION,
+  FACEBOOK_NONCE_TIMESTAMP_MAX_MS, createFacebookIdentityNonceRecord, readFacebookIdentityNonceRecord} from "./facebookIdentityNonce";
 import {
   acceptFacebookRequest,
   consumeFacebookRequestQuota,
@@ -29,12 +31,8 @@ const facebookAppSecret = defineSecret("FACEBOOK_APP_SECRET");
 const facebookUidSecret = defineSecret("FACEBOOK_UID_SECRET");
 /** Provides facebook http options behavior. */
 const facebookHttpOptions = {secrets: [facebookAppSecret, facebookUidSecret], invoker: "public" as const};
-/** Defines the nonce collection value. */
-const NONCE_COLLECTION = "facebookIdentityNonces";
 /** Defines the identity collection value. */
 const IDENTITY_COLLECTION = "providerIdentities";
-/** Defines the nonce ttl ms value. */
-const NONCE_TTL_MS = 5 * 60 * 1_000;
 /** Defines the app check ttl ms value. */
 const APP_CHECK_TTL_MS = 60 * 60 * 1_000;
 
@@ -195,16 +193,25 @@ export const consumeFacebookIdentityNonce = async (
   playerId: string,
   issuedAt: number,
   db: FirebaseFirestore.Firestore = admin.firestore(),
-  now = Date.now(),
+  now: number | (() => number) = Date.now,
 ): Promise<boolean> => {
+  /** Fresh server time is bounded after every awaited storage boundary; tests may inject a fixed clock. */
+  const readNow = (): number | undefined => {
+    try {
+      /** A stalled read/commit cannot reuse the request's earlier acceptance time. */
+      const value = typeof now === "function" ? now() : now;
+      return isSafeNonNegativeInteger(value) && value <= FACEBOOK_NONCE_TIMESTAMP_MAX_MS ? value : undefined;
+    } catch {return undefined;}
+  };
+  /** Syntax/clock failures stay before all nonce database reads. */
+  const startedAtMs = readNow();
   if (
     !nonce ||
     Buffer.byteLength(nonce, "utf8") > 256 ||
     !playerId ||
     playerId.length > 256 ||
     !/^[A-Za-z0-9_-]+$/.test(playerId) ||
-    !isSafeNonNegativeInteger(now) ||
-    now > Number.MAX_SAFE_INTEGER - NONCE_TTL_MS ||
+    startedAtMs === undefined ||
     !isSafeNonNegativeInteger(issuedAt) ||
     issuedAt > Math.floor(Number.MAX_SAFE_INTEGER / 1_000)
   )
@@ -213,33 +220,44 @@ export const consumeFacebookIdentityNonce = async (
   const issuedAtMs = issuedAt * 1_000;
   /** Provides ref behavior. */
   const ref = db.collection(NONCE_COLLECTION).doc(nonceId(nonce));
-  return db.runTransaction(async (transaction) => {
+  /** Only the successful transaction attempt supplies its commit acceptance window. */
+  let acceptedAtMs: number | undefined;
+  /** Original expiry is never extended to cover storage latency. */
+  let acceptedDeadlineMs: number | undefined;
+  /** A committed nonce may be spent even when delayed completion makes authentication fail closed. */
+  const accepted = await db.runTransaction(async (transaction) => {
     /** Provides snapshot behavior. */
     const snapshot = await transaction.get(ref);
     /** Provides data behavior. */
-    const data = snapshot.data();
+    let data;
+    try {data = readFacebookIdentityNonceRecord(snapshot.data());} catch {return false;}
     /** Creates d at ms. */
     const createdAtMs = data?.createdAtMs;
     /** Provides expires at ms behavior. */
     const expiresAtMs = data?.expiresAtMs;
+    /** Re-evaluate the server clock after the authoritative read and on every transaction retry. */
+    const currentNow = readNow();
     if (
-      !snapshot.exists ||
-      data?.consumedAtMs !== null ||
-      !isSafeNonNegativeInteger(createdAtMs) ||
-      !isSafeNonNegativeInteger(expiresAtMs) ||
-      createdAtMs > Number.MAX_SAFE_INTEGER - NONCE_TTL_MS ||
-      expiresAtMs !== createdAtMs + NONCE_TTL_MS ||
-      expiresAtMs <= now ||
+      data.consumedAtMs !== null ||
+      currentNow === undefined || currentNow < startedAtMs ||
+      currentNow < createdAtMs ||
+      expiresAtMs <= currentNow ||
       issuedAtMs < createdAtMs - 60_000 ||
       issuedAtMs > expiresAtMs
     )
       return false;
     transaction.update(ref, {
-      consumedAtMs: now,
+      consumedAtMs: currentNow,
       playerIdHash: createHash("sha256").update(playerId).digest("hex"),
     });
+    acceptedAtMs = currentNow;
+    acceptedDeadlineMs = expiresAtMs;
     return true;
   });
+  if (!accepted || acceptedAtMs === undefined || acceptedDeadlineMs === undefined) return false;
+  /** An expired or regressed clock after commit cannot authorize a custom token. */
+  const completedAtMs = readNow();
+  return completedAtMs !== undefined && completedAtMs >= acceptedAtMs && completedAtMs < acceptedDeadlineMs;
 };
 
 /** Provides reject behavior. */
@@ -272,16 +290,14 @@ export const issueFacebookIdentityNonce = onRequestWithSentry(
       const nonce = randomBytes(32).toString("base64url");
       /** Creates d at ms. */
       const createdAtMs = Date.now();
+      /** Shared nonce policy binds physical TTL to the same logical five-minute deadline. */
+      const record = createFacebookIdentityNonceRecord(createdAtMs);
       await admin
         .firestore()
         .collection(NONCE_COLLECTION)
         .doc(nonceId(nonce))
-        .create({
-          createdAtMs,
-          expiresAtMs: createdAtMs + NONCE_TTL_MS,
-          consumedAtMs: null,
-        });
-      response.json({nonce, expiresAtMs: createdAtMs + NONCE_TTL_MS});
+        .create(record);
+      response.json({nonce, expiresAtMs: record.expiresAtMs});
     } catch (error) {
       await reject("issueFacebookIdentityNonce", response, error);
     }

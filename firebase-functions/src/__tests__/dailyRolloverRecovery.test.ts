@@ -38,9 +38,22 @@ describe("Daily rollover binding recovery", () => {
     );
   });
 
-  it("does no recovery work outside the narrow rollover window", async () => {
+  it("recovers within London’s summer rollover window", async () => {
+    jest.setSystemTime(new Date("2026-08-11T23:05:00Z"));
+    await expect(reconcilePreviousDailyBinding("player-1", initialUser, false, "en")).resolves.toBe(refreshedUser);
+    expect(mockRecoverPendingCompletion).toHaveBeenCalledWith("player-1", "challenge", "challenge:2026-08-11", false, new Date("2026-08-11T23:05:00Z"));
+  });
+
+  it("keeps an English pending win recoverable after switching to German at London midnight", async () => {
+    jest.setSystemTime(new Date("2026-08-11T23:05:00Z"));
+    await expect(reconcilePreviousDailyBinding("player-1", initialUser, false, "de")).resolves.toBe(refreshedUser);
+    expect(mockRecoverPendingCompletion).toHaveBeenCalledWith("player-1", "challenge", "challenge:2026-08-11", false, new Date("2026-08-11T23:05:00Z"));
+  });
+
+  it("does not grant a rollover completion when the saved authority rejects it", async () => {
     jest.setSystemTime(new Date("2026-08-12T00:16:00.000Z"));
+    mockRecoverPendingCompletion.mockResolvedValue(false);
     await expect(reconcilePreviousDailyBinding("player-1", initialUser, false)).resolves.toBe(initialUser);
-    expect(mockRecoverPendingCompletion).not.toHaveBeenCalled();
+    expect(mockGetUser).not.toHaveBeenCalled();
   });
 });

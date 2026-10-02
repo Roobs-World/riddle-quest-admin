@@ -34,7 +34,7 @@ const harness = () => {
     /** Controlled request owned by this invocation. */
     const read = delivery(); reads.push(read); return read.promise;
   });
-  /** Record operations must never be invoked by optional reads or recovery. */
+  /** Reads alone must never invent a completed run to record. */
   const record = jest.fn(async () => {throw new Error("unexpected-record");});
   /** Module follows the same timer seam as the competitive session. */
   const views = new RaceProviderViews({reportError: error => errors.push(error), clock: {
@@ -57,6 +57,34 @@ const recorded = (): RecordFacebookTournamentRunResponse => ({tournamentId: "boa
   adjustedTimeMs: 10000, completedAtMs: 2000, improved: true, sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false});
 
 describe("owned multiplayer provider views", () => {
+  it("preserves a newer account installed by an entry cleanup notification", async () => {
+    /** Observable cleanup may synchronously replace authentication before the outer entry returns. */
+    const h = harness();
+    /** Recording adapters expose which account actually owns subsequent effects. */
+    const oldRecord = jest.fn(async () => recorded()), newRecord = jest.fn(async () => recorded());
+    /** The replacement language must reach reads as well as writes. */
+    const newList = jest.fn(async () => ({...board(), locale: "ar" as const}));
+    /** Replace exactly once during the old entry's empty-state notification. */
+    let armed = true;
+    h.views.subscribe(() => {if (armed) {armed = false; h.views.enter({locale: "ar", tournaments: {list: newList, record: newRecord}});}});
+    h.views.enter({locale: "en", tournaments: {list: h.list, record: oldRecord}});
+    h.views.record("run-1"); h.views.selectStage("tournaments"); await settle();
+    expect(oldRecord).not.toHaveBeenCalled(); expect(h.list).not.toHaveBeenCalled();
+    expect(newRecord).toHaveBeenCalledWith("run-1", "ar"); expect(newList).toHaveBeenCalledWith("ar");
+    expect(h.views.getSnapshot().tournament?.locale).toBe("ar"); h.views.dispose(); expect(h.timers.size).toBe(0);
+  });
+  it("respects disposal requested by an entry cleanup notification", async () => {
+    /** A host teardown notification must prevent an older requested entry from reopening adapters. */
+    const h = harness();
+    /** Dispose once to avoid recursive cleanup notifications. */
+    let armed = true;
+    h.views.subscribe(() => {if (armed) {armed = false; h.views.dispose();}});
+    h.views.enter({locale: "en", ...h.adapters});
+    h.views.record("run-1"); h.views.selectStage("tournaments"); await settle();
+    expect(h.record).not.toHaveBeenCalled(); expect(h.list).not.toHaveBeenCalled();
+    expect(h.timers.size).toBe(0); expect(h.views.getSnapshot().tournamentLoading).toBe(false);
+  });
+
   it("refreshes a changed context and ignores the previous context's pending standings", async () => {
     /** Cache and delayed reads both belong to the old context until selection is confirmed. */
     const h = harness(); h.views.selectStage("inbox"); h.reads[0].resolve(board(9)); await settle();
@@ -217,5 +245,153 @@ describe("owned multiplayer provider views", () => {
     const h = harness(); h.views.enter({locale: "en"}); h.views.selectStage("tournaments"); h.views.selectStage("inbox");
     h.views.enter({locale: "en", ...h.adapters}); h.views.selectStage("racing");
     h.views.refresh("tournaments"); expect(h.list).not.toHaveBeenCalled(); expect(h.timers.size).toBe(0);
+  });
+});
+
+/** Failed writes recover through visible reads without changing competitive authority. */
+describe("provider completion recovery", () => {
+  it.each(["tournaments", "inbox"] as const)("retries a failed %s record and replaces a pre-write read", async stage => {
+    /** The first write fails; the recovery write remains pending while the view reads. */
+    const h = harness();
+    /** Explicit completion of the recovered write. */
+    let resolve!: (value: RecordFacebookTournamentRunResponse) => void;
+    /** Controlled recovered write can finish after the first view read starts. */
+    const pending = new Promise<RecordFacebookTournamentRunResponse>(yes => {resolve = yes;});
+    /** Each target has an independent recording lifetime. */
+    const record = jest.fn(() => pending), other = jest.fn(async () => recorded());
+    record.mockImplementationOnce(() => Promise.reject(new Error("offline")));
+    h.views.enter({locale: "en", tournaments: {list: h.list, record: stage === "tournaments" ? record : other},
+      contextBoard: {list: h.list, record: stage === "inbox" ? record : other}});
+    h.views.record("run-1"); await settle(); h.views.selectStage(stage);
+    expect(record).toHaveBeenCalledTimes(2); expect(other).toHaveBeenCalledTimes(1);
+    h.views.refresh(stage); expect(record).toHaveBeenCalledTimes(2);
+    resolve(recorded()); await settle(); expect(h.list).toHaveBeenCalledTimes(2);
+    h.reads[0].resolve(board(9)); await settle();
+    expect(h.views.getSnapshot()[stage === "tournaments" ? "tournament" : "contextBoard"]).toBeNull();
+    h.reads[1].resolve(board(1)); await settle();
+    expect(h.views.getSnapshot()[stage === "tournaments" ? "tournament" : "contextBoard"]).toEqual(board(1));
+    h.views.refresh(stage); expect(record).toHaveBeenCalledTimes(2); expect(other).toHaveBeenCalledTimes(1);
+    expect(h.errors).toEqual([]);
+  });
+  it("does not retry a failed record for a context that has since changed", async () => {
+    /** Provider selection may change which context would receive a newly submitted run. */
+    const h = harness(); h.views.record("run-1"); await settle(); h.views.contextChanged();
+    h.views.selectStage("inbox"); await settle(); expect(h.record).toHaveBeenCalledTimes(2);
+  });
+  it("does not retain failed delivery retries across account replacement", async () => {
+    /** Reused adapters do not imply the same player ownership. */
+    const h = harness(); h.views.record("run-1"); await settle();
+    h.views.enter({locale: "en", ...h.adapters}); h.views.selectStage("tournaments"); await settle();
+    expect(h.record).toHaveBeenCalledTimes(2);
+  });
+});
+
+/** Retry routing follows provider identity rather than whichever screen happens to be visible. */
+describe("provider record retry ownership", () => {
+  it("retains a successful write guard when optional cache notification throws", async () => {
+    /** Rendering failure cannot turn confirmed provider delivery into another write. */
+    const h = harness();
+    /** Successful provider receipt is independent of presentation callbacks. */
+    const record = jest.fn(async () => recorded());
+    h.views.enter({locale: "en", tournaments: {list: h.list, record}});
+    /** A failing optional subscriber runs after the native delivery resolves. */
+    const unsubscribe = h.views.subscribe(() => {throw new Error("presentation-unavailable");});
+    h.views.record("run-1"); await settle(); await settle(); unsubscribe();
+    h.views.record("run-1"); h.views.selectStage("tournaments"); await settle();
+    expect(record).toHaveBeenCalledTimes(1); expect(h.errors).toEqual([]);
+  });
+
+  it("retries only the selected failed adapter, including synchronous rejection", async () => {
+    /** Both writes fail independently without a race mutation or presentation error. */
+    const h = harness();
+    /** Native adapters can reject before returning a promise. */
+    const tournament = jest.fn(async () => recorded()), context = jest.fn(async () => recorded());
+    tournament.mockImplementationOnce(() => {throw new Error("sync-offline");});
+    context.mockRejectedValueOnce(new Error("offline"));
+    h.views.enter({locale: "en", tournaments: {list: h.list, record: tournament}, contextBoard: {list: h.list, record: context}});
+    h.views.record("run-1"); await settle(); h.views.selectStage("tournaments"); await settle();
+    expect(tournament).toHaveBeenCalledTimes(2); expect(context).toHaveBeenCalledTimes(1);
+    h.views.selectStage("inbox"); await settle();
+    expect(tournament).toHaveBeenCalledTimes(2); expect(context).toHaveBeenCalledTimes(2);
+    expect(h.errors).toEqual([]);
+  });
+  it.each(["success", "failure"])("ignores old context recording %s after a room change", async ending => {
+    /** An in-flight record is bound to the context selected at submission. */
+    const h = harness();
+    /** Native completion is released after context selection changes. */
+    let resolve!: (value: RecordFacebookTournamentRunResponse) => void, reject!: (error: Error) => void;
+    /** Controlled old room write cannot authorize a retry in a new room. */
+    const pending = new Promise<RecordFacebookTournamentRunResponse>((yes, no) => {resolve = yes; reject = no;});
+    /** One context record remains held through the switch. */
+    const record = jest.fn(() => pending);
+    h.views.enter({locale: "en", contextBoard: {list: h.list, record}}); h.views.record("run-1");
+    h.views.selectStage("inbox"); h.views.contextChanged();
+    h.reads[1].resolve(board(2)); await settle();
+    if (ending === "success") resolve(recorded()); else reject(new Error("old-room-offline"));
+    await settle(); expect(h.views.getSnapshot().contextBoard).toEqual(board(2));
+    h.views.refresh("inbox"); expect(record).toHaveBeenCalledTimes(1);
+    expect(h.list).toHaveBeenCalledTimes(3); expect(h.errors).toEqual([]);
+  });
+});
+
+/** Lost native replies must not permanently suppress completion delivery. */
+describe("provider record delivery deadlines", () => {
+  it.each(["tournaments", "inbox"] as const)("releases a stalled %s write at the exact budget for an explicit retry", async stage => {
+    /** A never-returning provider call models a dropped reply after possible server commit. */
+    const h = harness();
+    /** Only the first write loses its reply. */
+    const record = jest.fn(async () => recorded()); record.mockImplementationOnce(() => new Promise(() => {}));
+    h.views.enter({locale: "en", [stage === "tournaments" ? "tournaments" : "contextBoard"]: {list: h.list, record}});
+    h.views.record("run-1"); h.advance(29999); h.views.record("run-1");
+    expect(record).toHaveBeenCalledTimes(1); expect(h.timers.size).toBe(1);
+    h.advance(1); expect(record).toHaveBeenCalledTimes(1); expect(h.timers.size).toBe(0);
+    h.views.selectStage(stage); await settle(); expect(record).toHaveBeenCalledTimes(2);
+    h.views.record("run-1"); expect(record).toHaveBeenCalledTimes(2);
+    expect(h.errors).toEqual([]); h.views.dispose(); expect(h.timers.size).toBe(0);
+  });
+  it.each(["success", "failure"])("ignores the old %s after a stalled write is replaced", async ending => {
+    /** Distinct receipts protect the new write even when run identifiers match. */
+    const h = harness();
+    /** Late response from the expired first delivery. */
+    let resolve!: (value: RecordFacebookTournamentRunResponse) => void, reject!: (error: Error) => void;
+    /** The first delivery remains observable after its budget expires. */
+    const old = new Promise<RecordFacebookTournamentRunResponse>((yes, no) => {resolve = yes; reject = no;});
+    /** Successful replacement remains held while the old write settles. */
+    let finish!: (value: RecordFacebookTournamentRunResponse) => void;
+    /** Replacement write owns a separate receipt and deadline. */
+    const current = new Promise<RecordFacebookTournamentRunResponse>(yes => {finish = yes;});
+    /** Adapter records the same canonical run on both attempts. */
+    const record = jest.fn(() => current); record.mockImplementationOnce(() => old);
+    h.views.enter({locale: "en", tournaments: {list: h.list, record}}); h.views.record("run-1");
+    h.advance(30000); h.views.selectStage("tournaments");
+    expect(record).toHaveBeenCalledTimes(2); expect(h.list).toHaveBeenCalledTimes(1);
+    if (ending === "success") resolve(recorded()); else reject(new Error("late-offline"));
+    await settle(); h.views.record("run-1");
+    expect(record).toHaveBeenCalledTimes(2); expect(h.list).toHaveBeenCalledTimes(1);
+    finish(recorded()); await settle(); expect(h.list).toHaveBeenCalledTimes(2);
+    h.reads[0].resolve(board(9)); await settle(); expect(h.views.getSnapshot().tournament).toBeNull();
+    h.reads[1].resolve(board(1)); await settle(); expect(h.views.getSnapshot().tournament).toEqual(board(1));
+    expect(h.timers.size).toBe(0); expect(h.errors).toEqual([]);
+  });
+  it.each(["completed", "failed", "disposed", "replaced", "context-changed"])("cleans a %s recording deadline", async ending => {
+    /** Every terminal owner transition must cancel the actual timer. */
+    const h = harness();
+    /** Controlled completion is shared by the optional provider destinations. */
+    let resolve!: (value: RecordFacebookTournamentRunResponse) => void, reject!: (error: Error) => void;
+    /** Two provider deliveries can be pending simultaneously. */
+    const pending = new Promise<RecordFacebookTournamentRunResponse>((yes, no) => {resolve = yes; reject = no;});
+    /** One adapter lifetime supplies both destinations. */
+    const record = jest.fn(() => pending);
+    h.views.enter({locale: "en", tournaments: {list: h.list, record}, contextBoard: {list: h.list, record}});
+    h.views.record("run-1"); expect(h.timers.size).toBe(2);
+    if (ending === "completed") resolve(recorded());
+    else if (ending === "failed") reject(new Error("offline"));
+    else if (ending === "disposed") h.views.dispose();
+    else if (ending === "replaced") h.views.enter({locale: "ar"});
+    else h.views.contextChanged();
+    await settle(); expect(h.timers.size).toBe(ending === "context-changed" ? 1 : 0);
+    h.advance(30000); expect(h.timers.size).toBe(0); expect(h.errors).toEqual([]);
+    if (["disposed", "replaced"].includes(ending)) {h.views.selectStage("inbox"); expect(h.list).not.toHaveBeenCalled();}
+    if (ending === "context-changed") {h.views.selectStage("inbox"); expect(record).toHaveBeenCalledTimes(2);}
   });
 });

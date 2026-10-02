@@ -1,0 +1,57 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand src/facebook/__tests__/FacebookPlatformBootstrap.test.ts '--testNamePattern=shared provider dialog'
+FAIL src/facebook/__tests__/FacebookPlatformBootstrap.test.ts
+  ● FacebookPlatformBootstrap › holds the shared provider dialog gate during choose
+
+    expect(received).resolves.toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "status": "unavailable",
+    +   "status": "success",
+      }
+
+       99 |     /** Provider context/match dialog remains open across competing calls. */
+      100 |     const opened = operation === "choose" ? social.chooseContext() : social.matchPlayer("race10_v1_en");
+    > 101 |     await expect(ads.showInterstitial("result")).resolves.toMatchObject({status: "unavailable"});
+          |                                                           ^
+      102 |     await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+      103 |     await expect(operation === "choose" ? social.matchPlayer("race10_v1_en") : social.chooseContext())
+      104 |       .resolves.toMatchObject({status: "unavailable"});
+
+      at Object.toMatchObject (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2140:20)
+      at src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:101:59
+
+  ● FacebookPlatformBootstrap › holds the shared provider dialog gate during match
+
+    expect(received).resolves.toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "status": "unavailable",
+    +   "status": "success",
+      }
+
+       99 |     /** Provider context/match dialog remains open across competing calls. */
+      100 |     const opened = operation === "choose" ? social.chooseContext() : social.matchPlayer("race10_v1_en");
+    > 101 |     await expect(ads.showInterstitial("result")).resolves.toMatchObject({status: "unavailable"});
+          |                                                           ^
+      102 |     await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+      103 |     await expect(operation === "choose" ? social.matchPlayer("race10_v1_en") : social.chooseContext())
+      104 |       .resolves.toMatchObject({status: "unavailable"});
+
+      at Object.toMatchObject (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2140:20)
+      at src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:101:59
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 14 skipped, 16 total
+Snapshots:   0 total
+Time:        0.201 s, estimated 1 s
+Ran all test suites matching src/facebook/__tests__/FacebookPlatformBootstrap.test.ts with tests matching "shared provider dialog".
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand src/facebook/__tests__/FacebookPlatformBootstrap.test.ts '--testNamePattern=shared provider dialog'`
+Exit status 1

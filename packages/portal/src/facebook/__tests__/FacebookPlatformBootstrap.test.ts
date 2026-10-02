@@ -1,6 +1,8 @@
 import {describe, expect, test} from "@jest/globals";
 import type {FacebookInstantSdk} from "../fbinstant";
 import {FacebookPlatformBootstrap} from "../FacebookPlatformBootstrap";
+import {createFacebookAdsCapability} from "../FacebookAdsCapability";
+import {createFacebookNotificationCapability} from "../FacebookNotificationCapability";
 
 /** Creates sdk. */
 const createSdk = () => {
@@ -38,6 +40,7 @@ const createSdk = () => {
     player: {
       /** Gets id. */
       getID() {
+        if (!events.includes("start")) throw new Error("player-read-before-start");
         events.push("player");
         return "facebook-player-1";
       },
@@ -47,6 +50,7 @@ const createSdk = () => {
       },
       /** Gets data async. */
       async getDataAsync(keys) {
+        if (!events.includes("start")) throw new Error("cloud-read-before-start");
         events.push(`read:${keys.join(",")}`);
         return Object.fromEntries(keys.map((key) => [key, data[key]]));
       },
@@ -65,6 +69,97 @@ const createSdk = () => {
 };
 
 describe("FacebookPlatformBootstrap", () => {
+  test("does not start context selection or native matching over an active result ad", async () => {
+    /** Every provider adapter receives this exact SDK instance. */
+    const harness = createSdk();
+    /** Ad loading holds provider occupancy across both social attempts. */
+    let finish!: () => void;
+    /** Deferred provider ad response. */
+    const pending = new Promise<void>(resolve => {finish = resolve;});
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync", "getInterstitialAdAsync"];
+    harness.sdk.context = {getID: () => "thread-1", getType: () => "THREAD", chooseAsync: jest.fn(async () => undefined)};
+    harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
+    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => pending, showAsync: async () => undefined}));
+    /** Native capabilities come from the public bootstrap interface. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+    if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
+    /** Result ad owns the provider dialog guard before social calls begin. */
+    const ads = createFacebookAdsCapability({sdk: harness.sdk, placementId: "result", adFree: false})!;
+    /** Running provider operation has not completed. */
+    const showing = ads.showInterstitial("result");
+    await expect(result.value.capabilities.nativeSocial.chooseContext()).resolves.toMatchObject({status: "unavailable"});
+    await expect(result.value.capabilities.nativeSocial.matchPlayer("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
+    expect(harness.sdk.context.chooseAsync).not.toHaveBeenCalled();
+    expect(harness.sdk.matchPlayerAsync).not.toHaveBeenCalled();
+    finish();
+    await expect(showing).resolves.toMatchObject({status: "success"});
+    await expect(result.value.capabilities.nativeSocial.chooseContext()).resolves.toMatchObject({status: "success"});
+  });
+
+  test.each(["choose", "match"] as const)("releases the shared dialog gate after %s cancellation or failure", async operation => {
+    /** Cancellation and transport failures both settle the native UI operation. */
+    for (const error of [{code: "USER_CANCELLED"}, new Error("native-social-failed")]) {
+      /** Each SDK lifetime has its own provider occupancy and ad state. */
+      const harness = createSdk();
+      harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync", "getInterstitialAdAsync"];
+      harness.sdk.context = {getID: () => "thread-1", getType: () => "THREAD",
+        chooseAsync: jest.fn(async () => {throw error;})};
+      harness.sdk.matchPlayerAsync = jest.fn(async () => {throw error;});
+      harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
+      /** Social adapter preserves the established provider error classification. */
+      const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+      if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
+      await expect(operation === "choose" ? result.value.capabilities.nativeSocial.chooseContext()
+        : result.value.capabilities.nativeSocial.matchPlayer("race10_v1_en"))
+        .resolves.toMatchObject({status: error instanceof Error ? "retryable-failure" : "cancelled"});
+      /** A failed native operation must not permanently suppress later result ads. */
+      const ads = createFacebookAdsCapability({sdk: harness.sdk, placementId: "result", adFree: false})!;
+      await expect(ads.showInterstitial("result")).resolves.toMatchObject({status: "success"});
+    }
+  });
+
+  test.each(["choose", "match"] as const)("holds the shared provider dialog gate during %s", async operation => {
+    /** Real adapters share this single injected Meta SDK instance. */
+    const harness = createSdk();
+    /** Simulated native UI remains open until its provider promise settles. */
+    let finish!: () => void;
+    /** Deferred result at the actual context/match SDK boundary. */
+    const pending = new Promise<void>(resolve => {finish = resolve;});
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync", "getInterstitialAdAsync",
+      "player.canSubscribeBotAsync", "player.isSubscribedBotAsync", "player.subscribeBotAsync"];
+    harness.sdk.context = {
+      getID: () => "thread-1", getType: () => "THREAD",
+      chooseAsync: jest.fn(async () => {if (operation === "choose") await pending;}),
+    };
+    harness.sdk.matchPlayerAsync = jest.fn(async () => {if (operation === "match") await pending;});
+    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
+    harness.sdk.player.canSubscribeBotAsync = jest.fn(async () => true);
+    harness.sdk.player.isSubscribedBotAsync = jest.fn(async () => false);
+    harness.sdk.player.subscribeBotAsync = jest.fn(async () => undefined);
+    /** Startup exposes the public platform social adapter. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+    if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
+    /** Public capability owns the same SDK used by ads and notification prompts. */
+    const social = result.value.capabilities.nativeSocial;
+    /** Real interstitial adapter, with a supported configured test placement. */
+    const ads = createFacebookAdsCapability({sdk: harness.sdk, placementId: "result", adFree: false})!;
+    /** Real bot prompt adapter observes the same provider occupancy. */
+    const notifications = createFacebookNotificationCapability(harness.sdk)!;
+    /** Provider context/match dialog remains open across competing calls. */
+    const opened = operation === "choose" ? social.chooseContext() : social.matchPlayer("race10_v1_en");
+    await expect(ads.showInterstitial("result")).resolves.toMatchObject({status: "unavailable"});
+    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+    await expect(operation === "choose" ? social.matchPlayer("race10_v1_en") : social.chooseContext())
+      .resolves.toMatchObject({status: "unavailable"});
+    expect(harness.sdk.getInterstitialAdAsync).not.toHaveBeenCalled();
+    expect(harness.sdk.player.subscribeBotAsync).not.toHaveBeenCalled();
+    expect(operation === "choose" ? harness.sdk.matchPlayerAsync : harness.sdk.context.chooseAsync).not.toHaveBeenCalled();
+    finish();
+    await expect(opened).resolves.toEqual({status: "success", value: {contextId: "thread-1", contextType: "THREAD"}});
+    await expect(ads.showInterstitial("result")).resolves.toMatchObject({status: "success"});
+    expect(harness.sdk.getInterstitialAdAsync).toHaveBeenCalledTimes(1);
+  });
+
   test("owns initialization ordering and exposes only supported capabilities", async () => {
     /** Provides harness behavior. */
     const harness = createSdk();
@@ -77,11 +172,11 @@ describe("FacebookPlatformBootstrap", () => {
     expect(harness.events).toEqual([
       "initialize",
       "progress:30",
+      "progress:70",
+      "progress:100",
+      "start",
       "player",
       "read:riddleQuestPreferences",
-      "progress:70",
-      "start",
-      "progress:100",
     ]);
     expect(reported).toEqual([30, 70, 100]);
     expect(result.value.platform).toBe("facebook");
@@ -93,6 +188,36 @@ describe("FacebookPlatformBootstrap", () => {
     expect(result.value.capabilities.sharing).toBeUndefined();
     expect(result.value.capabilities.nativeSocial).toBeUndefined();
     expect(result.value.capabilities.overlay).toBeUndefined();
+  });
+
+  test("uses Meta locale only when no supported saved preference exists", async () => {
+    /** Isolated provider SDK and saved preferences for this scenario. */
+    const harness = createSdk();
+    harness.sdk.getLocale = jest.fn(() => "pt_BR");
+    /** Initialization result exposing the normalized preference store. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk).initialize(() => undefined);
+    if (result.status !== "success") throw new Error("bootstrap failed");
+    await expect(result.value.storage.readPreferences()).resolves.toMatchObject({locale: "fr"});
+    expect(harness.sdk.getLocale).not.toHaveBeenCalled();
+    harness.data.riddleQuestPreferences = {locale: "unsupported", muted: true};
+    await expect(result.value.storage.readPreferences()).resolves.toEqual({locale: "pt", muted: true});
+    harness.sdk.getLocale = () => "ja-JP";
+    harness.data.riddleQuestPreferences = {};
+    await expect(result.value.storage.readPreferences()).resolves.toEqual({locale: "ja"});
+    harness.sdk.getLocale = () => null;
+    await expect(result.value.storage.readPreferences()).resolves.toEqual({});
+    harness.sdk.getLocale = () => "zz_ZZ";
+    await expect(result.value.storage.readPreferences()).resolves.toEqual({});
+  });
+
+  test("does not read identity or cloud state when Meta refuses to start", async () => {
+    /** Isolated provider SDK and saved preferences for this scenario. */
+    const harness = createSdk();
+    harness.sdk.startGameAsync = async () => {throw new Error("start-rejected");};
+    await expect(new FacebookPlatformBootstrap(() => harness.sdk).initialize(() => undefined)).resolves.toEqual({
+      status: "retryable-failure", message: "start-rejected",
+    });
+    expect(harness.events).toEqual(["initialize", "progress:30", "progress:70", "progress:100"]);
   });
 
   test("normalizes asynchronous storage and flushes critical clears", async () => {
@@ -191,12 +316,12 @@ describe("FacebookPlatformBootstrap", () => {
     let contextId: string | null = "thread-1";
     /** Provides context type behavior. */
     let contextType: "SOLO" | "THREAD" | "GROUP" = "THREAD";
-    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "context.matchPlayerAsync"];
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync"];
+    harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
     harness.sdk.context = {
       getID: () => contextId,
       getType: () => contextType,
       chooseAsync: jest.fn(async () => undefined),
-      matchPlayerAsync: jest.fn(async () => undefined),
     };
     /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
@@ -215,11 +340,15 @@ describe("FacebookPlatformBootstrap", () => {
     expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
     contextId = "group-1";
     contextType = "GROUP";
-    await expect(social?.matchPlayer("race10_v1:en")).resolves.toEqual({
+    await expect(social?.matchPlayer("race10_v1_en")).resolves.toEqual({
       status: "success",
       value: {contextId: "group-1", contextType: "GROUP"},
     });
-    expect(harness.sdk.context.matchPlayerAsync).toHaveBeenCalledWith("race10_v1:en", true, true);
+    expect(harness.sdk.matchPlayerAsync).toHaveBeenCalledWith("race10_v1_en", true, true);
+    await expect(social?.matchPlayer("race10_v1:en")).resolves.toEqual({
+      status: "terminal-failure", message: "facebook-match-tag-invalid",
+    });
+    expect(harness.sdk.matchPlayerAsync).toHaveBeenCalledTimes(1);
 
     contextType = "SOLO";
     await expect(social?.chooseContext()).resolves.toEqual({
@@ -241,12 +370,12 @@ describe("FacebookPlatformBootstrap", () => {
   test("keeps core play but hides native social when age configuration is unknown", async () => {
     /** Provides harness behavior. */
     const harness = createSdk();
-    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "context.matchPlayerAsync"];
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync"];
+    harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
     harness.sdk.context = {
       getID: () => "thread-1",
       getType: () => "THREAD",
       chooseAsync: jest.fn(async () => undefined),
-      matchPlayerAsync: jest.fn(async () => undefined),
     };
     /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "unknown").initialize(() => undefined);
@@ -323,6 +452,36 @@ describe("FacebookPlatformBootstrap", () => {
     fakeDocument.dispatchEvent(new Event("visibilitychange"));
     Reflect.deleteProperty(globalThis, "document");
     expect(calls).toBe(1);
+  });
+
+  test("uses Meta onResume without depending on browser visibility events", async () => {
+    /** Isolated provider SDK for this lifecycle or capability scenario. */
+    const harness = createSdk();
+    /** Provider callback captured independently of browser visibility. */
+    let resume: (() => void) | undefined;
+    harness.sdk.onResume = callback => {resume = callback;};
+    /** Bootstrap result exposing target-specific capabilities. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk).initialize(() => undefined);
+    if (result.status !== "success") throw new Error("bootstrap failed");
+    /** Consumer callback whose unsubscribe behavior is asserted. */
+    const callback = jest.fn();
+    /** Removes the consumer from provider resume notifications. */
+    const unsubscribe = result.value.capabilities.lifecycle?.onResume?.(callback);
+    resume?.();
+    unsubscribe?.();
+    resume?.();
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  test("does not mistake a context-namespaced matchmaking fixture for Meta's API", async () => {
+    /** Isolated provider SDK for this lifecycle or capability scenario. */
+    const harness = createSdk();
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "context.matchPlayerAsync"];
+    harness.sdk.context = {getID: () => "thread-1", getType: () => "THREAD", chooseAsync: jest.fn()};
+    /** Bootstrap result exposing target-specific capabilities. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+    if (result.status !== "success") throw new Error("bootstrap failed");
+    expect(result.value.capabilities.nativeSocial).toBeUndefined();
   });
 
   test("fails closed for invalid identity and retryably for SDK failures", async () => {

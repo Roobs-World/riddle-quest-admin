@@ -1,0 +1,81 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-multiplayer", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 18550.
+i  Running script: pnpm exec jest --config jest.race-coverage.config.js --runInBand --coverage=false --testPathPatterns=raceDeliveryQueue.it.test.ts
+FAIL src/__tests__/race/raceDeliveryQueue.it.test.ts
+  ● keeps a replacement replay identity despite a non-increasing replay clock 900
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 5
+
+      Object {
+    -   "delivered": false,
+    +   "delivered": true,
+        "deliveryAttempts": 0,
+    -   "deliveryState": "pending",
+    -   "nextAttemptAtMs": 900,
+    +   "deliveryState": "quarantined",
+    +   "failureCode": "data-loss",
+    +   "quarantined": true,
+    +   "quarantinedAtMs": 1000,
+        "replayId": "fresh-replay",
+        "replayedAtMs": 900,
+      }
+
+      257 |   reject(Object.assign(new Error("old corruption"), {name: "ZodError"}));
+      258 |   expect(await old).toBe(false);
+    > 259 |   expect((await ref.get()).data()).toEqual(fresh);
+          |                                    ^
+      260 |   /** A worker observing the replacement still quarantines actual current corruption. */
+      261 |   await withRaceDeliveryReceipt(db, ref, 1000, async (observe?: (value: FirebaseFirestore.DocumentData | undefined) => void) => {
+      262 |     observe?.((await ref.get()).data()); throw Object.assign(new Error("current corruption"), {name: "ZodError"});
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:259:36
+
+  ● keeps a replacement replay identity despite a non-increasing replay clock 1000
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 5
+
+      Object {
+    -   "delivered": false,
+    +   "delivered": true,
+        "deliveryAttempts": 0,
+    -   "deliveryState": "pending",
+    -   "nextAttemptAtMs": 1000,
+    +   "deliveryState": "quarantined",
+    +   "failureCode": "data-loss",
+    +   "quarantined": true,
+    +   "quarantinedAtMs": 1000,
+        "replayId": "fresh-replay",
+        "replayedAtMs": 1000,
+      }
+
+      257 |   reject(Object.assign(new Error("old corruption"), {name: "ZodError"}));
+      258 |   expect(await old).toBe(false);
+    > 259 |   expect((await ref.get()).data()).toEqual(fresh);
+          |                                    ^
+      260 |   /** A worker observing the replacement still quarantines actual current corruption. */
+      261 |   await withRaceDeliveryReceipt(db, ref, 1000, async (observe?: (value: FirebaseFirestore.DocumentData | undefined) => void) => {
+      262 |     observe?.((await ref.get()).data()); throw Object.assign(new Error("current corruption"), {name: "ZodError"});
+
+      at src/__tests__/race/raceDeliveryQueue.it.test.ts:259:36
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 33 passed, 35 total
+Snapshots:   0 total
+Time:        1.675 s, estimated 2 s
+Ran all test suites matching raceDeliveryQueue.it.test.ts.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.race-coverage.config.js --runInBand --coverage=false --testPathPatterns=raceDeliveryQueue.it.test.ts" exited with code 1

@@ -23,7 +23,7 @@ function hostedEvidence(sha256, sourceCommit) {
       project: "riddle-quest-ec2b2",
       verifiedAt: when,
       receipt: "evidence/firebase.json",
-      functions: ["exchangeRedditIdentity", "deleteRedditAccount", "redditStorage", "redditGameplay"],
+      functions: ["exchangeRedditIdentity", "deleteRedditAccount", "redditStorage", "redditGameplay", "redditProfileRetentionScheduler"],
       rules: ["firestore", "firestore-indexes", "realtime-database", "storage"],
     },
     clients: ["web", "ios", "android"].map((client) => ({

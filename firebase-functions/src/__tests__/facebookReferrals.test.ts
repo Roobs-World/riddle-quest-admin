@@ -5,6 +5,7 @@ import {
   issueFacebookReferralToken,
   settleFacebookReferralAfterAuthoritativeWin,
 } from "../facebook/facebookReferrals";
+import type {Timestamp} from "firebase-admin/firestore";
 
 /** Describes stored. */
 type Stored = Record<string, unknown>;
@@ -108,6 +109,17 @@ it("issues a seven-day opaque token while persisting only its hash", async () =>
   expect(path).toMatch(/^facebookReferralTokens\/[0-9a-f]{64}$/);
   expect(JSON.stringify([...fixture.documents])).not.toContain(token);
   expect(fixture.documents.get(path)?.expiresAtMs).toBe(now + FACEBOOK_REFERRAL_TOKEN_TTL_MS);
+  expect((fixture.documents.get(path)?.expiresAt as Timestamp).toMillis()).toBe(now + FACEBOOK_REFERRAL_TOKEN_TTL_MS);
+});
+
+it("retries the same permanent binding after token retention deletes the temporary row", async () => {
+  /** Binding retains the exact invitation window from its original server row. */
+  const {fixture, now} = await issuedFixture();
+  await bindFacebookReferralToken(inviteeUid, token, now + 1, fixture.db);
+  fixture.documents.delete(referralTokenPath(fixture.documents));
+  await expect(bindFacebookReferralToken(inviteeUid, token, now + FACEBOOK_REFERRAL_TOKEN_TTL_MS + 1, fixture.db))
+    .resolves.toEqual({alreadyBound: true, expiresAtMs: now + FACEBOOK_REFERRAL_TOKEN_TTL_MS});
+  await expect(bindFacebookReferralToken(inviteeUid, "u".repeat(43), now + 2, fixture.db)).rejects.toThrow("facebook-referral-binding-conflict");
 });
 
 it("binds one new invitee idempotently and rejects a second referrer", async () => {
@@ -259,6 +271,23 @@ it("settles both rewards once after the first authoritative win", async () => {
     inviteeCoins: 100,
     inviterCoins: 100,
   });
+  expect(fixture.documents.get(`users/${inviteeUid}`)?.coins).toBe(425);
+});
+
+it.each(["multiplayerGamesPlayed", "multiplayerWins", "multiplayerChallengesCreated"])("rejects an established multiplayer invitee with %s", async field => {
+  /** Stores fixture, now for this isolated provider verification. */
+  const {fixture, now} = await issuedFixture();
+  fixture.documents.set(`users/${inviteeUid}`, {coins: 300, hasPurchasedApp: false, stats: {wins: 0, gamesPlayed: 0, [field]: 1}});
+  await expect(bindFacebookReferralToken(inviteeUid, token, now + 1, fixture.db)).rejects.toThrow("facebook-invitee-already-established");
+});
+
+it("settles a bound invitee's first authoritative multiplayer win once", async () => {
+  /** Stores fixture, now for this isolated provider verification. */
+  const {fixture, now} = await issuedFixture();
+  await bindFacebookReferralToken(inviteeUid, token, now + 1, fixture.db);
+  fixture.documents.set(`users/${inviteeUid}`, {coins: 325, stats: {wins: 0, gamesPlayed: 0, multiplayerWins: 1, multiplayerGamesPlayed: 1}});
+  await expect(settleFacebookReferralAfterAuthoritativeWin(inviteeUid, now + 2, fixture.db)).resolves.toMatchObject({alreadySettled: false, inviteeCoins: 100});
+  await expect(settleFacebookReferralAfterAuthoritativeWin(inviteeUid, now + 3, fixture.db)).resolves.toMatchObject({alreadySettled: true});
   expect(fixture.documents.get(`users/${inviteeUid}`)?.coins).toBe(425);
 });
 

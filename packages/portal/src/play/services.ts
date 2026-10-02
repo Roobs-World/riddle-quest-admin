@@ -210,7 +210,9 @@ const createLazyFakeHostServices = (): HostServices => {
   /** Gets fake services. */
   const getFakeServices = (): Promise<HostServices> => {
     fakeServicesPromise ??= import("./fakeServices").then((module) =>
-      module.createFakeHostServices({initiallyAuthenticated: true}),
+      module.createFakeHostServices({initiallyAuthenticated: true,
+        dailyCompleted: new URLSearchParams(window.location.search).get("dailyCompleted") === "1",
+        dailyUnavailable: new URLSearchParams(window.location.search).get("dailyUnavailable") === "1"}),
     );
     return fakeServicesPromise;
   };
