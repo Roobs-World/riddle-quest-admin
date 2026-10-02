@@ -1,0 +1,17 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 8h ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1
++
+Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 693ms using pnpm v11.21.0
+
+Test Suites: 10 passed, 10 total
+Tests:       149 passed, 149 total
+Snapshots:   0 total
+Time:        0.471 s, estimated 1 s
+Ran all test suites within paths "src/jest/__tests__/JestSdkPlatform.test.ts", "src/jest/__tests__/purchases.test.ts", "src/jest/__tests__/useJestPurchase.test.ts", "src/play/__tests__/firebaseRaceMatchmaking.test.ts", "src/jest/__tests__/notificationFundChecklist.test.ts", "src/jest/__tests__/notificationCopy.test.ts", "src/jest/__tests__/engagement.test.ts", "src/jest/__tests__/useJestNotifications.test.ts", "src/jest/__tests__/notificationOperationGate.test.ts", "src/jest/__tests__/firebaseNotificationCopy.test.ts".

@@ -1,0 +1,61 @@
+{
+  "capturedAt": "2026-10-02T17:58:41.784554+00:00",
+  "head": "6a58097b3c26b86a51e27bce191022af70442081",
+  "uploadEligible": false,
+  "cleanImmutableRelease": false,
+  "liveProviderEffects": false,
+  "sourceFiles": [
+    {
+      "path": "packages/portal/src/facebook/FacebookRaceEntry.tsx",
+      "sha256": "dab0eb594ea99bbeefd6d0c0ebc1a30936a14e2fbbba5896b54aab31a8f82e4d"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookPlatformEntry.tsx",
+      "sha256": "a39e4e6ef54ac2bb0713cbcab3dc8b4f9a3af2d70af2fda275ad5819b20785b7"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+      "sha256": "6433374ab6800775b2923aae97ae35d933ea1d1020eeac6d1eeacaa39f4afaef"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/tournaments.jest-playwright.support.ts",
+      "sha256": "236ff08204c7f2e07d3605fe7c714b6a2bf1d0a2f2f1d0b99d109ac9d3cc3ac3"
+    },
+    {
+      "path": "packages/portal/src/play/GameFrameApp.tsx",
+      "sha256": "d1101a247e7f44245367e31e91111c3aa5860f5cbfab74d44389ed21bc6e4a6b"
+    },
+    {
+      "path": "packages/portal/src/play/PlayHostApp.tsx",
+      "sha256": "99ff727c7dfb4fa49d8fb792d90e268e91aa8c7916d43152b8f6465cfcec2703"
+    },
+    {
+      "path": "packages/portal/src/play/race/LiveRaceGame.tsx",
+      "sha256": "cffbaad7882ca9e49ba6dc5a7434a02495a1427ca34a9c42ea0c5cd9883c2d2e"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceTo10Game.tsx",
+      "sha256": "da115ad7e226fefbc7870c0575badd6119036da2939471d619cede716026d9e1"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceTo10Game.types.ts",
+      "sha256": "579e2c8d67939e69025788d5d132899ab9e635d5f98842b663ea41c54d7936fd"
+    },
+    {
+      "path": "firebase-functions/src/race/facebookLiveTournament.ts",
+      "sha256": "eccccde2157f9dfc83f5e86288a7acb8a8d8f30348bfae373c77146f6fc25216"
+    },
+    {
+      "path": "firebase-functions/src/race/facebookTournament.ts",
+      "sha256": "e6f1a0451947316923e5f495691f4127bc25aaf76d2dfadac3a53f0a9f8062d5"
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/facebookTournament.it.test.ts",
+      "sha256": "316fc1de49251d1aab214ec13891bd80b0100139da7dc536d27ab3fcdca55694"
+    },
+    {
+      "path": "docs/evidence/facebook-live-tournaments-2026-10-02.md",
+      "sha256": "c9290b85f730b2f0a56e418cbd7b30200a063c8b4f4286c1f7bfe3e7eefc16a3"
+    }
+  ]
+}

@@ -192,6 +192,7 @@
   gap: 8px;
 }
 .profile-links button,
+.profile-subscriptions button,
 .settings-row {
   min-height: 48px;
   border: 1px solid #d7c9b4;

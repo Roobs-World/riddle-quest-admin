@@ -1,5 +1,7 @@
 import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support";
+import {installRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
+import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support";
 import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
@@ -342,6 +344,14 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
         /** Meta fixture controls subscription state independently of game preferences. */
         let botSubscribed = false;
+        /** One page lifetime mirrors SDK read-after-write behavior; reload deliberately starts a fresh fixture. */
+        const playerData: Record<string, unknown> = {
+          riddleQuestPreferences: {
+            locale: new URL(location.href).searchParams.get("rewarded") === "on" ? "en" : "fr",
+            muted: true, reducedMotion: true, highContrast: true, onboardingComplete: false, presenceEnabled: false,
+          },
+          riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 42, coins: 300},
+        };
         window.FBInstant = {
           /** Provides initialize async behavior. */
           async initializeAsync() {
@@ -480,21 +490,12 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             /** Gets data async. */
             async getDataAsync(keys) {
               window.__facebookEvents.push(`read:${keys.join(",")}`);
-              return {
-                riddleQuestPreferences: {
-                  locale: new URL(location.href).searchParams.get("rewarded") === "on" ? "en" : "fr",
-                  muted: true,
-                  reducedMotion: true,
-                  highContrast: true,
-                  onboardingComplete: false,
-                  presenceEnabled: false,
-                },
-                riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 42, coins: 300},
-              };
+              return Object.fromEntries(keys.map(key => [key, structuredClone(playerData[key])]));
             },
             /** Sets data async. */
-            async setDataAsync() {
+            async setDataAsync(update) {
               window.__facebookEvents.push("write");
+              Object.assign(playerData, structuredClone(update));
             },
             /** Provides flush data async behavior. */
             async flushDataAsync() {
@@ -505,6 +506,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       });
       /** Current multiplayer journey crosses the authenticated Facebook live transport. */
       const verifyMultiplayer = await installLiveMultiplayerJourney(successPage, "Facebook");
+      await installRaceContextDialogs(successPage);
+      await installTournamentPresentation(successPage);
       await successPage.goto(`${origin}/?harness=race`);
       try {
         await successPage.waitForFunction(
@@ -616,6 +619,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       }
       await successPage.locator(".tooltip-backdrop").waitFor({state: "detached"});
       await verifyMultiplayer("fr");
+      await successPage.locator(".multiplayer-navigation-action").click();
+      await verifyTournamentPresentation(successPage);
+      await successPage.locator(".race-close").click();
       await verifyImmediateSoloFeedback(successPage, "Facebook");
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:button_press:")))).toBe(true);
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:guess_submitted:")))).toBe(true);
@@ -694,6 +700,39 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-page').waitFor({state: 'detached'});
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
       await verifyRewardedContinue(successPage, origin);
+      await verifyTournamentEntry(successPage, origin);
+      // Independent flags must permit native live-win consent with and without the tournament surface.
+      for (const tournaments of [true, false]) {
+        notificationAccepted = false;
+        const priorLiveClaims = notificationClaims;
+        await installTournamentPresentation(successPage);
+        await successPage.goto(`${origin}/?harness=race&live-consent=on&tournaments=${tournaments ? "on" : "off"}`);
+        await successPage.locator(".game-bottom-navigation").waitFor();
+        expect(notificationClaims).toBe(priorLiveClaims);
+        const freshOnboarding = successPage.locator(".onboarding-card .play-primary");
+        if (await freshOnboarding.count()) {
+          await freshOnboarding.click();
+          await successPage.locator(".onboarding-clues").waitFor();
+          await freshOnboarding.click();
+          await freshOnboarding.waitFor({state: "detached"});
+        }
+        for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
+          const tooltip = successPage.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
+          if (await tooltip.count()) await tooltip.locator("button").click();
+        }
+        if (tournaments) {
+          await successPage.locator(".multiplayer-navigation-action").click();
+          await verifyTournamentPresentation(successPage);
+          await successPage.locator(".race-close").click();
+        }
+        const liveAcceptance = successPage.waitForResponse("**/acceptFacebookNotificationPermissionPrompt", {timeout: 5000});
+        void liveAcceptance.catch(() => undefined);
+        await verifyTournamentLiveResult(successPage, tournaments);
+        await liveAcceptance;
+        expect(notificationAccepted).toBe(true);
+        expect(notificationClaims).toBe(priorLiveClaims + 1);
+        expect(await successPage.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length)).toBe(1);
+      }
     } finally {
       await browser.close();
       try {

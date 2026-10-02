@@ -33,12 +33,12 @@ function LiveRaceEntry(props: RaceTo10GameProps) {
   /** Immutable server content and invitation selection for the mounted live seat. */
   const [playing, setPlaying] = useState<LiveSelection | null>(null);
   if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={props.matchmaking.live}
-    locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId} coins={props.coins} ownerId={props.ownerId} onClose={() => setPlaying(null)} />;
+    locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId} coins={props.coins} ownerId={props.ownerId} onCompleted={props.onLiveResult} onClose={() => setPlaying(null)} />;
   return <LiveRaceIntro {...props} onStart={setPlaying} />;
 }
 
 /** Loads only the category catalog and starts the target's live matchmaking capability. */
-function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RACE_CATEGORIES, matchmaking, postToHost, onClose, onStart}: RaceTo10GameProps & {
+function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RACE_CATEGORIES, introNavigation, matchmaking, postToHost, onClose, onStart}: RaceTo10GameProps & {
   /** Opens a live seat in the selected category. */
   onStart: (selection: LiveSelection) => void;
 }) {
@@ -106,6 +106,7 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
   return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby="race-title"
     tabIndex={-1} data-analytics-screen="multiplayer_live_intro">
     <RaceTopbar live coins={coins} onClose={onClose} />
+    {introNavigation}
     {challengeId && /^live_[a-f0-9]{64}$/.test(challengeId) && matchmaking?.live?.challenge &&
       <LiveRaceInvitationCard key={challengeId} challengeId={challengeId} transport={matchmaking.live} onAccept={onStart} />}
     {matchmaking?.live?.inbox && matchmaking.live.challenge &&
@@ -127,7 +128,7 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
       </div>}
       <button className="race-primary live-race-start" disabled={loading || failed || !selected || !matchmaking?.live}
         onClick={() => {if (selected && matchmaking?.live) onStart({categoryId: selected, locale});}}>{tr("RaceTo10.LIVE_START")}</button>
-      {sharing?.shareLiveRace && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || failed || !selected}
+      {(matchmaking?.live?.shareChallenge || sharing?.shareLiveRace) && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || failed || !selected}
         onClick={() => {if (selected) onStart({categoryId: selected, locale, createChallenge: true});}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
       <LiveRacePushConsent />
     </div>

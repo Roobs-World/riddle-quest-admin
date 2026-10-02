@@ -1,4 +1,6 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import type {LiveRaceView} from "@qwordly/core/race";
+import type {RaceTo10GameProps} from "../play/race/RaceTo10Game.types";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {PlayHostApp} from "../play/PlayHostApp";
 import {getCurrentLocale, tr} from "../play/i18n";
@@ -9,6 +11,7 @@ import {requireFacebookInstant} from "./fbinstant";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {bindFacebookEntryReferral, facebookLaunchFromEntryData} from "./referrals";
 import {createFacebookReferralSharing} from "./FacebookReferralSharing";
+import {createFacebookLiveRaceSharing} from "./FacebookLiveRaceSharing";
 import {createFacebookTournamentPresentation} from "./FacebookTournamentPresentation";
 import {FacebookContextCoordinator} from "./contexts";
 import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
@@ -29,6 +32,16 @@ import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode
 import {PlayerProjectionPersistence} from "../platform/PlayerProjectionPersistence";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
 import {installFacebookAnalytics} from "./analytics";
+
+/** Native tournament presentation loads only when Facebook multiplayer opens. */
+const FacebookRaceSurface = lazy(() => import("./FacebookRaceEntry").then(module => ({default: module.FacebookRaceEntry})));
+
+/** Binds one stable Facebook-only result callback without changing shared platform behavior. */
+function createFacebookRaceSurface(onLiveResult: NonNullable<RaceTo10GameProps["onLiveResult"]>) {
+  return function FacebookScopedRaceSurface(props: RaceTo10GameProps) {
+    return <FacebookRaceSurface {...props} onLiveResult={onLiveResult} />;
+  };
+}
 
 /** Describes startup state. */
 type StartupState =
@@ -294,6 +307,14 @@ export function FacebookPlatformEntry() {
           matchmakingEnabled,
           configurationLoaded,
         });
+        /** Native friend invitations remain independent of referral reward configuration. */
+        const shareChallenge = createFacebookLiveRaceSharing({sdk, enabled: matchmakingEnabled, ageCategory,
+          isActive: () => active && deletionGateRef.current.isOpen(),
+          reportFailure: error => captureBrowserException(error, {component: "facebook_multiplayer", operation: "native_invite"})});
+        if (baseCapabilities.matchmaking?.live && shareChallenge) {
+          baseCapabilities.matchmaking = {...baseCapabilities.matchmaking,
+            live: {...baseCapabilities.matchmaking.live, shareChallenge}};
+        }
         /** Provides synchronized session behavior. */
         const synchronizedSession = contextCoordinator
           ? {
@@ -542,6 +563,16 @@ export function FacebookPlatformEntry() {
     }
   }, []);
 
+  /** Live snapshots reach the same leased, age/API-gated consent policy as solo wins. */
+  const handleAuthoritativeLiveRaceResult = useCallback((view: LiveRaceView) => {
+    if (view.phase !== "result" || !deletionGateRef.current.isOpen()) return;
+    void notificationPromptRef.current?.afterAuthoritativeCompletion(view.result === "win").catch(error => {
+      captureBrowserException(error, {component: "facebook_notifications", operation: "prompt_after_live_win"});
+    });
+  }, []);
+  /** The component identity remains stable while the host profile and coins refresh. */
+  const raceSurface = useMemo(() => createFacebookRaceSurface(handleAuthoritativeLiveRaceResult), [handleAuthoritativeLiveRaceResult]);
+
   if (startup.status === "error") {
     return (
       <main className="route-missing">
@@ -561,6 +592,7 @@ export function FacebookPlatformEntry() {
   }
   return (
     <PlayHostApp
+      raceSurface={raceSurface}
       session={createHostedPlaySession({
         hostServices,
         hostConfigurationWarning,

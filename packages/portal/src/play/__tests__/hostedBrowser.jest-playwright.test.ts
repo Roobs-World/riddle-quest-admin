@@ -1121,10 +1121,10 @@ describeBrowser("standalone Jest browser game", () => {
       await expectAccessible(page, "ranks");
       /** Provides rank icon names behavior. */
       const rankIconNames = await page
-        .locator(".modal-ranks [data-rank-icon]")
+        .locator(".modal-ranks .rank-list [data-rank-icon]")
         .evaluateAll((icons) => icons.map((icon) => icon.getAttribute("data-rank-icon")));
-      expect(rankIconNames).toHaveLength(8);
-      expect(new Set(rankIconNames).size).toBe(8);
+      expect(rankIconNames).toHaveLength(35);
+      expect(new Set(rankIconNames).size).toBe(35);
       await page.keyboard.press("Escape");
       await page
         .getByRole("button", {name: /^profile$/i})

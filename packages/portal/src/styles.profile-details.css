@@ -83,3 +83,32 @@
     font-size: 28px;
   }
 }
+
+.rank-material-section {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.rank-material-heading {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-inline-start: 4px solid currentColor;
+  border-radius: 4px;
+  font-size: 16px;
+}
+.rank-material-section[data-rank-material="bronze"] .rank-material-heading { color: #835127; background: #f8e8d5; }
+.rank-material-section[data-rank-material="silver"] .rank-material-heading { color: #566877; background: #e8eef4; }
+.rank-material-section[data-rank-material="gold"] .rank-material-heading { color: #91600c; background: #fff3cb; }
+.rank-material-section[data-rank-material="mithril"] .rank-material-heading { color: #176b86; background: #dff8fa; }
+.rank-material {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+}
+.rank-list article {
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+}
+.rank-list article > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

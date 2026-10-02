@@ -3,6 +3,7 @@ import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {raceClock, type RaceRunRecord} from "./raceEngine";
+import {readFacebookLiveTournamentRun} from "./facebookLiveTournament";
 import {parseRunRecord} from "./raceSetupService";
 
 /** Defines the facebook tournament duration ms value. */
@@ -226,9 +227,10 @@ export async function recordFacebookTournamentRun(
   return db.runTransaction(async (transaction) => {
     /** Provides run snapshot behavior. */
     const runSnapshot = await transaction.get(runRef);
-    if (!runSnapshot.exists) throw new HttpsError("not-found", "Tournament race run was not found.");
+    /** Live PvP retains authority in its match rather than the recorded-race store. */
+    const live = runSnapshot.exists ? undefined : await readFacebookLiveTournamentRun(transaction, db, userId, input.runId);
     /** Provides run behavior. */
-    const run = parseRunRecord(runSnapshot.data(), runSnapshot.id);
+    const run = live?.run ?? parseRunRecord(runSnapshot.data(), runSnapshot.id);
     if (run.finishedAtMs === undefined) {
       throw new HttpsError("failed-precondition", "Only completed authoritative Race to 10 runs qualify.");
     }
@@ -246,9 +248,9 @@ export async function recordFacebookTournamentRun(
     /** Provides deck ref behavior. */
     const deckRef = db.collection("raceDecks").doc(run.deckId);
     /** Provides [deck snapshot, existing snapshot] behavior. */
-    const [deckSnapshot, existingSnapshot] = await Promise.all([transaction.get(deckRef), transaction.get(entryRef)]);
-    if (!deckSnapshot.exists) throw new HttpsError("data-loss", "Tournament race deck was not found.");
-    assertFacebookTournamentDeck(run, deckSnapshot.data() as FacebookTournamentDeckBinding);
+    const [deckSnapshot, existingSnapshot] = await Promise.all([live ? Promise.resolve(undefined) : transaction.get(deckRef), transaction.get(entryRef)]);
+    if (!live && !deckSnapshot?.exists) throw new HttpsError("data-loss", "Tournament race deck was not found.");
+    assertFacebookTournamentDeck(run, live?.deck ?? deckSnapshot!.data() as FacebookTournamentDeckBinding);
     /** Provides candidate behavior. */
     const candidate = deriveFacebookTournamentEntry(userId, input.locale, run, run.finishedAtMs);
     /** Provides existing behavior. */

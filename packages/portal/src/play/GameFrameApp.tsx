@@ -1,4 +1,4 @@
-import {lazy, Suspense, useCallback, useEffect, useReducer, useRef, useState} from "react";
+import {lazy, Suspense, useCallback, useEffect, useReducer, useRef, useState, type ComponentType} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
@@ -47,6 +47,7 @@ import type {ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {useGameSurfaceCoordination} from "./useGameSurfaceCoordination";
 import {useAttemptRecovery} from "./game/hooks/useAttemptRecovery";
+import type {RaceTo10GameProps} from "./race/RaceTo10Game.types";
 import type {AttemptRecoveryCapability} from "../platform/types";
 
 /** Renders the solar system interface. */
@@ -54,6 +55,7 @@ const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({defaul
 
 /** Provides game frame app behavior. */
 export function GameFrameApp({
+  raceSurface,
   localBridge = false,
   raceOwnerId,
   interactionBlocked = false,
@@ -78,6 +80,8 @@ export function GameFrameApp({
   raceLocalePolicy = "english-only",
   onPresenceStateChange,
 }: {
+  /** Target-owned multiplayer presentation; provider modules stay outside shared imports. */
+  raceSurface?: ComponentType<RaceTo10GameProps>;
   /** Stores local bridge. */
   localBridge?: boolean;
   /** Authenticated game account used to isolate race resume state. */
@@ -160,7 +164,9 @@ export function GameFrameApp({
   useOfflineDialog(online, offlineDialogRef);
 
   /** Provides {game modal view, race to10 game} behavior. */
-  const {GameModalView, RaceTo10Game} = useGameSurfaces(raceEnabled);
+  const {GameModalView, RaceTo10Game: SharedRaceTo10Game} = useGameSurfaces(raceEnabled);
+  /** Supplied by the target entry rather than imported across platform boundaries. */
+  const RaceTo10Game = raceSurface ?? SharedRaceTo10Game;
 
   useEffect(() => {
     if (state.modal === null) setAnimatedCoinBalance(null);

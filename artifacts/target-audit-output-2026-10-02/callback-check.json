@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-10-02T17:31:17.784Z",
+  "source": "Authenticated Chrome Basic settings and read-only Functions metadata",
+  "dashboard": {
+    "app_id": "1748953042991569",
+    "selectedMode": "Data deletion callback URL",
+    "savedUrl": "https://us-central1-riddle-quest-ec2b2.cloudfunctions.net/facebookDataDeletionCallback",
+    "settingsWrites": 0
+  },
+  "probe": {
+    "method": "GET",
+    "signed": false,
+    "status": 405,
+    "accountDeletions": 0
+  },
+  "function": {
+    "name": "facebookDataDeletionCallback",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:39.174395294Z",
+    "uri": "https://facebookdatadeletioncallback-h5dplxxwha-uc.a.run.app",
+    "appId": "1748953042991569",
+    "statusBaseUrl": "https://facebookdatadeletionstatus-h5dplxxwha-uc.a.run.app"
+  },
+  "acceptance": "Signed deployed deletion and independent review remain outstanding."
+}

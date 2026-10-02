@@ -172,12 +172,14 @@ describe("Firebase environment variants", () => {
     expect(mockInitializeAuth).not.toHaveBeenCalled();
   });
 
-  it("routes all Jest multiplayer calls beside Firestore without rerouting other capabilities", async () => {
+  it("routes Jest gameplay beside Firestore without rerouting account or commerce calls", async () => {
     mockGetFunctions.mockClear();
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget: "jest"});
-    /** Multiplayer calls must share the database region, without moving account/economy calls. */
+    /** Session operations share the database region while accounts and purchases retain their configured endpoint. */
     const multiplayerCalls = [
+      "getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
+      "completeGame", "submitSinglePlayerGuess", "getHint", "spendCoins", "skipRiddle",
       "getRaceAccess",
       "findRaceMatch",
       "recordRaceAnalytics",
@@ -207,6 +209,19 @@ describe("Firebase environment variants", () => {
       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
     }
     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
+  });
+
+  it("can roll Jest solo back to the existing US endpoints without moving multiplayer", async () => {
+    mockHttpsCallable.mockClear();
+    await loadWithEnvironment({...completeEnvironment, platformTarget: "jest", gameplayRegion: "us-central1"});
+    /** A rollback must cover every session action together. */
+    const soloCalls = ["getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
+      "completeGame", "submitSinglePlayerGuess", "getHint", "spendCoins", "skipRiddle"];
+    for (const [instance, name] of mockHttpsCallable.mock.calls) {
+      if (soloCalls.includes(name)) expect(instance).toMatchObject({region: "us-central1"});
+      if (name === "joinLiveRace" || name === "updateLiveRace") expect(instance).toMatchObject({region: "europe-west1"});
+      if (name === "deleteAccount") expect(instance).toMatchObject({region: "europe-west2"});
+    }
   });
 
   it.each(["jest", "facebook"])("limits the optional solo region to Jest gameplay (%s)", async platformTarget => {

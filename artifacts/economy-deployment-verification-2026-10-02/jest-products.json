@@ -1,0 +1,226 @@
+{
+  "before": [
+    {
+      "product": {
+        "id": "019fab48-e1c8-75d5-afcc-12699f6a46f6",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack6",
+        "displayName": "coin pack 6",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:31:48.168Z"
+      },
+      "price": {
+        "id": "019fab48-e1ca-757e-b21d-fcfebadd5dd5",
+        "productId": "019fab48-e1c8-75d5-afcc-12699f6a46f6",
+        "price": 49.99,
+        "currency": "USD",
+        "createdAt": "2026-07-29T00:31:48.170Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab48-9c4c-70f8-ac66-ea2827a3f609",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack5",
+        "displayName": "coin pack 5",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:31:30.380Z"
+      },
+      "price": {
+        "id": "019fab48-9c5f-748f-b111-f3ade8d55c8a",
+        "productId": "019fab48-9c4c-70f8-ac66-ea2827a3f609",
+        "price": 15.99,
+        "currency": "USD",
+        "createdAt": "2026-07-29T00:31:30.399Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab48-52c8-7083-a763-18e2c291e1b9",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack4",
+        "displayName": "coin pack 4",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:31:11.560Z"
+      },
+      "price": {
+        "id": "019fab48-52ca-7239-9e61-432d79a34158",
+        "productId": "019fab48-52c8-7083-a763-18e2c291e1b9",
+        "price": 7.99,
+        "currency": "USD",
+        "createdAt": "2026-07-29T00:31:11.562Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab48-0e9b-7198-b16d-90a29653b243",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack3",
+        "displayName": "coin pack 3",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:30:54.107Z"
+      },
+      "price": {
+        "id": "019fab48-0e9e-75d8-868d-042b94d79f7e",
+        "productId": "019fab48-0e9b-7198-b16d-90a29653b243",
+        "price": 5.99,
+        "currency": "USD",
+        "createdAt": "2026-07-29T00:30:54.110Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab47-c2fb-711b-8b3a-2a5fcdc209b5",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack2",
+        "displayName": "coin pack 2",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:30:34.747Z"
+      },
+      "price": {
+        "id": "019fab47-c2fd-728b-ae93-fe683b61b65d",
+        "productId": "019fab47-c2fb-711b-8b3a-2a5fcdc209b5",
+        "price": 3.99,
+        "currency": "USD",
+        "createdAt": "2026-07-29T00:30:34.749Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab47-7afb-71fe-94dd-d2fa90665212",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack1",
+        "displayName": "coin pack 1",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:30:16.315Z"
+      },
+      "price": {
+        "id": "019fab47-7aff-7503-82a9-9d0a7bb9f2da",
+        "productId": "019fab47-7afb-71fe-94dd-d2fa90665212",
+        "price": 1.79,
+        "currency": "USD",
+        "createdAt": "2026-07-29T00:30:16.319Z"
+      }
+    }
+  ],
+  "after": [
+    {
+      "product": {
+        "id": "019fab48-e1c8-75d5-afcc-12699f6a46f6",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack6",
+        "displayName": "coin pack 6",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:31:48.168Z"
+      },
+      "price": {
+        "id": "01a0fdd7-8d22-779e-8109-c4a64a3593e7",
+        "productId": "019fab48-e1c8-75d5-afcc-12699f6a46f6",
+        "price": 19.99,
+        "currency": "USD",
+        "createdAt": "2026-10-02T18:19:17.154Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab48-9c4c-70f8-ac66-ea2827a3f609",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack5",
+        "displayName": "coin pack 5",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:31:30.380Z"
+      },
+      "price": {
+        "id": "01a0fdd7-8be6-743f-b6e1-6effbbcaa09c",
+        "productId": "019fab48-9c4c-70f8-ac66-ea2827a3f609",
+        "price": 9.99,
+        "currency": "USD",
+        "createdAt": "2026-10-02T18:19:16.838Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab48-52c8-7083-a763-18e2c291e1b9",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack4",
+        "displayName": "coin pack 4",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:31:11.560Z"
+      },
+      "price": {
+        "id": "01a0fdd7-89af-72bf-aef7-f8403fa52cf0",
+        "productId": "019fab48-52c8-7083-a763-18e2c291e1b9",
+        "price": 4.99,
+        "currency": "USD",
+        "createdAt": "2026-10-02T18:19:16.271Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab48-0e9b-7198-b16d-90a29653b243",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack3",
+        "displayName": "coin pack 3",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:30:54.107Z"
+      },
+      "price": {
+        "id": "01a0fdd7-8897-75f3-a4de-ab91127eafab",
+        "productId": "019fab48-0e9b-7198-b16d-90a29653b243",
+        "price": 2.99,
+        "currency": "USD",
+        "createdAt": "2026-10-02T18:19:15.991Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab47-c2fb-711b-8b3a-2a5fcdc209b5",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack2",
+        "displayName": "coin pack 2",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:30:34.747Z"
+      },
+      "price": {
+        "id": "01a0fdd7-86e2-76ba-83d6-33a881f98b26",
+        "productId": "019fab47-c2fb-711b-8b3a-2a5fcdc209b5",
+        "price": 1.99,
+        "currency": "USD",
+        "createdAt": "2026-10-02T18:19:15.554Z"
+      }
+    },
+    {
+      "product": {
+        "id": "019fab47-7afb-71fe-94dd-d2fa90665212",
+        "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+        "sku": "com.roobsworld.riddlequest.coinpack1",
+        "displayName": "coin pack 1",
+        "displayDescription": null,
+        "archivedAt": null,
+        "createdAt": "2026-07-29T00:30:16.315Z"
+      },
+      "price": {
+        "id": "01a0fdd7-85c5-754d-9ed7-da92490f0893",
+        "productId": "019fab47-7afb-71fe-94dd-d2fa90665212",
+        "price": 0.99,
+        "currency": "USD",
+        "createdAt": "2026-10-02T18:19:15.269Z"
+      }
+    }
+  ],
+  "checks": {
+    "increasingCoinsPerUsd": true,
+    "idsAndCoinGrantsPreserved": true
+  }
+}

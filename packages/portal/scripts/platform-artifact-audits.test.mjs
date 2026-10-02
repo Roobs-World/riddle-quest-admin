@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {mkdir, mkdtemp, readFile, rm, symlink, writeFile} from "node:fs/promises";
+import {cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
@@ -12,6 +12,7 @@ const jestAudit = path.join(packageDirectory, "scripts/audit-jest-artifact.mjs")
 const facebookAudit = path.join(packageDirectory, "scripts/audit-facebook-artifact.mjs");
 const redditAudit = path.join(packageDirectory, "scripts/audit-reddit-artifact.mjs");
 const youtubeAudit = path.join(packageDirectory, "scripts/audit-youtube-artifact.mjs");
+const standaloneAudit = path.join(packageDirectory, "scripts/audit-standalone-artifact.mjs");
 const targetName = (platform) => platform === "youtube"
   ? "YouTube"
   : platform[0].toUpperCase() + platform.slice(1);
@@ -383,7 +384,7 @@ async function withFixture(platform, operation) {
           ? 'const copy = {RedditPlatform: {TAGLINE: "fixture"}}; console.log(copy);\n'
           : 'console.log("grindheadgames@gmail.com");\n',
     );
-    if (platform !== "youtube") {
+    if (!["youtube", "netflix", "yahoo"].includes(platform)) {
       await writeFile(
         path.join(directory, "third-party-licenses.txt"),
         "@sentry/browser@1\nfirebase@1\nreact@1\nreact-dom@1\nthree@1\n",
@@ -407,6 +408,17 @@ async function withFixture(platform, operation) {
       await writeFile(path.join(directory, "reddit-inline.html"), `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"></head>
 <body><script type="module" src="./app.js"></script></body></html>\n`);
+    } else if (platform === "netflix" || platform === "yahoo") {
+      await writeFile(path.join(directory, "index.html"), `<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"></head>
+<body><script type="module" src="./app.js"></script></body></html>\n`);
+      await writeFile(path.join(directory, "youtube-content-manifest.json"), `${JSON.stringify({
+        target: `${platform}-candidate`,
+        fixture: false,
+        releaseReady: true,
+        locales: Array.from({length: 16}, (_, index) => `fixture-${index}`),
+        classicRiddleCount: 180,
+      })}\n`);
     } else {
       await writeFile(path.join(directory, "index.html"), `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"><script src="https://www.youtube.com/game_api/v1"></script></head>
@@ -446,6 +458,64 @@ test("artifact audits follow the same output override selected by each Web Targe
     });
   }
 });
+
+for (const platform of ["netflix", "yahoo"]) {
+  test(`${platform} package audit rejects contaminated selected output despite a clean default artifact`, async () => {
+    await withFixture(platform, async (directory) => {
+      const workspace = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-audit-command-`));
+      try {
+        await cp(directory, path.join(workspace, `dist-${platform}`), {recursive: true});
+        await mkdir(path.join(workspace, "scripts"));
+        await symlink(standaloneAudit, path.join(workspace, "scripts/audit-standalone-artifact.mjs"));
+        const {scripts} = JSON.parse(await readFile(path.join(packageDirectory, "package.json"), "utf8"));
+        const command = `audit:${platform}-artifact`;
+        await writeFile(path.join(workspace, "package.json"), JSON.stringify({scripts: {[command]: scripts[command]}}));
+        await writeFile(path.join(directory, "app.js"), "globalThis.FBInstant.initializeAsync();\n");
+        const result = spawnSync("pnpm", ["run", command], {
+          cwd: workspace,
+          encoding: "utf8",
+          env: {...process.env, [`${platform.toUpperCase()}_BUILD_OUT_DIR`]: directory},
+        });
+        assert.notEqual(result.status, 0, `${platform} audited the clean stale artifact instead of the contaminated build`);
+        assert.match(result.stderr, new RegExp(`Facebook integration found in ${platform} candidate artifact`, "u"));
+      } finally {
+        await rm(workspace, {recursive: true, force: true});
+      }
+    });
+  });
+
+  test(`${platform} audit respects explicit directory, target-specific environment and default precedence`, async () => {
+    await withFixture(platform, async (directory) => {
+      const workspace = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-audit-precedence-`));
+      try {
+        const defaultDirectory = path.join(workspace, `dist-${platform}`);
+        const contaminatedDirectory = path.join(workspace, "contaminated");
+        await cp(directory, defaultDirectory, {recursive: true});
+        await cp(directory, contaminatedDirectory, {recursive: true});
+        await writeFile(path.join(contaminatedDirectory, "app.js"), "globalThis.FBInstant.initializeAsync();\n");
+        const environmentName = `${platform.toUpperCase()}_BUILD_OUT_DIR`;
+        const otherEnvironmentName = platform === "netflix" ? "YAHOO_BUILD_OUT_DIR" : "NETFLIX_BUILD_OUT_DIR";
+        const invoke = (args, overrides) => spawnSync(process.execPath, [standaloneAudit, platform, ...args], {
+          cwd: workspace,
+          encoding: "utf8",
+          env: {...process.env, [environmentName]: "", [otherEnvironmentName]: contaminatedDirectory, ...overrides},
+        });
+        const selected = invoke([], {[environmentName]: `  ${directory}  `});
+        assert.equal(selected.status, 0, selected.stderr);
+        const explicit = invoke([directory], {[environmentName]: contaminatedDirectory});
+        assert.equal(explicit.status, 0, explicit.stderr);
+        const fallback = invoke([], {[environmentName]: "  "});
+        assert.equal(fallback.status, 0, fallback.stderr);
+        const missingDirectory = path.join(workspace, "missing");
+        const missing = invoke([], {[environmentName]: missingDirectory});
+        assert.notEqual(missing.status, 0);
+        assert.ok(missing.stderr.includes(missingDirectory), missing.stderr);
+      } finally {
+        await rm(workspace, {recursive: true, force: true});
+      }
+    });
+  });
+}
 
 test("Jest audit accepts its fixture and rejects Facebook contamination", async () => {
   await withFixture("jest", async (directory) => {

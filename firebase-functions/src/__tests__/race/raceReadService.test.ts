@@ -145,6 +145,7 @@ const inboxItem = (itemId: string, createdAtMs: number, read: boolean) => ({
   challengeId: `challenge-${itemId}`,
   opponentDisplayName: `Opponent ${itemId}`,
   opponentAvatarUrl: null,
+  opponentLevel: 15,
   categoryId: "history",
   result: "win",
   adjustedDeltaMs: 1_000,
@@ -444,6 +445,7 @@ describe("listRaceInboxForUser", () => {
       read: true,
     });
     expect(response.items[0]).not.toHaveProperty("opponentAvatarUrl");
+    expect(response.items[0]).not.toHaveProperty("opponentLevel");
   });
 
   it("scrubs a tombstoned linked opponent in the response and stored inbox row", async () => {
@@ -457,9 +459,11 @@ describe("listRaceInboxForUser", () => {
 
     expect(response.items[0]).toMatchObject({opponentDisplayName: "Riddle Quest player"});
     expect(response.items[0]).not.toHaveProperty("opponentAvatarUrl");
+    expect(response.items[0]).not.toHaveProperty("opponentLevel");
     expect(batch.update).toHaveBeenCalledWith(document.ref, {
       opponentDisplayName: "Riddle Quest player",
       opponentAvatarUrl: "field-delete",
+      opponentLevel: "field-delete",
     });
   });
 });

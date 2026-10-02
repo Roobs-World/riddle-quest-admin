@@ -14,13 +14,13 @@ it.each(["poll", "guess"] as const)("delivers a human %s within three database r
     /** Matched tickets and runs retain the same atomic authority as production. */
     const ticketId = "a".repeat(64), rivalId = "b".repeat(64), startsAtMs = NOW - 1000;
     /** Provides player behavior. */
-    const player = {displayName: "Alice", avatarUrl: null, bot: false, correctCount: 0};
+    const player = {displayName: "Alice", avatarUrl: null, level: 36, bot: false, correctCount: 0};
     /** Provides ticket behavior. */
     const ticket: LiveTicket = {userId: OWNER, pool: "pool", createdAtMs: startsAtMs - 5000,
       seenAtMs: startsAtMs, matchId: ticketId, player, run: liveRun(base, OWNER, ticketId, startsAtMs)};
     /** Provides match behavior. */
     const match: LiveMatch = {tickets: [ticketId, rivalId], startsAtMs, observedAtMs: NOW,
-      players: [player, {...player, displayName: "Bob"}],
+      players: [player, {...player, displayName: "Bob", level: 10}],
       runs: [liveRun(base, OWNER, ticketId, startsAtMs), liveRun(base, RIVAL, rivalId, startsAtMs)]};
     /** Every independent database read incurs the same deterministic 200ms RPC cost. */
     const documents = new Map<string, unknown>([[`liveRaceTickets/${ticketId}`, {...ticket, expiresAt: "expiry"}],
@@ -53,7 +53,7 @@ it.each(["poll", "guess"] as const)("delivers a human %s within three database r
       authorize: async () => {await new Promise(resolve => setTimeout(resolve, 200));},
     }).then(value => ({value}), error => ({error}));
     await jest.runAllTimersAsync();
-    expect(await result).toMatchObject({value: {phase: "racing", player: {correctCount: action === "guess" ? 1 : 0}}});
+    expect(await result).toMatchObject({value: {phase: "racing", player: {level: 36, correctCount: action === "guess" ? 1 : 0}, opponent: {level: 10}}});
     expect(reads).toHaveLength(action === "guess" ? 7 : 6);
     expect(Date.now() - NOW).toBe(600);
   } finally {jest.useRealTimers();}

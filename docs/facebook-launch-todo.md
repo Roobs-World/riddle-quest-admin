@@ -29,7 +29,7 @@ Sources: [approval walkthrough](facebook-approval-walkthrough.md), [testing uplo
 
 1. Read [the verification report](evidence/facebook-launch-verification-2026-10-02.md) for the exact results and limits. These are local/read-only substeps, not a completed public launch.
 2. Do not repeat the initial account discovery: the Meta connector now has read access to the correct app. Business verification passes; the app is still in development mode and not live.
-3. Fix the newly observed configuration gaps under P0-02: contact email is not verified; basic settings returned no support URL, deletion URL or base domains. Check any separately configured callback before deciding it is absent everywhere.
+3. Complete the configuration review under P0-02: MCP reports contact email unverified and empty generic support/deletion/domain fields. A later Chrome check confirms the saved deletion callback, whose unsigned GET returns 405. Preserve it and obtain signed acceptance; do not infer callback absence from the MCP field. See [the fresh follow-up](evidence/facebook-review-followup-2026-10-02.md).
 4. Reconcile App Review before submitting anything: status, requirements and history give conflicting signals. The requirements check refuses submission, while history has no submissions. Do not retry blindly.
 5. Continue O-03/P2-01/P5-07/P3-03: nonce and referral TTL are not enabled; a nonce dry-run found 13 records needing backfill; `facebookContextRetentionScheduler` is not deployed. The previews made no database changes.
 6. Initial local security, translation-key, type, release-script, backend, rules and six-target build checks passed. Facebook, YouTube and candidate browser checks passed. A later fresh Jest rebuild then failed with TS2353 in newly added `packages/core/src/validation/dailyCalendar.ts`: its `zh` clock is outside the 16 supported locales. Coordinate with the Daily-calendar author, resolve that mismatch and rerun types/all builds; the earlier results do not certify the changed source. Do not confuse translated UI-key coverage with completion of the Facebook riddle corpus.
@@ -147,7 +147,7 @@ git rev-parse HEAD
 
 **Who:** Meta administrator, developer and a second reviewer.
 
-**Latest read-only evidence:** The app is not live. Contact email is unverified; basic settings returned empty `data_deletion_url`, `support_url` and `base_domains`. Privacy and terms pages both returned HTTP 200. A page loading is not proof its wording or deletion behaviour is correct.
+**Latest read-only evidence:** The app is not live. MCP reports contact email unverified and empty generic `data_deletion_url`, `support_url` and `base_domains` fields. Chrome Basic settings visibly contains the saved callback `https://us-central1-riddle-quest-ec2b2.cloudfunctions.net/facebookDataDeletionCallback`; its unsigned GET returns 405 and deployed metadata confirms ACTIVE/correct app scope. Privacy and terms pages returned HTTP 200. Reachability does not prove signed deletion or independent acceptance. See [the follow-up](evidence/facebook-review-followup-2026-10-02.md).
 
 1. Open the existing app. Do not create another app simply because this task is outstanding.
 2. In Settings → Basic, or the current equivalent, inspect App ID, app domains, privacy URL, data deletion configuration and support details.
@@ -165,7 +165,7 @@ pnpm --filter @qwordly/portal facebook:setup
 9. Have the developer confirm the Facebook entry/build loads SDK v8 and root `fbapp-config.json`. SDK version is selected by the artifact; do not assume a dashboard dropdown controls it.
 10. Check the dashboard's Zero Permission Access status and the recorded 13+ audience. Reconcile any discrepancy with the built configuration.
 11. Under app roles/test access, have each authorised tester accept their invitation and open the unpublished game. Document tester labels, not personal identifiers, in public evidence.
-12. Have the developer obtain the actual deployed deletion callback URL; enter it in the dashboard field for the Meta callback. The callback and human-readable status URL serve different purposes.
+12. Have the developer compare the saved callback above with the actual deployed Function and app scope. Preserve the configured value if it matches; change it only when a verified deployment requires a different address. The callback and human-readable status URL serve different purposes.
 13. Test the callback through the signed test process in O-05; opening it in a browser alone does not prove deletion.
 14. Find the contact-email verification action in Basic settings. Request the verification message once, open the owner's mailbox, follow Meta's verification link, then reload Basic settings and confirm it says verified. If the message never arrives, check spam and the displayed address before requesting another.
 15. Find the support URL field in the current app/game details. Enter the existing owner-approved support page if required; do not invent a URL. Open that exact address in a signed-out browser and confirm the support route works. Save and reopen the settings to confirm persistence.

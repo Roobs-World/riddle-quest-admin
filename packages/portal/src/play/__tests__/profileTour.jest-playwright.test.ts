@@ -123,6 +123,35 @@ describeBrowser("profile walkthrough", () => {
     30_000,
   );
 
+  it("opens all 35 custom rank frames from the built profile on a narrow screen", async () => {
+    /** Built-game journey validates the complete rank catalogue independently of race setup. */
+    const page = await browser.newPage({viewport: {width: 320, height: 568}});
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await openProfile(page);
+      for (const id of PROFILE_TOUR) {
+        await expect(page.locator(".tooltip-backdrop")).toHaveAttribute("data-tooltip-id", id);
+        await page.locator(".tooltip-card button").click();
+      }
+      await page.getByRole("button", {name: "Ranks", exact: true}).click();
+      await expect(page.locator(".modal-ranks")).toBeVisible();
+      await expect(page.locator(".rank-list article")).toHaveCount(35);
+      await expect(page.locator(".rank-list .ranked-avatar")).toHaveCount(35);
+      await expect(page.locator(".rank-list article[aria-current='step']")).toHaveCount(1);
+      /** Each rank exposes its own large symbol in its frame preview. */
+      const symbols = await page.locator(".rank-list [data-rank-icon]").evaluateAll(nodes => nodes.map(node => node.getAttribute("data-rank-icon")));
+      expect(new Set(symbols).size).toBe(35);
+      expect(await page.locator(".rank-material-heading").allTextContents()).toEqual(["Bronze", "Silver", "Gold", "Mithril"]);
+      /** The final locked rank remains readable after scrolling the modal. */
+      const finalRank = page.locator(".rank-list article").last();
+      await finalRank.scrollIntoViewIfNeeded();
+      await expect(finalRank.getByText("Quest Legend", {exact: true})).toBeVisible();
+      await expect(finalRank.locator(".ranked-avatar")).toHaveAttribute("data-avatar-material", "mithril");
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   it("keeps the next step's button in place throughout an immediate press", async () => {
     /** Isolated page for this walkthrough scenario. */
     const page = await browser.newPage({viewport: {width: 459, height: 591}});

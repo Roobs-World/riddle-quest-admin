@@ -1,0 +1,82 @@
+{
+  "verifiedAt": "2026-10-02T18:29:38.700Z",
+  "operation": {
+    "name": "projects/riddle-quest-ec2b2/databases/(default)/operations/AyAyZDc0MTdkZmMzZDgtNzU2OS1iZGM0LTJlZWUtZDZmYzM4MTIkGnNlbmlsZXBpcAkKMxI",
+    "metadata": {
+      "@type": "type.googleapis.com/google.firestore.admin.v1.FieldOperationMetadata",
+      "startTime": "2026-10-02T18:19:48.533354Z",
+      "endTime": "2026-10-02T18:25:39.631488Z",
+      "field": "projects/riddle-quest-ec2b2/databases/(default)/collectionGroups/users/fields/stats.multiplayerWins",
+      "indexConfigDeltas": [
+        {
+          "changeType": "ADD",
+          "index": {
+            "queryScope": "COLLECTION",
+            "fields": [
+              {
+                "fieldPath": "stats.multiplayerWins",
+                "order": "DESCENDING"
+              }
+            ]
+          }
+        }
+      ],
+      "state": "SUCCESSFUL",
+      "progressDocuments": {
+        "estimatedWork": "84",
+        "completedWork": "84"
+      }
+    },
+    "done": true,
+    "response": {
+      "@type": "type.googleapis.com/google.firestore.admin.v1.Field",
+      "name": "projects/riddle-quest-ec2b2/databases/(default)/collectionGroups/users/fields/stats.multiplayerWins",
+      "indexConfig": {
+        "indexes": [
+          {
+            "queryScope": "COLLECTION",
+            "fields": [
+              {
+                "fieldPath": "stats.multiplayerWins",
+                "order": "DESCENDING"
+              }
+            ],
+            "state": "READY"
+          }
+        ],
+        "ancestorField": "projects/riddle-quest-ec2b2/databases/(default)/collectionGroups/users/fields/stats"
+      }
+    }
+  },
+  "indexHttpStatus": 200,
+  "indexConfig": {
+    "indexes": [
+      {
+        "queryScope": "COLLECTION",
+        "fields": [
+          {
+            "fieldPath": "stats.multiplayerWins",
+            "order": "DESCENDING"
+          }
+        ],
+        "state": "READY"
+      }
+    ],
+    "ancestorField": "projects/riddle-quest-ec2b2/databases/(default)/collectionGroups/users/fields/stats"
+  },
+  "queryHttpStatus": 200,
+  "resultCount": 9,
+  "scores": [
+    5,
+    5,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1
+  ],
+  "descending": true,
+  "queryErrors": []
+}

@@ -209,8 +209,19 @@ describeBrowser("Jest authentication integration", () => {
     expect(await cancel.count()).toBe(0);
     expect(await page.getByRole("button", {name: /start free trial|^subscribe$/i}).count()).toBe(0);
     await page.getByRole("button", {name: "Close", exact: true}).click();
+    await page.getByRole("button", {name: "Settings", exact: true}).click();
+    await cancel.waitFor();
+    expect(await page.locator(".settings-page button").last().textContent()).toMatch(/cancel subscription/i);
+    await page.screenshot({path: "/tmp/riddle-settings-subscription.png"});
+    await page.getByRole("button", {name: "Close", exact: true}).click();
     await openProfileAfterGuidance(page);
     await cancel.waitFor();
+    expect(await page.locator(".profile-page button").last().textContent()).toMatch(/delete account/i);
+    expect(await cancel.evaluate((button) => {
+      const deletion = document.querySelector(".profile-delete-account-button");
+      return deletion !== null && button.closest(".profile-subscriptions")?.nextElementSibling === deletion.parentElement
+        && button.getBoundingClientRect().bottom <= deletion.getBoundingClientRect().top;
+    })).toBe(true);
     expect((await getHarnessState(page)).calls).not.toContain("sdk.payments.beginSubscription");
     for (const scenario of ["subscription-cancel-dismiss", "subscription-cancel-error", "success"]) {
       await page.evaluate((value) => {
@@ -263,7 +274,7 @@ describeBrowser("Jest authentication integration", () => {
     const {page} = await openHarness(browser, {registered: true, scenario: "subscription-cancel-inactive"});
     await enterRegisteredGame(page);
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: true})));
-    await openProfileAfterGuidance(page);
+    await page.getByRole("button", {name: "Settings", exact: true}).click();
     /** Controlled cancellation result cannot revoke access before confirmation. */
     const cancel = page.getByRole("button", {name: /cancel subscription/i});
     await cancel.waitFor();

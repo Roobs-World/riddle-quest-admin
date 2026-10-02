@@ -163,6 +163,7 @@ export async function hydrateRedditRaceSocialResult(
               ...item,
               opponentDisplayName: "Riddle Quest player",
               opponentAvatarUrl: undefined,
+              opponentLevel: undefined,
             };
           /** Provides profile behavior. */
           const profile = await identity(item.opponentUserId, db, nowMs);

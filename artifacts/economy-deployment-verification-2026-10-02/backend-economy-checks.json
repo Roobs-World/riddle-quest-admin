@@ -1,0 +1,44 @@
+[
+  {
+    "region": "us-central1",
+    "costs": {
+      "hint": 25,
+      "continue": 50,
+      "skip": 100
+    },
+    "rewards": {
+      "classic": {
+        "easy": 25,
+        "medium": 40,
+        "hard": 60
+      },
+      "challenge": {
+        "easy": 75,
+        "medium": 100,
+        "hard": 125
+      }
+    },
+    "compiledRulesVerified": true
+  },
+  {
+    "region": "europe-west1",
+    "costs": {
+      "hint": 25,
+      "continue": 50,
+      "skip": 100
+    },
+    "rewards": {
+      "classic": {
+        "easy": 25,
+        "medium": 40,
+        "hard": 60
+      },
+      "challenge": {
+        "easy": 75,
+        "medium": 100,
+        "hard": 125
+      }
+    },
+    "compiledRulesVerified": true
+  }
+]

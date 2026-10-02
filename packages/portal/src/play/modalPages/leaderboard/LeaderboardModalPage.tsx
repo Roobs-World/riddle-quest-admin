@@ -1,3 +1,4 @@
+import {RankedAvatar} from "../../RankedAvatar";
 import {useState} from "react";
 import type {GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
@@ -70,13 +71,9 @@ export function LeaderboardModalPage({
         {visibleEntries.map((entry, index) => (
               <li key={entry.userId} data-placement={pageStart + index + 1}>
                 <b>{pageStart + index + 1}</b>
-                {entry.avatarUrl ? (
-                  <img className="leaderboard-avatar" src={entry.avatarUrl} alt="" referrerPolicy="no-referrer" />
-                ) : (
-                  <span className="leaderboard-avatar-fallback" aria-hidden="true">
-                    {entry.username.slice(0, 1).toUpperCase()}
-                  </span>
-                )}
+                <RankedAvatar avatarUrl={entry.avatarUrl} level={entry.level} size={30}
+                  fallback={entry.username.slice(0, 1).toUpperCase()} imageClassName="leaderboard-avatar"
+                  fallbackClassName="leaderboard-avatar-fallback" />
                 <span className="leaderboard-player"><span>{entry.username}</span><small>{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{entry.level}</small></span>
                 <strong>
                   {leaderboardType === "xp"

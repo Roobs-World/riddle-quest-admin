@@ -1,0 +1,122 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-facebook-live-tournament", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/facebookTournament.it.test.ts
+FAIL src/__tests__/race/facebookTournament.it.test.ts
+  ● records a real live winner in seat 0 without another economy grant
+
+    TypeError: A dynamic import callback was invoked without --experimental-vm-modules
+
+      100 | async function livePair() {
+      101 |   for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "facebookTournaments"]) await db.recursiveDelete(db.collection(collection));
+    > 102 |   const {joinLiveRaceForUser, updateLiveRaceForUser} = await import("../../race/raceLiveService");
+          |                                                        ^
+      103 |   const sequence = ++liveSequence;
+      104 |   const batch = db.batch();
+      105 |   for (let i = 0; i < 30; i++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${i}`), {
+
+      at livePair (src/__tests__/race/facebookTournament.it.test.ts:102:56)
+      at src/__tests__/race/facebookTournament.it.test.ts:130:18
+
+  ● records a real live winner in seat 1 without another economy grant
+
+    TypeError: A dynamic import callback was invoked without --experimental-vm-modules
+
+      100 | async function livePair() {
+      101 |   for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "facebookTournaments"]) await db.recursiveDelete(db.collection(collection));
+    > 102 |   const {joinLiveRaceForUser, updateLiveRaceForUser} = await import("../../race/raceLiveService");
+          |                                                        ^
+      103 |   const sequence = ++liveSequence;
+      104 |   const batch = db.batch();
+      105 |   for (let i = 0; i < 30; i++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${i}`), {
+
+      at livePair (src/__tests__/race/facebookTournament.it.test.ts:102:56)
+      at src/__tests__/race/facebookTournament.it.test.ts:130:18
+
+  ● keeps server hint and skip penalties while requiring ten solved answers
+
+    TypeError: A dynamic import callback was invoked without --experimental-vm-modules
+
+      144 |
+      145 | it("keeps server hint and skip penalties while requiring ten solved answers", async () => {
+    > 146 |   const {RACE_RULES} = await import("@qwordly/core/race");
+          |                        ^
+      147 |   const {b} = await livePair();
+      148 |   await liveSolve(LIVE_B, b.ticketId, START + 6000, "skip");
+      149 |   const hintedAt = START + 6000 + RACE_RULES.skipPenaltyMs;
+
+      at Object.<anonymous> (src/__tests__/race/facebookTournament.it.test.ts:146:24)
+
+  ● rejects unfinished players and forfeit victories without writing a board
+
+    TypeError: A dynamic import callback was invoked without --experimental-vm-modules
+
+      156 |
+      157 | it("rejects unfinished players and forfeit victories without writing a board", async () => {
+    > 158 |   const {updateLiveRaceForUser} = await import("../../race/raceLiveService");
+          |                                   ^
+      159 |   const {a, b} = await livePair();
+      160 |   await expect(recordFacebookTournamentRun(LIVE_A, {runId: a.ticketId, locale: "en"}, {db, nowMs: START + 7000}))
+      161 |     .rejects.toMatchObject({code: "failed-precondition"});
+
+      at Object.<anonymous> (src/__tests__/race/facebookTournament.it.test.ts:158:35)
+
+  ● rejects corrupted live deck bindings
+
+    TypeError: A dynamic import callback was invoked without --experimental-vm-modules
+
+      100 | async function livePair() {
+      101 |   for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "facebookTournaments"]) await db.recursiveDelete(db.collection(collection));
+    > 102 |   const {joinLiveRaceForUser, updateLiveRaceForUser} = await import("../../race/raceLiveService");
+          |                                                        ^
+      103 |   const sequence = ++liveSequence;
+      104 |   const batch = db.batch();
+      105 |   for (let i = 0; i < 30; i++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${i}`), {
+
+      at livePair (src/__tests__/race/facebookTournament.it.test.ts:102:56)
+      at src/__tests__/race/facebookTournament.it.test.ts:169:18
+
+  ● rejects corrupted live match bindings
+
+    TypeError: A dynamic import callback was invoked without --experimental-vm-modules
+
+      100 | async function livePair() {
+      101 |   for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "facebookTournaments"]) await db.recursiveDelete(db.collection(collection));
+    > 102 |   const {joinLiveRaceForUser, updateLiveRaceForUser} = await import("../../race/raceLiveService");
+          |                                                        ^
+      103 |   const sequence = ++liveSequence;
+      104 |   const batch = db.batch();
+      105 |   for (let i = 0; i < 30; i++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${i}`), {
+
+      at livePair (src/__tests__/race/facebookTournament.it.test.ts:102:56)
+      at src/__tests__/race/facebookTournament.it.test.ts:169:18
+
+  ● rejects corrupted live finish bindings
+
+    TypeError: A dynamic import callback was invoked without --experimental-vm-modules
+
+      100 | async function livePair() {
+      101 |   for (const collection of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "facebookTournaments"]) await db.recursiveDelete(db.collection(collection));
+    > 102 |   const {joinLiveRaceForUser, updateLiveRaceForUser} = await import("../../race/raceLiveService");
+          |                                                        ^
+      103 |   const sequence = ++liveSequence;
+      104 |   const batch = db.batch();
+      105 |   for (let i = 0; i < 30; i++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${i}`), {
+
+      at livePair (src/__tests__/race/facebookTournament.it.test.ts:102:56)
+      at src/__tests__/race/facebookTournament.it.test.ts:169:18
+
+Test Suites: 1 failed, 1 total
+Tests:       7 failed, 1 passed, 8 total
+Snapshots:   0 total
+Time:        4.594 s
+Ran all test suites within paths "src/__tests__/race/facebookTournament.it.test.ts".
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "node scripts/run-with-functions-node.js node_modules/jest/bin/jest.js --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/facebookTournament.it.test.ts" exited with code 1

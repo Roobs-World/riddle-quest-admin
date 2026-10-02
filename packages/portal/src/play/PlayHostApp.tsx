@@ -1,5 +1,5 @@
 import {deliverHostRaceResult} from "./hostRaceResultEffects";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState, type ComponentType} from "react";
 import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import {detectDeviceLanguage, tr, useLocale} from "./i18n";
@@ -18,6 +18,7 @@ import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
 import {useHostRaceCoordination} from "./useHostRaceCoordination";
 import {useHostAuthSession} from "./useHostAuthSession";
 import {useHostBridgeLifecycle} from "./useHostBridgeLifecycle";
+import type {RaceTo10GameProps} from "./race/RaceTo10Game.types";
 import type {HostedPlaySession} from "./HostedPlaySession";
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -46,6 +47,7 @@ export function PlayHostApp({
     onPresenceStateChange,
     referralSharing,
   },
+  raceSurface,
   onPlayable,
   onStartupUnavailable,
   onAuthoritativeGuessWin,
@@ -57,6 +59,8 @@ export function PlayHostApp({
 }: {
   /** Target-owned hosted-play session. */
   session: HostedPlaySession;
+  /** Target-owned multiplayer presentation; omitted for shared live PvP. */
+  raceSurface?: ComponentType<RaceTo10GameProps>;
   /** Stores on playable. */
   onPlayable?: () => void;
   /** Reports that a recoverable startup error surface is ready to be shown. */
@@ -384,10 +388,11 @@ export function PlayHostApp({
   }
 
   return (
-    <ReferralSharingProvider capability={referralSharing}>
+    <ReferralSharingProvider key={authSnapshot.user?.uid ?? "guest"} capability={referralSharing}>
       <div className="play-game-shell">
         {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
         <GameFrameApp
+          raceSurface={raceSurface}
           raceOwnerId={authSnapshot.user?.uid}
           localBridge
           startupError={startupUnavailable && !startupComplete && notice ? getHostNoticeMessage(notice) : undefined}

@@ -25,6 +25,8 @@ export const UpdateLiveRaceSchema = z.object({ticketId: z.string().regex(/^[a-f0
   .refine(input => !["hint", "skip"].includes(input.action) || Boolean(input.riddleId));
 /** Identity is projected from authenticated account data. */
 export const LiveRacePlayerSchema = z.object({displayName: z.string().min(1).max(80),
+  /** Account level used to display the earned avatar frame. */
+  level: z.number().int().positive().optional(),
   avatarUrl: z.string().url().nullable(), bot: z.boolean(), correctCount: z.number().int().min(0).max(10)}).strict();
 /** Answer-free, viewer-specific live state. */
 export const LiveRaceViewSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
@@ -59,6 +61,11 @@ export type UpdateLiveRace = z.infer<typeof UpdateLiveRaceSchema>;
 export type LiveRaceView = z.infer<typeof LiveRaceViewSchema>;
 /** Platform adapter owns the authenticated transport. */
 export type LiveRaceCapability = {
+  /** Opens the target's native friend invitation for an existing private lobby. */
+  shareChallenge?(input: {
+    /** Opaque existing server lobby. */
+    challengeId: string;
+  }): Promise<"success" | "cancelled" | "error">;
   /** Enters or recovers the player's current lobby. */
   join(input: JoinLiveRace): Promise<LiveRaceView>;
   /** Reads an invitation without joining, when supported by the target. */

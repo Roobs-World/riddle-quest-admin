@@ -122,6 +122,7 @@ const projectRaceInboxItem = (value: FirebaseFirestore.DocumentData, subjectDele
     ...(linkedOpponentIdentity && value.opponentAvatarUrl !== undefined
       ? {opponentAvatarUrl: value.opponentAvatarUrl}
       : {}),
+    ...(linkedOpponentIdentity && value.opponentLevel !== undefined ? {opponentLevel: value.opponentLevel} : {}),
     categoryId: value.categoryId,
     result: value.result,
     adjustedDeltaMs: value.adjustedDeltaMs,
@@ -197,6 +198,7 @@ export async function listRaceInboxForUser(
       if (subjectDeleted(document.data())) {
         fields.opponentDisplayName = PRIVATE_RACE_PLAYER_NAME;
         fields.opponentAvatarUrl = admin.firestore.FieldValue.delete();
+        fields.opponentLevel = admin.firestore.FieldValue.delete();
       }
       batch.update(document.ref, fields);
     });

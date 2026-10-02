@@ -32,7 +32,7 @@ export async function setJestLiveChallengePush(enabled: boolean): Promise<boolea
   const url = new URL(workerUrl, location.href);
   url.searchParams.set("gameUrl", launch.href);
   /** Dedicated browser worker for offline challenge notifications. */
-  const registration = await navigator.serviceWorker.register(url.href);
+  const registration = await navigator.serviceWorker.register(url.href, {type: "module"});
   /** The supplied registration avoids Firebase's default root worker and cross-target assets. */
   if (!registration.active) await new Promise<void>((resolve, reject) => {
     /** Installing or waiting worker before Firebase token registration. */

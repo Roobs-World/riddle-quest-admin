@@ -1,0 +1,27 @@
+{
+  "requestedAt": "2026-10-02T18:19:48.595Z",
+  "httpStatus": 200,
+  "response": {
+    "name": "projects/riddle-quest-ec2b2/databases/(default)/operations/AyAyZDc0MTdkZmMzZDgtNzU2OS1iZGM0LTJlZWUtZDZmYzM4MTIkGnNlbmlsZXBpcAkKMxI",
+    "metadata": {
+      "@type": "type.googleapis.com/google.firestore.admin.v1.FieldOperationMetadata",
+      "startTime": "2026-10-02T18:19:48.533354Z",
+      "field": "projects/riddle-quest-ec2b2/databases/(default)/collectionGroups/users/fields/stats.multiplayerWins",
+      "indexConfigDeltas": [
+        {
+          "changeType": "ADD",
+          "index": {
+            "queryScope": "COLLECTION",
+            "fields": [
+              {
+                "fieldPath": "stats.multiplayerWins",
+                "order": "DESCENDING"
+              }
+            ]
+          }
+        }
+      ],
+      "state": "INITIALIZING"
+    }
+  }
+}

@@ -1,0 +1,308 @@
+{
+  "baseline": true,
+  "conditions": "5 cold browser contexts; starts after successful identity/attestation; 200ms server profile, 700ms Daily, 1600ms Classic; actual Jest startup riddle adapter",
+  "results": [
+    {
+      "scenario": "daily-completed",
+      "medianReadyMs": 2300.5999999998603,
+      "runs": [
+        {
+          "readyMs": 2300.5999999998603,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 10.900000000139698
+            },
+            {
+              "name": "challenge:start",
+              "time": 10.900000000139698
+            },
+            {
+              "name": "profile:ready",
+              "time": 211
+            },
+            {
+              "name": "challenge:done",
+              "time": 711
+            },
+            {
+              "name": "classic:start",
+              "time": 711.5
+            },
+            {
+              "name": "classic:done",
+              "time": 2311.5
+            },
+            {
+              "name": "playable",
+              "time": 2311.5
+            }
+          ]
+        },
+        {
+          "readyMs": 2301.600000000093,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 7.399999999906868
+            },
+            {
+              "name": "challenge:start",
+              "time": 7.5
+            },
+            {
+              "name": "profile:ready",
+              "time": 207.5999999998603
+            },
+            {
+              "name": "challenge:done",
+              "time": 708.5
+            },
+            {
+              "name": "classic:start",
+              "time": 708.8999999999069
+            },
+            {
+              "name": "classic:done",
+              "time": 2309
+            },
+            {
+              "name": "playable",
+              "time": 2309
+            }
+          ]
+        },
+        {
+          "readyMs": 2300.5999999998603,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 5.699999999953434
+            },
+            {
+              "name": "challenge:start",
+              "time": 5.7999999998137355
+            },
+            {
+              "name": "profile:ready",
+              "time": 205.89999999990687
+            },
+            {
+              "name": "challenge:done",
+              "time": 705.8999999999069
+            },
+            {
+              "name": "classic:start",
+              "time": 706.1999999999534
+            },
+            {
+              "name": "classic:done",
+              "time": 2306.2999999998137
+            },
+            {
+              "name": "playable",
+              "time": 2306.2999999998137
+            }
+          ]
+        },
+        {
+          "readyMs": 2300.5999999998603,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 5.400000000139698
+            },
+            {
+              "name": "challenge:start",
+              "time": 5.400000000139698
+            },
+            {
+              "name": "profile:ready",
+              "time": 205.5
+            },
+            {
+              "name": "challenge:done",
+              "time": 705.4000000001397
+            },
+            {
+              "name": "classic:start",
+              "time": 705.8000000000466
+            },
+            {
+              "name": "classic:done",
+              "time": 2306
+            },
+            {
+              "name": "playable",
+              "time": 2306
+            }
+          ]
+        },
+        {
+          "readyMs": 2300.6999999999534,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 18.199999999953434
+            },
+            {
+              "name": "challenge:start",
+              "time": 18.199999999953434
+            },
+            {
+              "name": "profile:ready",
+              "time": 218.29999999981374
+            },
+            {
+              "name": "challenge:done",
+              "time": 718.2999999998137
+            },
+            {
+              "name": "classic:start",
+              "time": 718.6999999999534
+            },
+            {
+              "name": "classic:done",
+              "time": 2318.899999999907
+            },
+            {
+              "name": "playable",
+              "time": 2318.899999999907
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "daily-available",
+      "medianReadyMs": 700.1000000000931,
+      "runs": [
+        {
+          "readyMs": 700.1000000000931,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 8
+            },
+            {
+              "name": "challenge:start",
+              "time": 8
+            },
+            {
+              "name": "profile:ready",
+              "time": 208
+            },
+            {
+              "name": "challenge:done",
+              "time": 708.1000000000931
+            },
+            {
+              "name": "playable",
+              "time": 708.1000000000931
+            }
+          ]
+        },
+        {
+          "readyMs": 700.1000000000931,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 6.199999999953434
+            },
+            {
+              "name": "challenge:start",
+              "time": 6.199999999953434
+            },
+            {
+              "name": "profile:ready",
+              "time": 206.30000000004657
+            },
+            {
+              "name": "challenge:done",
+              "time": 706.3000000000466
+            },
+            {
+              "name": "playable",
+              "time": 706.3000000000466
+            }
+          ]
+        },
+        {
+          "readyMs": 700.2000000001863,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 6.699999999953434
+            },
+            {
+              "name": "challenge:start",
+              "time": 6.699999999953434
+            },
+            {
+              "name": "profile:ready",
+              "time": 206.9000000001397
+            },
+            {
+              "name": "challenge:done",
+              "time": 706.9000000001397
+            },
+            {
+              "name": "playable",
+              "time": 706.9000000001397
+            }
+          ]
+        },
+        {
+          "readyMs": 700.1999999999534,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 5.600000000093132
+            },
+            {
+              "name": "challenge:start",
+              "time": 5.699999999953434
+            },
+            {
+              "name": "profile:ready",
+              "time": 205.69999999995343
+            },
+            {
+              "name": "challenge:done",
+              "time": 705.6999999999534
+            },
+            {
+              "name": "playable",
+              "time": 705.8000000000466
+            }
+          ]
+        },
+        {
+          "readyMs": 700.1000000000931,
+          "events": [
+            {
+              "name": "startup:start",
+              "time": 5.5
+            },
+            {
+              "name": "challenge:start",
+              "time": 5.5
+            },
+            {
+              "name": "profile:ready",
+              "time": 205.60000000009313
+            },
+            {
+              "name": "challenge:done",
+              "time": 705.6000000000931
+            },
+            {
+              "name": "playable",
+              "time": 705.6000000000931
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

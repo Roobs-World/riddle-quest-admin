@@ -28,6 +28,10 @@ Current provider observations:
   allowlist, so an absent field must not be treated as proof that every game
   network request is blocked. Security reports that mandatory 2FA is disabled;
   review the app's security settings before release.
+  A subsequent [Chrome follow-up](facebook-review-followup-2026-10-02.md) visibly
+  confirms a saved data-deletion callback in Basic settings. The generic empty
+  MCP field therefore does not establish callback absence; the configured address
+  returns 405 to an unsigned GET. Signed acceptance remains outstanding.
 - Review responses contradict one another: status reports an unsubmitted record
   with its approved boolean true; requirements disallow submission because an
   earlier submission is allegedly under review; history reports no prior reviews;

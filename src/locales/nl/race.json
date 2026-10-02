@@ -115,7 +115,6 @@
     "LIVE_MODE": "Live PvP",
     "LIVE_WAITING_FINISH": "Wachten tot je tegenstander klaar is…",
     "LIVE_FRIEND_WAIT": "Wachten tot je vriend accepteert. Deze uitnodiging verloopt na 15 minuten.",
-    "LIVE_ACTION_WAIT": "Volgende actie over {seconds} s",
     "PLAYER_USERNAME": "Gebruikersnaam van speler",
     "NOTIFY_PLAYER": "Uitdaging sturen",
     "INVITE_QUEUED": "Uitnodiging opgeslagen. Pushmeldingen hangen af van de instellingen van de speler.",

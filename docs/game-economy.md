@@ -24,7 +24,7 @@ Difficulty comes from canonical content. Server sessions pin it when issued; com
 
 ## Shop value
 
-Existing bundle amounts, product IDs and configured price tiers are retained. Halving all three action prices doubles every pack's gameplay purchasing power. Bundles already provide progressively better value as their size increases; tests enforce that relationship separately for USD and Reddit Gold.
+Existing bundle amounts and product IDs are retained. Halving all three action prices doubles every pack's gameplay purchasing power. The price ladder below provides progressively better value as bundle size increases; tests enforce that relationship separately for USD and Reddit Gold. [Deployed verification on 2 October 2026](evidence/coin-economy-deployed-verification-2026-10-02.md) found that Jest still used older provider prices and updated its six existing products to this USD ladder. The latest active Jest build displays the corrected catalog.
 
 | Pack | Coins | Configured USD default | Reddit Gold | Hints **or** extra attempts |
 | --- | ---: | ---: | ---: | --- |

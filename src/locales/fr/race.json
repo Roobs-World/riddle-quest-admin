@@ -115,7 +115,6 @@
     "LIVE_MODE": "PvP en direct",
     "LIVE_WAITING_FINISH": "En attendant que votre adversaire termine…",
     "LIVE_FRIEND_WAIT": "En attendant que votre ami accepte. Cette invitation expire après 15 minutes.",
-    "LIVE_ACTION_WAIT": "Prochaine action dans {seconds} s",
     "PLAYER_USERNAME": "Nom d’utilisateur du joueur",
     "NOTIFY_PLAYER": "Envoyer un défi",
     "INVITE_QUEUED": "Invitation enregistrée. Les notifications dépendent des réglages du joueur.",

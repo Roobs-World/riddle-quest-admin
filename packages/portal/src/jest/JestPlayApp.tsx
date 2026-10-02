@@ -53,6 +53,7 @@ import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
 import {createJestHostedPlaySession} from "./JestHostedPlaySession";
 import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
+import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
   /** Counts confirmed guest Classic wins in this play session for the registration cadence. */
@@ -66,7 +67,9 @@ export function JestPlayApp() {
   /** Provides host services mode behavior. */
   const hostServicesMode = useMemo(() => resolveHostServicesMode(), []);
   /** Provides host services behavior. */
-  const hostServices = useMemo(() => createHostServices(hostServicesMode), [hostServicesMode]);
+  const startupRiddles = useMemo(() => createJestStartupRiddlePreload(createHostServices(hostServicesMode)), [hostServicesMode]);
+  /** Target services reuse one prepared Classic fallback during startup. */
+  const hostServices = startupRiddles.services;
   /** Provides host configuration warning behavior. */
   const hostConfigurationWarning = getHostConfigurationWarning(hostServicesMode);
   /** Provides search params behavior. */
@@ -295,6 +298,7 @@ export function JestPlayApp() {
     let active = true;
     /** Disconnects this startup's native analytics when the session retires. */
     let stopAnalytics: (() => void) | undefined;
+    startupRiddles.clear();
     playerStateWrites.disable();
     /** Provides deletion recovery behavior. */
     void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup, {
@@ -344,7 +348,11 @@ export function JestPlayApp() {
             isActive: () => active,
             session: result.value,
             prepareSession: async (readySession, preparedLocale) => {
-              if (hostServicesMode !== "firebase" || authHarness || mockRuntime) return readySession;
+              if (hostServicesMode !== "firebase" || authHarness || mockRuntime) {
+                if (active && notificationOperationGate.isOpen())
+                  startupRiddles.preloadClassic(preparedLocale, readySession.playerData?.profile?.classicIndex ?? 1);
+                return readySession;
+              }
               // Start issued content while the server profile and translated copy load.
               // Identity, App Check, and purchase recovery have already succeeded.
               hostServices.preloadInitialRiddles?.(preparedLocale);
@@ -363,6 +371,8 @@ export function JestPlayApp() {
                 email: undefined,
                 isAnonymous: !readySession.player.registered,
               }, profileData);
+              if (active && notificationOperationGate.isOpen())
+                startupRiddles.preloadClassic(preparedLocale, profile.classicIndex ?? 1);
               return {...readySession, playerData: {...readySession.playerData,
                 schemaVersion: 1, updatedAt: Date.now(), profile}};
             },
@@ -385,6 +395,7 @@ export function JestPlayApp() {
     });
     return () => {
       active = false;
+      startupRiddles.clear();
       stopAnalytics?.();
       playerStateWrites.disable();
       stopJestLoadingHeartbeat(platform);
@@ -395,6 +406,7 @@ export function JestPlayApp() {
     completeTombstonedPlayerCleanup,
     deletionCleanupOptions,
     hostServices,
+    startupRiddles,
     hostServicesMode,
     authHarness,
     mockRuntime,

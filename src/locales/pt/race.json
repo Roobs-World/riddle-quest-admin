@@ -115,7 +115,6 @@
     "LIVE_MODE": "PvP ao vivo",
     "LIVE_WAITING_FINISH": "Aguardando seu adversário terminar…",
     "LIVE_FRIEND_WAIT": "A aguardar que o teu amigo aceite. Este convite expira após 15 minutos.",
-    "LIVE_ACTION_WAIT": "Próxima ação em {seconds} s",
     "PLAYER_USERNAME": "Nome de usuário do jogador",
     "NOTIFY_PLAYER": "Enviar desafio",
     "INVITE_QUEUED": "Convite salvo. As notificações dependem das configurações do jogador.",

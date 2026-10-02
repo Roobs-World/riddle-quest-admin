@@ -1,3 +1,4 @@
+import {LiveRacePushConsent} from "../../race/components/LiveRacePushConsent";
 import {ProfileSubscriptionContext} from "./ProfileSubscriptionContext";
 import chestUrl from "../../../../../../assets/images-web/chest-closed.png";
 import {useProviderProfile} from "../../ProviderProfileContext";
@@ -6,6 +7,7 @@ import type {ChangeEvent, KeyboardEvent} from "react";
 import type {GameModal, GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel} from "../../ranks";
+import {RankedAvatar} from "../../RankedAvatar";
 import {RankIcon} from "../../RankIcon";
 import {getProfileProgress} from "./profileProgress";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
@@ -129,13 +131,8 @@ export function ProfileModalPage({
         <div className="profile-identity" data-tooltip="profileIdentity">
           {platformRegistered === undefined || providerProfile ? (
             <div className="profile-avatar-button">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="" referrerPolicy="no-referrer" />
-              ) : (
-                <span className="profile-avatar-fallback" aria-hidden="true">
-                  {displayName.slice(0, 1).toUpperCase()}
-                </span>
-              )}
+              <RankedAvatar avatarUrl={avatarUrl} level={progress.level} size={84}
+                fallback={displayName.slice(0, 1).toUpperCase()} fallbackClassName="profile-avatar-fallback" />
             </div>
           ) : <>
           <button
@@ -148,13 +145,8 @@ export function ProfileModalPage({
             }
             onClick={chooseAvatar}
           >
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="" referrerPolicy="no-referrer" />
-            ) : (
-              <span className="profile-avatar-fallback" aria-hidden="true">
-                {displayName.slice(0, 1).toUpperCase()}
-              </span>
-            )}
+            <RankedAvatar avatarUrl={avatarUrl} level={progress.level} size={84}
+              fallback={displayName.slice(0, 1).toUpperCase()} fallbackClassName="profile-avatar-fallback" />
             <span className="profile-avatar-edit" aria-hidden="true">
               ＋
             </span>
@@ -190,12 +182,11 @@ export function ProfileModalPage({
           </div>
         </div>
         <section className="rank-card" data-tooltip="profileProgression">
-          <span className="rank-emblem" style={{background: rank.color}}>
-            <RankIcon name={rank.icon} />
-          </span>
+          <RankedAvatar size={56} level={progress.level} fallback={<RankIcon name={rank.icon} />} showSymbolBadge={false} />
           <div>
             <small>{tr("Ranks.CURRENT_RANK")}</small>
             <strong>{tr(rank.nameKey)}</strong>
+            <span className="rank-material" data-rank-material={rank.material}>{tr(rank.materialKey)}</span>
             <p>{tr(rank.descriptionKey)}</p>
           </div>
         </section>
@@ -236,7 +227,6 @@ export function ProfileModalPage({
         </div>
       </dl>
       <div className="profile-links">
-        {subscriptionControls}
         {referralSharing ? (
           <button className="profile-invite-button" onClick={referralSharing.shareInvite}>
             {referralSharing.inviteLabel ?? tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
@@ -265,6 +255,8 @@ export function ProfileModalPage({
           <img src={chestUrl} alt="" width="72" height="64" />
         </button>
       </div>
+      <LiveRacePushConsent />
+      {subscriptionControls}
       <div className="profile-danger-zone">
         <button
           ref={deleteTriggerRef}

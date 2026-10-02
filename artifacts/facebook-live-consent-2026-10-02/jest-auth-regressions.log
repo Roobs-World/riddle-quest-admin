@@ -1,0 +1,383 @@
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:20:45.921Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration survives the hosted loading watchdog while signed identity takes 25 seconds"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:11.660Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration survives the hosted loading watchdog while signed identity takes 25 seconds","status":"passed","durationMs":25739}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:11.660Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration uses the restored language for the first hosted game handshake after reload"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:11.893Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration uses the restored language for the first hosted game handshake after reload","status":"passed","durationMs":233}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:11.894Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps unavailable Daily visible without silently opening Classic"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:12.024Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps unavailable Daily visible without silently opening Classic","status":"passed","durationMs":130}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:12.024Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps the riddle and controls usable in the short Jest phone preview"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:13.634Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps the riddle and controls usable in the short Jest phone preview","status":"passed","durationMs":1610}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:13.635Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration localizes game-owned Shop copy in Arabic and preserves provider descriptions"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:15.509Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration localizes game-owned Shop copy in Arabic and preserves provider descriptions","status":"passed","durationMs":1874}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:15.509Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:45.513Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile","status":"failed","durationMs":30003}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:45.513Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration delivers native analytics for startup, controls, and confirmed gameplay"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:47.215Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration delivers native analytics for startup, controls, and confirmed gameplay","status":"passed","durationMs":1702}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:47.215Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration refreshes an unavailable cancellation without claiming it succeeded or revoking paid access"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:49.068Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration refreshes an unavailable cancellation without claiming it succeeded or revoking paid access","status":"passed","durationMs":1853}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:49.068Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration reports first_milestone after a returning player solves a riddle"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:51.367Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration reports first_milestone after a returning player solves a riddle","status":"passed","durationMs":2298}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:51.367Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration starts a guest through signed identity exchange and reads stable-player progress"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:51.633Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration starts a guest through signed identity exchange and reads stable-player progress","status":"passed","durationMs":266}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:51.633Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration renders startup while the external Jest SDK request is still pending"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:56.686Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration renders startup while the external Jest SDK request is still pending","status":"passed","durationMs":5053}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:56.686Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps play interactive while the product catalog loads in the background"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:56.981Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps play interactive while the product catalog loads in the background","status":"passed","durationMs":295}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:21:56.981Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a new guest after the first solved riddle"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:00.684Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a new guest after the first solved riddle","status":"passed","durationMs":3703}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:00.684Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a guest with a legacy milestone after the first solved riddle"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:04.337Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a guest with a legacy milestone after the first solved riddle","status":"passed","durationMs":3653}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:04.337Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a returning guest with two saved wins after the first solved riddle"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:08.153Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a returning guest with two saved wins after the first solved riddle","status":"passed","durationMs":3816}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:08.153Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a guest when the milestone call fails after the first solved riddle"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:11.953Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prompts a guest when the milestone call fails after the first solved riddle","status":"passed","durationMs":3800}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:11.954Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration reports a guest Daily completion without opening registration"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:17.486Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration reports a guest Daily completion without opening registration","status":"passed","durationMs":5532}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:17.486Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration offers registration when confirmation arrives after all completion popups were dismissed"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:19.400Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration offers registration when confirmation arrives after all completion popups were dismissed","status":"passed","durationMs":1914}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:19.400Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration offers registration after the first Classic victory while reward syncing is delayed"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:21.221Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration offers registration after the first Classic victory while reward syncing is delayed","status":"passed","durationMs":1821}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:21.221Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration registers with a stable player id, re-signs identity, refreshes profile, and survives reload"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:52.621Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration registers with a stable player id, re-signs identity, refreshes profile, and survives reload","status":"failed","durationMs":31400}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:22:52.621Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prefills the Jest profile picture from the SDK avatar"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:23:24.088Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration prefills the Jest profile picture from the SDK avatar","status":"failed","durationMs":31466}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:23:24.088Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration runs the complete profile invite, attributed registration, and inviter reward journey"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:23:55.584Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration runs the complete profile invite, attributed registration, and inviter reward journey","status":"failed","durationMs":31495}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:23:55.584Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration logs an existing Jest player in from the onboarding choice"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:27.003Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration logs an existing Jest player in from the onboarding choice","status":"failed","durationMs":31419}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:27.004Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration skips the registration step for an already registered Jest player and restores platform data"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:27.819Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration skips the registration step for an already registered Jest player and restores platform data","status":"passed","durationMs":815}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:27.819Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration surfaces a server-authoritative referral reward in the game"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:27.966Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration surfaces a server-authoritative referral reward in the game","status":"passed","durationMs":146}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:27.966Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shares a race challenge and schedules its attributed registered-player reminder"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:28.197Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shares a race challenge and schedules its attributed registered-player reminder","status":"passed","durationMs":231}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:28.198Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration returns to the exhausted-attempt Continue prompt after closing the shop"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:30.877Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration returns to the exhausted-attempt Continue prompt after closing the shop","status":"passed","durationMs":2679}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:24:30.878Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration falls back to SDK login when the custom registration overlay cannot open"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:25:02.336Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration falls back to SDK login when the custom registration overlay cannot open","status":"failed","durationMs":31458}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:25:02.336Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration retains a retryable registration prompt when fallback SDK login fails"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:25:33.790Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration retains a retryable registration prompt when fallback SDK login fails","status":"failed","durationMs":31454}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:25:33.790Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration retains a retryable registration prompt when the overlay login action fails"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:26:05.538Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration retains a retryable registration prompt when the overlay login action fails","status":"failed","durationMs":31748}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:26:05.538Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration handles duplicate registration close callbacks idempotently"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:26:37.186Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration handles duplicate registration close callbacks idempotently","status":"failed","durationMs":31648}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:26:37.186Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable terminal screen when registered identity synchronization fails"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:27:08.629Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable terminal screen when registered identity synchronization fails","status":"failed","durationMs":31443}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:27:08.629Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration stops registration when the authoritative identity is already deleted"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:27:40.079Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration stops registration when the authoritative identity is already deleted","status":"failed","durationMs":31450}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:27:40.079Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration replaces play with a terminal screen that cannot reload the deleted identity"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:11.543Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration replaces play with a terminal screen that cannot reload the deleted identity","status":"failed","durationMs":31464}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:11.543Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for SDK initialization failures"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:11.598Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for SDK initialization failures","status":"passed","durationMs":55}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:11.598Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for SDK initialization timeout failures"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:42.001Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for SDK initialization timeout failures","status":"passed","durationMs":30403}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:42.001Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for signed player failures"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:42.077Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for signed player failures","status":"passed","durationMs":76}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:42.077Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for identity exchange failures"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:42.150Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration shows a retryable startup screen for identity exchange failures","status":"passed","durationMs":72}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:28:42.150Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration waits for a delayed host handshake before accessing player state and reaches playable UI"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:29:00.727Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration waits for a delayed host handshake before accessing player state and reaches playable UI","status":"passed","durationMs":18577}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:29:00.727Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration authenticates during a pending social profile and reports readiness only after playable UI"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:29:02.179Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration authenticates during a pending social profile and reports readiness only after playable UI","status":"passed","durationMs":1452}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:29:02.179Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps registered play available when the optional Jest social profile is unavailable"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:29:02.321Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration keeps registered play available when the optional Jest social profile is unavailable","status":"passed","durationMs":142}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:29:02.321Z","event":"start","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration recovers from a transient SDK initialization failure when Retry is pressed"}
+[AUTH-DIAGNOSTIC] {"time":"2026-10-02T18:29:02.513Z","event":"result","suite":"authentication.jest-playwright.test.ts","name":"Jest authentication integration recovers from a transient SDK initialization failure when Retry is pressed","status":"passed","durationMs":192}
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (497.1 s)
+  Jest authentication integration
+    ✓ survives the hosted loading watchdog while signed identity takes 25 seconds (25739 ms)
+    ✓ uses the restored language for the first hosted game handshake after reload (233 ms)
+    ✓ keeps unavailable Daily visible without silently opening Classic (130 ms)
+    ✓ keeps the riddle and controls usable in the short Jest phone preview (1610 ms)
+    ✓ localizes game-owned Shop copy in Arabic and preserves provider descriptions (1874 ms)
+    ✕ refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile (30003 ms)
+    ✓ delivers native analytics for startup, controls, and confirmed gameplay (1702 ms)
+    ✓ refreshes an unavailable cancellation without claiming it succeeded or revoking paid access (1853 ms)
+    ✓ reports first_milestone after a returning player solves a riddle (2298 ms)
+    ✓ starts a guest through signed identity exchange and reads stable-player progress (266 ms)
+    ✓ renders startup while the external Jest SDK request is still pending (5053 ms)
+    ✓ keeps play interactive while the product catalog loads in the background (295 ms)
+    ✓ prompts a new guest after the first solved riddle (3703 ms)
+    ✓ prompts a guest with a legacy milestone after the first solved riddle (3653 ms)
+    ✓ prompts a returning guest with two saved wins after the first solved riddle (3816 ms)
+    ✓ prompts a guest when the milestone call fails after the first solved riddle (3800 ms)
+    ✓ reports a guest Daily completion without opening registration (5532 ms)
+    ✓ offers registration when confirmation arrives after all completion popups were dismissed (1914 ms)
+    ✓ offers registration after the first Classic victory while reward syncing is delayed (1821 ms)
+    ✕ registers with a stable player id, re-signs identity, refreshes profile, and survives reload (31400 ms)
+    ✕ prefills the Jest profile picture from the SDK avatar (31466 ms)
+    ✕ runs the complete profile invite, attributed registration, and inviter reward journey (31495 ms)
+    ✕ logs an existing Jest player in from the onboarding choice (31419 ms)
+    ✓ skips the registration step for an already registered Jest player and restores platform data (815 ms)
+    ✓ surfaces a server-authoritative referral reward in the game (146 ms)
+    ✓ shares a race challenge and schedules its attributed registered-player reminder (231 ms)
+    ✓ returns to the exhausted-attempt Continue prompt after closing the shop (2679 ms)
+    ✕ falls back to SDK login when the custom registration overlay cannot open (31458 ms)
+    ✕ retains a retryable registration prompt when fallback SDK login fails (31454 ms)
+    ✕ retains a retryable registration prompt when the overlay login action fails (31748 ms)
+    ✕ handles duplicate registration close callbacks idempotently (31648 ms)
+    ✕ shows a retryable terminal screen when registered identity synchronization fails (31443 ms)
+    ✕ stops registration when the authoritative identity is already deleted (31450 ms)
+    ✕ replaces play with a terminal screen that cannot reload the deleted identity (31464 ms)
+    ✓ shows a retryable startup screen for SDK initialization failures (55 ms)
+    ✓ shows a retryable startup screen for SDK initialization timeout failures (30403 ms)
+    ✓ shows a retryable startup screen for signed player failures (76 ms)
+    ✓ shows a retryable startup screen for identity exchange failures (72 ms)
+    ✓ waits for a delayed host handshake before accessing player state and reaches playable UI (18577 ms)
+    ✓ authenticates during a pending social profile and reports readiness only after playable UI (1452 ms)
+    ✓ keeps registered play available when the optional Jest social profile is unavailable (142 ms)
+    ✓ recovers from a transient SDK initialization failure when Retry is pressed (192 ms)
+    ○ skipped opens the authoritative race results inbox from a messaging deep link
+    ○ skipped renders the preloaded next riddle before a delayed skip response returns
+    ○ skipped renders typed invitation waiting and cancellation for an opaque creator entry
+    ○ skipped recovers a waiting invitation from a local pointer after reloading without an incoming link
+    ○ skipped consumes an unavailable challenge on Close so Multiplayer reopens the normal lobby
+    ○ skipped reopens a completed recipient challenge to its result without a second start
+    ○ skipped opens a public creator entry as recorded and routes Check results to Activity
+    ○ skipped retains public recipient acceptance without exposing creator controls
+    ○ skipped suspends typed invitation polling while hidden and refreshes on visible recovery
+    ○ skipped recovers lost hint and skip confirmations by resuming the current race
+    ○ skipped confirms an automatic skip once after the fifth incorrect guess
+    ○ skipped merges guess confirmation hints and recovers an invalid reveal without losing successor typing
+    ○ skipped confirms the result when a hint penalty or final skip ends the challenger race
+    ○ skipped restores successor typing after a lost or malformed guess confirmation
+    ○ skipped recovers a completely lost hint response after the delivery deadline
+    ○ skipped rejects inconsistent hint confirmations and recovers authoritative reveals
+    ○ skipped preserves the player's draft through projected and confirmed hints
+    ○ skipped preserves solving time when hint and skip confirmations belong to another run
+    ○ skipped publishes a completed score before reusable Jest invites reach recipients
+    ○ skipped shows an opponent win immediately and keeps category navigation ahead of delayed outcome work
+    ○ skipped replays an opponent skip milestone after the player's penalty clock advances
+    ○ skipped recovers lost publication confirmations without creating another challenge
+    ○ skipped shows a completed creator result while authoritative completion work continues in the background
+    ○ skipped recovers a guess rejected after the ghost deadline without exposing a retry dead-end
+    ○ skipped keeps the immediate result visible and retries failed background reconciliation
+    ○ skipped acknowledges close during a delayed start and abandons the created run before exiting
+    ○ skipped preserves a newer same-account resume hint when an older race completes or is abandoned
+    ○ skipped recovers rejected race preparation without creating a second run
+    ○ skipped recovers lost quit confirmations during preparation and active play
+    ○ skipped confirms quitting an active race and abandons it with no result
+    ○ skipped does not schedule race reminders for an unregistered player
+
+  ● Jest authentication integration › refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile
+
+    thrown: "Exceeded timeout of 30000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at _getError (../../node_modules/.pnpm/jest-circus@30.5.2_supports-color@8.1.1/node_modules/jest-circus/build/jestAdapterInit.js:1985:12)
+          at Array.map (<anonymous>)
+
+    Cause:
+        thrown: "Exceeded timeout of 30000 ms for a test.
+        Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+          193 |   });
+          194 |
+        > 195 |   it("refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile", async () => {
+              |     ^
+          196 |     /** Explicit Daily entry keeps the canonical riddle available for subscription assertions. */
+          197 |     const {page} = await openHarness(browser, {registered: true, gameMode: "challenge"});
+          198 |     await enterRegisteredGame(page, /I speak without a mouth/i);
+
+          at src/jest/__tests__/authentication.jest-playwright.test.ts:195:5
+          at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:48:1)
+
+  ● Jest authentication integration › registers with a stable player id, re-signs identity, refreshes profile, and survives reload
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:584:5)
+
+  ● Jest authentication integration › prefills the Jest profile picture from the SDK avatar
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:759:5)
+
+  ● Jest authentication integration › runs the complete profile invite, attributed registration, and inviter reward journey
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:773:5)
+
+  ● Jest authentication integration › logs an existing Jest player in from the onboarding choice
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:877:5)
+
+  ● Jest authentication integration › falls back to SDK login when the custom registration overlay cannot open
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2230:5)
+
+  ● Jest authentication integration › retains a retryable registration prompt when fallback SDK login fails
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2260:5)
+
+  ● Jest authentication integration › retains a retryable registration prompt when the overlay login action fails
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2298:5)
+
+  ● Jest authentication integration › handles duplicate registration close callbacks idempotently
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2320:5)
+
+  ● Jest authentication integration › shows a retryable terminal screen when registered identity synchronization fails
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2343:5)
+
+  ● Jest authentication integration › stops registration when the authoritative identity is already deleted
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at advanceToRegistration (src/jest/__tests__/authentication.jest-playwright.support.ts:86:3)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2394:5)
+
+  ● Jest authentication integration › replaces play with a terminal screen that cannot reload the deleted identity
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2411:5)
+
+Test Suites: 1 failed, 1 total
+Tests:       12 failed, 31 skipped, 30 passed, 73 total
+Snapshots:   0 total
+Time:        497.224 s
+Ran all test suites within paths "src/jest/__tests__/authentication.jest-playwright.test.ts".

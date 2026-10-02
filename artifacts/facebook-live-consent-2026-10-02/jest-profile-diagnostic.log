@@ -1,0 +1,23 @@
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (31.931 s)
+  ● Jest authentication integration › prefills the Jest profile picture from the SDK avatar
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#game-modal-title').getByText(/^profile$/i) to be visible[22m
+
+      137 |     .locator("#game-modal-title")
+      138 |     .getByText(/^profile$/i)
+    > 139 |     .waitFor();
+          |      ^
+      140 |   /** Provides tooltip behavior. */
+      141 |   const tooltip = page.locator(".tooltip-card");
+      142 |   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+
+      at openProfileAfterGuidance (src/jest/__tests__/authentication.jest-playwright.support.ts:139:6)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:759:5)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 72 skipped, 73 total
+Snapshots:   0 total
+Time:        32.038 s
+Ran all test suites within paths "src/jest/__tests__/authentication.jest-playwright.test.ts".

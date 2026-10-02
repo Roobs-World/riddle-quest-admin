@@ -77,6 +77,7 @@ export async function deliverRaceSettlement(
           itemId,
           challengeId: run.challengeId,
           opponentUserId: run.userId,
+          opponentLevel: typeof profile.level === "number" && Number.isInteger(profile.level) && profile.level > 0 ? profile.level : 1,
           opponentDisplayName: String(profile.displayName || profile.username || "Riddle Quest player").trim().slice(0, 80),
           ...(typeof profile.avatarUrl === "string" ? {opponentAvatarUrl: profile.avatarUrl} : {}),
           categoryId: run.categoryId,

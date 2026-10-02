@@ -96,9 +96,9 @@ const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion 
 /** Jest multiplayer runs beside eur3; other capabilities retain their configured region. */
 const raceFunctions = firebaseEnvironment.platformTarget === "jest"
   ? getFunctions(firebaseApp, "europe-west1") : functions;
-/** Opts Jest solo into a deployed database-adjacent region without moving commerce or another target. */
-const gameplayFunctions = firebaseEnvironment.platformTarget === "jest" && firebaseEnvironment.gameplayRegion
-  ? getFunctions(firebaseApp, firebaseEnvironment.gameplayRegion) : functions;
+/** Jest solo runs beside the deployed eur3 endpoints; the explicit region override permits rollback. */
+const gameplayFunctions = firebaseEnvironment.platformTarget === "jest"
+  ? getFunctions(firebaseApp, firebaseEnvironment.gameplayRegion || "europe-west1") : functions;
 /** Shared Functions instance used by target-specific lazy adapters. */
 export const firebaseFunctions = functions;
 

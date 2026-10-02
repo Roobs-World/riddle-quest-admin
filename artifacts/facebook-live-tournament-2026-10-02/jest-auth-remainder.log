@@ -1,0 +1,58 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (60.479 s)
+  ● Jest authentication integration › authenticates during a pending social profile and reports readiness only after playable UI
+
+    page.waitForFunction: Timeout 30000ms exceeded.
+
+      2447 |     /** Native adapter uses a social read controlled by the injected SDK. */
+      2448 |     const {context, page, pageErrors} = await openHarness(browser, {registered: true, scenario: "profile-controlled"});
+    > 2449 |     await page.waitForFunction(() =>
+           |                ^
+      2450 |       (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+      2451 |         .__RIDDLE_QUEST_JEST_AUTH_TEST__.firebaseTokens.length === 1,
+      2452 |     );
+
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2449:16)
+
+  ● Jest authentication integration › keeps registered play available when the optional Jest social profile is unavailable
+
+    locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /let's play/i }) to be visible[22m
+
+      327 |   backendExchanges: string[];
+      328 | }>) => {
+    > 329 |     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+          |                                                           ^
+      330 |     /** Reads identity observations after startup is ready. */
+      331 |     const state = await readState();
+      332 |     expect(state.profileReads).toBe(1);
+
+      at verifyOptionalProfileFailure (src/jest/__tests__/authentication.jest-playwright.support.ts:329:59)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2476:39)
+
+  ● Jest authentication integration › recovers from a transient SDK initialization failure when Retry is pressed
+
+    locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('heading', { name: /startup failed/i }) to be visible[22m
+
+      345 | /** Retries a transient SDK failure and waits for the playable entry screen. */
+      346 | export const retryFailedStartup = async (page: Page) => {
+    > 347 |     await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout: 15_000});
+          |                                                                ^
+      348 |     await page.getByRole("button", {name: /retry/i}).click();
+      349 |     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+      350 | };
+
+      at retryFailedStartup (src/jest/__tests__/authentication.jest-playwright.support.ts:347:64)
+      at Object.<anonymous> (src/jest/__tests__/authentication.jest-playwright.test.ts:2483:29)
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 70 skipped, 73 total
+Snapshots:   0 total
+Time:        60.582 s
+Ran all test suites within paths "src/jest/__tests__/authentication.jest-playwright.test.ts".
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand --runTestsByPath src/jest/__tests__/authentication.jest-playwright.test.ts '--testNamePattern=authenticates during a pending social profile|keeps registered play available when the optional Jest social profile is unavailable|recovers from a transient SDK initialization failure'

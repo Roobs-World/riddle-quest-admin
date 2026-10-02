@@ -1,0 +1,42 @@
+[
+  {
+    "region": "us-central1",
+    "file": "packages/core/dist/game/economy.js",
+    "sha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0"
+  },
+  {
+    "region": "us-central1",
+    "file": "lib/shared/constants.js",
+    "sha256": "2ee390d601a62a8deff47cb1c2860b15ff1e12d38af7e260b202cf2bf37eb725"
+  },
+  {
+    "region": "us-central1",
+    "file": "lib/gameplay/completeGameLogic.js",
+    "sha256": "5e683cdc8ca269ed58c58509cc6ea8a31b2ec649c2f03d0b4bbc1e2bc89cb574"
+  },
+  {
+    "region": "us-central1",
+    "file": "lib/gameplay/singlePlayerSession.js",
+    "sha256": "505f3acb923241128b096e0871d87e33e3307ed55e5a05e488a6cc33565c9da0"
+  },
+  {
+    "region": "europe-west1",
+    "file": "packages/core/dist/game/economy.js",
+    "sha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0"
+  },
+  {
+    "region": "europe-west1",
+    "file": "lib/shared/constants.js",
+    "sha256": "2ee390d601a62a8deff47cb1c2860b15ff1e12d38af7e260b202cf2bf37eb725"
+  },
+  {
+    "region": "europe-west1",
+    "file": "lib/gameplay/completeGameLogic.js",
+    "sha256": "5e683cdc8ca269ed58c58509cc6ea8a31b2ec649c2f03d0b4bbc1e2bc89cb574"
+  },
+  {
+    "region": "europe-west1",
+    "file": "lib/gameplay/singlePlayerSession.js",
+    "sha256": "505f3acb923241128b096e0871d87e33e3307ed55e5a05e488a6cc33565c9da0"
+  }
+]

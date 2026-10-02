@@ -488,6 +488,8 @@ export const RaceInboxItemSchema = z
     opponentUserId: z.string().trim().min(1).max(128).optional(),
     opponentDisplayName: z.string().trim().min(1).max(80),
     opponentAvatarUrl: z.string().url().nullable().optional(),
+    /** Trusted opponent progression at result delivery. */
+    opponentLevel: z.number().int().positive().optional(),
     categoryId: RaceCategoryIdSchema,
     result: z.enum(["win", "loss", "tie"]),
     adjustedDeltaMs: z.number().int(),

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRiddle",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:25.646137068Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  },
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/completeGame",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:28.883915016Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  },
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getHint",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:20.250919534Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  },
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/spendCoins",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:18.148822774Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  },
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRiddle",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:55.816211978Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  },
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/completeGame",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.163352653Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  },
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getHint",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:03.329601904Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  },
+  {
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/spendCoins",
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:36.563697018Z",
+    "economySha256": "855a4b2583722f79d95a7eaa36876af9593eb1067334d19a31f9c275f9ad47c0",
+    "sameDeployedEconomy": true
+  }
+]

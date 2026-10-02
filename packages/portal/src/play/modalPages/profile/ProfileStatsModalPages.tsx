@@ -1,7 +1,8 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
 import type {GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
-import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS} from "../../ranks";
+import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS, RANK_MATERIAL_ORDER} from "../../ranks";
+import {RankedAvatar} from "../../RankedAvatar";
 import {RankIcon} from "../../RankIcon";
 import {createAchievementPlayer} from "./profileStats";
 
@@ -109,10 +110,11 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
   return (
     <div className="ranks-page">
       <section className="profile-detail-hero rank-summary">
-        <span className="rank-emblem" style={{background: currentRank.color}} aria-hidden="true"><RankIcon name={currentRank.icon} /></span>
+        <RankedAvatar size={64} level={currentRank.minimumLevel} fallback={<RankIcon name={currentRank.icon} />} showSymbolBadge={false} />
         <div>
           <span className="profile-detail-eyebrow">{tr("Ranks.CURRENT_RANK")}</span>
           <strong>{tr(currentRank.nameKey)}</strong>
+          <span className="rank-material" data-rank-material={currentRank.material}>{tr(currentRank.materialKey)}</span>
           <span className="rank-summary-level">{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{level}</span>
         </div>
         <div className="rank-summary-progress">
@@ -125,23 +127,24 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
       </section>
       <p className="rank-introduction">{tr("Ranks.SUBTITLE")}</p>
       <div className="rank-list">
-      {PLAYER_RANKS.map((rank) => (
-        <article className={rank.id === currentRank.id ? "current" : ""} key={rank.id}
-          data-reached={level >= rank.minimumLevel} aria-current={rank.id === currentRank.id ? "step" : undefined}>
-          <span className="rank-emblem" style={{background: rank.color}} aria-hidden="true">
-            <RankIcon name={rank.icon} />
-          </span>
-          <div>
-            <strong>{tr(rank.nameKey)}</strong>
-            <p>{tr(rank.descriptionKey)}</p>
-            {rank.id === currentRank.id ? <span className="rank-current-label">{tr("Ranks.CURRENT_RANK")}</span> : null}
-          </div>
-          <small>
-            {tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}
-            {rank.minimumLevel}
-          </small>
-        </article>
-      ))}
+        {RANK_MATERIAL_ORDER.map(material => {
+          /** Ordered milestones belonging to this metal tier. */
+          const ranks = PLAYER_RANKS.filter(rank => rank.material === material);
+          return <section className="rank-material-section" key={material} data-rank-material={material}>
+            <h3 className="rank-material-heading">{tr(ranks[0].materialKey)}</h3>
+            {ranks.map(rank => <article className={rank.id === currentRank.id ? "current" : ""} key={rank.id}
+              data-rank-id={rank.id} data-reached={level >= rank.minimumLevel}
+              aria-current={rank.id === currentRank.id ? "step" : undefined}>
+              <RankedAvatar size={56} level={rank.minimumLevel} fallback={<RankIcon name={rank.icon} />} showSymbolBadge={false} />
+              <div>
+                <strong>{tr(rank.nameKey)}</strong>
+                <p>{tr(rank.descriptionKey)}</p>
+                {rank.id === currentRank.id ? <span className="rank-current-label">{tr("Ranks.CURRENT_RANK")}</span> : null}
+              </div>
+              <small>{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{rank.minimumLevel}</small>
+            </article>)}
+          </section>;
+        })}
       </div>
     </div>
   );

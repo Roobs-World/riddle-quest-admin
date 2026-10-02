@@ -5,6 +5,7 @@ import type {FacebookInstantSdk, FacebookSharePayload} from "./fbinstant";
 import type {FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookReferralToken, parseFacebookReferralTokenResponse} from "./referrals";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
+import {createFacebookLiveRaceSharing} from "./FacebookLiveRaceSharing";
 
 /** Supplies native Meta invitations only after authenticated feature and age gates succeed. */
 export function createFacebookReferralSharing({sdk, enabled, ageCategory, isActive, issueToken = createFacebookReferralToken,
@@ -86,14 +87,8 @@ export function createFacebookReferralSharing({sdk, enabled, ageCategory, isActi
       void share("SHARE", tr("VictoryModal.SHARE_MESSAGE_TEMPLATE", {gameType, attempts, attemptLabel, emojiGrid}), {gameMode},
         {title: tr("VictoryModal.SHARE_RESULT_TITLE"), summary: `${gameType} · ${attempts} ${attemptLabel}`, emojiGrid});
     },
-    /** Meta's native challenge dialog lets the player choose friends and delivers the invitation. */
-    async shareLiveRace(input) {
-      if (!/^live_[a-f0-9]{64}$/.test(input.challengeId)) return "error";
-      /** Entry data contains only the server handle; lobby identity and deck are fetched after launch. */
-      const summary = tr("RaceTo10.FIRST_TO_TEN");
-      return share("CHALLENGE", `${tr("RaceTo10.TITLE")} · ${summary}`, {challengeId: input.challengeId},
-        {title: tr("RaceTo10.CHALLENGE_FRIEND"), summary, emojiGrid: ""});
-    },
+    /** Shares the same native invitation behavior as the independent multiplayer capability. */
+    shareLiveRace: createFacebookLiveRaceSharing({sdk, enabled, ageCategory, isActive, renderImage, reportFailure}),
     /** Shares a server-published challenge through Meta. */
     async shareRace(input) {
       if (!/^[A-Za-z0-9_-]{1,160}$/.test(input.challengeId) || !Number.isSafeInteger(input.preview.adjustedTimeToBeatMs) ||

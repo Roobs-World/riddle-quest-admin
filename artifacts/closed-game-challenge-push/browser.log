@@ -1,0 +1,1 @@
+Closed-game challenge push passed: the real service worker displays one browser notification with no game page open, replaces duplicates and rejects expired or malformed messages. FCM delivery was injected.

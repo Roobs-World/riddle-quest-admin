@@ -29,6 +29,7 @@ module.exports = {
     "**/__tests__/redditCommerceLedger.it.test.ts",
     "**/__tests__/facebookCommerceLedger.it.test.ts",
     "**/__tests__/race/facebookTournament.it.test.ts",
+    "**/__tests__/race/facebookLiveReferrals.it.test.ts",
     "**/__tests__/race/redditTournament.it.test.ts",
     "**/__tests__/socialSafety.it.test.ts",
     "**/__tests__/facebookContextRetention.it.test.ts",

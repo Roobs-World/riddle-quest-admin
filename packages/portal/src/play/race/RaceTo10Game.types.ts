@@ -1,5 +1,6 @@
 import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
+import type {ReactNode} from "react";
+import type {LiveRaceView, ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
 import type {
   ContextBoardCapability,
   MatchmakingCapability,
@@ -28,6 +29,10 @@ export type RaceTo10GameProps = Readonly<{
   onClose: () => void;
   /** Stores initial categories. */
   initialCategories?: ListRaceCategoriesResponse["categories"];
+  /** Target-owned navigation shown only while choosing a live match. */
+  introNavigation?: ReactNode;
+  /** Target-owned effect after a validated terminal live snapshot; never score authority. */
+  onLiveResult?: (view: LiveRaceView) => void;
   /** Stores native social. */
   nativeSocial?: NativeSocialCapability;
   /** Stores matchmaking. */

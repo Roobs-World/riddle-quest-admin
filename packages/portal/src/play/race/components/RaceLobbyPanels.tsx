@@ -1,3 +1,4 @@
+import {RankedAvatar} from "../../RankedAvatar";
 import {useState, type CSSProperties} from "react";
 import type {
   ListRaceCategoriesResponse,
@@ -165,11 +166,7 @@ export function RaceInboxPanel({
         <ul>
           {items.map((item) => (
             <li key={item.itemId}>
-              {item.opponentAvatarUrl ? (
-                <img src={item.opponentAvatarUrl} alt="" />
-              ) : (
-                <span aria-hidden="true">⚔️</span>
-              )}
+              <RankedAvatar avatarUrl={item.opponentAvatarUrl} level={item.opponentLevel} size={48} fallback="⚔️" />
               <div>
                 <strong>
                   {tr(

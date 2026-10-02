@@ -1,3 +1,4 @@
+import {PushConsentContext, usePushConsentState} from "./PushConsentContext";
 import {createContext, useContext, type ReactNode} from "react";
 
 /** Result data that a platform may turn into an attributed referral share. */
@@ -66,7 +67,11 @@ export function ReferralSharingProvider({
   /** Stores children. */
   children: ReactNode;
 }) {
-  return <ReferralSharingContext.Provider value={capability ?? null}>{children}</ReferralSharingContext.Provider>;
+  /** One acknowledged consent state serves all controls under this target. */
+  const consent = usePushConsentState(capability);
+  return <ReferralSharingContext.Provider value={capability ?? null}>
+    <PushConsentContext.Provider value={consent}>{children}</PushConsentContext.Provider>
+  </ReferralSharingContext.Provider>;
 }
 
 /** Returns the active target's referral-sharing capability, or null when unsupported. */

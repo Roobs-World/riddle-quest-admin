@@ -152,6 +152,23 @@ export interface FacebookSharePayload {
   switchContext: false;
 }
 
+/** Native friend picker payload, with only an opaque game-owned lobby handle. */
+export interface FacebookInvitePayload {
+  /** Locally rendered identity-free invitation card. */
+  image: string;
+  /** Copy in the active game locale. */
+  text: {
+    /** Fallback copy understood by the native picker. */
+    default: string;
+  };
+  /** Opaque server-owned challenge reference. */
+  data: Record<string, string>;
+  /** Localized native invitation action. */
+  cta: string;
+  /** Localized friend picker heading. */
+  dialogTitle: string;
+}
+
 /** Meta's current native tournament getters, inspected in the public v8 SDK. */
 export interface FacebookInstantTournament {
   /** Meta's opaque tournament identifier, never an official game ranking key. */
@@ -224,6 +241,8 @@ export interface FacebookInstantSdk {
   matchPlayerAsync?(matchTag?: string, switchContextWhenMatched?: boolean, offlineMatch?: boolean): Promise<void>;
   /** Opens Meta's native share dialog after the game has started. */
   shareAsync?(payload: FacebookSharePayload): Promise<void>;
+  /** Opens Meta's native friend invitation picker when supported by this host. */
+  inviteAsync?(payload: FacebookInvitePayload): Promise<void>;
   /** Gets entry point data. */
   getEntryPointData?(): unknown;
   /** Provides on pause behavior. */

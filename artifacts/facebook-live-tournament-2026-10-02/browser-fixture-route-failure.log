@@ -1,0 +1,924 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:facebook-commerce-activation && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && FACEBOOK_BUILD=1 NODE_ENV=production vite build --mode facebook && pnpm audit:facebook-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.99855ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.021462ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.047263ms)
+✔ rejects imports between different target owners (1.806835ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.619775ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.947466ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.132106ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.786741ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.049299ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.703704ms)
+✔ aggregates violations in deterministic file and source order (0.788805ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 137.794408
+Web Target boundary audit passed (268 files, 1151 module references).
+$ node ../../scripts/audit-facebook-commerce-activation.mjs
+Facebook commerce-activation audit passed: unverified commerce remains unreachable.
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+Third-party notices are current (107162 bytes)
+vite v8.3.1 building client environment for facebook...
+transforming...
+✓ 1359 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/fbapp-config.json                                 0.11 kB │ gzip:   0.12 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/index.html                                        1.46 kB │ gzip:   0.54 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_ring_b-BUHGHX-C.webp                   4.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coin-BnaBYH65.svg                          6.30 kB │ gzip:   1.96 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/wheel-bg-BifSuxYC.svg                      7.74 kB │ gzip:   1.13 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_ring_a-DuvJN49d.webp                   8.03 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_sun_corona-v2-BMfKNPFY.webp           14.24 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_moon_h-DGScgJpd.webp                  14.81 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_moon_g-B0h_U8wT.webp                  14.99 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_sun_spots_02-CCRhajmp.webp            18.87 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_planet_u-BzJmFwqP.webp                18.90 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_planet_v-DtVH6iTD.webp                19.84 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_planet_a-CKSLcGca.webp                25.73 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/third-party-licenses.txt                         25.82 kB │ gzip:   6.30 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/main-logo-DeVvp0Z6.webp                   26.72 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_moon_f-i48T7jJA.webp                  29.64 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_planet_s-fmsfCdSp.webp                31.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_planet_k-BTSVj7tG.webp                32.65 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_planet_r-k9FTlMLw.webp                32.83 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_moon_d-C8et7CUZ.webp                  36.81 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/chest-open-CQnbBCSD.webp                  38.74 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/riddlequest-r-kPbkvcmu.webp               42.31 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_moon_c-CbidFNBi.webp                  45.87 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/PoetsenOne-Regular-C2losmxN.woff2         48.38 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/Poppins-Bold-ryPfWsYm.woff2               51.20 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/Poppins-SemiBold-9BRRzCnb.woff2           51.80 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/Poppins-Regular-B-jQUxpD.woff2            51.85 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/chest-closed-GI3XjnpL.png                 56.64 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tex_planet_d-Bc6RyclI.webp                60.96 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/music-DoaAtikm.webm                    1,139.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/LiveRacePushConsent-rZDS_6_E.css           0.64 kB │ gzip:   0.34 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/RaceTo10Game-DLLfvRN1.css                 17.31 kB │ gzip:   4.51 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/GameModalView-CYADV0m9.css                22.93 kB │ gzip:   5.68 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/facebook-CLIP9yjv.css                     29.06 kB │ gzip:   7.08 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/index-f5oWfZDe.js                          0.04 kB │ gzip:   0.06 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/core-bridge-constants--aS0k-qf.js          0.10 kB │ gzip:   0.12 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-D5FNWyR-.js                  0.24 kB │ gzip:   0.24 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-nH51PXfP.js                  0.24 kB │ gzip:   0.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-D8ya_JNu.js                  0.24 kB │ gzip:   0.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-DWbUNWIe.js                  0.24 kB │ gzip:   0.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-BYE0U2nU.js                  0.24 kB │ gzip:   0.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-DOWwEDty.js                  0.24 kB │ gzip:   0.23 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-BDik9euY.js                  0.25 kB │ gzip:   0.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-CBBbHWwq.js                  0.25 kB │ gzip:   0.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-jg_xLRQF.js                  0.25 kB │ gzip:   0.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-BbL7_7k5.js                  0.25 kB │ gzip:   0.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-DTPGIncA.js                  0.26 kB │ gzip:   0.23 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-DnqoM55A.js                  0.26 kB │ gzip:   0.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-C7Vy1ASc.js                   0.27 kB │ gzip:   0.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-Cub-Q8ZC.js                  0.27 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-BYVVINHp.js                   0.27 kB │ gzip:   0.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-_IHX8OXJ.js                   0.27 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-BZVNlz11.js                   0.28 kB │ gzip:   0.24 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-DLij0XrJ.js                   0.28 kB │ gzip:   0.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-CnSXfRTK.js                   0.28 kB │ gzip:   0.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-DaUuHEwu.js                   0.28 kB │ gzip:   0.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-CK7PF9KX.js                   0.28 kB │ gzip:   0.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-Dphs8PuT.js                   0.28 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-Cs_VA6tJ.js                  0.28 kB │ gzip:   0.27 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-BdFq5bZC.js                   0.28 kB │ gzip:   0.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-DDFGPNCH.js                     0.29 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-xYGMEqwZ.js                   0.29 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-DRIFyWzN.js                     0.29 kB │ gzip:   0.29 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-ByeNUhlf.js                   0.29 kB │ gzip:   0.29 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-D5ciQ0bv.js                     0.30 kB │ gzip:   0.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-bOd9o3D2.js                     0.30 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-BxoJ25GD.js                     0.30 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-Dhd71lSG.js                     0.30 kB │ gzip:   0.27 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-CM4qvqpd.js                     0.30 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-DlF3CX7M.js                     0.31 kB │ gzip:   0.27 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-pVkVSjy8.js                     0.31 kB │ gzip:   0.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-a1B-pdoH.js                     0.31 kB │ gzip:   0.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-BrtYGPPp.js                   0.31 kB │ gzip:   0.30 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-BAlSQDJA.js                     0.32 kB │ gzip:   0.30 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/rolldown-runtime-BX80bFGj.js               0.32 kB │ gzip:   0.24 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/streakFanfare-BzlSgn3C.js                  0.32 kB │ gzip:   0.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/raceMatchmakingFailure-gwKWK-Mb.js         0.33 kB │ gzip:   0.24 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-DPa59xbr.js                     0.33 kB │ gzip:   0.32 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-DWAsypAb.js                     0.33 kB │ gzip:   0.30 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-O2VpNloi.js                   0.34 kB │ gzip:   0.30 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-BWcOtV6z.js                     0.40 kB │ gzip:   0.33 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/coinPurchase-BV6JOECJ.js                   0.40 kB │ gzip:   0.32 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/aboutLegal-CafrKBIi.js                     0.40 kB │ gzip:   0.35 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-B4mmyPlr.js                 0.44 kB │ gzip:   0.34 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-BPKjiUsq.js                 0.44 kB │ gzip:   0.35 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-Cl0qa3XP.js                 0.45 kB │ gzip:   0.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-CTGjhSJn.js                 0.45 kB │ gzip:   0.33 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-Da_x7Jue.js                 0.45 kB │ gzip:   0.34 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-DyoO6WH1.js                 0.47 kB │ gzip:   0.35 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-CHdstpWu.js                 0.47 kB │ gzip:   0.35 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-BAlJ8D0X.js                 0.47 kB │ gzip:   0.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-v2MHtQSQ.js                 0.47 kB │ gzip:   0.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-K9Nos2mF.js                 0.49 kB │ gzip:   0.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-Bue1Atdb.js                 0.51 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-DycDwaw7.js                 0.57 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-CAEFvJIw.js                           0.57 kB │ gzip:   0.38 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-k7gnV9d7.js                           0.60 kB │ gzip:   0.37 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-LHo0RTEh.js                     0.60 kB │ gzip:   0.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-BMJNzftc.js                           0.60 kB │ gzip:   0.38 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-BQYz0n7p.js                     0.60 kB │ gzip:   0.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-BCJJmg6G.js                 0.60 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-Ba8oafGm.js                     0.60 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-MEWTAVKQ.js                 0.60 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-BJfbarUe.js                       0.61 kB │ gzip:   0.41 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-uWLV7_IN.js                           0.61 kB │ gzip:   0.39 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-Chv-L1hH.js                           0.61 kB │ gzip:   0.43 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-BRdR07-x.js                    0.61 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-BR5T4TtI.js                     0.61 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-0ziv21kt.js                           0.61 kB │ gzip:   0.39 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-TXvA79Ew.js                       0.61 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-G4mMFInB.js                     0.62 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-B40AggAB.js                           0.62 kB │ gzip:   0.40 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-DPn3bYut.js                       0.62 kB │ gzip:   0.42 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-uBJWS9jJ.js                     0.62 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-Cb6Q_l6B.js                       0.63 kB │ gzip:   0.42 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-BvduCtS3.js                     0.63 kB │ gzip:   0.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-Dxn-nmrz.js                       0.63 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-C0q_S8jl.js                       0.63 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-CVOdB_vV.js                    0.63 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-DjcuQLRV.js                    0.63 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-CD2x3gjV.js                           0.63 kB │ gzip:   0.39 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-BAKuJQ0V.js                     0.63 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-y3_6efZc.js                     0.63 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-DlbT0guL.js                           0.64 kB │ gzip:   0.43 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-voYHsFUT.js                        0.64 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-EAZRhExY.js                       0.65 kB │ gzip:   0.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-Tve_fJmi.js                    0.65 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-DJXuQjmJ.js                       0.65 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-NcmlwEhr.js                     0.65 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-D4cBsewH.js                        0.65 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-ChGB28Me.js                          0.65 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-BH98FRri.js                           0.65 kB │ gzip:   0.39 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-D34B027x.js                       0.65 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-BbszsdYQ.js                           0.65 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-DrtwLq4d.js                     0.65 kB │ gzip:   0.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/FacebookFirebaseAppCheck-C6cTbtxq.js       0.66 kB │ gzip:   0.41 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-Dip51uU5.js                    0.66 kB │ gzip:   0.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-DHMrlBIz.js                    0.66 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-CePY92Zg.js                    0.66 kB │ gzip:   0.51 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-z81bey13.js                       0.66 kB │ gzip:   0.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-xz2rxIEE.js                    0.67 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-BC08gz35.js                           0.67 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-Cm2XrxOq.js                    0.67 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-yo3SbgUa.js                         0.67 kB │ gzip:   0.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-Cl-jOBH2.js                        0.67 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-CwKzye_a.js                        0.68 kB │ gzip:   0.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-DAs-qgR8.js                        0.68 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-LEc_FZAv.js                        0.68 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-D5Qv8qTc.js                        0.68 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-CgqA2j0A.js                       0.68 kB │ gzip:   0.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-zFYbm85S.js                          0.69 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-CamtRNro.js                        0.69 kB │ gzip:   0.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-DxN1dYl-.js                        0.69 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-Dxz7TG0R.js                         0.69 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-CcQuILuh.js                         0.69 kB │ gzip:   0.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-nPezcvFs.js                         0.69 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-DTBGSsux.js                       0.70 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-C840pk2y.js                          0.70 kB │ gzip:   0.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-BUW-2iCW.js                          0.70 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-sP4O4uOB.js                          0.70 kB │ gzip:   0.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-tP6PVopg.js                        0.71 kB │ gzip:   0.55 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-tSVkZ_F2.js                          0.71 kB │ gzip:   0.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-DooQ9gVw.js                    0.71 kB │ gzip:   0.53 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-Dn2o5t3O.js                         0.71 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-BRVy3Mmi.js                    0.71 kB │ gzip:   0.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common--aEQLWh2.js                         0.71 kB │ gzip:   0.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-CUOYuFbf.js                     0.71 kB │ gzip:   0.57 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-Da8541eN.js                           0.71 kB │ gzip:   0.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-y4a6s1oN.js                         0.72 kB │ gzip:   0.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-DlS2WGcR.js                          0.72 kB │ gzip:   0.56 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-KiRJYwtM.js                         0.72 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-MpoR7pbE.js                         0.72 kB │ gzip:   0.47 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-CtSj4RI_.js                          0.72 kB │ gzip:   0.51 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-xSvk09Tu.js                          0.73 kB │ gzip:   0.51 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-DVIQvc1k.js                          0.73 kB │ gzip:   0.51 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-B_BGKgyc.js                       0.74 kB │ gzip:   0.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-ffIM6-e_.js                         0.74 kB │ gzip:   0.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/levelUpFanfare-DQ8np8Rb.js                 0.74 kB │ gzip:   0.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-fRNVYmj2.js                          0.74 kB │ gzip:   0.54 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-DBkwvqdy.js                     0.76 kB │ gzip:   0.55 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-BXC6Nr9l.js                    0.77 kB │ gzip:   0.55 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-DqWadySW.js                        0.77 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-C3xPfGc-.js                         0.78 kB │ gzip:   0.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-D0_UhizG.js                       0.79 kB │ gzip:   0.54 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-DAfyC-CK.js                        0.80 kB │ gzip:   0.58 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-B1V3WjYh.js                          0.80 kB │ gzip:   0.57 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-vpljjTN8.js                         0.81 kB │ gzip:   0.54 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-Dz3UpTCl.js                         0.82 kB │ gzip:   0.55 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-CWXPUZRX.js                           0.82 kB │ gzip:   0.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-CPMr9j5i.js                        0.83 kB │ gzip:   0.59 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-MfKaCO-M.js                     0.83 kB │ gzip:   0.58 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-DDTHVAn4.js                    0.90 kB │ gzip:   0.56 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/settings-CS_i32e5.js                       0.91 kB │ gzip:   0.54 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-DQLra8FR.js                     0.92 kB │ gzip:   0.59 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/navigation-BQVuBhL8.js                     0.93 kB │ gzip:   0.57 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-DhRrKJqk.js                          0.93 kB │ gzip:   0.59 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-DGElKeRF.js                          0.94 kB │ gzip:   0.63 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-D4odGT_9.js                    0.95 kB │ gzip:   0.60 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/FirebasePresenceTransport-CmVSEUjy.js      0.95 kB │ gzip:   0.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-BdXkwqia.js                         0.95 kB │ gzip:   0.58 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-DBG6CBbL.js                     0.95 kB │ gzip:   0.60 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-BleaRYoH.js                        0.98 kB │ gzip:   0.63 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/stats-CuYOugsp.js                          0.98 kB │ gzip:   0.59 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-DRBoez9o.js                     0.99 kB │ gzip:   0.60 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-Dh8uBuI7.js                     0.99 kB │ gzip:   0.67 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-B7pKqerD.js                           1.00 kB │ gzip:   0.67 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-CvwH3JRg.js                     1.01 kB │ gzip:   0.63 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-Bxc6Vazv.js                           1.01 kB │ gzip:   0.64 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-Br7kjNqm.js                           1.01 kB │ gzip:   0.66 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-2t-QOlLl.js                           1.02 kB │ gzip:   0.63 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/loss-yasTnJNB.js                           1.03 kB │ gzip:   0.53 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-BBAL6gd1.js                           1.03 kB │ gzip:   0.65 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-DogN41pu.js                           1.03 kB │ gzip:   0.66 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/leaderboard-DgAQ8B8R.js                    1.04 kB │ gzip:   0.56 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/credits-BbaTbmS6.js                        1.05 kB │ gzip:   0.59 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-Dz1I3NHF.js                     1.06 kB │ gzip:   0.72 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-CxNt_bIa.js                           1.06 kB │ gzip:   0.71 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-CI3rvyFj.js                           1.06 kB │ gzip:   0.70 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-CGQR-1WH.js                           1.06 kB │ gzip:   0.66 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-Bc53XwVf.js                     1.06 kB │ gzip:   0.63 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-GaDlHPGX.js                     1.07 kB │ gzip:   0.65 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-Db1bojX4.js                     1.07 kB │ gzip:   0.66 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-9zKAd3CI.js                     1.07 kB │ gzip:   0.66 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-aH2F2ifU.js                        1.08 kB │ gzip:   0.71 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-DC9vM_Tc.js                        1.08 kB │ gzip:   0.68 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-D0qqLXEz.js                        1.08 kB │ gzip:   0.68 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-CeF9v80c.js                        1.08 kB │ gzip:   0.71 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-Bgt1szQl.js                        1.09 kB │ gzip:   0.69 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-mGKFaann.js                           1.09 kB │ gzip:   0.70 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/common-Bd-x9vS3.js                         1.09 kB │ gzip:   0.58 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-BKzUbbGR.js                        1.10 kB │ gzip:   0.72 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-B_FvyPF8.js                     1.11 kB │ gzip:   0.74 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-5LBKH9w4.js                        1.11 kB │ gzip:   0.76 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-D4A7IRHO.js                     1.12 kB │ gzip:   0.74 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-DSoKnGoZ.js                        1.12 kB │ gzip:   0.69 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-WnOT0bNz.js                        1.14 kB │ gzip:   0.71 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-VeWXLU1X.js                           1.14 kB │ gzip:   0.77 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-MKpBYOPd.js                           1.14 kB │ gzip:   0.78 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-9FrSpGI7.js                        1.15 kB │ gzip:   0.72 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-Y5kENKLF.js                           1.21 kB │ gzip:   0.83 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-BpkYhsKD.js                        1.22 kB │ gzip:   0.80 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-Dp0Ltz6A.js                        1.22 kB │ gzip:   0.83 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-BI5ouef1.js                     1.24 kB │ gzip:   0.79 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-C7LFLzdx.js                           1.26 kB │ gzip:   0.73 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-hVbmD5ZC.js                        1.26 kB │ gzip:   0.79 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-BtmL5mvj.js                     1.33 kB │ gzip:   0.77 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/preload-helper-ClC2XIXo.js                 1.33 kB │ gzip:   0.75 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/LiveRacePushConsent-D8OJ4tS0.js            1.38 kB │ gzip:   0.78 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-DlqM2-hj.js                   1.39 kB │ gzip:   0.63 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/firebaseClient-gv6JG4vI.js                 1.40 kB │ gzip:   0.54 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-A0I59Hwp.js                   1.41 kB │ gzip:   0.64 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-WYVc7UBU.js                   1.41 kB │ gzip:   0.64 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-B9l7Q7Lr.js                   1.42 kB │ gzip:   0.62 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-j0sPoT9_.js                   1.42 kB │ gzip:   0.61 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-DCCRen2A.js                   1.42 kB │ gzip:   0.62 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-lV6itiEw.js                   1.45 kB │ gzip:   0.65 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-MzG24ORQ.js                   1.45 kB │ gzip:   0.65 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-DSPGtFim.js                   1.46 kB │ gzip:   0.66 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-BZ8a1RcW.js                        1.47 kB │ gzip:   0.89 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-CN_qPQIa.js                  1.49 kB │ gzip:   0.89 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-CI4Rdj-4.js                  1.50 kB │ gzip:   0.88 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-ByCyVLjU.js                  1.53 kB │ gzip:   0.94 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-CTMqWnYu.js                  1.55 kB │ gzip:   0.91 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-cpV5YSgo.js                  1.56 kB │ gzip:   1.01 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-C-xuQOx7.js                  1.57 kB │ gzip:   0.91 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-BD1_VuwZ.js                   1.57 kB │ gzip:   0.70 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-BICgyIpZ.js                   1.58 kB │ gzip:   0.70 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-DdYm31wi.js                   1.59 kB │ gzip:   0.57 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-B4kwDiAE.js                  1.59 kB │ gzip:   0.92 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-BDiNWZUD.js                  1.60 kB │ gzip:   0.98 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-DRGqP7K6.js                  1.65 kB │ gzip:   0.98 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-g0BRFO7H.js                   1.65 kB │ gzip:   0.71 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/victory-Ftg8wV6N.js                        1.67 kB │ gzip:   0.84 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-TZIdKuXU.js                  1.68 kB │ gzip:   0.98 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/shop-9skbhZF9.js                           1.72 kB │ gzip:   0.81 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-4RKoE2kW.js                   1.72 kB │ gzip:   0.76 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/PlatformPresenceSession-CzEhWnuL.js        1.72 kB │ gzip:   0.63 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/onboarding-P14NxbMr.js                     1.73 kB │ gzip:   0.80 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-BOUSxXiL.js                  1.76 kB │ gzip:   1.06 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-CHIGdDnq.js                  1.77 kB │ gzip:   1.05 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-CqzKbFrh.js                  2.00 kB │ gzip:   1.04 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-BUUZF47d.js                   2.00 kB │ gzip:   0.79 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-CBQVCHEu.js                           2.00 kB │ gzip:   1.16 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-DugrZVK-.js                           2.01 kB │ gzip:   1.15 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-BoliY9mL.js                           2.02 kB │ gzip:   1.15 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-UuXq4gLU.js                           2.02 kB │ gzip:   1.13 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-Zz4k6Y4h.js                           2.02 kB │ gzip:   1.20 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-DWXtL8EX.js                           2.04 kB │ gzip:   1.16 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-C6APJE3p.js                           2.07 kB │ gzip:   1.18 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-Bg5MD8Zo.js                           2.07 kB │ gzip:   1.18 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-CiKrzzmu.js                   2.13 kB │ gzip:   0.76 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-CB8rHK4q.js                           2.13 kB │ gzip:   1.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-DkfdKGJd.js                  2.21 kB │ gzip:   1.15 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-WiBThsXY.js                           2.21 kB │ gzip:   1.30 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-DaxQ3avs.js                           2.31 kB │ gzip:   1.32 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-BHxLQ1l1.js                         2.36 kB │ gzip:   1.20 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-1Y1gZeIn.js                           2.37 kB │ gzip:   1.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-BzNiYrkL.js                         2.38 kB │ gzip:   1.23 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-A__uqMgo.js                         2.40 kB │ gzip:   1.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-BwB4svYZ.js                         2.41 kB │ gzip:   1.26 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-D4Az-shn.js                         2.45 kB │ gzip:   1.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-vXKfe_fy.js                         2.48 kB │ gzip:   1.32 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-BGKpbHhI.js                       2.49 kB │ gzip:   1.19 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/accessibility-CvNNiUKA.js                  2.51 kB │ gzip:   1.11 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-DGifcR-1.js                         2.53 kB │ gzip:   1.10 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-D5Ywc9Vk.js                       2.53 kB │ gzip:   1.13 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-oQC0fBdQ.js                         2.54 kB │ gzip:   1.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/core-game-Di-PVjWZ.js                      2.55 kB │ gzip:   1.14 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-DH8bVra0.js                           2.55 kB │ gzip:   1.31 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-8zDXHXQO.js                       2.56 kB │ gzip:   1.17 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-BR608YHT.js                       2.57 kB │ gzip:   1.21 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-CNs-xZKN.js                         2.57 kB │ gzip:   1.14 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-DzzwisH9.js                         2.58 kB │ gzip:   1.20 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-kU0CAp_D.js                         2.58 kB │ gzip:   1.12 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-Cyrlx-wK.js                       2.58 kB │ gzip:   1.11 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-sLAiJP32.js                         2.60 kB │ gzip:   1.15 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-BhmGk7Xr.js                       2.60 kB │ gzip:   1.20 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/defaultBackend-BFqaAmDo.js                 2.60 kB │ gzip:   1.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-DtfU7cxU.js                         2.61 kB │ gzip:   1.16 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-f00H2M3H.js                         2.62 kB │ gzip:   1.35 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-BUGcpZPI.js                       2.62 kB │ gzip:   1.19 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-SnS9dCw5.js                       2.67 kB │ gzip:   1.19 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-C0mAiFP_.js                           2.68 kB │ gzip:   1.39 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-BXMrGLsG.js                         2.69 kB │ gzip:   1.33 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-s7Pqotn6.js                         2.69 kB │ gzip:   1.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-C3horsHg.js                       2.70 kB │ gzip:   1.31 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-D3vm-yFo.js                         2.70 kB │ gzip:   1.37 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-BZLIGB8V.js                         2.72 kB │ gzip:   1.19 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-25N5gaMS.js                       2.72 kB │ gzip:   1.22 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-CyHn_m_Y.js                         2.79 kB │ gzip:   1.39 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-3t7p7vDz.js                         2.83 kB │ gzip:   1.21 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-BTbd_UlK.js                       2.84 kB │ gzip:   1.23 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-DOXRRko9.js                         2.84 kB │ gzip:   1.29 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-D_9pAoRw.js                         2.84 kB │ gzip:   1.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-DB9tD47Z.js                       2.90 kB │ gzip:   1.43 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-C81yRJEE.js                         3.00 kB │ gzip:   1.45 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-BR6mt4Wg.js                       3.03 kB │ gzip:   1.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-CFzrppLz.js                         3.13 kB │ gzip:   1.34 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-B36prJER.js                         3.20 kB │ gzip:   1.28 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-BY0IQe4V.js                         3.23 kB │ gzip:   1.43 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-CpMS91Nr.js                       3.27 kB │ gzip:   1.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/game-CXsaVaB7.js                           3.35 kB │ gzip:   1.41 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-a03rLGdp.js                         3.78 kB │ gzip:   1.49 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-Bs_CAkn2.js                         3.85 kB │ gzip:   1.59 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-D56A8l7Q.js                        4.47 kB │ gzip:   1.92 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/errors-DbyX3VtS.js                         4.47 kB │ gzip:   1.54 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/alerts-uYj0wuwT.js                         4.48 kB │ gzip:   1.38 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-Dgfsin_p.js                        4.56 kB │ gzip:   2.03 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-nPG55yg5.js                        4.60 kB │ gzip:   2.00 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-C2c-Jx3l.js                        4.63 kB │ gzip:   2.02 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/tooltips-BtUE9qRL.js                       4.66 kB │ gzip:   1.37 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-DcL-A6aY.js                        4.67 kB │ gzip:   2.15 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-zeQskhIS.js                        4.73 kB │ gzip:   2.06 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-CmwUa9Wt.js                        4.77 kB │ gzip:   2.08 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-C7Gx73zf.js                        4.78 kB │ gzip:   2.06 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-Brj4pKQV.js                        4.90 kB │ gzip:   2.12 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/firebase-DabOwqE_.js                       4.94 kB │ gzip:   2.19 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-B9AtSzhk.js                        5.09 kB │ gzip:   2.15 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-DxnHM23r.js                        5.10 kB │ gzip:   2.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-BVQsceen.js                           5.42 kB │ gzip:   2.38 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-BJRmCq_c.js                           5.59 kB │ gzip:   2.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-DGJCrZHQ.js                           5.59 kB │ gzip:   2.57 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-Yxd3EXXN.js                        5.62 kB │ gzip:   2.34 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-C5uD_3Tk.js                           5.64 kB │ gzip:   2.50 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/FacebookRaceEntry-B32DBoeC.js              5.64 kB │ gzip:   2.48 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-B28GgX6k.js                           5.69 kB │ gzip:   2.52 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-bVjNghrZ.js                           5.69 kB │ gzip:   2.64 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-o8qOXiEQ.js                           5.69 kB │ gzip:   2.51 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-CbpbiOwU.js                           5.86 kB │ gzip:   2.59 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-BgprCkIK.js                        5.89 kB │ gzip:   2.25 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-LAayNLmi.js                           5.91 kB │ gzip:   2.60 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/validation-BgRo5b2o.js                     6.01 kB │ gzip:   2.08 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-aauolVbc.js                           6.02 kB │ gzip:   2.70 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-CmhINcyK.js                           6.29 kB │ gzip:   2.65 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-BwhZOd7t.js                           6.55 kB │ gzip:   2.84 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-BgEmJgMl.js                           6.68 kB │ gzip:   2.75 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-CAiCNNqy.js                        6.77 kB │ gzip:   2.56 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-BQUUbQQD.js                           7.58 kB │ gzip:   2.84 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/requestSchemas-DzkJsbZF.js                 7.69 kB │ gzip:   2.23 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-CzBqWFf5.js                           8.04 kB │ gzip:   3.07 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/profile-SDXjI_xI.js                        8.07 kB │ gzip:   2.44 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three--DK9f_7z.js                   8.34 kB │ gzip:   2.85 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/bridge-DI6Yyth1.js                         8.92 kB │ gzip:   2.92 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/firebaseServices-H5DQuFBF.js               9.26 kB │ gzip:   3.29 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-CqvblP5O.js                   9.76 kB │ gzip:   3.07 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/race-BhLAk5y9.js                           9.80 kB │ gzip:   2.95 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-ByJ-Rtdi.js                   9.91 kB │ gzip:   3.46 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/achievements-zb3HfsZa.js                  12.51 kB │ gzip:   3.20 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/SolarSystem-BqGImexG.js                   12.80 kB │ gzip:   4.66 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-CkWfOPsS.js                  13.78 kB │ gzip:   4.55 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/fakeServices-CojBi3eI.js                  20.65 kB │ gzip:   7.04 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-Y1Z8nY45.js                  20.91 kB │ gzip:   4.78 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/ReferralSharingCapability-BHeZCFLA.js     31.60 kB │ gzip:  12.88 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/RaceTo10Game-DFZti0Vz.js                  32.51 kB │ gzip:  10.70 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-DsdThxkc.js                  37.04 kB │ gzip:  11.77 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-B10rdh0-.js                  57.10 kB │ gzip:  14.92 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/localeModules-DDoFzbxU.js                 57.34 kB │ gzip:   7.61 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/GameModalView-CmtbmTyS.js                 57.61 kB │ gzip:  18.36 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-BChfjRca.js                  65.48 kB │ gzip:  18.35 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-j2n53szm.js                  74.63 kB │ gzip:  21.29 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-CPNFdt8a.js                  78.40 kB │ gzip:  23.15 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/sentry-BajaMND_.js                        90.02 kB │ gzip:  30.84 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/raceSchemas-BiDriZN4.js                  107.30 kB │ gzip:  30.89 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/facebook-CBVFIhCW.js                     184.04 kB │ gzip:  54.76 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-three-D5TcQsOm.js                 192.57 kB │ gzip:  42.43 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-react-BsJIBMEs.js                 219.00 kB │ gzip:  68.35 kB
+../../../../../../tmp/riddle-quest-facebook-browser-a2s7X4/assets/vendor-firebase-C5F_jjbA.js              367.00 kB │ gzip: 109.80 kB
+
+✓ built in 2.05s
+$ node scripts/audit-facebook-artifact.mjs
+Facebook artifact audit passed: 407 files, 4.19 MB, 0.57 MB initial resources, isolated SDK/config, and no Jest/native/secrets leakage
+FAIL src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts (14.391 s)
+  ● Facebook artifact with injected FBInstant SDK › runs failure recovery plus authenticated restore/pause/reload lifecycle
+
+    page.waitForFunction: Timeout 5000ms exceeded.
+
+      177 |   await page.locator(".live-race-start").click();
+      178 |   await page.locator(".live-race-victory").waitFor();
+    > 179 |   await page.waitForFunction(() => Reflect.get(window, "__tournamentScore") === 2500);
+          |              ^
+      180 |   expect(records).toEqual([{runId: "d".repeat(64), locale: "fr"}]);
+      181 |   expect(await page.locator(".race-error").count()).toBe(0);
+      182 |   await page.locator(".race-close").click();
+
+      at verifyTournamentLiveResult (src/facebook/__tests__/tournaments.jest-playwright.support.ts:179:14)
+      at Object.<anonymous> (src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts:626:7)
+
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && REDDIT_BUILD=1 NODE_ENV=production vite build --mode reddit && pnpm audit:reddit-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.47486ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.926783ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.878683ms)
+✔ rejects imports between different target owners (1.757401ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.632199ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.542644ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.074227ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.718242ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.053266ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.834311ms)
+✔ aggregates violations in deterministic file and source order (0.845372ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.124029
+Web Target boundary audit passed (268 files, 1151 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+Third-party notices are current (107162 bytes)
+vite v8.3.1 building client environment for reddit...
+transforming...
+✓ 1102 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-reddit/reddit-inline.html                                1.53 kB │ gzip:  0.77 kB
+dist-reddit/index.html                                        1.88 kB │ gzip:  0.61 kB
+dist-reddit/assets/tex_ring_b-BUHGHX-C.webp                   4.45 kB
+dist-reddit/assets/coin-BnaBYH65.svg                          6.30 kB │ gzip:  1.96 kB
+dist-reddit/assets/wheel-bg-BifSuxYC.svg                      7.74 kB │ gzip:  1.13 kB
+dist-reddit/third-party-licenses.txt                          7.96 kB │ gzip:  1.80 kB
+dist-reddit/assets/tex_ring_a-DuvJN49d.webp                   8.03 kB
+dist-reddit/assets/tex_sun_corona-v2-BMfKNPFY.webp           14.24 kB
+dist-reddit/assets/tex_moon_h-DGScgJpd.webp                  14.81 kB
+dist-reddit/assets/tex_moon_g-B0h_U8wT.webp                  14.99 kB
+dist-reddit/assets/tex_sun_spots_02-CCRhajmp.webp            18.87 kB
+dist-reddit/assets/tex_planet_u-BzJmFwqP.webp                18.90 kB
+dist-reddit/assets/tex_planet_v-DtVH6iTD.webp                19.84 kB
+dist-reddit/assets/tex_planet_a-CKSLcGca.webp                25.73 kB
+dist-reddit/assets/main-logo-DeVvp0Z6.webp                   26.72 kB
+dist-reddit/assets/tex_moon_f-i48T7jJA.webp                  29.64 kB
+dist-reddit/assets/tex_planet_s-fmsfCdSp.webp                31.28 kB
+dist-reddit/assets/tex_planet_k-BTSVj7tG.webp                32.65 kB
+dist-reddit/assets/tex_planet_r-k9FTlMLw.webp                32.83 kB
+dist-reddit/assets/tex_moon_d-C8et7CUZ.webp                  36.81 kB
+dist-reddit/assets/chest-open-CQnbBCSD.webp                  38.74 kB
+dist-reddit/assets/riddlequest-r-kPbkvcmu.webp               42.31 kB
+dist-reddit/assets/tex_moon_c-CbidFNBi.webp                  45.87 kB
+dist-reddit/assets/PoetsenOne-Regular-C2losmxN.woff2         48.38 kB
+dist-reddit/assets/Poppins-Bold-ryPfWsYm.woff2               51.20 kB
+dist-reddit/assets/Poppins-SemiBold-9BRRzCnb.woff2           51.80 kB
+dist-reddit/assets/Poppins-Regular-B-jQUxpD.woff2            51.85 kB
+dist-reddit/assets/chest-closed-GI3XjnpL.png                 56.64 kB
+dist-reddit/assets/tex_planet_d-Bc6RyclI.webp                60.96 kB
+dist-reddit/assets/music-DoaAtikm.webm                    1,139.48 kB
+dist-reddit/assets/LiveRacePushConsent-rZDS_6_E.css           0.64 kB │ gzip:  0.34 kB
+dist-reddit/assets/RaceTo10Game-DLLfvRN1.css                 17.31 kB │ gzip:  4.51 kB
+dist-reddit/assets/GameModalView-CYADV0m9.css                22.93 kB │ gzip:  5.68 kB
+dist-reddit/assets/game-CLIP9yjv.css                         29.06 kB │ gzip:  7.08 kB
+dist-reddit/assets/redditPlatform-kePakTdw.js                 0.08 kB │ gzip:  0.09 kB
+dist-reddit/assets/core-bridge-constants-Bsju_PPr.js          0.10 kB │ gzip:  0.12 kB
+dist-reddit/assets/race-BGH5jtdN.js                           0.11 kB │ gzip:  0.11 kB
+dist-reddit/assets/rolldown-runtime-Czjbc987.js               0.17 kB │ gzip:  0.14 kB
+dist-reddit/assets/streakFanfare-CNktPzNV.js                  0.24 kB │ gzip:  0.24 kB
+dist-reddit/assets/streakFanfare-CILTTN8I.js                  0.24 kB │ gzip:  0.22 kB
+dist-reddit/assets/streakFanfare-CoNWczXG.js                  0.24 kB │ gzip:  0.22 kB
+dist-reddit/assets/streakFanfare-CYtxZCtU.js                  0.24 kB │ gzip:  0.25 kB
+dist-reddit/assets/streakFanfare-CiFffE4P.js                  0.24 kB │ gzip:  0.22 kB
+dist-reddit/assets/streakFanfare-DbdEYngK.js                  0.24 kB │ gzip:  0.23 kB
+dist-reddit/assets/streakFanfare-B68ZEMLJ.js                  0.25 kB │ gzip:  0.22 kB
+dist-reddit/assets/streakFanfare-_7h3xJnx.js                  0.25 kB │ gzip:  0.22 kB
+dist-reddit/assets/streakFanfare-qLbhhx5e.js                  0.25 kB │ gzip:  0.22 kB
+dist-reddit/assets/streakFanfare-RU7tUQ6a.js                  0.25 kB │ gzip:  0.22 kB
+dist-reddit/assets/streakFanfare-CcEuRTaC.js                  0.26 kB │ gzip:  0.23 kB
+dist-reddit/assets/streakFanfare-BVNTII4j.js                  0.26 kB │ gzip:  0.25 kB
+dist-reddit/assets/coinPurchase-JOGy0qmc.js                   0.27 kB │ gzip:  0.24 kB
+dist-reddit/assets/streakFanfare-CsqZ9FuY.js                  0.27 kB │ gzip:  0.26 kB
+dist-reddit/assets/coinPurchase-S3LHouKQ.js                   0.27 kB │ gzip:  0.25 kB
+dist-reddit/assets/coinPurchase-C7ASXWB7.js                   0.27 kB │ gzip:  0.26 kB
+dist-reddit/assets/coinPurchase-DqhpsdiJ.js                   0.28 kB │ gzip:  0.24 kB
+dist-reddit/assets/coinPurchase-3W29am3Z.js                   0.28 kB │ gzip:  0.25 kB
+dist-reddit/assets/coinPurchase-D0pVpDZ9.js                   0.28 kB │ gzip:  0.28 kB
+dist-reddit/assets/coinPurchase-DC-ee1Z4.js                   0.28 kB │ gzip:  0.25 kB
+dist-reddit/assets/coinPurchase-pN1GgFfU.js                   0.28 kB │ gzip:  0.24 kB
+dist-reddit/assets/coinPurchase-C9LzawBN.js                   0.28 kB │ gzip:  0.26 kB
+dist-reddit/assets/streakFanfare-B8ADHt-p.js                  0.28 kB │ gzip:  0.27 kB
+dist-reddit/assets/coinPurchase-C8bjDuJq.js                   0.28 kB │ gzip:  0.28 kB
+dist-reddit/assets/aboutLegal-9Lub4aST.js                     0.29 kB │ gzip:  0.25 kB
+dist-reddit/assets/coinPurchase-D11na4Ir.js                   0.29 kB │ gzip:  0.26 kB
+dist-reddit/assets/aboutLegal-CIQlmZyd.js                     0.29 kB │ gzip:  0.29 kB
+dist-reddit/assets/coinPurchase-Dfy4vHsX.js                   0.29 kB │ gzip:  0.29 kB
+dist-reddit/assets/aboutLegal-BOERrO-7.js                     0.30 kB │ gzip:  0.26 kB
+dist-reddit/assets/aboutLegal-BkaUziYk.js                     0.30 kB │ gzip:  0.28 kB
+dist-reddit/assets/aboutLegal-BzJhPWZb.js                     0.30 kB │ gzip:  0.26 kB
+dist-reddit/assets/aboutLegal-Czoa72th.js                     0.30 kB │ gzip:  0.27 kB
+dist-reddit/assets/aboutLegal-BiwDzknj.js                     0.30 kB │ gzip:  0.26 kB
+dist-reddit/assets/aboutLegal-B452_NSe.js                     0.31 kB │ gzip:  0.27 kB
+dist-reddit/assets/aboutLegal-DQj9hAh9.js                     0.31 kB │ gzip:  0.26 kB
+dist-reddit/assets/aboutLegal-B9DtFS4v.js                     0.31 kB │ gzip:  0.27 kB
+dist-reddit/assets/coinPurchase-B1ipvSPi.js                   0.31 kB │ gzip:  0.30 kB
+dist-reddit/assets/shop-CeHAnN68.js                           0.32 kB │ gzip:  0.31 kB
+dist-reddit/assets/aboutLegal-xUlXjvaE.js                     0.32 kB │ gzip:  0.30 kB
+dist-reddit/assets/shop-Cyuj6FTi.js                           0.32 kB │ gzip:  0.28 kB
+dist-reddit/assets/streakFanfare-Ck_CGuXM.js                  0.32 kB │ gzip:  0.28 kB
+dist-reddit/assets/shop-CftVa749.js                           0.32 kB │ gzip:  0.28 kB
+dist-reddit/assets/shop-CJPGUsZp.js                           0.33 kB │ gzip:  0.29 kB
+dist-reddit/assets/shop-DI5nIg6p.js                           0.33 kB │ gzip:  0.29 kB
+dist-reddit/assets/shop-DK6wYOR-.js                           0.33 kB │ gzip:  0.29 kB
+dist-reddit/assets/shop-BI5duCyP.js                           0.33 kB │ gzip:  0.29 kB
+dist-reddit/assets/aboutLegal-BETt7Q1S.js                     0.33 kB │ gzip:  0.32 kB
+dist-reddit/assets/aboutLegal-DE8omzrK.js                     0.33 kB │ gzip:  0.30 kB
+dist-reddit/assets/shop-BCOA8lN0.js                           0.34 kB │ gzip:  0.29 kB
+dist-reddit/assets/coinPurchase-DbxQErWv.js                   0.34 kB │ gzip:  0.30 kB
+dist-reddit/assets/shop-DXUoZYyl.js                           0.34 kB │ gzip:  0.31 kB
+dist-reddit/assets/shop-CvOoxpgx.js                           0.35 kB │ gzip:  0.30 kB
+dist-reddit/assets/layoutReady-B86Ech8U.js                    0.35 kB │ gzip:  0.25 kB
+dist-reddit/assets/shop-Cm2jn5cR.js                           0.35 kB │ gzip:  0.33 kB
+dist-reddit/assets/shop-CzJeEB4B.js                           0.36 kB │ gzip:  0.31 kB
+dist-reddit/assets/shop-DQsNJ7dr.js                           0.37 kB │ gzip:  0.35 kB
+dist-reddit/assets/aboutLegal-C9CEn1K6.js                     0.40 kB │ gzip:  0.33 kB
+dist-reddit/assets/coinPurchase-Df3WZgjf.js                   0.40 kB │ gzip:  0.32 kB
+dist-reddit/assets/aboutLegal-l9aacrYT.js                     0.40 kB │ gzip:  0.35 kB
+dist-reddit/assets/shop-CQHTc95K.js                           0.42 kB │ gzip:  0.35 kB
+dist-reddit/assets/levelUpFanfare-IkSP6zKG.js                 0.44 kB │ gzip:  0.34 kB
+dist-reddit/assets/levelUpFanfare-BSV7qTuK.js                 0.44 kB │ gzip:  0.35 kB
+dist-reddit/assets/levelUpFanfare-B8EKUlLu.js                 0.45 kB │ gzip:  0.36 kB
+dist-reddit/assets/levelUpFanfare-DdbQoiY3.js                 0.45 kB │ gzip:  0.33 kB
+dist-reddit/assets/levelUpFanfare-C4ORfkJc.js                 0.45 kB │ gzip:  0.34 kB
+dist-reddit/assets/levelUpFanfare-Cj4O5s0v.js                 0.47 kB │ gzip:  0.35 kB
+dist-reddit/assets/levelUpFanfare-DuMc8ZTt.js                 0.47 kB │ gzip:  0.35 kB
+dist-reddit/assets/levelUpFanfare-BMnpPRct.js                 0.47 kB │ gzip:  0.36 kB
+dist-reddit/assets/levelUpFanfare-DdnhnMcu.js                 0.47 kB │ gzip:  0.36 kB
+dist-reddit/assets/shop-C-JW-fHL.js                           0.48 kB │ gzip:  0.37 kB
+dist-reddit/assets/levelUpFanfare-C4f0yIrt.js                 0.49 kB │ gzip:  0.37 kB
+dist-reddit/assets/levelUpFanfare-7ftzEHpd.js                 0.51 kB │ gzip:  0.44 kB
+dist-reddit/assets/browserStorage-ClWTh26r.js                 0.56 kB │ gzip:  0.31 kB
+dist-reddit/assets/levelUpFanfare-Bz5CPf2F.js                 0.57 kB │ gzip:  0.45 kB
+dist-reddit/assets/loss-CYC759HX.js                           0.57 kB │ gzip:  0.38 kB
+dist-reddit/assets/redditPlatform-NO0DIMgp.js                 0.57 kB │ gzip:  0.42 kB
+dist-reddit/assets/loss-DZD3eg0q.js                           0.60 kB │ gzip:  0.37 kB
+dist-reddit/assets/navigation-HG3bW032.js                     0.60 kB │ gzip:  0.46 kB
+dist-reddit/assets/loss-BvDApK2O.js                           0.60 kB │ gzip:  0.38 kB
+dist-reddit/assets/navigation-CEVnRywa.js                     0.60 kB │ gzip:  0.46 kB
+dist-reddit/assets/levelUpFanfare-ebsdRUVf.js                 0.60 kB │ gzip:  0.44 kB
+dist-reddit/assets/navigation-DyYYuPKb.js                     0.60 kB │ gzip:  0.45 kB
+dist-reddit/assets/levelUpFanfare-DQd31DAk.js                 0.60 kB │ gzip:  0.45 kB
+dist-reddit/assets/settings-B1LFBtVQ.js                       0.61 kB │ gzip:  0.41 kB
+dist-reddit/assets/loss-ByiuR_q2.js                           0.61 kB │ gzip:  0.39 kB
+dist-reddit/assets/loss-NQ6EheyS.js                           0.61 kB │ gzip:  0.43 kB
+dist-reddit/assets/leaderboard-C_nQkQjt.js                    0.61 kB │ gzip:  0.45 kB
+dist-reddit/assets/navigation-BOOVb0wq.js                     0.61 kB │ gzip:  0.47 kB
+dist-reddit/assets/loss-CXIQ1poD.js                           0.61 kB │ gzip:  0.39 kB
+dist-reddit/assets/settings-BiUZub5u.js                       0.61 kB │ gzip:  0.44 kB
+dist-reddit/assets/navigation-f6qqy4Sb.js                     0.62 kB │ gzip:  0.47 kB
+dist-reddit/assets/loss-Bk9noke9.js                           0.62 kB │ gzip:  0.40 kB
+dist-reddit/assets/settings-BQ0VOnyD.js                       0.62 kB │ gzip:  0.42 kB
+dist-reddit/assets/navigation-CTFusaBb.js                     0.62 kB │ gzip:  0.47 kB
+dist-reddit/assets/redditPlatform-BeWVfLKN.js                 0.62 kB │ gzip:  0.44 kB
+dist-reddit/assets/redditPlatform-DQrQSo8-.js                 0.62 kB │ gzip:  0.45 kB
+dist-reddit/assets/settings-BhaoB_oq.js                       0.63 kB │ gzip:  0.42 kB
+dist-reddit/assets/navigation-BsNpJ5oL.js                     0.63 kB │ gzip:  0.46 kB
+dist-reddit/assets/settings-CQ5iWsTC.js                       0.63 kB │ gzip:  0.44 kB
+dist-reddit/assets/settings-CtSogYrK.js                       0.63 kB │ gzip:  0.44 kB
+dist-reddit/assets/leaderboard-BvMSXx64.js                    0.63 kB │ gzip:  0.45 kB
+dist-reddit/assets/leaderboard-COKjU29R.js                    0.63 kB │ gzip:  0.45 kB
+dist-reddit/assets/loss-OZTdIurh.js                           0.63 kB │ gzip:  0.39 kB
+dist-reddit/assets/navigation-Cd1c24qw.js                     0.63 kB │ gzip:  0.48 kB
+dist-reddit/assets/navigation-D6xjyWV_.js                     0.63 kB │ gzip:  0.52 kB
+dist-reddit/assets/redditPlatform-DhIbnMlf.js                 0.63 kB │ gzip:  0.48 kB
+dist-reddit/assets/loss-Doi2zsGm.js                           0.64 kB │ gzip:  0.44 kB
+dist-reddit/assets/credits-BUHMQe8H.js                        0.64 kB │ gzip:  0.44 kB
+dist-reddit/assets/redditPlatform-DLdxdYNO.js                 0.64 kB │ gzip:  0.46 kB
+dist-reddit/assets/redditPlatform-Dk0V0-gm.js                 0.64 kB │ gzip:  0.46 kB
+dist-reddit/assets/redditPlatform-DzDBmJ2Z.js                 0.64 kB │ gzip:  0.47 kB
+dist-reddit/assets/settings-BjgjqXIj.js                       0.65 kB │ gzip:  0.49 kB
+dist-reddit/assets/leaderboard-CLBAPhGC.js                    0.65 kB │ gzip:  0.48 kB
+dist-reddit/assets/settings-W34iFf6Y.js                       0.65 kB │ gzip:  0.44 kB
+dist-reddit/assets/navigation-Db-Onnml.js                     0.65 kB │ gzip:  0.51 kB
+dist-reddit/assets/redditPlatform-DkbFl4BS.js                 0.65 kB │ gzip:  0.49 kB
+dist-reddit/assets/credits-D5aE9Jzr.js                        0.65 kB │ gzip:  0.45 kB
+dist-reddit/assets/stats-mIP995PB.js                          0.65 kB │ gzip:  0.52 kB
+dist-reddit/assets/loss-CTnNrJk5.js                           0.65 kB │ gzip:  0.39 kB
+dist-reddit/assets/redditPlatform-WTdF7zyJ.js                 0.65 kB │ gzip:  0.46 kB
+dist-reddit/assets/settings-5KMS-6Ua.js                       0.65 kB │ gzip:  0.45 kB
+dist-reddit/assets/loss-qptvpt-b.js                           0.65 kB │ gzip:  0.47 kB
+dist-reddit/assets/navigation-DVaORH4E.js                     0.65 kB │ gzip:  0.49 kB
+dist-reddit/assets/leaderboard-B2SVDJjQ.js                    0.66 kB │ gzip:  0.49 kB
+dist-reddit/assets/leaderboard-DOuSE9DY.js                    0.66 kB │ gzip:  0.52 kB
+dist-reddit/assets/leaderboard-BJLwqpeD.js                    0.66 kB │ gzip:  0.51 kB
+dist-reddit/assets/settings-Bvq9AKQm.js                       0.66 kB │ gzip:  0.46 kB
+dist-reddit/assets/leaderboard-H7ljF1LZ.js                    0.67 kB │ gzip:  0.48 kB
+dist-reddit/assets/loss-DrrdN1ST.js                           0.67 kB │ gzip:  0.47 kB
+dist-reddit/assets/leaderboard-t84bq2br.js                    0.67 kB │ gzip:  0.47 kB
+dist-reddit/assets/common-lqZx1SM_.js                         0.67 kB │ gzip:  0.45 kB
+dist-reddit/assets/credits-C-fTV8Es.js                        0.67 kB │ gzip:  0.47 kB
+dist-reddit/assets/redditPlatform-B7pv1esc.js                 0.67 kB │ gzip:  0.50 kB
+dist-reddit/assets/credits-B2FMOOee.js                        0.68 kB │ gzip:  0.47 kB
+dist-reddit/assets/credits-BAi2MGkp.js                        0.68 kB │ gzip:  0.46 kB
+dist-reddit/assets/credits-DLA52QJG.js                        0.68 kB │ gzip:  0.48 kB
+dist-reddit/assets/credits-N7-HSvFa.js                        0.68 kB │ gzip:  0.47 kB
+dist-reddit/assets/settings-zC3GS2AV.js                       0.68 kB │ gzip:  0.50 kB
+dist-reddit/assets/stats-CKZoTo8L.js                          0.69 kB │ gzip:  0.48 kB
+dist-reddit/assets/credits-WIsdg--y.js                        0.69 kB │ gzip:  0.50 kB
+dist-reddit/assets/credits-BMuqt5mm.js                        0.69 kB │ gzip:  0.48 kB
+dist-reddit/assets/common-CJein-tm.js                         0.69 kB │ gzip:  0.45 kB
+dist-reddit/assets/common-BVKGsOnP.js                         0.69 kB │ gzip:  0.45 kB
+dist-reddit/assets/common-n-P6ZiqJ.js                         0.69 kB │ gzip:  0.46 kB
+dist-reddit/assets/settings-PC1e89Gh.js                       0.70 kB │ gzip:  0.52 kB
+dist-reddit/assets/stats-BhMNt6gS.js                          0.70 kB │ gzip:  0.50 kB
+dist-reddit/assets/stats-B9uVVH6n.js                          0.70 kB │ gzip:  0.48 kB
+dist-reddit/assets/stats-CZbMxORv.js                          0.70 kB │ gzip:  0.49 kB
+dist-reddit/assets/credits-1_wv8ESf.js                        0.71 kB │ gzip:  0.56 kB
+dist-reddit/assets/stats-D_FzSdUS.js                          0.71 kB │ gzip:  0.50 kB
+dist-reddit/assets/leaderboard-dL-62jdQ.js                    0.71 kB │ gzip:  0.53 kB
+dist-reddit/assets/common-Dw_J1HMX.js                         0.71 kB │ gzip:  0.47 kB
+dist-reddit/assets/leaderboard-CCFGtQTb.js                    0.71 kB │ gzip:  0.49 kB
+dist-reddit/assets/common-BwIO3epv.js                         0.71 kB │ gzip:  0.49 kB
+dist-reddit/assets/navigation-BvveN4-G.js                     0.71 kB │ gzip:  0.57 kB
+dist-reddit/assets/redditPlatform-DVd1Lrdv.js                 0.71 kB │ gzip:  0.53 kB
+dist-reddit/assets/loss-CkrZTTeh.js                           0.71 kB │ gzip:  0.45 kB
+dist-reddit/assets/common-C5vxl13O.js                         0.72 kB │ gzip:  0.49 kB
+dist-reddit/assets/stats-BYAzlDU4.js                          0.72 kB │ gzip:  0.56 kB
+dist-reddit/assets/common-0T1Fp4PZ.js                         0.72 kB │ gzip:  0.52 kB
+dist-reddit/assets/common-B7xIq-DG.js                         0.72 kB │ gzip:  0.47 kB
+dist-reddit/assets/stats-gsZ2Zhcx.js                          0.72 kB │ gzip:  0.51 kB
+dist-reddit/assets/stats-Xg5ZTDDu.js                          0.73 kB │ gzip:  0.51 kB
+dist-reddit/assets/stats-BogWWKhc.js                          0.73 kB │ gzip:  0.51 kB
+dist-reddit/assets/redditPlatform-JMhQe933.js                 0.74 kB │ gzip:  0.54 kB
+dist-reddit/assets/settings-BQE2hkg5.js                       0.74 kB │ gzip:  0.49 kB
+dist-reddit/assets/common-DI-bC8ZO.js                         0.74 kB │ gzip:  0.50 kB
+dist-reddit/assets/levelUpFanfare-JTawCUZ6.js                 0.74 kB │ gzip:  0.47 kB
+dist-reddit/assets/stats-DL-wHO5L.js                          0.74 kB │ gzip:  0.54 kB
+dist-reddit/assets/redditPlatform-Briloaej.js                 0.75 kB │ gzip:  0.55 kB
+dist-reddit/assets/navigation-BYU4BtBy.js                     0.76 kB │ gzip:  0.55 kB
+dist-reddit/assets/redditPlatform-D-XZWHg3.js                 0.76 kB │ gzip:  0.52 kB
+dist-reddit/assets/leaderboard-36KCW9Fg.js                    0.77 kB │ gzip:  0.55 kB
+dist-reddit/assets/credits-BVHomOvF.js                        0.77 kB │ gzip:  0.52 kB
+dist-reddit/assets/common-Bs_Q8hBU.js                         0.78 kB │ gzip:  0.50 kB
+dist-reddit/assets/settings-npX_-5Tm.js                       0.79 kB │ gzip:  0.54 kB
+dist-reddit/assets/credits-D5AM3JCO.js                        0.80 kB │ gzip:  0.58 kB
+dist-reddit/assets/stats-B4JcruVz.js                          0.80 kB │ gzip:  0.57 kB
+dist-reddit/assets/common-_TLj9cwa.js                         0.81 kB │ gzip:  0.54 kB
+dist-reddit/assets/common-Srl377cb.js                         0.82 kB │ gzip:  0.55 kB
+dist-reddit/assets/loss-DVqcPbls.js                           0.82 kB │ gzip:  0.52 kB
+dist-reddit/assets/credits-DocYIUPf.js                        0.83 kB │ gzip:  0.59 kB
+dist-reddit/assets/navigation-DZeRltNs.js                     0.83 kB │ gzip:  0.58 kB
+dist-reddit/assets/leaderboard-CmGOY-Qf.js                    0.90 kB │ gzip:  0.56 kB
+dist-reddit/assets/redditPlatform-3JKFJnCC.js                 0.90 kB │ gzip:  0.61 kB
+dist-reddit/assets/settings-CtA6hyi7.js                       0.91 kB │ gzip:  0.54 kB
+dist-reddit/assets/onboarding-DirbkJOv.js                     0.92 kB │ gzip:  0.59 kB
+dist-reddit/assets/navigation-BEDfLC7r.js                     0.93 kB │ gzip:  0.57 kB
+dist-reddit/assets/stats-DT0INrsG.js                          0.93 kB │ gzip:  0.59 kB
+dist-reddit/assets/stats-BomADS7E.js                          0.94 kB │ gzip:  0.63 kB
+dist-reddit/assets/leaderboard-BI6FIILA.js                    0.95 kB │ gzip:  0.61 kB
+dist-reddit/assets/common-BxLdFFQq.js                         0.95 kB │ gzip:  0.59 kB
+dist-reddit/assets/onboarding-BhOVm4rB.js                     0.95 kB │ gzip:  0.60 kB
+dist-reddit/assets/credits-C5hOuWeV.js                        0.98 kB │ gzip:  0.63 kB
+dist-reddit/assets/stats--DHf9LMG.js                          0.98 kB │ gzip:  0.59 kB
+dist-reddit/assets/onboarding-BxVBap_6.js                     0.99 kB │ gzip:  0.60 kB
+dist-reddit/assets/onboarding-DA3OScEF.js                     0.99 kB │ gzip:  0.67 kB
+dist-reddit/assets/onboarding-DhnSB8l9.js                     1.01 kB │ gzip:  0.63 kB
+dist-reddit/assets/loss-fvzfjwgz.js                           1.03 kB │ gzip:  0.53 kB
+dist-reddit/assets/leaderboard-Cu_dPNAJ.js                    1.04 kB │ gzip:  0.56 kB
+dist-reddit/assets/credits-CcHyHvgm.js                        1.05 kB │ gzip:  0.59 kB
+dist-reddit/assets/onboarding-B0_bhepm.js                     1.06 kB │ gzip:  0.72 kB
+dist-reddit/assets/onboarding-CIvuwGEp.js                     1.06 kB │ gzip:  0.63 kB
+dist-reddit/assets/onboarding-DUXgO8Tr.js                     1.07 kB │ gzip:  0.65 kB
+dist-reddit/assets/onboarding-BNc7aOSk.js                     1.07 kB │ gzip:  0.66 kB
+dist-reddit/assets/onboarding-yXeCHql5.js                     1.07 kB │ gzip:  0.66 kB
+dist-reddit/assets/victory-BOt-EJWI.js                        1.08 kB │ gzip:  0.72 kB
+dist-reddit/assets/victory-DQz03h3V.js                        1.08 kB │ gzip:  0.68 kB
+dist-reddit/assets/victory-CHiYFUo-.js                        1.08 kB │ gzip:  0.68 kB
+dist-reddit/assets/victory-BBCEHWs_.js                        1.08 kB │ gzip:  0.71 kB
+dist-reddit/assets/victory-SwC6BPeg.js                        1.09 kB │ gzip:  0.69 kB
+dist-reddit/assets/common-DLRf0r44.js                         1.09 kB │ gzip:  0.58 kB
+dist-reddit/assets/victory-BSurpYZb.js                        1.10 kB │ gzip:  0.72 kB
+dist-reddit/assets/redditPlatform-DAfEFqFb.js                 1.11 kB │ gzip:  0.59 kB
+dist-reddit/assets/onboarding-DhEdSRME.js                     1.11 kB │ gzip:  0.74 kB
+dist-reddit/assets/victory-Ds6eFDbR.js                        1.11 kB │ gzip:  0.76 kB
+dist-reddit/assets/onboarding-CZ4brNYq.js                     1.12 kB │ gzip:  0.74 kB
+dist-reddit/assets/victory-BG5R_urP.js                        1.12 kB │ gzip:  0.69 kB
+dist-reddit/assets/victory-DSWYvMKn.js                        1.14 kB │ gzip:  0.71 kB
+dist-reddit/assets/victory-fhnJ2tpo.js                        1.15 kB │ gzip:  0.72 kB
+dist-reddit/assets/victory-BUTzSOaB.js                        1.22 kB │ gzip:  0.83 kB
+dist-reddit/assets/victory-DiBsCrFr.js                        1.22 kB │ gzip:  0.80 kB
+dist-reddit/assets/onboarding-BrUDPGim.js                     1.24 kB │ gzip:  0.78 kB
+dist-reddit/assets/victory-CdAQnwGp.js                        1.26 kB │ gzip:  0.79 kB
+dist-reddit/assets/onboarding-D1d0muyC.js                     1.33 kB │ gzip:  0.77 kB
+dist-reddit/assets/preload-helper-C57RQWSg.js                 1.33 kB │ gzip:  0.75 kB
+dist-reddit/assets/LiveRacePushConsent-Bbwz65aU.js            1.37 kB │ gzip:  0.77 kB
+dist-reddit/assets/achievements-Dh34o_SP.js                   1.39 kB │ gzip:  0.63 kB
+dist-reddit/assets/achievements-BuR4IQfR.js                   1.41 kB │ gzip:  0.64 kB
+dist-reddit/assets/achievements-C3Ng0I7V.js                   1.41 kB │ gzip:  0.64 kB
+dist-reddit/assets/achievements-B5EuNWKZ.js                   1.42 kB │ gzip:  0.62 kB
+dist-reddit/assets/achievements-BuOw_Qeh.js                   1.42 kB │ gzip:  0.61 kB
+dist-reddit/assets/achievements-nOVGJfDO.js                   1.42 kB │ gzip:  0.63 kB
+dist-reddit/assets/achievements-cCezItVY.js                   1.45 kB │ gzip:  0.65 kB
+dist-reddit/assets/achievements-Bi4PHlu2.js                   1.45 kB │ gzip:  0.65 kB
+dist-reddit/assets/achievements-sa_csMz_.js                   1.46 kB │ gzip:  0.66 kB
+dist-reddit/assets/victory-CNBe35hS.js                        1.47 kB │ gzip:  0.89 kB
+dist-reddit/assets/accessibility-DBWotlLW.js                  1.49 kB │ gzip:  0.89 kB
+dist-reddit/assets/accessibility-mnG6Ux4q.js                  1.50 kB │ gzip:  0.88 kB
+dist-reddit/assets/accessibility-DoUGjQcm.js                  1.53 kB │ gzip:  0.94 kB
+dist-reddit/assets/accessibility-DDdV10oS.js                  1.55 kB │ gzip:  0.91 kB
+dist-reddit/assets/accessibility-BTdzn21X.js                  1.56 kB │ gzip:  1.01 kB
+dist-reddit/assets/accessibility-CDcYo3NC.js                  1.57 kB │ gzip:  0.91 kB
+dist-reddit/assets/achievements-BCtMdDEy.js                   1.57 kB │ gzip:  0.70 kB
+dist-reddit/assets/achievements-DNTE4wDB.js                   1.58 kB │ gzip:  0.71 kB
+dist-reddit/assets/vendor-three-Cp5lfKAm.js                   1.59 kB │ gzip:  0.57 kB
+dist-reddit/assets/accessibility-BtoY_R4l.js                  1.59 kB │ gzip:  0.92 kB
+dist-reddit/assets/accessibility-OytD13PE.js                  1.60 kB │ gzip:  0.98 kB
+dist-reddit/assets/accessibility-pbCkmE6-.js                  1.65 kB │ gzip:  0.98 kB
+dist-reddit/assets/achievements-BAnaa15R.js                   1.65 kB │ gzip:  0.71 kB
+dist-reddit/assets/victory-CQY7TXi8.js                        1.67 kB │ gzip:  0.84 kB
+dist-reddit/assets/accessibility-CjlDnMhS.js                  1.68 kB │ gzip:  0.98 kB
+dist-reddit/assets/achievements-D2bAKfl_.js                   1.72 kB │ gzip:  0.76 kB
+dist-reddit/assets/onboarding-0spzMYMq.js                     1.73 kB │ gzip:  0.80 kB
+dist-reddit/assets/accessibility-5aadonXn.js                  1.76 kB │ gzip:  1.06 kB
+dist-reddit/assets/accessibility-Czcbizk8.js                  1.77 kB │ gzip:  1.05 kB
+dist-reddit/assets/accessibility-6FKcnuQn.js                  2.00 kB │ gzip:  1.04 kB
+dist-reddit/assets/achievements-BEKbBP5O.js                   2.00 kB │ gzip:  0.79 kB
+dist-reddit/assets/game-CNflmOys.js                           2.00 kB │ gzip:  1.16 kB
+dist-reddit/assets/game-BEmm6OG0.js                           2.01 kB │ gzip:  1.15 kB
+dist-reddit/assets/game-r5Ir4Jh8.js                           2.02 kB │ gzip:  1.15 kB
+dist-reddit/assets/game-BqHhoJxi.js                           2.02 kB │ gzip:  1.13 kB
+dist-reddit/assets/game-DP1vieUR.js                           2.02 kB │ gzip:  1.20 kB
+dist-reddit/assets/game-D5iiSVmO.js                           2.04 kB │ gzip:  1.16 kB
+dist-reddit/assets/game-Dzl9eVQ5.js                           2.07 kB │ gzip:  1.18 kB
+dist-reddit/assets/game-Z6k-vNVe.js                           2.07 kB │ gzip:  1.18 kB
+dist-reddit/assets/bridge-CPMwEs3I.js                         2.09 kB │ gzip:  0.76 kB
+dist-reddit/assets/achievements-CHaj-vqJ.js                   2.13 kB │ gzip:  0.76 kB
+dist-reddit/assets/game-DRkWBCJy.js                           2.13 kB │ gzip:  1.22 kB
+dist-reddit/assets/accessibility-DgPVrXsF.js                  2.21 kB │ gzip:  1.15 kB
+dist-reddit/assets/game-uUa4AxK0.js                           2.21 kB │ gzip:  1.31 kB
+dist-reddit/assets/game-DHdRy91p.js                           2.31 kB │ gzip:  1.33 kB
+dist-reddit/assets/core-game-Dcv9DG4Z.js                      2.32 kB │ gzip:  1.04 kB
+dist-reddit/assets/errors-DFFPSE-7.js                         2.36 kB │ gzip:  1.20 kB
+dist-reddit/assets/game-BApwafnU.js                           2.37 kB │ gzip:  1.36 kB
+dist-reddit/assets/errors-BW1VmJzc.js                         2.38 kB │ gzip:  1.23 kB
+dist-reddit/assets/errors-D2-OXfSy.js                         2.40 kB │ gzip:  1.26 kB
+dist-reddit/assets/errors-Cehdj1Wx.js                         2.41 kB │ gzip:  1.26 kB
+dist-reddit/assets/errors-mq1bZfkt.js                         2.45 kB │ gzip:  1.28 kB
+dist-reddit/assets/errors-BH21ki5o.js                         2.48 kB │ gzip:  1.32 kB
+dist-reddit/assets/tooltips-CxP_khYh.js                       2.49 kB │ gzip:  1.19 kB
+dist-reddit/assets/accessibility-bksbmqER.js                  2.51 kB │ gzip:  1.11 kB
+dist-reddit/assets/alerts-Bjw2X9IP.js                         2.53 kB │ gzip:  1.10 kB
+dist-reddit/assets/tooltips-BaDaooE4.js                       2.53 kB │ gzip:  1.13 kB
+dist-reddit/assets/errors-ApDyhna7.js                         2.54 kB │ gzip:  1.28 kB
+dist-reddit/assets/game-CVqpj1aR.js                           2.55 kB │ gzip:  1.31 kB
+dist-reddit/assets/tooltips-yHNOr35R.js                       2.56 kB │ gzip:  1.17 kB
+dist-reddit/assets/tooltips-WYqdtrQB.js                       2.57 kB │ gzip:  1.21 kB
+dist-reddit/assets/alerts-BKOZ8A_f.js                         2.57 kB │ gzip:  1.14 kB
+dist-reddit/assets/alerts-Ct9CZwj4.js                         2.58 kB │ gzip:  1.20 kB
+dist-reddit/assets/alerts-IAZvWJU4.js                         2.58 kB │ gzip:  1.12 kB
+dist-reddit/assets/tooltips-6zouP0XA.js                       2.58 kB │ gzip:  1.11 kB
+dist-reddit/assets/alerts-D5rgpZk_.js                         2.60 kB │ gzip:  1.16 kB
+dist-reddit/assets/tooltips-B9i-1jrf.js                       2.60 kB │ gzip:  1.20 kB
+dist-reddit/assets/alerts-RpDOi6GD.js                         2.61 kB │ gzip:  1.16 kB
+dist-reddit/assets/errors-KXrHpEFp.js                         2.62 kB │ gzip:  1.35 kB
+dist-reddit/assets/tooltips-C4EgqKK2.js                       2.62 kB │ gzip:  1.19 kB
+dist-reddit/assets/tooltips-AXbH-0mH.js                       2.67 kB │ gzip:  1.19 kB
+dist-reddit/assets/game-Dh2yEbJ5.js                           2.68 kB │ gzip:  1.39 kB
+dist-reddit/assets/errors-8OKshPzs.js                         2.69 kB │ gzip:  1.33 kB
+dist-reddit/assets/alerts-CZIVGJSf.js                         2.69 kB │ gzip:  1.24 kB
+dist-reddit/assets/tooltips-P4yGzLRy.js                       2.70 kB │ gzip:  1.31 kB
+dist-reddit/assets/errors-BABpJZgl.js                         2.70 kB │ gzip:  1.37 kB
+dist-reddit/assets/alerts-CSeGzMCX.js                         2.72 kB │ gzip:  1.19 kB
+dist-reddit/assets/tooltips-CyQ2-MBP.js                       2.72 kB │ gzip:  1.22 kB
+dist-reddit/assets/errors-SUwuBgtY.js                         2.79 kB │ gzip:  1.39 kB
+dist-reddit/assets/alerts-BVJgwU-_.js                         2.83 kB │ gzip:  1.21 kB
+dist-reddit/assets/tooltips-DdGlh_Tv.js                       2.84 kB │ gzip:  1.23 kB
+dist-reddit/assets/alerts-DSQ7RoYj.js                         2.84 kB │ gzip:  1.29 kB
+dist-reddit/assets/alerts-DRwjGC7c.js                         2.84 kB │ gzip:  1.25 kB
+dist-reddit/assets/tooltips-DUOdfoS9.js                       2.90 kB │ gzip:  1.43 kB
+dist-reddit/assets/errors-62EEx56-.js                         3.00 kB │ gzip:  1.45 kB
+dist-reddit/assets/tooltips-CO8aJWYs.js                       3.03 kB │ gzip:  1.36 kB
+dist-reddit/assets/alerts-CkArfypF.js                         3.13 kB │ gzip:  1.34 kB
+dist-reddit/assets/alerts-C9dGsq9L.js                         3.20 kB │ gzip:  1.28 kB
+dist-reddit/assets/errors-CyEYyxxk.js                         3.23 kB │ gzip:  1.43 kB
+dist-reddit/assets/tooltips-DE2iImLy.js                       3.27 kB │ gzip:  1.37 kB
+dist-reddit/assets/game-CLrbk-AC.js                           3.35 kB │ gzip:  1.41 kB
+dist-reddit/assets/alerts-C7m5MV33.js                         3.78 kB │ gzip:  1.49 kB
+dist-reddit/assets/race-B6N5iepC.js                           3.81 kB │ gzip:  1.55 kB
+dist-reddit/assets/errors-LMh1MBOC.js                         3.85 kB │ gzip:  1.59 kB
+dist-reddit/assets/splash-DNO5krMd.js                         4.27 kB │ gzip:  1.08 kB
+dist-reddit/assets/profile-BUqjbENK.js                        4.47 kB │ gzip:  1.92 kB
+dist-reddit/assets/errors-CsX4n6XL.js                         4.47 kB │ gzip:  1.54 kB
+dist-reddit/assets/alerts-DB2b2bFL.js                         4.48 kB │ gzip:  1.38 kB
+dist-reddit/assets/profile-BXrkcGJ6.js                        4.56 kB │ gzip:  2.03 kB
+dist-reddit/assets/profile-wu6ql5S2.js                        4.60 kB │ gzip:  2.00 kB
+dist-reddit/assets/profile-DON8uHPl.js                        4.63 kB │ gzip:  2.02 kB
+dist-reddit/assets/tooltips-7ITtr-wV.js                       4.66 kB │ gzip:  1.37 kB
+dist-reddit/assets/profile-Dga5MmA3.js                        4.67 kB │ gzip:  2.15 kB
+dist-reddit/assets/profile-D9HD74CD.js                        4.73 kB │ gzip:  2.06 kB
+dist-reddit/assets/profile-W5Vd1fz3.js                        4.77 kB │ gzip:  2.08 kB
+dist-reddit/assets/profile-CebrTeVe.js                        4.78 kB │ gzip:  2.06 kB
+dist-reddit/assets/profile-CfxadMO8.js                        4.90 kB │ gzip:  2.12 kB
+dist-reddit/assets/profile-BapDZIaz.js                        5.09 kB │ gzip:  2.16 kB
+dist-reddit/assets/profile-BRD51OQq.js                        5.10 kB │ gzip:  2.25 kB
+dist-reddit/assets/race-Cq_O8K71.js                           5.42 kB │ gzip:  2.38 kB
+dist-reddit/assets/race-CATdH75d.js                           5.59 kB │ gzip:  2.52 kB
+dist-reddit/assets/race-Bs7ZmP02.js                           5.59 kB │ gzip:  2.57 kB
+dist-reddit/assets/profile-DYTLjGms.js                        5.62 kB │ gzip:  2.34 kB
+dist-reddit/assets/race-BRd-yeSH.js                           5.64 kB │ gzip:  2.50 kB
+dist-reddit/assets/race-CZisVP0p.js                           5.69 kB │ gzip:  2.52 kB
+dist-reddit/assets/race--FvB0Wvp.js                           5.69 kB │ gzip:  2.65 kB
+dist-reddit/assets/race-DKNtDZEg.js                           5.69 kB │ gzip:  2.51 kB
+dist-reddit/assets/race-CzuLBmpH.js                           5.86 kB │ gzip:  2.60 kB
+dist-reddit/assets/profile-DdkGK4vT.js                        5.89 kB │ gzip:  2.25 kB
+dist-reddit/assets/race-BPqSklK5.js                           5.91 kB │ gzip:  2.60 kB
+dist-reddit/assets/race-C70jeLsf.js                           6.02 kB │ gzip:  2.70 kB
+dist-reddit/assets/race-BlwjMyin.js                           6.29 kB │ gzip:  2.66 kB
+dist-reddit/assets/race-CasmFCMi.js                           6.55 kB │ gzip:  2.85 kB
+dist-reddit/assets/race-bIQTP2rw.js                           6.68 kB │ gzip:  2.75 kB
+dist-reddit/assets/profile-BZrAySFe.js                        6.77 kB │ gzip:  2.57 kB
+dist-reddit/assets/bridge-DVVx1abm.js                         7.53 kB │ gzip:  2.70 kB
+dist-reddit/assets/requestSchemas-BCRIy-rj.js                 7.77 kB │ gzip:  2.30 kB
+dist-reddit/assets/race-BwCX1FBS.js                           8.04 kB │ gzip:  3.07 kB
+dist-reddit/assets/profile-Bs27Tv-R.js                        8.07 kB │ gzip:  2.44 kB
+dist-reddit/assets/vendor-three-CDAmVu_b.js                   8.34 kB │ gzip:  2.85 kB
+dist-reddit/assets/validation-C8A6BVdv.js                     9.64 kB │ gzip:  3.48 kB
+dist-reddit/assets/vendor-three-ByiBCCcg.js                   9.76 kB │ gzip:  3.07 kB
+dist-reddit/assets/race-C8eINTSU.js                           9.80 kB │ gzip:  2.95 kB
+dist-reddit/assets/vendor-three-BRUU7_Lb.js                   9.91 kB │ gzip:  3.46 kB
+dist-reddit/assets/client-D9Ka2dOe.js                        10.00 kB │ gzip:  3.48 kB
+dist-reddit/assets/SolarSystem-y2wlfn6x.js                   12.81 kB │ gzip:  4.67 kB
+dist-reddit/assets/vendor-three-BiCdcn-D.js                  13.78 kB │ gzip:  4.54 kB
+dist-reddit/assets/vendor-three-Adn5u5Zy.js                  20.91 kB │ gzip:  4.79 kB
+dist-reddit/assets/useAnswerKeyboard-Dg-8KAiH.js             24.77 kB │ gzip:  7.82 kB
+dist-reddit/assets/RaceTo10Game-CpDDpEa_.js                  32.44 kB │ gzip: 10.68 kB
+dist-reddit/assets/vendor-three-CSZGoEsN.js                  37.04 kB │ gzip: 11.77 kB
+dist-reddit/assets/ReferralSharingCapability-BUW9Ncd7.js     43.53 kB │ gzip: 15.55 kB
+dist-reddit/assets/GameModalView-QeYoKuwT.js                 54.71 kB │ gzip: 17.29 kB
+dist-reddit/assets/vendor-three-DvaUqFWL.js                  57.10 kB │ gzip: 14.95 kB
+dist-reddit/assets/localeModules-BfMFtt8f.js                 57.33 kB │ gzip:  7.60 kB
+dist-reddit/assets/vendor-three-CFA9LI49.js                  65.49 kB │ gzip: 18.35 kB
+dist-reddit/assets/vendor-three-DJoh3hnH.js                  74.63 kB │ gzip: 21.29 kB
+dist-reddit/assets/vendor-three-Bsvtb-PI.js                  78.43 kB │ gzip: 23.20 kB
+dist-reddit/assets/raceSchemas-BnfRn0H3.js                  107.04 kB │ gzip: 30.75 kB
+dist-reddit/assets/game-CCHppUJx.js                         127.62 kB │ gzip: 38.11 kB
+dist-reddit/assets/vendor-three-rp2wzGbr.js                 192.57 kB │ gzip: 42.43 kB
+dist-reddit/assets/vendor-react-BaMjfHjM.js                 219.00 kB │ gzip: 68.35 kB
+
+✓ built in 1.85s
+$ node scripts/audit-reddit-artifact.mjs
+Reddit artifact audit passed: 417 regular files, 2 entry documents, 3.67 MB, 0.57 MB initial resources, isolated and same-origin only
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 total
+Time:        27.56 s
+Ran all test suites within paths "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts", "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts".
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand --runTestsByPath src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts src/reddit/__tests__/redditBrowser.jest-playwright.test.ts

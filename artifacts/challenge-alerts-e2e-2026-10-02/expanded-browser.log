@@ -1,0 +1,24 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-challenge-alerts", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node ../packages/portal/scripts/verify-live-race-invitations-browser.mjs
+jest 1280px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+jest 1280px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+jest 390px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+jest 390px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+facebook 1280px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+facebook 1280px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+facebook 390px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+facebook 390px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+facebook-share 1280px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+facebook-share 1280px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+facebook-share 390px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+facebook-share 390px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+Unsupported native invitation hosts omit the friend challenge action.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

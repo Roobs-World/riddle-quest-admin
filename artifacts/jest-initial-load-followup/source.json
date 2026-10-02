@@ -1,0 +1,5 @@
+{
+  "packages/portal/src/jest/JestPlayApp.tsx": "ca513652c2191e09704e3ebdbf7bf097574425774ffc6c91aa66fa69b7494b47",
+  "packages/portal/src/jest/startupRiddlePreload.ts": "995a7f8b3957ad659f03b2823886fdd0b66ad7abade652f3eb6d1dc33ad1326c",
+  "packages/portal/scripts/verify-jest-classic-startup-performance.mjs": "e43a41d7cb78f89f377c4a3d7ac408f1e9adc74fa3d2bfa13092c1f37e19b637"
+}

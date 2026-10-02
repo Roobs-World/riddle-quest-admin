@@ -39,7 +39,7 @@ describe("fanfare sequence", () => {
         newLevel: 2,
         newlyUnlockedAchievementIds: [],
       }),
-    ).toEqual([{kind: "victory"}, {kind: "level"}]);
+    ).toEqual([{kind: "victory"}, {kind: "level"}, {kind: "rank"}]);
     expect(
       createVictoryFanfareSteps({
         coinsEarned: 10,

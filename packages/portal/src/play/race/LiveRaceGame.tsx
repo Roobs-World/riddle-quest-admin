@@ -1,3 +1,4 @@
+import {RankedAvatar} from "../RankedAvatar";
 import {LiveRaceInviteShare} from "./components/LiveRaceInviteShare";
 import {estimatedRaceServerNow} from "./logic/raceCountdown";
 import {liveRaceDeliveryDeadline, liveRaceCommandRejected} from "./logic/liveRaceDeliveryDeadline";
@@ -14,7 +15,7 @@ import {editRaceInput} from "./logic/raceInput";
 import {createRaceAttempt, findFirstEditableRaceSlot, getRaceLetterStates} from "./logic/racePresentation";
 
 /** Lobby and live race presentation use one target-owned authenticated transport. */
-export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, coins, ownerId, onClose}: {
+export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, coins, ownerId, onCompleted, onClose}: {
   /** Approved target transport. */ transport: LiveRaceCapability;
   /** Exact content language. */ locale: RaceLocale;
   /** Selected shared riddle category. */ categoryId: RaceCategoryId;
@@ -22,6 +23,8 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   /** Accepts the existing private lobby after the recipient confirms. */ challengeId?: string;
   /** Current profile balance. */ coins: number;
   /** Account lifetime owning result refresh. */ ownerId?: string;
+  /** Optional target-owned terminal effect; transport and scoring stay server authoritative. */
+  onCompleted?: (view: LiveRaceView) => void;
   /** Return to the multiplayer intro. */ onClose: () => void;
 }) {
   /** Viewer-specific snapshot from the authoritative match. */
@@ -34,14 +37,11 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const [busy, setBusy] = useState(false);
   /** A failed delivery that the player can retry with the same request id. */
   const [error, setError] = useState(false);
-  /** Unavailable profile pictures fall back to the same accessible identity placeholder. */
-  const [failedAvatars, setFailedAvatars] = useState<string[]>([]);
   /** Local animation clock adjusted to the latest server observation. */
   const [now, setNow] = useState(Date.now());
   /** Starts gameplay when the shared authoritative countdown reaches zero. */
   const phase = view?.phase === "countdown" && view.startsAtMs !== null && now >= view.startsAtMs ? "racing" : view?.phase;
   /** Server-owned help waits disable actions while preserving answer drafting. */
-  const cooldownSeconds = phase === "racing" ? Math.max(0, Math.ceil(((view?.actionAvailableAtMs ?? 0) - now) / 1000)) : 0;
   /** Receipt anchor advances server time independently of device wall-clock changes. */
   const clockAnchor = useRef({serverNowMs: Date.now(), receivedAtMs: performance.now()});
   /** Current server-time estimate shared by countdown, typing and command admission. */
@@ -102,9 +102,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     setView(next);
     if (next.phase === "result" && !notified.current) {
       notified.current = true;
+      onCompleted?.(next);
       window.dispatchEvent(new CustomEvent("riddle-quest:live-race-completed", {detail: {ownerId}}));
     }
-  }, [ownerId]);
+  }, [ownerId, onCompleted]);
   /** Sends one owned join, progress poll or idempotent player command. */
   const deliver = useCallback(async () => {
     /** Stable command selected before starting an asynchronous delivery. */
@@ -209,25 +210,6 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     }, 100);
     return () => window.clearInterval(timer);
   }, [view?.phase, view?.startsAtMs, deliver]);
-  useEffect(() => {
-    if (view?.phase !== "racing" || !view.actionAvailableAtMs) return;
-    /** The action deadline remains useful even if background observations temporarily fail. */
-    const deadline = view.actionAvailableAtMs;
-    /** Only active help waits need to update the gameplay owner's countdown. */
-    const remainingMs = deadline - serverNow();
-    if (remainingMs <= 0) return;
-    /** Retires the bounded animation when the authoritative deadline is reached. */
-    let timer: number;
-    /** Fractional timer rounding must never leave the last second locked during an outage. */
-    const tick = () => {
-      /** A monotonic sample also keeps the visible wait current without successful polls. */
-      const sampledNow = serverNow();
-      setNow(sampledNow);
-      if (sampledNow < deadline) timer = window.setTimeout(tick, Math.min(1000, Math.ceil(deadline - sampledNow)));
-    };
-    timer = window.setTimeout(tick, Math.min(1000, Math.ceil(remainingMs)));
-    return () => window.clearTimeout(timer);
-  }, [view?.phase, view?.actionAvailableAtMs]);
   /** Leaves the owned seat and returns to the multiplayer intro. */
   const close = () => {
     if (closed.current) return;
@@ -251,7 +233,6 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     /** Snapshot whose ticket and prompt own the current interaction. */
     const current = viewRef.current;
     if (!current?.run?.currentRiddle || pending.current || refreshRequired.current || !(current.phase === "racing" || current.phase === "countdown" && serverNow() >= (current.startsAtMs ?? Infinity))) return;
-    if (serverNow() < (current.actionAvailableAtMs ?? 0)) return;
     if (action === "guess" && draft.letters.some(letter => !letter)) return;
     pending.current = {ticketId: current.ticketId, action, requestId: createRequestId(`live-${action}`),
       riddleId: current.run.currentRiddle.riddleId, ...(action === "guess" ? {guess: draft.letters.join("")} : {})};
@@ -266,12 +247,9 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const countdown = Math.max(0, Math.ceil(((view?.startsAtMs ?? now) - now) / 1000));
   /** Centered avatar and username displayed in the lobby. */
   const identity = (player: LiveRaceView["player"]) => {
-    /** Capture the immutable URL so a failed image cannot erase a later profile picture. */
-    const avatarUrl = player.avatarUrl;
     return <div className="live-race-player">
-      {avatarUrl && !failedAvatars.includes(avatarUrl) ? <img src={avatarUrl} alt="" onError={() =>
-        setFailedAvatars(failed => failed.includes(avatarUrl) ? failed : [...failed, avatarUrl])} /> :
-        <span className="live-race-avatar" aria-hidden="true">{player.bot ? "🤖" : "👤"}</span>}
+      <RankedAvatar avatarUrl={player.avatarUrl} level={player.level} size={100}
+        fallback={player.bot ? "🤖" : "👤"} fallbackClassName="live-race-avatar" />
       <strong>{player.bot ? tr("RaceTo10.LIVE_BOT") : player.displayName}</strong>
     </div>;
   };
@@ -291,10 +269,9 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     {phase === "racing" && view?.run && <RaceGameplay live viewportRef={viewportRef} gameplayRef={gameplayRef}
       run={view.opponent?.bot && view.run.opponent ? {...view.run, opponent: {...view.run.opponent, displayName: tr("RaceTo10.LIVE_BOT")}} : view.run} adjustedNow={Math.max(0, now - (view.startsAtMs ?? now)) + view.run.totalPenaltyMs}
       liveClock={{...clockAnchor.current, startsAtMs: view.startsAtMs ?? now}}
-      liveActionWaitSeconds={cooldownSeconds}
       opponentCorrect={view.opponent?.correctCount ?? 0} feedback={null} coins={coins} currentLetters={draft.letters}
       activeSlotIndex={draft.activeSlotIndex} guesses={guesses} letterStates={getRaceLetterStates(guesses)}
-      pending={busy || Boolean(pending.current)} requiresRunRefresh={Boolean(pending.current) || refreshRequired.current || cooldownSeconds > 0} allowTypingWhilePending={false}
+      pending={busy || Boolean(pending.current)} requiresRunRefresh={Boolean(pending.current) || refreshRequired.current} allowTypingWhilePending={false}
       onClose={close} onSelectSlot={index => input("slot", index)} onLetter={letter => input("letter", letter)}
       onText={text => input("text", text)} onBackspace={() => input("backspace")} onSubmit={() => command("guess")}
       onHint={() => command("hint")} onSkip={() => command("skip")} />}

@@ -1,0 +1,21 @@
+{
+  "spec": {
+    "template": {
+      "metadata": {
+        "annotations": {
+          "cloudfunctions.googleapis.com/trigger-type": "HTTP_TRIGGER",
+          "run.googleapis.com/base-images": "{\"worker\":\"europe-west1-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/nodejs22\"}",
+          "run.googleapis.com/client-name": "cli-firebase",
+          "run.googleapis.com/startup-cpu-boost": "true"
+        }
+      },
+      "spec": {
+        "containerConcurrency": 80,
+        "timeoutSeconds": 60
+      }
+    }
+  },
+  "status": {
+    "latestReadyRevisionName": "getcurrentdailychallenge-00001-zil"
+  }
+}

@@ -19,4 +19,14 @@ Logs and screenshots are saved in `artifacts/multiplayer-wins-leaderboard/`. The
 
 ## Release
 
-This work is local and has not been deployed. Deploy the Firestore index and updated leaderboard/live-race backend before releasing the connected clients. Self-contained targets remain isolated from multiplayer and provider services.
+The user reported deployment, and follow-up checks on 2026-10-02 confirmed the Jest client and both backend functions contain the feature:
+
+- Jest version `01a0fdd1-98b5-750e-ab1c-f83cb6536155`, build `1.0.0-dev.20261002181230.bde26d430c08.b0d01aba`, visibly includes the **Multiplayer wins** tab under Profile → Leaderboard.
+- `getLeaderboard` revision `getleaderboard-00036-rux` is ACTIVE, updated at 17:21:01 UTC. Its deployed source archive contains the positive canonical-user filter and descending multiplayer-wins query.
+- `updateLiveRace` revision `updateliverace-00004-zin` is ACTIVE, updated at 18:14:31 UTC. Its deployed source archive contains the multiplayer win counter.
+
+The first deployed Firestore check found the child field inheriting the unindexed `stats` map. The ranking query failed with `FAILED_PRECONDITION`, so the missing descending collection index was applied directly at 18:19:48 UTC using the exact repository field override. This narrow repair did not redeploy functions or other indexes. The operation completed successfully at 18:25:39 UTC; the index is READY.
+
+The final masked Firestore query returned HTTP 200 and nine rows with scores `5, 5, 3, 2, 2, 2, 2, 2, 1`. After refreshing the deployed Jest version, Profile → Leaderboard → Multiplayer wins displayed the same nine scores in the same order. This browser check used Jest's signed-in Sandbox User session; it confirms the deployed version, without asserting a separate public-release promotion. The screenshot is `artifacts/multiplayer-wins-leaderboard/deployed/live-leaderboard.jpg`.
+
+Deployment metadata, sanitized score-only query evidence, and the index operation are saved in `artifacts/multiplayer-wins-leaderboard/deployed/`. The deployed source checks confirm the shipped code; repeat/concurrent settlement correctness remains supported by the emulator tests above. This follow-up does not create matches or alter account win totals. Self-contained targets remain isolated from multiplayer and provider services.

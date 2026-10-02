@@ -1,7 +1,7 @@
 import {tr} from "../play/i18n";
 import {useSubscriptionManagement} from "../play/modalPages/commerce/useSubscriptionManagement";
 
-/** Keeps subscription management in Profile, using the target's authoritative entitlement catalog. */
+/** Shares subscription management across Profile and Settings using the target's authoritative entitlement catalog. */
 export function JestProfileSubscriptions() {
   /** Authoritative catalog and cancellation state drive the Profile subscription controls. */
   const {products, pending, cancelled, unavailable, error, cancel} = useSubscriptionManagement();

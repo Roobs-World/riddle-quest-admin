@@ -26,4 +26,4 @@ The complete Facebook and Reddit walkthroughs reached their multiplayer hub chec
 
 The global TSDoc audit still reports undocumented declarations from concurrent work. It reports no outstanding declarations in the new economy module or this task's added tests. No unrelated changes were reverted to make these broader checks pass.
 
-The changes are local and have not been deployed. Client and backend economy changes should ship together to keep displayed and charged prices aligned.
+The original checkpoint did not perform a deployment. The subsequent [deployed economy verification](coin-economy-deployed-verification-2026-10-02.md) confirms the backend rules and latest active Jest build, and corrects the live Jest catalog prices to the balanced ladder. Other platform catalogs and build publication are outside that verification.

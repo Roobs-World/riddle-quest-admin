@@ -116,24 +116,19 @@ try {
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});
   if(cooldownOnly){
    await a.evaluate(()=>{window.testActionDeadline=Date.now()+4000;window.dispatchEvent(new Event('online'));});
-   await a.locator('.live-race-cooldown').waitFor();
+   await a.waitForFunction(()=>window.deliveryCalls.filter(call=>call.action==='poll').length>1);
    await a.evaluate(()=>{window.failAllPolls=true;});
    await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('test');
-   assert.equal(await a.locator('.race-actions .submit-action').isDisabled(),true,'A known penalty deadline must block submitting');
-   assert.equal(await a.locator('.guess-row .cell').allTextContents().then(values=>values.join('')),'test','Penalty waits must preserve keyboard input');
-   await a.screenshot({path:path.join(output,'cooldown-'+viewport.width+'.png'),fullPage:true});
-   const waitBounds=await a.locator('.live-race-cooldown').boundingBox();
-   assert.ok(waitBounds&&waitBounds.y>=0&&waitBounds.y+waitBounds.height<=viewport.height,'The penalty countdown must remain within the visible gameplay screen');
-   await a.waitForFunction(()=>!document.querySelector('.race-actions .submit-action').disabled,null,{timeout:6000}).catch(async failure=>{
-    console.log(JSON.stringify(await a.evaluate(()=>({deadline:window.testActionDeadline,now:Date.now(),cooldown:document.querySelector('.live-race-cooldown')?.textContent,
-     letters:[...document.querySelectorAll('.guess-row .cell')].map(cell=>cell.textContent).join(''),error:document.querySelector('.race-error')?.textContent}))));
-    throw failure;
-   });
-   assert.equal(await a.locator('.live-race-cooldown').count(),0,'A polling outage must not extend the known penalty');
+   assert.equal(await a.locator('.race-actions .submit-action').isDisabled(),false,'Time penalties must not block submission, even with a legacy future action deadline');
+   assert.equal(await a.locator('.race-actions button').first().isDisabled(),false,'Time penalties must not block hints');
+   assert.equal(await a.locator('.race-actions button').last().isDisabled(),false,'Time penalties must not block skipping');
+   assert.equal(await a.locator('.guess-row .cell').allTextContents().then(values=>values.join('')),'test');
+   assert.equal(await a.locator('.live-race-cooldown').count(),0,'Time-only penalties must not display an action wait');
+   await a.screenshot({path:path.join(output,'time-only-penalty-'+viewport.width+'.png'),fullPage:true});
    await a.locator('.race-actions .submit-action').click();
    await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
    assert.equal(tickets.get('Alice').count,1);assert.deepEqual(errors,[]);
-   console.log('Known penalty deadline preserved typing and re-enabled submission during a poll outage at '+viewport.width+'px.');
+   console.log('Legacy penalty deadline left hint, skip and submission enabled during a poll outage at '+viewport.width+'px.');
    await context.close();continue;
   }
   if(renderOnly){

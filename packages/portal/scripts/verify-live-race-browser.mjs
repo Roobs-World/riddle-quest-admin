@@ -119,7 +119,7 @@ try {
    const wrongAttempts=viewport.width===1280?1:RACE_RULES.maxGuessesPerRiddle;
    for(let index=0;index<wrongAttempts;index++){
     await a.locator('.guess-row .cell:not([disabled])').first().click();await a.keyboard.type('x'.repeat((await authority.answer('Alice')).length));
-    if(index===0){assert.equal(await a.locator('.race-actions .submit-action').isDisabled(),true,'Hint wait must block submitting while preserving typing');assert.ok(await a.locator('.live-race-cooldown').count());}
+    if(index===0){assert.equal(await a.locator('.race-actions .submit-action').isDisabled(),false,'Hint time must not block submitting');assert.equal(await a.locator('.live-race-cooldown').count(),0);}
     await a.waitForFunction(()=>!document.querySelector('.race-actions .submit-action').disabled,null,{timeout:RACE_RULES.hintPenaltyMs+5000});
     await a.locator('.race-actions .submit-action').click();
     await a.waitForFunction(expected=>{const riddle=window.liveSnapshots.at(-1).run?.currentRiddle;return expected===5?riddle?.position===10:riddle?.guessesUsed===expected;},index+1);
@@ -131,7 +131,7 @@ try {
    assert.deepEqual(current.run.currentRiddle.revealedLetters,[]);assert.deepEqual(current.run.currentRiddle.confirmedGuesses,[]);
    assert.equal(current.run.currentRiddle.guessesUsed,0);assert.equal(current.run.currentRiddle.guessesRemaining,RACE_RULES.maxGuessesPerRiddle);
    assert.deepEqual(await authority.balances(),[100,100],'Skipping cannot award victory or coins');
-   assert.equal(await a.locator('.race-actions button').first().isDisabled(),true,'Skip penalty must prevent immediately advancing the race');
+   assert.equal(await a.locator('.race-actions button').first().isDisabled(),false,'Skip time must not block the next hint');
    await a.waitForFunction(()=>!document.querySelector('.race-actions button').disabled,null,{timeout:RACE_RULES.skipPenaltyMs+5000});
    console.log('Hint and '+(viewport.width===1280?'manual skip':'exhausted guesses')+' at nine solves produced a fresh, unscored question at '+viewport.width+'px.');
   }

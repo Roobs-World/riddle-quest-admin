@@ -1,3 +1,4 @@
+import {jestChallengePushWorkerPlugin} from "./jestChallengePushWorkerPlugin.ts";
 import {webBuildFacts} from "../../scripts/release/release-registry.mjs";
 import {playableContentModule, playableContentPlugin} from "./playableContentPlugin.ts";
 import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";
@@ -575,6 +576,7 @@ export function createWebTargetViteConfig({
   const plugins: PluginOption[] = [
     webTargetBuildContractPlugin(profile.id, selectedBuildOutDir),
     targetHtmlPlugin(profile),
+    jestChallengePushWorkerPlugin(profile.id, command),
     webTargetDependencyPlugin(profile.id),
     react(),
     babel({presets: [reactCompilerPreset()]}),

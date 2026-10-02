@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 1,
+  "target": "youtube",
+  "outputDirectory": "/tmp/riddle-fb-live-tournament-20261002-vpWOVl/youtube",
+  "packages": [
+    "react",
+    "react-dom",
+    "scheduler"
+  ],
+  "modules": [
+    "packages/portal/\u0000rolldown/runtime.js",
+    "packages/portal/\u0000virtual:playable-content",
+    "packages/portal/\u0000virtual:playable-pack-ar",
+    "packages/portal/\u0000virtual:playable-pack-de",
+    "packages/portal/\u0000virtual:playable-pack-en",
+    "packages/portal/\u0000virtual:playable-pack-es",
+    "packages/portal/\u0000virtual:playable-pack-fr",
+    "packages/portal/\u0000virtual:playable-pack-hi",
+    "packages/portal/\u0000virtual:playable-pack-id",
+    "packages/portal/\u0000virtual:playable-pack-it",
+    "packages/portal/\u0000virtual:playable-pack-ja",
+    "packages/portal/\u0000virtual:playable-pack-ko",
+    "packages/portal/\u0000virtual:playable-pack-nl",
+    "packages/portal/\u0000virtual:playable-pack-pl",
+    "packages/portal/\u0000virtual:playable-pack-pt",
+    "packages/portal/\u0000virtual:playable-pack-ru",
+    "packages/portal/\u0000virtual:playable-pack-tr",
+    "packages/portal/\u0000virtual:playable-pack-vi",
+    "packages/portal/\u0000vite/preload-helper.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/client.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-compiler-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-jsx-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/compiler-runtime.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
+    "packages/core/src/contentProtection.ts",
+    "packages/core/src/game/achievementMilestones.ts",
+    "packages/core/src/game/achievementRewards.ts",
+    "packages/core/src/game/economy.ts",
+    "packages/core/src/game/graphemes.ts",
+    "packages/core/src/game/index.ts",
+    "packages/portal/src/playable/LocalSoloAuthority.contract.ts",
+    "packages/portal/src/playable/LocalSoloAuthority.ts",
+    "packages/portal/src/playable/YouTubeNativeAnswerInput.tsx",
+    "packages/portal/src/playable/YouTubePlayableApp.tsx",
+    "packages/portal/src/playable/YouTubePlayableViews.tsx",
+    "packages/portal/src/playable/YouTubeSaveGate.ts",
+    "packages/portal/src/playable/achievements.ts",
+    "packages/portal/src/playable/content.ts",
+    "packages/portal/src/playable/economy.ts",
+    "packages/portal/src/playable/i18n.ts",
+    "packages/portal/src/playable/input.ts",
+    "packages/portal/src/playable/localSoloGameRules.ts",
+    "packages/portal/src/playable/save.ts",
+    "packages/portal/src/playable/styles.css",
+    "packages/portal/src/playable/useYouTubePlayableBoot.ts",
+    "packages/portal/src/playable/useYouTubeReadySession.ts",
+    "packages/portal/src/youtube/main.tsx",
+    "packages/portal/src/youtube/sdk.ts",
+    "packages/portal/targets/youtube/index.html"
+  ],
+  "chunks": [
+    {
+      "file": "assets/index-Bch6zkCZ.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/vendor-react-CzolT8tg.js",
+        "assets/core-game-B_elbW7b.js",
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "511362f06009bc1858bdb184008529fd1810fe9cc8858bc6b755f36c615b5aee"
+    },
+    {
+      "file": "assets/playable-pack-ar-DU3Ptg6z.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "d3671978a135aefeddebbfd9948e9f138e52ee20b759831d532bce098500e2a1"
+    },
+    {
+      "file": "assets/playable-pack-de-Cn6QLGQO.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "e78bd4b5a0d1edacafb051f0c2ba20b1a6359bbcf8eca3372d13cd5d1f6e0202"
+    },
+    {
+      "file": "assets/playable-pack-en-I0dYdCPi.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "73e7d737c5cf3496ebc89832132739c128291168c9552ad0704da193c92d9cd1"
+    },
+    {
+      "file": "assets/playable-pack-es-4RtiL8Qz.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "e2e89ac80c0f607f6209aeafa6483a4e5ed011d29687b27a508a12a692868801"
+    },
+    {
+      "file": "assets/playable-pack-fr-BsVvRDq-.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "b75950b876aeae69ae4c30db52fa6ba25483a676ee057fc5c09346fcf45c0265"
+    },
+    {
+      "file": "assets/playable-pack-hi-DOugCXgu.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "3d1fc3f3aaa3f1f0e6e589cf5ebeb251fcda2fdf35a6c40c054042f780202783"
+    },
+    {
+      "file": "assets/playable-pack-id-DR-LnXu9.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "4b96b30f296184f62604e6cd5b5b1be8f71340ca3ff4930e51043d21b11db16a"
+    },
+    {
+      "file": "assets/playable-pack-it-CCtqGm_Z.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "bb0d2fc1b43ff34355962c2ff46f635cf17436bbc6820c9ce3f0dbfc0644728a"
+    },
+    {
+      "file": "assets/playable-pack-ja-xdEWmDii.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "7cec2d65ffca46bb3f00aa4d3ebe2f07fbf91b3eedec9c8bad72b6b7997713ef"
+    },
+    {
+      "file": "assets/playable-pack-ko-DbB-FFj1.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "abcbca60ce278fbe4835b55cc6cef7f432adf5b30839d675be25f02dbb963967"
+    },
+    {
+      "file": "assets/playable-pack-nl-B1Jot1rq.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "3aff111097edb8ee738e04085f7a12d4b6236cf00cc1122a4b631ab0ce671d79"
+    },
+    {
+      "file": "assets/playable-pack-pl-0vQHUsDF.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "e18a490d9bb66c39cd7e3d6cbad235a78d3fded51182450032ea5763aa58ba0a"
+    },
+    {
+      "file": "assets/playable-pack-pt-COPilu59.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "a8259649235eb5640d00c6aad871e9769797199b7de7e36f2055f92d627ff35e"
+    },
+    {
+      "file": "assets/playable-pack-ru-ywEVlY3q.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "bad8fd4861c49bcee6e3b5b5e1026d4768668dd204aab6fb3008a861070009fe"
+    },
+    {
+      "file": "assets/playable-pack-tr-0ZZaefnB.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "d936147f67e88f038a0b4b45e777dadd695aae8f8ff4297d86868b0c3cff0063"
+    },
+    {
+      "file": "assets/playable-pack-vi-C1BpI2k-.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "be884c08b1c88dbd4e664f4ffb2dda0bcc23cf0676dba2bfe435ad9d38bfde3d"
+    },
+    {
+      "file": "assets/core-game-B_elbW7b.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "c22065485ee553756d2b36c9900e0268e8c736810dce90be784ce9a83a7f8509"
+    },
+    {
+      "file": "assets/rolldown-runtime-Czjbc987.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [],
+      "dynamicImports": [],
+      "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
+    },
+    {
+      "file": "assets/vendor-react-CzolT8tg.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "17edcf9bd2f8eb65ec3547491935a3e9a658416faa23d41a9148c62312551b81"
+    }
+  ],
+  "files": [
+    {
+      "file": "assets/core-game-B_elbW7b.js",
+      "sha256": "c22065485ee553756d2b36c9900e0268e8c736810dce90be784ce9a83a7f8509"
+    },
+    {
+      "file": "assets/index-Bch6zkCZ.js",
+      "sha256": "511362f06009bc1858bdb184008529fd1810fe9cc8858bc6b755f36c615b5aee"
+    },
+    {
+      "file": "assets/index-DhsmAOC4.css",
+      "sha256": "838a7feff2b201fe61bd0afd5e7a216ca355ba0b7386d1adc94780b097dc1be0"
+    },
+    {
+      "file": "assets/playable-pack-ar-DU3Ptg6z.js",
+      "sha256": "d3671978a135aefeddebbfd9948e9f138e52ee20b759831d532bce098500e2a1"
+    },
+    {
+      "file": "assets/playable-pack-de-Cn6QLGQO.js",
+      "sha256": "e78bd4b5a0d1edacafb051f0c2ba20b1a6359bbcf8eca3372d13cd5d1f6e0202"
+    },
+    {
+      "file": "assets/playable-pack-en-I0dYdCPi.js",
+      "sha256": "73e7d737c5cf3496ebc89832132739c128291168c9552ad0704da193c92d9cd1"
+    },
+    {
+      "file": "assets/playable-pack-es-4RtiL8Qz.js",
+      "sha256": "e2e89ac80c0f607f6209aeafa6483a4e5ed011d29687b27a508a12a692868801"
+    },
+    {
+      "file": "assets/playable-pack-fr-BsVvRDq-.js",
+      "sha256": "b75950b876aeae69ae4c30db52fa6ba25483a676ee057fc5c09346fcf45c0265"
+    },
+    {
+      "file": "assets/playable-pack-hi-DOugCXgu.js",
+      "sha256": "3d1fc3f3aaa3f1f0e6e589cf5ebeb251fcda2fdf35a6c40c054042f780202783"
+    },
+    {
+      "file": "assets/playable-pack-id-DR-LnXu9.js",
+      "sha256": "4b96b30f296184f62604e6cd5b5b1be8f71340ca3ff4930e51043d21b11db16a"
+    },
+    {
+      "file": "assets/playable-pack-it-CCtqGm_Z.js",
+      "sha256": "bb0d2fc1b43ff34355962c2ff46f635cf17436bbc6820c9ce3f0dbfc0644728a"
+    },
+    {
+      "file": "assets/playable-pack-ja-xdEWmDii.js",
+      "sha256": "7cec2d65ffca46bb3f00aa4d3ebe2f07fbf91b3eedec9c8bad72b6b7997713ef"
+    },
+    {
+      "file": "assets/playable-pack-ko-DbB-FFj1.js",
+      "sha256": "abcbca60ce278fbe4835b55cc6cef7f432adf5b30839d675be25f02dbb963967"
+    },
+    {
+      "file": "assets/playable-pack-nl-B1Jot1rq.js",
+      "sha256": "3aff111097edb8ee738e04085f7a12d4b6236cf00cc1122a4b631ab0ce671d79"
+    },
+    {
+      "file": "assets/playable-pack-pl-0vQHUsDF.js",
+      "sha256": "e18a490d9bb66c39cd7e3d6cbad235a78d3fded51182450032ea5763aa58ba0a"
+    },
+    {
+      "file": "assets/playable-pack-pt-COPilu59.js",
+      "sha256": "a8259649235eb5640d00c6aad871e9769797199b7de7e36f2055f92d627ff35e"
+    },
+    {
+      "file": "assets/playable-pack-ru-ywEVlY3q.js",
+      "sha256": "bad8fd4861c49bcee6e3b5b5e1026d4768668dd204aab6fb3008a861070009fe"
+    },
+    {
+      "file": "assets/playable-pack-tr-0ZZaefnB.js",
+      "sha256": "d936147f67e88f038a0b4b45e777dadd695aae8f8ff4297d86868b0c3cff0063"
+    },
+    {
+      "file": "assets/playable-pack-vi-C1BpI2k-.js",
+      "sha256": "be884c08b1c88dbd4e664f4ffb2dda0bcc23cf0676dba2bfe435ad9d38bfde3d"
+    },
+    {
+      "file": "assets/rolldown-runtime-Czjbc987.js",
+      "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
+    },
+    {
+      "file": "assets/vendor-react-CzolT8tg.js",
+      "sha256": "17edcf9bd2f8eb65ec3547491935a3e9a658416faa23d41a9148c62312551b81"
+    },
+    {
+      "file": "index.html",
+      "sha256": "2a643432c740e7845284afdbe14b82d4f4d6d0bb8957cae4b7c1b13f729ee4fc"
+    },
+    {
+      "file": "third-party-licenses.txt",
+      "sha256": "0191e203e9b03a2301fbadfb5786a0c4b7a0fb2007f00b1efb560cc7e19235f2"
+    },
+    {
+      "file": "youtube-content-manifest.json",
+      "sha256": "dd42f7474b22ddb7187cf05148aa1bc024d6f0d3f72c16436f0fb845ecc81251"
+    }
+  ]
+}

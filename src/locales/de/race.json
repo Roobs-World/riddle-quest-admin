@@ -115,7 +115,6 @@
     "LIVE_MODE": "Live-PvP",
     "LIVE_WAITING_FINISH": "Warte, bis dein Gegner fertig ist…",
     "LIVE_FRIEND_WAIT": "Warte, bis dein Freund die Herausforderung annimmt. Diese Einladung läuft nach 15 Minuten ab.",
-    "LIVE_ACTION_WAIT": "Nächste Aktion in {seconds} s",
     "PLAYER_USERNAME": "Benutzername des Spielers",
     "NOTIFY_PLAYER": "Herausforderung senden",
     "INVITE_QUEUED": "Einladung gespeichert. Push-Benachrichtigungen hängen von den Einstellungen des Spielers ab.",

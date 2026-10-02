@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+Test Suites: 3 passed, 3 total
+Tests:       55 passed, 55 total
+Snapshots:   0 total
+Time:        0.231 s, estimated 1 s
+Ran all test suites matching src/jest/__tests__/startupRiddlePreload.test.ts|src/jest/__tests__/startup.test.ts|src/jest/__tests__/startupPreparation.test.ts.

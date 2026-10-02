@@ -9,7 +9,7 @@ import {raceProviderScope} from "./raceEligibility";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "./raceEngine";
 import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent, readRaceCoinBalance,
   requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
-import {liveRun, liveView, liveOperationAtMs, liveActionAvailableAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
+import {liveRun, liveView, liveOperationAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
 
 /** A short lobby heartbeat prevents matching players who already closed their game. */
 const LOBBY_LEASE_MS = 10_000;
@@ -97,6 +97,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     const data = owner.data()!;
     /** Provides player behavior. */
     const player = {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
+      level: typeof data.level === "number" && Number.isInteger(data.level) && data.level > 0 ? data.level : 1,
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
     /** Provides ticket behavior. */
     const ticket: LiveTicket = {userId, pool, player, ...(input.createChallenge ? {privateChallenge: true} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
@@ -231,7 +232,7 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
     if (receipt?.exists && receipt.data()?.binding !== binding) throw new HttpsError("invalid-argument", "Live command id reused.");
     if (checks.some(check => check.exists)) {
       matchChanged ||= match.players[1 - seat].displayName !== "Riddle Quest player" || match.players[1 - seat].avatarUrl !== null || match.winner === undefined;
-      match.players[1 - seat] = {...match.players[1 - seat], displayName: "Riddle Quest player", avatarUrl: null};
+      match.players[1 - seat] = {...match.players[1 - seat], displayName: "Riddle Quest player", avatarUrl: null, level: 1};
       if (match.winner === undefined) match.winner = null;
     }
     matchChanged = advanceLiveBot(match, nowMs) || matchChanged;
@@ -241,8 +242,6 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
       if (input.action === "leave") match.winner = nowMs < match.startsAtMs ? null : 1 - seat;
       else {
         if (nowMs < match.startsAtMs) throw new HttpsError("failed-precondition", "Match has not started.");
-        if (nowMs < liveActionAvailableAtMs(match.runs[seat]))
-          throw new HttpsError("failed-precondition", "Wait for the hint or skip penalty to finish.");
         /** Provides run behavior. */
         const run = applyActionRateLimit(refreshRaceRun(match.runs[seat], nowMs), userId, nowMs);
         // Scoring uses the existing hint/guess rules, without an opponent recording.

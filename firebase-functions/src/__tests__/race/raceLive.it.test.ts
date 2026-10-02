@@ -295,38 +295,35 @@ it.each(["skip", "exhaust"] as const)("resets question state after %s at nine so
   expect(await answer(A, current, guessAtMs + 5000 + RACE_RULES.skipPenaltyMs, "tenth-actual-solve")).toMatchObject({result: "win", rewardCoins: 50, newCoins: 150});
 });
 
-it("enforces the hint penalty before accepting another live action", async () => {
-  /** Revealing letters must not provide a cost-free route to the live victory reward. */
+it("adds hint time without blocking the next live action", async () => {
   const {a} = await pair();
-  /** The server releases the first question at the shared start. */
   const started = await update(A, a, NOW + 7000);
-  /** One confirmed hint has a deadline determined only by the server-owned event. */
-  const hinted = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "fair-hint", riddleId: started.run!.currentRiddle!.riddleId}, {db, nowMs: NOW + 7000});
-  await expect(answer(A, hinted, NOW + 8000, "early-hinted-guess")).rejects.toMatchObject({code: "failed-precondition"});
-  expect(hinted).toMatchObject({actionAvailableAtMs: NOW + 7000 + RACE_RULES.hintPenaltyMs, player: {correctCount: 0}});
-  for (const action of ["hint", "skip"] as const) await expect(updateLiveRaceForUser(A, {
-    ticketId: a.ticketId, action, requestId: `early-after-hint-${action}`, riddleId: hinted.run!.currentRiddle!.riddleId,
-  }, {db, nowMs: NOW + 8000})).rejects.toMatchObject({code: "failed-precondition"});
-  expect(await answer(A, hinted, NOW + 7000 + RACE_RULES.hintPenaltyMs, "ready-hinted-guess")).toMatchObject({player: {correctCount: 1}});
+  const hinted = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "time-only-hint", riddleId: started.run!.currentRiddle!.riddleId}, {db, nowMs: NOW + 7000});
+  expect(hinted).toMatchObject({player: {correctCount: 0}, rewardCoins: 0, run: {totalPenaltyMs: RACE_RULES.hintPenaltyMs}});
+  const solved = await answer(A, hinted, NOW + 8000, "immediate-hinted-guess");
+  expect(solved).toMatchObject({player: {correctCount: 1}, run: {totalPenaltyMs: RACE_RULES.hintPenaltyMs}});
+  expect(solved.run!.adjustedElapsedMs).toBe(solved.run!.wallElapsedMs + RACE_RULES.hintPenaltyMs);
 });
 
-it.each(["skip", "exhaust"] as const)("enforces the skip penalty after %s without granting a solved point", async action => {
-  /** Manual and automatic skipping have the same authoritative cost. */
+it.each(["skip", "exhaust"] as const)("adds skip time after %s while immediately allowing hint, submit and skip", async action => {
   const {a} = await pair();
-  /** The first real question is issued only after the shared start. */
   let current = await update(A, a, NOW + 7000);
   if (action === "skip") current = await updateLiveRaceForUser(A, {
-    ticketId: a.ticketId, action: "skip", requestId: "fair-manual-skip", riddleId: current.run!.currentRiddle!.riddleId,
+    ticketId: a.ticketId, action: "skip", requestId: "time-only-skip", riddleId: current.run!.currentRiddle!.riddleId,
   }, {db, nowMs: NOW + 7000});
   else for (let index = 0; index < 5; index++) current = await updateLiveRaceForUser(A, {
-    ticketId: a.ticketId, action: "guess", requestId: `fair-auto-skip-${index}`, riddleId: current.run!.currentRiddle!.riddleId,
+    ticketId: a.ticketId, action: "guess", requestId: `time-only-exhaust-${index}`, riddleId: current.run!.currentRiddle!.riddleId,
     guess: "x".repeat(current.run!.currentRiddle!.answerLength),
   }, {db, nowMs: NOW + 7000 + index * 1000});
-  /** The deadline begins when the authority accepts the skipping action. */
-  const availableAtMs = NOW + (action === "skip" ? 7000 : 11000) + RACE_RULES.skipPenaltyMs;
-  await expect(answer(A, current, availableAtMs - 1, "too-early-after-skip")).rejects.toMatchObject({code: "failed-precondition"});
-  expect(current).toMatchObject({actionAvailableAtMs: availableAtMs, player: {correctCount: 0}, rewardCoins: 0});
-  expect(await answer(A, current, availableAtMs, "ready-after-skip")).toMatchObject({player: {correctCount: 1}});
+  const nextAtMs = NOW + (action === "skip" ? 8000 : 12000);
+  expect(current).toMatchObject({player: {correctCount: 0}, rewardCoins: 0, run: {totalPenaltyMs: RACE_RULES.skipPenaltyMs}});
+  current = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "hint", requestId: "hint-immediately-after-skip", riddleId: current.run!.currentRiddle!.riddleId}, {db, nowMs: nextAtMs});
+  current = await answer(A, current, nextAtMs + 1000, "submit-immediately-after-skip");
+  current = await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "skip", requestId: "skip-again-without-waiting", riddleId: current.run!.currentRiddle!.riddleId}, {db, nowMs: nextAtMs + 2000});
+  const penalties = 2 * RACE_RULES.skipPenaltyMs + RACE_RULES.hintPenaltyMs;
+  expect(current).toMatchObject({player: {correctCount: 1}, rewardCoins: 0, run: {totalPenaltyMs: penalties}});
+  expect(current.run!.adjustedElapsedMs).toBe(current.run!.wallElapsedMs + penalties);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
 });
 
 it("scores wrong answers on the server and cannot win by exhausting attempts", async () => {

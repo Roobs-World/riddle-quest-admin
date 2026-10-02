@@ -157,12 +157,13 @@ it("shares results and profile invitations without promising a share-time reward
 
 it("shares a private PvP lobby through Meta's native friend challenge dialog", async () => {
   /** Isolated provider dialog records its opaque invitation entry data. */
-  const {options, shareAsync} = fixture();
+  const {options, shareAsync, issueToken} = fixture();
   /** Server lobby handle carries no player identity or client-scored result. */
   const challengeId = `live_${"a".repeat(64)}`;
   await expect(createFacebookReferralSharing(options)!.shareLiveRace!({challengeId})).resolves.toBe("success");
   expect(shareAsync).toHaveBeenCalledWith(expect.objectContaining({intent: "CHALLENGE", switchContext: false,
-    data: {challengeId, referralToken: "a".repeat(43)}}));
+    data: {challengeId}}));
+  expect(issueToken).not.toHaveBeenCalled();
   expect(shareAsync.mock.calls[0][0].text).not.toContain("Time to beat");
 });
 

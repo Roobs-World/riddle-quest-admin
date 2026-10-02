@@ -1,0 +1,127 @@
+[
+  {
+    "region": "us-central1",
+    "endpoint": "getCurrentDailyChallenge",
+    "status": 204,
+    "durationMs": 236,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "us-central1",
+    "endpoint": "getCurrentClassicRiddle",
+    "status": 204,
+    "durationMs": 170,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "us-central1",
+    "endpoint": "getClassicRiddleBuffer",
+    "status": 204,
+    "durationMs": 179,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "us-central1",
+    "endpoint": "submitSinglePlayerGuess",
+    "status": 204,
+    "durationMs": 13687,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "us-central1",
+    "endpoint": "completeGame",
+    "status": 204,
+    "durationMs": 4413,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "us-central1",
+    "endpoint": "getHint",
+    "status": 204,
+    "durationMs": 308,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "us-central1",
+    "endpoint": "spendCoins",
+    "status": 204,
+    "durationMs": 12590,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "us-central1",
+    "endpoint": "skipRiddle",
+    "error": "The read operation timed out"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "getCurrentDailyChallenge",
+    "status": 204,
+    "durationMs": 6191,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "getCurrentClassicRiddle",
+    "status": 204,
+    "durationMs": 5950,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "getClassicRiddleBuffer",
+    "status": 204,
+    "durationMs": 6131,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "submitSinglePlayerGuess",
+    "status": 204,
+    "durationMs": 7850,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "completeGame",
+    "status": 204,
+    "durationMs": 5107,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "getHint",
+    "status": 204,
+    "durationMs": 5979,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "spendCoins",
+    "status": 204,
+    "durationMs": 6292,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  },
+  {
+    "region": "europe-west1",
+    "endpoint": "skipRiddle",
+    "status": 204,
+    "durationMs": 5959,
+    "allowOrigin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "allowHeaders": "content-type,authorization,x-firebase-appcheck"
+  }
+]

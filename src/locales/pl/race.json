@@ -115,7 +115,6 @@
     "LIVE_MODE": "PvP na żywo",
     "LIVE_WAITING_FINISH": "Czekamy, aż przeciwnik skończy…",
     "LIVE_FRIEND_WAIT": "Czekamy, aż znajomy zaakceptuje. To zaproszenie wygasa po 15 minutach.",
-    "LIVE_ACTION_WAIT": "Następna akcja za {seconds} s",
     "PLAYER_USERNAME": "Nazwa użytkownika gracza",
     "NOTIFY_PLAYER": "Wyślij wyzwanie",
     "INVITE_QUEUED": "Zaproszenie zapisane. Powiadomienia zależą od ustawień gracza.",

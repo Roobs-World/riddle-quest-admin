@@ -1,0 +1,122 @@
+✖ netflix package audit rejects contaminated selected output despite a clean default artifact (462.678343ms)
+✖ netflix audit respects explicit directory, target-specific environment and default precedence (24.172595ms)
+✖ yahoo package audit rejects contaminated selected output despite a clean default artifact (445.135032ms)
+✖ yahoo audit respects explicit directory, target-specific environment and default precedence (19.197465ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 958.984702
+
+✖ failing tests:
+
+test at packages/portal/scripts/platform-artifact-audits.test.mjs:463:3
+✖ netflix package audit rejects contaminated selected output despite a clean default artifact (462.678343ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Facebook integration found in netflix candidate artifact/u. Input:
+  
+  '$ node scripts/audit-standalone-artifact.mjs netflix dist-netflix\n' +
+    'file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19\n' +
+    '    throw new Error(`${target} candidate contains a non-portable entry resource: ${reference}`);\n' +
+    '          ^\n' +
+    '\n' +
+    'Error: netflix candidate contains a non-portable entry resource: https://www.youtube.com/game_api/v1\n' +
+    '    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19:11\n' +
+    '\n' +
+    'Node.js v24.17.0\n'
+  
+      at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:480:16
+      at async withFixture (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:438:5)
+      at async TestContext.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:464:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Node.js v24.17.0\n...',
+    expected: /Facebook integration found in netflix candidate artifact/u,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at packages/portal/scripts/platform-artifact-audits.test.mjs:487:3
+✖ netflix audit respects explicit directory, target-specific environment and default precedence (24.172595ms)
+  AssertionError [ERR_ASSERTION]: file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19
+      throw new Error(`${target} candidate contains a non-portable entry resource: ${reference}`);
+            ^
+  
+  Error: netflix candidate contains a non-portable entry resource: https://www.youtube.com/game_api/v1
+      at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19:11
+  
+  Node.js v24.17.0
+  
+  
+  1 !== 0
+  
+      at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:504:16
+      at async withFixture (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:438:5)
+      at async TestContext.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:488:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/portal/scripts/platform-artifact-audits.test.mjs:463:3
+✖ yahoo package audit rejects contaminated selected output despite a clean default artifact (445.135032ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Facebook integration found in yahoo candidate artifact/u. Input:
+  
+  '$ node scripts/audit-standalone-artifact.mjs yahoo dist-yahoo\n' +
+    'file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19\n' +
+    '    throw new Error(`${target} candidate contains a non-portable entry resource: ${reference}`);\n' +
+    '          ^\n' +
+    '\n' +
+    'Error: yahoo candidate contains a non-portable entry resource: https://www.youtube.com/game_api/v1\n' +
+    '    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19:11\n' +
+    '\n' +
+    'Node.js v24.17.0\n'
+  
+      at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:480:16
+      at async withFixture (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:438:5)
+      at async TestContext.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:464:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 's v24.17.0\n...',
+    expected: /Facebook integration found in yahoo candidate artifact/u,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at packages/portal/scripts/platform-artifact-audits.test.mjs:487:3
+✖ yahoo audit respects explicit directory, target-specific environment and default precedence (19.197465ms)
+  AssertionError [ERR_ASSERTION]: file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19
+      throw new Error(`${target} candidate contains a non-portable entry resource: ${reference}`);
+            ^
+  
+  Error: yahoo candidate contains a non-portable entry resource: https://www.youtube.com/game_api/v1
+      at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-standalone-artifact.mjs:19:11
+  
+  Node.js v24.17.0
+  
+  
+  1 !== 0
+  
+      at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:504:16
+      at async withFixture (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:438:5)
+      at async TestContext.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/platform-artifact-audits.test.mjs:488:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

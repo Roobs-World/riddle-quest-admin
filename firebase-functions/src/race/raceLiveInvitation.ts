@@ -104,6 +104,7 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     const data = owner.data()!;
     /** Safe identity snapshot for the creator's lobby. */
     const player = {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
+      level: typeof data.level === "number" && Number.isInteger(data.level) && data.level > 0 ? data.level : 1,
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
     /** Both seats receive the creator's immutable deck and the same five-second countdown. */
     const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;

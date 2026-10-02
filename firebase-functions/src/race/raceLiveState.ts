@@ -38,12 +38,6 @@ export function liveRun(base: Pick<RaceRunRecord, "riddles" | "locale" | "catego
 /** Fixed server-owned interval between fallback bot solves. */
 const LIVE_BOT_SOLVE_MS = 12_000;
 
-/** Hint and skip penalties impose an actual wait before the viewer's next competitive action. */
-export function liveActionAvailableAtMs(run: RaceRunRecord): number {
-  return run.events.reduce((availableAtMs, event) => event.penaltyAddedMs > 0
-    ? Math.max(availableAtMs, run.startedAtMs + event.wallElapsedMs + event.penaltyAddedMs) : availableAtMs, run.startedAtMs);
-}
-
 /** Reads and commands share a persisted clock floor, including pre-marker accepted events and bot progress. */
 export function liveOperationAtMs(ticket: LiveTicket, match: LiveMatch | undefined, sampledAtMs: number): number {
   return Math.max(sampledAtMs, ticket.createdAtMs, ticket.seenAtMs, match?.observedAtMs ?? 0,
@@ -91,7 +85,7 @@ export function liveView(ticketId: string, ticket: LiveTicket, match: LiveMatch 
     serverNowMs: observedAtMs, searchEndsAtMs: ticket.createdAtMs + (ticket.privateChallenge ? LIVE_RACE_INVITE_MS : 60_000), startsAtMs: match?.startsAtMs ?? null,
     player: {...ticket.player, correctCount: own?.correctCount ?? 0},
     opponent: match ? {...match.players[1 - seat], correctCount: rival?.correctCount ?? 0} : null,
-    ...(own ? {actionAvailableAtMs: liveActionAvailableAtMs(own)} : {}),
+    ...(own ? {actionAvailableAtMs: own.startedAtMs} : {}),
     ...(ticket.privateChallenge ? {challengeId: `live_${ticketId}`} : {}),
     run, result: terminal ? match.winner === null ? "tie" : match.winner === seat ? "win" : "loss" : null,
     rewardCoins: terminal && match.winner === seat ? match.rewardCoins ?? 0 : 0,

@@ -16,7 +16,6 @@ export function RaceGameplay({
   live = false,
   adjustedNow,
   liveClock,
-  liveActionWaitSeconds,
   opponentCorrect,
   feedback,
   coins,
@@ -48,8 +47,6 @@ export function RaceGameplay({
   adjustedNow: number;
   /** Live clock animates without rerendering the answer controls. */
   liveClock?: LiveRaceClockAnchor;
-  /** Remaining authoritative help wait, displayed inside the fitted gameplay surface. */
-  liveActionWaitSeconds?: number;
   /** Server-confirmed opponent score. */
   opponentCorrect: number;
   /** Stores feedback. */
@@ -96,7 +93,6 @@ export function RaceGameplay({
           run={run}
           adjustedNow={adjustedNow}
           liveClock={liveClock}
-          liveActionWaitSeconds={liveActionWaitSeconds}
           opponentCorrect={opponentCorrect}
           feedback={feedback}
           coins={coins}

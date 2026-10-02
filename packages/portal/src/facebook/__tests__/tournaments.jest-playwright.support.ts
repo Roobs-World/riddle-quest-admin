@@ -1,3 +1,4 @@
+import {LiveRaceViewSchema, RACE_RULES} from "@qwordly/core/race";
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
 import type {FacebookInstantTournament} from "../fbinstant";
@@ -66,7 +67,11 @@ export async function installTournamentPresentation(page: Page): Promise<void> {
 
 /** Proves the localized control, fresh authority, duplicate protection and exact native payloads. */
 export async function verifyTournamentPresentation(page: Page): Promise<void> {
-  await page.getByRole("tab", {name: "Tournois", exact: true}).click();
+  const play = page.getByRole("tab").first();
+  await play.focus();
+  await play.press("End");
+  expect(await page.getByRole("tab", {name: "Tournois", exact: true}).getAttribute("aria-selected")).toBe("true");
+  await page.waitForFunction(() => document.activeElement?.getAttribute("role") === "tab" && document.activeElement?.getAttribute("aria-selected") === "true");
   await page.locator(".race-tournaments li").waitFor();
   expect(await page.locator(".race-tournaments").innerText()).toContain("0:09.0");
   /** French restored preferences drive the new button and native title. */
@@ -141,4 +146,63 @@ export async function verifyTournamentEntry(page: Page, origin: string): Promise
   await page.locator(".game-bottom-navigation").waitFor();
   expect(await page.locator(".race-tournaments").count()).toBe(0);
   expect(await page.locator(".race-challenge-card").count()).toBe(0);
+}
+
+/** Live results request a server record once; native score projection uses its confirmed best. */
+export async function verifyTournamentLiveResult(page: Page, tournaments = true): Promise<void> {
+  const records: unknown[] = [];
+  let solves = 9;
+  let outcome: "win" | "loss" | "tie" = "loss";
+  await page.route("**/recordFacebookTournament", async route => {
+    const input = route.request().postDataJSON().data;
+    records.push(input);
+    const completedAtMs = Date.now(), day = new Date(completedAtMs).toISOString().slice(0, 10);
+    await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
+      tournamentId: `facebook-race10-${input.locale}-${day}`, locale: input.locale, runId: input.runId,
+      adjustedTimeMs: 2500, completedAtMs, improved: true, sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false,
+    }})});
+  });
+  await page.route("**/joinLiveRace", async route => {
+    const {locale, categoryId} = route.request().postDataJSON().data;
+    const serverNowMs = Date.now(), startsAtMs = serverNowMs - 2500;
+    const result = LiveRaceViewSchema.parse({ticketId: "d".repeat(64), phase: "result",
+      serverNowMs, startsAtMs, searchEndsAtMs: serverNowMs + 60000,
+      player: {displayName: "FacebookSolver", avatarUrl: null, bot: false, correctCount: solves},
+      opponent: {displayName: "LiveRival", avatarUrl: null, bot: false, correctCount: 0},
+      run: {runId: "d".repeat(64), role: "creator", status: "completed", categoryId, locale, rules: RACE_RULES,
+        correctCount: solves, wallElapsedMs: 2500, totalPenaltyMs: 0, adjustedElapsedMs: 2500, currentRiddle: null, events: []},
+      result: outcome, rewardCoins: 0,
+    });
+    await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: result})});
+  });
+  await page.locator(".multiplayer-navigation-action").click();
+  const subscriptions = await page.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length);
+  for (const result of ["loss", "tie"] as const) {
+    outcome = result;
+    await page.locator(".live-race-start").click();
+    await page.locator(".live-race-victory").waitFor();
+    await page.locator(".race-close").click();
+    await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
+    expect(records).toHaveLength(0);
+    expect(await page.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length)).toBe(subscriptions);
+  }
+  outcome = "win"; solves = 10;
+  const confirmation = tournaments ? page.waitForResponse("**/recordFacebookTournament") : undefined;
+  await page.locator(".live-race-start").click();
+  await page.locator(".live-race-victory").waitFor();
+  await confirmation;
+  if (tournaments) await page.waitForFunction(() => Reflect.get(window, "__tournamentScore") === 2500);
+  else expect(await page.evaluate(() => Reflect.get(window, "__tournamentScore"))).toBeUndefined();
+  expect(records).toEqual(tournaments ? [{runId: "d".repeat(64), locale: "fr"}] : []);
+  expect(await page.locator(".race-error").count()).toBe(0);
+  await page.locator(".race-close").click();
+  await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
+  // A forfeit may project a win and completed run while the player solved fewer than ten.
+  solves = 9;
+  await page.locator(".live-race-start").click();
+  await page.locator(".live-race-victory").waitFor();
+  await page.locator(".race-close").click();
+  await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
+  expect(records).toHaveLength(tournaments ? 1 : 0);
+  await page.locator(".race-close").click();
 }

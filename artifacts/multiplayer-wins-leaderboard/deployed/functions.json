@@ -1,0 +1,48 @@
+[
+  {
+    "buildConfig": {
+      "source": {
+        "storageSource": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1790961575369642",
+          "object": "getLeaderboard/function-source.zip"
+        }
+      }
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLeaderboard",
+    "serviceConfig": {
+      "revision": "getleaderboard-00036-rux"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.641861826Z",
+    "sourceSignals": {
+      "multiplayerMetricPresent": true,
+      "canonicalWinsFilter": true,
+      "descendingWinsOrder": true,
+      "liveWinCounterPresent": true
+    }
+  },
+  {
+    "buildConfig": {
+      "source": {
+        "storageSource": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1790964822931926",
+          "object": "updateLiveRace/function-source.zip"
+        }
+      }
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateLiveRace",
+    "serviceConfig": {
+      "revision": "updateliverace-00004-zin"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T18:14:31.635179711Z",
+    "sourceSignals": {
+      "multiplayerMetricPresent": true,
+      "canonicalWinsFilter": true,
+      "descendingWinsOrder": true,
+      "liveWinCounterPresent": true
+    }
+  }
+]

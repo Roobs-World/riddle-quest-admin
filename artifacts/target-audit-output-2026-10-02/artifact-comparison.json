@@ -1,0 +1,17 @@
+{
+  "facebook": {
+    "files": 404,
+    "byteIdentical": true,
+    "changed": []
+  },
+  "jest": {
+    "files": 404,
+    "byteIdentical": true,
+    "changed": []
+  },
+  "reddit": {
+    "files": 415,
+    "byteIdentical": true,
+    "changed": []
+  }
+}

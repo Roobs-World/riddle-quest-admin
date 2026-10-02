@@ -1,4 +1,6 @@
-import type {ChangeEvent} from "react";
+import {LiveRacePushConsent} from "../../race/components/LiveRacePushConsent";
+import {useContext, type ChangeEvent} from "react";
+import {ProfileSubscriptionContext} from "../profile/ProfileSubscriptionContext";
 import type {GameModal} from "../../gameSession";
 import {LANGUAGE_OPTIONS, tr, type Locale} from "../../i18n";
 import {setPlayerLocale} from "../../playerPreferences";
@@ -25,6 +27,8 @@ export function SettingsModalPage({
   onToggleMute,
   commerceAvailable = true,
 }: SettingsModalPageProps) {
+  /** Target-specific subscription management shared with Profile. */
+  const subscriptionControls = useContext(ProfileSubscriptionContext);
   /** Persists and immediately activates the selected locale. */
   const changeLocale = (event: ChangeEvent<HTMLSelectElement>) => {
     /** Provides next locale behavior. */
@@ -38,6 +42,7 @@ export function SettingsModalPage({
         <span>{tr("Settings.SOUND_TOGGLE")}</span>
         <strong>{muted ? tr("Settings.TOGGLE_OFF") : tr("Settings.TOGGLE_ON")}</strong>
       </button>
+      <LiveRacePushConsent />
       <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>
         <select value={locale} onChange={changeLocale}>
@@ -66,6 +71,7 @@ export function SettingsModalPage({
           <strong>›</strong>
         </button>
       )}
+      {subscriptionControls}
     </div>
   );
 }

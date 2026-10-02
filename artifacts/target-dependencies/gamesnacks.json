@@ -9,6 +9,24 @@
   ],
   "modules": [
     "packages/portal/\u0000rolldown/runtime.js",
+    "packages/portal/\u0000virtual:playable-content",
+    "packages/portal/\u0000virtual:playable-pack-ar",
+    "packages/portal/\u0000virtual:playable-pack-de",
+    "packages/portal/\u0000virtual:playable-pack-en",
+    "packages/portal/\u0000virtual:playable-pack-es",
+    "packages/portal/\u0000virtual:playable-pack-fr",
+    "packages/portal/\u0000virtual:playable-pack-hi",
+    "packages/portal/\u0000virtual:playable-pack-id",
+    "packages/portal/\u0000virtual:playable-pack-it",
+    "packages/portal/\u0000virtual:playable-pack-ja",
+    "packages/portal/\u0000virtual:playable-pack-ko",
+    "packages/portal/\u0000virtual:playable-pack-nl",
+    "packages/portal/\u0000virtual:playable-pack-pl",
+    "packages/portal/\u0000virtual:playable-pack-pt",
+    "packages/portal/\u0000virtual:playable-pack-ru",
+    "packages/portal/\u0000virtual:playable-pack-tr",
+    "packages/portal/\u0000virtual:playable-pack-vi",
+    "packages/portal/\u0000vite/preload-helper.js",
     "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.production.js",
     "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom.production.js",
     "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/client.js",
@@ -21,8 +39,12 @@
     "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
     "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
     "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
+    "packages/core/src/contentProtection.ts",
+    "packages/core/src/game/achievementMilestones.ts",
     "packages/core/src/game/achievementRewards.ts",
+    "packages/core/src/game/economy.ts",
     "packages/core/src/game/graphemes.ts",
+    "packages/core/src/game/index.ts",
     "packages/portal/src/gamesnacks/GameSnacksSdkPort.ts",
     "packages/portal/src/gamesnacks/main.tsx",
     "packages/portal/src/playable/LocalSoloAuthority.contract.ts",
@@ -34,7 +56,6 @@
     "packages/portal/src/playable/achievements.ts",
     "packages/portal/src/playable/content.ts",
     "packages/portal/src/playable/economy.ts",
-    "packages/portal/src/playable/generated/youtube-content-v1.json",
     "packages/portal/src/playable/i18n.ts",
     "packages/portal/src/playable/input.ts",
     "packages/portal/src/playable/localSoloGameRules.ts",
@@ -55,7 +76,167 @@
         "assets/rolldown-runtime.js"
       ],
       "dynamicImports": [],
-      "sha256": "9810753ef962d59a41a581cf28d6d3586476fa05eeb58dc45901354a766adadc"
+      "sha256": "2a1238129c9c01342463a03999fc25fb2af41bd90aa8e0d41dc54344389efa8e"
+    },
+    {
+      "file": "assets/playable-pack-ar.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "f4fa72ed635b11bdb5476e0c78ab0a504f45b481505c6ca77635d83c6d2865db"
+    },
+    {
+      "file": "assets/playable-pack-de.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "5be395292adb9659b9a6d2b1665b27ddd5c17552c0c3b3ab98e801d0032759c7"
+    },
+    {
+      "file": "assets/playable-pack-en.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "f7e0689dbc09aac21a690f5a5f039708634a78bd267662dab83664b6c7e31632"
+    },
+    {
+      "file": "assets/playable-pack-es.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "f368bff894de316d0e6de004a3ea8ed323ddd5819ab117cbd9a6c02937e9ed8e"
+    },
+    {
+      "file": "assets/playable-pack-fr.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "3564c1ee12eed4b60fa36310862f30ed819f3ebe11784c4e73f3b9af6551134e"
+    },
+    {
+      "file": "assets/playable-pack-hi.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "7f20096f6495e9c87ea08bb6633976f73adffbe458e5bc8a2cbf36abc0bd7e1e"
+    },
+    {
+      "file": "assets/playable-pack-id.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "8c3f72b14ddb194a0d6188673f9ae812a55993c0455c5b6933575406736063aa"
+    },
+    {
+      "file": "assets/playable-pack-it.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "188ca87739de41444cf01a8189e85da0b55d1e914263cd8bfcbb6866fdc7a858"
+    },
+    {
+      "file": "assets/playable-pack-ja.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "24f99052895587a48387b29984a1af939ccaab9ca599270ee13613afddd26712"
+    },
+    {
+      "file": "assets/playable-pack-ko.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "28a6454ded63a74ef29b3eb12e3b6b1bbe63aed2dd0f2401bed790a130faa318"
+    },
+    {
+      "file": "assets/playable-pack-nl.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "88a1ad527241a2f1a8f478f60fcebdc0886bb49d1d3079f57a224bef2575b86d"
+    },
+    {
+      "file": "assets/playable-pack-pl.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "ecf612c4d39c3183ff881c4069619e3f7e4df971dc29984674fd5f5f67a8de25"
+    },
+    {
+      "file": "assets/playable-pack-pt.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "275471ae24563bf070c4487cf414c997a4df2a595a942b6a43855d262b3d3344"
+    },
+    {
+      "file": "assets/playable-pack-ru.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "ce45de923d140250ac0580054e407a1dd8c548fec2fb105b67a990577b69995e"
+    },
+    {
+      "file": "assets/playable-pack-tr.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "735f9179b5eece9c9bc196a5efc2544daf9a515fafbf1dfe2313e189923dcf37"
+    },
+    {
+      "file": "assets/playable-pack-vi.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "6bd40ca6eb8454b9b2c5c696a73d9036e23aeb2f483e87c4919fb348b722ac16"
     },
     {
       "file": "assets/core-game.js",
@@ -65,7 +246,7 @@
         "assets/rolldown-runtime.js"
       ],
       "dynamicImports": [],
-      "sha256": "39f10563353486e1dd116cea148c487cb520600587b4f028b586556c4c874c60"
+      "sha256": "a8b500251c4ef8064c70f33b06cfb8eacdbc7968fba9ea6f081713468d2adee3"
     },
     {
       "file": "assets/rolldown-runtime.js",
@@ -89,7 +270,7 @@
   "files": [
     {
       "file": "assets/core-game.js",
-      "sha256": "39f10563353486e1dd116cea148c487cb520600587b4f028b586556c4c874c60"
+      "sha256": "a8b500251c4ef8064c70f33b06cfb8eacdbc7968fba9ea6f081713468d2adee3"
     },
     {
       "file": "assets/index.css",
@@ -97,7 +278,71 @@
     },
     {
       "file": "assets/index.js",
-      "sha256": "9810753ef962d59a41a581cf28d6d3586476fa05eeb58dc45901354a766adadc"
+      "sha256": "2a1238129c9c01342463a03999fc25fb2af41bd90aa8e0d41dc54344389efa8e"
+    },
+    {
+      "file": "assets/playable-pack-ar.js",
+      "sha256": "f4fa72ed635b11bdb5476e0c78ab0a504f45b481505c6ca77635d83c6d2865db"
+    },
+    {
+      "file": "assets/playable-pack-de.js",
+      "sha256": "5be395292adb9659b9a6d2b1665b27ddd5c17552c0c3b3ab98e801d0032759c7"
+    },
+    {
+      "file": "assets/playable-pack-en.js",
+      "sha256": "f7e0689dbc09aac21a690f5a5f039708634a78bd267662dab83664b6c7e31632"
+    },
+    {
+      "file": "assets/playable-pack-es.js",
+      "sha256": "f368bff894de316d0e6de004a3ea8ed323ddd5819ab117cbd9a6c02937e9ed8e"
+    },
+    {
+      "file": "assets/playable-pack-fr.js",
+      "sha256": "3564c1ee12eed4b60fa36310862f30ed819f3ebe11784c4e73f3b9af6551134e"
+    },
+    {
+      "file": "assets/playable-pack-hi.js",
+      "sha256": "7f20096f6495e9c87ea08bb6633976f73adffbe458e5bc8a2cbf36abc0bd7e1e"
+    },
+    {
+      "file": "assets/playable-pack-id.js",
+      "sha256": "8c3f72b14ddb194a0d6188673f9ae812a55993c0455c5b6933575406736063aa"
+    },
+    {
+      "file": "assets/playable-pack-it.js",
+      "sha256": "188ca87739de41444cf01a8189e85da0b55d1e914263cd8bfcbb6866fdc7a858"
+    },
+    {
+      "file": "assets/playable-pack-ja.js",
+      "sha256": "24f99052895587a48387b29984a1af939ccaab9ca599270ee13613afddd26712"
+    },
+    {
+      "file": "assets/playable-pack-ko.js",
+      "sha256": "28a6454ded63a74ef29b3eb12e3b6b1bbe63aed2dd0f2401bed790a130faa318"
+    },
+    {
+      "file": "assets/playable-pack-nl.js",
+      "sha256": "88a1ad527241a2f1a8f478f60fcebdc0886bb49d1d3079f57a224bef2575b86d"
+    },
+    {
+      "file": "assets/playable-pack-pl.js",
+      "sha256": "ecf612c4d39c3183ff881c4069619e3f7e4df971dc29984674fd5f5f67a8de25"
+    },
+    {
+      "file": "assets/playable-pack-pt.js",
+      "sha256": "275471ae24563bf070c4487cf414c997a4df2a595a942b6a43855d262b3d3344"
+    },
+    {
+      "file": "assets/playable-pack-ru.js",
+      "sha256": "ce45de923d140250ac0580054e407a1dd8c548fec2fb105b67a990577b69995e"
+    },
+    {
+      "file": "assets/playable-pack-tr.js",
+      "sha256": "735f9179b5eece9c9bc196a5efc2544daf9a515fafbf1dfe2313e189923dcf37"
+    },
+    {
+      "file": "assets/playable-pack-vi.js",
+      "sha256": "6bd40ca6eb8454b9b2c5c696a73d9036e23aeb2f483e87c4919fb348b722ac16"
     },
     {
       "file": "assets/rolldown-runtime.js",
@@ -109,7 +354,7 @@
     },
     {
       "file": "game.json",
-      "sha256": "e914a896cfd366bc2f703546c28d61ba0f0baf61737410e2310cdfac68540189"
+      "sha256": "0f895580d477714b69ce6c8c922de7fc94a089c31bbdb85ffda868219fbc3b17"
     },
     {
       "file": "index.html",

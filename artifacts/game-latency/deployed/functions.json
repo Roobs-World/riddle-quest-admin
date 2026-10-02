@@ -1,0 +1,1613 @@
+[
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/requestRaceHint",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://requestracehint-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:17.219210006Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getCurrentDailyChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://getcurrentdailychallenge-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:23.891920122Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/readyRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://readyracerun-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:34.157648007Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceAccess",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getraceaccess-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:23.948943758Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/publishRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://publishracechallenge-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:25.945854274Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getCurrentClassicRiddle",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://getcurrentclassicriddle-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:19.444940990Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRiddle",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://skipriddle-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:25.646137068Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/resumeRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://resumeracerun-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:17.393271809Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRaceRiddle",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://skipraceriddle-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:27.640171775Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/setLiveRacePushSubscription",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://setliveracepushsubscription-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:27.524637277Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/joinLiveRace",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://joinliverace-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T18:13:57.165620003Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/reserveRaceInvite",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://reserveraceinvite-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:16.271206494Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/submitRaceGuess",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://submitraceguess-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:26.601363418Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/aggregatePresenceStatus",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://aggregatepresencestatus-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:29.773460037Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/deliverLiveRaceChallengePush",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://deliverliveracechallengepush-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:39.725581211Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceEntry",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getraceentry-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:29.293778369Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/updateLiveRace",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://updateliverace-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T18:13:54.510523290Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceCategories",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://listracecategories-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:20.715638262Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/startRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://startracerun-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:17.532748796Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/sendLiveRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://sendliveracechallenge-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:24.182869008Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/completeGame",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://completegame-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:28.883915016Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceOutcome",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://getraceoutcome-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:23.849664361Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getHint",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://gethint-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:20.250919534Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getracechallenge-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:28.093665439Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getLiveRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getliveracechallenge-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:27.914931614Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceInbox",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://listraceinbox-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:29.154324381Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/abandonRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://abandonracerun-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:29.737325708Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/submitSinglePlayerGuess",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://submitsingleplayerguess-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:21.141113425Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/cancelRaceInvite",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://cancelraceinvite-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:20.416107360Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/spendCoins",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://spendcoins-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:18.148822774Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getClassicRiddleBuffer",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://getclassicriddlebuffer-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:28.312170189Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceChallenges",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://listliveracechallenges-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:15.588580297Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/recordRaceAnalytics",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://recordraceanalytics-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:18.572769904Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/findRaceMatch",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://findracematch-h5dplxxwha-ew.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:16.233181386Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getFacebookClientConfiguration",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getfacebookclientconfiguration-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.730665336Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/requestRaceHint",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://requestracehint-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:00.843461412Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentDailyChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getcurrentdailychallenge-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.017984874Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/readyRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://readyracerun-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:04.951538581Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/replenishClassicSupply",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 540,
+      "uri": "https://replenishclassicsupply-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:14.861766648Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestAvatar",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://syncjestavatar-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:59.981255406Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/acceptFacebookNotificationPermissionPrompt",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://acceptfacebooknotificationpermissionprompt-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:59.787034099Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceAccess",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getraceaccess-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.230899681Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthCallback",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 30,
+      "uri": "https://yahoooauthcallback-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:14.449812849Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/publishRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://publishracechallenge-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.794099545Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentClassicRiddle",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getcurrentclassicriddle-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:55.137012012Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRiddle",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://skipriddle-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:55.816211978Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockRival",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://blockrival-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.057420030Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createFacebookReferral",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://createfacebookreferral-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.294642714Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeRedditIdentity",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://exchangeredditidentity-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.547015326Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeJestIdentity",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://exchangejestidentity-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.323226146Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditProfileRetentionScheduler",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 1,
+      "timeoutSeconds": 120,
+      "uri": "https://redditprofileretentionscheduler-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:31.859339218Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/resumeRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://resumeracerun-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:36.696929707Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLeaderboard",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getleaderboard-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.641861826Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRaceRiddle",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://skipraceriddle-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:52.600669489Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookContextRetentionScheduler",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 1,
+      "timeoutSeconds": 120,
+      "uri": "https://facebookcontextretentionscheduler-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:28.841612493Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinLiveRace",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://joinliverace-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T18:14:30.928218901Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reserveRaceInvite",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://reserveraceinvite-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:54.470237217Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionStatus",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://facebookdatadeletionstatus-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.204547663Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitRaceGuess",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://submitraceguess-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.174404983Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/confirmYahooStripeCheckout",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 30,
+      "uri": "https://confirmyahoostripecheckout-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:14.699475648Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinFacebookContext",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://joinfacebookcontext-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:59.343816059Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionCallback",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 540,
+      "uri": "https://facebookdatadeletioncallback-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:39.174395294Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooStripeWebhook",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 30,
+      "uri": "https://yahoostripewebhook-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:13.689003658Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/verifyJestReferrals",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://verifyjestreferrals-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:05.227648568Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/leaveFacebookContext",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://leavefacebookcontext-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.220288463Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestSubscriptions",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://syncjestsubscriptions-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:04.952495892Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createYahooStripeCheckout",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 30,
+      "uri": "https://createyahoostripecheckout-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:16.663868967Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncBlockedRivalPresenceVisibility",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://syncblockedrivalpresencevisibility-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.822040116Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceEntry",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getraceentry-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:00.107099279Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/dailyChallengeScheduler",
+    "serviceConfig": {
+      "availableMemory": "512Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 900,
+      "uri": "https://dailychallengescheduler-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:22:04.085203728Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncKnownRivalPresenceVisibility",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://syncknownrivalpresencevisibility-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.956767335Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateLiveRace",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://updateliverace-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T18:14:31.635179711Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthStart",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 30,
+      "uri": "https://yahoooauthstart-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:11.812758318Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/bindFacebookReferral",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://bindfacebookreferral-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.680400045Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceCategories",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://listracecategories-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:55.397661963Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/startRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://startracerun-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.512553645Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retryJestAccountDeletion",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 540,
+      "uri": "https://retryjestaccountdeletion-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:59.032928655Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/settleRaceDeadlines",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 120,
+      "uri": "https://settleracedeadlines-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:17.338100291Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/sendLiveRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://sendliveracechallenge-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:55.866354306Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditStorage",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://redditstorage-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.704233154Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookTournament",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://recordfacebooktournament-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:58.992829954Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/grantFacebookRewardedContinue",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://grantfacebookrewardedcontinue-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:56.775014268Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/completeGame",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://completegame-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.163352653Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceOutcome",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://getraceoutcome-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.723512276Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/setPresenceConsent",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://setpresenceconsent-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.491476821Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/claimFacebookNotificationPermissionPrompt",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://claimfacebooknotificationpermissionprompt-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.723375296Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/monitorRaceRecoveryHealth",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 120,
+      "uri": "https://monitorracerecoveryhealth-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:14.244942569Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteAccount",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 540,
+      "uri": "https://deleteaccount-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.441167242Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getHint",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://gethint-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:03.329601904Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRaceSettlementEvent",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://deliverracesettlementevent-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:15.896045401Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookTournament",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://listfacebooktournament-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:36.783384492Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateUsername",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://updateusername-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:03.946042545Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteRedditAccount",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://deleteredditaccount-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.794047883Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getracechallenge-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:57.426265357Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/grantJestPurchase",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://grantjestpurchase-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.949075080Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookContextBoard",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://listfacebookcontextboard-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.094780968Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportRival",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://reportrival-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.536363448Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLiveRaceChallenge",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getliveracechallenge-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:14.843113405Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRacePerformanceEvent",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://deliverraceperformanceevent-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:16.799602400Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceInbox",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://listraceinbox-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:03.032725826Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/abandonRaceRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://abandonracerun-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:54.212374097Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitSinglePlayerGuess",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://submitsingleplayerguess-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:53.373019984Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditGameplay",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://redditgameplay-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:15.055049514Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookContextRun",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://recordfacebookcontextrun-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.878610709Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/cancelRaceInvite",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://cancelraceinvite-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:36.517299802Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/spendCoins",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://spendcoins-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:36.563697018Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getClassicRiddleBuffer",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://getclassicriddlebuffer-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:02.982730721Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/issueFacebookIdentityNonce",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://issuefacebookidentitynonce-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:19:55.917688079Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceChallenges",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "timeoutSeconds": 60,
+      "uri": "https://listliveracechallenges-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:00.591246738Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reconcileRaceMatchProjections",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 120,
+      "uri": "https://reconcileracematchprojections-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:17.266207999Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordRaceAnalytics",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://recordraceanalytics-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:01.158099666Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateAvatar",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://updateavatar-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.162479917Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/findRaceMatch",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "minInstanceCount": 1,
+      "timeoutSeconds": 60,
+      "uri": "https://findracematch-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:20:37.231933261Z"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeFacebookIdentity",
+    "serviceConfig": {
+      "availableMemory": "256Mi",
+      "maxInstanceCount": 20,
+      "timeoutSeconds": 60,
+      "uri": "https://exchangefacebookidentity-h5dplxxwha-uc.a.run.app"
+    },
+    "state": "ACTIVE",
+    "updateTime": "2026-10-02T17:21:00.182293167Z"
+  }
+]

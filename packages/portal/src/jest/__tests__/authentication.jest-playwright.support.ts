@@ -246,6 +246,13 @@ export const verifyShortJestPreview = async (page: Page) => {
 /** Mocks the external SDK request, including the delayed-startup scenario. */
 export const installJestSdkRequestRoute = async (page: Page, scenario?: string) => {
   await page.route("https://cdn.jest.com/**", async (route) => {
+    // The provider avatar fixture must decode so the real image fallback does not replace it.
+    if (route.request().url() === "https://cdn.jest.com/mock-avatar.webp") {
+      await route.fulfill({contentType: "image/png", body: Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j6o0AAAAASUVORK5CYII=", "base64",
+      )});
+      return;
+    }
     if (scenario === "sdk-request-delay") {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }

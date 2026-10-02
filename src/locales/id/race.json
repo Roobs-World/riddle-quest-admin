@@ -115,7 +115,6 @@
     "LIVE_MODE": "PvP Langsung",
     "LIVE_WAITING_FINISH": "Menunggu lawan selesai…",
     "LIVE_FRIEND_WAIT": "Menunggu temanmu menerima. Undangan ini kedaluwarsa setelah 15 menit.",
-    "LIVE_ACTION_WAIT": "Aksi berikutnya dalam {seconds} dtk",
     "PLAYER_USERNAME": "Nama pengguna pemain",
     "NOTIFY_PLAYER": "Kirim tantangan",
     "INVITE_QUEUED": "Undangan disimpan. Pengiriman notifikasi bergantung pada pengaturan pemain.",
