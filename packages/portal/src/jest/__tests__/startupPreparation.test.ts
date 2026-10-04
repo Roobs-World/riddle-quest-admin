@@ -65,7 +65,7 @@ it.each(["locale", "profile"] as const)("starts reads together and waits for bot
   expect(f.effects.setSession).not.toHaveBeenCalled();
   if (first === "locale") f.profile.resolve(hydrated); else f.locale.resolve();
   await expect(commit).resolves.toBe(true);
-  expect(f.effects.enablePlayerStateWrites).toHaveBeenCalledWith(hydrated.playerData);
+  expect(f.effects.enablePlayerStateWrites).toHaveBeenCalledWith(hydrated.playerData, hydrated.player.playerId);
   expect(f.effects.setSession).toHaveBeenCalledWith(hydrated);
   expect(f.effects.setEngagementProgress).toHaveBeenCalledWith({level: 7, winStreak: 3, wins: 12});
 });

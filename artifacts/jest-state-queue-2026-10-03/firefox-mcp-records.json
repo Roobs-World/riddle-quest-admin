@@ -1,0 +1,1135 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "jest-state-queue-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:34833",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:34833 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "maxLines": 40
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot\n\nuid=e84 body\n  uid=e83 div\n    uid=e82 div\n      uid=e81 main\n        uid=e79 div\n          uid=e5 header\n            uid=e0 img \"Logo\" src=\"http://127.0.0.1:34833/asse...\"\n            uid=e1 button \"Mute sound\"\n            uid=e2 div text=\"Classic\"\n            uid=e4 div \"300  coins\"\n              uid=e3 img src=\"http://127.0.0.1:34833/asse...\"\n          uid=e39 section\n            uid=e7 div\n              uid=e6 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n            uid=e38 div\n              uid=e13 div\n                uid=e8 button \"Letter 1\"\n                uid=e9 button \"Letter 2\"\n                uid=e10 button \"Letter 3\"\n                uid=e11 button \"Letter 4\"\n                uid=e12 button \"Letter 5\"\n              uid=e19 div\n                uid=e14 button \"Letter 1\"\n                uid=e15 button \"Letter 2\"\n                uid=e16 button \"Letter 3\"\n                uid=e17 button \"Letter 4\"\n                uid=e18 button \"Letter 5\"\n              uid=e25 div\n                uid=e20 button \"Letter 1\"\n                uid=e21 button \"Letter 2\"\n                uid=e22 button \"Letter 3\"\n                uid=e23 button \"Letter 4\"\n                uid=e24 button \"Letter 5\"\n              uid=e31 div\n                uid=e26 button \"Letter 1\"\n                uid=e27 button \"Letter 2\"\n                uid=e28 button \"Letter 3\"\n                uid=e29 button \"Letter 4\"\n                uid=e30 button \"Letter 5\"\n              uid=e37 div\n\n[+46 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({draft:window.draft(),writes:window.storageProbe.writes.length,acks:window.storageProbe.writes.map(x=>x.ack),initializations:window.storageProbe.initializations,errors:window.probe.errors,unhandled:window.probe.unhandled})"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"writes\\\":1,\\\"acks\\\":[false],\\\"initializations\\\":2,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Backspace"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Backspace"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "n"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Backspace"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Backspace"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "n"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Backspace"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Backspace"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "n"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Backspace"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Backspace"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "n"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.mergeProfile(); await window.restart(false); return JSON.stringify({draft:window.draft(),checkpoint:window.committed.playerData.activeGame?.currentLetters.join(''),coins:window.committed.playerData.profile.coins,writes:window.storageProbe.writes.length,edits:window.probe.saves.filter(x=>'activeGame' in x).length,failures:window.storageProbe.failures}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"checkpoint\\\":\\\"PIAN\\\",\\\"coins\\\":80,\\\"writes\\\":1,\\\"edits\\\":12,\\\"failures\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.releaseStorage(); await window.awaitQueue(); return JSON.stringify({draft:window.draft(),writes:window.storageProbe.writes.map(x=>({playerId:x.playerId,letters:x.value.activeGame?.currentLetters.join(''),coins:x.value.profile?.coins,ack:x.ack})),failures:window.storageProbe.failures,errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"writes\\\":[{\\\"playerId\\\":\\\"jest-player\\\",\\\"coins\\\":300,\\\"ack\\\":true},{\\\"playerId\\\":\\\"jest-player\\\",\\\"letters\\\":\\\"PIAN\\\",\\\"coins\\\":300,\\\"ack\\\":true}],\\\"failures\\\":[],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "o"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { await window.awaitQueue(); return JSON.stringify({guesses:window.probe.guesses,completions:window.probe.completions,clear:window.storageProbe.writes.at(-1).value.activeGame,failures:window.storageProbe.failures,errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"guesses\\\":0,\\\"completions\\\":0,\\\"clear\\\":{\\\"schemaVersion\\\":1,\\\"savedAt\\\":1791026290776,\\\"riddleId\\\":\\\"classic-fake-1\\\",\\\"gameMode\\\":\\\"classic\\\",\\\"sessionToken\\\":\\\"00000000-0000-4000-8000-000000000001\\\",\\\"currentLetters\\\":[\\\"P\\\",\\\"I\\\",\\\"A\\\",\\\"N\\\",\\\"\\\"],\\\"activeSlotIndex\\\":4,\\\"hintRevealedIndices\\\":[],\\\"guesses\\\":[],\\\"engineSnapshot\\\":{\\\"guesses\\\":[],\\\"attemptsUsed\\\":0,\\\"hasUsedContinue\\\":false,\\\"gameOver\\\":false},\\\"awaitingContinue\\\":false,\\\"letterStates\\\":{}},\\\"failures\\\":[],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "maxLines": 100
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot\n\nuid=e84 body\n  uid=e83 div\n    uid=e179 div\n      uid=e178 main\n        uid=e164 div\n          uid=e90 header\n            uid=e85 img \"Logo\" src=\"http://127.0.0.1:34833/asse...\"\n            uid=e86 button \"Mute sound\"\n            uid=e87 div text=\"Classic\"\n            uid=e89 div \"300  coins\"\n              uid=e88 img src=\"http://127.0.0.1:34833/asse...\"\n          uid=e124 section\n            uid=e92 div\n              uid=e91 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n            uid=e123 div\n              uid=e98 div\n                uid=e93 button \"Letter 1: P\" text=\"P\"\n                uid=e94 button \"Letter 2: I\" text=\"I\"\n                uid=e95 button \"Letter 3: A\" text=\"A\"\n                uid=e96 button \"Letter 4: N\" text=\"N\"\n                uid=e97 button \"Letter 5\"\n              uid=e104 div\n                uid=e99 button \"Letter 1\"\n                uid=e100 button \"Letter 2\"\n                uid=e101 button \"Letter 3\"\n                uid=e102 button \"Letter 4\"\n                uid=e103 button \"Letter 5\"\n              uid=e110 div\n                uid=e105 button \"Letter 1\"\n                uid=e106 button \"Letter 2\"\n                uid=e107 button \"Letter 3\"\n                uid=e108 button \"Letter 4\"\n                uid=e109 button \"Letter 5\"\n              uid=e116 div\n                uid=e111 button \"Letter 1\"\n                uid=e112 button \"Letter 2\"\n                uid=e113 button \"Letter 3\"\n                uid=e114 button \"Letter 4\"\n                uid=e115 button \"Letter 5\"\n              uid=e122 div\n                uid=e117 button \"Letter 1\"\n                uid=e118 button \"Letter 2\"\n                uid=e119 button \"Letter 3\"\n                uid=e120 button \"Letter 4\"\n                uid=e121 button \"Letter 5\"\n          uid=e156 section \"Virtual keyboard\"\n            uid=e135 div\n              uid=e125 button \"Q\" text=\"Q\"\n              uid=e126 button \"W\" text=\"W\"\n              uid=e127 button \"E\" text=\"E\"\n              uid=e128 button \"R\" text=\"R\"\n              uid=e129 button \"T\" text=\"T\"\n              uid=e130 button \"Y\" text=\"Y\"\n              uid=e131 button \"U\" text=\"U\"\n              uid=e132 button \"I\" text=\"I\"\n              uid=e133 button \"O\" text=\"O\"\n              uid=e134 button \"P\" text=\"P\"\n            uid=e145 div\n              uid=e136 button \"A\" text=\"A\"\n              uid=e137 button \"S\" text=\"S\"\n              uid=e138 button \"D\" text=\"D\"\n              uid=e139 button \"F\" text=\"F\"\n              uid=e140 button \"G\" text=\"G\"\n              uid=e141 button \"H\" text=\"H\"\n              uid=e142 button \"J\" text=\"J\"\n              uid=e143 button \"K\" text=\"K\"\n              uid=e144 button \"L\" text=\"L\"\n            uid=e155 div\n              uid=e146 button \"Z\" text=\"Z\"\n              uid=e147 button \"X\" text=\"X\"\n              uid=e148 button \"C\" text=\"C\"\n              uid=e149 button \"V\" text=\"V\"\n              uid=e150 button \"B\" text=\"B\"\n              uid=e151 button \"N\" text=\"N\"\n              uid=e152 button \"M\" text=\"M\"\n              uid=e154 button \"Backspace\"\n                uid=e153 img src=\"data:image/svg+xml,%3csvg%2...\"\n          uid=e160 section \"Game\"\n            uid=e157 button \"Hint\" text=\"Hint\"\n            uid=e158 button \"SUBMIT\" text=\"SUBMIT\"\n            uid=e159 button \"Skip\" text=\"Skip\"\n          uid=e163 nav \"Game\"\n            uid=e161 button \"Settings\"\n            uid=e162 button \"Profile\"\n        uid=e177 div\n          uid=e176 presentation tag=div\n            uid=e165 span\n            uid=e175 dialog tag=div\n              uid=e166 span text=\"2/2\"\n              uid=e167 h2 \"The Goal\" text=\"The Goal\"\n              uid=e168 p text=\"Guess the hidden riddle in ...\"\n              uid=e172 div\n                uid=e169 span text=\"Letter is correct and in th...\"\n                uid=e170 span text=\"Letter is in the word but w...\"\n                uid=e171 span text=\"Letter is not in the word a...\"\n              uid=e173 p text=\"Start with common letters a...\"\n              uid=e174 button \"Got It!\" text=\"Got It!\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e174"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e174"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "o"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { await window.awaitQueue(); return JSON.stringify({guesses:window.probe.guesses,completions:window.probe.completions,clear:window.storageProbe.writes.at(-1).value.activeGame,errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"guesses\\\":1,\\\"completions\\\":1,\\\"clear\\\":null,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:34811?registered=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [2] \u2192 http://127.0.0.1:34811?registered=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.mergeProfile(); await window.restart(false); return JSON.stringify({draft:window.draft(),letters:window.committed.playerData.activeGame?.currentLetters.join(''),coins:window.committed.playerData.profile.coins,writes:window.storageProbe.writes.length,acks:window.storageProbe.writes.map(x=>x.ack),errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"letters\\\":\\\"PIAN\\\",\\\"coins\\\":80,\\\"writes\\\":1,\\\"acks\\\":[false],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 26
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.releaseStorage(); await window.awaitQueue(); return JSON.stringify({draft:window.draft(),epoch:document.querySelector('[data-host-epoch]').dataset.hostEpoch,writes:window.storageProbe.writes.map(x=>({playerId:x.playerId,letters:x.value.activeGame?.currentLetters.join('')??'',coins:x.value.profile?.coins,ack:x.ack})),errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"epoch\\\":\\\"1\\\",\\\"writes\\\":[{\\\"playerId\\\":\\\"jest-player\\\",\\\"letters\\\":\\\"\\\",\\\"coins\\\":300,\\\"ack\\\":true},{\\\"playerId\\\":\\\"jest-player\\\",\\\"letters\\\":\\\"PIAN\\\",\\\"coins\\\":80,\\\"ack\\\":true}],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 27
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T11-21-05-439Z.png (179.1KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 28
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "o"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 29
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 30
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { await window.awaitQueue(); return JSON.stringify({guesses:window.probe.guesses,completions:window.probe.completions,clear:window.storageProbe.writes.at(-1).value.activeGame,failures:window.storageProbe.failures,errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"guesses\\\":1,\\\"completions\\\":1,\\\"clear\\\":null,\\\"failures\\\":[],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 31
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:34811",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [3] \u2192 http://127.0.0.1:34811 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 32
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 33
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.oldDrain=window.writes.drainAndClear(); await window.restart(true); return JSON.stringify({oldAnswer:window.latestCheckpoint()?.currentLetters.join(''),playerId:window.committed.player.playerId,coins:window.committed.playerData.profile.coins,importedAnswer:window.committed.playerData.activeGame?.currentLetters.join('')??'',writes:window.storageProbe.writes.length,acks:window.storageProbe.writes.map(x=>x.ack)}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"oldAnswer\\\":\\\"PIAN\\\",\\\"playerId\\\":\\\"other-player\\\",\\\"coins\\\":80,\\\"importedAnswer\\\":\\\"\\\",\\\"writes\\\":1,\\\"acks\\\":[false]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 34
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.releaseStorage(); await window.oldDrain; await window.awaitQueue(); return JSON.stringify({draft:window.draft(),playerId:window.sessionRef.current.player.playerId,coins:window.sessionRef.current.playerData.profile.coins,storedCoins:window.storageProbe.writes.at(-1).value.profile.coins,writes:window.storageProbe.writes.map(x=>({playerId:x.playerId,letters:x.value.activeGame?.currentLetters.join('')??'',ack:x.ack})),failures:window.storageProbe.failures,errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"\\\",\\\"playerId\\\":\\\"other-player\\\",\\\"coins\\\":80,\\\"storedCoins\\\":80,\\\"writes\\\":[{\\\"playerId\\\":\\\"jest-player\\\",\\\"letters\\\":\\\"\\\",\\\"ack\\\":true},{\\\"playerId\\\":\\\"other-player\\\",\\\"letters\\\":\\\"\\\",\\\"ack\\\":true}],\\\"failures\\\":[],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 35
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:34641",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [4] \u2192 http://127.0.0.1:34641 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 36
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 37
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { await window.restart(false); window.releaseStorage(); await window.awaitQueue(); return JSON.stringify({draft:window.draft(),coins:window.storageProbe.writes.at(-1).value.profile.coins,letters:window.storageProbe.writes.at(-1).value.activeGame?.currentLetters.join(''),failures:window.storageProbe.failures,errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"AN\\\",\\\"coins\\\":300,\\\"failures\\\":[],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 38
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 25
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: main]\n\nuid=e261 main\n  uid=e259 div\n    uid=e185 header\n      uid=e180 img \"Logo\" src=\"http://127.0.0.1:34641/asse...\"\n      uid=e181 button \"Mute sound\"\n      uid=e182 div text=\"Classic\"\n      uid=e184 div \"80  coins\"\n        uid=e183 img src=\"http://127.0.0.1:34641/asse...\"\n    uid=e219 section\n      uid=e187 div\n        uid=e186 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n      uid=e218 div\n        uid=e193 div\n          uid=e188 button \"Letter 1: A\" text=\"A\"\n          uid=e189 button \"Letter 2: N\" text=\"N\"\n          uid=e190 button \"Letter 3\"\n          uid=e191 button \"Letter 4\"\n          uid=e192 button \"Letter 5\"\n        uid=e199 div\n          uid=e194 button \"Letter 1\"\n          uid=e195 button \"Letter 2\"\n          uid=e196 button \"Letter 3\"\n          uid=e197 button \"Letter 4\"\n          uid=e198 button \"Letter 5\"\n        uid=e205 div\n\n[+58 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 39
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 40,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Backspace"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Backspace"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 40
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 41,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Backspace"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Backspace"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 41
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 42,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 42
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 43,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { await window.awaitQueue(); return JSON.stringify({draft:window.draft(),coins:window.storageProbe.writes.at(-1).value.profile.coins,letters:window.storageProbe.writes.at(-1).value.activeGame?.currentLetters.join(''),images:Array.from(document.querySelectorAll('header img')).map(x=>({complete:x.complete,width:x.naturalWidth})),failures:window.storageProbe.failures,errors:window.probe.errors,unhandled:window.probe.unhandled}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"coins\\\":80,\\\"letters\\\":\\\"PIAN\\\",\\\"images\\\":[{\\\"complete\\\":true,\\\"width\\\":1254},{\\\"complete\\\":true,\\\"width\\\":120}],\\\"failures\\\":[],\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 43
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 44,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T11-24-01-156Z.png (188.1KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 44
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 45,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 45
+    }
+  }
+]

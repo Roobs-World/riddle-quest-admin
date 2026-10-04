@@ -1,0 +1,5 @@
+{
+  "packages/portal/src/reddit/RedditHostServices.ts": "c9c4eaefcae044251fa51e197bf910baaab0074d2e240c5174bd1b7ef47cda7e",
+  "packages/portal/src/reddit/RedditPlatformBootstrap.ts": "7e752b03d76c083c852871572c2e67f238f4b085ab5a03d9335aad406e568e64",
+  "packages/portal/src/reddit/redditGatewayDeadline.ts": "5dd25294f1a9f1e9ae0b9b0f31106e13c49b74a3d0b4ea2224c824ee698cc5d1"
+}

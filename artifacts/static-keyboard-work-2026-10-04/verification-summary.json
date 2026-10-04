@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "scope": "Prepare fixed keyboard letter lists once per module",
+  "matrices": {
+    "development": {
+      "assertions": 354,
+      "journeys": 33
+    },
+    "production": {
+      "assertions": 354,
+      "journeys": 33
+    }
+  },
+  "newJourneys": 66,
+  "regressions": {
+    "game-keyboard-lifetime": 376,
+    "bounded-grapheme-input": 324,
+    "race-action-focus": 684,
+    "playable-action-focus": 462
+  },
+  "browserAssertions": 2554,
+  "portalUnits": 2724,
+  "builtJourneys": 37,
+  "isolatedBuilds": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube-fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "stableInputPaths": 765,
+  "firefoxProofVerified": true,
+  "ownedTabsClosed": true,
+  "ownedFixtureStopped": true,
+  "scriptHash": "0ecb2e978e5add91a4d466ff6eeece8c5303095ac8edfe9ac421776f7ea50cda",
+  "goal": "active"
+}

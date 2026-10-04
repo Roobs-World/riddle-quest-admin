@@ -1,0 +1,541 @@
+{
+  "target": "solo",
+  "checks": [
+    {
+      "name": "native physical typing creates PIAN",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "ordinary Backspace and typing preserve draft",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "answer edits keep one subscription",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "one active physical subscription",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "IME 229 x stays native",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "IME 229 Backspace stays native",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "IME boundary preserves draft",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "pause removes physical subscription",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "retired physical callbacks consume no key",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "retired callbacks cannot edit resumed answer",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "complete draft uses latest input callback",
+      "actual": "PIANO",
+      "expected": "PIANO"
+    },
+    {
+      "name": "IME 229 Enter stays native",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "IME Enter sends no answer",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "native Enter on Submit sends one answer",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "solo completes once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "no escaped browser error",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "no unhandled promise",
+      "actual": [],
+      "expected": []
+    }
+  ],
+  "probe": {
+    "adds": 2,
+    "removes": 2,
+    "saves": [
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021552772,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021552778,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021552782,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021552785,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "N",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604228,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604298,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "N",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604366,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604431,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "N",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604496,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604564,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "N",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604673,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "N",
+            "O"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark",
+            "wins_5",
+            "perfect_guess",
+            "classic_perfect"
+          ],
+          "classicIndex": 1
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791021604768,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "p",
+                "i",
+                "a",
+                "n",
+                "o"
+              ],
+              "feedback": [
+                "green",
+                "green",
+                "green",
+                "green",
+                "green"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "p",
+                  "i",
+                  "a",
+                  "n",
+                  "o"
+                ],
+                "feedback": [
+                  "green",
+                  "green",
+                  "green",
+                  "green",
+                  "green"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": true
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "p": "green",
+            "i": "green",
+            "a": "green",
+            "n": "green",
+            "o": "green"
+          },
+          "pendingOutcome": {
+            "id": "00000000-0000-4000-8000-000000000001-win-1",
+            "kind": "win",
+            "riddleId": "classic-fake-1",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "attempts": 1,
+            "isCorrect": true
+          }
+        }
+      },
+      {
+        "activeGame": null
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 325,
+          "level": 3,
+          "xp": 510,
+          "winStreak": 2,
+          "gamesPlayed": 8,
+          "wins": 6,
+          "achievements": [
+            "first_win",
+            "daily_spark",
+            "wins_5",
+            "perfect_guess",
+            "classic_perfect"
+          ],
+          "classicIndex": 2,
+          "totalWins": 6,
+          "challengeWins": 0,
+          "dailyPuzzlesCompleted": 0,
+          "bestStreak": 2,
+          "totalWordsGuessed": 1,
+          "totalGuessesInWins": 1,
+          "winRate": 75,
+          "averageGuesses": 0.17,
+          "totalScore": 90,
+          "highestLevelClassic": 1
+        }
+      }
+    ],
+    "guesses": 1,
+    "completions": 1,
+    "requests": [],
+    "errors": [],
+    "unhandled": []
+  }
+}

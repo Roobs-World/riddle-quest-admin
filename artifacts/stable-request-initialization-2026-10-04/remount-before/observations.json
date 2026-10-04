@@ -1,0 +1,395 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "physical input starts the correct draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "mounted identities are initialized",
+    "actual": [
+      "pending-owner",
+      "session"
+    ],
+    "expected": [
+      "pending-owner",
+      "session"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "remounted identities are initialized",
+    "actual": [
+      "pending-owner",
+      "session"
+    ],
+    "expected": [
+      "pending-owner",
+      "session"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "remount uses distinct identities",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "edited draft is preserved",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "mounted lifetime identities add no repeated initialization",
+    "actual": {},
+    "expected": {},
+    "measurement": {
+      "transitions": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "fixed keyboard DOM identity survives updates",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "editing does not submit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "fresh suffix completes the answer",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "explicit submission completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "hosted answer completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "remount",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "physical input starts the correct draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "mounted identities are initialized",
+    "actual": [
+      "live-join",
+      "live-leave"
+    ],
+    "expected": [
+      "live-join",
+      "live-leave"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "remounted identities are initialized",
+    "actual": [
+      "live-join",
+      "live-leave"
+    ],
+    "expected": [
+      "live-join",
+      "live-leave"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "remount uses distinct identities",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "edited draft is preserved",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "mounted lifetime identities add no repeated initialization",
+    "actual": {},
+    "expected": {},
+    "measurement": {
+      "transitions": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "fixed keyboard DOM identity survives updates",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "editing does not submit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "fresh suffix completes the answer",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "explicit submission completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "physical input starts the correct draft",
+    "actual": "rom",
+    "expected": "rom"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "mounted identities are initialized",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "remounted identities are initialized",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "remount uses distinct identities",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "edited draft is preserved",
+    "actual": "rom",
+    "expected": "rom"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "mounted lifetime identities add no repeated initialization",
+    "actual": {},
+    "expected": {},
+    "measurement": {
+      "transitions": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "fixed keyboard DOM identity survives updates",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "editing does not submit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "fresh suffix completes the answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "explicit submission completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "remount",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

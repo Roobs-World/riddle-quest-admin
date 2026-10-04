@@ -1,0 +1,57 @@
+--- controls.before.txt
++++ packages/portal/src/play/GameFrameControls.tsx
+@@ -1,13 +1,13 @@
+ import type {CSSProperties, Dispatch} from "react";
+-import {splitGraphemes, type Feedback, type ScoredGuess} from "@qwordly/core/game";
++import type {Feedback, ScoredGuess} from "@qwordly/core/game";
+ import mascotUrl from "../../../../assets/images-web/riddlequest-r.webp";
+ import coinUrl from "../../../../assets/images/coin.svg";
+ import backspaceUrl from "../../../../assets/images/backspace-key.svg";
+ import {tr} from "./i18n";
+ import {canEditCurrentGuess, gameSessionReducer, type GameSessionState} from "./gameSession";
+ 
+-/** Defines the keyboard rows value. */
+-const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
++/** Fixed Latin shortcut letters are prepared once, independently of draft and receipt renders. */
++const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"].map(id => ({id, letters: id.split("")}));
+ 
+ /** Provides game header behavior. */
+ export function GameHeader({
+@@ -269,13 +269,13 @@
+   return (
+     <section className="keyboard" aria-label={tr("Accessibility.VIRTUAL_KEYBOARD")}>
+       {KEYBOARD_ROWS.map((row) => (
+-        <div key={row}>
+-          {splitGraphemes(row).map((letter) => (
++        <div key={row.id}>
++          {row.letters.map((letter) => (
+             <button className={keyClass(letter)} key={letter} disabled={disabled} onClick={() => onLetter(letter)}>
+               {letter}
+             </button>
+           ))}
+-          {row === "ZXCVBNM" && (
++          {row.id === "ZXCVBNM" && (
+             <button
+               className="key utility"
+               disabled={disabled}
+
+--- playable.before.txt
++++ packages/portal/src/playable/YouTubePlayableApp.tsx
+@@ -10,6 +10,8 @@
+ import {AchievementIcon, SaveBanner, StatusHeader} from "./YouTubePlayableViews";
+ import {useYouTubePlayableBoot, type YouTubeRuntime} from "./useYouTubePlayableBoot";
+ import {useYouTubeReadySession} from "./useYouTubeReadySession";
++/** Fixed Latin shortcut letters do not need splitting again for each answer or save projection. */
++const LATIN_SHORTCUT_KEYS = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+ /** Provides you tube playable app behavior. */
+ export function YouTubePlayableApp({
+   sdk,
+@@ -281,7 +283,7 @@
+           />
+           {latinShortcut && (
+             <div className="yt-keyboard" aria-hidden="true">
+-              {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((letter) => (
++              {LATIN_SHORTCUT_KEYS.map((letter) => (
+                 <button
+                   tabIndex={-1}
+                   disabled={inputDisabled || active.awaitingContinue}

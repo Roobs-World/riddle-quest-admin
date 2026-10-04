@@ -47,7 +47,12 @@ export function getMobileCapabilities(): MobileCapabilities {
       try {
         /** Provides canvas behavior. */
         const canvas = document.createElement("canvas");
-        webGlAvailable = Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+        /** The capability probe must not retain a second context beside the real scene. */
+        const context = canvas.getContext("webgl2") || canvas.getContext("webgl");
+        webGlAvailable = Boolean(context);
+        try { context?.getExtension("WEBGL_lose_context")?.loseContext(); } catch {
+          /* Availability is already known; optional probe cleanup does not change it. */
+        }
       } catch {
         webGlAvailable = false;
       }

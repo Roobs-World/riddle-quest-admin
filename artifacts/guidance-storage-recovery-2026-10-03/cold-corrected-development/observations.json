@@ -1,0 +1,94 @@
+[
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "guest play starts with unavailable storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold failed progress has no durability acknowledgement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold startup retries the latest complete guest record",
+    "actual": {
+      "draft": "PIAN",
+      "contrast": true
+    },
+    "expected": {
+      "draft": "PIAN",
+      "contrast": true
+    }
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold startup has no unhandled storage rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold recovery survives reload",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "guest play starts with unavailable storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold failed progress has no durability acknowledgement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold startup retries the latest complete guest record",
+    "actual": {
+      "draft": "PIAN",
+      "contrast": true
+    },
+    "expected": {
+      "draft": "PIAN",
+      "contrast": true
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold startup has no unhandled storage rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "cold-start",
+    "name": "cold recovery survives reload",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  }
+]

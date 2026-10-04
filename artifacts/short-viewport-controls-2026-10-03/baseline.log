@@ -1,0 +1,511 @@
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 540,
+  "failures": [
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "unsaved",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 280,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 360,
+      "height": 600,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 390,
+      "height": 640,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 412,
+      "height": 720,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 600,
+      "height": 500,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 844,
+      "height": 390,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 1280,
+      "height": 844,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 500,
+      "height": 494,
+      "surface": "unsaved",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 500,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 280,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 360,
+      "height": 600,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 390,
+      "height": 640,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 412,
+      "height": 720,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 600,
+      "height": 500,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 844,
+      "height": 390,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 1280,
+      "height": 844,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "unsaved",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "unsaved",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 568,
+      "surface": "solo",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 568,
+      "surface": "unsaved",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 280,
+      "height": 568,
+      "surface": "solo",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 280,
+      "height": 568,
+      "surface": "unsaved",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 280,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 360,
+      "height": 600,
+      "surface": "unsaved",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 360,
+      "height": 600,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 390,
+      "height": 640,
+      "surface": "unsaved",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 390,
+      "height": 640,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 412,
+      "height": 720,
+      "surface": "solo",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 412,
+      "height": 720,
+      "surface": "unsaved",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 412,
+      "height": 720,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 600,
+      "height": 500,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 844,
+      "height": 390,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 1280,
+      "height": 844,
+      "surface": "solo",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 1280,
+      "height": 844,
+      "surface": "unsaved",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 1280,
+      "height": 844,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 500,
+      "height": 494,
+      "surface": "unsaved",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 500,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 280,
+      "height": 568,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 360,
+      "height": 600,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 390,
+      "height": 640,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 412,
+      "height": 720,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 600,
+      "height": 500,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 844,
+      "height": 390,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 1280,
+      "height": 844,
+      "surface": "race",
+      "name": "keyboard and actions stay inside viewport",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}

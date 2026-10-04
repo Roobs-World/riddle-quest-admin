@@ -1,17 +1,17 @@
 firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
 $ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
 $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
-✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (13.693472ms)
-✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.708711ms)
-✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.850064ms)
-✔ rejects imports between different target owners (1.500913ms)
-✔ rejects the legacy platform entry while allowing the shop adapter (0.607561ms)
-✔ rejects Devvit imports outside Reddit-owned source (0.874917ms)
-✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (2.921174ms)
-✔ fails closed when a missing relative path lexically enters target-owned source (0.768155ms)
-✔ handles extensions and index modules with TypeScript-compatible resolution (1.151822ms)
-✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.808362ms)
-✔ aggregates violations in deterministic file and source order (0.927256ms)
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.04989ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.867007ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.883828ms)
+✔ rejects imports between different target owners (1.443154ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.719634ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.994094ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (0.972543ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.731165ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.975718ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.649911ms)
+✔ aggregates violations in deterministic file and source order (0.743358ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -19,7 +19,7 @@ $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && no
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 142.331239
+ℹ duration_ms 132.873822
 Web Target boundary audit passed (284 files, 1237 module references).
 $ pnpm --dir ../../firebase-functions youtube:content:audit
 [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
@@ -38,25 +38,25 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/index-DhsmAOC4.css              6.92 kB │ gzip:  2.30 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-en-CRXivxes.js   87.86 kB │ gzip: 47.72 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-pt-B-8btmY8.js   90.15 kB │ gzip: 48.92 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-nl-D9BpYJOQ.js   90.54 kB │ gzip: 49.16 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-id-Cg3m5m6e.js   91.21 kB │ gzip: 49.51 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-it-56TaMoi5.js   91.35 kB │ gzip: 49.59 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-es-ClAP8uol.js   91.65 kB │ gzip: 49.76 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-de-DEY7XbGD.js   92.15 kB │ gzip: 50.03 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-tr-OGTcxRkB.js   92.54 kB │ gzip: 50.25 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-pl-Dxw6_ZVI.js   92.70 kB │ gzip: 50.33 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-fr-X3Fyl7As.js   93.56 kB │ gzip: 50.80 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ja-D1TZr-UW.js   94.66 kB │ gzip: 51.40 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-vi-CflIs1AJ.js   96.78 kB │ gzip: 52.55 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ko-CJDbNput.js   97.36 kB │ gzip: 52.84 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ar-sReTSsr1.js  102.12 kB │ gzip: 55.44 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/index-Dbbn55Nd.js             104.07 kB │ gzip: 34.72 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ru-BdqQs-IE.js  114.09 kB │ gzip: 61.93 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-hi-XZ-DeocB.js  134.49 kB │ gzip: 72.93 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-en-CEaJAA3l.js   87.86 kB │ gzip: 47.69 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-pt-Ch3h6CAs.js   90.15 kB │ gzip: 48.96 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-nl-D9DV-aNE.js   90.54 kB │ gzip: 49.15 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-id-RFIB_fIC.js   91.21 kB │ gzip: 49.52 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-it-CIlbTFdx.js   91.35 kB │ gzip: 49.59 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-es-A3s3jYjA.js   91.65 kB │ gzip: 49.75 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-de-CJDkU9rT.js   92.15 kB │ gzip: 50.01 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-tr-D9Pv47z4.js   92.54 kB │ gzip: 50.21 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-pl-CIXXQ4V_.js   92.70 kB │ gzip: 50.30 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-fr-Bc__f1Qk.js   93.56 kB │ gzip: 50.78 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ja-deoKkjBy.js   94.66 kB │ gzip: 51.39 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-vi-C7VqVMEH.js   96.78 kB │ gzip: 52.55 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ko-DGft8Xrw.js   97.36 kB │ gzip: 52.87 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ar-DdZv20fc.js  102.12 kB │ gzip: 55.46 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/index-v4KGbJnS.js             104.07 kB │ gzip: 34.72 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-ru-D-hFUXyo.js  114.09 kB │ gzip: 61.93 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/playable-pack-hi-DC8NktS_.js  134.49 kB │ gzip: 72.99 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
 
-✓ built in 1.11s
+✓ built in 978ms
 $ node scripts/audit-standalone-artifact.mjs yahoo
 yahoo artifact audit passed: 24 files, 1.80 MiB

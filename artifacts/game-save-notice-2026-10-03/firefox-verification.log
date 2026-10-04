@@ -1,0 +1,33 @@
+1791030513186	geckodriver	INFO	Listening on 127.0.0.1:39173
+1791030513206	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/snap/firefox/current/ ... tion-efraffc1/firefox_devtools_mcp_profile" "--remote-debugging-port" "32973" "--remote-allow-hosts" "localhost" "-no-remote"
+*** You are running in headless mode.
+1791030513333	Marionette	INFO	Marionette enabled
+1791030513473	Marionette	INFO	Listening on port 34139
+WebDriver BiDi listening on ws://127.0.0.1:32973
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+Read port: 34139
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1791030514470	RemoteAgent	INFO	Perform WebSocket upgrade for incoming connection from 127.0.0.1:51820
+console.error: (new InvalidStateError("JSWindowActorChild.sendAsyncMessage: JSWindowActorChild cannot send at the moment", (void 0), 103))
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  audioipc2_server::server] Promotion of content process thread to real-time error
+1791031192041	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'interactive'.
+console.error: (new InvalidStateError("JSWindowActorChild.sendAsyncMessage: JSWindowActorChild cannot send at the moment", (void 0), 103))
+1791031294946	Marionette	INFO	Stopped listening on port 34139
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null

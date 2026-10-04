@@ -51,6 +51,29 @@ describe("useCompletionDelivery", () => {
     });
   });
 
+  it("retires queued receipts and rejects acknowledgements when the account changes", () => {
+    /** Counts terminal receipt dispatches across account replacement. */
+    const postToHost = jest.fn<(message: GameToHostMessage) => void>();
+    /** Old responses cannot acknowledge the new player outcome. */
+    const dispatch = jest.fn();
+    useCompletionDelivery({ownerKey: "alice:1", outcome: {
+      id: "alice-win", kind: "win", riddleId: "classic-1", gameMode: "classic",
+      sessionToken: "00000000-0000-4000-8000-000000000001", attempts: 1, isCorrect: true,
+    }, dispatch, postToHost});
+    mockEffects[0]();
+    mockRefIndex = 0;
+    mockEffects.length = 0;
+    /** Render revokes old acknowledgements before effect cleanup. */
+    const acknowledge = useCompletionDelivery({ownerKey: "bob:1", outcome: null, dispatch, postToHost});
+    expect(acknowledge(true, "complete-request-stable")).toBe(false);
+    mockEffects[0]();
+    expect(window.clearTimeout).toHaveBeenCalledWith(1);
+    mockEffects[0]();
+    expect(postToHost).toHaveBeenCalledTimes(1);
+    expect(acknowledge(true, "complete-request-stable")).toBe(false);
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
   it("resumes retries when React replays the mounted effects", () => {
     /** The same idempotent outcome survives React development effect replay. */
     const postToHost = jest.fn<(message: GameToHostMessage) => void>();
@@ -150,5 +173,53 @@ describe("useCompletionDelivery", () => {
     expect(postToHost).toHaveBeenCalledTimes(2);
     expect(handleLateResult(true, "complete-request-stable")).toBe(false);
     expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("keeps one delivery when Continue's provisional row count becomes the authoritative total", () => {
+    /** A Continued board previews one local row; the server reports all six attempts. */
+    const provisional = {id: "session-win-1", kind: "win" as const, riddleId: "classic-17", gameMode: "classic" as const,
+      sessionToken: "00000000-0000-4000-8000-000000000017", attempts: 1, isCorrect: true};
+    /** The current question remains identical while only authoritative attempt metadata changes. */
+    const confirmed = {...provisional, id: "session-win-6", attempts: 6};
+    /** Actual delivery effects share refs across both reducer outcomes. */
+    const postToHost = jest.fn<(message: GameToHostMessage) => void>();
+    /** The acknowledgement must apply to the canonical version of the same question. */
+    const dispatch = jest.fn();
+    useCompletionDelivery({outcome: provisional, dispatch, postToHost});
+    mockEffects[0]();
+    mockRefIndex = 0;
+    mockEffects.length = 0;
+    /** Correlates the response with the canonical question outcome. */
+    const acknowledge = useCompletionDelivery({outcome: confirmed, dispatch, postToHost});
+    mockEffects[0]();
+    expect(postToHost).toHaveBeenCalledTimes(1);
+    expect(acknowledge(true, "complete-request-stable")).toBe(true);
+    expect(dispatch).toHaveBeenCalledWith({type: "completionAcknowledged"});
+    mockRefIndex = 0;
+    mockEffects.length = 0;
+    useCompletionDelivery({outcome: confirmed, dispatch, postToHost});
+    mockEffects[0]();
+    expect(postToHost).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejoins acknowledgement when the canonical Continue row count arrives after completion", () => {
+    /** First response may confirm completion before the guess receipt corrects attempt metadata. */
+    const outcome = {id: "continued-win-1", kind: "win" as const, riddleId: "classic-17", gameMode: "classic" as const,
+      sessionToken: "00000000-0000-4000-8000-000000000017", attempts: 1, isCorrect: true};
+    /** Exact same issued question must retain its completed receipt. */
+    const postToHost = jest.fn<(message: GameToHostMessage) => void>();
+    /** Canonical guess reduction clears completionAcknowledged and must rejoin that receipt. */
+    const dispatch = jest.fn();
+    /** Captures completion before canonical attempt metadata arrives. */
+    const acknowledge = useCompletionDelivery({outcome, dispatch, postToHost});
+    mockEffects[0]();
+    expect(acknowledge(true, "complete-request-stable")).toBe(true);
+    dispatch.mockClear();
+    mockRefIndex = 0;
+    mockEffects.length = 0;
+    useCompletionDelivery({outcome: {...outcome, id: "continued-win-6", attempts: 6}, dispatch, postToHost});
+    mockEffects[0]();
+    expect(postToHost).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledWith({type: "completionAcknowledged"});
   });
 });

@@ -1,0 +1,560 @@
+{
+  "pending": [
+    {
+      "version": 1,
+      "scope": "jest-guest:1:en",
+      "riddle": {
+        "riddleId": "classic-fake-1",
+        "text": "What has keys but cannot open doors?",
+        "answerLength": 5,
+        "evaluation": {
+          "answer": "piano",
+          "locale": "en"
+        },
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "gameMode": "classic",
+        "index": 1,
+        "acceptedGuesses": [],
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "awaitingContinue": false
+      },
+      "confirmedClassicIndex": 1,
+      "base": {
+        "currentLetters": [
+          "P",
+          "I",
+          "A",
+          "N",
+          "O"
+        ],
+        "activeSlotIndex": 0,
+        "guesses": [],
+        "engineSnapshot": {
+          "guesses": [],
+          "attemptsUsed": 5,
+          "hasUsedContinue": true,
+          "gameOver": false
+        },
+        "modal": null,
+        "lastOutcome": null,
+        "completionAcknowledged": false,
+        "letterStates": {},
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 250,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "lastRewards": null,
+        "optimisticAchievementIds": []
+      },
+      "successors": [],
+      "queue": [
+        {
+          "message": {
+            "type": "game:submitGuess",
+            "requestId": "guess-62761b2c-bb0e-4364-bf9b-711059561a26",
+            "payload": {
+              "riddleId": "classic-fake-1",
+              "gameMode": "classic",
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "guess": "PIANO",
+              "requestId": "guess-62761b2c-bb0e-4364-bf9b-711059561a26"
+            }
+          },
+          "attempts": 6,
+          "isCorrect": true,
+          "gameOver": true,
+          "canContinue": false,
+          "feedback": [
+            "green",
+            "green",
+            "green",
+            "green",
+            "green"
+          ]
+        }
+      ],
+      "draft": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "draftActiveSlotIndex": 0
+    }
+  ],
+  "bridge": {
+    "outbound": [
+      {
+        "type": "game:resize",
+        "requestId": "resize-bb8fd928-e310-44d6-8e59-bba71f5e7850",
+        "payload": {
+          "width": 1280,
+          "height": 844
+        },
+        "sentAt": 1791064947964
+      },
+      {
+        "type": "game:ready",
+        "requestId": "ready-64e8cfc6-6909-40ae-9b34-829ee97afd64",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791064947967
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-22ecc76b-bb79-4d54-a728-2d451908bbfa",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "QQQQQ",
+          "requestId": "guess-22ecc76b-bb79-4d54-a728-2d451908bbfa"
+        },
+        "sentAt": 1791064948044
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-d02579a8-d188-4fdf-8018-8ae3f18023d6",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "RRRRR",
+          "requestId": "guess-d02579a8-d188-4fdf-8018-8ae3f18023d6"
+        },
+        "sentAt": 1791064948112
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-a9c5a1fc-3f3f-4396-a9f5-93b353539523",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "SSSSS",
+          "requestId": "guess-a9c5a1fc-3f3f-4396-a9f5-93b353539523"
+        },
+        "sentAt": 1791064948177
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-990c8cbb-8dfe-42ee-8871-2f434088bab8",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "TTTTT",
+          "requestId": "guess-990c8cbb-8dfe-42ee-8871-2f434088bab8"
+        },
+        "sentAt": 1791064948244
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-b5ebe23d-0ddb-4a47-8e67-5720e94d12ad",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "UUUUU",
+          "requestId": "guess-b5ebe23d-0ddb-4a47-8e67-5720e94d12ad"
+        },
+        "sentAt": 1791064948311
+      },
+      {
+        "type": "game:spendCoins",
+        "requestId": "continue-6186c655-45c9-4637-8999-b85e2b97a8b5",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic-fake-1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        },
+        "sentAt": 1791064948346
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-62761b2c-bb0e-4364-bf9b-711059561a26",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "PIANO",
+          "requestId": "guess-62761b2c-bb0e-4364-bf9b-711059561a26"
+        },
+        "sentAt": 1791064948410
+      },
+      {
+        "type": "game:recordAchievements",
+        "payload": {
+          "achievementIds": [
+            "wins_5"
+          ]
+        },
+        "sentAt": 1791064948415
+      }
+    ],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-a20c3b51-ca59-47b7-b465-f3b6dbcdc3cb",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064947946
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-49282c82-bb7e-442a-b1ed-592531e1bd76",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064947960
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-e6e674b5-3372-44b3-aad6-240cdd361e75",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-1ded0ac4-ea27-4a72-9806-0a046295239f",
+          "locale": "en",
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791064947974
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "classic-fake-1",
+            "text": "What has keys but cannot open doors?",
+            "answerLength": 5,
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "gameMode": "classic",
+            "index": 1,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "piano",
+              "locale": "en"
+            },
+            "acceptedGuesses": []
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064947974
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "classic-fake-1"
+          }
+        },
+        "sentAt": 1791064947975
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-22ecc76b-bb79-4d54-a728-2d451908bbfa",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              }
+            ],
+            "attempts": 1,
+            "isCorrect": false,
+            "gameOver": false
+          }
+        },
+        "sentAt": 1791064948046
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-d02579a8-d188-4fdf-8018-8ae3f18023d6",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              }
+            ],
+            "attempts": 2,
+            "isCorrect": false,
+            "gameOver": false
+          }
+        },
+        "sentAt": 1791064948113
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-a9c5a1fc-3f3f-4396-a9f5-93b353539523",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              }
+            ],
+            "attempts": 3,
+            "isCorrect": false,
+            "gameOver": false
+          }
+        },
+        "sentAt": 1791064948177
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-990c8cbb-8dfe-42ee-8871-2f434088bab8",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              }
+            ],
+            "attempts": 4,
+            "isCorrect": false,
+            "gameOver": false
+          }
+        },
+        "sentAt": 1791064948244
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-b5ebe23d-0ddb-4a47-8e67-5720e94d12ad",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "u",
+                "status": "red"
+              },
+              {
+                "letter": "u",
+                "status": "red"
+              },
+              {
+                "letter": "u",
+                "status": "red"
+              },
+              {
+                "letter": "u",
+                "status": "red"
+              },
+              {
+                "letter": "u",
+                "status": "red"
+              }
+            ],
+            "attempts": 5,
+            "isCorrect": false,
+            "gameOver": false,
+            "canContinue": true
+          }
+        },
+        "sentAt": 1791064948314
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-74e4b202-9713-42be-aae0-39fc497ed17b",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 250,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064948348
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "continue-6186c655-45c9-4637-8999-b85e2b97a8b5",
+        "payload": {
+          "operation": "spendCoins",
+          "ok": true,
+          "data": {
+            "newCoins": 250
+          }
+        },
+        "sentAt": 1791064948348
+      }
+    ],
+    "errors": []
+  }
+}

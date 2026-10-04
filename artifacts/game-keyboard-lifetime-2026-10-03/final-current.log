@@ -1,0 +1,14 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/verify-game-keyboard-lifetime-browser.mjs && KEYBOARD_REACT_MODE=production node scripts/verify-game-keyboard-lifetime-browser.mjs
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 188,
+  "failures": []
+}
+{
+  "mode": "production",
+  "baseline": false,
+  "checks": 188,
+  "failures": []
+}

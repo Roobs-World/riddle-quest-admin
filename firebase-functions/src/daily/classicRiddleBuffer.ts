@@ -30,13 +30,13 @@ export const getClassicRiddleBuffer = onCallWithSentry(
     /** The current used by the authoritative operation. */
     const current = await getCurrentClassicRiddle.run({
       ...request,
-      data: {...request.data, includeEvaluation: true},
+      data: {...request.data, includeEvaluation: true, includeClassicIndex: true},
     } as never);
     /** The user used by the authoritative operation. */
     const user = await getUser(userId);
     if (!user) throw new HttpsError("not-found", "User data not found.");
     /** The confirmed classic index used by the authoritative operation. */
-    const confirmedClassicIndex = user.progress?.classicIndex ?? 1;
+    const confirmedClassicIndex = current.classicIndex ?? user.progress?.classicIndex ?? 1;
     /** The locale used by the authoritative operation. */
     const locale = request.data?.locale ?? user.preferredLanguage ?? "en";
     /** The riddles used by the authoritative operation. */

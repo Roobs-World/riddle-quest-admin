@@ -1,0 +1,57 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-facebook-context-delivery-review", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config jest.rules.config.js --runInBand --testMatch '**/facebookLiveContextDelivery.it.test.ts'
+FAIL src/__tests__/race/facebookLiveContextDelivery.it.test.ts (9.427 s)
+  ● recovers original context for winning seat 0 after the browser disappears
+
+    expect(received).toMatchObject(expected)
+
+    Matcher error: received value must be a non-null object
+
+    Received has value: undefined
+
+      107 |   const receipt = await event();
+      108 |   await Promise.all(Array.from({length: 4}, () => deliverRacePerformance(receipt.id, db, START + 16000)));
+    > 109 |   expect((await contextEntry(seat).get()).data()).toMatchObject({runId: tickets[seat].ticketId, adjustedTimeMs: 9000});
+          |                                                   ^
+      110 |   expect((await contextEntry(1 - seat).get()).exists).toBe(false);
+      111 |   expect((await entry(PLAYERS[seat]).get()).exists).toBe(true);
+      112 |   expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(150);
+
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:109:51
+
+  ● recovers original context for winning seat 1 after the browser disappears
+
+    expect(received).toMatchObject(expected)
+
+    Matcher error: received value must be a non-null object
+
+    Received has value: undefined
+
+      107 |   const receipt = await event();
+      108 |   await Promise.all(Array.from({length: 4}, () => deliverRacePerformance(receipt.id, db, START + 16000)));
+    > 109 |   expect((await contextEntry(seat).get()).data()).toMatchObject({runId: tickets[seat].ticketId, adjustedTimeMs: 9000});
+          |                                                   ^
+      110 |   expect((await contextEntry(1 - seat).get()).exists).toBe(false);
+      111 |   expect((await entry(PLAYERS[seat]).get()).exists).toBe(true);
+      112 |   expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(150);
+
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:109:51
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        9.534 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.rules.config.js --runInBand --testMatch '**/facebookLiveContextDelivery.it.test.ts'" exited with code 1

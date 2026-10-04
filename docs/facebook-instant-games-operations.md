@@ -165,7 +165,7 @@ Facebook names and photos may appear only through the v8 `overlayViews.createPro
 
 The queue's exact intake, least-privilege triage, deletion, unresolved retention, and current lack of an adjudication/sanction workflow are documented in the [Facebook social moderation runbook](facebook-moderation-runbook.md). Do not mutate report status or player state manually until that workflow has owner/counsel approval and an auditable implementation.
 
-Live PvP now exposes translated block/report controls for a retained human opponent through the authenticated Facebook and Reddit adapters. The client submits only its own opaque live ticket; the existing server endpoints resolve both private seats, same-provider match/pool/run bindings, account existence and deletion guards inside the mutation transaction. Bots, foreign, expired, cancelled and deleted seats cannot become report targets. Legacy linked-rival requests remain compatible, and the default Jest adapter does not opt into the new controls. Successful blocking synchronously revokes bilateral presence visibility and masks the opponent locally; the existing live engine ends an unfinished blocked pair as a tie without a reward and excludes future pairing. Reports retain the five fixed categories, no narrative, stable retry identity and five-per-UTC-day cap, with a hashed live-ticket binding preventing request-ID reuse for another match. Reddit uses its existing same-origin signed safety routes and the shared account-operation lease. The current Activity destination exposes context standings; recorded-race history/rematches still need review. See [live safety evidence](evidence/live-race-safety-2026-10-02.md). These local browser/emulator checks do not establish hosted role-account acceptance.
+Live PvP now exposes translated block/report controls for a retained human opponent through the authenticated Facebook and Reddit adapters. The client submits only its own opaque live ticket; the existing server endpoints resolve both private seats, same-provider match/pool/run bindings, account existence and deletion guards inside the mutation transaction. Bots, foreign, expired, cancelled and deleted seats cannot become report targets. Legacy linked-rival requests remain compatible, and the default Jest adapter does not opt into the new controls. Successful blocking synchronously revokes bilateral presence visibility and masks the opponent locally; the existing live engine ends an unfinished blocked pair as a tie without a reward and excludes future pairing. Reports retain the five fixed categories, no narrative, stable retry identity and five-per-UTC-day cap, with a hashed live-ticket binding preventing request-ID reuse for another match. Reddit uses its existing same-origin signed safety routes and the shared account-operation lease. The current Activity destination exposes context standings and read-only recent Live PvP results through the opted-in Facebook adapter. The private history reader honors locale, retention, account deletion and bilateral blocks; confirmed blocking immediately retires visible rows. Live rematches now reserve the original authoritative human through an opt-in authenticated adapter, with explicit inbox acceptance, stable retries, bilateral blocks and real account-deletion cleanup. The 3 October rematch follow-up passes 64 emulator cases, both provider browsers, six selected Jest regressions and all six isolated builds/audits; hosted acceptance remains pending. See [rematch evidence](evidence/live-race-rematches-2026-10-03.md). See [history evidence](evidence/live-race-history-2026-10-02.md). See [live safety evidence](evidence/live-race-safety-2026-10-02.md). These local browser/emulator checks do not establish hosted role-account acceptance.
 
 Each opted-in browser tab/device owns one RTDB `presenceConnections/{uid}/{sessionId}` record, arms `onDisconnect` deletion before publishing, and reports only `online`, `playing`, or `racing`. The server aggregates the highest active state and maintains a separate `presenceOptIn` bit. Rival reads require both a server-written `presenceVisibility/{viewer}/{target}` edge and the target's live opt-in bit; clients cannot write visibility, read its reverse index, or enumerate strangers. A known-rival Firestore trigger creates the edge. A successful block now waits for both visibility directions to be removed, with the Firestore trigger repeating that revocation as reconciliation; deletion uses `presenceViewers` as a server-only reverse index to remove incoming and outgoing edges. When the last connection disappears, aggregation persists an unreadable `offline` status and `presenceOptIn: false`; account deletion removes those records.
 
@@ -181,6 +181,8 @@ pnpm --dir firebase-functions facebook:contexts:retention \
 Writes require a separately reviewed maintenance action with `--apply --confirm-project riddle-quest-ec2b2`. The command does not accept a caller-supplied future clock. Review one bounded page at a time and repeat until a fresh scan is empty; a dry-run `complete` means page coverage only, not deletion. Invalid records or excessive entry fan-out remain unchanged and produce incomplete aggregate evidence. The scheduler reports the same failure without private provider diagnostics. A persistent invalid page needs operator investigation; do not silently widen the write budget. Cleanup never changes known rivals, accounts, balances, settlements or another provider's records. Retain the reviewed server deployment revision and exercise expiration, fresh rejoin and account deletion in the hosted test app. See [context retention evidence](evidence/facebook-context-retention-2026-10-01.md).
 
 ## Release and incident rules
+
+Selected-context private Live PvP is prepared in the [3 October context challenge evidence](evidence/facebook-context-challenges-2026-10-03.md). `targets/facebook/fbapp-config.json` declares the `race_context_challenge` custom-update template and the Facebook mode selects it. On an advertised callable `updateAsync` host, an explicit native choice starts the existing private lobby in the selected category; another explicit click sends its opaque handle to that same native context with `NO_PUSH`. Native context changes, language retirement and account deletion cannot retarget that invitation. The template is registered through a testing bundle upload, rather than the dashboard's scheduled User Notifications editor. The current dashboard still shows version 6 as Testing; this source manifest and SDK integration have not been uploaded or accepted. The shared dirty checkout has no eligible canonical handoff. Keep actual two-role delivery/acceptance and device coverage open after a clean reviewed candidate is prepared.
 
 - Keep Meta Business verification and Approved Partner approval deferred as requested. An audited non-production role-account test draft may be uploaded to gather P0 hosted evidence, but do not promote, expose public traffic, or call the project complete without the approvals.
 - The target build first rebuilds and audits the Facebook artifact. The draft preparer then runs the server-only Meta secret-boundary audit, reruns the artifact audit, creates the root-content ZIP, and records its SHA-256 and source commit. Upload only those exact bytes as a non-production test draft after the local/backend gates required for that test pass.
@@ -288,6 +290,41 @@ The [2 October live-context follow-up](evidence/facebook-live-contexts-2026-10-0
 restores Activity standings, native context selection and social overlays after the
 Live PvP migration. Eligible live wins record through the existing context adapter
 independently of tournaments, with private match/deck authority and no extra grant.
-This optional browser submission does not prove closed-browser context recovery,
-or that the global live queue matches a chosen friend. The injected provider journeys
-and all six isolated builds pass; hosted/device acceptance remains required.
+The [3 October durable-context follow-up](evidence/facebook-live-context-delivery-2026-10-03.md)
+binds new seats to the synchronized FBInstant context before joining and recovers
+eligible ten-solve scores through the existing worker after the browser closes.
+Private board/member epochs prevent retries, native context switches, rollover or
+rejoining from moving a retained score. Legacy unbound seats keep the optional
+browser submission. All 105 emulator cases, both injected provider journeys, six
+selected Jest browser regressions and all six isolated builds/audits pass.
+This does not bind the global queue to a selected friend. Hosted/device acceptance
+and deployed-source equivalence remain required. The authenticated read-only Meta
+review check still reports `UNSUBMITTED`, with no submission/completion timestamps.
+
+The [3 October context-capability check](evidence/facebook-context-capabilities-2026-10-03.md)
+also removes an unnecessary dependency on native matchmaking: an advertised,
+callable `context.chooseAsync` keeps the existing chooser and context boards
+available when `matchPlayerAsync` is absent or unadvertised. Native matching
+checks its own exact advertisement and callable implementation before use.
+Audience, authenticated rollout and dialog exclusion remain enforced. Fresh
+chooser-only/full-SDK Facebook journeys, Reddit and six selected Jest browser
+regressions pass alongside all six isolated builds/audits; hosted API acceptance
+remains required.
+
+For the shared presence mirror rollout, use the [presence permission reconciliation runbook](presence-visibility-reconciliation.md) after the matching backend/rules are staged and older writers have drained. Its local verification does not establish hosted inventory coverage or acceptance.
+
+The [3 October native context-event check](evidence/facebook-context-events-2026-10-03.md)
+observes `FBInstant.onContextChange` for the authenticated session, including
+changes made through Meta overlays while Activity is unmounted. Mounted boards
+retire late reads immediately, and returning to solo removes the previous social
+membership. The [solo-state follow-up](evidence/facebook-solo-context-2026-10-03.md)
+treats that normal absence as no optional board/score destination, preserving the
+server-error retry path without showing a false transport error during solo play.
+
+A fresh authenticated Meta MCP review read on 3 October still reports
+`UNSUBMITTED` without submission/completion timestamps. Requirements nevertheless
+say a prior submission is in review, and privileges list Instant Games Zero
+Permission Access as rejected with no live access or reason. These conflicting
+responses require provider/dashboard resolution; the aggregate `is_approved`
+flag does not establish Zero Permission Access or Instant Games release approval.
+No review submission or provider setting was changed by these checks.

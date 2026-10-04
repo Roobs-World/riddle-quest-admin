@@ -1,6 +1,8 @@
 import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
 import type {Feedback} from "@qwordly/core/game";
-import type {PendingGuessState} from "./gameSessionTypes";
+import {splitGraphemes} from "@qwordly/core/game";
+import type {PendingGuessState, GameSessionState} from "./gameSessionTypes";
+import {getConfirmedRiddleOutcome, getConfirmedRiddleWin} from "./ConfirmedRiddleOutcome";
 /** A confirmed coin action delivered after all earlier answers settle. */
 export type QueuedCoinAction = Extract<
   GameToHostMessage,
@@ -61,6 +63,69 @@ export type PendingGuessJournal = {
 const journalKey = (scope: string) => `riddleQuest:pendingPlay:v1:${scope}`;
 /** The lease key retained for safe pending-play recovery. */
 const leaseKey = (scope: string) => `riddleQuest:pendingPlayLease:v1:${scope}`;
+/** A host-confirmed terminal round supersedes its remaining local deliveries, never a later question. */
+export function isPendingPlayJournalSupersededByWin(journal: PendingGuessJournal, riddle: BridgeRiddle): boolean {
+  if (!getConfirmedRiddleWin(riddle) || journal.successors.length > 0) return false;
+  /** Exact issued-question identity prevents retiring another round's durable requests. */
+  const ownsRound = (candidate: Pick<BridgeRiddle, "riddleId" | "sessionToken" | "gameMode">) =>
+    candidate.riddleId === riddle.riddleId && candidate.sessionToken === riddle.sessionToken &&
+    candidate.gameMode === riddle.gameMode;
+  return ownsRound(journal.riddle) && journal.queue.every(item => ownsRound(item.message.payload)) &&
+    (!journal.coinAction || ownsRound(journal.coinAction.payload));
+}
+/** Retires confirmed terminal rounds or superseded drafts without losing another question’s deliveries. */
+export function reconcileConfirmedPendingPlay(journal: PendingGuessJournal, riddle: BridgeRiddle): PendingGuessJournal | null {
+  /** Matching all question identity fields avoids consuming another issued round. */
+  const sameRound = (candidate: Pick<BridgeRiddle, "riddleId" | "sessionToken" | "gameMode">, issued: BridgeRiddle) =>
+    candidate.riddleId === issued.riddleId && candidate.sessionToken === issued.sessionToken && candidate.gameMode === issued.gameMode;
+  /** Completed victory can precede a later draft until the normal fanfare is dismissed. */
+  const outcome = getConfirmedRiddleOutcome(riddle);
+  /** A loss retires only its exact owned root; it never promotes a successor or advances Classic. */
+  if (outcome?.kind === "loss" && sameRound(journal.riddle,riddle) && journal.successors.length === 0 &&
+    journal.queue.every(item => sameRound(item.message.payload,riddle)) &&
+    (!journal.coinAction || sameRound(journal.coinAction.payload,riddle))) return null;
+  /** Only a proven victory permits consuming a completed prefix. */
+  const confirmedWin = outcome?.kind === "win" ? outcome : null;
+  if (!confirmedWin && journal.riddle.gameMode === riddle.gameMode &&
+    journal.queue.length === 0 && !journal.coinAction && journal.successors.length === 0 && !sameRound(journal.riddle,riddle))
+    return null;
+  if (!confirmedWin || !sameRound(journal.riddle, riddle)) return journal;
+  if (isPendingPlayJournalSupersededByWin(journal, riddle)) return null;
+  if (riddle.gameMode !== "classic" || !Number.isSafeInteger(riddle.index) || (riddle.index ?? 0) < 1 ||
+    journal.riddle.index !== riddle.index || journal.successors.length === 0 || journal.successors.length > 3) return journal;
+  /** Each retained segment must be a distinct, consecutive issued Classic question. */
+  const segments = [journal.riddle, ...journal.successors.map(segment => segment.riddle)];
+  if (segments.some((segment, index) => segment.gameMode !== "classic" || !Number.isSafeInteger(segment.index) || segment.index !== riddle.index! + index) ||
+    new Set(segments.map(segment => segment.sessionToken)).size !== segments.length) return journal;
+  /** Unknown or reordered deliveries cannot safely be attributed to the completed prefix. */
+  const positions = journal.queue.map(item => segments.findIndex(segment => sameRound(item.message.payload, segment)));
+  if (positions.some((position, index) => position < 0 || (index > 0 && position < positions[index - 1]!)) ||
+    (journal.coinAction && !segments.some(segment => sameRound(journal.coinAction!.payload, segment)))) return journal;
+  /** The first issued successor becomes the durable root without modifying the original journal. */
+  const next = journal.successors[0]!;
+  return {...journal, ...next, draftActiveSlotIndex: next.draftActiveSlotIndex,
+    confirmedClassicIndex: Math.max(journal.confirmedClassicIndex, riddle.index! + 1),
+    successors: journal.successors.slice(1),
+    queue: journal.queue.filter((_item, index) => positions[index] !== 0),
+    coinAction: journal.coinAction && sameRound(journal.coinAction.payload, riddle) ? undefined : journal.coinAction};
+}
+/** Keeps only valid, unsubmitted letters for the rejected root question; every dependent delivery is retired. */
+export function createRejectedPlayDraft(journal: PendingGuessJournal,
+  current: Pick<GameSessionState, "riddle" | "engineSnapshot" | "currentLetters" | "activeSlotIndex">): PendingGuessJournal | null {
+  if (!Number.isInteger(journal.riddle.answerLength) || journal.riddle.answerLength < 1 || journal.riddle.answerLength > 7) return null;
+  /** Current input is usable only while the exact rejected question remains editable. */
+  const sameQuestion = current.riddle?.sessionToken === journal.riddle.sessionToken &&
+    current.riddle.riddleId === journal.riddle.riddleId && current.riddle.gameMode === journal.riddle.gameMode &&
+    current.engineSnapshot?.gameOver === false;
+  /** Otherwise the journal's root draft is kept; input from later dependent questions is never transferred. */
+  const draft = sameQuestion ? current.currentLetters : journal.draft;
+  if (draft.length !== journal.riddle.answerLength || !draft.some(Boolean) || draft.some(letter =>
+    typeof letter !== "string" || letter.length > 32 || (letter !== "" && splitGraphemes(letter).length !== 1))) return null;
+  /** A legacy or invalid selection falls back to the reducer's first editable slot. */
+  const selected = sameQuestion ? current.activeSlotIndex : journal.draftActiveSlotIndex;
+  return {...journal,queue: [],successors: [],coinAction: undefined,draft: [...draft],
+    draftActiveSlotIndex: selected !== undefined && Number.isInteger(selected) && selected >= 0 && selected < draft.length ? selected : undefined};
+}
 /** Checks whether an unknown value is a plain record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);

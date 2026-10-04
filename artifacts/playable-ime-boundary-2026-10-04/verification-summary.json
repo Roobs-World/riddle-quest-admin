@@ -1,0 +1,63 @@
+{
+  "status": "verified",
+  "goalStatus": "active",
+  "affectedTargets": [
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "portalUnitCases": 2707,
+  "portalUnitSuites": 296,
+  "portalSkippedCases": 121,
+  "injectedChecks": 336,
+  "injectedJourneys": 54,
+  "builtPlayableJourneys": 15,
+  "builtPlayableSuites": 3,
+  "reactModes": [
+    "development",
+    "production"
+  ],
+  "viewports": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "baselineBackspaceRed": {
+    "width": 390,
+    "height": 568,
+    "scenario": "ime-backspace",
+    "name": "IME key preserves the complete draft",
+    "actual": "ro",
+    "expected": "rom"
+  },
+  "baselineEnterRed": {
+    "saveCount": 2,
+    "totalWins": 1,
+    "revision": 2
+  },
+  "firefoxMcpVerified": true,
+  "builtTargets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "stableBuildInputs": 763,
+  "ownedSourceSha256": {
+    "packages/portal/src/playable/YouTubeNativeAnswerInput.tsx": "4ce7f98196b91c667a524a437d641b892b47eb81db7a3fcc3f92f8a8c875ba54",
+    "packages/portal/scripts/verify-playable-ime-boundary-browser.mjs": "e34f4cc525eeb09c766515dbdb83c883ea80d8884bf0d1a2e30582156cde82c3",
+    "packages/portal/package.json": "4b51ac15a7370b90af65f2130138c45b36de819718246a1c32ee99dfb4d5967e"
+  },
+  "compositionEventLimit": "IME boundary events were injected; ordinary Firefox typing and keys used native MCP input. OS IME certification was not performed."
+}

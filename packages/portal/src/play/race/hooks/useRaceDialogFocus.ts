@@ -28,7 +28,7 @@ export function useRaceDialogFocus({
   /** Handles keys using the latest dialog state without restarting the focus lifecycle. */
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
     // Composition and an earlier control retain ownership of their keyboard event.
-    if (event.isComposing || event.defaultPrevented) return;
+    if (event.isComposing || event.keyCode === 229 || event.defaultPrevented) return;
     if (event.key === "Escape") {
       event.preventDefault();
       if (quitConfirmationOpen) dismissQuitConfirmation();

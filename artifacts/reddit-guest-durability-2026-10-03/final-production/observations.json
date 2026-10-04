@@ -1,0 +1,3774 @@
+[
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "retry remains reachable beside the guest banner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "retry remains reachable beside the guest banner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "retry remains reachable beside the guest banner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "manual",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "retry remains reachable beside the guest banner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "preference change survives recovery with the draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "recovery does not restart provider initialization",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "reload restores the saved draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "reload restores the saved preference",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "one accepted guess completes once",
+    "actual": {
+      "games": 1,
+      "wins": 1
+    },
+    "expected": {
+      "games": 1,
+      "wins": 1
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "guest play retains zero canonical currency",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "manual",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "guest play starts with unavailable storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold failed progress has no durability acknowledgement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold startup retries the latest complete guest record",
+    "actual": {
+      "draft": "PIAN",
+      "contrast": true
+    },
+    "expected": {
+      "draft": "PIAN",
+      "contrast": true
+    }
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold startup has no unhandled storage rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold recovery survives reload",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "guest play starts with unavailable storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold failed progress has no durability acknowledgement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold startup retries the latest complete guest record",
+    "actual": {
+      "draft": "PIAN",
+      "contrast": true
+    },
+    "expected": {
+      "draft": "PIAN",
+      "contrast": true
+    }
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold startup has no unhandled storage rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "cold-start",
+    "name": "cold recovery survives reload",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "en",
+    "expected": "en"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Progress stays on this device. Coins and purchases are unavailable and never transfer.",
+      "Guest play has no coins, purchases, leaderboards, daily challenge, or multiplayer."
+    ],
+    "expected": [
+      "Progress stays on this device. Coins and purchases are unavailable and never transfer.",
+      "Guest play has no coins, purchases, leaderboards, daily challenge, or multiplayer."
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "en",
+    "expected": "en"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Progress stays on this device. Coins and purchases are unavailable and never transfer.",
+      "Guest play has no coins, purchases, leaderboards, daily challenge, or multiplayer."
+    ],
+    "expected": [
+      "Progress stays on this device. Coins and purchases are unavailable and never transfer.",
+      "Guest play has no coins, purchases, leaderboards, daily challenge, or multiplayer."
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ar",
+    "expected": "ar"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "يبقى التقدم على هذا الجهاز. العملات والمشتريات غير متاحة ولا تُنقل.",
+      "لا تتوفر العملات أو المشتريات أو لوحات الصدارة أو التحدي اليومي أو اللعب الجماعي في وضع الضيف."
+    ],
+    "expected": [
+      "يبقى التقدم على هذا الجهاز. العملات والمشتريات غير متاحة ولا تُنقل.",
+      "لا تتوفر العملات أو المشتريات أو لوحات الصدارة أو التحدي اليومي أو اللعب الجماعي في وضع الضيف."
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ar",
+    "expected": "ar"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "يبقى التقدم على هذا الجهاز. العملات والمشتريات غير متاحة ولا تُنقل.",
+      "لا تتوفر العملات أو المشتريات أو لوحات الصدارة أو التحدي اليومي أو اللعب الجماعي في وضع الضيف."
+    ],
+    "expected": [
+      "يبقى التقدم على هذا الجهاز. العملات والمشتريات غير متاحة ولا تُنقل.",
+      "لا تتوفر العملات أو المشتريات أو لوحات الصدارة أو التحدي اليومي أو اللعب الجماعي في وضع الضيف."
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "de",
+    "expected": "de"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Der Fortschritt bleibt auf diesem Gerät. Münzen und Käufe sind nicht verfügbar und werden nie übertragen.",
+      "Im Gastspiel gibt es keine Münzen, Käufe, Bestenlisten, tägliche Herausforderung oder Mehrspielerfunktion."
+    ],
+    "expected": [
+      "Der Fortschritt bleibt auf diesem Gerät. Münzen und Käufe sind nicht verfügbar und werden nie übertragen.",
+      "Im Gastspiel gibt es keine Münzen, Käufe, Bestenlisten, tägliche Herausforderung oder Mehrspielerfunktion."
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "de",
+    "expected": "de"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Der Fortschritt bleibt auf diesem Gerät. Münzen und Käufe sind nicht verfügbar und werden nie übertragen.",
+      "Im Gastspiel gibt es keine Münzen, Käufe, Bestenlisten, tägliche Herausforderung oder Mehrspielerfunktion."
+    ],
+    "expected": [
+      "Der Fortschritt bleibt auf diesem Gerät. Münzen und Käufe sind nicht verfügbar und werden nie übertragen.",
+      "Im Gastspiel gibt es keine Münzen, Käufe, Bestenlisten, tägliche Herausforderung oder Mehrspielerfunktion."
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "es",
+    "expected": "es"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "El progreso permanece en este dispositivo. Las monedas y compras no están disponibles ni se transfieren.",
+      "El modo invitado no incluye monedas, compras, clasificaciones, desafío diario ni multijugador."
+    ],
+    "expected": [
+      "El progreso permanece en este dispositivo. Las monedas y compras no están disponibles ni se transfieren.",
+      "El modo invitado no incluye monedas, compras, clasificaciones, desafío diario ni multijugador."
+    ]
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "es",
+    "expected": "es"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "El progreso permanece en este dispositivo. Las monedas y compras no están disponibles ni se transfieren.",
+      "El modo invitado no incluye monedas, compras, clasificaciones, desafío diario ni multijugador."
+    ],
+    "expected": [
+      "El progreso permanece en este dispositivo. Las monedas y compras no están disponibles ni se transfieren.",
+      "El modo invitado no incluye monedas, compras, clasificaciones, desafío diario ni multijugador."
+    ]
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "fr",
+    "expected": "fr"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "La progression reste sur cet appareil. Les pièces et achats sont indisponibles et ne sont jamais transférés.",
+      "Le mode invité n’inclut ni pièces, ni achats, ni classements, ni défi quotidien, ni multijoueur."
+    ],
+    "expected": [
+      "La progression reste sur cet appareil. Les pièces et achats sont indisponibles et ne sont jamais transférés.",
+      "Le mode invité n’inclut ni pièces, ni achats, ni classements, ni défi quotidien, ni multijoueur."
+    ]
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "fr",
+    "expected": "fr"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "La progression reste sur cet appareil. Les pièces et achats sont indisponibles et ne sont jamais transférés.",
+      "Le mode invité n’inclut ni pièces, ni achats, ni classements, ni défi quotidien, ni multijoueur."
+    ],
+    "expected": [
+      "La progression reste sur cet appareil. Les pièces et achats sont indisponibles et ne sont jamais transférés.",
+      "Le mode invité n’inclut ni pièces, ni achats, ni classements, ni défi quotidien, ni multijoueur."
+    ]
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "hi",
+    "expected": "hi"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "प्रगति इसी डिवाइस पर रहती है। सिक्के और खरीद उपलब्ध नहीं हैं और कभी स्थानांतरित नहीं होते।",
+      "अतिथि खेल में सिक्के, खरीद, लीडरबोर्ड, दैनिक चुनौती या मल्टीप्लेयर उपलब्ध नहीं हैं।"
+    ],
+    "expected": [
+      "प्रगति इसी डिवाइस पर रहती है। सिक्के और खरीद उपलब्ध नहीं हैं और कभी स्थानांतरित नहीं होते।",
+      "अतिथि खेल में सिक्के, खरीद, लीडरबोर्ड, दैनिक चुनौती या मल्टीप्लेयर उपलब्ध नहीं हैं।"
+    ]
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "hi",
+    "expected": "hi"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "प्रगति इसी डिवाइस पर रहती है। सिक्के और खरीद उपलब्ध नहीं हैं और कभी स्थानांतरित नहीं होते।",
+      "अतिथि खेल में सिक्के, खरीद, लीडरबोर्ड, दैनिक चुनौती या मल्टीप्लेयर उपलब्ध नहीं हैं।"
+    ],
+    "expected": [
+      "प्रगति इसी डिवाइस पर रहती है। सिक्के और खरीद उपलब्ध नहीं हैं और कभी स्थानांतरित नहीं होते।",
+      "अतिथि खेल में सिक्के, खरीद, लीडरबोर्ड, दैनिक चुनौती या मल्टीप्लेयर उपलब्ध नहीं हैं।"
+    ]
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "id",
+    "expected": "id"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Progres tetap di perangkat ini. Koin dan pembelian tidak tersedia dan tidak pernah ditransfer.",
+      "Mode tamu tidak memiliki koin, pembelian, papan peringkat, tantangan harian, atau multipemain."
+    ],
+    "expected": [
+      "Progres tetap di perangkat ini. Koin dan pembelian tidak tersedia dan tidak pernah ditransfer.",
+      "Mode tamu tidak memiliki koin, pembelian, papan peringkat, tantangan harian, atau multipemain."
+    ]
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "id",
+    "expected": "id"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Progres tetap di perangkat ini. Koin dan pembelian tidak tersedia dan tidak pernah ditransfer.",
+      "Mode tamu tidak memiliki koin, pembelian, papan peringkat, tantangan harian, atau multipemain."
+    ],
+    "expected": [
+      "Progres tetap di perangkat ini. Koin dan pembelian tidak tersedia dan tidak pernah ditransfer.",
+      "Mode tamu tidak memiliki koin, pembelian, papan peringkat, tantangan harian, atau multipemain."
+    ]
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "it",
+    "expected": "it"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "I progressi restano su questo dispositivo. Monete e acquisti non sono disponibili e non vengono trasferiti.",
+      "La modalità ospite non include monete, acquisti, classifiche, sfida giornaliera o multigiocatore."
+    ],
+    "expected": [
+      "I progressi restano su questo dispositivo. Monete e acquisti non sono disponibili e non vengono trasferiti.",
+      "La modalità ospite non include monete, acquisti, classifiche, sfida giornaliera o multigiocatore."
+    ]
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "it",
+    "expected": "it"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "I progressi restano su questo dispositivo. Monete e acquisti non sono disponibili e non vengono trasferiti.",
+      "La modalità ospite non include monete, acquisti, classifiche, sfida giornaliera o multigiocatore."
+    ],
+    "expected": [
+      "I progressi restano su questo dispositivo. Monete e acquisti non sono disponibili e non vengono trasferiti.",
+      "La modalità ospite non include monete, acquisti, classifiche, sfida giornaliera o multigiocatore."
+    ]
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ja",
+    "expected": "ja"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "進行状況はこの端末にのみ保存されます。コインと購入は利用できず、引き継がれません。",
+      "ゲストプレイではコイン、購入、ランキング、デイリーチャレンジ、マルチプレイを利用できません。"
+    ],
+    "expected": [
+      "進行状況はこの端末にのみ保存されます。コインと購入は利用できず、引き継がれません。",
+      "ゲストプレイではコイン、購入、ランキング、デイリーチャレンジ、マルチプレイを利用できません。"
+    ]
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ja",
+    "expected": "ja"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "進行状況はこの端末にのみ保存されます。コインと購入は利用できず、引き継がれません。",
+      "ゲストプレイではコイン、購入、ランキング、デイリーチャレンジ、マルチプレイを利用できません。"
+    ],
+    "expected": [
+      "進行状況はこの端末にのみ保存されます。コインと購入は利用できず、引き継がれません。",
+      "ゲストプレイではコイン、購入、ランキング、デイリーチャレンジ、マルチプレイを利用できません。"
+    ]
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ko",
+    "expected": "ko"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "진행 상황은 이 기기에만 저장됩니다. 코인과 구매는 이용할 수 없으며 이전되지 않습니다.",
+      "게스트 플레이에서는 코인, 구매, 순위표, 일일 도전 및 멀티플레이를 이용할 수 없습니다."
+    ],
+    "expected": [
+      "진행 상황은 이 기기에만 저장됩니다. 코인과 구매는 이용할 수 없으며 이전되지 않습니다.",
+      "게스트 플레이에서는 코인, 구매, 순위표, 일일 도전 및 멀티플레이를 이용할 수 없습니다."
+    ]
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ko",
+    "expected": "ko"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "진행 상황은 이 기기에만 저장됩니다. 코인과 구매는 이용할 수 없으며 이전되지 않습니다.",
+      "게스트 플레이에서는 코인, 구매, 순위표, 일일 도전 및 멀티플레이를 이용할 수 없습니다."
+    ],
+    "expected": [
+      "진행 상황은 이 기기에만 저장됩니다. 코인과 구매는 이용할 수 없으며 이전되지 않습니다.",
+      "게스트 플레이에서는 코인, 구매, 순위표, 일일 도전 및 멀티플레이를 이용할 수 없습니다."
+    ]
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "pt",
+    "expected": "pt"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "O progresso fica neste dispositivo. Moedas e compras não estão disponíveis nem são transferidas.",
+      "O modo convidado não tem moedas, compras, placares, desafio diário ou multijogador."
+    ],
+    "expected": [
+      "O progresso fica neste dispositivo. Moedas e compras não estão disponíveis nem são transferidas.",
+      "O modo convidado não tem moedas, compras, placares, desafio diário ou multijogador."
+    ]
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "pt",
+    "expected": "pt"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "O progresso fica neste dispositivo. Moedas e compras não estão disponíveis nem são transferidas.",
+      "O modo convidado não tem moedas, compras, placares, desafio diário ou multijogador."
+    ],
+    "expected": [
+      "O progresso fica neste dispositivo. Moedas e compras não estão disponíveis nem são transferidas.",
+      "O modo convidado não tem moedas, compras, placares, desafio diário ou multijogador."
+    ]
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ru",
+    "expected": "ru"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Прогресс хранится на этом устройстве. Монеты и покупки недоступны и не переносятся.",
+      "В гостевой игре нет монет, покупок, таблиц лидеров, ежедневных заданий и мультиплеера."
+    ],
+    "expected": [
+      "Прогресс хранится на этом устройстве. Монеты и покупки недоступны и не переносятся.",
+      "В гостевой игре нет монет, покупок, таблиц лидеров, ежедневных заданий и мультиплеера."
+    ]
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "ru",
+    "expected": "ru"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Прогресс хранится на этом устройстве. Монеты и покупки недоступны и не переносятся.",
+      "В гостевой игре нет монет, покупок, таблиц лидеров, ежедневных заданий и мультиплеера."
+    ],
+    "expected": [
+      "Прогресс хранится на этом устройстве. Монеты и покупки недоступны и не переносятся.",
+      "В гостевой игре нет монет, покупок, таблиц лидеров, ежедневных заданий и мультиплеера."
+    ]
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "nl",
+    "expected": "nl"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Voortgang blijft op dit apparaat. Munten en aankopen zijn niet beschikbaar en worden nooit overgedragen.",
+      "Spelen als gast heeft geen munten, aankopen, klassementen, dagelijkse uitdaging of multiplayer."
+    ],
+    "expected": [
+      "Voortgang blijft op dit apparaat. Munten en aankopen zijn niet beschikbaar en worden nooit overgedragen.",
+      "Spelen als gast heeft geen munten, aankopen, klassementen, dagelijkse uitdaging of multiplayer."
+    ]
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "nl",
+    "expected": "nl"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Voortgang blijft op dit apparaat. Munten en aankopen zijn niet beschikbaar en worden nooit overgedragen.",
+      "Spelen als gast heeft geen munten, aankopen, klassementen, dagelijkse uitdaging of multiplayer."
+    ],
+    "expected": [
+      "Voortgang blijft op dit apparaat. Munten en aankopen zijn niet beschikbaar en worden nooit overgedragen.",
+      "Spelen als gast heeft geen munten, aankopen, klassementen, dagelijkse uitdaging of multiplayer."
+    ]
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "tr",
+    "expected": "tr"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "İlerleme bu cihazda kalır. Jetonlar ve satın alımlar kullanılamaz ve aktarılmaz.",
+      "Misafir oyununda jeton, satın alım, liderlik tablosu, günlük görev veya çok oyunculu mod yoktur."
+    ],
+    "expected": [
+      "İlerleme bu cihazda kalır. Jetonlar ve satın alımlar kullanılamaz ve aktarılmaz.",
+      "Misafir oyununda jeton, satın alım, liderlik tablosu, günlük görev veya çok oyunculu mod yoktur."
+    ]
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "tr",
+    "expected": "tr"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "İlerleme bu cihazda kalır. Jetonlar ve satın alımlar kullanılamaz ve aktarılmaz.",
+      "Misafir oyununda jeton, satın alım, liderlik tablosu, günlük görev veya çok oyunculu mod yoktur."
+    ],
+    "expected": [
+      "İlerleme bu cihazda kalır. Jetonlar ve satın alımlar kullanılamaz ve aktarılmaz.",
+      "Misafir oyununda jeton, satın alım, liderlik tablosu, günlük görev veya çok oyunculu mod yoktur."
+    ]
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "vi",
+    "expected": "vi"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Tiến trình chỉ lưu trên thiết bị này. Xu và giao dịch mua không khả dụng và không được chuyển.",
+      "Chế độ khách không có xu, giao dịch mua, bảng xếp hạng, thử thách hằng ngày hoặc nhiều người chơi."
+    ],
+    "expected": [
+      "Tiến trình chỉ lưu trên thiết bị này. Xu và giao dịch mua không khả dụng và không được chuyển.",
+      "Chế độ khách không có xu, giao dịch mua, bảng xếp hạng, thử thách hằng ngày hoặc nhiều người chơi."
+    ]
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "vi",
+    "expected": "vi"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Tiến trình chỉ lưu trên thiết bị này. Xu và giao dịch mua không khả dụng và không được chuyển.",
+      "Chế độ khách không có xu, giao dịch mua, bảng xếp hạng, thử thách hằng ngày hoặc nhiều người chơi."
+    ],
+    "expected": [
+      "Tiến trình chỉ lưu trên thiết bị này. Xu và giao dịch mua không khả dụng và không được chuyển.",
+      "Chế độ khách không có xu, giao dịch mua, bảng xếp hạng, thử thách hằng ngày hoặc nhiều người chơi."
+    ]
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "pl",
+    "expected": "pl"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Postęp pozostaje na tym urządzeniu. Monety i zakupy są niedostępne i nie są przenoszone.",
+      "Gra gościnna nie obejmuje monet, zakupów, rankingów, codziennego wyzwania ani trybu wieloosobowego."
+    ],
+    "expected": [
+      "Postęp pozostaje na tym urządzeniu. Monety i zakupy są niedostępne i nie są przenoszone.",
+      "Gra gościnna nie obejmuje monet, zakupów, rankingów, codziennego wyzwania ani trybu wieloosobowego."
+    ]
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "controls use the requested locale",
+    "actual": "pl",
+    "expected": "pl"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "localized guest banner and recovery row do not overlap",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "keyboard retains 32px minimum height",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all game controls fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "actual guest input remains accepted",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "all supported locale names match the real catalog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "the previous fixed guest warning is absent",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "native disclosure preserves all translated guest information",
+    "actual": [
+      "Postęp pozostaje na tym urządzeniu. Monety i zakupy są niedostępne i nie są przenoszone.",
+      "Gra gościnna nie obejmuje monet, zakupów, rankingów, codziennego wyzwania ani trybu wieloosobowego."
+    ],
+    "expected": [
+      "Postęp pozostaje na tym urządzeniu. Monety i zakupy są niedostępne i nie są przenoszone.",
+      "Gra gościnna nie obejmuje monet, zakupów, rankingów, codziennego wyzwania ani trybu wieloosobowego."
+    ]
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "recovery": "localized-layout",
+    "name": "disclosure keyboard activation does not edit the answer",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  }
+]

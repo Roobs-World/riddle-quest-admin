@@ -9,11 +9,14 @@ import {gameSessionReducer} from "../../gameSession";
 import {
   createPendingPlayJournalStorage,
   pendingPlayScope,
+  reconcileConfirmedPendingPlay,
+  createRejectedPlayDraft,
   type PendingGuessJournal,
   type QueuedGuess,
   type QueuedCoinAction,
 } from "../../pendingGuessJournal";
 import {createRequestId} from "../../requestIds";
+import {getConfirmedRiddleOutcome} from "../../ConfirmedRiddleOutcome";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "../../modalPages/commerce/commerceCosts";
 import type {GameFeedbackKind} from "./useGameAudio";
 /** Clock seam for retry, lease renewal and account-scope cleanup. */
@@ -101,8 +104,15 @@ export function useProvisionalPlayRecovery({
   const queuedGuessesRef = useRef<QueuedGuess[]>([]);
   /** The journal ref used by the current operation. */
   const journalRef = useRef<PendingGuessJournal | null>(null);
+  /** Tracks the displayed journal segment and the render preceding its restoration. */
+  const restoredJournalRef = useRef<{
+    /** Account generation and locale owning the restored segment. */ scope: string;
+    /** Issued question whose draft was restored. */ sessionToken: string;
+    /** Exact loaded host riddle distinguishes a refreshed same-session reconcile reply. */ riddle: BridgeRiddle;
+    /** Render preceding restoration must not overwrite its durable draft. */ before: GameSessionState;
+  } | null>(null);
   /** The owner ref used by the current operation. */
-  const ownerRef = useRef(createRequestId("pending-owner"));
+  const [ownerRef] = useState(() => ({current: createRequestId("pending-owner")}));
   /** The sent request ref used by the current operation. */
   const sentRequestRef = useRef<string | null>(null);
   /** The sent at ref used by the current operation. */
@@ -145,12 +155,29 @@ export function useProvisionalPlayRecovery({
   /** The prior scope ref used by the current operation. */
   const priorScopeRef = useRef(scope);
   scopeRef.current = scope;
+  /** The non-journaled fallback still owns an exact request, question and player scope. */
+  const directGuessRef = useRef<{
+    /** Correlated fallback request. */ requestId: string;
+    /** Account generation and content locale at submission. */ scope: string | null;
+    /** Authority-issued question at submission. */ sessionToken: string;
+  } | null>(null);
+  /** Retains ownership when evaluation or durable journal storage is unavailable. */
+  const sendDirectGuess = useCallback((message: QueuedGuess["message"]) => {
+    directGuessRef.current = {requestId: message.requestId!, scope: scopeRef.current,
+      sessionToken: message.payload.sessionToken};
+    postToHost(message);
+  }, [postToHost]);
   /** The send first used by the current operation. */
   const sendFirst = useCallback(() => {
     /** The first used by the current operation. */
     const message = queuedGuessesRef.current[0]?.message ?? journalRef.current?.coinAction;
     /** The active scope used by the current operation. */
     const activeScope = scopeRef.current;
+    /** Buffered successor delivery waits until the recovered predecessor's completion is acknowledged. */
+    const current = stateRef.current;
+    if (current.riddle && getConfirmedRiddleOutcome(current.riddle) && !current.completionAcknowledged &&
+      (getConfirmedRiddleOutcome(current.riddle)?.kind === "loss" ||
+        message?.payload.sessionToken !== current.riddle.sessionToken)) return;
     if (!message || !activeScope || !adapters.journal.acquire(activeScope, ownerRef.current, adapters.clock.now()))
       return;
     if (sentRequestRef.current !== message.requestId || adapters.clock.now() - sentAtRef.current >= 20_000) {
@@ -182,6 +209,7 @@ export function useProvisionalPlayRecovery({
     leaseRenewRef.current = null;
     retryTimerRef.current = null;
     sentRequestRef.current = null;
+    directGuessRef.current = null;
     queuedGuessesRef.current = [];
     setPendingCount(0);
     setCoinActionPending(false);
@@ -189,15 +217,80 @@ export function useProvisionalPlayRecovery({
     skipPreviewRef.current = null;
     earlySkipLoadRef.current = null;
     journalRef.current = null;
+    restoredJournalRef.current = null;
     priorScopeRef.current = scope;
     setJournalAvailable(true);
   }, [scope]);
   useEffect(() => {
     if (!scope || !state.riddle) return;
+    /** Restores one displayed segment without writing its pre-restoration empty draft back to storage. */
+    const restoreSegment = (journal: PendingGuessJournal, segment: NonNullable<ReturnType<typeof findSegment>>) => {
+      restoredJournalRef.current = {scope, sessionToken: segment.riddle.sessionToken, riddle: state.riddle!, before: state};
+      /** Complete newer host history takes precedence over an older draft-only gameplay checkpoint. */
+      const hostHistoryIsCurrent = journal.queue.length === 0 && !journal.coinAction &&
+        state.riddle!.attemptsUsed > 0 && state.riddle!.acceptedGuesses?.length === state.riddle!.attemptsUsed &&
+        state.riddle!.attemptsUsed >= (segment.base.engineSnapshot?.attemptsUsed ?? 0);
+      dispatch({type: "restoreQueuedGuesses", base: hostHistoryIsCurrent ? capturePendingBase(state) : segment.base,
+        guesses: journal.queue.filter(item => item.message.payload.sessionToken === segment.riddle.sessionToken)
+          .map(item => item.message.payload.guess),draft: segment.draft,draftActiveSlotIndex: segment.draftActiveSlotIndex});
+      if (journal.coinAction?.type === "game:spendCoins" && journal.coinAction.payload.sessionToken === segment.riddle.sessionToken)
+        dispatch({type: "previewCoinSpend",requestId: journal.coinAction.requestId!,
+          amount: journal.coinAction.payload.amount ?? CONTINUE_COIN_COST,reason: "continue",
+          draft: segment.draft,draftActiveSlotIndex: segment.draftActiveSlotIndex});
+    };
     /** The active journal used by the current operation. */
-    const activeJournal = journalRef.current;
+    let activeJournal = journalRef.current;
+    /** Reconcile persisted and in-memory ownership before restoring input or delivering requests. */
+    let persistedJournal = activeJournal ?? adapters.journal.read(scope);
+    /** Reconciliation returns the original reference unless a confirmed prefix can safely be retired. */
+    const reconciled = persistedJournal ? reconcileConfirmedPendingPlay(persistedJournal, state.riddle) : null;
+    /** Other-mode input stays durable but cannot own new submissions in the displayed mode. */
+    const detachOtherModeDraft = reconciled && reconciled.riddle.gameMode !== state.riddle.gameMode &&
+      reconciled.queue.length === 0 && !reconciled.coinAction && reconciled.successors.length === 0;
+    if (persistedJournal && (!reconciled || detachOtherModeDraft)) {
+      if (!reconciled) adapters.journal.clear(scope);
+      adapters.journal.release(scope, ownerRef.current);
+      if (leaseRenewRef.current !== null) adapters.clock.clearInterval(leaseRenewRef.current);
+      if (retryTimerRef.current !== null) adapters.clock.clearTimeout(retryTimerRef.current);
+      leaseRenewRef.current = null;
+      retryTimerRef.current = null;
+      journalRef.current = null;
+      restoredJournalRef.current = null;
+      queuedGuessesRef.current = [];
+      sentRequestRef.current = null;
+      setPendingCount(0);
+      setCoinActionPending(false);
+      return;
+    }
+    if (reconciled && reconciled !== persistedJournal) {
+      adapters.journal.write(reconciled);
+      journalRef.current = reconciled;
+      queuedGuessesRef.current = reconciled.queue;
+      sentRequestRef.current = null;
+      setPendingCount(reconciled.queue.length);
+      setCoinActionPending(Boolean(reconciled.coinAction));
+      persistedJournal = reconciled;
+      activeJournal = reconciled;
+    }
+    if (persistedJournal && getConfirmedRiddleOutcome(state.riddle)) {
+      // Preserve terminal authority; foreign deliveries wait until this completion is acknowledged.
+      if (getConfirmedRiddleOutcome(state.riddle)?.kind === "win") sendFirst();
+      if ((persistedJournal.queue.length || persistedJournal.coinAction) && leaseRenewRef.current === null)
+        leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
+      return;
+    }
     if (activeJournal) {
-      if (findSegment(activeJournal, state.riddle.sessionToken)) return;
+      /** A retained successor becomes restorable only after the preceding victory has been dismissed. */
+      const segment = findSegment(activeJournal, state.riddle.sessionToken);
+      if (segment) {
+        if (restoredJournalRef.current?.scope !== scope || restoredJournalRef.current.sessionToken !== state.riddle.sessionToken ||
+          restoredJournalRef.current.riddle !== state.riddle)
+          restoreSegment(activeJournal, segment);
+        sendFirst();
+        if ((activeJournal.queue.length || activeJournal.coinAction) && leaseRenewRef.current === null)
+          leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
+        return;
+      }
       /** The previous used by the current operation. */
       const previous = activeJournal.successors.at(-1)?.riddle ?? activeJournal.riddle;
       if (
@@ -212,7 +305,7 @@ export function useProvisionalPlayRecovery({
     }
     if (queuedGuessesRef.current.length > 0) return;
     /** The journal used by the current operation. */
-    const journal = adapters.journal.read(scope);
+    const journal = persistedJournal;
     if (!journal || state.riddle.gameMode !== journal.riddle.gameMode) return;
     if (
       state.riddle.gameMode === "classic" &&
@@ -229,33 +322,20 @@ export function useProvisionalPlayRecovery({
     const active = journal.successors.at(-1) ?? journal;
     if (state.riddle.gameMode === "challenge" && active.riddle.sessionToken !== state.riddle.sessionToken) {
       sendFirst();
-      if (leaseRenewRef.current === null) leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
+      if ((journal.queue.length || journal.coinAction) && leaseRenewRef.current === null)
+        leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
       return;
     }
     if (active.riddle.sessionToken !== state.riddle.sessionToken) dispatch({type: "loadRiddle", riddle: active.riddle});
-    dispatch({
-      type: "restoreQueuedGuesses",
-      base: active.base,
-      guesses: journal.queue
-        .filter((item) => item.message.payload.sessionToken === active.riddle.sessionToken)
-        .map((item) => item.message.payload.guess),
-      draft: active.draft,
-      draftActiveSlotIndex: active.draftActiveSlotIndex,
-    });
-    if (journal.coinAction?.type === "game:spendCoins")
-      dispatch({
-        type: "previewCoinSpend",
-        requestId: journal.coinAction.requestId!,
-        amount: journal.coinAction.payload.amount ?? CONTINUE_COIN_COST,
-        reason: "continue",
-      });
+    restoreSegment(journal, active);
     sendFirst();
-    if (leaseRenewRef.current === null) leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
-  }, [dispatch, scope, sendFirst, state.riddle]);
+    if ((journal.queue.length || journal.coinAction) && leaseRenewRef.current === null)
+      leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
+  }, [dispatch, scope, sendFirst, state.riddle, state.completionAcknowledged]);
   useEffect(() => {
     /** The journal used by the current operation. */
     const journal = journalRef.current;
-    if (!journal || !state.guessPending || !state.riddle) return;
+    if (!journal || !state.riddle || restoredJournalRef.current?.before === state) return;
     /** The segment used by the current operation. */
     const segment = findSegment(journal, state.riddle.sessionToken);
     if (!segment) return;
@@ -319,8 +399,12 @@ export function useProvisionalPlayRecovery({
   const currentAttempt = state.riddle
     ? Array.from({length: state.riddle.answerLength}, (_, index) => state.currentLetters[index] ?? "")
     : [];
+  /** The submit control follows the same consecutive-answer guard as its handler. */
+  const repeatsPreviousGuess = state.guesses.at(-1)?.guess.join("").toLocaleLowerCase(state.riddle?.evaluation?.locale) ===
+    currentAttempt.join("").toLocaleLowerCase(state.riddle?.evaluation?.locale);
   /** Indicates whether can submit. */
   const canSubmit =
+    !repeatsPreviousGuess &&
     !coinActionPending &&
     !state.pendingCoinSpend?.continueState &&
     (!state.guessPending ||
@@ -434,7 +518,7 @@ export function useProvisionalPlayRecovery({
         adapters.journal.release(scope, ownerRef.current);
         playFeedback("submit");
         dispatch({type: "guessRequested"});
-        postToHost(message);
+        sendDirectGuess(message);
         return;
       }
       journalRef.current = journal;
@@ -447,22 +531,26 @@ export function useProvisionalPlayRecovery({
     } else {
       playFeedback("submit");
       dispatch({type: "guessRequested"});
-      postToHost(message);
+      sendDirectGuess(message);
     }
-  }, [canSubmit, currentAttempt, dispatch, journalAvailable, playFeedback, postToHost, scope, sendFirst, state]);
+  }, [canSubmit, currentAttempt, dispatch, journalAvailable, playFeedback, postToHost, scope, sendFirst, sendDirectGuess, state]);
   /** Restores the last confirmed checkpoint and removes every dependent provisional action. */
   const rollbackQueuedPlay = useCallback(
     (first: QueuedGuess) => {
       /** The checkpoint used by the current operation. */
       const checkpoint = journalRef.current;
+      /** Retires queued mutations and the unpaid hint preview before preserving the same-question user draft. */
+      const retainedDraft = checkpoint ? createRejectedPlayDraft(checkpoint,
+        gameSessionReducer(stateRef.current, {type: "rejectHint"})) : null;
       if (checkpoint?.coinAction?.type === "game:spendCoins")
         dispatch({type: "rejectCoinSpend", requestId: checkpoint.coinAction.requestId!});
       queuedGuessesRef.current = [];
       setPendingCount(0);
       setCoinActionPending(false);
       sentRequestRef.current = null;
-      if (journalRef.current) adapters.journal.clear(journalRef.current.scope);
-      journalRef.current = null;
+      if (checkpoint && (!retainedDraft || !adapters.journal.write(retainedDraft))) adapters.journal.clear(checkpoint.scope);
+      journalRef.current = retainedDraft;
+      restoredJournalRef.current = null;
       if (scopeRef.current) adapters.journal.release(scopeRef.current, ownerRef.current);
       if (leaseRenewRef.current !== null) adapters.clock.clearInterval(leaseRenewRef.current);
       leaseRenewRef.current = null;
@@ -470,8 +558,12 @@ export function useProvisionalPlayRecovery({
         if (
           stateRef.current.riddle?.sessionToken === checkpoint.riddle.sessionToken ||
           checkpoint.riddle.gameMode === "classic"
-        )
+        ) {
           dispatch({type: "restoreConfirmedRiddle", riddle: checkpoint.riddle, base: checkpoint.base});
+          // The same riddle object may not rerun the recovery effect after rollback.
+          if (retainedDraft) dispatch({type: "restoreQueuedGuesses",base: checkpoint.base,guesses: [],
+            draft: retainedDraft.draft,draftActiveSlotIndex: retainedDraft.draftActiveSlotIndex});
+        }
         postToHost({
           type: "game:loadRiddle",
           requestId: createRequestId("reconcile"),
@@ -552,8 +644,17 @@ export function useProvisionalPlayRecovery({
       }
       /** The first used by the current operation. */
       const first = queuedGuessesRef.current[0];
-      if (!first || message.payload.operation !== "guess" || message.requestId !== first.message.requestId)
+      if (message.payload.operation !== "guess") return false;
+      if (!first || message.requestId !== first.message.requestId) {
+        /** Only a still-owned fallback may reach the generic non-provisional answer handler. */
+        const direct = directGuessRef.current;
+        if (!direct || direct.requestId !== message.requestId || direct.scope !== scopeRef.current ||
+          direct.sessionToken !== stateRef.current.riddle?.sessionToken) return true;
+        directGuessRef.current = null;
         return false;
+      }
+      // Scope updates during render; do not wait for the effect that retires the old queue.
+      if (journalRef.current?.scope !== scopeRef.current) return true;
       if (!message.payload.ok) {
         if (message.payload.errorKind !== "rejected") {
           if (retryTimerRef.current !== null) adapters.clock.clearTimeout(retryTimerRef.current);
@@ -691,7 +792,8 @@ export function useProvisionalPlayRecovery({
       else {
         dispatch({type: "guessPreviewConfirmed"});
         if (journalRef.current?.coinAction) sendFirst();
-        if (first.canContinue && stateRef.current.riddle?.sessionToken === first.message.payload.sessionToken)
+        if (first.canContinue && stateRef.current.riddle?.sessionToken === first.message.payload.sessionToken &&
+          !stateRef.current.engineSnapshot?.hasUsedContinue)
           dispatch({type: "openModal", modal: "continue"});
       }
       return true;
@@ -914,8 +1016,13 @@ export function useProvisionalPlayRecovery({
     skipLoadRef.current?.sessionToken === state.riddle?.sessionToken
   );
 
+  /** Paid actions may follow durable guesses, but must wait for an unjournaled guess to settle. */
+  const coinActionsReady = Boolean(scope && state.riddle) && !coinActionPending &&
+    !state.pendingCoinSpend && (!state.guessPending || Boolean(journalRef.current));
+
   return {
     waitingForSkippedRiddle,
+    coinActionsReady,
     canSubmit,
     submitGuess,
     handleQueuedGuessResult,

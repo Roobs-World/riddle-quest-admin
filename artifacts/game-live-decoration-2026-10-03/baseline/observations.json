@@ -1,0 +1,1010 @@
+[
+  {
+    "width": 1280,
+    "name": "idle: initial reduced motion schedules no decorative work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: initial reduced motion allocates no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: SDK preference update schedules scene without another gameplay action",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: SDK preference read does not echo to provider persistence",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "idle: reduced motion cancels pending scene load",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: retained idle callback cannot mount reduced-motion scene",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: synchronous preference write blocks a callback before React commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: Initially reduced motion: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "idle: Initially reduced motion: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "idle: Initially reduced motion: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: Initially reduced motion: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: Initially reduced motion: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "idle: Initially reduced motion: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "idle: healthy initialized puzzle owns one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: multiplayer cancels decoration that has not loaded",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: retained idle callback cannot mount behind multiplayer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: multiplayer before deferred load owns no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: returning to puzzle schedules one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: returning from multiplayer constructs a healthy scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: loaded decoration has no frame chain behind multiplayer",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: loaded decoration draws nothing behind multiplayer",
+    "actual": 181,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: multiplayer retains healthy graphics resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "idle: closing multiplayer preserves independent host pause",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: host resume starts exactly one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: multiplayer transitions do not reconstruct the scene",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "idle: resumed puzzle draws once",
+    "actual": 182,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "idle: live SDK reduced motion removes scene canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: live reduced motion releases all scene allocations",
+    "actual": 76,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: live reduced motion cancels scene frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: retained callbacks do not resurrect reduced-motion graphics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: retained callbacks do not repeat cleanup",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: retained callbacks do not create diagnostics",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: platform motion updates remain read-only",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "idle: re-enabling motion constructs one active scene",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: re-enabled scene has one frame chain",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "idle: Multiplayer and live motion transitions: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "idle: Multiplayer and live motion transitions: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "idle: Multiplayer and live motion transitions: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: Multiplayer and live motion transitions: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "idle: Multiplayer and live motion transitions: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "idle: Multiplayer and live motion transitions: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "timer: initial reduced motion schedules no decorative work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: initial reduced motion allocates no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: SDK preference update schedules scene without another gameplay action",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: SDK preference read does not echo to provider persistence",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "timer: reduced motion cancels pending scene load",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: retained idle callback cannot mount reduced-motion scene",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: synchronous preference write blocks a callback before React commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: Initially reduced motion: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "timer: Initially reduced motion: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "timer: Initially reduced motion: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: Initially reduced motion: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: Initially reduced motion: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "timer: Initially reduced motion: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "timer: healthy initialized puzzle owns one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: multiplayer cancels decoration that has not loaded",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: retained idle callback cannot mount behind multiplayer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: multiplayer before deferred load owns no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: returning to puzzle schedules one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: returning from multiplayer constructs a healthy scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: loaded decoration has no frame chain behind multiplayer",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: loaded decoration draws nothing behind multiplayer",
+    "actual": 181,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: multiplayer retains healthy graphics resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "timer: closing multiplayer preserves independent host pause",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: host resume starts exactly one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: multiplayer transitions do not reconstruct the scene",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "timer: resumed puzzle draws once",
+    "actual": 182,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "timer: live SDK reduced motion removes scene canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: live reduced motion releases all scene allocations",
+    "actual": 76,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: live reduced motion cancels scene frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: retained callbacks do not resurrect reduced-motion graphics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: retained callbacks do not repeat cleanup",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: retained callbacks do not create diagnostics",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: platform motion updates remain read-only",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "timer: re-enabling motion constructs one active scene",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: re-enabled scene has one frame chain",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "timer: Multiplayer and live motion transitions: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "timer: Multiplayer and live motion transitions: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "timer: Multiplayer and live motion transitions: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: Multiplayer and live motion transitions: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "timer: Multiplayer and live motion transitions: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "timer: Multiplayer and live motion transitions: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "idle: initial reduced motion schedules no decorative work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: initial reduced motion allocates no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: SDK preference update schedules scene without another gameplay action",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: SDK preference read does not echo to provider persistence",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "idle: reduced motion cancels pending scene load",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: retained idle callback cannot mount reduced-motion scene",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: synchronous preference write blocks a callback before React commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: Initially reduced motion: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "idle: Initially reduced motion: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "idle: Initially reduced motion: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: Initially reduced motion: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: Initially reduced motion: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "idle: Initially reduced motion: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "idle: healthy initialized puzzle owns one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: multiplayer cancels decoration that has not loaded",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: retained idle callback cannot mount behind multiplayer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: multiplayer before deferred load owns no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: returning to puzzle schedules one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: returning from multiplayer constructs a healthy scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: loaded decoration has no frame chain behind multiplayer",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: loaded decoration draws nothing behind multiplayer",
+    "actual": 181,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: multiplayer retains healthy graphics resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "idle: closing multiplayer preserves independent host pause",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: host resume starts exactly one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: multiplayer transitions do not reconstruct the scene",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "idle: resumed puzzle draws once",
+    "actual": 182,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "idle: live SDK reduced motion removes scene canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: live reduced motion releases all scene allocations",
+    "actual": 76,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: live reduced motion cancels scene frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: retained callbacks do not resurrect reduced-motion graphics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: retained callbacks do not repeat cleanup",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: retained callbacks do not create diagnostics",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: platform motion updates remain read-only",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "idle: re-enabling motion constructs one active scene",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: re-enabled scene has one frame chain",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "idle: Multiplayer and live motion transitions: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "idle: Multiplayer and live motion transitions: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "idle: Multiplayer and live motion transitions: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: Multiplayer and live motion transitions: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "idle: Multiplayer and live motion transitions: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "idle: Multiplayer and live motion transitions: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "timer: initial reduced motion schedules no decorative work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: initial reduced motion allocates no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: SDK preference update schedules scene without another gameplay action",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: SDK preference read does not echo to provider persistence",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "timer: reduced motion cancels pending scene load",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: retained idle callback cannot mount reduced-motion scene",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: synchronous preference write blocks a callback before React commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: Initially reduced motion: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "timer: Initially reduced motion: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "timer: Initially reduced motion: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: Initially reduced motion: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: Initially reduced motion: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "timer: Initially reduced motion: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "timer: healthy initialized puzzle owns one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: multiplayer cancels decoration that has not loaded",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: retained idle callback cannot mount behind multiplayer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: multiplayer before deferred load owns no scene resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: returning to puzzle schedules one deferred load",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: returning from multiplayer constructs a healthy scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: loaded decoration has no frame chain behind multiplayer",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: loaded decoration draws nothing behind multiplayer",
+    "actual": 181,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: multiplayer retains healthy graphics resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "timer: closing multiplayer preserves independent host pause",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: host resume starts exactly one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: multiplayer transitions do not reconstruct the scene",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "timer: resumed puzzle draws once",
+    "actual": 182,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "timer: live SDK reduced motion removes scene canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: live reduced motion releases all scene allocations",
+    "actual": 76,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: live reduced motion cancels scene frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: retained callbacks do not resurrect reduced-motion graphics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: retained callbacks do not repeat cleanup",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: retained callbacks do not create diagnostics",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: platform motion updates remain read-only",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "timer: re-enabling motion constructs one active scene",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: re-enabled scene has one frame chain",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "timer: Multiplayer and live motion transitions: retains the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "timer: Multiplayer and live motion transitions: retains the authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "timer: Multiplayer and live motion transitions: accepts one answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: Multiplayer and live motion transitions: completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "timer: Multiplayer and live motion transitions: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "timer: Multiplayer and live motion transitions: no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

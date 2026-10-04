@@ -1,0 +1,59 @@
+--- useRaceDialogFocus.before.txt
++++ packages/portal/src/play/race/hooks/useRaceDialogFocus.ts
+@@ -28,7 +28,7 @@
+   /** Handles keys using the latest dialog state without restarting the focus lifecycle. */
+   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+     // Composition and an earlier control retain ownership of their keyboard event.
+-    if (event.isComposing || event.defaultPrevented) return;
++    if (event.isComposing || event.keyCode === 229 || event.defaultPrevented) return;
+     if (event.key === "Escape") {
+       event.preventDefault();
+       if (quitConfirmationOpen) dismissQuitConfirmation();
+--- raceLayoutHooks.test.before.txt
++++ packages/portal/src/play/race/__tests__/raceLayoutHooks.test.ts
+@@ -308,6 +308,24 @@
+     expect(harness.requestClose).not.toHaveBeenCalled();
+   });
+ 
++  it.each(["Escape", "Tab"])("leaves IME boundary %s keys with their editor", key => {
++    /** Real dialog commands must not consume a native composition boundary. */
++    const harness = install();
++    /** A single edge control would normally trigger the Tab trap. */
++    const control = new TestElement();
++    harness.dialog.focusable = [control];
++    effects[0]();
++    testDocument.activeElement = control;
++    /** Some IMEs expose 229 while isComposing is still false. */
++    const event = {...keyboardEvent(key), keyCode: 229, isComposing: false};
++    control.focus.mockClear();
++    keydownHandler?.(event);
++    expect(harness.requestClose).not.toHaveBeenCalled();
++    expect(harness.dismissQuitConfirmation).not.toHaveBeenCalled();
++    expect(event.preventDefault).not.toHaveBeenCalled();
++    expect(control.focus).not.toHaveBeenCalled();
++  });
++
+   it.each(["valid", "disabled", "disconnected", "outside", "missing"])("restores appropriate focus after confirmation for %s controls", state => {
+     /** Provides harness behavior. */
+     const harness = install(true);
+--- package.before.txt
++++ packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -132,7 +132,8 @@
+     "test:authority-terminal-recovery:browser": "node scripts/verify-authority-terminal-recovery-browser.mjs && AUTHORITY_TERMINAL_REACT_MODE=production node scripts/verify-authority-terminal-recovery-browser.mjs",
+     "test:terminal-journal-recovery:browser": "AUTHORITY_TERMINAL_JOURNAL_ONLY=1 AUTHORITY_TERMINAL_REPORT_DIR=../../artifacts/terminal-journal-recovery-2026-10-03/development node scripts/verify-authority-terminal-recovery-browser.mjs && AUTHORITY_TERMINAL_JOURNAL_ONLY=1 AUTHORITY_TERMINAL_REACT_MODE=production AUTHORITY_TERMINAL_REPORT_DIR=../../artifacts/terminal-journal-recovery-2026-10-03/production node scripts/verify-authority-terminal-recovery-browser.mjs",
+     "test:authority-loss-recovery:browser": "node scripts/verify-authority-loss-recovery-browser.mjs && AUTHORITY_LOSS_REACT_MODE=production node scripts/verify-authority-loss-recovery-browser.mjs",
+-    "test:cold-draft-recovery:browser": "node scripts/verify-cold-draft-recovery-browser.mjs && COLD_DRAFT_REACT_MODE=production node scripts/verify-cold-draft-recovery-browser.mjs"
++    "test:cold-draft-recovery:browser": "node scripts/verify-cold-draft-recovery-browser.mjs && COLD_DRAFT_REACT_MODE=production node scripts/verify-cold-draft-recovery-browser.mjs",
++    "test:race-ime-dialog:browser": "node scripts/verify-race-ime-dialog-browser.mjs && RACE_IME_DIALOG_REACT_MODE=production node scripts/verify-race-ime-dialog-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",

@@ -1,0 +1,29 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "key": "ArrowLeft",
+    "name": "composition commits its prefix once",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "key": "ArrowLeft",
+    "name": "committed composition has already cleared the native buffer",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "key": "ArrowLeft",
+    "name": "non-editing key retains trailing-input deduplication",
+    "actual": "roro",
+    "expected": "ro"
+  }
+]

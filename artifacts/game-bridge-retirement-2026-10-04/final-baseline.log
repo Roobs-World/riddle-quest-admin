@@ -1,0 +1,948 @@
+{
+  "mode": "production",
+  "checks": 282,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "replace",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "replace",
+      "name": "replayed completion cannot request another question",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "first synchronous completion reply is handled before the host send returns",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "current receipt acknowledges the completion",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "remounted game owns its fresh completion receipt",
+      "actual": [
+        "A",
+        "A"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "replace",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "replace",
+      "name": "replayed completion cannot request another question",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "first synchronous completion reply is handled before the host send returns",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "current receipt acknowledges the completion",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "remounted game owns its fresh completion receipt",
+      "actual": [
+        "A",
+        "A"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "replace",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "replace",
+      "name": "replayed completion cannot request another question",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "first synchronous completion reply is handled before the host send returns",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "current receipt acknowledges the completion",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "remounted game owns its fresh completion receipt",
+      "actual": [
+        "A",
+        "A"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "replace",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "replace",
+      "name": "replayed completion cannot request another question",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "first synchronous completion reply is handled before the host send returns",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "current receipt acknowledges the completion",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "remounted game owns its fresh completion receipt",
+      "actual": [
+        "A",
+        "A"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "retire",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "replace",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "replace",
+      "name": "replayed completion cannot request another question",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "first synchronous completion reply is handled before the host send returns",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "sync-initial",
+      "name": "current receipt acknowledges the completion",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "remount",
+      "name": "remounted game owns its fresh completion receipt",
+      "actual": [
+        "A",
+        "A"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "retire",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "replace",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "replace",
+      "name": "replayed completion cannot request another question",
+      "actual": [
+        "A"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "first synchronous completion reply is handled before the host send returns",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "sync-initial",
+      "name": "current receipt acknowledges the completion",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "only the current game can request the next question from a loss receipt",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "removed game ignores completion reducer effects",
+      "actual": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "removed game detaches both channels during commit",
+      "actual": {
+        "removed": true,
+        "listeners": 2
+      },
+      "expected": {
+        "removed": true,
+        "listeners": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "remount",
+      "name": "remounted game owns its fresh completion receipt",
+      "actual": [
+        "A",
+        "A"
+      ],
+      "expected": [
+        "A"
+      ]
+    }
+  ]
+}

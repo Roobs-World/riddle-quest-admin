@@ -1,0 +1,26 @@
+{
+  "reopen": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"profile\": false,\n  \"guidance\": 0,\n  \"guesses\": 2,\n  \"profileMarker\": null,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "recovery": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"notice\": false,\n  \"guesses\": 2,\n  \"onboarding\": true,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "reload": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"guidance\": 0,\n  \"gameMarker\": \"seen\",\n  \"rows\": [\n    {\n      \"guess\": \"ppppp\",\n      \"feedback\": [\n        \"green\",\n        \"red\",\n        \"red\",\n        \"red\",\n        \"red\"\n      ]\n    },\n    {\n      \"guess\": \"qqqqq\",\n      \"feedback\": [\n        \"red\",\n        \"red\",\n        \"red\",\n        \"red\",\n        \"red\"\n      ]\n    }\n  ],\n  \"guesses\": 2,\n  \"errors\": [],\n  \"unhandled\": [],\n  \"paths\": [\n    \"/api/session\",\n    \"/api/session\"\n  ]\n}\n```"
+      }
+    ]
+  }
+}

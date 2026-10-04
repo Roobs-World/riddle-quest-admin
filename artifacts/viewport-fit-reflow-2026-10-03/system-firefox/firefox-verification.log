@@ -1,0 +1,34 @@
+1791034474129	geckodriver	INFO	Listening on 127.0.0.1:43225
+1791034474145	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/snap/firefox/current/ ... tion-oy8wccq0/firefox_devtools_mcp_profile" "--remote-debugging-port" "32769" "--remote-allow-hosts" "localhost" "-no-remote"
+*** You are running in headless mode.
+1791034474269	Marionette	INFO	Marionette enabled
+1791034474427	Marionette	INFO	Listening on port 38881
+WebDriver BiDi listening on ws://127.0.0.1:32769
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+Read port: 38881
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1791034475509	RemoteAgent	INFO	Perform WebSocket upgrade for incoming connection from 127.0.0.1:43172
+JavaScript warning: http://127.0.0.1:42081/assets/index-BIoQgzP_.js, line 24089: Failed to create WebGL context: WebGL creation failed: 
+* AllowWebgl2:false restricts context creation on this system. ()
+JavaScript warning: http://127.0.0.1:42081/assets/index-BIoQgzP_.js, line 24089: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  audioipc2_server::server] Promotion of content process thread to real-time error
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+1791034579121	Marionette	INFO	Stopped listening on port 38881
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null

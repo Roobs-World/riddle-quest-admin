@@ -1,0 +1,37 @@
+{
+  "text": "Race to 10\n×\n0:02.3\n+0:00.0\nYou\nRiddles completed:\n0 / 10\nBob\nRiddles completed:\n0 / 10\nA four-letter browser answer\nZ\nZ\nZ\nZ\nT\nE\nS\nT\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\n+15 seconds\nSubmit\nSkip\n+45 seconds",
+  "nativeValue": "",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Alice",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-626d417d-191e-4d2d-a054-9cdcc98ab7f5"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-8a25169d-5ff6-4c1a-a039-ed039ae12474"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "guess",
+        "requestId": "live-guess-eba441cc-14d8-4510-b7c9-05a7272a30ac",
+        "riddleId": "q0",
+        "guess": "zzzz"
+      }
+    ],
+    "saves": [],
+    "loads": 0,
+    "errors": [],
+    "unhandled": [],
+    "segmentYields": 0,
+    "countSegments": false
+  }
+}

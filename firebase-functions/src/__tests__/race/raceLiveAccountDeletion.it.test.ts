@@ -13,6 +13,8 @@ import {LIVE_RACE_WAIT_MS} from "@qwordly/core/race";
 import {FieldValue, Timestamp} from "firebase-admin/firestore";
 import {sendLiveRaceChallengeForUser} from "../../race/raceLiveChallengeNotifications";
 import {createUsernameReservationId} from "../../profile/usernameReservations";
+import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
+import {listLiveRaceChallengesForUser} from "../../race/raceLiveChallengeNotifications";
 
 /** All destructive fixture work is restricted to an isolated loopback demo emulator. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "";
@@ -158,7 +160,7 @@ it.each(["facebook", "reddit"])("preserves a %s winner's pending referral after 
   await erase(players[0]);
   await erase(players[0]);
   await deliverRacePerformance(event.id, db, START + 16000);
-  expect((await db.doc(`users/${players[1]}`).get()).data()).toMatchObject({coins: 250, stats: {multiplayerWins: 1}});
+  expect((await db.doc(`users/${players[1]}`).get()).data()).toMatchObject({coins: 325, stats: {multiplayerWins: 1}});
   expect((await db.doc(`users/${inviter}`).get()).data()?.coins).toBe(400);
   /** Provides result behavior. */
   const result = await updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "poll", requestId: "preserved-win"}, {db, nowMs: START + 17000});
@@ -167,7 +169,7 @@ it.each(["facebook", "reddit"])("preserves a %s winner's pending referral after 
     /** Provides score behavior. */
     const score = await recordFacebookTournamentRun(players[1], {runId: tickets[1].ticketId, locale: "en"}, {db, nowMs: START + 18000});
     expect(score.entry.adjustedTimeMs).toBe(9000);
-    expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(250);
+    expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(325);
   }
   /** Provides match behavior. */
   const match = (await db.doc(`liveRaceMatches/${tickets[0].ticketId}`).get()).data()!;
@@ -246,6 +248,33 @@ it.each(["creator", "recipient"])("removes direct invitation/push linkage after 
   if (role === "creator") expect((await db.collection(`users/${players[1]}/liveRaceInvitations`).get()).empty).toBe(true);
 });
 
+it.each(["facebook", "reddit"].flatMap(provider => ["creator", "recipient"].map(role => ({provider, role}))))(
+  "retires a reserved $provider rematch after its $role deletes", async ({provider, role}) => {
+    /** A real completed pair supplies the immutable original opponent. */
+    const {players, tickets} = await pair(provider);
+    await updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "leave", requestId: "delete-rematch-source-forfeit"}, {db, nowMs: START + 8000});
+    /** The new invitation owns a separate seat and original invitation deadline. */
+    const lobby = await joinLiveRaceForUser(players[0], {locale: "en", categoryId: "history", requestId: "delete-rematch-invite",
+      rematchOfTicketId: tickets[0].ticketId}, {db, nowMs: START + 10_000});
+    expect(await getLiveRaceChallengeForUser(players[1], lobby.challengeId!, {db, nowMs: START + 11_000})).toMatchObject({status: "available"});
+    /** Canonical balances must remain unchanged by creation and account cleanup. */
+    const before = await Promise.all(players.map(async userId => (await db.doc(`users/${userId}`).get()).data()?.coins));
+    await erase(players[role === "creator" ? 0 : 1]);
+    expect(await listLiveRaceChallengesForUser(db, players[1], START + 12_000)).toEqual([]);
+    await expect(joinLiveRaceForUser(players[1], {locale: "en", categoryId: "history", requestId: "deleted-rematch-accept", challengeId: lobby.challengeId},
+      {db, nowMs: START + 12_000})).rejects.toThrow();
+    /** Cleanup removes or cancels the waiting reservation, including provider push linkage. */
+    const retained = (await db.doc(`liveRaceTickets/${lobby.ticketId}`).get()).data();
+    if (role === "creator") {
+      expect(retained).toBeUndefined();
+      expect((await db.collection(`users/${players[1]}/liveRaceInvitations`).get()).empty).toBe(true);
+    } else expect(retained).toMatchObject({userId: players[0], cancelled: true});
+    expect(retained?.inviteRecipientId).toBeUndefined();
+    expect((await db.collection("liveRacePushOutbox").get()).empty).toBe(true);
+    expect(await Promise.all(players.map(async userId => (await db.doc(`users/${userId}`).get()).data()?.coins))).toEqual(before);
+  },
+);
+
 it("removes a deleting winner's board entry and balance snapshot without changing the surviving loss", async () => {
   /** Provides {players, tickets} behavior. */
   const {players, tickets} = await pair("facebook");
@@ -258,11 +287,14 @@ it("removes a deleting winner's board entry and balance snapshot without changin
   /** Provides match behavior. */
   const match = (await db.doc(`liveRaceMatches/${tickets[0].ticketId}`).get()).data()!;
   expect(match.newCoins).toBeUndefined();
+  expect(match.settlementCoins).toBeUndefined();
+  expect(match.runs[0].settlementCoins).toBeUndefined();
+  expect(match.runs[1].settlementCoins).toBe(125);
   expect(match.facebookReferral).toBeUndefined();
   /** Provides loss behavior. */
   const loss = await updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "poll", requestId: "preserved-loss"}, {db, nowMs: START + 18000});
   expect(loss).toMatchObject({result: "loss", rewardCoins: 0, opponent: {displayName: "Riddle Quest player", avatarUrl: null}});
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(100);
+  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(125);
 });
 
 it("serializes rival completion with deletion and cannot create another economic grant", async () => {
@@ -286,7 +318,7 @@ it("serializes rival completion with deletion and cannot create another economic
   const match = (await db.doc(`liveRaceMatches/${tickets[0].ticketId}`).get()).data()!;
   expect([null, 1]).toContain(match.winner);
   await Promise.all(Array.from({length: 4}, (_, i) => updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "poll", requestId: `delete-repeat-${i}`}, {db, nowMs: START + 16000})));
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(match.winner === 1 ? 150 : 100);
+  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(match.winner === 1 ? 225 : 100);
   expect((await db.doc(`users/${players[1]}`).get()).data()?.stats.multiplayerWins).toBe(match.winner === 1 ? 1 : 0);
   expect(JSON.stringify(match).includes(players[0])).toBe(false);
 });
@@ -361,5 +393,5 @@ it.each(["creator-marker", "match-marker", "frozen-answer"])("rejects a tampered
   await expect(recordFacebookTournamentRun(players[1], {runId: tickets[1].ticketId, locale: "en"}, {db, nowMs: START + 16000}))
     .rejects.toMatchObject({code: "data-loss"});
   expect((await db.collectionGroup("entries").where("userId", "==", players[1]).get()).empty).toBe(true);
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(225);
 });

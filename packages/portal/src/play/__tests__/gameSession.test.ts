@@ -1,4 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
+import type {BridgeRiddle} from "@qwordly/core/bridge";
+import type {SavedGame} from "../../platform/types";
 import {
   createInitialGameSession,
   gameSessionReducer,
@@ -7,6 +9,7 @@ import {
   type GameSessionState,
 } from "../gameSession";
 import {createSavedGame} from "../game/hooks/useGameSessionPersistence";
+import type {PendingGuessState} from "../gameSessionTypes";
 
 it("starts with sound enabled when no sound preference is saved", () => {
   expect(createInitialGameSession().muted).toBe(false);
@@ -48,6 +51,169 @@ const resolveGuess = (
   });
 
 describe("game session reducer", () => {
+  it.each(["profile", "settings", "instructions", "credits", "about", "statistics",
+    "achievements", "ranks", "leaderboard", "shop", "treasure", "username"] as const)(
+    "keeps %s open when journal restoration or rollback replaces gameplay", (modal) => {
+      /** Gameplay captured before the player opened a utility page. */
+      const initial = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+      /** Gameplay fields owned by the pre-modal pending journal. */
+      const {currentLetters, activeSlotIndex, guesses, engineSnapshot, lastOutcome,
+        completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = initial;
+      /** Journal snapshot replacing gameplay without changing utility-page ownership. */
+      const base: PendingGuessState = {currentLetters, activeSlotIndex, guesses, engineSnapshot,
+        modal: null, lastOutcome, completionAcknowledged, letterStates, profile,
+        lastRewards, optimisticAchievementIds};
+      /** Current utility page that recovery must keep open. */
+      const open = reduce(initial, {type: "openModal", modal});
+      /** Queued guesses restored while retaining the active utility page. */
+      const restored = reduce(open, {type: "restoreQueuedGuesses", base, guesses: [], draft: ["P", "", "", "", ""]});
+      expect(restored.modal).toBe(modal);
+      expect(restored.currentLetters).toEqual(["P", "", "", "", ""]);
+      /** Authority-issued replacement prompt for rollback. */
+      const replacement = {...riddle, riddleId: "confirmed-replacement", sessionToken: "confirmed-session-replacement"};
+      /** Confirmed prompt restored without closing the current utility page. */
+      const rolledBack = reduce(open, {type: "restoreConfirmedRiddle", riddle: replacement, base});
+      expect(rolledBack.riddle).toEqual(replacement);
+      expect(rolledBack.modal).toBe(modal);
+      expect(reduce(rolledBack, {type: "closeModal"}).modal).toBeNull();
+    },
+  );
+  it.each([false, true])("keeps current host hint letters when restoring an older draft (valid width=%s)", validWidth => {
+    /** Older gameplay checkpoint predates the host's hint grant. */
+    const prior = reduce(createInitialGameSession(), {type: "loadRiddle",riddle: {...riddle,evaluation: {answer: "clock",locale: "en"}}});
+    /** Journal owns gameplay fields but cannot remove a newly confirmed hint. */
+    const base = {currentLetters: prior.currentLetters,activeSlotIndex: prior.activeSlotIndex,guesses: prior.guesses,
+      engineSnapshot: prior.engineSnapshot,modal: prior.modal,lastOutcome: prior.lastOutcome,
+      completionAcknowledged: prior.completionAcknowledged,letterStates: prior.letterStates,
+      profile: prior.profile,lastRewards: prior.lastRewards,optimisticAchievementIds: prior.optimisticAchievementIds};
+    /** Current authoritative load contains the purchased hint before journal restoration. */
+    let state = reduce(prior, {type: "loadRiddle",riddle: {...riddle,evaluation: {answer: "clock",locale: "en"},revealedHints: [{index: 2,letter: "o"}]}});
+    state = reduce(state, {type: "restoreQueuedGuesses",base,guesses: [],draft: validWidth ? ["C", "L", "X", "", ""] : [],draftActiveSlotIndex: 2});
+    expect(state.currentLetters).toEqual(validWidth ? ["C", "L", "o", "", ""] : ["", "", "o", "", ""]);
+    expect(state.hintRevealedIndices).toEqual([2]);
+    expect(state.activeSlotIndex).not.toBe(2);
+    state = reduce(state, {type: "selectSlot",index: 2});
+    state = reduce(state, {type: "typeLetter",letter: "Z"});
+    expect(state.currentLetters[2]).toBe("o");
+  });
+
+  it.each([false, true])("rolls back rejected gameplay without replacing the acknowledged host profile (profile available=%s)", available => {
+    /** Current server profile includes the completed predecessor's balance and progression. */
+    const profile = {username: "Current",coins: 325,level: 3,xp: 510,winStreak: 2,
+      gamesPlayed: 8,wins: 6,achievements: ["first_win"],classicIndex: 2};
+    /** Successor loaded under the current host profile before rejection. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit",locale: "en",gameMode: "classic",
+      user: {uid: "player",isAnonymous: false},products: [],profile: available ? profile : null});
+    state = reduce(state, {type: "loadRiddle",riddle});
+    /** Old gameplay base is valid for rollback, while its profile is no longer current. */
+    const base = {currentLetters: state.currentLetters,activeSlotIndex: state.activeSlotIndex,guesses: state.guesses,
+      engineSnapshot: state.engineSnapshot,modal: state.modal,lastOutcome: state.lastOutcome,
+      completionAcknowledged: state.completionAcknowledged,letterStates: state.letterStates,
+      profile: {...profile,username: "Older",coins: 300,xp: 420,gamesPlayed: 7,wins: 5,classicIndex: 1},
+      lastRewards: state.lastRewards,optimisticAchievementIds: state.optimisticAchievementIds};
+    state = reduce(state, {type: "restoreConfirmedRiddle",riddle,base});
+    expect(state.profile).toEqual(available ? profile : null);
+    expect(state.currentLetters).toEqual(Array(5).fill(""));
+    expect(state.guesses).toEqual([]);
+  });
+
+  it.each([false, true])("restores journal gameplay without replacing the host profile (profile available=%s)", available => {
+    /** Newer host profile carries the acknowledged predecessor's balance and progress. */
+    const profile = {username: "Current", coins: 325, level: 3, xp: 510, winStreak: 2,
+      gamesPlayed: 8, wins: 6, achievements: ["first_win"], classicIndex: 2};
+    /** Actual next-question reducer state is loaded before applying the retained journal. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit",locale: "en",gameMode: "classic",
+      user: {uid: "player",isAnonymous: false},products: [],profile: available ? profile : null});
+    state = reduce(state, {type: "loadRiddle",riddle: {...riddle,index: 2,evaluation: {answer: "clock",locale: "en"}}});
+    /** Older journal still owns its draft and rows, but cannot replace authoritative profile fields. */
+    const base = {currentLetters: state.currentLetters,activeSlotIndex: state.activeSlotIndex,guesses: state.guesses,
+      engineSnapshot: state.engineSnapshot,modal: state.modal,lastOutcome: state.lastOutcome,
+      completionAcknowledged: state.completionAcknowledged,letterStates: state.letterStates,
+      profile: {...profile,username: "Older",coins: 300,xp: 420,gamesPlayed: 7,wins: 5,classicIndex: 1},
+      lastRewards: state.lastRewards,optimisticAchievementIds: state.optimisticAchievementIds};
+    state = reduce(state, {type: "restoreQueuedGuesses",base,guesses: ["ZZZZZ"],draft: ["C", "L", "", "", ""],draftActiveSlotIndex: 2});
+    expect(state.profile).toEqual(available ? profile : null);
+    expect(state.guesses[0]?.guess.join("")).toBe("zzzzz");
+    expect(state.currentLetters.join("")).toBe("CL");
+    expect(state.activeSlotIndex).toBe(2);
+    expect(state.pendingGuessState?.profile).toEqual(available ? profile : null);
+  });
+
+  it.each(["authState", "hostInit"] as const)("retires the previous player's victory on %s", type => {
+    /** Account whose terminal outcome must be retired. */
+    const alice = {uid: "alice", isAnonymous: false, accountGeneration: 1};
+    /** Replacement account owning the next riddle. */
+    const bob = {uid: "bob", isAnonymous: false, accountGeneration: 1};
+    /** Authoritative replacement balance and progression. */
+    const profile = {username: "Bob", coins: 800, level: 1, xp: 0,
+      winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 2};
+    /** Gameplay state spanning the account replacement. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user: alice, products: [], profile: null});
+    state = reduce(state, {type: "loadRiddle", riddle});
+    state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    state = reduce(state, type === "authState" ? {type, user: bob, profile} :
+      {type, locale: "en", gameMode: "classic", user: bob, profile, products: []});
+    expect(state.riddle).toBeNull();
+    expect(state.modal).toBeNull();
+    expect(state.lastOutcome).toBeNull();
+    expect(state.currentLetters).toEqual([]);
+    expect(state.profile?.coins).toBe(800);
+    /** New content can load after the old modal retires. */
+    const nextRiddle = {...riddle, riddleId: "classic-2", index: 2};
+    expect(reduce(state, {type: "loadRiddle", riddle: nextRiddle}).riddle).toEqual(nextRiddle);
+  });
+
+  it("preserves drafts on profile refresh and clears them for a recreated account", () => {
+    /** UID reused across independently created accounts. */
+    const user = {uid: "alice", isAnonymous: false, accountGeneration: 1};
+    /** Gameplay state spanning the account replacement. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user, products: [], profile: null});
+    state = reduce(state, {type: "loadRiddle", riddle});
+    state = reduce(state, {type: "typeLetter", letter: "P"});
+    expect(reduce(state, {type: "authState", user, profile: null}).currentLetters[0]).toBe("P");
+    expect(reduce(state, {type: "authState", user: {...user, accountGeneration: 2}, profile: null}).riddle).toBeNull();
+  });
+
+  it.each(["profile", "settings", "instructions", "credits", "about", "statistics",
+    "achievements", "ranks", "leaderboard", "shop", "treasure", "username"] as const)(
+    "keeps the user-opened %s page when a delayed locale question arrives", (modal) => {
+      /** Current question before the player changes language and opens a utility page. */
+      let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+      state = reduce(state, {type: "hostInit", locale: "pt", gameMode: "classic",
+        user: state.user, profile: state.profile, products: state.products});
+      state = reduce(state, {type: "openModal", modal});
+      /** Delayed authoritative question for the newly selected language. */
+      const localized = {...riddle, riddleId: "classic-1-pt", sessionToken: "locale-session-pt",
+        text: "Qual instrumento tem teclas?"};
+      state = reduce(state, {type: "loadRiddle", riddle: localized});
+      expect(state.riddle).toEqual(localized);
+      expect(state.modal).toBe(modal);
+      expect(reduce(state, {type: "typeLetter", letter: "P"}).currentLetters).toEqual(state.currentLetters);
+      expect(reduce(state, {type: "closeModal"}).modal).toBeNull();
+    },
+  );
+
+  it("defers a restored Continue offer until the user closes their Profile page", () => {
+    /** Profile opened while the host is still restoring an exhausted session. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    state = reduce(state, {type: "openModal", modal: "profile"});
+    state = reduce(state, {type: "loadRiddle", riddle: {...riddle, attemptsUsed: 5, awaitingContinue: true}});
+    expect(state.modal).toBe("profile");
+    expect(reduce(state, {type: "closeModal"}).modal).toBe("continue");
+  });
+
+  it.each(["hint", "skip", "continue"] as const)(
+    "closes the old question's %s choice when a playable replacement arrives", (modal) => {
+      /** Question-specific action that must not survive a different issued question. */
+      let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+      state = reduce(state, {type: "openModal", modal});
+      state = reduce(state, {type: "loadRiddle", riddle: {...riddle, riddleId: "replacement"}});
+      expect(state.modal).toBeNull();
+    },
+  );
+
   it("keeps the victory sequence open when a late riddle arrives", () => {
     /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
@@ -363,6 +529,28 @@ describe("game session reducer", () => {
     expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "loss", attempts: 6}));
   });
 
+  it("replays Continue from an exhausted journal checkpoint without a modal", () => {
+    /** Exhausted session recovered before replaying its interrupted charge. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user: null, products: [], profile: {username: "Guest", coins: 150, level: 1, xp: 0,
+        winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 1}});
+    state = reduce(state, {type: "loadRiddle", riddle});
+    for (let attempt = 1; attempt <= 5; attempt += 1)
+      state = resolveGuess(state, "clock", attempt, {canContinue: attempt === 5});
+    state = {...state, modal: null};
+    state = reduce(state, {type: "previewCoinSpend", requestId: "continue-replay", amount: 50, reason: "continue",
+      draft: ["P", "I", "", "", ""], draftActiveSlotIndex: 2});
+    expect(state.engineSnapshot?.hasUsedContinue).toBe(true);
+    expect(state.engineSnapshot?.attemptsUsed).toBe(5);
+    expect(state.profile?.coins).toBe(100);
+    expect(state.pendingCoinSpend?.requestId).toBe("continue-replay");
+    expect(state.guesses).toHaveLength(0);
+    expect(state.currentLetters.join("")).toBe("PI");
+    expect(state.activeSlotIndex).toBe(2);
+    state = reduce(state, {type: "openModal", modal: "continue"});
+    expect(state.modal).toBeNull();
+  });
+
   it("opens play immediately after a local Continue charge and restores the panel on rejection", () => {
     /** Paid Continue session before and after server confirmation. */
     let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
@@ -473,6 +661,42 @@ describe("game session reducer", () => {
     expect(state.engineSnapshot?.gameOver).toBe(true);
   });
 
+  it.each(["provider-only", "count", "token", "riddle", "mode", "not-terminal", "wrong-host-feedback"])(
+    "anchors winning recovery to host feedback despite the provider record: %s", mismatch => {
+      /** Local colours and a visible answer cannot replace host acceptance of the winning guess. */
+      const guesses = [{guess: [..."PIANO"], feedback: Array(5).fill("green" as const)}];
+      /** Host-issued row is independent of the provider colours. */
+      const acceptedGuesses = [{attempt: 1, feedback: [..."PIANO"].map(letter => ({letter, status: "green" as const}))}];
+      /** Presentation evaluation remains insufficient to prove server acceptance. */
+      const issued: BridgeRiddle = {...riddle, attemptsUsed: 1, acceptedGuesses, evaluation: {answer: "piano", locale: "en"}};
+      if(mismatch === "provider-only") delete issued.acceptedGuesses;
+      if(mismatch === "wrong-host-feedback") issued.acceptedGuesses = [{attempt: 1, feedback: [..."QQQQQ"].map(letter => ({letter, status: "red"}))}];
+      /** Saved intent is independently altered to verify identity and count guards. */
+      const pendingOutcome: NonNullable<SavedGame["pendingOutcome"]> = {id: "saved-win-1", kind: "win", isCorrect: true, attempts: 1,
+        riddleId: riddle.riddleId, sessionToken: riddle.sessionToken, gameMode: riddle.gameMode};
+      if(mismatch === "count") pendingOutcome.attempts = 2;
+      if(mismatch === "token") pendingOutcome.sessionToken = "00000000-0000-4000-8000-000000000002";
+      if(mismatch === "riddle") pendingOutcome.riddleId = "classic-2";
+      if(mismatch === "mode") pendingOutcome.gameMode = "challenge";
+      /** Actual restore action reconciles the provider record with the loaded authority snapshot. */
+      const state = reduce(reduce(createInitialGameSession(), {type: "loadRiddle", riddle: issued}), {
+        type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
+        currentLetters: Array(5).fill(""), activeSlotIndex: 0, hintRevealedIndices: [], guesses,
+        engineSnapshot: {guesses, attemptsUsed: 1, hasUsedContinue: false, gameOver: mismatch !== "not-terminal"},
+        awaitingContinue: false, letterStates: {}, pendingOutcome,
+      });
+      if(mismatch === "provider-only" || mismatch === "wrong-host-feedback") {
+        expect(state.lastOutcome).toBeNull();
+        expect(state.modal).not.toBe("victory");
+        expect(state.engineSnapshot?.gameOver).toBe(false);
+      } else {
+        expect(state.lastOutcome).toMatchObject({id: `${riddle.sessionToken}-win-1`, riddleId: riddle.riddleId,
+          gameMode: "classic", sessionToken: riddle.sessionToken, attempts: 1, isCorrect: true});
+        expect(state.modal).toBe("victory");
+        expect(state.engineSnapshot?.gameOver).toBe(true);
+      }
+  });
+
   it("locks hinted slots while allowing non-sequential editing", () => {
     /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
@@ -513,6 +737,35 @@ describe("game session reducer", () => {
 
     expect(state.leaderboard).toEqual([existingEntry]);
     expect(state.leaderboardLoading).toBe(false);
+  });
+
+  it("keeps a failed ranking distinct from empty results and clears it on Retry", () => {
+    /** Correlated reducer state follows failure, retry, and a confirmed empty result. */
+    let state = reduce(createInitialGameSession(), {type: "leaderboardRequested", leaderboardType: "totalWins", requestId: "wins-1"});
+    state = reduce(state, {type: "leaderboardLoadFailed", requestId: "wins-1"});
+    expect(state).toMatchObject({leaderboardLoading: false, leaderboardLoadError: true, leaderboard: []});
+    state = reduce(state, {type: "leaderboardRequested", leaderboardType: "totalWins", requestId: "wins-2"});
+    expect(state).toMatchObject({leaderboardLoading: true, leaderboardLoadError: false});
+    state = reduce(state, {type: "leaderboardLoaded", leaderboardType: "totalWins", entries: [], requestId: "wins-2"});
+    expect(state).toMatchObject({leaderboardLoading: false, leaderboardLoadError: false, leaderboard: []});
+  });
+
+  it("ignores older ranking successes and failures after a newer selection or Retry", () => {
+    /** Current request ownership excludes older ranking deliveries. */
+    let state = reduce(createInitialGameSession(), {type: "leaderboardRequested", leaderboardType: "xp", requestId: "old"});
+    state = reduce(state, {type: "leaderboardRequested", leaderboardType: "totalWins", requestId: "new"});
+    expect(reduce(state, {type: "leaderboardLoadFailed", requestId: "old"})).toBe(state);
+    expect(reduce(state, {type: "leaderboardLoaded", requestId: "old", leaderboardType: "xp", entries: []})).toBe(state);
+    state = reduce(state, {type: "leaderboardLoaded", requestId: "new", leaderboardType: "totalWins", entries: []});
+    expect(reduce(state, {type: "leaderboardLoadFailed", requestId: "new"})).toBe(state);
+  });
+
+  it("rejects another account's late ranking result", () => {
+    /** Account replacement retires the previous player's requested ranking. */
+    let state = reduce(createInitialGameSession(), {type: "leaderboardRequested", leaderboardType: "xp", requestId: "previous-player"});
+    state = reduce(state, {type: "authState", user: {uid: "new-player", isAnonymous: true}, profile: null});
+    expect(reduce(state, {type: "leaderboardLoaded", requestId: "previous-player", leaderboardType: "xp", entries: []})).toBe(state);
+    expect(state.leaderboardLoadError).toBe(false);
   });
 
   it("invalidates cached rankings when the account generation or ranking profile changes", () => {

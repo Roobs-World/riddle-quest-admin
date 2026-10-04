@@ -1,0 +1,28 @@
+--- before/packages/portal/src/play/race/LiveRaceGame.tsx
++++ after/packages/portal/src/play/race/LiveRaceGame.tsx
+@@ -194,7 +194,7 @@
+     } catch (failure) {
+       if (inFlight.current === delivery && active.current && !closed.current) {
+         if (!viewRef.current && !command && challengeId &&
+-          await confirmUnavailableLiveInvitation(failure, challengeId, transport)) {
++          await confirmUnavailableLiveInvitation(failure, challengeId, transport, lifetime.signal)) {
+           // A close, account retirement or newer receipt may have superseded this read.
+           if (inFlight.current !== delivery || latestDelivery.current !== delivery || !active.current || closed.current || viewRef.current) return;
+           invitationUnavailableRef.current = true;
+--- before/packages/portal/src/play/race/logic/liveRaceDeliveryDeadline.ts
++++ after/packages/portal/src/play/race/logic/liveRaceDeliveryDeadline.ts
+@@ -13,11 +13,11 @@
+ 
+ /** A rejected acceptance becomes terminal only after a matching, validated server preview confirms it. */
+ export async function confirmUnavailableLiveInvitation(failure: unknown, challengeId: string | undefined,
+-  transport: Pick<LiveRaceCapability, "challenge">): Promise<boolean> {
+-  if (!challengeId || !transport.challenge || !liveRaceCommandRejected(failure)) return false;
++  transport: Pick<LiveRaceCapability, "challenge">, signal?: AbortSignal): Promise<boolean> {
++  if (signal?.aborted || !challengeId || !transport.challenge || !liveRaceCommandRejected(failure)) return false;
+   try {
+     /** A bounded read must confirm the same invitation with a strict server schema. */
+-    const preview = LiveRaceChallengeSchema.parse(await liveRaceDeliveryDeadline(transport.challenge({challengeId}), false));
++    const preview = LiveRaceChallengeSchema.parse(await liveRaceDeliveryDeadline(transport.challenge({challengeId}), false, undefined, signal));
+     return preview.challengeId === challengeId && preview.status === "unavailable";
+   } catch {return false;}
+ }

@@ -29,7 +29,7 @@ export async function verifyRedditTournamentBoard(page: Page) {
   try {
     await page.locator(".multiplayer-navigation-action").click();
     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
-    await page.locator('.race-hub-tabs [role="tab"]').nth(1).click({timeout: 5000});
+    await page.locator('.race-hub-tabs [role="tab"]').last().click({timeout: 5000});
     await page.locator('[data-analytics-screen="reddit_tournament"]').waitFor();
     await page.locator(".race-error").waitFor();
     await page.locator(".race-error button").click();

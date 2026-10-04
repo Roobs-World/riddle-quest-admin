@@ -1,0 +1,256 @@
+{
+  "pending": [
+    {
+      "version": 1,
+      "scope": "reddit-guest:1:en",
+      "riddle": {
+        "riddleId": "reddit-guest-1",
+        "text": "What has keys but cannot open doors?",
+        "answerLength": 5,
+        "evaluation": {
+          "answer": "piano",
+          "locale": "en"
+        },
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "gameMode": "classic",
+        "index": 1,
+        "acceptedGuesses": [],
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "awaitingContinue": false
+      },
+      "confirmedClassicIndex": 1,
+      "base": {
+        "currentLetters": [
+          "P",
+          "I",
+          "A",
+          "N",
+          "O"
+        ],
+        "activeSlotIndex": 0,
+        "guesses": [],
+        "engineSnapshot": {
+          "guesses": [],
+          "attemptsUsed": 0,
+          "hasUsedContinue": false,
+          "gameOver": false
+        },
+        "modal": null,
+        "lastOutcome": null,
+        "completionAcknowledged": false,
+        "letterStates": {},
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 0,
+          "level": 1,
+          "xp": 0,
+          "winStreak": 0,
+          "gamesPlayed": 0,
+          "wins": 0,
+          "achievements": [],
+          "classicIndex": 1
+        },
+        "lastRewards": null,
+        "optimisticAchievementIds": []
+      },
+      "successors": [],
+      "queue": [
+        {
+          "message": {
+            "type": "game:submitGuess",
+            "requestId": "guess-f4d40d60-ae6f-4dca-81b6-89a6d794d799",
+            "payload": {
+              "riddleId": "reddit-guest-1",
+              "gameMode": "classic",
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "guess": "PIANO",
+              "requestId": "guess-f4d40d60-ae6f-4dca-81b6-89a6d794d799"
+            }
+          },
+          "attempts": 1,
+          "isCorrect": true,
+          "gameOver": true,
+          "canContinue": false,
+          "feedback": [
+            "green",
+            "green",
+            "green",
+            "green",
+            "green"
+          ]
+        }
+      ],
+      "draft": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "draftActiveSlotIndex": 0
+    }
+  ],
+  "bridge": {
+    "outbound": [
+      {
+        "type": "game:resize",
+        "requestId": "resize-e6066675-aaec-4469-99ea-b8ce81bcf40b",
+        "payload": {
+          "width": 390,
+          "height": 844
+        },
+        "sentAt": 1791064925600
+      },
+      {
+        "type": "game:ready",
+        "requestId": "ready-695e6292-1f3c-4110-ad53-1c45202454bd",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791064925600
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-f4d40d60-ae6f-4dca-81b6-89a6d794d799",
+        "payload": {
+          "riddleId": "reddit-guest-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "PIANO",
+          "requestId": "guess-f4d40d60-ae6f-4dca-81b6-89a6d794d799"
+        },
+        "sentAt": 1791064925728
+      },
+      {
+        "type": "game:recordAchievements",
+        "payload": {
+          "achievementIds": [
+            "first_win",
+            "perfect_guess",
+            "classic_perfect"
+          ]
+        },
+        "sentAt": 1791064925736
+      }
+    ],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-0ccbfbda-3974-443c-a957-e5198a5d6552",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064925587
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-b65c94fa-d13a-4a9e-8c14-5943b0dc7767",
+        "payload": {
+          "user": {
+            "uid": "reddit-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064925596
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-916408c8-b69c-4af6-85e2-ca9280ef7693",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-7e1c90f2-20c4-4c05-81a6-993b63558017",
+          "locale": "en",
+          "user": {
+            "uid": "reddit-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791064925618
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "reddit-guest-1",
+            "text": "What has keys but cannot open doors?",
+            "answerLength": 5,
+            "evaluation": {
+              "answer": "piano",
+              "locale": "en"
+            },
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "gameMode": "classic",
+            "index": 1,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "acceptedGuesses": []
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064925618
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "reddit-guest-1"
+          }
+        },
+        "sentAt": 1791064925619
+      }
+    ],
+    "errors": []
+  }
+}

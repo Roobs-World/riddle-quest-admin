@@ -1,0 +1,12 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 9 production declarations are undocumented.
+- packages/portal/src/facebook/__tests__/contextEvents.test.ts:82 changed
+- packages/portal/src/play/race/__tests__/liveRaceInvitationFailure.test.ts:3 challengeId
+- packages/portal/src/play/race/__tests__/liveRaceInvitationFailure.test.ts:4 preview
+- packages/portal/src/play/race/__tests__/liveRaceInvitationFailure.test.ts:9 challenge
+- packages/portal/src/play/race/__tests__/liveRaceInvitationFailure.test.ts:15 challenge
+- packages/portal/src/play/race/__tests__/liveRaceInvitationFailure.test.ts:20 challenge
+- packages/portal/src/play/race/__tests__/liveRaceInvitationFailure.test.ts:36 challenge
+- packages/portal/src/play/race/__tests__/liveRaceInvitationFailure.test.ts:45 result
+- packages/portal/src/play/race/logic/liveRaceDeliveryDeadline.ts:19 preview
+[ELIFECYCLE] Command failed with exit code 1.

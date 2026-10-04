@@ -1,0 +1,6 @@
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 60,
+  "failures": []
+}

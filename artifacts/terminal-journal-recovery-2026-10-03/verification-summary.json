@@ -1,0 +1,48 @@
+{
+  "status": "verified-progress",
+  "goalStatus": "active",
+  "portalUnitChecks": 2615,
+  "portalUnitSuites": 294,
+  "portalSkipped": 120,
+  "terminalJournalBoundaryTests": 11,
+  "browserAssertions": {
+    "development": 690,
+    "production": 690,
+    "nonjournal-production": 582,
+    "guest-terminal": 96
+  },
+  "browserTotal": 2058,
+  "builtJourneys": {
+    "tests": 22,
+    "suites": 4
+  },
+  "targetBuilds": {
+    "jest": "audit-passed",
+    "facebook": "audit-passed",
+    "reddit": "audit-passed",
+    "youtube": "audit-passed",
+    "netflix": "audit-passed",
+    "yahoo": "audit-passed"
+  },
+  "jestInitialResourcesMB": 0.53,
+  "jestInitialBudgetMB": 0.55,
+  "types": "passed",
+  "tsdocDeclarations": 24954,
+  "nativeRedControl": "reproduced: one replay instead of zero",
+  "finalQuick": "25 checks passed",
+  "nativeFirefox": "firefox-verified.json",
+  "sourceSha256": {
+    "packages/portal/src/play/pendingGuessJournal.ts": "441de0e5f462c78c39635bdb0f4f17371fabe738467a4459d2f0644fb30717cd",
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "b992474b15e7c36f544697a4c594e1aa7a0d1c7216baf5fcdc15fb8ad5e6b0e1",
+    "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts": "5d2148d9c595808895d7131110e774fe9b55df3ff1cb5cdcc0e30e18f5e63b51",
+    "packages/portal/scripts/verify-authority-terminal-recovery-browser.mjs": "a5bd90f8eac4ccf5168e1cd45a9826b063a8078be2ad07824862273eca242c3c",
+    "packages/portal/package.json": "0c8c11d456ae90663ba7a41d8b398eedb2f99bf5174c29e818a06219b7a812cf",
+    "packages/portal/src/play/gameSession.ts": "851ab98d12dbc1d436b0ac2806d9abd9bed3af1b0f826e8bdfe0f2d9bc9fa0d9",
+    "packages/portal/src/play/gameSessionTypes.ts": "76f9590e226e9da131561d1124a2e8c4804d58fcfde2909b6013cf3cb310873c",
+    "packages/portal/src/play/ConfirmedRiddleOutcome.ts": "a1377b2c95afc69b8aa366c3e8ee923d6b6985a2b05bbff2d103cfaa3c26cb7d"
+  },
+  "ownedProcessesTerminal": true,
+  "ownedFirefoxTabsClosed": true,
+  "ownedFixtureServerStopped": true,
+  "remainingInvestigation": "Terminal journals containing later issued questions are preserved; reconciliation of only their completed prefix remains to investigate."
+}

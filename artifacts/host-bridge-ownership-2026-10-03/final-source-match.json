@@ -1,0 +1,5 @@
+{
+  "packages/portal/src/play/useHostBridgeLifecycle.ts": true,
+  "packages/portal/src/play/PlayHostApp.tsx": true,
+  "packages/portal/scripts/verify-host-bridge-ownership-browser.mjs": true
+}

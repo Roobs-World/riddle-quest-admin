@@ -86,6 +86,15 @@ describe("race input helpers", () => {
     });
   });
 
+  it("preserves full Unicode clusters after ignored whitespace without changing the original draft", () => {
+    /** One text commitment accepts four complete graphemes, even with a long ignored suffix. */
+    const draft = {letters: ["", "", "", ""], activeSlotIndex: 0};
+    expect(insertRaceText(createRiddle(), draft, "  e\u0301👩🏽‍🚀नदी" + "x".repeat(20000)).letters)
+      .toEqual(["é", "👩🏽‍🚀", "न", "दी"]);
+    expect(draft.letters).toEqual(["", "", "", ""]);
+    expect(insertRaceText(createRiddle(), draft, "  ")).toBe(draft);
+  });
+
   it("deletes the active letter or searches backward with wraparound", () => {
     expect(deleteRaceLetter(createRiddle(), {letters: ["T", "E", "", "T"], activeSlotIndex: 1})).toEqual({
       letters: ["T", "", "", "T"],

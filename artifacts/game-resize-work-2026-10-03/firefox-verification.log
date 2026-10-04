@@ -1,0 +1,24 @@
+1791019864568	geckodriver	INFO	Listening on 127.0.0.1:38943
+1791019864578	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/snap/firefox/current/ ... tion-82psb2d2/firefox_devtools_mcp_profile" "--remote-debugging-port" "35497" "--remote-allow-hosts" "localhost" "-no-remote"
+*** You are running in headless mode.
+1791019864712	Marionette	INFO	Marionette enabled
+1791019864856	Marionette	INFO	Listening on port 34907
+WebDriver BiDi listening on ws://127.0.0.1:35497
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+Read port: 34907
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1791019865839	RemoteAgent	INFO	Perform WebSocket upgrade for incoming connection from 127.0.0.1:56396
+console.error: (new InvalidStateError("JSWindowActorChild.sendAsyncMessage: JSWindowActorChild cannot send at the moment", (void 0), 103))
+JavaScript warning: http://127.0.0.1:44381/assets/index-CA2Atqvf.js, line 64469: Failed to create WebGL context: WebGL creation failed: 
+* AllowWebgl2:false restricts context creation on this system. ()
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+1791020484617	Marionette	INFO	Stopped listening on port 34907
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null

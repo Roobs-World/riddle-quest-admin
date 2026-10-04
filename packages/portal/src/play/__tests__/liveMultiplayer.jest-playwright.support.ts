@@ -1,6 +1,8 @@
 import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
 import {LiveRaceViewSchema, RACE_RULES, type JoinLiveRace, type UpdateLiveRace, type LiveRaceView} from "@qwordly/core/race";
+import {installLiveHistoryJourney} from "./liveHistory.jest-playwright.support";
+import {installLiveRematchJourney} from "./liveRematch.jest-playwright.support";
 
 /** Exercises the shipped platform adapter and live intro instead of the retired recorded hub. */
 export async function installLiveMultiplayerJourney(page: Page, target: "Facebook" | "Reddit") {
@@ -12,7 +14,9 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
   const reports: unknown[] = [], blocks: unknown[] = [];
   /** Live requests must preserve Reddit's same-origin boundary. */
   const requestUrls: string[] = [];
-  /** One transient poll failure exercises recovery after the join has succeeded. */
+  /** Shared Activity history runs through each target's actual adapter. */
+  const verifyHistory = await installLiveHistoryJourney(page, target, requestUrls);
+  /** A controlled poll outage persists until the journey explicitly restores service. */
   let failPoll = false;
   /** Matching is controlled independently of the browser's countdown clock. */
   let startsAtMs: number | null = null;
@@ -49,7 +53,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     const input = route.request().postDataJSON();
     requestUrls.push(route.request().url());
     updates.push(target === "Reddit" ? input : input.data);
-    if (failPoll && updates.at(-1)?.action === "poll") {failPoll = false; return unavailable(route);}
+    if (failPoll && updates.at(-1)?.action === "poll") return unavailable(route);
     return reply(route, updates.at(-1)?.action === "leave" ? {...snapshot(), phase: "cancelled"} : snapshot());
   });
   await page.route(target === "Reddit" ? "**/api/game/safety.report" : "**/reportRival", route => {
@@ -64,6 +68,8 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     blocks.push(target === "Reddit" ? raw : raw.data); requestUrls.push(route.request().url());
     return reply(route, {blocked: true});
   });
+  /** More specific owned rematch routes fall through to the unchanged public lobby fixture. */
+  const verifyRematch = await installLiveRematchJourney(page, target, requestUrls);
   return async (locale: string) => {
     await page.locator(".multiplayer-navigation-action").click();
     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
@@ -80,17 +86,18 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     expect(joins[0]).toMatchObject({locale, categoryId: "mixed"});
     failPoll = true;
     await page.locator(".race-error").waitFor();
+    failPoll = false;
     await page.locator(".race-error button").click();
     await page.locator(".race-error").waitFor({state: "detached"});
     expect(joins).toHaveLength(2);
     startsAtMs = Date.now() + 5_000;
     await page.locator('[data-analytics-screen="multiplayer_live_countdown"]').waitFor();
     await page.locator(".live-race-rival").getByText("LiveRival", {exact: true}).waitFor();
-    expect(Number(await page.locator(".live-race-countdown").innerText())).toBeGreaterThan(0);
-    expect(Number(await page.locator(".live-race-countdown").innerText())).toBeLessThanOrEqual(5);
+    expect(Number(await page.locator(".live-race-search-wheel[data-phase=countdown]").getAttribute("aria-valuenow"))).toBeGreaterThan(0);
+    expect(Number(await page.locator(".live-race-search-wheel[data-phase=countdown]").getAttribute("aria-valuenow"))).toBeLessThanOrEqual(100);
     // Hold the matched fixture while testing safety so viewport assertions do not race the countdown.
     startsAtMs = Date.now() + 30_000;
-    await page.waitForFunction(() => Number(document.querySelector(".live-race-countdown")?.textContent) > 5);
+    await page.waitForFunction(() => document.querySelector(".live-race-search-wheel[data-phase=countdown]")?.getAttribute("aria-valuenow") === "0");
     await page.locator(".live-race-safety summary").waitFor({timeout: 4000});
     await page.locator(".live-race-safety summary").click();
     expect(await page.locator(".live-race-safety option").count()).toBe(5);
@@ -131,7 +138,15 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     await page.waitForFunction(() => document.querySelector(".live-race-block")?.hasAttribute("disabled"));
     await page.waitForFunction(() => !document.querySelector(".race-screen")?.textContent?.includes("LiveRival"));
     expect(blocks).toEqual([{liveTicketId: "b".repeat(64)}]);
+    /** Rendering the intro can precede the lazy transport's owned leave request. */
+    const leaving = page.waitForRequest(request => {
+      if (!request.url().endsWith(target === "Reddit" ? "/api/game/race.live.update" : "/updateLiveRace")) return false;
+      /** Check the real command rather than waiting for an unrelated progress poll. */
+      const raw = request.postDataJSON();
+      return (target === "Reddit" ? raw : raw.data).action === "leave";
+    });
     await page.locator(".race-close").click();
+    await leaving;
     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
     await page.waitForFunction(() => (document.querySelector(".live-race-start") as HTMLButtonElement | null)?.disabled === false);
     expect(updates.filter(input => input.action === "leave")).toHaveLength(1);
@@ -147,6 +162,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     await page.locator(".race-close").click();
     await page.locator(".race-screen").waitFor({state: "detached"});
     expect(updates.filter(input => input.action === "leave")).toHaveLength(2);
+    await verifyHistory(locale, verifyRematch);
     if (target === "Reddit") expect(requestUrls.every(url => new URL(url).origin === new URL(page.url()).origin &&
       new URL(url).pathname.startsWith("/api/"))).toBe(true);
     await page.setViewportSize({width: 390, height: 844});

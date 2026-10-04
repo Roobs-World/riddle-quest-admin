@@ -77,7 +77,8 @@ const reportJestLoadingProgress = (platform: JestPlatformPort, progress: number)
 };
 
 /** Dismisses Jest's manual-loading overlay so an in-game retry screen remains interactive. */
-const exposeJestStartupFailure = (platform: JestPlatformPort): void => {
+export const exposeJestStartupFailure = (platform: JestPlatformPort): void => {
+  stopJestLoadingHeartbeat(platform);
   try {
     platform.setLoadingProgress(100);
   } catch (error) {

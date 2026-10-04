@@ -1,1 +1,1 @@
-Facebook artifact audit passed: 408 files, 4.25 MB, 0.58 MB initial resources, isolated SDK/config, and no Jest/native/secrets leakage
+Facebook artifact audit passed: 408 files, 4.25 MB, 0.57 MB initial resources, isolated SDK/config, and no Jest/native/secrets leakage

@@ -1,0 +1,50 @@
+{
+  "SoloTyped": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"piano\",\n  \"segments\": 0,\n  \"splits\": 0,\n  \"guesses\": 0,\n  \"completions\": 0,\n  \"keyOrder\": \"QWERTYUIOPASDFGHJKLZXCVBNM\",\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "SoloComplete": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"segments\": 0,\n  \"splits\": 0,\n  \"guesses\": 1,\n  \"completions\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "RaceTyped": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"piano\",\n  \"segments\": 0,\n  \"splits\": 0,\n  \"guesses\": 0,\n  \"keyOrder\": \"QWERTYUIOPASDFGHJKLZXCVBNM\",\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "RaceComplete": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"segments\": 0,\n  \"splits\": 0,\n  \"guesses\": 1,\n  \"progress\": \"Riddles completed: 1 / 10\",\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "PlayableTyped": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"segments\": 0,\n  \"splits\": 0,\n  \"saves\": 1,\n  \"keyOrder\": \"QWERTYUIOPASDFGHJKLZXCVBNM\",\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "PlayableComplete": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"segments\": 0,\n  \"splits\": 0,\n  \"saves\": 2,\n  \"wins\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  }
+}

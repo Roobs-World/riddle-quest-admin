@@ -1,7 +1,7 @@
 import {RankedAvatar} from "../../RankedAvatar";
 import {useState} from "react";
 import type {GameSessionState} from "../../gameSession";
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 import {PulsingSpinner} from "../../SpinningWheelLoader";
 import {LEADERBOARD_PAGE_SIZE, paginateLeaderboard} from "./leaderboardPagination";
 
@@ -14,6 +14,8 @@ export type LeaderboardModalPageProps = {
   entries: GameSessionState["leaderboard"];
   /** Whether the host is loading the selected leaderboard. */
   loading: boolean;
+  /** The latest request failed rather than returning an empty ranking. */
+  loadError?: boolean;
   /** Measurement currently selected by the player. */
   leaderboardType: LeaderboardType;
   /** Requests one leaderboard measurement from the host. */
@@ -27,9 +29,12 @@ const LEADERBOARD_TYPES: readonly LeaderboardType[] = ["xp", "totalWins", "bestS
 export function LeaderboardModalPage({
   entries,
   loading,
+  loadError = false,
   leaderboardType,
   onRequestLeaderboard,
 }: LeaderboardModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Zero-based page requested by the player. */
   const [requestedPage, setRequestedPage] = useState(0);
   /** Pagination values derived from the latest server entries. */
@@ -61,20 +66,29 @@ export function LeaderboardModalPage({
           </button>
         ))}
       </div>
+      <div className="leaderboard-content">
       {loading ? (
         <div className="leaderboard-loading" role="status" aria-label={tr("Accessibility.LOADING")}>
           <PulsingSpinner />
         </div>
       ) : null}
+      {!loading && loadError ? (
+        <div className="leaderboard-error" role="alert">
+          <p>{tr("Leaderboard.LOAD_ERROR")}</p>
+          <button className="play-secondary compact" onClick={() => onRequestLeaderboard(leaderboardType)}>
+            {tr("Leaderboard.RETRY_BUTTON")}
+          </button>
+        </div>
+      ) : null}
       <ol className="leaderboard-list" aria-busy={loading} aria-label={tr("Leaderboard.TITLE")} tabIndex={0} start={pageStart + 1}>
-        {!loading && entries.length === 0 ? <li className="leaderboard-empty"><span aria-hidden="true">🏆</span><p>{tr("Leaderboard.NO_SCORES_YET")}</p></li> : null}
+        {!loading && !loadError && entries.length === 0 ? <li className="leaderboard-empty"><span aria-hidden="true">🏆</span><p>{tr("Leaderboard.NO_SCORES_YET")}</p></li> : null}
         {visibleEntries.map((entry, index) => (
               <li key={entry.userId} data-placement={pageStart + index + 1}>
                 <b>{pageStart + index + 1}</b>
                 <RankedAvatar avatarUrl={entry.avatarUrl} level={entry.level} size={30}
                   fallback={entry.username.slice(0, 1).toUpperCase()} imageClassName="leaderboard-avatar"
                   fallbackClassName="leaderboard-avatar-fallback" />
-                <span className="leaderboard-player"><span>{entry.username}</span><small>{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{entry.level}</small></span>
+                <span className="leaderboard-player"><span title={entry.username}>{entry.username}</span><small>{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{entry.level}</small></span>
                 <strong>
                   {leaderboardType === "xp"
                     ? entry.xp
@@ -87,6 +101,7 @@ export function LeaderboardModalPage({
               </li>
             ))}
       </ol>
+      </div>
       {entries.length > LEADERBOARD_PAGE_SIZE ? (
         <nav className="leaderboard-pagination" aria-label={tr("Leaderboard.PAGINATION_LABEL")}>
           <button

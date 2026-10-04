@@ -1,0 +1,760 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 328,
+  "failures": [
+    {
+      "width": 1280,
+      "name": "restoration: retained native restoration callback cannot reinitialize driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "restoration: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "restoration: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: diagnostic identifies restoration",
+      "expected": "restore_context"
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: diagnostic identifies restoration",
+      "expected": "restore_context"
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: retained callbacks cannot repeat diagnostics",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "restore-dispose-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context loss failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "loss-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context loss failure",
+        "Error: injected driver context loss failure",
+        "Error: injected driver context loss failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: driver failure retires frame chain",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context creation callback failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: retained native loss callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: retained creation callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "creation-callback-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context creation callback failure",
+        "Error: injected driver context creation callback failure",
+        "Error: injected driver context creation callback failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "name": "constructor-listener-failure: driver failure retires all context subscriptions",
+      "actual": 6,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "constructor-listener-failure: normal retirement removes every context callback",
+      "actual": 6,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "constructor-listener-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "constructor-listener-failure: retained native loss callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "constructor-listener-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "normal-retirement: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "normal-retirement: retained native loss callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "normal-retirement: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restoration: retained native restoration callback cannot reinitialize driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "restoration: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "restoration: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: diagnostic identifies restoration",
+      "expected": "restore_context"
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: diagnostic identifies restoration",
+      "expected": "restore_context"
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: retained callbacks cannot repeat diagnostics",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "restore-dispose-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure",
+        "Error: injected driver context restoration failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context loss failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: retained native loss callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "loss-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context loss failure",
+        "Error: injected driver context loss failure",
+        "Error: injected driver context loss failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: driver failure retires every returned resource",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: driver failure retires all context subscriptions",
+      "actual": 5,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: driver failure removes canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: driver failure retires frame chain",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: driver failure reports once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: each returned renderer is disposed once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: each returned renderer releases context once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: failure never escapes native DOM event",
+      "actual": [
+        "Error: injected driver context creation callback failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: retained native loss callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: retained creation callback cannot re-enter driver",
+      "actual": 3,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "creation-callback-failure: no browser callback error remains",
+      "actual": [
+        "Error: injected driver context creation callback failure",
+        "Error: injected driver context creation callback failure",
+        "Error: injected driver context creation callback failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "name": "constructor-listener-failure: driver failure retires all context subscriptions",
+      "actual": 6,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "constructor-listener-failure: normal retirement removes every context callback",
+      "actual": 6,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "constructor-listener-failure: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "constructor-listener-failure: retained native loss callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "constructor-listener-failure: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "normal-retirement: retained native restoration callback cannot reinitialize driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "normal-retirement: retained native loss callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "normal-retirement: retained creation callback cannot re-enter driver",
+      "actual": 2,
+      "expected": 0
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "name": "later wrong row is restored exactly once",
+    "actual": "",
+    "expected": "ZZZZZ"
+  }
+]

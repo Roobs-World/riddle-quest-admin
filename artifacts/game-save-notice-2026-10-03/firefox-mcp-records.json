@@ -1,0 +1,1098 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "save-notice-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:44731?locale=de",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:44731?locale=de (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:33153?locale=de",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [2] \u2192 http://127.0.0.1:33153?locale=de (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 280,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "280x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 90
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: main]\n\nuid=e81 main\n  uid=e79 div\n    uid=e5 header\n      uid=e0 img \"Logo-Schaltfl\u00e4che\" src=\"http://127.0.0.1:33153/asse...\"\n      uid=e1 button \"Ton ausschalten\"\n      uid=e2 div text=\"Klassisch\"\n      uid=e4 div \"300  Muenzen\"\n        uid=e3 img src=\"http://127.0.0.1:33153/asse...\"\n    uid=e39 section\n      uid=e7 div\n        uid=e6 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n      uid=e38 div\n        uid=e13 div\n          uid=e8 button \"Buchstabe 1\"\n          uid=e9 button \"Buchstabe 2\"\n          uid=e10 button \"Buchstabe 3\"\n          uid=e11 button \"Buchstabe 4\"\n          uid=e12 button \"Buchstabe 5\"\n        uid=e19 div\n          uid=e14 button \"Buchstabe 1\"\n          uid=e15 button \"Buchstabe 2\"\n          uid=e16 button \"Buchstabe 3\"\n          uid=e17 button \"Buchstabe 4\"\n          uid=e18 button \"Buchstabe 5\"\n        uid=e25 div\n          uid=e20 button \"Buchstabe 1\"\n          uid=e21 button \"Buchstabe 2\"\n          uid=e22 button \"Buchstabe 3\"\n          uid=e23 button \"Buchstabe 4\"\n          uid=e24 button \"Buchstabe 5\"\n        uid=e31 div\n          uid=e26 button \"Buchstabe 1\"\n          uid=e27 button \"Buchstabe 2\"\n          uid=e28 button \"Buchstabe 3\"\n          uid=e29 button \"Buchstabe 4\"\n          uid=e30 button \"Buchstabe 5\"\n        uid=e37 div\n          uid=e32 button \"Buchstabe 1\"\n          uid=e33 button \"Buchstabe 2\"\n          uid=e34 button \"Buchstabe 3\"\n          uid=e35 button \"Buchstabe 4\"\n          uid=e36 button \"Buchstabe 5\"\n    uid=e71 section \"Virtuelle Tastatur\"\n      uid=e50 div\n        uid=e40 button \"Q\" text=\"Q\"\n        uid=e41 button \"W\" text=\"W\"\n        uid=e42 button \"E\" text=\"E\"\n        uid=e43 button \"R\" text=\"R\"\n        uid=e44 button \"T\" text=\"T\"\n        uid=e45 button \"Y\" text=\"Y\"\n        uid=e46 button \"U\" text=\"U\"\n        uid=e47 button \"I\" text=\"I\"\n        uid=e48 button \"O\" text=\"O\"\n        uid=e49 button \"P\" text=\"P\"\n      uid=e60 div\n        uid=e51 button \"A\" text=\"A\"\n        uid=e52 button \"S\" text=\"S\"\n        uid=e53 button \"D\" text=\"D\"\n        uid=e54 button \"F\" text=\"F\"\n        uid=e55 button \"G\" text=\"G\"\n        uid=e56 button \"H\" text=\"H\"\n        uid=e57 button \"J\" text=\"J\"\n        uid=e58 button \"K\" text=\"K\"\n        uid=e59 button \"L\" text=\"L\"\n      uid=e70 div\n        uid=e61 button \"Z\" text=\"Z\"\n        uid=e62 button \"X\" text=\"X\"\n        uid=e63 button \"C\" text=\"C\"\n        uid=e64 button \"V\" text=\"V\"\n        uid=e65 button \"B\" text=\"B\"\n        uid=e66 button \"N\" text=\"N\"\n        uid=e67 button \"M\" text=\"M\"\n        uid=e69 button \"R\u00fccktaste\"\n          uid=e68 img src=\"data:image/svg+xml,%3csvg%2...\"\n    uid=e75 section \"Spiel\"\n      uid=e72 button \"Hinweis\" text=\"Hinweis\"\n      uid=e73 button \"EINREICHEN\" text=\"EINREICHEN\"\n      uid=e74 button \"\u00dcberspringen\" text=\"\u00dcberspringen\"\n    uid=e78 nav \"Spiel\"\n      uid=e76 button \"Einstellungen\"\n      uid=e77 button \"Profil\"\n  uid=e80 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { window.initialInitCount=window.storageProbe.initializations; document.activeElement?.blur(); return JSON.stringify({initializations:window.initialInitCount,draft:window.draft(),prompt:document.querySelectorAll(\".player-save-notice\").length}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"initializations\\\":2,\\\"draft\\\":\\\"\\\",\\\"prompt\\\":0}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.storageProbe.failDraft=100; window.releaseStorage(); await window.awaitQueue(); return JSON.stringify({draft:window.draft(),checkpoint:window.latestCheckpoint()?.currentLetters.join(\"\"),failures:window.storageProbe.failures}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"checkpoint\\\":\\\"PIAN\\\",\\\"failures\\\":[\\\"player_data_save_failed\\\"]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { const notice=document.querySelector(\".player-save-notice\"), b=notice?.querySelector(\"button\"), n=notice?.getBoundingClientRect(), g=document.querySelector(\".game-app\")?.getBoundingClientRect(), k=document.querySelector(\".keyboard\")?.getBoundingClientRect(), a=document.querySelector(\".game-input-actions\")?.getBoundingClientRect(), nav=document.querySelector(\".game-bottom-navigation\")?.getBoundingClientRect(); const result={case:\"de-280-exhausted\",status:window.writes.recovery.getSnapshot(),message:notice?.querySelector(\"p\")?.textContent,expectedMessage:window.copy().message,retryLabel:b?.getAttribute(\"aria-label\"),expectedRetry:window.copy().retry,retryHeight:b?.getBoundingClientRect().height,keyboardMinHeight:Math.min(...Array.from(document.querySelectorAll(\".keyboard button\")).map(x=>x.getBoundingClientRect().height)),noticeFits:!!n&&n.left>=-1&&n.right<=innerWidth+1,noticeAboveGame:!!n&&!!g&&n.bottom<=g.top+1,controlsFit:!!k&&!!a&&!!nav&&k.bottom<=innerHeight+1&&a.bottom<=innerHeight+1&&nav.bottom<=innerHeight+1,documentFits:document.documentElement.scrollHeight<=innerHeight+1,draft:window.draft(),initializations:window.storageProbe.initializations,initialInitCount:window.initialInitCount,errors:window.probe.errors,unhandled:window.probe.unhandled}; window.firefoxChecks=[result]; return JSON.stringify(result); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"de-280-exhausted\\\",\\\"status\\\":\\\"unsaved\\\",\\\"message\\\":\\\"Der Fortschritt ist noch nicht gespeichert. Lass das Spiel ge\u00f6ffnet.\\\",\\\"expectedMessage\\\":\\\"Der Fortschritt ist noch nicht gespeichert. Lass das Spiel ge\u00f6ffnet.\\\",\\\"retryLabel\\\":\\\"Erneut versuchen\\\",\\\"expectedRetry\\\":\\\"Erneut versuchen\\\",\\\"retryHeight\\\":44,\\\"keyboardMinHeight\\\":25.29998779296875,\\\"noticeFits\\\":true,\\\"noticeAboveGame\\\":true,\\\"controlsFit\\\":true,\\\"documentFits\\\":true,\\\"draft\\\":\\\"PIAN\\\",\\\"initializations\\\":2,\\\"initialInitCount\\\":2,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".player-save-notice",
+          "maxLines": 20
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .player-save-notice]\n\nuid=e85 status tag=div\n  uid=e82 p text=\"Der Fortschritt ist noch ni...\"\n  uid=e84 button \"Erneut versuchen\"\n    uid=e83 span text=\"Erneut versuchen\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T12-37-44-021Z.png (99.3KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({innerWidth,innerHeight,outerWidth,outerHeight,dpr:devicePixelRatio,visualWidth:visualViewport.width,visualHeight:visualViewport.height})"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"innerWidth\\\":500,\\\"innerHeight\\\":494,\\\"outerWidth\\\":500,\\\"outerHeight\\\":568,\\\"dpr\\\":1,\\\"visualWidth\\\":500,\\\"visualHeight\\\":494}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 642
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x642"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { const b=document.querySelector(\".player-save-notice button\"), n=document.querySelector(\".player-save-notice\").getBoundingClientRect(),g=document.querySelector(\".game-app\").getBoundingClientRect(),k=document.querySelector(\".keyboard\").getBoundingClientRect(),a=document.querySelector(\".game-input-actions\").getBoundingClientRect(),nav=document.querySelector(\".game-bottom-navigation\").getBoundingClientRect(); const result={case:\"de-exhausted-actual-viewport\",width:innerWidth,height:innerHeight,status:window.writes.recovery.getSnapshot(),messageMatches:document.querySelector(\".player-save-notice p\").textContent===window.copy().message,retryLabelMatches:b.getAttribute(\"aria-label\")===window.copy().retry,retryHeight:b.getBoundingClientRect().height,keyboardMinHeight:Math.min(...Array.from(document.querySelectorAll(\".keyboard button\")).map(x=>x.getBoundingClientRect().height)),noticeFits:n.left>=-1&&n.right<=innerWidth+1,noticeAboveGame:n.bottom<=g.top+1,controlsFit:k.bottom<=innerHeight+1&&a.bottom<=innerHeight+1&&nav.bottom<=innerHeight+1,documentFits:document.documentElement.scrollHeight<=innerHeight+1,draft:window.draft(),initializationsUnchanged:window.initialInitCount===window.storageProbe.initializations,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result); window.storageProbe.failDraft=0;window.holdNextDraft();return JSON.stringify(result); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"de-exhausted-actual-viewport\\\",\\\"width\\\":500,\\\"height\\\":568,\\\"status\\\":\\\"unsaved\\\",\\\"messageMatches\\\":true,\\\"retryLabelMatches\\\":true,\\\"retryHeight\\\":44,\\\"keyboardMinHeight\\\":29.583328247070312,\\\"noticeFits\\\":true,\\\"noticeAboveGame\\\":true,\\\"controlsFit\\\":true,\\\"documentFits\\\":true,\\\"draft\\\":\\\"PIAN\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e84"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e84"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { const b=document.querySelector(\".player-save-notice button\"); const result={case:\"de-held-retry\",status:window.writes.recovery.getSnapshot(),visible:!!b,disabled:b?.disabled,busy:b?.getAttribute(\"aria-busy\"),draft:window.draft()};window.firefoxChecks.push(result);return JSON.stringify(result); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"de-held-retry\\\",\\\"status\\\":\\\"saving\\\",\\\"visible\\\":true,\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\",\\\"draft\\\":\\\"PIAN\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "o"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { const before={case:\"de-playable-held-retry\",draft:window.draft(),checkpoint:window.latestCheckpoint()?.currentLetters.join(\"\"),visible:!!document.querySelector(\".player-save-notice\")};window.firefoxChecks.push(before);window.releaseNextDraft();await window.awaitQueue();await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))); const after={case:\"de-latest-ack\",status:window.writes.recovery.getSnapshot(),notice:document.querySelectorAll(\".player-save-notice\").length,draft:window.draft(),durable:window.durableData().riddleQuestPlayerState.activeGame.currentLetters.join(\"\"),initializationsUnchanged:window.initialInitCount===window.storageProbe.initializations,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(after); return JSON.stringify({before,after}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"before\\\":{\\\"case\\\":\\\"de-playable-held-retry\\\",\\\"draft\\\":\\\"PIANO\\\",\\\"checkpoint\\\":\\\"PIANO\\\",\\\"visible\\\":true},\\\"after\\\":{\\\"case\\\":\\\"de-latest-ack\\\",\\\"status\\\":\\\"quiet\\\",\\\"notice\\\":0,\\\"draft\\\":\\\"PIANO\\\",\\\"durable\\\":\\\"PIANO\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { await window.awaitQueue();const result={case:\"de-native-completion\",guesses:window.probe.guesses,completions:window.probe.completions,activeGame:window.durableData().riddleQuestPlayerState.activeGame,status:window.writes.recovery.getSnapshot(),notice:document.querySelectorAll(\".player-save-notice\").length,initializationsUnchanged:window.initialInitCount===window.storageProbe.initializations,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result);return JSON.stringify(result); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"de-native-completion\\\",\\\"guesses\\\":1,\\\"completions\\\":1,\\\"activeGame\\\":null,\\\"status\\\":\\\"quiet\\\",\\\"notice\\\":0,\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:33153?locale=ar",
+          "waitUntil": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: BiDi error: \"unknown error\""
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 12
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Failed to take snapshot: Selector \"main\" not found\n\nThe page may not be fully loaded or accessible."
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({href:location.href,ready:document.readyState})"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"href\\\":\\\"http://127.0.0.1:33153/?locale=ar\\\",\\\"ready\\\":\\\"interactive\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 12
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Failed to take snapshot: Selector \"main\" not found\n\nThe page may not be fully loaded or accessible."
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({ready:document.readyState,body:document.body?.textContent?.slice(0,600),errors:window.probe?.errors,unhandled:window.probe?.unhandled,storage:window.storageProbe,resources:performance.getEntriesByType(\"resource\").length})"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"ready\\\":\\\"interactive\\\",\\\"body\\\":\\\"\\\",\\\"resources\\\":0}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 26
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:33153/?locale=ar",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: BiDi error: \"unknown error\""
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 27
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "tools/call",
+      "params": {
+        "name": "select_page",
+        "arguments": {
+          "pageIdx": 2
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "selected [2]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 28
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify(window.firefoxChecks)"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"de-280-exhausted\\\",\\\"status\\\":\\\"unsaved\\\",\\\"message\\\":\\\"Der Fortschritt ist noch nicht gespeichert. Lass das Spiel ge\u00f6ffnet.\\\",\\\"expectedMessage\\\":\\\"Der Fortschritt ist noch nicht gespeichert. Lass das Spiel ge\u00f6ffnet.\\\",\\\"retryLabel\\\":\\\"Erneut versuchen\\\",\\\"expectedRetry\\\":\\\"Erneut versuchen\\\",\\\"retryHeight\\\":44,\\\"keyboardMinHeight\\\":25.29998779296875,\\\"noticeFits\\\":true,\\\"noticeAboveGame\\\":true,\\\"controlsFit\\\":true,\\\"documentFits\\\":true,\\\"draft\\\":\\\"PIAN\\\",\\\"initializations\\\":2,\\\"initialInitCount\\\":2,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"de-exhausted-actual-viewport\\\",\\\"width\\\":500,\\\"height\\\":568,\\\"status\\\":\\\"unsaved\\\",\\\"messageMatches\\\":true,\\\"retryLabelMatches\\\":true,\\\"retryHeight\\\":44,\\\"keyboardMinHeight\\\":29.583328247070312,\\\"noticeFits\\\":true,\\\"noticeAboveGame\\\":true,\\\"controlsFit\\\":true,\\\"documentFits\\\":true,\\\"draft\\\":\\\"PIAN\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"de-held-retry\\\",\\\"status\\\":\\\"saving\\\",\\\"visible\\\":true,\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\",\\\"draft\\\":\\\"PIAN\\\"},{\\\"case\\\":\\\"de-playable-held-retry\\\",\\\"draft\\\":\\\"PIANO\\\",\\\"checkpoint\\\":\\\"PIANO\\\",\\\"visible\\\":true},{\\\"case\\\":\\\"de-latest-ack\\\",\\\"status\\\":\\\"quiet\\\",\\\"notice\\\":0,\\\"draft\\\":\\\"PIANO\\\",\\\"durable\\\":\\\"PIANO\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"de-native-completion\\\",\\\"guesses\\\":1,\\\"completions\\\":1,\\\"activeGame\\\":null,\\\"status\\\":\\\"quiet\\\",\\\"notice\\\":0,\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 29
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:45633/?locale=ar",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[2] \u2192 http://127.0.0.1:45633/?locale=ar (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 30
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 14
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: main]\n\nuid=e167 main\n  uid=e165 div\n    uid=e91 header\n      uid=e86 img \"\u0627\u0644\u0634\u0639\u0627\u0631\" src=\"http://127.0.0.1:45633/asse...\"\n      uid=e87 button \"\u0643\u062a\u0645 \u0627\u0644\u0635\u0648\u062a\"\n      uid=e88 div text=\"\u0643\u0644\u0627\u0633\u064a\u0643\u064a\"\n      uid=e90 div \"300 \u0639\u0645\u0644\u0627\u062a \u0645\u0639\u062f\u0646\u064a\u0629\"\n        uid=e89 img src=\"http://127.0.0.1:45633/asse...\"\n    uid=e125 section\n      uid=e93 div\n        uid=e92 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n      uid=e124 div\n        uid=e99 div\n          uid=e94 button \"\u062d\u0631\u0641 1\"\n\n[+69 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 31
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { window.initialInitCount=window.storageProbe.initializations;document.activeElement?.blur(); return JSON.stringify({width:innerWidth,height:innerHeight,direction:getComputedStyle(document.documentElement).direction,prompt:document.querySelectorAll(\".player-save-notice\").length}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"width\\\":500,\\\"height\\\":832,\\\"direction\\\":\\\"rtl\\\",\\\"prompt\\\":0}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 32
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 33
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { window.storageProbe.failDraft=100;window.releaseStorage();await window.awaitQueue();return JSON.stringify({draft:window.draft(),failures:window.storageProbe.failures}); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draft\\\":\\\"PIAN\\\",\\\"failures\\\":[\\\"player_data_save_failed\\\"]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 34
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { const notice=document.querySelector(\".player-save-notice\"),b=notice?.querySelector(\"button\"),n=notice?.getBoundingClientRect(),g=document.querySelector(\".game-app\")?.getBoundingClientRect(),a=document.querySelector(\".game-input-actions\")?.getBoundingClientRect(),nav=document.querySelector(\".game-bottom-navigation\")?.getBoundingClientRect();const result={case:\"ar-exhausted\",width:innerWidth,height:innerHeight,direction:getComputedStyle(document.documentElement).direction,status:window.writes.recovery.getSnapshot(),messageMatches:notice?.querySelector(\"p\")?.textContent===window.copy().message,retryLabelMatches:b?.getAttribute(\"aria-label\")===window.copy().retry,retryHeight:b?.getBoundingClientRect().height,noticeFits:!!n&&n.left>=-1&&n.right<=innerWidth+1,noticeAboveGame:!!n&&!!g&&n.bottom<=g.top+1,controlsFit:!!a&&!!nav&&a.bottom<=innerHeight+1&&nav.bottom<=innerHeight+1,documentFits:document.documentElement.scrollHeight<=innerHeight+1,draft:window.draft(),initializationsUnchanged:window.initialInitCount===window.storageProbe.initializations,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks=[result];return JSON.stringify(result); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"ar-exhausted\\\",\\\"width\\\":500,\\\"height\\\":832,\\\"direction\\\":\\\"rtl\\\",\\\"status\\\":\\\"unsaved\\\",\\\"messageMatches\\\":true,\\\"retryLabelMatches\\\":true,\\\"retryHeight\\\":44,\\\"noticeFits\\\":true,\\\"noticeAboveGame\\\":true,\\\"controlsFit\\\":true,\\\"documentFits\\\":true,\\\"draft\\\":\\\"PIAN\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 35
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".player-save-notice",
+          "maxLines": 15
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .player-save-notice]\n\nuid=e171 status tag=div\n  uid=e168 p text=\"\u0644\u0645 \u064a\u064f\u062d\u0641\u0638 \u0627\u0644\u062a\u0642\u062f\u0645 \u0628\u0639\u062f. \u0623\u0628\u0642\u0650 \u0627...\"\n  uid=e170 button \"\u0625\u0639\u0627\u062f\u0629 \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629\"\n    uid=e169 span text=\"\u0625\u0639\u0627\u062f\u0629 \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 36
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T12-41-05-401Z.png (170.6KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 37
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.storageProbe.failDraft=0;window.holdNextDraft();return true;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\ntrue\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 38
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e170"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e170"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 39
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 40,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const b=document.querySelector(\".player-save-notice button\");const result={case:\"ar-held-retry\",status:window.writes.recovery.getSnapshot(),visible:!!b,disabled:b?.disabled,busy:b?.getAttribute(\"aria-busy\")};window.firefoxChecks.push(result);return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"ar-held-retry\\\",\\\"status\\\":\\\"saving\\\",\\\"visible\\\":true,\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 40
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 41,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "o"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 41
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 42,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const before={case:\"ar-playable-held-retry\",draft:window.draft(),checkpoint:window.latestCheckpoint()?.currentLetters.join(\"\"),visible:!!document.querySelector(\".player-save-notice\")};window.firefoxChecks.push(before);window.releaseNextDraft();await window.awaitQueue();await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));const after={case:\"ar-latest-ack\",status:window.writes.recovery.getSnapshot(),notice:document.querySelectorAll(\".player-save-notice\").length,draft:window.draft(),durable:window.durableData().riddleQuestPlayerState.activeGame.currentLetters.join(\"\"),initializationsUnchanged:window.initialInitCount===window.storageProbe.initializations,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(after);return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"ar-exhausted\\\",\\\"width\\\":500,\\\"height\\\":832,\\\"direction\\\":\\\"rtl\\\",\\\"status\\\":\\\"unsaved\\\",\\\"messageMatches\\\":true,\\\"retryLabelMatches\\\":true,\\\"retryHeight\\\":44,\\\"noticeFits\\\":true,\\\"noticeAboveGame\\\":true,\\\"controlsFit\\\":true,\\\"documentFits\\\":true,\\\"draft\\\":\\\"PIAN\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"ar-held-retry\\\",\\\"status\\\":\\\"saving\\\",\\\"visible\\\":true,\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\"},{\\\"case\\\":\\\"ar-playable-held-retry\\\",\\\"draft\\\":\\\"PIANO\\\",\\\"checkpoint\\\":\\\"PIANO\\\",\\\"visible\\\":true},{\\\"case\\\":\\\"ar-latest-ack\\\",\\\"status\\\":\\\"quiet\\\",\\\"notice\\\":0,\\\"draft\\\":\\\"PIANO\\\",\\\"durable\\\":\\\"PIANO\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 42
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 43,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 43
+    }
+  }
+]

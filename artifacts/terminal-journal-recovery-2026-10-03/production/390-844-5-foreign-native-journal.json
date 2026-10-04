@@ -1,0 +1,587 @@
+{
+  "pending": [
+    {
+      "version": 1,
+      "scope": "reddit-guest:1:en",
+      "riddle": {
+        "riddleId": "reddit-guest-1",
+        "text": "What has keys but cannot open doors?",
+        "answerLength": 5,
+        "evaluation": {
+          "answer": "piano",
+          "locale": "en"
+        },
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "gameMode": "classic",
+        "index": 1,
+        "acceptedGuesses": [],
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "awaitingContinue": false
+      },
+      "confirmedClassicIndex": 1,
+      "base": {
+        "currentLetters": [
+          "P",
+          "I",
+          "A",
+          "N",
+          "O"
+        ],
+        "activeSlotIndex": 0,
+        "guesses": [
+          {
+            "guess": [
+              "q",
+              "q",
+              "q",
+              "q",
+              "q"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "r",
+              "r",
+              "r",
+              "r",
+              "r"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "s",
+              "s",
+              "s",
+              "s",
+              "s"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "t",
+              "t",
+              "t",
+              "t",
+              "t"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          }
+        ],
+        "engineSnapshot": {
+          "guesses": [
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "r",
+                "r",
+                "r",
+                "r",
+                "r"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "s",
+                "s",
+                "s",
+                "s",
+                "s"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "t",
+                "t",
+                "t",
+                "t",
+                "t"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "attemptsUsed": 4,
+          "hasUsedContinue": false,
+          "gameOver": false
+        },
+        "modal": null,
+        "lastOutcome": null,
+        "completionAcknowledged": false,
+        "letterStates": {
+          "q": "red",
+          "r": "red",
+          "s": "red",
+          "t": "red"
+        },
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 0,
+          "level": 1,
+          "xp": 0,
+          "winStreak": 0,
+          "gamesPlayed": 0,
+          "wins": 0,
+          "achievements": [],
+          "classicIndex": 1
+        },
+        "lastRewards": null,
+        "optimisticAchievementIds": []
+      },
+      "successors": [],
+      "queue": [
+        {
+          "message": {
+            "type": "game:submitGuess",
+            "requestId": "guess-6130e06b-f6ac-4eae-a265-5f6802607d29",
+            "payload": {
+              "riddleId": "reddit-guest-1",
+              "gameMode": "classic",
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "guess": "PIANO",
+              "requestId": "guess-6130e06b-f6ac-4eae-a265-5f6802607d29"
+            }
+          },
+          "attempts": 5,
+          "isCorrect": true,
+          "gameOver": true,
+          "canContinue": false,
+          "feedback": [
+            "green",
+            "green",
+            "green",
+            "green",
+            "green"
+          ]
+        }
+      ],
+      "draft": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "draftActiveSlotIndex": 0
+    }
+  ],
+  "bridge": {
+    "outbound": [
+      {
+        "type": "game:resize",
+        "requestId": "resize-da4a4195-1686-438f-8db3-5ed481e7ce21",
+        "payload": {
+          "width": 390,
+          "height": 844
+        },
+        "sentAt": 1791056657978
+      },
+      {
+        "type": "game:ready",
+        "requestId": "ready-bc6b0362-5ba1-4f80-bd85-978f9f3d2f91",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791056657979
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-3c259748-44d6-4c71-9fbf-8ddeb21128da",
+        "payload": {
+          "riddleId": "reddit-guest-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "QQQQQ",
+          "requestId": "guess-3c259748-44d6-4c71-9fbf-8ddeb21128da"
+        },
+        "sentAt": 1791056658093
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-b462f6dd-6fa3-4046-8623-8c9198e32949",
+        "payload": {
+          "riddleId": "reddit-guest-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "RRRRR",
+          "requestId": "guess-b462f6dd-6fa3-4046-8623-8c9198e32949"
+        },
+        "sentAt": 1791056658159
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-7d171778-a40a-4a2a-a2de-0d703a358e6e",
+        "payload": {
+          "riddleId": "reddit-guest-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "SSSSS",
+          "requestId": "guess-7d171778-a40a-4a2a-a2de-0d703a358e6e"
+        },
+        "sentAt": 1791056658225
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-78034a7d-1c4c-4fdd-837f-1799622ea306",
+        "payload": {
+          "riddleId": "reddit-guest-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "TTTTT",
+          "requestId": "guess-78034a7d-1c4c-4fdd-837f-1799622ea306"
+        },
+        "sentAt": 1791056658292
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-6130e06b-f6ac-4eae-a265-5f6802607d29",
+        "payload": {
+          "riddleId": "reddit-guest-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "PIANO",
+          "requestId": "guess-6130e06b-f6ac-4eae-a265-5f6802607d29"
+        },
+        "sentAt": 1791056658363
+      },
+      {
+        "type": "game:recordAchievements",
+        "payload": {
+          "achievementIds": [
+            "first_win",
+            "last_chance",
+            "classic_last_chance"
+          ]
+        },
+        "sentAt": 1791056658375
+      }
+    ],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-e5cf4846-1400-41ad-ab40-530662f19092",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791056657966
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-57728c87-0efc-49db-a93d-fbe96e3523dd",
+        "payload": {
+          "user": {
+            "uid": "reddit-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791056657975
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-909bebed-611b-4786-b440-b1cc14960fb0",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-f9aefe57-d0ad-4866-aea4-fe7a92041819",
+          "locale": "en",
+          "user": {
+            "uid": "reddit-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791056657989
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "reddit-guest-1",
+            "text": "What has keys but cannot open doors?",
+            "answerLength": 5,
+            "evaluation": {
+              "answer": "piano",
+              "locale": "en"
+            },
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "gameMode": "classic",
+            "index": 1,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "acceptedGuesses": []
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791056657990
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "reddit-guest-1"
+          }
+        },
+        "sentAt": 1791056657991
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-3c259748-44d6-4c71-9fbf-8ddeb21128da",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              }
+            ],
+            "attempts": 1,
+            "isCorrect": false,
+            "gameOver": false,
+            "canContinue": false
+          }
+        },
+        "sentAt": 1791056658094
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-b462f6dd-6fa3-4046-8623-8c9198e32949",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              },
+              {
+                "letter": "r",
+                "status": "red"
+              }
+            ],
+            "attempts": 2,
+            "isCorrect": false,
+            "gameOver": false,
+            "canContinue": false
+          }
+        },
+        "sentAt": 1791056658159
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-7d171778-a40a-4a2a-a2de-0d703a358e6e",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              },
+              {
+                "letter": "s",
+                "status": "red"
+              }
+            ],
+            "attempts": 3,
+            "isCorrect": false,
+            "gameOver": false,
+            "canContinue": false
+          }
+        },
+        "sentAt": 1791056658226
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-78034a7d-1c4c-4fdd-837f-1799622ea306",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              },
+              {
+                "letter": "t",
+                "status": "red"
+              }
+            ],
+            "attempts": 4,
+            "isCorrect": false,
+            "gameOver": false,
+            "canContinue": false
+          }
+        },
+        "sentAt": 1791056658293
+      }
+    ],
+    "errors": []
+  }
+}

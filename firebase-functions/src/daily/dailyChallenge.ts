@@ -347,6 +347,8 @@ export const getCurrentClassicRiddle = onCallWithSentry(
     request: CallableRequest<{
       /** Stores classic index. */
       classicIndex?: number;
+      /** Opts in to canonical Classic position without changing older response shapes. */
+      includeClassicIndex?: boolean;
       /** Stores locale. */
       locale?: string;
       /** Stores session token. */
@@ -529,6 +531,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       return validateCallableResponse(
         GetCurrentDailyChallengeResponseSchema,
         {
+          ...(request.data?.includeClassicIndex === true ? {classicIndex} : {}),
           challenge: buildSinglePlayerChallengeResponse(riddle, undefined, sessionToken, activeSession, request.data?.includeEvaluation === true, request.data?.includeHintRecovery === true, request.data?.includeGuessRecovery === true),
         },
         "getCurrentClassicRiddle",

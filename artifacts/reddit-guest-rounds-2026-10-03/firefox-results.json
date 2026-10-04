@@ -1,0 +1,34 @@
+{
+  "beforeReload": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"decision\": true,\n  \"attempts\": 5,\n  \"rows\": [\n    \"qqqqq\",\n    \"rrrrr\",\n    \"sssss\",\n    \"ttttt\",\n    \"uuuuu\"\n  ],\n  \"coins\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "reloaded": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"decision\": true,\n  \"attempts\": 5,\n  \"rows\": [\n    \"qqqqq\",\n    \"rrrrr\",\n    \"sssss\",\n    \"ttttt\",\n    \"uuuuu\"\n  ],\n  \"paidDisabled\": true,\n  \"closeHit\": true,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "advanced": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"decision\": false,\n  \"riddle\": {\n    \"riddleId\": \"reddit-guest-2\",\n    \"text\": \"What has a face and hands but no arms?\",\n    \"answerLength\": 5,\n    \"evaluation\": {\n      \"answer\": \"clock\",\n      \"locale\": \"en\"\n    },\n    \"sessionToken\": \"00000000-0000-4000-8000-000000000002\",\n    \"gameMode\": \"classic\",\n    \"index\": 2,\n    \"attemptsUsed\": 0,\n    \"hasUsedContinue\": false,\n    \"awaitingContinue\": false\n  },\n  \"profile\": {\n    \"username\": \"Guest Solver\",\n    \"coins\": 0,\n    \"level\": 1,\n    \"xp\": 0,\n    \"winStreak\": 0,\n    \"gamesPlayed\": 1,\n    \"wins\": 0,\n    \"achievements\": [],\n    \"classicIndex\": 2\n  },\n  \"rows\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"completionReceipts\": [\n    {\n      \"ok\": true,\n      \"attempts\": 5,\n      \"coins\": 0\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  },
+  "input": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"rows\": [\n    \"Q\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"draft\": \"Q\",\n  \"profile\": {\n    \"username\": \"Guest Solver\",\n    \"coins\": 0,\n    \"level\": 1,\n    \"xp\": 0,\n    \"winStreak\": 0,\n    \"gamesPlayed\": 1,\n    \"wins\": 0,\n    \"achievements\": [],\n    \"classicIndex\": 2\n  },\n  \"paths\": [\n    \"/api/session\",\n    \"/api/session\"\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+      }
+    ]
+  }
+}

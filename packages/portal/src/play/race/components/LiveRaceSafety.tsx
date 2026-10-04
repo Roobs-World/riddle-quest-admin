@@ -2,6 +2,8 @@ import {useEffect, useRef, useState} from "react";
 import {BlockSocialRivalResponseSchema, ReportSocialRivalResponseSchema, type LiveRaceCapability, type SocialReportCategory} from "@qwordly/core/race";
 import {tr} from "../../i18n";
 import {createRequestId} from "../../requestIds";
+import {liveRaceDeliveryDeadline} from "../logic/liveRaceDeliveryDeadline";
+import {captureBrowserException} from "../../../observability/browserErrorReporter";
 
 /** An immutable selected operation survives uncertain transport retries. */
 type SafetyIntent = {
@@ -29,20 +31,36 @@ type SafetyIntent = {
 const REASONS = [["harassment", "REPORT_HARASSMENT"], ["cheating", "REPORT_CHEATING"],
   ["inappropriate_identity", "REPORT_IDENTITY"], ["spam", "REPORT_SPAM"], ["other", "REPORT_OTHER"]] as const;
 
-/** Capability-owned safety controls never receive or submit the rival's account identity. */
-export function LiveRaceSafety({transport, ticketId, onBlocked}: {
+/** One owned seat and transport determine the safety panel's complete lifetime. */
+type LiveRaceSafetyProps = {
   /** Authenticated owning-target transport. */ transport: LiveRaceCapability;
   /** Current player's opaque seat. */ ticketId: string;
   /** Immediately retires visible rival identity after a confirmed block. */ onBlocked: () => void;
-}) {
+};
+
+/** Capability-owned controls cannot retain a retired seat or provider's pending mutation. */
+export function LiveRaceSafety(props: LiveRaceSafetyProps) {
+  /** Callback and profile changes retain the same seat; ownership changes replace its controls. */
+  const lifetime = useRef({transport: props.transport, ticketId: props.ticketId, version: 0});
+  if (lifetime.current.transport !== props.transport || lifetime.current.ticketId !== props.ticketId)
+    lifetime.current = {transport: props.transport, ticketId: props.ticketId, version: lifetime.current.version + 1};
+  return <LiveRaceSafetyPanel key={lifetime.current.version} {...props} />;
+}
+
+/** Owns immutable safety intents, bounded delivery, and validated acknowledgments. */
+function LiveRaceSafetyPanel({transport, ticketId, onBlocked}: LiveRaceSafetyProps) {
   /** Selected fixed report category. */
   const [category, setCategory] = useState<SocialReportCategory>("harassment");
   /** Synchronous exclusion prevents double admission before React disables controls. */
   const pending = useRef(false);
+  /** A superseded or retired delivery cannot publish its late acknowledgment. */
+  const latestDelivery = useRef<object | null>(null);
   /** The selected immutable request remains available for a delivery retry. */
   const intent = useRef<SafetyIntent | null>(null);
   /** Mounted lifetime rejects late outcomes after account, seat or locale retirement. */
   const active = useRef(true);
+  /** Local presentation waits are released when the owning panel retires. */
+  const waitAbort = useRef<AbortController | null>(null);
   /** Visible transport pending state. */
   const [busy, setBusy] = useState(false);
   /** Existing translated success acknowledgement. */
@@ -51,26 +69,57 @@ export function LiveRaceSafety({transport, ticketId, onBlocked}: {
   const [failed, setFailed] = useState(false);
   /** A confirmed block is not repeated by subsequent clicks. */
   const [blocked, setBlocked] = useState(false);
-  useEffect(() => {active.current = true; return () => {active.current = false;};}, []);
+  /** Canonical block acceptance excludes duplicate clicks before React paints its disabled state. */
+  const blockConfirmed = useRef(false);
+  useEffect(() => {
+    active.current = true;
+    /** Effect replay gets a fresh local wait lifetime without cancelling server work. */
+    const abort = new AbortController();
+    waitAbort.current = abort;
+    return () => {active.current = false; latestDelivery.current = null; abort.abort();};
+  }, []);
+  /** Only validated authority data can confirm a block or report. */
+  const confirm = (selected: SafetyIntent, value: unknown) => {
+    if (selected.kind === "block") {
+      BlockSocialRivalResponseSchema.parse(value);
+      setBlocked(true); setNotice("RaceTo10.BLOCK_SUCCESS");
+      if (!blockConfirmed.current) {
+        blockConfirmed.current = true;
+        /** A queued optional callback retains this effect lifetime even through replay. */
+        const ownerSignal = waitAbort.current?.signal;
+        // Optional parent work cannot reject an already confirmed authority receipt.
+        void Promise.resolve().then(() => {if (active.current && !ownerSignal?.aborted) return onBlocked();}).catch(error =>
+          captureBrowserException(error, {component: "live_race_safety", operation: "confirmed_block_callback"}));
+      }
+    } else {
+      ReportSocialRivalResponseSchema.parse(value);
+      setNotice("RaceTo10.REPORT_SUCCESS");
+    }
+    intent.current = null; setFailed(false);
+  };
   /** Dispatches the originally selected request; responses never become score authority. */
   const deliver = async (selected: SafetyIntent) => {
-    if (pending.current) return;
+    if (!active.current || pending.current) return;
     pending.current = true; setBusy(true); setFailed(false); setNotice(null); intent.current = selected;
+    /** This request owns confirmation until a new explicit request or panel retirement replaces it. */
+    const delivery = {}, signal = waitAbort.current?.signal;
+    latestDelivery.current = delivery;
+    /** A current late receipt can recover a timeout without overriding a newer operation. */
+    const late = (value: unknown) => {
+      if (active.current && !signal?.aborted && latestDelivery.current === delivery && !pending.current)
+        confirm(selected, value);
+    };
     try {
-      if (selected.kind === "block") {
-        BlockSocialRivalResponseSchema.parse(await transport.blockOpponent!(selected.input));
-        if (active.current) {setBlocked(true); setNotice("RaceTo10.BLOCK_SUCCESS"); onBlocked();}
-      } else {
-        ReportSocialRivalResponseSchema.parse(await transport.reportOpponent!(selected.input));
-        if (active.current) setNotice("RaceTo10.REPORT_SUCCESS");
-      }
-      if (active.current) intent.current = null;
+      /** Unknown authority outcomes retain their frozen request identity for retry. */
+      const value = await liveRaceDeliveryDeadline(selected.kind === "block"
+        ? transport.blockOpponent!(selected.input) : transport.reportOpponent!(selected.input), false, late, signal);
+      if (active.current && latestDelivery.current === delivery) confirm(selected, value);
     } catch {if (active.current) setFailed(true);}
     finally {pending.current = false; if (active.current) setBusy(false);}
   };
   /** Same operation retries retain the original request; a new reason starts a distinct explicit report. */
   const select = (kind: SafetyIntent["kind"]) => {
-    if (pending.current || kind === "block" && blocked) return;
+    if (!active.current || pending.current || kind === "block" && blockConfirmed.current) return;
     /** Previously uncertain work is retried only with exactly the same operation and category. */
     const previous = intent.current;
     if (previous?.kind === kind && (previous.kind === "block" || previous.input.category === category)) {void deliver(previous); return;}

@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: keyboard retains 32px minimum height:en:568
+
+false !== true
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-durability-browser.mjs:95:138)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-durability-browser.mjs:102:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,0 +1,78 @@
+{
+  "status": "verified-progress",
+  "goalStatus": "active",
+  "unitChecks": {
+    "portal-unit-final.log": 2588,
+    "core-unit.log": 316,
+    "backend-session-checks.log": 33
+  },
+  "unitTotal": 2937,
+  "portalSkipped": 118,
+  "focusedRegressionChecks": 75,
+  "injectedBrowserAssertions": {
+    "browser-development-final": 96,
+    "browser-production-final": 96,
+    "browser-existing-rounds": 72
+  },
+  "injectedBrowserTotal": 264,
+  "builtJourneys": {
+    "tests": 8,
+    "suites": 3
+  },
+  "sharedRecoveryHarness": {
+    "viewports": [
+      1280,
+      390
+    ],
+    "status": "passed",
+    "timingsExcludeProductionNetwork": true
+  },
+  "firefoxNative": "firefox-verified.json",
+  "targetBuilds": {
+    "jest": {
+      "built": true,
+      "artifactAuditPassed": true
+    },
+    "facebook": {
+      "built": true,
+      "artifactAuditPassed": true
+    },
+    "reddit": {
+      "built": true,
+      "artifactAuditPassed": true
+    },
+    "youtube": {
+      "built": true,
+      "artifactAuditPassed": true
+    },
+    "netflix": {
+      "built": true,
+      "artifactAuditPassed": true
+    },
+    "yahoo": {
+      "built": true,
+      "artifactAuditPassed": true
+    }
+  },
+  "types": {
+    "portal": "passed",
+    "core": "passed"
+  },
+  "tsdoc": {
+    "passed": true,
+    "declarations": 24913
+  },
+  "finalOwnedProcessesTerminal": true,
+  "ownedFirefoxTabClosed": true,
+  "originalFirefoxAboutBlankPreserved": true,
+  "sourceSha256": {
+    "packages/core/src/bridge/index.ts": "56e092a49723a142739e18586ad6efebddf4cafb3e0573fc03e9b553b725e92a",
+    "packages/core/src/bridge/__tests__/bridge.test.ts": "4fb7693ad3a6d38a54b67375846c1116b2f1aa9ca35f92dde78561cb8eb2b62d",
+    "packages/portal/src/reddit/RedditGuestHostServices.ts": "df3283b7c56f273598bee2935d46b6e9f8a242029d10c06500db70beb80c9017",
+    "packages/portal/src/reddit/__tests__/RedditGuestHostServices.test.ts": "53150ea67c30333c5da1838079c11a8ddba3d77851fa1301a7ac7b0ed1b838d2",
+    "packages/portal/src/play/gameSession.ts": "a510fc308d21bebeaa2c5fd47648bc20da15432092ee6d0925e212bc402213e3",
+    "packages/portal/src/play/__tests__/gameSession.test.ts": "01b5de006c787cf85f2cf8e01c3f7c7a15bd934517871d6854ffde336e0a616a",
+    "packages/portal/scripts/verify-reddit-guest-rounds-browser.mjs": "bfd3204a6272b06971a75ef8374127a8de62e4677d4478db8ba0615bf54c5a40",
+    "packages/portal/package.json": "2784a9f201bb251c454cb561b4c447ada2fb111fd942cea566532a883ea71d74"
+  }
+}

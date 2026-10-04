@@ -1,0 +1,23 @@
+1791014584896	geckodriver	INFO	Listening on 127.0.0.1:35335
+1791014584911	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/snap/firefox/current/ ... tion-9u0a9s83/firefox_devtools_mcp_profile" "--remote-debugging-port" "46645" "--remote-allow-hosts" "localhost" "-no-remote"
+*** You are running in headless mode.
+1791014585036	Marionette	INFO	Marionette enabled
+1791014585179	Marionette	INFO	Listening on port 45545
+WebDriver BiDi listening on ws://127.0.0.1:46645
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+Read port: 45545
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1791014586190	RemoteAgent	INFO	Perform WebSocket upgrade for incoming connection from 127.0.0.1:60286
+JavaScript warning: http://127.0.0.1:39783/assets/index-CVKuyJS0.js, line 45851: Failed to create WebGL context: WebGL creation failed: 
+* AllowWebgl2:false restricts context creation on this system. ()
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+1791014903988	Marionette	INFO	Stopped listening on port 45545
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null

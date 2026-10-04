@@ -1,0 +1,14 @@
+✔ invalid flags, input scopes and project/database mismatches fail before SDK initialization (7.52466ms)
+✔ the full inventory is validated offline before even the first valid page can apply (3.185216ms)
+✔ preview defaults to a bounded read-only page and reports scope without player IDs (0.758568ms)
+✔ apply requires the exact reviewed inventory hash and resumes only its requested page (0.989685ms)
+✔ both private loopback demo services are required when either emulator is selected (1.449046ms)
+✔ a busy owner does not advance the unapplied cursor and failures expose no private diagnostics (1.325011ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41.141659

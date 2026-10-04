@@ -1,0 +1,47 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "physical input starts the correct draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "edited draft is preserved",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "fixed keyboard preparation adds no repeated work",
+    "actual": {
+      "segments": 12,
+      "splits": 0
+    },
+    "expected": {
+      "segments": 0,
+      "splits": 0
+    },
+    "measurement": {
+      "transitions": 2
+    }
+  }
+]

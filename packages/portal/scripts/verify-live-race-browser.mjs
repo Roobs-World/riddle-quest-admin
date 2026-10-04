@@ -134,13 +134,40 @@ try {
   assert.ok(geometry.lobby.y+geometry.lobby.height>viewport.height-50,'Lobby fills the available screen height');
   await a.screenshot({path:path.join(output,`searching-${viewport.width}.png`),fullPage:true});
   await b.goto(baseUrl+'/?user=Bob');await b.getByRole('button',{name:'History People, events, and eras from the past',exact:true}).click();await b.getByRole('button',{name:'Start PvP match',exact:true}).click();
-  await b.locator('.live-race-countdown').waitFor();assert.equal(await b.locator('.live-race-countdown').innerText(),'5');
+  await b.locator('.live-race-search-wheel[data-phase=countdown]').waitFor();assert.equal(await b.locator('.live-race-search-wheel[data-phase=countdown]').innerText(),'');
   await a.locator('.live-race-rival strong').waitFor();assert.equal(await a.locator('.live-race-rival strong').innerText(),'Bob');
   assert.equal(await b.locator('.live-race-rival strong').innerText(),'Alice');
   if(authority)await b.locator('.live-race-rival .live-race-avatar').waitFor();
   if(authority)for(const page of [a,b])assert.equal(await page.evaluate(()=>window.liveSnapshots.filter(view=>view.phase==='countdown').every(view=>view.run.currentRiddle===null)),true,'Neither player may inspect the first riddle during countdown');
   await a.screenshot({path:path.join(output,`countdown-${viewport.width}.png`),fullPage:true});
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});await b.locator('.race-gameplay .guess-board').waitFor({timeout:15000});
+
+  // Current live gameplay owns the multilingual input coverage formerly exercised by recorded races.
+  const nativeInput=a.locator('.race-native-answer-input');
+  for(const {committed,rendered} of [
+   {committed:'e\u0301',rendered:'é'},{committed:'نَ',rendered:'نَ'},{committed:'Ж',rendered:'Ж'},
+   {committed:'क्ष',rendered:'क्ष'},{committed:'日',rendered:'日'},{committed:'한',rendered:'한'},{committed:'中',rendered:'中'},
+  ]){
+   await nativeInput.evaluate((element,value)=>{
+    element.focus({preventScroll:true});
+    element.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true,data:value}));
+    element.value=value;
+    element.dispatchEvent(new InputEvent('input',{bubbles:true,data:value,inputType:'insertCompositionText',isComposing:true}));
+    element.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:value}));
+   },committed);
+   await a.waitForFunction(value=>document.querySelector('.race-gameplay .guess-row .cell')?.textContent===value,rendered);
+   assert.equal(await a.locator('.race-gameplay .guess-row .cell').nth(1).innerText(),'','Composition commits one grapheme exactly once');
+   const accepted=await nativeInput.evaluate(element=>element.dispatchEvent(new InputEvent('beforeinput',{
+    bubbles:true,cancelable:true,inputType:'deleteContentBackward',
+   })));
+   assert.equal(accepted,false,'Software backspace consumes one live answer slot');
+   await a.waitForFunction(()=>document.querySelector('.race-gameplay .guess-row .cell')?.textContent==='');
+  }
+  await nativeInput.fill('日本語');
+  await a.waitForFunction(()=>[...document.querySelectorAll('.race-gameplay .guess-row .cell')].map(cell=>cell.textContent).join('')==='日本語');
+  for(let index=0;index<3;index++)await nativeInput.press('Backspace');
+  await a.waitForFunction(()=>[...document.querySelectorAll('.race-gameplay .guess-row .cell')].every(cell=>cell.textContent===''));
+  console.log('Live multilingual IME, paste, and physical/software deletion passed at '+viewport.width+'px.');
 
   if(push && authority){
    await a.waitForFunction(()=>window.livePushConnected===true).catch(async error=>{console.error(await a.evaluate(()=>({connected:window.livePushConnected,signals:window.livePushEvents,requests:window.liveRequests})));throw error;});

@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.yt-keyboard').getByRole('button', { name: 'R', exact: true })[22m
+
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-playable-action-focus-browser.mjs:50:107 {
+  log: [
+    "  - waiting for locator('.yt-keyboard').getByRole('button', { name: 'R', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

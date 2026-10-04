@@ -470,29 +470,29 @@
 /* Match the solo stack: status, full-width riddle, keyboard, actions. */
 .race-gameplay {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-  grid-template-areas: "scoreboard" "riddle" "keyboard" "actions";
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-areas: "riddle" "keyboard" "actions";
 }
-.race-gameplay .race-scoreboard {
+.race-screen-gameplay .race-scoreboard {
   position: static;
   padding: 8px 12px;
   gap: 6px;
 }
-.race-gameplay .race-rail-header {
+.race-screen-gameplay .race-rail-header {
   grid-template-columns: 1fr auto;
   justify-items: start;
 }
-.race-gameplay .race-rail-header .race-kicker {
+.race-screen-gameplay .race-rail-header .race-kicker {
   display: none;
 }
-.race-gameplay .race-rail-header h1 {
+.race-screen-gameplay .race-rail-header h1 {
   font-size: 1rem;
 }
-.race-gameplay .race-rail-header .race-close {
+.race-screen-gameplay .race-rail-header .race-close {
   width: 44px;
   height: 44px;
 }
-.race-gameplay .race-rail-game-info {
+.race-screen-gameplay .race-rail-game-info {
   padding-top: 0;
   border: 0;
   grid-template-columns: 70px minmax(0, 1fr);
@@ -500,38 +500,38 @@
   align-items: center;
   gap: 6px 12px;
 }
-.race-gameplay .race-header-clock {
+.race-screen-gameplay .race-header-clock {
   grid-area: clock;
 }
-.race-gameplay .race-progress {
+.race-screen-gameplay .race-progress {
   grid-area: progress;
   min-width: 0;
   min-height: 0;
   gap: 8px;
 }
-.race-gameplay .race-progress > div {
+.race-screen-gameplay .race-progress > div {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   padding: 8px 10px;
   border-radius: 12px;
   background: #fffdf70a;
 }
-.race-gameplay .race-progress > div > strong {
+.race-screen-gameplay .race-progress > div > strong {
   font: 400 1.1rem/1.2 var(--rq-font-display);
   white-space: nowrap;
 }
-.race-gameplay .race-progress > div > span {
+.race-screen-gameplay .race-progress > div > span {
   text-align: start;
   font-size: 0.7rem;
 }
-.race-gameplay .race-progress-track {
+.race-screen-gameplay .race-progress-track {
   grid-column: 1 / -1;
   width: 100%;
   height: 10px;
   border: 0;
   background: #fffdf726;
 }
-.race-gameplay .race-progress-track i {
+.race-screen-gameplay .race-progress-track i {
   inset: 0 auto 0 0;
   width: var(--race-progress);
   height: 100%;
@@ -539,21 +539,70 @@
   background: #49cf87;
   transition: width 240ms ease-out;
 }
-.race-gameplay .race-feedback {
+.race-screen-gameplay .race-feedback {
   grid-area: feedback;
   padding: 4px;
 }
 
-.race-gameplay .race-progress > div:nth-child(2) .race-progress-track i {
+.race-screen-gameplay .race-progress > div:nth-child(2) .race-progress-track i {
   background: #ffd45c;
 }
-.race-gameplay .race-rail-header h1 { font-family: var(--rq-font-display); }
-.race-gameplay .race-header-clock strong { font-family: var(--rq-font-display); font-weight: 400; }
+.race-screen-gameplay .race-rail-header h1 { font-family: var(--rq-font-display); }
+.race-screen-gameplay .race-header-clock strong { font-family: var(--rq-font-display); font-weight: 400; }
 @media (max-width: 620px) {
-  .race-gameplay .race-rail-game-info { gap: 6px 8px; }
-  .race-gameplay .race-progress { gap: 6px; }
-  .race-gameplay .race-progress > div { padding: 7px 6px; gap: 4px; }
-  .race-gameplay .race-progress > div > strong { font-size: 0.9rem; }
+  .race-screen-gameplay .race-rail-game-info { gap: 6px 8px; }
+  .race-screen-gameplay .race-progress { gap: 6px; }
+  .race-screen-gameplay .race-progress > div { padding: 7px 6px; gap: 4px; }
+  .race-screen-gameplay .race-progress > div > strong { font-size: 0.9rem; }
 }
 
-.race-gameplay .race-feedback.idle { display: none; }
+.race-screen-gameplay .race-feedback.idle { display: none; }
+
+/* Compact the board before fitting the whole short, narrow race surface. */
+@media (max-width: 540px) and (max-height: 650px) {
+  .race-gameplay .guess-board {
+    max-width: min(100%, calc(var(--answer-length) * 42px - 4px));
+  }
+}
+
+/* A short landscape view gives the puzzle and keyboard their own columns. */
+@media (min-width: 600px) and (max-height: 600px) and (orientation: landscape) {
+  .race-gameplay {
+    grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "scoreboard scoreboard" "riddle keyboard" "riddle actions";
+  }
+  .race-gameplay .race-riddle-surface {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .race-gameplay .race-riddle-surface .riddle-card {
+    min-height: 0;
+    padding: 16px 12px;
+  }
+  .race-gameplay .race-riddle-surface .riddle-card h2 { font-size: 20px; }
+  .race-gameplay .guess-board {
+    max-width: min(100%, calc(var(--answer-length) * 42px - 4px));
+  }
+  .race-gameplay > .keyboard { align-self: center; }
+}
+
+/* Status stays unscaled; only the unchanged puzzle and inputs use viewport fit. */
+.race-screen-gameplay > .race-scoreboard {
+  width: min(360px, 100%);
+  margin: 0 auto 8px;
+}
+.race-screen-gameplay .race-rail-header h1 { font-size: 18px; }
+.race-screen-gameplay .race-rail-header .race-close {
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+}
+.race-screen-gameplay .race-header-clock { grid-row: 1; }
+.race-screen-gameplay .race-header-clock strong { font-size: 22px; }
+.race-screen-gameplay .race-header-clock small { font-size: 10px; }
+.race-screen-gameplay .race-progress { grid-area: 1 / 2; }
+.race-screen-gameplay .race-progress > div { grid-template-columns: minmax(0, 1fr); }
+.race-screen-gameplay .race-progress > div > span { font-size: 12px; }
+.race-screen-gameplay .race-progress > div > strong { white-space: normal; font-size: 14px; line-height: 1.2; }
+.race-screen-gameplay .race-feedback.idle { display: none; }

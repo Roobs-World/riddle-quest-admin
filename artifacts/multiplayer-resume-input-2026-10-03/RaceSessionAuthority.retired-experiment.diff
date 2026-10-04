@@ -1,0 +1,26 @@
+--- 
++++ 
+@@ -54,6 +54,12 @@
+ };
+ /** Private input candidate whose question identity must be confirmed before restoration. */
+ export type RaceResumeDraft = Pick<RaceSessionState, "run" | "currentLetters" | "activeSlotIndex" | "raceGuesses">;
++
++/** Local input belongs only to the exact active question confirmed by the returned run. */
++export const matchesRaceResumeDraft = (draft: RaceResumeDraft, run: RaceRunView): boolean => Boolean(
++  run.status === "active" && run.currentRiddle && draft.run?.runId === run.runId && draft.run.locale === run.locale &&
++  draft.run.currentRiddle?.riddleId === run.currentRiddle.riddleId &&
++  draft.run.currentRiddle.position === run.currentRiddle.position && draft.currentLetters.length === run.currentRiddle.answerLength);
+ /** Validates the complete reveal set before any guess or paid-action checkpoint is consumed. */
+ const raceReveals = (prompt: RaceRunView["currentRiddle"]): Map<number, string> => {
+   /** A terminal view has no editable answer or reveals to merge. */
+@@ -229,9 +235,7 @@
+       /** Recovery preserves known input only for the same authority-owned question. */
+       let attempt = {...raceAttemptState(run), raceGuesses: attempts(run)};
+       /** Provisional input supplies letters only after the server confirms its exact question. */
+-      const matchesDraft = (draft: RaceResumeDraft): boolean => Boolean(run.status === "active" && run.currentRiddle &&
+-        draft.run?.runId === run.runId && run.currentRiddle.riddleId === draft.run.currentRiddle?.riddleId &&
+-        run.currentRiddle.position === draft.run.currentRiddle.position && run.currentRiddle.answerLength === draft.currentLetters.length);
++      const matchesDraft = (draft: RaceResumeDraft): boolean => matchesRaceResumeDraft(draft, run);
+       /** Prefer confirmed successor input; otherwise preserve the current authority-owned draft. */
+       const draft = resumeDraft && matchesDraft(resumeDraft) ? resumeDraft : state;
+       if (operation === "raceResume" && run.currentRiddle && matchesDraft(draft)) {

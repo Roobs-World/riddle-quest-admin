@@ -1,0 +1,1094 @@
+[
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "scene preparation waits until idle is explicitly released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "a pending decoration download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "decorative failures preserve the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "the same authoritative riddle stays visible",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "decoration does not submit an answer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "decoration does not deliver a reward",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "saved draft keeps its server session token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "saved draft survives decorative resolution",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "decoration failure is isolated and reported once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "no fatal page diagnostic is emitted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "pause and resume do not retry a failed scene import",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "pause and resume do not repeat its diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "reduced motion removes healthy and failed decorative children",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "motion changes retain native import ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "motion changes preserve retired failure diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "only healthy decoration returns when motion is enabled",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "the player can finish after decorative resolution",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "completion still delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "scene resolution produces no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "active-failure: shared preparation makes one native request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "active-failure: rejected preparation stays handled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "active-failure: diagnostics belong to the current effect",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "active-failure: retired preparation cannot publish a race component",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "active-failure: retired resolution adds no render",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-failure: shared preparation makes one native request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-failure: rejected preparation stays handled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-failure: diagnostics belong to the current effect",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-failure: retired preparation cannot publish a race component",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-failure: retired resolution adds no render",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-success: shared preparation makes one native request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-success: rejected preparation stays handled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-success: diagnostics belong to the current effect",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-success: retired preparation cannot publish a race component",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "retired-success: retired resolution adds no render",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "target-provided multiplayer avoids the unused shared chunk",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "target-provided multiplayer has no unrelated preload rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "target-provided multiplayer remains reachable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "closing the target surface preserves the puzzle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 1280,
+    "name": "opening the target surface still avoids shared code",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "scene preparation waits until idle is explicitly released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "a pending decoration download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "decorative failures preserve the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "the same authoritative riddle stays visible",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "decoration does not submit an answer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "decoration does not deliver a reward",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "saved draft keeps its server session token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "saved draft survives decorative resolution",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "decoration failure is isolated and reported once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "no fatal page diagnostic is emitted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "pause and resume do not retry a failed scene import",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "pause and resume do not repeat its diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "reduced motion removes healthy and failed decorative children",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "motion changes retain native import ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "motion changes preserve retired failure diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "only healthy decoration returns when motion is enabled",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "the player can finish after decorative resolution",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "completion still delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "scene resolution produces no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "active-failure: shared preparation makes one native request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "active-failure: rejected preparation stays handled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "active-failure: diagnostics belong to the current effect",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "active-failure: retired preparation cannot publish a race component",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "active-failure: retired resolution adds no render",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-failure: shared preparation makes one native request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-failure: rejected preparation stays handled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-failure: diagnostics belong to the current effect",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-failure: retired preparation cannot publish a race component",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-failure: retired resolution adds no render",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-success: shared preparation makes one native request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-success: rejected preparation stays handled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-success: diagnostics belong to the current effect",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-success: retired preparation cannot publish a race component",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "retired-success: retired resolution adds no render",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "target-provided multiplayer avoids the unused shared chunk",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "target-provided multiplayer has no unrelated preload rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "target-provided multiplayer remains reachable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "closing the target surface preserves the puzzle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "download",
+    "width": 390,
+    "name": "opening the target surface still avoids shared code",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "scene preparation waits until idle is explicitly released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "a pending decoration download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "decorative failures preserve the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "the same authoritative riddle stays visible",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "decoration does not submit an answer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "decoration does not deliver a reward",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "saved draft keeps its server session token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "saved draft survives decorative resolution",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "decoration failure is isolated and reported once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "no fatal page diagnostic is emitted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "pause and resume do not retry a failed scene import",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "pause and resume do not repeat its diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "reduced motion removes healthy and failed decorative children",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "motion changes retain native import ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "motion changes preserve retired failure diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "only healthy decoration returns when motion is enabled",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "the player can finish after decorative resolution",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "completion still delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 1280,
+    "name": "scene resolution produces no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "scene preparation waits until idle is explicitly released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "a pending decoration download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "decorative failures preserve the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "the same authoritative riddle stays visible",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "decoration does not submit an answer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "decoration does not deliver a reward",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "saved draft keeps its server session token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "saved draft survives decorative resolution",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "decoration failure is isolated and reported once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "no fatal page diagnostic is emitted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "pause and resume do not retry a failed scene import",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "pause and resume do not repeat its diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "reduced motion removes healthy and failed decorative children",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "motion changes retain native import ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "motion changes preserve retired failure diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "only healthy decoration returns when motion is enabled",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "the player can finish after decorative resolution",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "completion still delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "render",
+    "width": 390,
+    "name": "scene resolution produces no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "scene preparation waits until idle is explicitly released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "a pending decoration download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "decorative failures preserve the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "the same authoritative riddle stays visible",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "decoration does not submit an answer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "decoration does not deliver a reward",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "saved draft keeps its server session token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "saved draft survives decorative resolution",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "decoration failure is isolated and reported once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "no fatal page diagnostic is emitted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "pause and resume do not retry a failed scene import",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "pause and resume do not repeat its diagnostic",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "healthy decoration follows resume state",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "reduced motion removes healthy and failed decorative children",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "motion changes retain native import ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "motion changes preserve retired failure diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "only healthy decoration returns when motion is enabled",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "the player can finish after decorative resolution",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "completion still delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 1280,
+    "name": "scene resolution produces no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "scene preparation waits until idle is explicitly released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "a pending decoration download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "decorative failures preserve the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "the same authoritative riddle stays visible",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "decoration does not submit an answer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "decoration does not deliver a reward",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "saved draft keeps its server session token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "saved draft survives decorative resolution",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "decoration failure is isolated and reported once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "no fatal page diagnostic is emitted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "pause and resume do not retry a failed scene import",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "pause and resume do not repeat its diagnostic",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "healthy decoration follows resume state",
+    "actual": "no",
+    "expected": "no"
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "reduced motion removes healthy and failed decorative children",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "motion changes retain native import ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "motion changes preserve retired failure diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "only healthy decoration returns when motion is enabled",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "the player can finish after decorative resolution",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "completion still delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "healthy",
+    "width": 390,
+    "name": "scene resolution produces no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

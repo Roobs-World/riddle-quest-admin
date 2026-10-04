@@ -1,0 +1,6 @@
+
+Test Suites: 5 passed, 5 total
+Tests:       61 passed, 61 total
+Snapshots:   0 total
+Time:        0.252 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts|src/play/__tests__/useCompletionDelivery.test.ts|src/play/__tests__/firebaseServiceOwnership.test.ts|src/play/__tests__/useHostAuthSession.test.ts|src/play/__tests__/useHostRiddleRecovery.test.ts.

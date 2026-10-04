@@ -8,9 +8,11 @@ import {
   getHostErrorMessage,
   getHostNoticeMessage,
   type HostOperationName,
+  type CreateHostMessageHandlersOptions,
 } from "../hostMessageHandlers";
 import * as browserErrorReporter from "../../observability/browserErrorReporter";
 import {createHostAuthorityModules, type HostAuthorityModules} from "../HostAuthorityModules";
+import {setLocaleAndWait} from "../i18n";
 
 /** Reads auth snapshot. */
 const readAuthSnapshot = (services: HostServices): AuthSnapshot => {
@@ -32,6 +34,7 @@ const createHarness = (
   onAuthoritativeComplete?: () => void | Promise<void>,
   onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>,
   authority?: HostAuthorityModules,
+  onAuthoritativeGuess?: CreateHostMessageHandlersOptions["onAuthoritativeGuess"],
 ) => {
   /** Provides post operation behavior. */
   const postOperation = jest.fn(
@@ -101,6 +104,7 @@ const createHarness = (
     persistAchievementProjection,
     onPlayable,
     onAuthoritativeComplete,
+    onAuthoritativeGuess,
     onAuthoritativeRaceResult,
     onAccountDeleted,
     onAccountDeletionRequested,
@@ -173,6 +177,41 @@ describe("play host message handlers", () => {
       "Service temporarily unavailable. Please try again.",
     );
     expect(getHostNoticeMessage("Already rendered")).toBe("Already rendered");
+  });
+
+  it.each(["unauthenticated", "functions/unauthenticated"])(
+    "renders a retry notice for %s without exposing provider diagnostics",
+    async code => {
+      /** Real SDK failure shape from the hosted expired App Check refusal. */
+      const error = Object.assign(new Error("Unauthenticated [401]"), {code});
+      try {
+        await setLocaleAndWait("en");
+        expect(getHostErrorMessage(error)).toBe("Service temporarily unavailable. Please try again.");
+        await setLocaleAndWait("fr");
+        expect(getHostErrorMessage(error)).toBe("Service temporairement indisponible. Veuillez réessayer.");
+      } finally {
+        await setLocaleAndWait("en");
+      }
+    },
+  );
+
+  it("keeps an authentication-refused Hint rejected and correlated", async () => {
+    /** Authority seam throws the same SDK error shape as the real hosted refusal. */
+    const services = createFakeHostServices();
+    /** Definitive refusal must not be reclassified as an ambiguous paid outcome. */
+    const error = Object.assign(new Error("Unauthenticated [401]"), {code: "functions/unauthenticated"});
+    jest.spyOn(services, "requestHint").mockRejectedValue(error);
+    /** Correlated host delivery under test, independent of fake economy behavior. */
+    const harness = createHarness(services);
+    await harness.handlers.requestHint({type: "game:requestHint", requestId: "auth-refused-hint", payload: {
+      riddleId: "classic-fake-1", gameMode: "classic", locale: "en",
+      sessionToken: "00000000-0000-4000-8000-000000000003", requestId: "auth-refused-hint",
+    }});
+    expect(services.requestHint).toHaveBeenCalledTimes(1);
+    expect(harness.postOperation).toHaveBeenCalledWith(
+      "auth-refused-hint", "hint", false, undefined,
+      "Service temporarily unavailable. Please try again.", "rejected",
+    );
   });
 
   it("does not expose bridge validation details from an incompatible backend response", () => {
@@ -248,6 +287,30 @@ describe("play host message handlers", () => {
     requestHint.mockRejectedValueOnce(new Error("Firebase: hint unavailable"));
     await harness.handlers.requestHint(message);
     expect(harness.postOperation).toHaveBeenLastCalledWith("hint-1", "hint", false, undefined, "hint unavailable", "retryable");
+  });
+
+  it("acknowledges accepted guesses while optional target work remains pending", async () => {
+    /** Accepted authority state must not inherit provider follow-up latency. */
+    const services = createFakeHostServices();
+    /** Canonical accepted result delivered before optional target work. */
+    const result = {feedback: [{letter: "p", status: "green" as const}], attempts: 1, isCorrect: true, gameOver: true};
+    jest.spyOn(services, "submitGuess").mockResolvedValue(result);
+    /** Held callback acknowledgment controls only optional side effects. */
+    let finish!: () => void;
+    /** Target provider response never gates the accepted receipt. */
+    const pending = new Promise<void>(resolve => {finish = resolve;});
+    /** Records the optional callback invocation independently of reward delivery. */
+    const callback = jest.fn(() => pending);
+    /** Real host router retains every accepted guess acknowledgment. */
+    const harness = createHarness(services, undefined, undefined, undefined, undefined, undefined, callback);
+    await harness.handlers.submitGuess({type: "game:submitGuess", requestId: "guess-fast", payload: {
+      riddleId: "classic-fake-1", gameMode: "classic", sessionToken: "00000000-0000-4000-8000-000000000001",
+      requestId: "guess-authority", guess: "piano",
+    }});
+    try {
+      expect(harness.postOperation).toHaveBeenCalledWith("guess-fast", "guess", true, result);
+      expect(callback).toHaveBeenCalledTimes(1);
+    } finally {finish();}
   });
 
   it("delivers earned rewards before optional platform follow-up finishes", async () => {
@@ -679,4 +742,12 @@ describe("play host message handlers", () => {
       "deletion marker unavailable",
     );
   });
+});
+
+it.each(["deadline-exceeded", "functions/deadline-exceeded"])("translates %s delivery failures into existing player-facing copy", code => {
+  /** Transport implementation details must not appear in game notices. */
+  const message = getHostErrorMessage({code, message: "reddit-gateway-request-timed-out"});
+  expect(message).not.toContain("reddit-gateway");
+  expect(message).not.toContain("deadline-exceeded");
+  expect(message).not.toBe("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE");
 });

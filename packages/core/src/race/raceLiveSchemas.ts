@@ -16,8 +16,13 @@ export const LiveRaceChallengeIdSchema = z.string().regex(/^live_[a-f0-9]{64}$/)
 /** One authenticated, idempotent queue entry. */
 export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema,
   requestId: z.string().min(8).max(160), createChallenge: z.boolean().optional(),
-  challengeId: LiveRaceChallengeIdSchema.optional()}).strict()
-  .refine(input => !(input.createChallenge && input.challengeId));
+  challengeId: LiveRaceChallengeIdSchema.optional(),
+  /** Facebook adapter captures its synchronized SDK context; other providers must reject this selector. */
+  facebookContextId: z.string().min(1).max(256).regex(/^[A-Za-z0-9._:-]+$/).optional(),
+  /** Caller-owned terminal ticket; the server resolves the original human opponent. */
+  rematchOfTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict()
+  .refine(input => !(input.createChallenge && input.challengeId))
+  .refine(input => !input.rematchOfTicketId || !(input.createChallenge || input.challengeId));
 /** Commands identify an owned seat and never supply scores or clock values. */
 export const UpdateLiveRaceSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
   action: z.enum(["poll", "guess", "hint", "skip", "leave"]), requestId: z.string().min(8).max(160),
@@ -62,6 +67,10 @@ export type UpdateLiveRace = z.infer<typeof UpdateLiveRaceSchema>;
 export type LiveRaceView = z.infer<typeof LiveRaceViewSchema>;
 /** Platform adapter owns the authenticated transport. */
 export type LiveRaceCapability = {
+  /** Creates or recovers a private rematch without accepting a rival account identifier. */
+  rematch?(input: Pick<JoinLiveRace, "locale" | "categoryId" | "requestId"> & {
+    /** Caller-owned retained terminal seat. */ rematchOfTicketId: string;
+  }): Promise<LiveRaceView>;
   /** Reads only the authenticated account's retained terminal seats in the selected language. */
   history?(locale: z.infer<typeof RaceLocaleSchema>): Promise<ListLiveRaceHistoryResponse>;
   /** Blocks the private opponent resolved from the caller's own live seat. */
@@ -91,6 +100,21 @@ export type LiveRaceCapability = {
     /** Opaque existing server lobby. */
     challengeId: string;
   }): Promise<"success" | "cancelled" | "error">;
+  /** Chooses a native private audience and returns the transport bound to that selection. */
+  chooseChallenge?(): Promise<
+    /** A successful selection owns its private join and native invitation delivery. */
+    {
+      /** Confirms that native selection produced a bound private transport. */
+      status: "success";
+      /** Transport retaining the selected native audience for subsequent play. */
+      value: LiveRaceCapability;
+    } |
+    /** Dismissal and provider failure never create a server seat. */
+    {
+      /** Distinguishes expected dismissal from failed native selection. */
+      status: "cancelled" | "error";
+    }
+  >;
   /** Enters or recovers the player's current lobby. */
   join(input: JoinLiveRace): Promise<LiveRaceView>;
   /** Reads an invitation without joining, when supported by the target. */

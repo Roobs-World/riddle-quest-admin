@@ -1,0 +1,3668 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "x",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "x",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "authority applies each help penalty once",
+    "actual": 15000,
+    "expected": 15000
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "local edits cannot change authority solve count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "authority applies each help penalty once",
+    "actual": 45000,
+    "expected": 45000
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "background observations keep Submit available",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz",
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz",
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retry",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-edit",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "empty",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner",
+    "name": "retired receipt cannot reopen another account board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "close immediately disables draft editing",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "leave confirms once for the original ticket",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "x",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "x",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "authority applies each help penalty once",
+    "actual": 15000,
+    "expected": 15000
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "local edits cannot change authority solve count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "authority applies each help penalty once",
+    "actual": 45000,
+    "expected": 45000
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "background observations keep Submit available",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "poll",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz",
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz",
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retry",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "empty",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner",
+    "name": "retired receipt cannot reopen another account board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "close immediately disables draft editing",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "leave confirms once for the original ticket",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "x",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "x",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "authority applies each help penalty once",
+    "actual": 15000,
+    "expected": 15000
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "local edits cannot change authority solve count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "authority applies each help penalty once",
+    "actual": 45000,
+    "expected": 45000
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "background observations keep Submit available",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "transport retry retains one original request id",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "poll",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz",
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz",
+      "zzzz"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retry",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-edit",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "receipt keeps only the correct question-owned draft",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "accepted original guess is never replaced by new draft text",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "transport retry retains one original request id",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "local edits cannot change authority solve count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "authority applies each help penalty once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "next explicit command uses the complete native word",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "new explicit submission advances authority exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "empty",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner",
+    "name": "retired receipt cannot reopen another account board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "held delivery leaves native composition enabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "held delivery accepts native local edits",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      "t"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "pending receipt still locks Submit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "native Enter cannot bypass pending authority",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "close immediately disables draft editing",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "leave confirms once for the original ticket",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

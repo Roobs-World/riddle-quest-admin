@@ -1,5 +1,5 @@
 import {useState, type FormEvent} from "react";
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 import {canSubmitUsername, normalizeUsernameInput, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH} from "./usernameForm";
 
 /** Props required to submit a profile username change. */
@@ -10,6 +10,8 @@ export type UsernameModalPageProps = {
 
 /** Renders and owns the transient username editing form state. */
 export function UsernameModalPage({onUpdateUsername}: UsernameModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Provides [username, set username] behavior. */
   const [username, setUsername] = useState("");
   /** Normalizes d username. */

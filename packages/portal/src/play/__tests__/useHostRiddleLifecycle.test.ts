@@ -6,6 +6,24 @@ jest.mock("../../analytics/events", () => ({trackEvent: jest.fn()}));
 jest.mock("../../observability/browserErrorReporter", () => ({captureBrowserException: jest.fn()}));
 jest.mock("../preloadGameModals", () => ({preloadGameModals: async () => undefined}));
 import {useHostRiddleLifecycle} from "../useHostRiddleLifecycle";
+
+it.each(["functions/deadline-exceeded", "deadline-exceeded"])("renders a translated recovery notice for callable timeout %s", async (code) => {
+  /** Real lifecycle catch receives the same structured error as the callable SDK. */
+  const services = {loadRiddle: async () => {throw Object.assign(new Error("deadline-exceeded"), {code});}};
+  /** Captures the notice and correlated failure delivered to the player. */
+  const notice = jest.fn();
+  /** Observes the correlated authority failure sent to the current question request. */
+  const operation = jest.fn();
+  /** Real lifecycle receives the injected callable timeout. */
+  const lifecycle = useHostRiddleLifecycle({userId: "player", profile: null, initialGameMode: "classic", locale: "en",
+    services, withActivity: callback => callback(), postToGame: jest.fn(),
+    postOperation: operation, configurationWarning: null, setNotice: notice, onRecoveryAttempt: jest.fn()});
+  expect(await lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "timed-out-question")).toBe(false);
+  /** Existing translated recovery copy expected for both callable timeout spellings. */
+  const expected = "Service temporarily unavailable. Please try again.";
+  expect(notice).toHaveBeenLastCalledWith(expected);
+  expect(operation).toHaveBeenLastCalledWith("timed-out-question", "loadRiddle", false, undefined, expected);
+});
 it.each([undefined, "load-after-daily-win"])("loads Classic after authoritative Daily completion, preserving correlation %s", async (requestId) => {
   /** Injected authority loader records fallback attempts and correlated failures. */
   const load = jest.fn<HostServices["loadRiddle"]>(async input => {

@@ -1,0 +1,7 @@
+{
+  "packages/portal/src/play/firebaseServices.ts": "8eb446962047a57424aea7000d7421a1b31e05d77f140361d088bb25991f6005",
+  "packages/portal/src/play/gameplayAuthorityDelivery.ts": "34f325413e1655b56f6a1af7fab357d87c5144809eb4470c02f2f575c8a57be7",
+  "packages/portal/src/play/useHostOperations.ts": "d5c9c07ab5ddad7fad995000b3c3cc3f13c1888d76efc1f681eb6e2e1fed7f18",
+  "packages/portal/src/play/PlayHostApp.tsx": "ccd5bdb64d08921589bd549f8e859597fd2c1813b78dda2099b8c3f90652cc25",
+  "packages/portal/src/play/hostMessageHandlers.ts": "45487d9cc56d89649f55192cb3de363f840cbc9ea8dad1e2a59f50d56da5ca74"
+}

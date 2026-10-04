@@ -1,0 +1,60 @@
+{
+  "status": "verified",
+  "goalStatus": "active",
+  "newUnitCases": 17,
+  "portalUnitCases": 2707,
+  "portalUnitSuites": 296,
+  "portalSkippedCases": 121,
+  "injectedChecks": 708,
+  "injectedJourneys": 60,
+  "builtJourneys": 22,
+  "builtSuites": 4,
+  "reactModes": [
+    "development",
+    "production"
+  ],
+  "viewports": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "baselineRed": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "wrong",
+      "name": "held delivery leaves native composition enabled",
+      "actual": false,
+      "expected": true
+    }
+  ],
+  "firefoxMcpVerified": true,
+  "builtTargets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "stableBuildInputs": 762,
+  "ownedSourceSha256": {
+    "packages/portal/src/play/race/LiveRaceGame.tsx": "d3c465ac69d43804bb966985dafe0b62bcb94927edb2d5079a41e31150bc01aa",
+    "packages/portal/src/play/race/logic/liveRaceDraft.ts": "b896fa2947fa81e0e719fa628bc50a42e5d565a863c5e6794a20dff74dbf241d",
+    "packages/portal/src/play/race/__tests__/liveRaceDraft.test.ts": "aade958d8939f80f4dfc54164b0f84bae389cdbdc4a3119ff1fee3c9117b8af2",
+    "packages/portal/scripts/verify-live-reconnect-input-browser.mjs": "5188928f00500ff2a926a2c6b40f4b24adf5612ddfe612ff09a195d0ff854acf",
+    "packages/portal/src/play/__tests__/CommerceModalPages.test.tsx": "8ad0e5cd9c8fb4bedc1d6407cac38fe2428b13327e16a1f6a382be22fd4cd26d",
+    "packages/portal/src/play/i18n.ts": "4fc5c6e3090e79ff32bc5ce19500c03a8ba7ab98dcca4f1ecf9f034c4d50b91f",
+    "packages/portal/package.json": "9821b34aa5b6b8163fcbc668d28d8732bd629994053ec345b948306e9fdd49d0"
+  },
+  "unchangedOtherScope": "No backend, SDK, translation key, deployment, or commit changes in this pass."
+}

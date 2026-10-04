@@ -1,0 +1,10 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "typing after an action completes the current draft",
+    "actual": "zzzz",
+    "expected": "test"
+  }
+]

@@ -1,0 +1,40 @@
+--- GameFrameApp.before
++++ GameFrameApp.after
+@@ -1,4 +1,4 @@
+-import {lazy, Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ComponentType} from "react";
++import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ComponentType} from "react";
+ import type {GameToHostMessage} from "@qwordly/core/bridge";
+ import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
+ import musicUrl from "../../../../assets/audio-web/music.webm";
+@@ -51,8 +51,7 @@
+ import type {RaceTo10GameProps} from "./race/RaceTo10Game.types";
+ import type {AttemptRecoveryCapability} from "../platform/types";
+ 
+-/** Renders the solar system interface. */
+-const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
++import {DecorativeSolarSystem} from "./DecorativeSolarSystem";
+ 
+ /** Provides game frame app behavior. */
+ export function GameFrameApp({
+@@ -184,7 +183,7 @@
+   useOfflineDialog(online, offlineDialogRef);
+ 
+   /** Provides {game modal view, race to10 game} behavior. */
+-  const {GameModalView, RaceTo10Game: SharedRaceTo10Game} = useGameSurfaces(raceEnabled);
++  const {GameModalView, RaceTo10Game: SharedRaceTo10Game} = useGameSurfaces(raceEnabled && raceSurface === undefined);
+   /** Supplied by the target entry rather than imported across platform boundaries. */
+   const RaceTo10Game = raceSurface ?? SharedRaceTo10Game;
+ 
+@@ -342,11 +341,7 @@
+       inert={interactionBlocked && online !== false ? true : undefined}
+       data-analytics-screen={raceOpen ? "multiplayer" : state.modal ? `modal_${state.modal}` : `game_${state.gameMode}`}
+     >
+-      {solarReady && (
+-        <Suspense fallback={null}>
+-          <SolarSystem paused={state.paused} />
+-        </Suspense>
+-      )}
++      {solarReady && <DecorativeSolarSystem paused={state.paused} />}
+       <audio ref={musicRef} loop preload="none" aria-hidden="true">
+         <source src={musicUrl} type='audio/webm; codecs="opus"' />
+       </audio>

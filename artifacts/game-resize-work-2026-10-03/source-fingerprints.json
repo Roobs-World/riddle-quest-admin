@@ -1,0 +1,10 @@
+{
+  "packages/portal/src/play/SolarSystem.tsx": "8f81dd3ce789f935952b9f1db5bd5f43d5dba151ae6d1825777cc399ca90ad61",
+  "packages/portal/src/play/game/decorativeSizing.ts": "9d30ccfbefc790fb317848af5b0971fd91d4e3267244f0cb82c038cd461795fc",
+  "packages/portal/src/play/game/decorativeRestoration.ts": "a0df7aa97ab2f0f085320660dc24676bddf74ce93afb3e51ffb9cbe6bf44323d",
+  "packages/portal/src/play/game/decorativeAnimation.ts": "f2237d045c863829e143995d1d2bfb85812fd100dfb11138a5bea059a35be371",
+  "packages/portal/src/play/__tests__/decorativeSizing.test.ts": "cdfabf81f228dbdba6473e660cce8dbf429570f59c2087c07e8475699c1a1f09",
+  "packages/portal/scripts/verify-solar-animation-browser.mjs": "2151367f624fc76bf6ef262172fd9a023dacefa4f8c3bf366d5ade0ac5fd6eab",
+  "packages/portal/scripts/verify-solar-sizing-browser.mjs": "d4876c715d5f87e501c8968f08fa7c66621f35c4aad67dc0c4e96c04ff84d065",
+  "packages/portal/package.json": "28eadb1645ab4841d67aa5d4e908921a55e18efa92ce0abbad2b7fdddcf5d1fe"
+}

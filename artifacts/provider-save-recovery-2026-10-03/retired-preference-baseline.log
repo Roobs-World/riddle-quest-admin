@@ -1,0 +1,24 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/platform/__tests__/PlayerProjectionRecovery.test.ts
+  ● provider projection save recovery › does not begin a preference retry after its preceding projection outlives the view
+
+    TypeError: release is not a function
+
+      229 |     await jest.advanceTimersByTimeAsync(1000);
+      230 |     owner.detachRecovery();
+    > 231 |     release();
+          |     ^
+      232 |     await jest.advanceTimersByTimeAsync(0);
+      233 |     expect(preferences).toHaveBeenCalledTimes(1);
+      234 |     owner.attachRecovery(() => true);
+
+      at Object.<anonymous> (src/platform/__tests__/PlayerProjectionRecovery.test.ts:231:5)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 10 passed, 11 total
+Snapshots:   0 total
+Time:        0.193 s, estimated 1 s
+Ran all test suites matching src/platform/__tests__/PlayerProjectionRecovery.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/platform/__tests__/PlayerProjectionRecovery.test.ts

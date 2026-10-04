@@ -1,0 +1,166 @@
+{
+  "mode": "development",
+  "checks": 134,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "commit",
+      "name": "software deletion uses the visible committed callback",
+      "actual": [
+        "B"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "commit",
+      "name": "committed replacement uses its new callback once",
+      "actual": [
+        "B",
+        "B"
+      ],
+      "expected": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "abandon",
+      "name": "software deletion uses the visible committed callback",
+      "actual": [
+        "B"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "retire-commit",
+      "name": "retired editor cannot delete through retained or commit-boundary events",
+      "actual": [
+        "B"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "composition",
+      "name": "software deletion uses the visible committed callback",
+      "actual": [
+        "B"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "composition",
+      "name": "committed replacement uses its new callback once",
+      "actual": [
+        "B",
+        "B"
+      ],
+      "expected": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "playable",
+      "scenario": "commit",
+      "name": "software deletion uses the visible committed callback",
+      "actual": [
+        "B"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "playable",
+      "scenario": "commit",
+      "name": "committed replacement uses its new callback once",
+      "actual": [
+        "B",
+        "B"
+      ],
+      "expected": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "playable",
+      "scenario": "abandon",
+      "name": "software deletion uses the visible committed callback",
+      "actual": [
+        "B"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "playable",
+      "scenario": "retire-commit",
+      "name": "retired editor cannot delete through retained or commit-boundary events",
+      "actual": [
+        "B"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "playable",
+      "scenario": "composition",
+      "name": "software deletion uses the visible committed callback",
+      "actual": [
+        "B"
+      ],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "playable",
+      "scenario": "composition",
+      "name": "committed replacement uses its new callback once",
+      "actual": [
+        "B",
+        "B"
+      ],
+      "expected": [
+        "A",
+        "B"
+      ]
+    }
+  ]
+}

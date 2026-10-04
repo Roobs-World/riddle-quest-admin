@@ -1,0 +1,53 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 8h ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1
++
+Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 613ms using pnpm v11.21.0
+$ jest --config jest.config.cjs --runInBand
+FAIL src/play/race/__tests__/RaceProviderViews.test.ts
+  ● owned multiplayer provider views › settles normal context absence without reporting a failed board or repeating a mutation
+
+    TypeError: h.views.show is not a function
+
+      64 |     const list = jest.fn(async () => null), record = jest.fn(async () => null);
+      65 |     h.views.enter({locale: "en", contextBoard: {list, record}});
+    > 66 |     h.views.show("inbox"); await settle();
+         |             ^
+      67 |     expect(h.views.getSnapshot()).toMatchObject({contextBoard: null, contextBoardLoading: false, failed: false});
+      68 |     expect(h.errors).not.toContain("RaceTo10.ERROR_GENERIC");
+      69 |     expect(record).not.toHaveBeenCalled(); expect(h.timers.size).toBe(0);
+
+      at Object.<anonymous> (src/play/race/__tests__/RaceProviderViews.test.ts:66:13)
+
+
+Summary of all failing tests
+FAIL src/play/race/__tests__/RaceProviderViews.test.ts
+  ● owned multiplayer provider views › settles normal context absence without reporting a failed board or repeating a mutation
+
+    TypeError: h.views.show is not a function
+
+      64 |     const list = jest.fn(async () => null), record = jest.fn(async () => null);
+      65 |     h.views.enter({locale: "en", contextBoard: {list, record}});
+    > 66 |     h.views.show("inbox"); await settle();
+         |             ^
+      67 |     expect(h.views.getSnapshot()).toMatchObject({contextBoard: null, contextBoardLoading: false, failed: false});
+      68 |     expect(h.errors).not.toContain("RaceTo10.ERROR_GENERIC");
+      69 |     expect(record).not.toHaveBeenCalled(); expect(h.timers.size).toBe(0);
+
+      at Object.<anonymous> (src/play/race/__tests__/RaceProviderViews.test.ts:66:13)
+
+
+Test Suites: 1 failed, 15 skipped, 277 passed, 278 of 293 total
+Tests:       1 failed, 118 skipped, 2400 passed, 2519 total
+Snapshots:   0 total
+Time:        8.927 s, estimated 178 s
+Ran all test suites.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test: `jest --config jest.config.cjs --runInBand`
+Exit status 1

@@ -1,0 +1,9 @@
+{
+  "packages/portal/src/play/game/hooks/useAnswerKeyboard.ts": "e7be9f82bd3e6c7ba6d58d5a49295366e79cf811ca08a82c22db1ff9655e0b41",
+  "packages/portal/src/input/useNativeAnswerBackspace.ts": "9aa6ef32c6488dc44311939db98b820c8c41936768f68661b150bc2d1974ee2f",
+  "packages/portal/src/play/race/components/NativeAnswerInput.tsx": "7a26e4416927b54dd0128e29e8845ef83af74ac732d42db5799a1b908a348373",
+  "packages/portal/src/play/race/LiveRaceGame.tsx": "87866b904593884c2649ac8dbedba0402489f7ce84dd0cb89098b5d1679ac5bb",
+  "packages/portal/scripts/verify-game-keyboard-lifetime-browser.mjs": "cfbcfa4ccdb5777488afa40b894d0da3312ab40b45e8f71e6f4d1ef98f2ed184",
+  "packages/portal/scripts/verify-live-race-browser.mjs": "2183adef313ad95d167cf8653911dad7e6f458dd3f8042bc733253c1663a9013",
+  "packages/portal/package.json": "d2fe0e5fd2c2af780c746705fee415ff80c16d1f54de190ae453f1da57b1f639"
+}

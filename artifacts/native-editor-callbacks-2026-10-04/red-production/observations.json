@@ -1,0 +1,134 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "name": "speculative render retains committed editor",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "name": "speculative render retains native DOM identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "name": "software deletion uses the visible committed callback",
+    "actual": [
+      "B"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "name": "committed replacement uses its new callback once",
+    "actual": [
+      "B",
+      "B"
+    ],
+    "expected": [
+      "A",
+      "B"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "name": "ordinary committed update retains native editor and focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "name": "speculative render retains committed editor",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "name": "speculative render retains native DOM identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "name": "software deletion uses the visible committed callback",
+    "actual": [
+      "B"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "name": "committed replacement uses its new callback once",
+    "actual": [
+      "B",
+      "B"
+    ],
+    "expected": [
+      "A",
+      "B"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "name": "ordinary committed update retains native editor and focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

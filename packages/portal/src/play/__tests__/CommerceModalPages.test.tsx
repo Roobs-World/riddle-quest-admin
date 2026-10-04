@@ -6,6 +6,18 @@ import {
   SkipModalPage,
   TreasureModalPage,
 } from "../modalPages/commerce/CoinActionModalPages";
+
+it("offers the ordinary next action without advertising unavailable guest coin actions", () => {
+  /** No economy module exists in this hosted practice session. */
+  const props = {balance: 0, onContinue: () => {}, onSkip: () => {}, onOpenModal: () => {},
+    economyAvailable: false, onDecline: () => {}};
+  /** This actual dialog must omit unsupported paid choices even with no checkout products. */
+  const html = renderToString(<ContinueModalPage {...props} />);
+  expect(html).not.toContain("loss-continue-action");
+  expect(html).not.toContain("loss-skip-action");
+  expect(html).not.toContain("continue-balance");
+  expect(html).toContain("loss-next-action");
+});
 import {ShopModalPage} from "../modalPages/commerce/ShopModalPage";
 import {ShopSubscriptionContext} from "../modalPages/commerce/ShopSubscriptionContext";
 import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "../modalPages/commerce/commerceCosts";
@@ -111,26 +123,31 @@ describe("commerce modal pages", () => {
     const poorHtml = renderToString(<ContinueModalPage balance={99} onContinue={noop}
       onSkip={() => { skipRequests += 1; }} onOpenModal={noop} />);
     /** Provides funded prompt behavior for interaction inspection. */
-    const fundedPrompt = ContinueModalPage({
-      balance: SKIP_COIN_COST,
-      onContinue: noop,
-      onSkip: () => { skipRequests += 1; },
-      onOpenModal: noop,
-    });
-    /** Direct skip action rendered by the funded loss prompt. */
-    const skipButton = fundedPrompt.props.children.find(
-      (child: {
-        /** Stores props. */
-        props?: {
-          /** Stores class name. */
-          className?: string;
-        };
-      }) => child?.props?.className === "play-primary loss-skip-action",
-    );
-
-    expect(poorHtml).toMatch(/not have enough coins[\s\S]*loss-skip-action[^>]*disabled/u);
-    expect(skipButton.props.disabled).toBe(false);
-    skipButton.props.onClick();
+    function FundedPrompt() {
+      /** Actual component executes under the server renderer hook dispatcher. */
+      const fundedPrompt = ContinueModalPage({
+        balance: SKIP_COIN_COST,
+        onContinue: noop,
+        onSkip: () => { skipRequests += 1; },
+        onOpenModal: noop,
+      });
+      /** Direct skip action rendered by the funded loss prompt. */
+      const skipButton = fundedPrompt.props.children.find(
+        (child: {
+          /** Stores props. */
+          props?: {
+            /** Stores class name. */
+            className?: string;
+          };
+        }) => child?.props?.className === "play-primary loss-skip-action",
+      );
+  
+      expect(poorHtml).toMatch(/not have enough coins[\s\S]*loss-skip-action[^>]*disabled/u);
+      expect(skipButton.props.disabled).toBe(false);
+      skipButton.props.onClick();
+      return fundedPrompt;
+    }
+    renderToString(<FundedPrompt />);
     expect(skipRequests).toBe(1);
   });
 

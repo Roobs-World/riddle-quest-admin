@@ -1,0 +1,102 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-facebook-context-delivery-review", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9151.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config jest.rules.config.js --runInBand src/__tests__/race/facebookLiveContextDelivery.it.test.ts src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts src/__tests__/race/facebookContextBoard.it.test.ts src/__tests__/race/redditLiveTournamentDelivery.it.test.ts src/__tests__/race/raceLiveRematch.it.test.ts src/__tests__/race/raceLiveInvitation.it.test.ts src/__tests__/race/raceLiveAccountDeletion.it.test.ts
+FAIL src/__tests__/race/facebookLiveContextDelivery.it.test.ts (17.515 s)
+  ● captures independent context destinations for rematch invitation winning seat 1
+
+    6 ALREADY_EXISTS: entity already exists: EntityRef[partitionRef=dev~demo-facebook-context-delivery-review, path=/liveRacePushOutbox/446a169203e4b1bc1ad8c3ce7fb9b13ae8a4c1dd19160c47d078113de5dba119]
+
+      at callErrorFromStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/call.ts:84:17)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:360:55)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:466:34)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+      at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+      for call at
+      at ServiceClientImpl.makeUnaryRequest (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:325:42)
+      at ServiceClientImpl.<anonymous> (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/make-client.ts:189:15)
+      at ../node_modules/.pnpm/@google-cloud+firestore-api@0.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore-api/src/v1/firestore_client.ts:358:25
+      at ../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/timeout.js:44:16
+      at repeat (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/retries.js:121:25)
+      at ../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/retries.js:163:13
+      at OngoingCallPromise.call (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/call.js:70:27)
+      at NormalApiCaller.call (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/normalCalls/normalApiCaller.js:34:19)
+      at ../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/createApiCall.js:122:37
+
+  ● rejects a deleted owner at the actual context callable lease before recreating membership or scores
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "account-deleted"
+    Received message:   "This account was permanently deleted."
+
+          83 |     } catch (error) {
+          84 |       if (isJestAccountDeletedError(error)) {
+        > 85 |         throw new HttpsError("failed-precondition", "This account was permanently deleted.");
+             |               ^
+          86 |       }
+          87 |       throw error;
+          88 |     }
+
+      at src/shared/sentryHandlers.ts:85:15
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:358:5
+      at Object.toThrow (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:360:17
+
+  ● rejects a deleted owner at the actual context callable lease before recreating membership or scores
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "account-deleted"
+    Received message:   "This account was permanently deleted."
+
+          83 |     } catch (error) {
+          84 |       if (isJestAccountDeletedError(error)) {
+        > 85 |         throw new HttpsError("failed-precondition", "This account was permanently deleted.");
+             |               ^
+          86 |       }
+          87 |       throw error;
+          88 |     }
+
+      at src/shared/sentryHandlers.ts:85:15
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:358:5
+      at Object.toThrow (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:360:17
+
+  ● rejects a deleted owner at the actual context callable lease before recreating membership or scores
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "account-deleted"
+    Received message:   "This account was permanently deleted."
+
+          83 |     } catch (error) {
+          84 |       if (isJestAccountDeletedError(error)) {
+        > 85 |         throw new HttpsError("failed-precondition", "This account was permanently deleted.");
+             |               ^
+          86 |       }
+          87 |       throw error;
+          88 |     }
+
+      at src/shared/sentryHandlers.ts:85:15
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:358:5
+      at Object.toThrow (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at src/__tests__/race/facebookLiveContextDelivery.it.test.ts:360:17
+
+
+Test Suites: 1 failed, 6 passed, 7 total
+Tests:       4 failed, 97 passed, 101 total
+Snapshots:   0 total
+Time:        74.527 s, estimated 79 s
+Ran all test suites matching src/__tests__/race/facebookLiveContextDelivery.it.test.ts|src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts|src/__tests__/race/facebookContextBoard.it.test.ts|src/__tests__/race/redditLiveTournamentDelivery.it.test.ts|src/__tests__/race/raceLiveRematch.it.test.ts|src/__tests__/race/raceLiveInvitation.it.test.ts|src/__tests__/race/raceLiveAccountDeletion.it.test.ts.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config jest.rules.config.js --runInBand src/__tests__/race/facebookLiveContextDelivery.it.test.ts src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts src/__tests__/race/facebookContextBoard.it.test.ts src/__tests__/race/redditLiveTournamentDelivery.it.test.ts src/__tests__/race/raceLiveRematch.it.test.ts src/__tests__/race/raceLiveInvitation.it.test.ts src/__tests__/race/raceLiveAccountDeletion.it.test.ts" exited with code 1

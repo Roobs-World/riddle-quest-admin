@@ -1,0 +1,43 @@
+[
+  {
+    "case": "ar-exhausted",
+    "width": 500,
+    "height": 832,
+    "direction": "rtl",
+    "status": "unsaved",
+    "messageMatches": true,
+    "retryLabelMatches": true,
+    "retryHeight": 44,
+    "noticeFits": true,
+    "noticeAboveGame": true,
+    "controlsFit": true,
+    "documentFits": true,
+    "draft": "PIAN",
+    "initializationsUnchanged": true,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "case": "ar-held-retry",
+    "status": "saving",
+    "visible": true,
+    "disabled": true,
+    "busy": "true"
+  },
+  {
+    "case": "ar-playable-held-retry",
+    "draft": "PIANO",
+    "checkpoint": "PIANO",
+    "visible": true
+  },
+  {
+    "case": "ar-latest-ack",
+    "status": "quiet",
+    "notice": 0,
+    "draft": "PIANO",
+    "durable": "PIANO",
+    "initializationsUnchanged": true,
+    "errors": [],
+    "unhandled": []
+  }
+]

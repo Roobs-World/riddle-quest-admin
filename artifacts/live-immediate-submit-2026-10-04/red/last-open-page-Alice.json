@@ -1,0 +1,25 @@
+{
+  "text": "Race to 10\n×\n0:02.3\n+0:00.0\nYou\nRiddles completed:\n0 / 10\nBob\nRiddles completed:\n0 / 10\nA four-letter browser answer\nT\nE\nS\nT\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\n+15 seconds\nSubmit\nSkip\n+45 seconds",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Alice",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-0a1911e4-e0ce-4805-b5fd-fe4c0efba2e0"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-aff38940-7eff-49fe-a9a3-c44cc2f009e3"
+      }
+    ],
+    "saves": [],
+    "loads": 0,
+    "errors": [],
+    "unhandled": []
+  }
+}

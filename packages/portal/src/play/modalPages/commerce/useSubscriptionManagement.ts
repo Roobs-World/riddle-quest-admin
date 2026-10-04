@@ -67,5 +67,7 @@ export function useSubscriptionManagement() {
       setPending(null);
     }
   };
-  return {loading, pending, cancelled, unavailable, error, cancel, products: subscriptions?.products ?? []};
+  return {loading: loading || Boolean(subscriptions?.catalogLoading), pending, cancelled, unavailable, error, cancel,
+    catalogError: Boolean(subscriptions?.catalogError), retryCatalog: subscriptions?.refresh,
+    products: subscriptions?.products ?? []};
 }

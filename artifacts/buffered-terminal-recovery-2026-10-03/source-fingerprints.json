@@ -1,0 +1,11 @@
+{
+  "packages/portal/src/play/pendingGuessJournal.ts": "a2cde3a8c288704391f72ab1d66e37b51984cf970e952ab69031b6ce172c049e",
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "954b76de601c200eab095d3a3d7093c3ebc84a188637f854e3080dab61163341",
+  "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts": "3de2c96d3f9eb1e82c998f558eee6ce1f2cfd93e86b5fab8a8f9532fb26ebf62",
+  "packages/portal/scripts/verify-buffered-terminal-recovery-browser.mjs": "dbe87efd7474499d697d83fe918d2794548868038e841a43f553341834e4cbf0",
+  "packages/portal/package.json": "b3e4135d745a1e3500a1b7c0401c7fa4aac972b545868d69e0bc81a29f2b77ca",
+  "packages/portal/src/play/gameSession.ts": "a8991f2a35dffb0eea60c2322168eee9772fe705fdf37717e3179412937de383",
+  "packages/portal/src/play/gameSessionTypes.ts": "76f9590e226e9da131561d1124a2e8c4804d58fcfde2909b6013cf3cb310873c",
+  "packages/portal/src/play/ConfirmedRiddleOutcome.ts": "a1377b2c95afc69b8aa366c3e8ee923d6b6985a2b05bbff2d103cfaa3c26cb7d",
+  "packages/portal/src/play/__tests__/gameSession.test.ts": "06b884cf4c963af3d5dd6c97ba7df5b64fcdda4ced1b7d4a043ba247a021c25d"
+}

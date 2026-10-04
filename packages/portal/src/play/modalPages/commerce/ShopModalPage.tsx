@@ -2,7 +2,7 @@ import {getCoinPackBuyingPower} from "@qwordly/core/game";
 import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
 import {useSubscriptionManagement} from "./useSubscriptionManagement";
 import coinUrl from "../../../../../../assets/images/coin.svg";
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 import type {ProductSummary} from "../../types";
 
 /** Inputs required to display the platform product catalog. */
@@ -16,7 +16,7 @@ export type ShopModalPageProps = {
 };
 
 /** Localizes game-owned fallback copy while preserving provider-authored descriptions. */
-function shopProductCopy(product: ProductSummary) {
+function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTranslator>) {
   /** Game-owned pricing metadata used only for localized fallback copy. */
   const local = DEFAULT_PRODUCT_PRICING.find((item) => item.productId === product.productId);
   /** Maps catalog badge codes to the existing translated shop labels. */
@@ -35,8 +35,10 @@ function shopProductCopy(product: ProductSummary) {
 
 /** Renders products supplied by the Jest platform purchase catalog. */
 export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Provider refresh state controls the shop's loading presentation. */
-  const {loading} = useSubscriptionManagement();
+  const {loading, catalogError, retryCatalog} = useSubscriptionManagement();
   /** Whether current catalog entitlements already include an active subscription. */
   const hasActiveSubscription = products.some((product) => product.productType === "subscription" && product.subscriptionStatus === "active");
   /** Offers eligible for display while preserving the currently active subscription. */
@@ -48,11 +50,20 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
         <span>{tr("CoinShop.YOUR_BALANCE")}</span>
         <strong>{balance.toLocaleString()}</strong>
       </div>
+      {catalogError ? (
+        <div className="shop-catalog-error" role="alert">
+          <p>{tr("ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS")}</p>
+          <button className="play-secondary compact" disabled={loading} onClick={() => { void retryCatalog?.(); }}>
+            {tr("CommonButtons.RETRY")}
+          </button>
+        </div>
+      ) : null}
       <div className="game-shop-grid" aria-busy={loading}>
-        {products.length === 0 ? <p>{tr("CoinShop.NO_PACKS_AVAILABLE")}</p> : null}
+        {loading && products.length === 0 ? <p role="status">{tr("Accessibility.LOADING")}</p> : null}
+        {!loading && !catalogError && products.length === 0 ? <p>{tr("CoinShop.NO_PACKS_AVAILABLE")}</p> : null}
         {visibleProducts.map((product) => {
           /** Localized game-owned labels and provider-authored product description. */
-          const copy = shopProductCopy(product);
+          const copy = shopProductCopy(product, tr);
           /** Whole-action alternatives explain the actual value of the provider coin grant. */
           const buyingPower = getCoinPackBuyingPower(product.coins);
           return (
@@ -92,6 +103,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
             {product.subscriptionStatus !== "active" ? (
             <button
               className="play-primary compact"
+              disabled={catalogError}
               onClick={() => onPurchase(product.productId)}
             >
               {product.productType === "subscription" ? (

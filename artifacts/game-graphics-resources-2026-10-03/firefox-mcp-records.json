@@ -1,0 +1,432 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "graphics-resources-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "about:blank",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 about:blank (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:40177",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:40177 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".game-app",
+          "maxLines": 112
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .game-app]\n\nuid=e81 main\n  uid=e79 div\n    uid=e5 header\n      uid=e0 img \"Logo\" src=\"http://127.0.0.1:40177/asse...\"\n      uid=e1 button \"Mute sound\"\n      uid=e2 div text=\"Classic\"\n      uid=e4 div \"300  coins\"\n        uid=e3 img src=\"http://127.0.0.1:40177/asse...\"\n    uid=e39 section\n      uid=e7 div\n        uid=e6 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n      uid=e38 div\n        uid=e13 div\n          uid=e8 button \"Letter 1\"\n          uid=e9 button \"Letter 2\"\n          uid=e10 button \"Letter 3\"\n          uid=e11 button \"Letter 4\"\n          uid=e12 button \"Letter 5\"\n        uid=e19 div\n          uid=e14 button \"Letter 1\"\n          uid=e15 button \"Letter 2\"\n          uid=e16 button \"Letter 3\"\n          uid=e17 button \"Letter 4\"\n          uid=e18 button \"Letter 5\"\n        uid=e25 div\n          uid=e20 button \"Letter 1\"\n          uid=e21 button \"Letter 2\"\n          uid=e22 button \"Letter 3\"\n          uid=e23 button \"Letter 4\"\n          uid=e24 button \"Letter 5\"\n        uid=e31 div\n          uid=e26 button \"Letter 1\"\n          uid=e27 button \"Letter 2\"\n          uid=e28 button \"Letter 3\"\n          uid=e29 button \"Letter 4\"\n          uid=e30 button \"Letter 5\"\n        uid=e37 div\n          uid=e32 button \"Letter 1\"\n          uid=e33 button \"Letter 2\"\n          uid=e34 button \"Letter 3\"\n          uid=e35 button \"Letter 4\"\n          uid=e36 button \"Letter 5\"\n    uid=e71 section \"Virtual keyboard\"\n      uid=e50 div\n        uid=e40 button \"Q\" text=\"Q\"\n        uid=e41 button \"W\" text=\"W\"\n        uid=e42 button \"E\" text=\"E\"\n        uid=e43 button \"R\" text=\"R\"\n        uid=e44 button \"T\" text=\"T\"\n        uid=e45 button \"Y\" text=\"Y\"\n        uid=e46 button \"U\" text=\"U\"\n        uid=e47 button \"I\" text=\"I\"\n        uid=e48 button \"O\" text=\"O\"\n        uid=e49 button \"P\" text=\"P\"\n      uid=e60 div\n        uid=e51 button \"A\" text=\"A\"\n        uid=e52 button \"S\" text=\"S\"\n        uid=e53 button \"D\" text=\"D\"\n        uid=e54 button \"F\" text=\"F\"\n        uid=e55 button \"G\" text=\"G\"\n        uid=e56 button \"H\" text=\"H\"\n        uid=e57 button \"J\" text=\"J\"\n        uid=e58 button \"K\" text=\"K\"\n        uid=e59 button \"L\" text=\"L\"\n      uid=e70 div\n        uid=e61 button \"Z\" text=\"Z\"\n        uid=e62 button \"X\" text=\"X\"\n        uid=e63 button \"C\" text=\"C\"\n        uid=e64 button \"V\" text=\"V\"\n        uid=e65 button \"B\" text=\"B\"\n        uid=e66 button \"N\" text=\"N\"\n        uid=e67 button \"M\" text=\"M\"\n        uid=e69 button \"Backspace\"\n          uid=e68 img src=\"data:image/svg+xml,%3csvg%2...\"\n    uid=e75 section \"Game\"\n      uid=e72 button \"Hint\" text=\"Hint\"\n      uid=e73 button \"SUBMIT\" text=\"SUBMIT\"\n      uid=e74 button \"Skip\" text=\"Skip\"\n    uid=e78 nav \"Game\"\n      uid=e76 button \"Settings\"\n      uid=e77 button \"Profile\"\n  uid=e80 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e49"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e49"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e47"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e47"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e51"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e51"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e66"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e66"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.firefoxChecks=[];window.check=(name,actual,expected)=>{window.firefoxChecks.push({name,actual,expected});if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(name);};window.draft=window.probe.saves.findLast(row=>row.activeGame)?.activeGame;window.check('native PIAN draft checkpoint',window.draft.currentLetters.join('').toUpperCase(),'PIAN');window.check('native authoritative session exists',typeof window.draft.sessionToken,'string');window.failResource={kind:'MeshBasicMaterial',occurrence:1};window.controlFrames();window.releaseScene();return window.firefoxChecks;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n[\n  {\n    \"name\": \"native PIAN draft checkpoint\",\n    \"actual\": \"PIAN\",\n    \"expected\": \"PIAN\"\n  },\n  {\n    \"name\": \"native authoritative session exists\",\n    \"actual\": \"string\",\n    \"expected\": \"string\"\n  }\n]\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const c=window.check,p=window.probe,d=p.saves.findLast(row=>row.activeGame)?.activeGame;c('partial setup preserves frame',document.querySelectorAll('.game-app').length,1);c('partial setup preserves token',d.sessionToken,window.draft.sessionToken);c('partial setup preserves PIAN',d.currentLetters.join('').toUpperCase(),'PIAN');c('partial construction returns exactly three owned allocations',p.allocations,['renderer','SphereGeometry','texture']);c('all returned allocations released',window.liveResources(),0);c('partial renderer disposed once',p.disposals,1);c('partial context released once',p.contextReleases,1);c('capability probe released',p.probeReleases,p.capabilityProbes);c('partial canvas removed',document.querySelectorAll('.solar-system canvas').length,0);c('partial scene has no frames',window.pendingFrames(),0);c('one local setup diagnostic',p.errors.filter(r=>r.operation==='initialize_scene').length,1);c('no render boundary failure',p.errors.filter(r=>r.operation==='render_decoration').length,0);c('no window errors',p.windowErrors,[]);c('no unhandled promises',p.unhandled,[]);c('no automatic guess',p.guesses,0);c('no automatic completion',p.completions,0);window.replayFrames();window.resizeScene(400,300,true);for(const callback of p.textureCallbacks)callback.onError?.(Error('retained texture failure'));c('retained callbacks do not redispose',p.duplicateReleases,0);c('retained callbacks do not report again',p.errors.filter(r=>r.component==='solar_system').length,1);return window.firefoxChecks;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n[\n  {\n    \"name\": \"native PIAN draft checkpoint\",\n    \"actual\": \"PIAN\",\n    \"expected\": \"PIAN\"\n  },\n  {\n    \"name\": \"native authoritative session exists\",\n    \"actual\": \"string\",\n    \"expected\": \"string\"\n  },\n  {\n    \"name\": \"partial setup preserves frame\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"partial setup preserves token\",\n    \"actual\": \"00000000-0000-4000-8000-000000000001\",\n    \"expected\": \"00000000-0000-4000-8000-000000000001\"\n  },\n  {\n    \"name\": \"partial setup preserves PIAN\",\n    \"actual\": \"PIAN\",\n    \"expected\": \"PIAN\"\n  },\n  {\n    \"name\": \"partial construction returns exactly three owned allocations\",\n    \"actual\": [\n      \"renderer\",\n      \"SphereGeometry\",\n      \"texture\"\n    ],\n    \"expected\": [\n      \"renderer\",\n      \"SphereGeometry\",\n      \"texture\"\n    ]\n  },\n  {\n    \"name\": \"all returned allocations released\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"partial renderer disposed once\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"partial context released once\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"capability probe released\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"partial canvas removed\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"partial scene has no frames\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"one local setup diagnostic\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"no render boundary failure\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"no window errors\",\n    \"actual\": [],\n    \"expected\": []\n  },\n  {\n    \"name\": \"no unhandled promises\",\n    \"actual\": [],\n    \"expected\": []\n  },\n  {\n    \"name\": \"no automatic guess\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"no automatic completion\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"retained callbacks do not redispose\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"retained callbacks do not report again\",\n    \"actual\": 1,\n    \"expected\": 1\n  }\n]\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T07-23-24-028Z.png (122.4KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e48"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e48"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e73"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e73"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const end=Date.now()+5000;while(window.probe.completions!==1){if(Date.now()>end)throw Error('completion timed out');await new Promise(requestAnimationFrame);}const c=window.check,p=window.probe;c('native answer remains submittable after partial setup failure',p.guesses,1);c('native answer receives one authoritative completion',p.completions,1);c('gameplay does not recreate failed graphics',window.liveResources(),0);c('gameplay does not repeat graphics diagnostic',p.errors.filter(r=>r.component==='solar_system').length,1);return window.firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n24\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify(window.firefoxChecks)",
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page. Result saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/evaluate-script-2026-10-03T07-24-51-661Z.json (2.0KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "get_firefox_info",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Firefox Instance Configuration\n\nBinary: /snap/firefox/current/usr/lib/firefox/firefox\nFirefox version: 157.0\nHeadless: Yes\nProfile: /home/craig-beswetherick/snap/firefox/common/mcp-tmp/graphics-resources-firefox-verification-aqfdfuml\nStart URL: about:blank\n\nOutput File: /home/craig-beswetherick/Documents/riddle-quest/artifacts/game-graphics-resources-2026-10-03/firefox-verification.log\n  Size: 0.00 MB\n  Last Modified: 2026-10-03T07:22:00.394Z"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  }
+]

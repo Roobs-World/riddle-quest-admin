@@ -1,0 +1,290 @@
+[
+  {
+    "case": "blocked-auto",
+    "name": "before draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "blocked-auto",
+    "name": "before saved",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "case": "blocked-auto",
+    "name": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "blocked-auto",
+    "name": "saved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "blocked-auto",
+    "name": "contrast",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "blocked-auto",
+    "name": "notice",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "case": "blocked-auto",
+    "name": "sessions",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "case": "blocked-auto",
+    "name": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "blocked-auto",
+    "name": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "final-short",
+    "name": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "final-short",
+    "name": "saved",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "case": "final-short",
+    "name": "height",
+    "actual": 576,
+    "expected": 576
+  },
+  {
+    "case": "final-short",
+    "name": "width",
+    "actual": 500,
+    "expected": 500
+  },
+  {
+    "case": "final-short",
+    "name": "retryReachable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "final-short",
+    "name": "retryHeight",
+    "actual": 44,
+    "expected": 44
+  },
+  {
+    "case": "final-short",
+    "name": "summaryHeight",
+    "actual": 44,
+    "expected": 44
+  },
+  {
+    "case": "final-short",
+    "name": "fixedWarningCount",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "case": "final-short",
+    "name": "detailsOpen",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "case": "final-short",
+    "name": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "final-short",
+    "name": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "final-short",
+    "name": "key height at least 32px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "native-disclosure",
+    "name": "open",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "native-disclosure",
+    "name": "draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "native-disclosure",
+    "name": "both existing explanations visible",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "case": "blockedManual",
+    "name": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "blockedManual",
+    "name": "saved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "blockedManual",
+    "name": "contrast",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "blockedManual",
+    "name": "notice",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "case": "blockedManual",
+    "name": "sessions",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "case": "blockedManual",
+    "name": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "blockedManual",
+    "name": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "finalAck",
+    "name": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "finalAck",
+    "name": "saved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "finalAck",
+    "name": "contrast",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "finalAck",
+    "name": "notice",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "case": "finalAck",
+    "name": "sessions",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "case": "finalAck",
+    "name": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "finalAck",
+    "name": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "reload",
+    "name": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "reload",
+    "name": "saved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "reload",
+    "name": "contrast",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "completion",
+    "name": "games",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "case": "completion",
+    "name": "wins",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "case": "completion",
+    "name": "coins",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "case": "completion",
+    "name": "xp",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "case": "completion",
+    "name": "activeGame",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "case": "completion",
+    "name": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "completion",
+    "name": "unhandled",
+    "actual": [],
+    "expected": []
+  }
+]

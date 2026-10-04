@@ -1,4 +1,4 @@
-import {lazy, Suspense, useCallback, useEffect, useReducer, useRef, useState, type ComponentType} from "react";
+import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
@@ -7,6 +7,7 @@ import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, 
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
+import {ShopSubscriptionContext} from "./modalPages/commerce/ShopSubscriptionContext";
 import {GuidanceOverlay} from "./guidance/GuidanceOverlay";
 import {SpinningWheel, SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {
@@ -50,14 +51,18 @@ import {useAttemptRecovery} from "./game/hooks/useAttemptRecovery";
 import type {RaceTo10GameProps} from "./race/RaceTo10Game.types";
 import type {AttemptRecoveryCapability} from "../platform/types";
 
-/** Renders the solar system interface. */
-const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
+import {DecorativeSolarSystem} from "./DecorativeSolarSystem";
+import {GameSurfaceBoundary, GameSurfaceRecovery} from "./GameSurfaceRecovery";
+import {completionPresentationKey} from "./completionPresentation";
+import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "./playerPreferences";
 
 /** Provides game frame app behavior. */
 export function GameFrameApp({
   raceSurface,
   localBridge = false,
+  economyAvailable = true,
   raceOwnerId,
+  onLiveRaceBalance,
   interactionBlocked = false,
   startupError,
   restoredGame,
@@ -84,8 +89,12 @@ export function GameFrameApp({
   raceSurface?: ComponentType<RaceTo10GameProps>;
   /** Stores local bridge. */
   localBridge?: boolean;
+  /** Presentation exposes paid actions only when the host has an economy authority. */
+  economyAvailable?: boolean;
   /** Authenticated game account used to isolate race resume state. */
   raceOwnerId?: string;
+  /** Applies a transport-confirmed terminal balance to the owning host profile. */
+  onLiveRaceBalance?: (coins: number, ownerId: string) => void;
   /** Stores interaction blocked. */
   interactionBlocked?: boolean;
   /** Failed initial content load, shown with a usable Settings recovery control. */
@@ -131,6 +140,22 @@ export function GameFrameApp({
 } = {}) {
   /** Provides [state, dispatch] behavior. */
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
+  /** Keeps catalog recovery reachable when the provider read failed before any offers loaded. */
+  const shopCatalog = useContext(ShopSubscriptionContext);
+  /** Existing offers or a retryable catalog error keep the shop entry available. */
+  const commerceAvailable = state.products.length > 0 || Boolean(shopCatalog?.catalogError);
+  /** Terminal receipts belong to the exact account generation that opened the race. */
+  const raceAccount = useMemo(() => ({ownerId: raceOwnerId, generation: state.user?.accountGeneration}), [raceOwnerId, state.user?.accountGeneration]);
+  /** Retired race callbacks cannot change the replacement account's display. */
+  const currentRaceAccount = useRef(raceAccount);
+  currentRaceAccount.current = raceAccount;
+  /** Keep the server-confirmed balance visible while the independent profile refresh is pending. */
+  const acceptLiveRaceBalance: NonNullable<RaceTo10GameProps["onLiveResult"]> = (view) => {
+    if (currentRaceAccount.current !== raceAccount || !raceOwnerId || raceOwnerId !== state.user?.uid ||
+      view.phase !== "result" || typeof view.newCoins !== "number" || !Number.isInteger(view.newCoins) || view.newCoins < 0) return;
+    onLiveRaceBalance?.(view.newCoins, raceOwnerId);
+    dispatch({type: "coinsUpdated", newCoins: view.newCoins});
+  };
   /** Provides {shell ref, content ref} behavior. */
   const {shellRef, contentRef} = useViewportFit();
   /** Provides {music ref, play feedback} behavior. */
@@ -139,6 +164,8 @@ export function GameFrameApp({
   const online = useOnlineStatus();
   /** Provides [solar ready, set solar ready] behavior. */
   const [solarReady, setSolarReady] = useState(false);
+  /** Accessibility choices update the optional scene without waiting for another gameplay event. */
+  const reducedMotion = useSyncExternalStore(subscribeToPlayerReducedMotion, isPlayerReducedMotionEnabled, () => true);
   /** Provides [animated coin balance, set animated coin balance] behavior. */
   const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
   /** Overlay lifecycle, multiplayer eligibility, analytics, and presence coordination. */
@@ -164,9 +191,15 @@ export function GameFrameApp({
   useOfflineDialog(online, offlineDialogRef);
 
   /** Provides {game modal view, race to10 game} behavior. */
-  const {GameModalView, RaceTo10Game: SharedRaceTo10Game} = useGameSurfaces(raceEnabled);
+  const {GameModalView, RaceTo10Game: SharedRaceTo10Game} = useGameSurfaces(raceEnabled && raceSurface === undefined);
   /** Supplied by the target entry rather than imported across platform boundaries. */
   const RaceTo10Game = raceSurface ?? SharedRaceTo10Game;
+  /** Exact account visit owning interactive surface retirement. */
+  const surfaceOwner = JSON.stringify([state.user?.uid ?? null, state.user?.accountGeneration ?? null]);
+  /** Failed modal code must not leave an acknowledged outcome without its Next action. */
+  const [failedModalOwner, setFailedModalOwner] = useState<string | null>(null);
+  /** Terminal recovery belongs only to the visit whose modal code failed. */
+  const terminalSurfaceRecovery = failedModalOwner === surfaceOwner && state.lastOutcome?.kind === "win";
 
   useEffect(() => {
     if (state.modal === null) setAnimatedCoinBalance(null);
@@ -213,6 +246,7 @@ export function GameFrameApp({
   } behavior. */
   const {
     waitingForSkippedRiddle,
+    coinActionsReady,
     canSubmit,
     submitGuess,
     handleQueuedGuessResult,
@@ -229,7 +263,14 @@ export function GameFrameApp({
   } = useGameOperations({state, stateRef, restoredGame, dispatch, postToHost, playFeedback});
 
   useEffect(() => {
-    if (!state.initialized || !shouldLoadDecorativeWebGl(getMobileCapabilities())) return;
+    if (!state.initialized || solarReady || reducedMotion || raceOpen || state.paused ||
+      !shouldLoadDecorativeWebGl(getMobileCapabilities())) return;
+    /** Canceled native idle and fallback timer callbacks cannot start a retired scene load. */
+    let active = true;
+    /** Rechecks synchronous preference writes before React has committed their subscription update. */
+    const loadScene = () => {
+      if (active && !isPlayerReducedMotionEnabled()) setSolarReady(true);
+    };
     /** Provides idle window behavior. */
     const idleWindow = window as Window & {
       /** Stores request idle callback. */
@@ -245,18 +286,19 @@ export function GameFrameApp({
     };
     if (idleWindow.requestIdleCallback) {
       /** Provides handle behavior. */
-      const handle = idleWindow.requestIdleCallback(() => setSolarReady(true), {timeout: 5_000});
-      return () => idleWindow.cancelIdleCallback?.(handle);
+      const handle = idleWindow.requestIdleCallback(loadScene, {timeout: 5_000});
+      return () => { active = false; idleWindow.cancelIdleCallback?.(handle); };
     }
     /** Provides timer behavior. */
-    const timer = window.setTimeout(() => setSolarReady(true), 2_500);
-    return () => window.clearTimeout(timer);
-  }, [state.initialized]);
+    const timer = window.setTimeout(loadScene, 2_500);
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [state.initialized, solarReady, reducedMotion, raceOpen, state.paused]);
 
   useGameReadyReporter({initialized: state.initialized, sendReady, postToHost});
 
   /** Handles completion result. */
   const handleCompletionResult = useCompletionDelivery({
+    ownerKey: state.user ? JSON.stringify([state.user.uid, state.user.accountGeneration ?? null]) : undefined,
     outcome: state.guessPending ? null : state.lastOutcome,
     dispatch,
     postToHost,
@@ -308,7 +350,7 @@ export function GameFrameApp({
     dispatch({type: "backspace"});
   }, [playFeedback]);
   useAnswerKeyboard({
-    active: online && canEditCurrentGuess(state) && !guidanceActive && !raceOpen,
+    active: online && !interactionBlocked && canEditCurrentGuess(state) && !guidanceActive && !raceOpen,
     onLetter: typeKeyboardLetter,
     onBackspace: deleteKeyboardLetter,
     onSubmit: submitGuess,
@@ -321,26 +363,22 @@ export function GameFrameApp({
       inert={interactionBlocked && online !== false ? true : undefined}
       data-analytics-screen={raceOpen ? "multiplayer" : state.modal ? `modal_${state.modal}` : `game_${state.gameMode}`}
     >
-      {solarReady && (
-        <Suspense fallback={null}>
-          <SolarSystem paused={state.paused} />
-        </Suspense>
-      )}
+      {solarReady && <DecorativeSolarSystem enabled={!reducedMotion} paused={state.paused || raceOpen} />}
       <audio ref={musicRef} loop preload="none" aria-hidden="true">
         <source src={musicUrl} type='audio/webm; codecs="opus"' />
       </audio>
       <div
         ref={contentRef}
         className="game-content"
-        inert={state.modal !== null || guidanceActive || raceOpen || !online ? true : undefined}
-        aria-hidden={state.modal !== null || guidanceActive || raceOpen || !online ? true : undefined}
+        inert={state.modal !== null || terminalSurfaceRecovery || guidanceActive || raceOpen || !online ? true : undefined}
+        aria-hidden={state.modal !== null || terminalSurfaceRecovery || guidanceActive || raceOpen || !online ? true : undefined}
       >
         <GameHeader
           state={state}
           displayedCoins={animatedCoinBalance ?? undefined}
           onOpenShop={() => dispatch({type: "openModal", modal: "shop"})}
           onToggleMute={() => dispatch({type: "toggleMute"})}
-          commerceAvailable={state.products.length > 0}
+          commerceAvailable={commerceAvailable}
         />
 
         {!state.riddle || waitingForSkippedRiddle ? (
@@ -367,14 +405,14 @@ export function GameFrameApp({
             <Keyboard state={state} dispatch={dispatch} playFeedback={playFeedback} />
 
             <section className="game-input-actions" aria-label={tr("Navigation.GAME")}>
-              <button data-tooltip="gameHint" disabled={state.guessPending && !canDraftWhileConfirming(state)} onClick={() => dispatch({type: "openModal", modal: "hint"})}>
+              {economyAvailable && <button data-tooltip="gameHint" disabled={state.guessPending && !canDraftWhileConfirming(state)} onClick={() => dispatch({type: "openModal", modal: "hint"})}>
                 <HintIcon />
                 {tr("Navigation.HINT_BUTTON")}
-              </button>
+              </button>}
               <button data-tooltip="submitAnswer" className="submit-action" onClick={submitGuess} disabled={!canSubmit}>
                 {tr("GameScreenAlerts.SUBMIT_BUTTON")}
               </button>
-              {state.gameMode === "classic" && (
+              {economyAvailable && state.gameMode === "classic" && (
                 <button data-tooltip="gameSkip" disabled={state.guessPending && !canDraftWhileConfirming(state)} onClick={() => dispatch({type: "openModal", modal: "skip"})}>
                   <ForwardIcon />
                   {tr("GameScreenAlerts.SKIP_BUTTON")}
@@ -421,20 +459,60 @@ export function GameFrameApp({
         {state.paused && <div className="pause-banner">{tr("WebPortal.PAUSED")}</div>}
       </div>
       <div className="game-overlay-surfaces" inert={!online ? true : undefined}>
-        {state.modal && !raceOpen && (
+        <GameSurfaceBoundary key={`modal-${surfaceOwner}`} surface="modal" visible={Boolean((state.modal || terminalSurfaceRecovery) && !raceOpen)}
+          onUnavailable={() => setFailedModalOwner(surfaceOwner)}
+          recovery={<GameSurfaceRecovery
+            onClose={() => {if (!recovery.isPending() && !stateRef.current.pendingCoinSpend) dispatch(stateRef.current.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
+            closeBlocked={state.lastOutcome?.kind === "win" || (state.modal === "continue" && (state.guessPending || recovery.pending || Boolean(state.pendingCoinSpend)))}
+            onNext={state.lastOutcome?.kind === "win" ? () => {
+              /** Explicit Next releases the normal victory-load guard before asking authority. */
+              const current = stateRef.current;
+              if (!current.lastOutcome || !current.completionAcknowledged || current.guessPending || current.pendingCoinSpend || recovery.isPending()) return;
+              dispatch({type: "closeModal"});
+              if (current.lastOutcome.kind === "win") window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed", {
+                detail: {outcomeKey: completionPresentationKey(current.lastOutcome)},
+              }));
+              requestRiddle();
+            } : undefined}
+            nextBlocked={state.guessPending || !state.completionAcknowledged}
+            continuation={state.modal === "continue" ? {
+              economyAvailable,
+              onDecline: () => {if (!recovery.isPending() && !stateRef.current.guessPending && !stateRef.current.pendingCoinSpend) dispatch({type: "declineContinue"});},
+              balance: state.profile?.coins ?? 0,
+              onContinue: (amount) => {if (!recovery.isPending()) requestContinue(amount);},
+              onRecoverAttempt: isFacebookWebTarget && attemptRecovery ? recovery.request : undefined,
+              pending: recovery.pending || !coinActionsReady,
+              recoveryPending: state.guessPending,
+              onSkip: () => {if (!recovery.isPending()) requestSkip();},
+              onOpenModal: (modal) => dispatch({type: "openModal", modal}),
+              commerceAvailable: false,
+            } : undefined}
+            coinAction={state.modal === "hint" || (state.modal === "skip" && state.gameMode === "classic") ? {
+              kind: state.modal,
+              balance: state.profile?.coins ?? 0,
+              pending: recovery.pending || !coinActionsReady || (state.modal === "hint" && Boolean(state.engineSnapshot?.gameOver)),
+              onClose: () => dispatch({type: "closeModal"}),
+              onRequestAction: () => {if (!recovery.isPending()) state.modal === "hint" ? requestHint() : requestSkip();},
+              onOpenModal: (modal) => dispatch({type: "openModal", modal}),
+              commerceAvailable: false,
+            } : undefined}
+          />}
+        >
           <Suspense fallback={<SpinningWheelLoader overlay className="game-modal-loading" />}>
             <GameModalView
+              interactionBlocked={interactionBlocked || !online}
               state={state}
               onCoinBalancePreview={setAnimatedCoinBalance}
               onClose={() => {if (!recovery.isPending()) dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
               onContinue={(amount) => {if (!recovery.isPending()) requestContinue(amount);}}
               onRecoverAttempt={isFacebookWebTarget && attemptRecovery ? recovery.request : undefined}
-              continuationPending={recovery.pending || Boolean(state.pendingCoinSpend)}
+              continuationPending={recovery.pending || !coinActionsReady}
               onPurchase={requestPurchase}
               onNext={requestRiddle}
               onOpenModal={(modal) => dispatch({type: "openModal", modal})}
               onToggleMute={() => dispatch({type: "toggleMute"})}
-              commerceAvailable={state.products.length > 0}
+              commerceAvailable={commerceAvailable}
+              economyAvailable={economyAvailable}
               onRequestHint={requestHint}
               onRequestSkip={() => {if (!recovery.isPending()) requestSkip();}}
               onRequestLeaderboard={requestLeaderboard}
@@ -443,17 +521,20 @@ export function GameFrameApp({
               onDeleteAccount={deleteAccount}
             />
           </Suspense>
-        )}
+        </GameSurfaceBoundary>
         <GuidanceOverlay
           state={state}
+          economyAvailable={economyAvailable}
           modal={state.modal}
-          suspended={raceOpen}
+          suspended={raceOpen || (failedModalOwner === surfaceOwner && Boolean(state.modal || terminalSurfaceRecovery))}
           onActiveChange={setGuidanceActive}
           registrationName={registrationName}
           registrationInviterName={registrationInviterName}
           interactionBlocked={interactionBlocked || !online}
         />
-        {raceOpen && raceEnabled && (
+        <GameSurfaceBoundary key={`multiplayer-${surfaceOwner}`} surface="multiplayer" visible={raceOpen && raceEnabled}
+          recovery={<GameSurfaceRecovery onClose={() => setRaceOpen(false)} />}
+        >
           <Suspense fallback={<SpinningWheel />}>
             <RaceTo10Game
               key={raceOwnerId}
@@ -465,6 +546,7 @@ export function GameFrameApp({
               initialCategories={prefetchedRaceCategories}
               coins={state.profile?.coins ?? 0}
               postToHost={postToHost}
+              onLiveResult={acceptLiveRaceBalance}
               onClose={() => setRaceOpen(false)}
               nativeSocial={nativeSocial}
               matchmaking={matchmaking}
@@ -474,7 +556,7 @@ export function GameFrameApp({
               contextBoard={contextBoard}
             />
           </Suspense>
-        )}
+        </GameSurfaceBoundary>
       </div>
       {!online && (
         <div

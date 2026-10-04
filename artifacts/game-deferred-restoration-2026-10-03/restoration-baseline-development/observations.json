@@ -1,0 +1,1682 @@
+[
+  {
+    "width": 1280,
+    "name": "hidden: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "hidden: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden: eligible driver rebuilds once",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "hidden: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "hidden: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "hidden: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "hidden: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "hidden: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: eligible driver rebuilds once",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "zero-layout: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: eligible driver rebuilds once",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired pending driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired pending resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: newer loss invalidates pending restore",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: newer loss keeps frame stopped",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: eligible driver rebuilds once",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: retained callbacks cannot rebuild",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "newer-loss: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: blocked driver rebuilds",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: blocked diagnostic count",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: blocked live resources",
+    "actual": 0,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: eligible driver rebuilds once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: failure retires resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: failure stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: failure reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: retained callbacks cannot rebuild",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: retained callbacks do not repeat errors",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "resume-failure: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "hidden: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "hidden: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden: eligible driver rebuilds once",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "hidden: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "hidden: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "hidden: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "hidden: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "hidden: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: eligible driver rebuilds once",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "zero-layout: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: eligible driver rebuilds once",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired pending driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired pending resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retained callbacks cannot rebuild",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: blocked driver rebuilds",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: blocked diagnostic count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: blocked live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: newer loss invalidates pending restore",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: newer loss keeps frame stopped",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: eligible driver rebuilds once",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: eligible frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: eligible draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: retained callbacks cannot rebuild",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: retained callbacks do not repeat errors",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "newer-loss: no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: healthy draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: loss stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: blocked driver rebuilds",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: blocked frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: blocked diagnostic count",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: blocked live resources",
+    "actual": 0,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: blocked draw count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: eligible driver rebuilds once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: failure retires resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: failure stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: failure reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: retained callbacks cannot rebuild",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: retained callbacks do not repeat errors",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: retired context listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: no duplicate releases",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: restoration reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: draft preserved",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: token preserved",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: one submitted answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "resume-failure: no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

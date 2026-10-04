@@ -1,0 +1,110 @@
+import assert from 'node:assert/strict';
+import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
+import {createServer} from 'node:http';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {build} from 'vite';
+import {chromium} from '@playwright/test';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const mode=process.env.GUEST_ROUNDS_REACT_MODE??'development',baseline=process.env.GUEST_ROUNDS_BASELINE_DIR,uiBaseline=process.env.GUEST_ROUNDS_UI_BASELINE_DIR;
+const output=path.resolve(process.env.GUEST_ROUNDS_REPORT_DIR??path.join(root,'../../artifacts/reddit-guest-rounds-2026-10-03',mode));
+await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
+const scratch=await mkdtemp(path.join(root,'node_modules/.cache/guest-rounds-'));let browser,server;const observations=[];
+try{
+ const source=`
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
+import {tr,setLocaleAndWait} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
+window.setLocale=setLocaleAndWait;window.nextCopy=()=>tr('GameScreenAlerts.NEXT_BUTTON');
+window.__RIDDLE_QUEST_BROWSER_TEST__=true;
+const key='riddleQuestRedditGuestV1';
+if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify({preferences:{locale:'en',muted:true,reducedMotion:true,onboardingComplete:true},playerData:null}));
+localStorage.setItem('appLanguage','en');sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','reddit-guest'),'seen');
+for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'reddit-guest'),'seen');
+for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'reddit-guest'),'seen');
+window.probe={outbound:[],inbound:[],errors:[],unhandled:[],paths:[],dropCompletion:new URL(location.href).searchParams.has('drop'),dropped:0};
+window.addEventListener('riddle-quest:game-to-host',e=>window.probe.outbound.push(e.detail));
+window.addEventListener('riddle-quest:host-to-game',e=>{window.probe.inbound.push(e.detail);if(window.probe.dropCompletion&&e.detail.type==='host:operationResult'&&e.detail.payload.operation==='completeGame'&&e.detail.payload.ok){window.probe.dropCompletion=false;window.probe.dropped++;e.stopImmediatePropagation();}},true);
+window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
+window.durable=()=>JSON.parse(localStorage.getItem(key));
+const nativeFetch=window.fetch.bind(window);window.fetch=async(input,init)=>{const url=typeof input==='string'?input:input.url??String(input);if(url.startsWith('/api/')){window.probe.paths.push(url);if(url==='/api/session')return Response.json({ok:true,authenticated:false});throw new Error('unexpected-guest-api:'+url);}return nativeFetch(input,init);};
+globalThis.devvit={context:{},entrypoints:{game:location.origin+'/game.html'},token:'injected-browser-fixture',webViewMode:2};
+await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
+`;
+ await writeFile(path.join(scratch,'main.ts'),source);await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
+ await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.ts"></script></body></html>');
+ await build({root:scratch,base:'./',configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-guest-rounds',async load(id){if(uiBaseline&&id.endsWith('/GameFrameApp.tsx'))return readFile(path.join(uiBaseline,'GameFrameApp.tsx.before.txt'),'utf8');if(baseline&&id.endsWith('/RedditGuestHostServices.ts'))return readFile(path.join(baseline,'RedditGuestHostServices.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ server=createServer(async(req,res)=>{try{const file=path.join(scratch,'dist',new URL(req.url,'http://localhost').pathname==='/'?'index.html':new URL(req.url,'http://localhost').pathname);res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg','.json':'application/json'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+server.address().port;
+ if(process.env.GUEST_ROUNDS_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(r=>{process.once('SIGINT',r);process.once('SIGTERM',r);});}
+ else{
+ browser=await chromium.launch({headless:true});
+ for(const [width,height]of [[390,844],[390,568],[1280,844]])for(const scenario of ['cycle','loss']){
+  const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();
+  const metric=(name,actual,expected)=>{observations.push({width,height,scenario,name,actual,expected});if(!baseline&&!uiBaseline)assert.deepEqual(actual,expected,name);};
+  await page.goto(url+(scenario==='cycle'&&!baseline?'?drop=1':''));await page.locator('.guess-board').waitFor();
+  metric('guest gameplay does not advertise unavailable hint and skip actions',await page.locator('[data-tooltip="gameHint"],[data-tooltip="gameSkip"]').count(),0);
+  const submit=async(guess)=>{await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type(guess);await page.keyboard.press('Enter');};
+  if(scenario==='cycle'){
+   const tokens=[];
+   for(let round=1;round<=3;round++){
+    const issued=await page.evaluate(()=>[...window.probe.inbound].reverse().find(x=>x.type==='host:riddleLoaded')?.payload.riddle);
+    tokens.push(issued.sessionToken);
+    metric('round '+round+' starts with zero attempts',issued.attemptsUsed,0);
+    metric('round '+round+' starts with an empty board',await page.locator('.guess-row .cell').allTextContents(),Array(issued.answerLength*5).fill(''));
+    if(baseline&&round===3)break;
+    await submit(issued.evaluation.answer);await page.locator('.modal-victory').waitFor();
+    for(let step=0;step<10&&await page.locator('.modal-victory').count();step++){const next=page.locator('.modal-victory button').filter({hasText:/Next/i}).last();await next.waitFor();await next.click();await page.waitForTimeout(100);}
+    await page.waitForFunction(round=>window.durable().playerData.profile.wins===round,round);
+    if(round<3)await page.waitForFunction(token=>[...window.probe.inbound].reverse().find(x=>x.type==='host:riddleLoaded')?.payload.riddle.sessionToken!==token,issued.sessionToken);
+   }
+   metric('recycled content retains distinct round tokens',new Set(tokens).size,3);
+   metric('lost completion acknowledgement is retried without duplicate practice wins',await page.evaluate(()=>({dropped:window.probe.dropped,wins:window.durable().playerData.profile.wins})),{dropped:baseline?0:1,wins:baseline?2:3});
+  }else{
+   for(let attempt=1;attempt<=5;attempt++){
+    await submit(['qqqqq','rrrrr','sssss','ttttt','uuuuu'][attempt-1]);await page.waitForFunction(n=>window.probe.outbound.filter(x=>x.type==='game:submitGuess').length===n,attempt);await page.waitForTimeout(150);
+   }
+   await page.waitForTimeout(400);
+   metric('fifth wrong guess reaches the ordinary decision without bridge errors',await page.locator('.modal-continue').count(),1);
+   if(!baseline){
+    await page.reload();await page.locator('.modal-continue').waitFor();
+    metric('five acknowledged wrong guesses survive decision reload',await page.locator('.guess-row').evaluateAll(rows=>rows.every((row,index)=>[...row.querySelectorAll('.cell')].every(c=>c.textContent===['q','r','s','t','u'][index]))),true);
+    metric('guest decision does not advertise unavailable paid choices',await page.locator('.loss-continue-action,.loss-skip-action,.continue-balance,.loss-shop-action').count(),0);
+    metric('guest decision offers the translated next action',await page.locator('.loss-next-action').count(),1);
+    if(uiBaseline)await page.locator('.modal-continue .modal-x').click();else await page.locator('.loss-next-action').click();
+    await page.waitForFunction(()=>window.durable().playerData.profile.gamesPlayed===1);
+    await page.waitForFunction(()=>[...window.probe.inbound].reverse().find(x=>x.type==='host:riddleLoaded')?.payload.riddle.index===2);
+    await page.waitForFunction(()=>[...document.querySelectorAll('.guess-row .cell')].every(cell=>cell.textContent===''));
+    const nextLength=await page.evaluate(()=>[...window.probe.inbound].reverse().find(x=>x.type==='host:riddleLoaded').payload.riddle.answerLength);
+    metric('acknowledged loss advances automatically to an empty playable example',await page.locator('.guess-row .cell').allTextContents(),Array(nextLength*5).fill(''));
+    await submit('q');metric('next round accepts native typing',await page.locator('.guess-row').first().innerText(),'Q');
+   }
+  }
+  metric('all guest currency and rewards remain zero',await page.evaluate(()=>({coins:window.durable().playerData.profile.coins,xp:window.durable().playerData.profile.xp})),{coins:0,xp:0});
+  metric('only the same-origin session gateway is requested',await page.evaluate(()=>window.probe.paths.every(x=>x==='/api/session')),true);
+  metric('no browser errors',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejection',await page.evaluate(()=>window.probe.unhandled),[]);
+  await page.screenshot({path:path.join(output,`${width}-${height}-${scenario}.png`)});await context.close();
+ }
+ if(process.env.GUEST_ROUNDS_LOCALES==='1')for(const locale of ['en','ar','de','es','fr','hi','id','it','ja','ko','pt','ru','nl','tr','vi','pl'])for(const height of [568,844]){
+  const context=await browser.newContext({viewport:{width:390,height}}),page=await context.newPage();
+  const metric=(name,actual,expected)=>{observations.push({locale,width:390,height,scenario:'localized-next',name,actual,expected});assert.deepEqual(actual,expected,name+':'+locale);};
+  await page.goto(url);await page.locator('.guess-board').waitFor();
+  for(const guess of ['qqqqq','rrrrr','sssss','ttttt','uuuuu']){await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type(guess);await page.keyboard.press('Enter');await page.waitForTimeout(120);}
+  await page.locator('.modal-continue').waitFor();await page.evaluate(locale=>window.setLocale(locale),locale);
+  // Locale changes may briefly cover existing controls with the real preparation surface.
+  await page.waitForFunction(()=>{const b=document.querySelector('.loss-next-action');if(!b)return false;const r=b.getBoundingClientRect();return b.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));});
+  metric('guest Next uses the supported locale',await page.locator('.loss-next-action').innerText(),await page.evaluate(()=>window.nextCopy()));
+  metric('translated Next is reachable and at least 44px',await page.locator('.loss-next-action').evaluate(button=>{const r=button.getBoundingClientRect();return r.width>=44&&r.height>=44&&r.top>=0&&r.bottom<=innerHeight&&r.left>=0&&r.right<=innerWidth&&button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),true);
+  metric('translated guest dialog has no paid choices',await page.locator('.loss-continue-action,.loss-skip-action,.continue-balance').count(),0);
+  await page.screenshot({path:path.join(output,`${locale}-390-${height}-next.png`)});await page.locator('.loss-next-action').click();
+  await page.waitForFunction(()=>[...window.probe.inbound].reverse().find(x=>x.type==='host:riddleLoaded').payload.riddle.index===2);
+  await page.waitForFunction(()=>window.durable().playerData.profile.gamesPlayed===1);
+  metric('translated Next advances the confirmed practice round',await page.evaluate(()=>window.durable().playerData.profile.gamesPlayed),1);
+  await context.close();
+ }
+ }
+}finally{
+ if(browser)for(const context of browser.contexts())for(const page of context.pages())await writeFile(path.join(output,'last-open-page.json'),JSON.stringify(await page.evaluate(()=>({body:document.body.innerText,probe:window.probe,durable:window.durable?.()})).catch(e=>({error:String(e)})),null,2));
+ await browser?.close();if(server?.listening)await new Promise(r=>server.close(r));await rm(scratch,{recursive:true,force:true});await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2));
+}
+console.log(JSON.stringify({mode,baseline:!!baseline,checks:observations.length,failures:observations.filter(x=>JSON.stringify(x.actual)!==JSON.stringify(x.expected))},null,2));

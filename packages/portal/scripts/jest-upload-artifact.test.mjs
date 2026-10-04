@@ -187,6 +187,7 @@ test("release child processes receive only the allowlist and isolated runtime pa
     LD_LIBRARY_PATH: "/untrusted/loader-path",
     NODE_EXTRA_CA_CERTS: "/untrusted/ca.pem",
     NPM_TOKEN: "registry-secret",
+    pnpm_config_verify_deps_before_run: "install",
     PATH: "/release/bin",
     SENTRY_AUTH_TOKEN: "sentry-secret",
     SSL_CERT_DIR: "/untrusted/certificates",
@@ -207,6 +208,7 @@ test("release child processes receive only the allowlist and isolated runtime pa
     TMP: "/tmp/release-sandbox/tmp",
     TMPDIR: "/tmp/release-sandbox/tmp",
     XDG_RUNTIME_DIR: "/tmp/release-sandbox/runtime",
+    pnpm_config_verify_deps_before_run: "false",
   });
   assert.throws(() => createReleaseChildEnvironment({HOME: "/home/release-operator"}, {
     isolatedHomeDirectory: "/tmp/release-sandbox/home",

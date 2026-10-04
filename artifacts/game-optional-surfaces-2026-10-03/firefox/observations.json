@@ -1,0 +1,146 @@
+[
+  {
+    "phase": "initial",
+    "name": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "phase": "initial",
+    "name": "guesses",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "initial",
+    "name": "completions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "initial",
+    "name": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "phase": "failed",
+    "name": "questionVisible",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "failed",
+    "name": "frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "failed",
+    "name": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "phase": "failed",
+    "name": "token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "phase": "failed",
+    "name": "guesses",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "failed",
+    "name": "completions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "failed",
+    "name": "sceneDiagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "failed",
+    "name": "fatalDiagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "failed",
+    "name": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "phase": "failed",
+    "name": "rawErrorVisible",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "phase": "failed",
+    "name": "fits",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "completed",
+    "name": "frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "completed",
+    "name": "guesses",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "completed",
+    "name": "completions",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "completed",
+    "name": "authorityCoins",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "phase": "completed",
+    "name": "coins",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "phase": "completed",
+    "name": "sceneDiagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "completed",
+    "name": "fatalDiagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "completed",
+    "name": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "phase": "network",
+    "name": "failed scene requests",
+    "actual": 1,
+    "expected": 1
+  }
+]

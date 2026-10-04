@@ -1,0 +1,92 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "visible hosted game admits its explicit answer once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "retirement happens before passive bridge listener cleanup",
+    "actual": {
+      "hostRemoved": true,
+      "listeners": 1
+    },
+    "expected": {
+      "hostRemoved": true,
+      "listeners": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "removed host cannot admit another authority command",
+    "actual": {
+      "calls": 0,
+      "guesses": 1
+    },
+    "expected": {
+      "calls": 0,
+      "guesses": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "removed host cannot deliver lifecycle messages",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "removed host cannot report delayed notices or recovery",
+    "actual": {
+      "notices": [],
+      "recoveries": [],
+      "reports": []
+    },
+    "expected": {
+      "notices": [],
+      "recoveries": [],
+      "reports": []
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "retirement releases bridge and visibility subscriptions",
+    "actual": {
+      "bridge": 0,
+      "visibility": 0
+    },
+    "expected": {
+      "bridge": 0,
+      "visibility": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hosted",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

@@ -20,7 +20,7 @@ export {
   type GameEngineMode,
 } from "./GameEngine";
 export {computeGuestCompletionRewards, type LocalCompletionRewards} from "./completionStrategies";
-export {splitGraphemes, lowerCaseGraphemes, graphemeLength} from "./graphemes";
+export {splitGraphemes, iterateGraphemes, lowerCaseGraphemes, graphemeLength} from "./graphemes";
 export {MAX_RIDDLE_ANSWER_CHARACTERS} from "./limits";
 
 export {countCoinRewardAchievements} from "./achievementRewards";

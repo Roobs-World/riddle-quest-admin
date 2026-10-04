@@ -1,0 +1,9 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 6 production declarations are undocumented.
+- packages/portal/src/jest/__tests__/useJestProductCatalog.test.ts:190 coin
+- packages/portal/src/jest/__tests__/useJestProductCatalog.test.ts:191 {getProducts, state}
+- packages/portal/src/jest/__tests__/useJestProductCatalog.test.ts:205 coin
+- packages/portal/src/jest/__tests__/useJestProductCatalog.test.ts:206 {getProducts, getSubscriptions, state}
+- packages/portal/src/jest/useJestProductCatalog.ts:67 nextCatalog
+- packages/portal/src/jest/useJestProductCatalog.ts:77 consumables
+[ELIFECYCLE] Command failed with exit code 1.

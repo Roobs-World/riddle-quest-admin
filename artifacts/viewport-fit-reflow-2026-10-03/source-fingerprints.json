@@ -1,0 +1,22 @@
+[
+  {
+    "file": "packages/portal/src/styles.foundation.css",
+    "sha256": "6691d303a80e3c1690351f32367d2a06710da7620caca0f2fb63b27cc22c5f11"
+  },
+  {
+    "file": "packages/portal/src/styles.guidance.css",
+    "sha256": "63280c9db6795e518672184144a91814b9b85e0dabc6c2d47b723ceba0492a3b"
+  },
+  {
+    "file": "packages/portal/package.json",
+    "sha256": "35bfc879b4976e277d4a035614b1becfe27d1e0529985aadf03d27a64ea6f7b0"
+  },
+  {
+    "file": "packages/portal/scripts/verify-viewport-fit-reflow-browser.mjs",
+    "sha256": "46976fbd38ac0ec080cfec5c380a22e9bce1de18a25ebd58748aeeaade06510e"
+  },
+  {
+    "file": "packages/portal/src/play/game/hooks/useViewportFit.ts",
+    "sha256": "a760efd5a0e689ca0447b92139fa4c6fca707d0e1f428471e8886bc92b0cbc55"
+  }
+]

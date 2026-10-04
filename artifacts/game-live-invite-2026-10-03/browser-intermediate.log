@@ -1,0 +1,26 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: later name refusal cannot erase an earlier unknown queue
++ actual - expected
+
+  {
+    alerts: 1,
+    busy: false,
++   inputDisabled: false,
+-   inputDisabled: true,
+    notices: 0
+  }
+
+    at inspect (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-direct-invite-browser.mjs:49:75)
+    at async file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-direct-invite-browser.mjs:83:7 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: { busy: false, inputDisabled: false, alerts: 1, notices: 0 },
+  expected: { busy: false, inputDisabled: true, alerts: 1, notices: 0 },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

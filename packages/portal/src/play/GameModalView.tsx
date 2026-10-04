@@ -1,4 +1,5 @@
 import {completionPresentationKey} from "./completionPresentation";
+import {getConfirmedRiddleWin} from "./ConfirmedRiddleOutcome";
 import {useEffect, useRef, useState} from "react";
 import "../styles.modal-shell.css";
 import "../styles.modal-rewards.css";
@@ -6,7 +7,7 @@ import "../styles.modal-commerce.css";
 import "../styles.account.css";
 import "../styles.profile-details.css";
 import type {GameModal, GameSessionState} from "./gameSession";
-import {tr} from "./i18n";
+import {useTranslator} from "./i18n";
 import {SpinningWheel} from "./SpinningWheelLoader";
 import {GameModalPages} from "./GameModalPages";
 import {RewardFanfareContent, VictoryFanfareContent} from "./modalPages/fanfare/FanfareModalContent";
@@ -29,6 +30,8 @@ export type GameModalViewProps = {
   onRecoverAttempt?: () => void;
   /** Disables competing loss actions while continuation is awaiting completion. */
   continuationPending?: boolean;
+  /** Suspends modal focus and keyboard ownership while its parent is inert. */
+  interactionBlocked?: boolean;
   /** Stores on purchase. */
   onPurchase: (productId: string) => void;
   /** Stores on next. */
@@ -39,6 +42,8 @@ export type GameModalViewProps = {
   onToggleMute: () => void;
   /** Stores commerce available. */
   commerceAvailable?: boolean;
+  /** Gates paid-action presentation independently of provider checkout availability. */
+  economyAvailable?: boolean;
   /** Stores on request hint. */
   onRequestHint: () => void;
   /** Stores on request skip. */
@@ -61,11 +66,13 @@ export function GameModalView({
   onContinue,
   onRecoverAttempt,
   continuationPending = false,
+  interactionBlocked = false,
   onPurchase,
   onNext,
   onOpenModal,
   onToggleMute,
   commerceAvailable = true,
+  economyAvailable = true,
   onRequestHint,
   onRequestSkip,
   onRequestLeaderboard,
@@ -74,6 +81,8 @@ export function GameModalView({
   onDeleteAccount,
   onCoinBalancePreview,
 }: GameModalViewProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Provides [victory step index, set victory step index] behavior. */
   const [victoryStepIndex, setVictoryStepIndex] = useState(0);
   /** Provides [reward step index, set reward step index] behavior. */
@@ -86,12 +95,25 @@ export function GameModalView({
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  /** A page switch remains part of the same modal interaction. */
+  const modalOpen = state.modal !== null;
   useEffect(() => {
-    if (!state.modal) {
+    if (!modalOpen) return;
+    // Remember the gameplay trigger once. A Settings/Profile child button may
+    // disappear when its next modal page renders and cannot receive focus back.
+    /** Original game control remains the focus return target across modal page changes. */
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    return () => {
+      if (trigger?.isConnected && !trigger.matches(":disabled, [aria-disabled='true']")) {
+        trigger.focus({preventScroll: true});
+      }
+    };
+  }, [modalOpen]);
+
+  useEffect(() => {
+    if (!state.modal || interactionBlocked) {
       return;
     }
-    /** Provides previously focused behavior. */
-    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     /** Provides modal behavior. */
     const modal = modalRef.current;
     modal?.scrollTo({top: 0, left: 0});
@@ -105,11 +127,12 @@ export function GameModalView({
     /** Gets focusable. */
     const getFocusable = () =>
       Array.from(
-        modal?.querySelectorAll<HTMLElement>(
+        (modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal)?.querySelectorAll<HTMLElement>(
           "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
         ) ?? [],
       );
-    window.requestAnimationFrame(() => getFocusable()[0]?.focus());
+    /** Deferred focus waits for the active modal page's controls to mount. */
+    const focusFrame = window.requestAnimationFrame(() => getFocusable()[0]?.focus());
     /** Handles key down. */
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -145,13 +168,13 @@ export function GameModalView({
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      previouslyFocused?.focus();
+      window.cancelAnimationFrame(focusFrame);
       if (externalNotice) {
         externalNotice.inert = false;
         externalNotice.removeAttribute("aria-hidden");
       }
     };
-  }, [state.guessPending, state.lastRewards, state.modal, continuationPending]);
+  }, [state.guessPending, state.lastRewards, state.modal, continuationPending, interactionBlocked]);
 
   useEffect(() => {
     setVictoryStepIndex(0);
@@ -218,6 +241,7 @@ export function GameModalView({
       setVictoryStepIndex((index) => index + 1);
       return;
     }
+    if (!state.completionAcknowledged && state.riddle && getConfirmedRiddleWin(state.riddle)) return;
     onClose();
     window.dispatchEvent(
       new CustomEvent("riddle-quest:victory-dismissed", {
@@ -293,6 +317,7 @@ export function GameModalView({
           onOpenModal={onOpenModal}
           onToggleMute={onToggleMute}
           commerceAvailable={commerceAvailable}
+          economyAvailable={economyAvailable}
           onRequestHint={onRequestHint}
           onRequestSkip={onRequestSkip}
           onRequestLeaderboard={onRequestLeaderboard}

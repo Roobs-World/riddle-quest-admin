@@ -1,0 +1,30 @@
+--- before/packages/portal/src/play/race/LiveRaceGame.tsx
++++ after/packages/portal/src/play/race/LiveRaceGame.tsx
+@@ -92,6 +92,11 @@
+   const nextDeliveryAt = useRef(0);
+   /** Prevents updates after the mounted journey is retired. */
+   const active = useRef(true);
++  useLayoutEffect(() => {
++    active.current = true;
++    // A receipt microtask can run before passive cleanup after a replacement commits.
++    return () => {active.current = false;};
++  }, []);
+   /** Closing retains the owned seat until the authority confirms its retirement. */
+   const closeRequested = useRef(false);
+   /** Closing immediately disables local editing even while an earlier command still owns delivery. */
+--- before/packages/portal/src/play/race/RaceTo10Game.tsx
++++ after/packages/portal/src/play/race/RaceTo10Game.tsx
+@@ -35,6 +35,13 @@
+ function LiveRaceEntry(props: RaceTo10GameProps) {
+   /** Immutable server content and invitation selection for the mounted live seat. */
+   const [playing, setPlaying] = useState<LiveSelection | null>(null);
++  /** A replacement authenticated capability starts at the intro instead of inheriting an old provider's ticket. */
++  const [entryProvider, setEntryProvider] = useState(props.matchmaking?.live);
++  if (entryProvider !== props.matchmaking?.live) {
++    // Adjust before children commit so no old seat can subscribe or dispatch through the replacement provider.
++    setEntryProvider(props.matchmaking?.live);
++    setPlaying(null);
++  }
+   if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={playing.transport ?? props.matchmaking.live}
+     locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId}
+     rematchOfTicketId={playing.rematchOfTicketId} coins={props.coins} ownerId={props.ownerId} onCompleted={props.onLiveResult}

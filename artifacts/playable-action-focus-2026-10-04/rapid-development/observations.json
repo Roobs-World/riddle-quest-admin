@@ -1,0 +1,3554 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "text-delete-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "software-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "slot-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "microtask-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "repeat-input",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "physical-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "text-delete-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "software-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "slot-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "microtask-text",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "repeat-input",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "physical-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

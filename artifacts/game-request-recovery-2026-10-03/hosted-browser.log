@@ -1,0 +1,28 @@
+  console.info
+    Immediate wrong-answer feedback: 12.4ms with server response held
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:606:15)
+
+FAIL src/play/__tests__/hostedBrowser.jest-playwright.test.ts (25.13 s)
+  ● standalone Jest browser game › covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      803 |         return Boolean(lastRow && lastRow.bottom <= listRect.bottom + 1);
+      804 |       });
+    > 805 |       expect(firstPageFits).toBe(true);
+          |                             ^
+      806 |       await page.getByRole("button", {name: /next page/i}).click();
+      807 |       expect(await leaderboardList.locator("li").count()).toBe(10);
+      808 |       expect(await leaderboardList.locator("li").first().locator("b").textContent()).toBe("11");
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:805:29)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        25.256 s, estimated 45 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts.

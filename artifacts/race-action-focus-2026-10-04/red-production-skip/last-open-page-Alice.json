@@ -1,0 +1,39 @@
+{
+  "text": "Race to 10\n×\n0:47.3\n+0:45.0\nYou\nRiddles completed:\n1 / 10\nBob\nRiddles completed:\n0 / 10\nA four-letter browser answer\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\n+15 seconds\nSubmit\nSkip\n+45 seconds",
+  "active": {
+    "tag": "BODY",
+    "className": "",
+    "text": "Live PvPRace to 10×Adjusted time0:47.3+0:45.0 YouRiddles completed: 1 / 101/10BobRiddles completed: 0 / 100/10A four-letter browser answerQWERTYUIOPASDFGHJKLZXCVBNMHint +15 secondsSubmitSkip +45 seconds"
+  },
+  "nativeValue": "",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Alice",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-dfe86f4b-63fc-41d1-99cd-f7f21cab4082"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-830e07d1-3fb4-46e2-a4eb-0e5189fe1fb2"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "skip",
+        "requestId": "live-skip-62357868-fc74-49e3-9dac-4d02b29198d0",
+        "riddleId": "q0"
+      }
+    ],
+    "saves": [],
+    "loads": 0,
+    "errors": [],
+    "unhandled": []
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "status": "passed",
+  "goalStatus": "active",
+  "sourceInputs": 766,
+  "sourceEpochUnchanged": true,
+  "browser": {
+    "development": {
+      "checks": 186,
+      "failures": 0
+    },
+    "production": {
+      "checks": 186,
+      "failures": 0
+    },
+    "regression-commit/development": {
+      "checks": 240,
+      "failures": 0
+    },
+    "regression-commit/production": {
+      "checks": 240,
+      "failures": 0
+    },
+    "regression-host/development": {
+      "checks": 116,
+      "failures": 0
+    },
+    "regression-host/production": {
+      "checks": 116,
+      "failures": 0
+    }
+  },
+  "browserChecks": 1084,
+  "baseline": {
+    "checks": 186,
+    "failures": 18,
+    "scenarios": [
+      "command",
+      "hosted",
+      "lifecycle",
+      "provider-commit",
+      "remount"
+    ]
+  },
+  "firefox": "asserted native explicit answer preserved; removed host rejects distinct queued answer; exact pre-passive cleanup phase",
+  "unitTests": 2756,
+  "unitSuites": 297,
+  "optionalBrowserTestsSkipped": 121,
+  "builtJourneys": 37,
+  "builtSuites": 7,
+  "types": "passed",
+  "tsdoc": {
+    "declarations": 25252,
+    "files": 1139
+  },
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube:fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "ownedFixtures": {
+    "stopped": true,
+    "pnpmExitCode": 130,
+    "scratchRemoved": true
+  },
+  "limitations": [
+    "Injected queued command and providers; no live backend acceptance claim",
+    "YouTube incomplete English fixture",
+    "Already-admitted authority operations remain owned by their original operation",
+    "No measured network latency claim"
+  ]
+}

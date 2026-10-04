@@ -35,3 +35,8 @@ test("accepts the repository entry point", () => {
   const source = fs.readFileSync(path.resolve(__dirname, "../src/index.ts"), "utf8");
   assert.deepEqual(auditFacebookBackendExports(source), []);
 });
+
+test("reads runtime re-exports without absorbing following exports and excludes erased type exports", () => {
+  assert.deepEqual(readExportNames('export { own as publicName } from "./module"; export { next };'), ["publicName", "next"]);
+  assert.deepEqual(readExportNames("export { own } from './module'; export type { erased };"), ["own"]);
+});

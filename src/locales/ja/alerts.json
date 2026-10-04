@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "連敗記録",
     "NO_PRODUCTS_AVAILABLE_TITLE": "利用可能な製品がありません",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "アプリは謎の読み込みを完了できませんでした。接続を確認して、もう一度お試しください。",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "なぞなぞデータベースが利用できません"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "なぞなぞデータベースが利用できません",
+    "PROGRESS_UNSAVED_MESSAGE": "進行状況はまだ保存されていません。ゲームを開いたままにしてください。"
   }
 }

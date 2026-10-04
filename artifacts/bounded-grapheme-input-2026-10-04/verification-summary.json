@@ -1,0 +1,79 @@
+{
+  "status": "passed",
+  "matrixAssertions": {
+    "reverified-bounded-development": 162,
+    "reverified-bounded-production": 162,
+    "reverified-capacity-development": 165,
+    "reverified-capacity-production": 165,
+    "reverified-composition-development": 540,
+    "reverified-composition-production": 540,
+    "reverified-rapid-development": 384,
+    "reverified-rapid-production": 384,
+    "reverified-immediate-development": 153,
+    "reverified-immediate-production": 153,
+    "reverified-playable-ime-development": 168,
+    "reverified-playable-ime-production": 168,
+    "reverified-race-ime-development": 174,
+    "reverified-race-ime-production": 174,
+    "reverified-cancelled-development": 198,
+    "reverified-cancelled-production": 198
+  },
+  "totalInjectedBrowserAssertions": 3888,
+  "newMatrixJourneys": 36,
+  "coreUnitTests": 318,
+  "portalUnitTests": 2721,
+  "portalSkippedOptionalBrowserTests": 121,
+  "builtGameTests": 37,
+  "builtGameSuites": 7,
+  "targetBuildsAndIsolationAudits": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "stableReplayBuildInputPaths": 765,
+  "policyComparison": {
+    "seed": 20261004,
+    "cases": 4096,
+    "comparisons": 8192,
+    "identityChecks": 8192,
+    "immutableChecks": 8192,
+    "locales": [
+      "en",
+      "es",
+      "pt",
+      "fr",
+      "de",
+      "ja",
+      "ko",
+      "hi",
+      "ru",
+      "tr",
+      "ar",
+      "id",
+      "it",
+      "nl",
+      "pl",
+      "vi"
+    ],
+    "segmenterModes": [
+      "native",
+      "code-point fallback"
+    ],
+    "status": "passed"
+  },
+  "earlierFirefoxVerifiedSteps": 6,
+  "tsdocDeclarations": 25152,
+  "tsdocFiles": 1138,
+  "ownedSourceDiff": "owned-existing-source.diff",
+  "notes": [
+    "Concurrent race UI/source changes preserved. Complete input-path inventory recollected and all six builds, portal units/types/TSDoc, browser matrices and built journeys replayed against unchanged snapshot.",
+    "Final development/production matrices passed after correcting fixture focus following Hint. Initial failures retained.",
+    "Earlier timing samples cover input assignment/dispatch and synchronous editing only; no React commit/paint/network. Upper middle of eight retained samples reported.",
+    "NFC normalization still processes the whole string; rejected prefixes can require scanning.",
+    "Original blank Firefox tab preserved; owned tabs and scratch fixture removed.",
+    "Goal remains active. No commit, push, or deployment."
+  ]
+}

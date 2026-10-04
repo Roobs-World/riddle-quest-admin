@@ -1,0 +1,136 @@
+{
+  "capturedAtUtc": "2026-10-03T11:21:56.502872+00:00",
+  "head": "88d12d438435f9c71862fa1918a070f02e0cd4a3",
+  "sourceDirty": true,
+  "template": "race_context_challenge",
+  "localTemplateConfigured": true,
+  "templateRegisteredInMeta": false,
+  "dashboardInspected": true,
+  "dashboardTestingVersion": 6,
+  "dashboardTestingBundleInstanceId": "26805848032447156",
+  "providerWritesPerformed": false,
+  "testingUploadPerformed": false,
+  "deploymentPerformed": false,
+  "nativeDeviceAcceptance": false,
+  "atomicSourceAndArtifactProvenanceVerified": false,
+  "canonicalUploadEligible": false,
+  "ownedJobsSettled": true,
+  "sourceSha256": {
+    "packages/core/src/race/raceLiveSchemas.ts": "6f217e775e00ae922b8f606a89719f84632d9cb516946dec186bc35f895843ab",
+    "packages/portal/src/facebook/contextChallenges.ts": "34ec73060d3d15bc3a53efda4de51ba1a003ae723ea916e0702a132d693fd498",
+    "packages/portal/src/facebook/contexts.ts": "d3f3ff92d4ed363fe8d9ae6dce5371b9096391f1ebec526e93348a62ed8783fe",
+    "packages/portal/src/facebook/fbinstant.ts": "1329b650db3462541e1519fa58f137add61ce0c74dc5cff2b2111e6f2f6497da",
+    "packages/portal/src/facebook/FacebookPlatformEntry.tsx": "4306907d74138c94dc7cbbffc223e380d6946fd93e766dd4286b44be73ee1e94",
+    "packages/portal/src/play/race/RaceTo10Game.tsx": "6f0ba15521e0c5fef6332b158451c105224546a355ed9e23c025790d33a20807",
+    "packages/portal/src/play/race/RaceTournamentEntry.tsx": "a64bda2c3637cad1d11ea688a5fb1b15e7ad2144567e0fd55475c699397322f3",
+    "packages/portal/webTargetViteConfig.ts": "ba93393a33b363f7a16567237ab5fcb739018801eccff1afe068a57899e0ee19",
+    "packages/portal/targets/facebook/fbapp-config.json": "11d10d36b7ff7a75deb864e0dc9d23d4383707a593f0ef8c112bd2b3c668137e",
+    "config/vite/portal/.env.facebook": "dcd289bed922c63088db97bc325715a75e882475d74cd135b2610d69448226be",
+    "packages/portal/scripts/audit-facebook-artifact.mjs": "fda89e7b0c9d2888c5b0a8d2de063be3fe67e5b1ecd66efb3790f683e43cd55b",
+    "packages/portal/scripts/platform-artifact-audits.test.mjs": "dc43827943c2930580b2797abd1663d47bd40b34394d16a9a13ecbf838645fd2",
+    "packages/portal/src/facebook/__tests__/contextChallenges.test.ts": "986b605049ff6f7fcde3dd98558764dc852d79814ed7fd48ab7d147be55a9ef3",
+    "packages/portal/src/facebook/__tests__/contextChallenges.jest-playwright.support.ts": "161f5b4a07ffc92b87d5b6f0eb3d0d4ffd2a27961f38907f49540eb9f2c9dcb6",
+    "packages/portal/src/facebook/__tests__/contextEvents.test.ts": "7903cad1e12bd1be0a394dcd9e984b03dbbb1c4326bb5f66008ce1fb56c94137",
+    "packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts": "231bc913c4ec3536f9f676d644cf0354dbc0e38bb7ee5fbef2054c3581a17aa2",
+    "packages/portal/src/facebook/__tests__/raceDialogs.jest-playwright.support.ts": "f5b7a61616e6a1c9c6dcb09d48209615bbde07df3759dd61387848d11db8f6e4",
+    "pnpm-lock.yaml": "5fd809854e267c6e6160a678ad461b8e4999db50c8d3c1f3dbcadf44a1b2aeb3",
+    "pnpm-workspace.yaml": "ee4cf31110c5ce9d37d22c1ccac28688febdc83b8fcd33504dcef396589b0f52",
+    "docs/evidence/facebook-context-challenges-2026-10-03.md": "6162f3d04147ef8650807f63c3341a14f3aa32b907b21cbe165c5abebb727a43",
+    "docs/facebook-instant-games-operations.md": "a78aaef487fd92ffc380d9d9e718d98f6ad6068576045e9647007b00ff4ca879"
+  },
+  "builds": [
+    {
+      "target": "reddit",
+      "output": "/tmp/riddle-quest-review-facebook-context-challenges-20261003/reddit",
+      "buildExitCode": 0,
+      "privateAuditExitCode": 0
+    },
+    {
+      "target": "jest",
+      "output": "/tmp/riddle-quest-review-facebook-context-challenges-20261003/jest",
+      "buildExitCode": 0,
+      "privateAuditExitCode": 0
+    },
+    {
+      "target": "facebook",
+      "output": "/tmp/riddle-quest-review-facebook-context-challenges-20261003/facebook",
+      "buildExitCode": 0,
+      "privateAuditExitCode": 0
+    },
+    {
+      "target": "youtube",
+      "output": "/tmp/riddle-quest-review-facebook-context-challenges-20261003/youtube",
+      "buildExitCode": 0,
+      "privateAuditExitCode": 0
+    },
+    {
+      "target": "netflix",
+      "output": "/tmp/riddle-quest-review-facebook-context-challenges-20261003/netflix",
+      "buildExitCode": 0,
+      "privateAuditExitCode": 0
+    },
+    {
+      "target": "yahoo",
+      "output": "/tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo",
+      "buildExitCode": 0,
+      "privateAuditExitCode": 0
+    }
+  ],
+  "verification": {
+    "focused": {
+      "passed": 40,
+      "suites": 5
+    },
+    "portal": {
+      "passed": 2516,
+      "suites": 290,
+      "skippedTests": 118,
+      "skippedSuites": 15
+    },
+    "artifactRegressionCases": 50,
+    "finalFacebookInjectedBrowser": "passed",
+    "finalRedditInjectedBrowser": "passed",
+    "finalSelectedJestBrowser": {
+      "passed": 6,
+      "unselected": 68
+    },
+    "facebookChooserOnlyControl": "passed before dependency reconciliation",
+    "facebookNoUpdateApiControl": "passed before dependency reconciliation",
+    "typescript": "passed",
+    "tsdoc": "passed",
+    "fileSizes": "passed",
+    "whitespace": "passed"
+  },
+  "logSha256": {
+    "artifact-regressions.log": "0647d1fc70eccff6f7b02cb5cc62a08eccfc2aa74b09b90254a62f5fdb63b9f7",
+    "audit-facebook.log": "f03dac46025bc2756549b85704d3dc3b9915909249c72b2c9107f7450de3b9e0",
+    "audit-jest.log": "c554854f87af259664bdcf8a56842f5f7976fee472a0323b73960fd9c9cc06e8",
+    "audit-netflix.log": "65bad85041ec92748abdfc1190838aaa296aca6d652451ac9a7d87131519cd81",
+    "audit-reddit.log": "e1f5856cbfc207df9f77d3140f835d7ab47af1367c62ef19b698bf626f1d4b23",
+    "audit-yahoo.log": "fb778a39418371b1870d5760c6bafe8500c75356a80248fa15738fbb02d6dbb5",
+    "audit-youtube.log": "4903c08bceadbfd2591d6d978457a9bfe396b0bb216f977fbb76e81ae333e973",
+    "browser-chooser-only.log": "551c714ed8f1c33cde3ec99c9c0bda874372f4ded93b96f91edf536665bfca30",
+    "browser-context-challenges.log": "d915eb5745fa01183d1e76a9ef51f7651c1bcc51a6c8b883c3ab79be88541bce",
+    "browser-fallback.log": "ee45fcfb08b4ad890628b139ede28d16268085ed855c6c33314b662b321be47a",
+    "build-dependency-drift.log": "a5cc40984af4110d87dd6e2cc6c3a255178f3474cdce438fc976fb921e4edd59",
+    "build-facebook.log": "893250bba85a06e1e5ef16b462b25739b675029d5ce42aa3cfc11978994ae212",
+    "build-jest.log": "aa7f0a834568041fd18d11ab055fa7998efc1d1c70e4e997cde7824e4d0d1573",
+    "build-netflix.log": "d7078eb492cf5332ccf1e13ec03674be3b58b7df52cb9ec522e16842f9ea29fb",
+    "build-reddit.log": "9526548db9414a9cf5c37cfee2dd54730487c0d3b4d62af8f8c9accb4011d134",
+    "build-yahoo.log": "6b31a2240bc4f1891adae1d259f1d85cfe29be6c44d27a0d90f21c467d1b40bb",
+    "build-youtube.log": "e00cbe40f242e1ff66241ceaf55ccfcc557e9b36ce433abc97a01e0c7b642a2c",
+    "chooser-event-red.log": "c2e0e88e10514032d08e2d15de8f2936121d86a7856eeb5b7a16cb25736e7d45",
+    "chooser-no-events-red.log": "32b7555bca89b1ad157d2965ec2481ffc0a42319af28f2f64bf3be58ba1bf209",
+    "dependency-reconciliation.log": "22ac3ae48255e6d398e35065b6054e9b1968e87a3d8e45f96adfa07006ca8b8e",
+    "file-sizes.log": "223afe128043a2654ec4c4a5ab3820a43f98e4676950a6903df920a7dfd893e9",
+    "focused.log": "1864cee465b0382de7b78b3750ee492acaa57ecc492a4917189c1d594e367b77",
+    "jest-browser.log": "96ce7c6978a0dc0fc2b5b3b1525744d130ecc3aa7ed84fcc7f5dc595adff011e",
+    "portal-unit-dependency-drift.log": "4b954099b682b15d6ef090af39851329c9516246d320b4d1de1429949ae0bd26",
+    "portal-unit.log": "9bea3c2345ca2b70a82457f404d92cce3150c50e89f3e63152980df3c1493e1c",
+    "reddit-browser.log": "7da6ec4ffa4837de6ee1a34c7d027f414d12847c59173adb985fb75bf37db747",
+    "template-audit.log": "4ed0ecf13ce0143e5d5b4222dea4990b5f626d611370fcd105ac090d3788bbdf",
+    "tsdoc.log": "ad9012e79d9c0edc713ceb23c6e8e44f476480933762c82001fd6548f9d97181",
+    "types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "whitespace.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

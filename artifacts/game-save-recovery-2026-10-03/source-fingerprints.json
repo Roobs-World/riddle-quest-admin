@@ -1,0 +1,8 @@
+{
+  "packages/portal/src/platform/PlayerSaveRecovery.ts": "2cd87785dfe3eef00781f7d10d519e865c82969d648b8f0f10c64513cbc937a9",
+  "packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts": "b989afa1023e2348c21f6fdcb612d73096176029bdd9b66bbdde9a1d8263900d",
+  "packages/portal/src/jest/useJestPlayerStateWrites.ts": "bad7c1d65f2b4088bf337927b77b53ab94d18c2d67e23cb9139acd078ddbed1c",
+  "packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts": "8a27943d56d7fc9da840b404944b701d9bd8e8b8c490a58b779ad9c10315c216",
+  "packages/portal/scripts/verify-game-save-recovery-browser.mjs": "21d54c864ff6088c0504f7e114649c7ee2ff8556b2161c2faab560fa34c0553c",
+  "packages/portal/package.json": "07b74564469c68e3ce70c7b54f05949709262098aa9b3e93132009b3251fc291"
+}

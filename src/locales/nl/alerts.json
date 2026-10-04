@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Streep gebroken",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Geen producten beschikbaar",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "De app kon het laden van de raadsels niet voltooien. Controleer uw verbinding en probeer het opnieuw.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle-database niet beschikbaar"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle-database niet beschikbaar",
+    "PROGRESS_UNSAVED_MESSAGE": "Je voortgang is nog niet opgeslagen. Houd het spel open."
   }
 }

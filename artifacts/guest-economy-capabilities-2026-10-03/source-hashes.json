@@ -1,0 +1,15 @@
+{
+  "packages/portal/src/play/PlayHostApp.tsx": "67d4ad33be370646cc9103622e980d83e4d5c72974b2f2d788b8587720689760",
+  "packages/portal/src/play/GameFrameApp.tsx": "c721aa0aeb37d982d9e4fa84a02e6d639254aeb39a88e470df6be7d1c1f79adb",
+  "packages/portal/src/play/GameModalView.tsx": "5282e4c7fd6b6946661ba6557362888d7237a32b70248fcde58d2209a3d3fbcc",
+  "packages/portal/src/play/GameModalPages.tsx": "d7223e53b1c816a759a91c0f47a8d91d28cc797af0a6abbdc2535da7e7e8d70c",
+  "packages/portal/src/play/guidance/GuidanceOverlay.tsx": "04c80964a4ff42e87ef080d7f130fbacc168e6fdd7519b0d16229f235756e44b",
+  "packages/portal/src/play/guidance/guidanceConfig.ts": "4461cd8fe790396ccfe16dcaa627a229065202a07c35b8c5f49eb08e0755c8c9",
+  "packages/portal/src/play/modalPages/commerce/ContinueActions.tsx": "7dffd6e2a407ef289929b8bae06fea58c33d9cc949be46ab9d70ea4e8136da84",
+  "packages/portal/src/styles.puzzle.css": "2d72d689438e7aecb9449d35f87cdd0d40a19141194b49ad5984f24d5855b078",
+  "packages/portal/src/play/__tests__/CommerceModalPages.test.tsx": "47622f4ce837d751cfa7e529c2af39f510041c6ee420add0b0e4c3478cf01f19",
+  "packages/portal/src/play/__tests__/guidanceConfig.test.ts": "98a532f28309f1911458350de5b0ea58d77ac2f9e81990f813d54532faeabb37",
+  "packages/portal/scripts/verify-reddit-guest-rounds-browser.mjs": "4a1902b20abca03bf152935ee3decc3b5b4e095922465e9769bc7c35548066c7",
+  "packages/portal/scripts/verify-guidance-storage-recovery-browser.mjs": "c297ebd159c26089f95c9a00fa2128a1713dae1f3505e162c3548b043d4b04dd",
+  "packages/portal/package.json": "06d0c499667c1d4639e2598e5adf2f58bb7aa4fcc0ceea9706a120fab1c47904"
+}

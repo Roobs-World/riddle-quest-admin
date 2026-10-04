@@ -109,7 +109,6 @@
     "LIVE_START": "PvP対戦を開始",
     "LIVE_FINDING": "対戦相手を検索中…",
     "LIVE_STARTING": "対戦開始",
-    "LIVE_WAIT": "対戦相手を探しています。最大1分かかる場合があります。",
     "LIVE_OPPONENT": "対戦相手",
     "LIVE_REWARD": "+{coins}コイン",
     "LIVE_MODE": "リアルタイムPvP",

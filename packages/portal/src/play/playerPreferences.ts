@@ -45,6 +45,8 @@ const SESSION_GUIDANCE_STORAGE_PREFIXES = ["riddleQuest:welcomeSession:"] as con
 const supportedLocales = new Set<Locale>(LANGUAGE_OPTIONS.map(({code}) => code));
 /** Active platform listeners that persist user-initiated preference changes. */
 const preferenceSubscribers = new Set<(change: PlayerPreferenceChange) => void>();
+/** Read-only subscribers observe applied motion preferences without creating provider writes. */
+const motionSubscribers = new Set<() => void>();
 /** Platform onboarding value that takes precedence over browser fallback state. */
 let onboardingCompleteOverride: boolean | undefined;
 /** Jest installs this dynamically so stale tabs cannot recreate deleted browser state. */
@@ -116,6 +118,7 @@ const applyAccessibilityPreferences = (reducedMotion: boolean, highContrast: boo
   if (!root) return;
   root.dataset.riddleQuestReducedMotion = String(reducedMotion);
   root.dataset.riddleQuestHighContrast = String(highContrast);
+  motionSubscribers.forEach((subscriber) => subscriber());
 };
 
 /** Notifies the active platform integration of a user-initiated preference change. */
@@ -236,6 +239,21 @@ export function subscribeToPlayerPreferenceChanges(subscriber: (change: PlayerPr
   return () => preferenceSubscribers.delete(subscriber);
 }
 
+/** Observes SDK-applied and player-selected motion changes independently of persistence listeners. */
+export function subscribeToPlayerReducedMotion(subscriber: () => void): () => void {
+  motionSubscribers.add(subscriber);
+  /** OS changes affect the snapshot only when no applied or stored player choice overrides them. */
+  const media = typeof window !== "undefined" && typeof window.matchMedia === "function"
+    ? window.matchMedia("(prefers-reduced-motion: reduce)") : undefined;
+  if (media?.addEventListener) media.addEventListener("change", subscriber);
+  else media?.addListener?.(subscriber);
+  return () => {
+    motionSubscribers.delete(subscriber);
+    if (media?.removeEventListener) media.removeEventListener("change", subscriber);
+    else media?.removeListener?.(subscriber);
+  };
+}
+
 /** Removes exact app-owned browser state after authoritative account deletion. */
 export function clearBrowserPlayerState(): void {
   /** Removes keys. */
@@ -282,6 +300,7 @@ export function clearBrowserPlayerState(): void {
       delete root.dataset.riddleQuestReducedMotion;
       delete root.dataset.riddleQuestHighContrast;
     }
+    motionSubscribers.forEach((subscriber) => subscriber());
   }
   if (failures.length > 0) throw new AggregateError(failures, "browser-player-state-clear-failed");
 }

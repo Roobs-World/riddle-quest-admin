@@ -1,0 +1,57 @@
+{
+  "screens": 1,
+  "nodes": [
+    {
+      "selector": ".race-topbar",
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "1",
+      "background": "rgba(0, 0, 0, 0)",
+      "x": 12,
+      "y": 18,
+      "width": 366,
+      "height": 44,
+      "textLength": 12,
+      "topElement": "race-topbar"
+    },
+    {
+      "selector": ".race-context-panel",
+      "display": "block",
+      "visibility": "visible",
+      "opacity": "1",
+      "background": "rgb(255, 255, 255)",
+      "x": 12,
+      "y": 282,
+      "width": 366,
+      "height": 143.90625,
+      "textLength": 27,
+      "topElement": ""
+    },
+    {
+      "selector": ".race-context-board",
+      "display": "grid",
+      "visibility": "visible",
+      "opacity": "1",
+      "background": "rgba(0, 0, 0, 0)",
+      "x": 31,
+      "y": 353.90625,
+      "width": 328,
+      "height": 49,
+      "textLength": 8,
+      "topElement": ""
+    },
+    {
+      "selector": ".race-hub-tabs",
+      "display": "block",
+      "visibility": "visible",
+      "opacity": "1",
+      "background": "rgba(0, 0, 0, 0)",
+      "x": 12,
+      "y": 80,
+      "width": 366,
+      "height": 58,
+      "textLength": 21,
+      "topElement": ""
+    }
+  ]
+}

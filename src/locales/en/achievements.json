@@ -59,6 +59,176 @@
         "DESCRIPTION": "Earn 10000 XP"
       }
     },
-    "UNLOCKED_LABEL": "Unlocked"
+    "UNLOCKED_LABEL": "Unlocked",
+    "SOLO": {
+      "first_win": {
+        "NAME": "First Win",
+        "DESCRIPTION": "Win your first riddle"
+      },
+      "wins_5": {
+        "NAME": "Getting Started",
+        "DESCRIPTION": "Win 5 riddles"
+      },
+      "wins_25": {
+        "NAME": "Riddle Master",
+        "DESCRIPTION": "Win 25 riddles"
+      },
+      "wins_50": {
+        "NAME": "Grand Solver",
+        "DESCRIPTION": "Win 50 riddles"
+      },
+      "wins_100": {
+        "NAME": "Century Solver",
+        "DESCRIPTION": "Win 100 riddles"
+      },
+      "win_rate_80": {
+        "NAME": "Sharp Record",
+        "DESCRIPTION": "Hold an 80% win rate after 10 games"
+      },
+      "efficient_10": {
+        "NAME": "Efficient Solver",
+        "DESCRIPTION": "Average 3 guesses or fewer after 10 wins"
+      },
+      "games_25": {
+        "NAME": "Riddle Regular",
+        "DESCRIPTION": "Play 25 riddles"
+      },
+      "games_100": {
+        "NAME": "Puzzle Patron",
+        "DESCRIPTION": "Play 100 riddles"
+      },
+      "streak_3": {
+        "NAME": "On a Roll",
+        "DESCRIPTION": "Reach a 3-day win streak"
+      },
+      "streak_7": {
+        "NAME": "Unstoppable",
+        "DESCRIPTION": "Reach a 7-day win streak"
+      },
+      "streak_14": {
+        "NAME": "Two-Week Spark",
+        "DESCRIPTION": "Reach a 14-day win streak"
+      },
+      "streak_30": {
+        "NAME": "Monthly Momentum",
+        "DESCRIPTION": "Reach a 30-day win streak"
+      },
+      "classic_10": {
+        "NAME": "Classic Explorer",
+        "DESCRIPTION": "Complete 10 classic levels"
+      },
+      "classic_25": {
+        "NAME": "Classic Voyager",
+        "DESCRIPTION": "Complete 25 classic levels"
+      },
+      "classic_50": {
+        "NAME": "Classic Cartographer",
+        "DESCRIPTION": "Complete 50 classic levels"
+      },
+      "classic_100": {
+        "NAME": "Classic Legend",
+        "DESCRIPTION": "Complete 100 classic levels"
+      },
+      "daily_completed": {
+        "NAME": "Daily Challenger",
+        "DESCRIPTION": "Complete a daily challenge"
+      },
+      "daily_7": {
+        "NAME": "Weekly Ritual",
+        "DESCRIPTION": "Complete 7 daily challenges"
+      },
+      "daily_30": {
+        "NAME": "Daily Devotee",
+        "DESCRIPTION": "Complete 30 daily challenges"
+      },
+      "daily_100": {
+        "NAME": "Daily Sentinel",
+        "DESCRIPTION": "Complete 100 daily challenges"
+      },
+      "challenge_5": {
+        "NAME": "Challenge Climber",
+        "DESCRIPTION": "Win 5 daily challenges"
+      },
+      "challenge_25": {
+        "NAME": "Challenge Champion",
+        "DESCRIPTION": "Win 25 daily challenges"
+      },
+      "challenge_50": {
+        "NAME": "Challenge Conqueror",
+        "DESCRIPTION": "Win 50 daily challenges"
+      },
+      "perfect_guess": {
+        "NAME": "First Try",
+        "DESCRIPTION": "Solve a riddle on your first guess"
+      },
+      "classic_perfect": {
+        "NAME": "Classic Bullseye",
+        "DESCRIPTION": "Solve a classic riddle on your first guess"
+      },
+      "challenge_perfect": {
+        "NAME": "Daily Bullseye",
+        "DESCRIPTION": "Solve a daily challenge on your first guess"
+      },
+      "last_chance": {
+        "NAME": "Last Chance Save",
+        "DESCRIPTION": "Solve a riddle on your final guess"
+      },
+      "classic_last_chance": {
+        "NAME": "Classic Comeback",
+        "DESCRIPTION": "Solve a classic riddle on your final guess"
+      },
+      "challenge_last_chance": {
+        "NAME": "Daily Comeback",
+        "DESCRIPTION": "Solve a daily challenge on your final guess"
+      },
+      "lesson_learned": {
+        "NAME": "Lesson Learned",
+        "DESCRIPTION": "Finish a riddle without solving it"
+      },
+      "hint_user": {
+        "NAME": "Need a Clue",
+        "DESCRIPTION": "Use a hint"
+      },
+      "hints_10": {
+        "NAME": "Clue Collector",
+        "DESCRIPTION": "Use 10 hints"
+      },
+      "hints_25": {
+        "NAME": "Clue Archivist",
+        "DESCRIPTION": "Use 25 hints"
+      },
+      "level_5": {
+        "NAME": "Level Five",
+        "DESCRIPTION": "Reach player level 5"
+      },
+      "level_10": {
+        "NAME": "Double Digits",
+        "DESCRIPTION": "Reach player level 10"
+      },
+      "level_20": {
+        "NAME": "Orbit Breaker",
+        "DESCRIPTION": "Reach player level 20"
+      },
+      "xp_1000": {
+        "NAME": "XP Collector",
+        "DESCRIPTION": "Earn 1,000 XP"
+      },
+      "xp_5000": {
+        "NAME": "XP Engine",
+        "DESCRIPTION": "Earn 5,000 XP"
+      },
+      "coin_hoarder": {
+        "NAME": "Coin Hoarder",
+        "DESCRIPTION": "Hold 1,000 coins"
+      },
+      "treasure_vault": {
+        "NAME": "Treasure Vault",
+        "DESCRIPTION": "Hold 2,500 coins"
+      },
+      "first_purchase": {
+        "NAME": "Supporter",
+        "DESCRIPTION": "Buy an item from the shop"
+      }
+    }
   }
 }

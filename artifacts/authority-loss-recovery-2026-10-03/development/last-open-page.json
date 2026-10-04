@@ -1,0 +1,774 @@
+{
+  "text": "Classic\n300\nWhat has keys but cannot open doors?\nQ\nQ\nQ\nQ\nQ\nQ\nQ\nQ\nQ\nQ\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip",
+  "probe": {
+    "outbound": [
+      {
+        "type": "game:ready",
+        "requestId": "ready-94c11a6a-c1a2-4ddd-bcf0-50b705a2e00a",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791064624666
+      },
+      {
+        "type": "game:resize",
+        "requestId": "resize-8818767c-26fa-44ca-adc7-1384851acc93",
+        "payload": {
+          "width": 390,
+          "height": 568
+        },
+        "sentAt": 1791064624677
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "guess-16a7b772-335d-4227-af44-d11714e868c3",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "QQQQQ",
+          "requestId": "guess-16a7b772-335d-4227-af44-d11714e868c3"
+        },
+        "sentAt": 1791064624774
+      }
+    ],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-a79400ca-1059-43a3-91e2-882d2523ea77",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064624649
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-71de5593-42e5-4013-82f2-f1749761953f",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064624650
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-e9185893-f1e4-4063-a233-f65ddb14b123",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064624664
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-b4d3c816-35c8-4207-8a0b-ebad9b7d7381",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-1be51f00-da8e-4817-bee4-6f198e6fbb34",
+          "locale": "en",
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791064624675
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "classic-fake-1",
+            "text": "What has keys but cannot open doors?",
+            "answerLength": 5,
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "gameMode": "classic",
+            "index": 1,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "piano",
+              "locale": "en"
+            },
+            "acceptedGuesses": []
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791064624675
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "classic-fake-1"
+          }
+        },
+        "sentAt": 1791064624676
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "guess-16a7b772-335d-4227-af44-d11714e868c3",
+        "payload": {
+          "operation": "guess",
+          "ok": true,
+          "data": {
+            "feedback": [
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              },
+              {
+                "letter": "q",
+                "status": "red"
+              }
+            ],
+            "attempts": 1,
+            "isCorrect": false,
+            "gameOver": false
+          }
+        },
+        "sentAt": 1791064624777
+      }
+    ],
+    "errors": [],
+    "unhandled": [],
+    "saves": [
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624732,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624736,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624740,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "Q",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624744,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "Q",
+            "Q",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624748,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "Q",
+            "Q",
+            "Q"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624791,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "q",
+                  "q",
+                  "q",
+                  "q",
+                  "q"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "q": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624812,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "q",
+                  "q",
+                  "q",
+                  "q",
+                  "q"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "q": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624815,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "q",
+                  "q",
+                  "q",
+                  "q",
+                  "q"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "q": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624819,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "Q",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "q",
+                  "q",
+                  "q",
+                  "q",
+                  "q"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "q": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624822,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "Q",
+            "Q",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "q",
+                  "q",
+                  "q",
+                  "q",
+                  "q"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "q": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791064624825,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "Q",
+            "Q",
+            "Q",
+            "Q",
+            "Q"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "q",
+                  "q",
+                  "q",
+                  "q",
+                  "q"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "q": "red"
+          }
+        }
+      }
+    ],
+    "completions": [],
+    "spends": [],
+    "seedSpends": 0,
+    "before": {
+      "username": "Guest Solver",
+      "coins": 300,
+      "level": 3,
+      "xp": 420,
+      "winStreak": 2,
+      "gamesPlayed": 7,
+      "wins": 5,
+      "achievements": [
+        "first_win",
+        "daily_spark"
+      ],
+      "classicIndex": 1
+    },
+    "ready": true
+  }
+}

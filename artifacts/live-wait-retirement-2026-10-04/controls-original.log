@@ -1,0 +1,30 @@
+{
+  "mode": "production",
+  "checks": 76,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "join",
+      "name": "retirement releases every local delivery deadline",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "poll",
+      "name": "retirement releases every local delivery deadline",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "guess",
+      "name": "retirement releases every local delivery deadline",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}

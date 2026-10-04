@@ -153,6 +153,8 @@ export const getCurrentClassicRiddle = httpsCallable<
   {
     /** Stores classic index. */
     classicIndex: number;
+    /** Opts in to the issued question's server-confirmed Classic position. */
+    includeClassicIndex?: boolean;
     /** Stores locale. */
     locale?: string;
     /** Stores session token. */
@@ -415,6 +417,8 @@ export const loadUserDocument = async (userId: string): Promise<Record<string, u
 
 /** Describes current riddle response. */
 export type CurrentRiddleResponse = {
+  /** Canonical Classic position of the issued question after terminal recovery. */
+  classicIndex?: number;
   /** Stores challenge. */
   challenge?: {
     /** Stores date. */

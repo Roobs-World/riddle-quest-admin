@@ -1,0 +1,7 @@
+{
+  "packages/portal/src/play/GameSessionCheckpoints.ts": "fa44c4a62bfc2181e54eb0c192adaac6c4007696d155a5642f244f7821b7a46d",
+  "packages/portal/src/play/game/hooks/useGameSessionPersistence.ts": "410d58c61842411a41ff31624e58a5798f2191ee9a0ad4cc9c7c300720aa95a6",
+  "packages/portal/src/play/__tests__/GameSessionCheckpoints.test.ts": "853f997b48ceb7cd00fe6b8207a47676c9fb39dcbc5e53a58af096547b35af3a",
+  "packages/portal/scripts/verify-game-checkpoint-work-browser.mjs": "0afb912f94466dbb61682afb40f7f66c133bdce943a639b52406cce8c357fa88",
+  "packages/portal/package.json": "f28d3cc76a9c1e80cc4be19324119a113f63fe848cff3c5e9c6d0ff2fe6e5b41"
+}

@@ -1,0 +1,225 @@
+{
+  "preferences": {
+    "locale": "en",
+    "muted": false,
+    "reducedMotion": true,
+    "onboardingComplete": true
+  },
+  "playerData": {
+    "schemaVersion": 1,
+    "updatedAt": 1791056764708,
+    "profile": {
+      "username": "Guest Solver",
+      "coins": 0,
+      "level": 1,
+      "xp": 0,
+      "winStreak": 0,
+      "gamesPlayed": 0,
+      "wins": 0,
+      "achievements": [],
+      "classicIndex": 1
+    },
+    "activeGame": {
+      "schemaVersion": 1,
+      "savedAt": 1791056764708,
+      "riddleId": "reddit-guest-1",
+      "sessionToken": "00000000-0000-4000-8000-000000000001",
+      "gameMode": "classic",
+      "currentLetters": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "activeSlotIndex": 0,
+      "hintRevealedIndices": [],
+      "guesses": [
+        {
+          "guess": [
+            "q",
+            "q",
+            "q",
+            "q",
+            "q"
+          ],
+          "feedback": [
+            "red",
+            "red",
+            "red",
+            "red",
+            "red"
+          ]
+        },
+        {
+          "guess": [
+            "r",
+            "r",
+            "r",
+            "r",
+            "r"
+          ],
+          "feedback": [
+            "red",
+            "red",
+            "red",
+            "red",
+            "red"
+          ]
+        },
+        {
+          "guess": [
+            "s",
+            "s",
+            "s",
+            "s",
+            "s"
+          ],
+          "feedback": [
+            "red",
+            "red",
+            "red",
+            "red",
+            "red"
+          ]
+        },
+        {
+          "guess": [
+            "t",
+            "t",
+            "t",
+            "t",
+            "t"
+          ],
+          "feedback": [
+            "red",
+            "red",
+            "red",
+            "red",
+            "red"
+          ]
+        },
+        {
+          "guess": [
+            "u",
+            "u",
+            "u",
+            "u",
+            "u"
+          ],
+          "feedback": [
+            "red",
+            "red",
+            "red",
+            "red",
+            "red"
+          ]
+        }
+      ],
+      "engineSnapshot": {
+        "guesses": [
+          {
+            "guess": [
+              "q",
+              "q",
+              "q",
+              "q",
+              "q"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "r",
+              "r",
+              "r",
+              "r",
+              "r"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "s",
+              "s",
+              "s",
+              "s",
+              "s"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "t",
+              "t",
+              "t",
+              "t",
+              "t"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "u",
+              "u",
+              "u",
+              "u",
+              "u"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          }
+        ],
+        "attemptsUsed": 5,
+        "hasUsedContinue": false,
+        "gameOver": true
+      },
+      "awaitingContinue": false,
+      "letterStates": {
+        "q": "red",
+        "r": "red",
+        "s": "red",
+        "t": "red",
+        "u": "red"
+      },
+      "pendingOutcome": {
+        "id": "00000000-0000-4000-8000-000000000001-loss-5",
+        "kind": "loss",
+        "riddleId": "reddit-guest-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "attempts": 5,
+        "isCorrect": false
+      }
+    }
+  }
+}

@@ -1,0 +1,842 @@
+[
+  {
+    "width": 1280,
+    "name": "one immediate message dispatch under StrictMode",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "profile and callback replacement preserve current pending errors",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "current failure uses the latest notice sink",
+    "expected": {
+      "notice": "current account failure",
+      "noticeVersion": 1,
+      "uid": "Alice"
+    },
+    "actual": {
+      "notice": "current account failure",
+      "noticeVersion": 1,
+      "uid": "Alice"
+    }
+  },
+  {
+    "width": 1280,
+    "name": "ordinary host renders keep all stable subscriptions",
+    "expected": {
+      "bridge": 2,
+      "visibility": 2,
+      "provider": 4,
+      "auth": 2
+    },
+    "actual": {
+      "bridge": 2,
+      "visibility": 2,
+      "provider": 4,
+      "auth": 2
+    }
+  },
+  {
+    "width": 1280,
+    "name": "account notification retires delayed notices before render",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "account notification retires delayed telemetry before render",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "messages cannot enter the old router before account render",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "rendered replacement uses its new router",
+    "expected": "Bob",
+    "actual": "Bob"
+  },
+  {
+    "width": 1280,
+    "name": "same UID with a new generation retires pending notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "leave and return to the same UID does not revive old notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "sign-out suppresses delayed account errors",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "signed-out account cannot route a game message",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "same-UID identity-provider replacement retires pending notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "replacement identity provider remains routable",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 1280,
+    "name": "provider lifecycle replacement retires pending listener errors",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "queued retired SDK callbacks cannot pause the replacement game",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "current SDK pause and resume remain synchronous",
+    "expected": 2,
+    "actual": 2
+  },
+  {
+    "width": 1280,
+    "name": "current lifecycle delivery uses the latest host sender",
+    "expected": [
+      {
+        "type": "host:pause",
+        "host": 1
+      },
+      {
+        "type": "host:resume",
+        "host": 1
+      }
+    ],
+    "actual": [
+      {
+        "type": "host:pause",
+        "host": 1
+      },
+      {
+        "type": "host:resume",
+        "host": 1
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "name": "SDK resume is suppressed while the document is hidden",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden document sends pause",
+    "expected": "host:pause",
+    "actual": "host:pause"
+  },
+  {
+    "width": 1280,
+    "name": "visible document sends resume",
+    "expected": "host:resume",
+    "actual": "host:resume"
+  },
+  {
+    "width": 1280,
+    "name": "synchronous route failure becomes a host notice",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "throw from optional telemetry preserves host recovery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "reject from optional telemetry preserves host recovery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "failed notice delivery is observed without a recursive notice",
+    "expected": "Error: notice delivery failed",
+    "actual": "Error: notice delivery failed"
+  },
+  {
+    "width": 1280,
+    "name": "all lifecycle sender failures are observed safely",
+    "expected": 4,
+    "actual": 4
+  },
+  {
+    "width": 1280,
+    "name": "unmount retires pending notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "unmount retires pending telemetry",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "unmount removes the message subscription",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "unmount suppresses retained SDK callbacks",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "unmount balances local bridge subscriptions",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "unmount balances visibility subscriptions",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "unmount retires every provider callback",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "host recovery has no uncaught browser errors",
+    "expected": [],
+    "actual": []
+  },
+  {
+    "width": 1280,
+    "name": "close during telemetry retires the notice before delivery",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "replace during telemetry retires the notice before delivery",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "pause registration failure keeps the game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "pause registration failure retires a callback retained by the SDK",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "pause registration failure preserves the other provider signal",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "pause registration failure preserves browser visibility delivery",
+    "expected": "host:pause",
+    "actual": "host:pause"
+  },
+  {
+    "width": 1280,
+    "name": "pause registration failure is reported without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "pause registration failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "pause cleanup failure keeps the replacement game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "pause cleanup failure still detaches both provider subscriptions",
+    "expected": [
+      "pause",
+      "resume"
+    ],
+    "actual": [
+      "pause",
+      "resume"
+    ]
+  },
+  {
+    "width": 1280,
+    "name": "pause cleanup failure is observed without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "pause cleanup failure cannot revive retired callbacks",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "pause cleanup failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume registration failure keeps the game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume registration failure retires a callback retained by the SDK",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume registration failure preserves the other provider signal",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume registration failure preserves browser visibility delivery",
+    "expected": "host:pause",
+    "actual": "host:pause"
+  },
+  {
+    "width": 1280,
+    "name": "resume registration failure is reported without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "resume registration failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume cleanup failure keeps the replacement game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume cleanup failure still detaches both provider subscriptions",
+    "expected": [
+      "pause",
+      "resume"
+    ],
+    "actual": [
+      "pause",
+      "resume"
+    ]
+  },
+  {
+    "width": 1280,
+    "name": "resume cleanup failure is observed without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "resume cleanup failure cannot revive retired callbacks",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "resume cleanup failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "one immediate message dispatch under StrictMode",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "profile and callback replacement preserve current pending errors",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "current failure uses the latest notice sink",
+    "expected": {
+      "notice": "current account failure",
+      "noticeVersion": 1,
+      "uid": "Alice"
+    },
+    "actual": {
+      "notice": "current account failure",
+      "noticeVersion": 1,
+      "uid": "Alice"
+    }
+  },
+  {
+    "width": 390,
+    "name": "ordinary host renders keep all stable subscriptions",
+    "expected": {
+      "bridge": 2,
+      "visibility": 2,
+      "provider": 4,
+      "auth": 2
+    },
+    "actual": {
+      "bridge": 2,
+      "visibility": 2,
+      "provider": 4,
+      "auth": 2
+    }
+  },
+  {
+    "width": 390,
+    "name": "account notification retires delayed notices before render",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "account notification retires delayed telemetry before render",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "messages cannot enter the old router before account render",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "rendered replacement uses its new router",
+    "expected": "Bob",
+    "actual": "Bob"
+  },
+  {
+    "width": 390,
+    "name": "same UID with a new generation retires pending notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "leave and return to the same UID does not revive old notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "sign-out suppresses delayed account errors",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "signed-out account cannot route a game message",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "same-UID identity-provider replacement retires pending notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "replacement identity provider remains routable",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 390,
+    "name": "provider lifecycle replacement retires pending listener errors",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "queued retired SDK callbacks cannot pause the replacement game",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "current SDK pause and resume remain synchronous",
+    "expected": 2,
+    "actual": 2
+  },
+  {
+    "width": 390,
+    "name": "current lifecycle delivery uses the latest host sender",
+    "expected": [
+      {
+        "type": "host:pause",
+        "host": 1
+      },
+      {
+        "type": "host:resume",
+        "host": 1
+      }
+    ],
+    "actual": [
+      {
+        "type": "host:pause",
+        "host": 1
+      },
+      {
+        "type": "host:resume",
+        "host": 1
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "name": "SDK resume is suppressed while the document is hidden",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden document sends pause",
+    "expected": "host:pause",
+    "actual": "host:pause"
+  },
+  {
+    "width": 390,
+    "name": "visible document sends resume",
+    "expected": "host:resume",
+    "actual": "host:resume"
+  },
+  {
+    "width": 390,
+    "name": "synchronous route failure becomes a host notice",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "throw from optional telemetry preserves host recovery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "reject from optional telemetry preserves host recovery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "failed notice delivery is observed without a recursive notice",
+    "expected": "Error: notice delivery failed",
+    "actual": "Error: notice delivery failed"
+  },
+  {
+    "width": 390,
+    "name": "all lifecycle sender failures are observed safely",
+    "expected": 4,
+    "actual": 4
+  },
+  {
+    "width": 390,
+    "name": "unmount retires pending notices",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "unmount retires pending telemetry",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "unmount removes the message subscription",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "unmount suppresses retained SDK callbacks",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "unmount balances local bridge subscriptions",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "unmount balances visibility subscriptions",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "unmount retires every provider callback",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "host recovery has no uncaught browser errors",
+    "expected": [],
+    "actual": []
+  },
+  {
+    "width": 390,
+    "name": "close during telemetry retires the notice before delivery",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "replace during telemetry retires the notice before delivery",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "pause registration failure keeps the game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "pause registration failure retires a callback retained by the SDK",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "pause registration failure preserves the other provider signal",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "pause registration failure preserves browser visibility delivery",
+    "expected": "host:pause",
+    "actual": "host:pause"
+  },
+  {
+    "width": 390,
+    "name": "pause registration failure is reported without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "pause registration failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "pause cleanup failure keeps the replacement game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "pause cleanup failure still detaches both provider subscriptions",
+    "expected": [
+      "pause",
+      "resume"
+    ],
+    "actual": [
+      "pause",
+      "resume"
+    ]
+  },
+  {
+    "width": 390,
+    "name": "pause cleanup failure is observed without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "pause cleanup failure cannot revive retired callbacks",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "pause cleanup failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "resume registration failure keeps the game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "resume registration failure retires a callback retained by the SDK",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "resume registration failure preserves the other provider signal",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "resume registration failure preserves browser visibility delivery",
+    "expected": "host:pause",
+    "actual": "host:pause"
+  },
+  {
+    "width": 390,
+    "name": "resume registration failure is reported without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "resume registration failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "resume cleanup failure keeps the replacement game mounted",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "resume cleanup failure still detaches both provider subscriptions",
+    "expected": [
+      "pause",
+      "resume"
+    ],
+    "actual": [
+      "pause",
+      "resume"
+    ]
+  },
+  {
+    "width": 390,
+    "name": "resume cleanup failure is observed without an uncaught effect error",
+    "expected": {
+      "errors": [],
+      "reported": true
+    },
+    "actual": {
+      "errors": [],
+      "reported": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "resume cleanup failure cannot revive retired callbacks",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "resume cleanup failure leaves no local bridge listener after unmount",
+    "expected": 0,
+    "actual": 0
+  }
+]

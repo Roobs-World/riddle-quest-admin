@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Série brisée",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Aucun produit disponible",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "L'application n'a pas pu finir de charger ses énigmes. Veuillez vérifier votre connexion et réessayer.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Base de données Riddle indisponible"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Base de données Riddle indisponible",
+    "PROGRESS_UNSAVED_MESSAGE": "La progression n'est pas encore enregistrée. Gardez le jeu ouvert."
   }
 }

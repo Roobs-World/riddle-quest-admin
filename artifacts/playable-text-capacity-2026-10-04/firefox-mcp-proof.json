@@ -1,0 +1,166 @@
+{
+  "capacityFirefoxPaste": {
+    "raw": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"nativeValue\": \"\",\n  \"writes\": 1,\n  \"results\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    "parsed": {
+      "draft": "rome",
+      "nativeValue": "",
+      "writes": 1,
+      "results": 0,
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "capacityFirefoxSolved": {
+    "raw": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"writes\": 2,\n  \"result\": 1,\n  \"lastSave\": {\n    \"schemaVersion\": 1,\n    \"revision\": 2,\n    \"contentVersion\": \"youtube-content-v1-fixture-643b893f7ed0c15d\",\n    \"progression\": {\n      \"coins\": 450,\n      \"xp\": 100,\n      \"level\": 2,\n      \"classicIndex\": 1,\n      \"gamesPlayed\": 1,\n      \"totalWins\": 1,\n      \"challengeWins\": 0,\n      \"dailyPuzzlesCompleted\": 0,\n      \"currentDailyStreak\": 0,\n      \"bestDailyStreak\": 0,\n      \"totalGuesses\": 1,\n      \"totalGuessesInWins\": 1,\n      \"totalHintsUsed\": 0,\n      \"highestClassicLevel\": 1,\n      \"unlockedAchievementIds\": [\n        \"first_win\",\n        \"perfect_guess\",\n        \"classic_perfect\"\n      ]\n    },\n    \"activeGame\": null,\n    \"operationReceipts\": [\n      {\n        \"id\": \"start:classic:0:1\",\n        \"revision\": 1\n      },\n      {\n        \"id\": \"guess:1:1\",\n        \"revision\": 2\n      }\n    ],\n    \"preferences\": {\n      \"reducedMotion\": false,\n      \"highContrast\": false,\n      \"guidanceComplete\": false\n    }\n  },\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    "parsed": {
+      "writes": 2,
+      "result": 1,
+      "lastSave": {
+        "schemaVersion": 1,
+        "revision": 2,
+        "contentVersion": "youtube-content-v1-fixture-643b893f7ed0c15d",
+        "progression": {
+          "coins": 450,
+          "xp": 100,
+          "level": 2,
+          "classicIndex": 1,
+          "gamesPlayed": 1,
+          "totalWins": 1,
+          "challengeWins": 0,
+          "dailyPuzzlesCompleted": 0,
+          "currentDailyStreak": 0,
+          "bestDailyStreak": 0,
+          "totalGuesses": 1,
+          "totalGuessesInWins": 1,
+          "totalHintsUsed": 0,
+          "highestClassicLevel": 1,
+          "unlockedAchievementIds": [
+            "first_win",
+            "perfect_guess",
+            "classic_perfect"
+          ]
+        },
+        "activeGame": null,
+        "operationReceipts": [
+          {
+            "id": "start:classic:0:1",
+            "revision": 1
+          },
+          {
+            "id": "guess:1:1",
+            "revision": 2
+          }
+        ],
+        "preferences": {
+          "reducedMotion": false,
+          "highContrast": false,
+          "guidanceComplete": false
+        }
+      },
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "capacityFirefoxHintCommit": {
+    "raw": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"firstLocked\": true,\n  \"nativeValue\": \"\",\n  \"writes\": 2,\n  \"coins\": 275,\n  \"hints\": [\n    0\n  ],\n  \"results\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    "parsed": {
+      "draft": "rome",
+      "firstLocked": true,
+      "nativeValue": "",
+      "writes": 2,
+      "coins": 275,
+      "hints": [
+        0
+      ],
+      "results": 0,
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "capacityFirefoxHintSolved": {
+    "raw": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"writes\": 3,\n  \"result\": 1,\n  \"lastSave\": {\n    \"schemaVersion\": 1,\n    \"revision\": 3,\n    \"contentVersion\": \"youtube-content-v1-fixture-643b893f7ed0c15d\",\n    \"progression\": {\n      \"coins\": 425,\n      \"xp\": 100,\n      \"level\": 2,\n      \"classicIndex\": 1,\n      \"gamesPlayed\": 1,\n      \"totalWins\": 1,\n      \"challengeWins\": 0,\n      \"dailyPuzzlesCompleted\": 0,\n      \"currentDailyStreak\": 0,\n      \"bestDailyStreak\": 0,\n      \"totalGuesses\": 1,\n      \"totalGuessesInWins\": 1,\n      \"totalHintsUsed\": 1,\n      \"highestClassicLevel\": 1,\n      \"unlockedAchievementIds\": [\n        \"hint_user\",\n        \"first_win\",\n        \"perfect_guess\",\n        \"classic_perfect\"\n      ]\n    },\n    \"activeGame\": null,\n    \"operationReceipts\": [\n      {\n        \"id\": \"start:classic:0:1\",\n        \"revision\": 1\n      },\n      {\n        \"id\": \"hint:1:0:0\",\n        \"revision\": 2\n      },\n      {\n        \"id\": \"guess:1:1\",\n        \"revision\": 3\n      }\n    ],\n    \"preferences\": {\n      \"reducedMotion\": false,\n      \"highContrast\": false,\n      \"guidanceComplete\": false\n    }\n  },\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    "parsed": {
+      "writes": 3,
+      "result": 1,
+      "lastSave": {
+        "schemaVersion": 1,
+        "revision": 3,
+        "contentVersion": "youtube-content-v1-fixture-643b893f7ed0c15d",
+        "progression": {
+          "coins": 425,
+          "xp": 100,
+          "level": 2,
+          "classicIndex": 1,
+          "gamesPlayed": 1,
+          "totalWins": 1,
+          "challengeWins": 0,
+          "dailyPuzzlesCompleted": 0,
+          "currentDailyStreak": 0,
+          "bestDailyStreak": 0,
+          "totalGuesses": 1,
+          "totalGuessesInWins": 1,
+          "totalHintsUsed": 1,
+          "highestClassicLevel": 1,
+          "unlockedAchievementIds": [
+            "hint_user",
+            "first_win",
+            "perfect_guess",
+            "classic_perfect"
+          ]
+        },
+        "activeGame": null,
+        "operationReceipts": [
+          {
+            "id": "start:classic:0:1",
+            "revision": 1
+          },
+          {
+            "id": "hint:1:0:0",
+            "revision": 2
+          },
+          {
+            "id": "guess:1:1",
+            "revision": 3
+          }
+        ],
+        "preferences": {
+          "reducedMotion": false,
+          "highContrast": false,
+          "guidanceComplete": false
+        }
+      },
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "verified": true,
+  "limit": "Native paste/composition deliveries were injected through DOM events; mode selection, hint purchase, answer-slot focus, and Enter submission used native Firefox MCP interaction."
+}

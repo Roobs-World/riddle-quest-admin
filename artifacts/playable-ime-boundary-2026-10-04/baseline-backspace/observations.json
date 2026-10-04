@@ -1,0 +1,18 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ime-backspace",
+    "name": "native typing reaches the current answer",
+    "actual": "rom",
+    "expected": "rom"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ime-backspace",
+    "name": "IME key preserves the complete draft",
+    "actual": "ro",
+    "expected": "rom"
+  }
+]

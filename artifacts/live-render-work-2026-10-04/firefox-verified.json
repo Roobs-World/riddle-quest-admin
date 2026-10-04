@@ -1,0 +1,48 @@
+[
+  {
+    "initialized": true,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "guesses": 1,
+    "Z": "key red",
+    "work": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    },
+    "focused": true,
+    "epoch": "1",
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "draft": "pian",
+    "Z": "key red",
+    "work": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 7
+    },
+    "newPolls": 7,
+    "guesses": 1,
+    "sameInput": true,
+    "focused": true,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "guesses": 2,
+    "score": "Riddles completed: 1 / 10",
+    "Z": "key",
+    "initialReads": {
+      "wall": 0,
+      "monotonic": 0
+    },
+    "sameInput": false,
+    "focused": false,
+    "errors": [],
+    "unhandled": []
+  }
+]

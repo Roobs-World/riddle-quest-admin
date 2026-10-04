@@ -9,7 +9,10 @@ import {
 import {get, onValue, ref, set} from "firebase/database";
 
 /** Defines the project id value. */
-const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "";
+// Every destructive fixture operation requires the private loopback demo services.
+if (!PROJECT_ID.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? ""))
+  throw new Error("Private demo presence emulators required");
 /** Defines the jest user value. */
 const JEST_USER = `jest_${"a".repeat(40)}`;
 /** Defines the facebook user value. */

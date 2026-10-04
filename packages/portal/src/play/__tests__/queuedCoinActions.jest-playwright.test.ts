@@ -137,6 +137,89 @@ describeBrowser("queued coin actions", () => {
     }
   });
 
+  it("disables Submit when the draft repeats the previous wrong answer", async () => {
+    /** Mounted game used to verify duplicate-draft submission behavior. */
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
+      await completeMockOnboarding(page);
+      await page.getByText(/what has keys/i).waitFor();
+      await page.locator(".guess-row button:not([disabled])").first().click();
+      await page.keyboard.type("ZZZZZ");
+      await page.locator(".submit-action").click();
+      await page.locator(".guess-row .cell.red").last().waitFor();
+      await page.locator(".guess-row button:not([disabled])").first().click();
+      await page.keyboard.type("ZZZZZ");
+      await expect(page.locator(".submit-action")).toBeDisabled();
+      await page.locator(".guess-row button:not([disabled])").first().click();
+      await page.keyboard.type("X");
+      await expect(page.locator(".submit-action")).toBeEnabled();
+    } finally {
+      await page.close();
+    }
+  });
+
+  it("recovers an unaccepted Continue and its typed draft after reload", async () => {
+    /** Exercises the real frame, durable paid-action journal and host acknowledgement. */
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    page.setDefaultTimeout(8_000);
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+        /** Interrupt delivery before authority, then allow journal recovery on reload. */
+        const dispatch = window.dispatchEvent.bind(window);
+        window.dispatchEvent = (event: Event) => {
+          /** Bridge request intercepted until the reload permits recovery. */
+          const message = (event as CustomEvent).detail;
+          if (event.type === "riddle-quest:game-to-host" && message?.type === "game:spendCoins" &&
+              sessionStorage.getItem("allowContinueRecovery") !== "yes") return true;
+          return dispatch(event);
+        };
+      });
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
+      await completeMockOnboarding(page);
+      await page.getByText(/what has keys/i).waitFor();
+      for (const wrongLetter of ["X", "Z", "Q", "V", "B"]) {
+        await page.locator(".guess-row button:not([disabled])").first().click();
+        await page.keyboard.type(wrongLetter.repeat(5));
+        await page.locator(".submit-action").click();
+        await page.locator(".guess-row .cell.red").last().waitFor();
+      }
+      await page.locator(".modal-continue").waitFor();
+      /** Displayed balance before the interrupted Continue purchase. */
+      const coinsBefore = Number((await page.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
+      await page.getByRole("button", {name: /Coins to Try Again/i}).click();
+      await expect(page.locator(".modal-continue")).toHaveCount(0);
+      await page.locator(".guess-row button:not([disabled])").first().click();
+      await page.keyboard.type("PI");
+      await expect(page.locator(".guess-row").first()).toHaveText("PI");
+      await page.evaluate(() => sessionStorage.setItem("allowContinueRecovery", "yes"));
+      await page.reload();
+      await completeMockOnboarding(page);
+      await page.getByText(/what has keys/i).waitFor();
+      await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")));
+      await expect(page.locator(".modal-continue")).toHaveCount(0);
+      await expect(page.locator(".guess-row:has(button:not([disabled]))")).toHaveText("PI");
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 50));
+      await expect(page.locator("main.game-app")).not.toHaveAttribute("aria-hidden", "true");
+    } finally {
+      await page.close();
+    }
+  });
+
   it("skips and charges directly from the loss modal", async () => {
     /** Browser page used to exhaust attempts and exercise the loss action. */
     const page = await browser.newPage({viewport: {width: 390, height: 844}});
@@ -376,6 +459,10 @@ describeBrowser("queued coin actions", () => {
         /** Optional wrong-answer guidance must not obscure the controls under test. */
         const tooltip = page.locator("[data-tooltip-id=hintAfterWrongGuess] button");
         if (await tooltip.isVisible()) await tooltip.click();
+        if (recovery === "reject") {
+          for (const letter of "CL") await page.locator(".keyboard").getByRole("button", {name: new RegExp(`^${letter}$`)}).click();
+          await expect(page.locator(".guess-row").nth(1)).toHaveText(/^C\s*L$/i);
+        }
         await expect(page.locator("[data-tooltip=gameHint]")).toBeEnabled();
         await expect(page.locator("[data-tooltip=gameSkip]")).toBeEnabled();
         await page.locator(`[data-tooltip=${action === "hint" ? "gameHint" : "gameSkip"}]`).click();
@@ -404,8 +491,27 @@ describeBrowser("queued coin actions", () => {
               }),
             ),
           );
-          await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")));
+          await page.waitForFunction(() => {
+            /** Retained input must contain no rejected answer or paid delivery. */
+            const key = Object.keys(localStorage).find(key => key.includes("pendingPlay:v1:"));
+            if (!key) return false;
+            /** Draft-only checkpoint remains owned by the rejected question. */
+            const journal = JSON.parse(localStorage.getItem(key)!);
+            return journal.queue.length === 0 && !journal.coinAction && journal.successors.length === 0;
+          });
+          expect(await page.evaluate(() => {
+            /** Draft checkpoint and original rejected request share the same round. */
+            const key = Object.keys(localStorage).find(key => key.includes("pendingPlay:v1:"))!;
+            /** Only user input may survive the rejection of its dependent hint or Skip. */
+            const journal = JSON.parse(localStorage.getItem(key)!);
+            return {draft: journal.draft,slot: journal.draftActiveSlotIndex,
+              sameSession: journal.riddle.sessionToken === Reflect.get(window, "__heldGuess").payload.sessionToken};
+          })).toEqual({draft: ["C", "L", "", "", ""],slot: 2,sameSession: true});
           expect(await page.evaluate(() => Reflect.get(window, "__paidRequests").length)).toBe(0);
+          await expect(page.locator(".guess-row").first()).toHaveText(/^C\s*L$/i);
+          expect(await page.locator(".guess-row").first().locator("button[disabled]").count()).toBe(0);
+          await page.locator(".keyboard").getByRole("button", {name: /^O$/}).click();
+          await expect(page.locator(".guess-row").first()).toHaveText(/^C\s*L\s*O$/i);
           return;
         }
         /** Original paid identity must survive replay without a second charge request. */

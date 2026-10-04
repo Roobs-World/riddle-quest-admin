@@ -2,7 +2,7 @@
 export type BrowserErrorContext = Readonly<Record<string, unknown>>;
 
 /** Target-provided adapter for reporting a caught browser failure. */
-export type BrowserErrorReporter = (error: unknown, context?: BrowserErrorContext) => void;
+export type BrowserErrorReporter = (error: unknown, context?: BrowserErrorContext) => void | Promise<void>;
 
 /** Default adapter used by Web Targets that deliberately ship without remote telemetry. */
 const ignoreBrowserError: BrowserErrorReporter = () => undefined;
@@ -26,7 +26,12 @@ export function configureBrowserErrorReporter(reporter: BrowserErrorReporter | n
  * @param context Non-sensitive fields describing the failed operation.
  */
 export function captureBrowserException(error: unknown, context?: BrowserErrorContext): void {
-  activeBrowserErrorReporter(error, context);
+  try {
+    // Optional telemetry must not interrupt error recovery or reject an event handler.
+    void Promise.resolve(activeBrowserErrorReporter(error, context)).catch(() => undefined);
+  } catch {
+    // Reporting failures cannot safely be reported through the same failing adapter.
+  }
 }
 
 /** Restores the no-op adapter for deterministic unit tests. */

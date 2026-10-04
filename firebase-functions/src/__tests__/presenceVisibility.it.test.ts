@@ -8,7 +8,7 @@ import {
   initializeTestEnvironment,
   type RulesTestEnvironment,
 } from "@firebase/rules-unit-testing";
-import {get, onValue, ref, remove, update, type Database as ClientDatabase} from "firebase/database";
+import {get, onValue, ref, remove, runTransaction, update, type Database as ClientDatabase} from "firebase/database";
 import {
   deletePresenceForUser,
   refreshBlockedRivalPresenceVisibility,
@@ -17,7 +17,14 @@ import {
 import {setPresenceConsentForUser} from "../presence/presenceAggregation";
 
 /** Defines the project id value. */
-const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "";
+// Every destructive fixture operation requires the private loopback demo services.
+if (
+  !PROJECT_ID.startsWith("demo-") ||
+  !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "") ||
+  !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "")
+)
+  throw new Error("Private demo presence emulators required");
 /** Renders the viewer interface. */
 const VIEWER = "presence-integration-viewer";
 /** Renders the target interface. */
@@ -95,6 +102,15 @@ const adminDatabase = () => ({
     },
     update: (values: Record<string, unknown>) =>
       environment.withSecurityRulesDisabled((context) => update(ref(context.database(), path), values)),
+    transaction: async (operation: (value: unknown) => unknown) => {
+      /** Rules-disabled context callbacks do not forward return values. */
+      let result: Awaited<ReturnType<typeof runTransaction>> | undefined;
+      await environment.withSecurityRulesDisabled(async (context) => {
+        result = await runTransaction(ref(context.database(), path), operation, {applyLocally: false});
+      });
+      if (!result) throw new Error("missing-rtdb-transaction-result");
+      return result;
+    },
     remove: () => environment.withSecurityRulesDisabled((context) => remove(ref(context.database(), path))),
   }),
 });
@@ -174,10 +190,10 @@ it("revokes RTDB reads when the Firestore block-trigger body runs, then deletes 
   await firestore.doc(`users/${TARGET}/blockedRivals/${VIEWER}`).set({createdAtMs: 2});
   await refreshBlockedRivalPresenceVisibility(TARGET, VIEWER, firestore, database as never);
   await assertFails(get(ref(viewerDatabase, `presenceStatus/${TARGET}`)));
-  expect((await database.ref(`presenceVisibility/${VIEWER}/${TARGET}`).get()).exists()).toBe(false);
-  expect((await database.ref(`presenceViewers/${TARGET}/${VIEWER}`).get()).exists()).toBe(false);
-  expect((await database.ref(`presenceVisibility/${TARGET}/${VIEWER}`).get()).exists()).toBe(false);
-  expect((await database.ref(`presenceViewers/${VIEWER}/${TARGET}`).get()).exists()).toBe(false);
+  expect((await database.ref(`presenceVisibility/${VIEWER}/${TARGET}`).get()).child("allowed").val()).toBe(false);
+  expect((await database.ref(`presenceViewers/${TARGET}/${VIEWER}`).get()).val()).toBe(true);
+  expect((await database.ref(`presenceVisibility/${TARGET}/${VIEWER}`).get()).child("allowed").val()).toBe(false);
+  expect((await database.ref(`presenceViewers/${VIEWER}/${TARGET}`).get()).val()).toBe(true);
 
   await firestore.doc(`users/${TARGET}/blockedRivals/${VIEWER}`).delete();
   await refreshBlockedRivalPresenceVisibility(TARGET, VIEWER, firestore, database as never);

@@ -19,11 +19,11 @@ import {purchase} from "@devvit/payments/client";
 import {getWebViewMode} from "@devvit/client";
 import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
 import {raceMatchmakingFailureResult} from "../platform/raceMatchmakingFailure";
+import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
+export {REDDIT_GATEWAY_REQUEST_TIMEOUT_MS} from "./redditGatewayDeadline";
 
 /** Defines the guest key value. */
 const GUEST_KEY = "riddleQuestRedditGuestV1";
-/** Maximum time allowed for a same-origin Reddit gateway request. */
-export const REDDIT_GATEWAY_REQUEST_TIMEOUT_MS = 15_000;
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -67,46 +67,29 @@ export const selectMigratableGuestPreferences = (preferences: PlatformPreference
 /** Provides post reddit gateway behavior. */
 export const postRedditGateway = async (path: string, body: unknown = {}): Promise<Record<string, unknown>> => {
   assertRedditGatewayPath(path);
-  /** Provides controller behavior. */
-  const controller = new AbortController();
-  /** Provides timeout behavior. */
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-  try {
-    /** Provides request behavior. */
-    const request = (async () => {
-      /** Provides response behavior. */
-      const response = await fetch(path, {
-        method: "POST",
-        // A valid initial API path must never authorize a redirect to another route or origin.
-        redirect: "error",
-        headers: {"content-type": "application/json"},
-        body: JSON.stringify(body),
-        signal: controller.signal,
-      });
-      /** Provides payload behavior. */
-      const payload: unknown = await response.json();
-      if (!response.ok || !isRecord(payload) || payload.ok !== true) {
-        /** Stable HTTP categories remain available when older gateways omit typed details. */
-        const code = response.status === 409 && /^\/api\/game\/race\.live\.(join|update)$/.test(path) &&
-          isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "failed-precondition" ? "failed-precondition" :
-          [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
-          response.status === 429 ? "resource-exhausted" : "unavailable";
-        throw Object.assign(new Error("reddit-gateway-request-failed"), {code,
-          details: {matchmaking: isRecord(payload) ? payload.matchmaking : undefined}});
-      }
-      return payload;
-    })();
-    /** Provides deadline behavior. */
-    const deadline = new Promise<never>((_resolve, reject) => {
-      timeout = setTimeout(() => {
-        controller.abort();
-        reject(new Error("reddit-gateway-request-timed-out"));
-      }, REDDIT_GATEWAY_REQUEST_TIMEOUT_MS);
+  return withRedditGatewayDeadline(async signal => {
+    /** Provides response behavior. */
+    const response = await fetch(path, {
+      method: "POST",
+      // A valid initial API path must never authorize a redirect to another route or origin.
+      redirect: "error",
+      headers: {"content-type": "application/json"},
+      body: JSON.stringify(body),
+      signal,
     });
-    return await Promise.race([request, deadline]);
-  } finally {
-    if (timeout !== undefined) clearTimeout(timeout);
-  }
+    /** Provides payload behavior. */
+    const payload: unknown = await response.json();
+    if (!response.ok || !isRecord(payload) || payload.ok !== true) {
+      /** Stable HTTP categories remain available when older gateways omit typed details. */
+      const code = response.status === 409 && /^\/api\/game\/race\.live\.(join|update)$/.test(path) &&
+        isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "failed-precondition" ? "failed-precondition" :
+        [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
+        response.status === 429 ? "resource-exhausted" : "unavailable";
+      throw Object.assign(new Error("reddit-gateway-request-failed"), {code,
+        details: {matchmaking: isRecord(payload) ? payload.matchmaking : undefined}});
+    }
+    return payload;
+  });
 };
 
 /** Provides reddit server storage behavior. */
@@ -139,6 +122,8 @@ class RedditServerStorage implements PlatformStorage {
 
 /** Provides reddit guest storage behavior. */
 class RedditGuestStorage implements PlatformStorage {
+  /** A readable older browser record cannot replace newer unacknowledged session state. */
+  private unsaved = false;
   /** Preserves guest progress for the current session when browser storage is unavailable. */
   private fallback: {
     /** Stores preferences. */
@@ -154,6 +139,7 @@ class RedditGuestStorage implements PlatformStorage {
     /** Stores player data. */
     playerData: unknown;
   } {
+    if (this.unsaved) return this.fallback;
     try {
       /** Parses d. */
       const parsed: unknown = JSON.parse(readBrowserStorage("local", GUEST_KEY) ?? "null");
@@ -172,7 +158,11 @@ class RedditGuestStorage implements PlatformStorage {
     playerData: unknown;
   }): void {
     this.fallback = value;
-    writeBrowserStorage("local", GUEST_KEY, JSON.stringify(value));
+    this.unsaved = true;
+    if (!writeBrowserStorage("local", GUEST_KEY, JSON.stringify(value))) {
+      throw new Error("reddit-guest-storage-unavailable");
+    }
+    this.unsaved = false;
   }
   /** Reads preferences. */
   async readPreferences() {
@@ -195,7 +185,8 @@ class RedditGuestStorage implements PlatformStorage {
   /** Provides clear behavior. */
   async clear() {
     this.fallback = {preferences: {}, playerData: null};
-    removeBrowserStorage("local", GUEST_KEY);
+    // Login cleanup stays best-effort; a failed removal cannot revive old guest data in this session.
+    this.unsaved = !removeBrowserStorage("local", GUEST_KEY);
   }
   /** Provides flush behavior. */
   async flush() {
@@ -384,6 +375,24 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
             ? {
                 matchmaking: {
                   live: {
+                    /** Server resolves the former human from this caller's retained seat. */
+                    async rematch(input) {
+                      /** Same-origin join remains the only creation boundary. */
+                      const {LiveRaceViewSchema} = await import("@qwordly/core/race");
+                      return LiveRaceViewSchema.parse((await postRedditGateway("/api/game/race.live.join", input)).result);
+                    },
+                    /** Reads private in-game invitations without provider notifications or acceptance. */
+                    async inbox() {
+                      /** Bounded public notices contain no provider subject or canonical account ID. */
+                      const {LiveRaceChallengeSchema} = await import("@qwordly/core/race");
+                      return LiveRaceChallengeSchema.array().max(10).parse((await postRedditGateway("/api/game/race.live.inbox", {})).result);
+                    },
+                    /** Explicit acceptance is preceded by an authenticated private preview. */
+                    async challenge(input) {
+                      /** The original lobby owns locale, category and deadline. */
+                      const {LiveRaceChallengeSchema} = await import("@qwordly/core/race");
+                      return LiveRaceChallengeSchema.parse((await postRedditGateway("/api/game/race.live.challenge", input)).result);
+                    },
                     /** Retained results stay on the approved same-origin signed gateway. */
                     async history(locale) {
                       /** Exact public rows contain no account IDs, decks or confirmed guesses. */

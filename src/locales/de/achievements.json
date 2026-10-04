@@ -59,6 +59,176 @@
         "DESCRIPTION": "Verdiene 10000 XP"
       }
     },
-    "UNLOCKED_LABEL": "Freigeschaltet"
+    "UNLOCKED_LABEL": "Freigeschaltet",
+    "SOLO": {
+      "first_win": {
+        "NAME": "Erster Sieg",
+        "DESCRIPTION": "Gewinne dein erstes Rätsel"
+      },
+      "wins_5": {
+        "NAME": "Erste Schritte",
+        "DESCRIPTION": "Gewinne 5 Rätsel"
+      },
+      "wins_25": {
+        "NAME": "Rätselmeister",
+        "DESCRIPTION": "Gewinne 25 Rätsel"
+      },
+      "wins_50": {
+        "NAME": "Großer Löser",
+        "DESCRIPTION": "Gewinne 50 Rätsel"
+      },
+      "wins_100": {
+        "NAME": "Hundert Siege",
+        "DESCRIPTION": "Gewinne 100 Rätsel"
+      },
+      "win_rate_80": {
+        "NAME": "Starke Bilanz",
+        "DESCRIPTION": "Halte nach 10 Spielen eine Siegquote von 80 %"
+      },
+      "efficient_10": {
+        "NAME": "Effizienter Löser",
+        "DESCRIPTION": "Benötige nach 10 Siegen durchschnittlich höchstens 3 Versuche"
+      },
+      "games_25": {
+        "NAME": "Rätselstammgast",
+        "DESCRIPTION": "Spiele 25 Rätsel"
+      },
+      "games_100": {
+        "NAME": "Rätselfreund",
+        "DESCRIPTION": "Spiele 100 Rätsel"
+      },
+      "streak_3": {
+        "NAME": "Im Lauf",
+        "DESCRIPTION": "Erreiche eine Siegesserie von 3 Tagen"
+      },
+      "streak_7": {
+        "NAME": "Unaufhaltsam",
+        "DESCRIPTION": "Erreiche eine Siegesserie von 7 Tagen"
+      },
+      "streak_14": {
+        "NAME": "Zwei Wochen voller Schwung",
+        "DESCRIPTION": "Erreiche eine Siegesserie von 14 Tagen"
+      },
+      "streak_30": {
+        "NAME": "Monatlicher Schwung",
+        "DESCRIPTION": "Erreiche eine Siegesserie von 30 Tagen"
+      },
+      "classic_10": {
+        "NAME": "Klassischer Entdecker",
+        "DESCRIPTION": "Schließe 10 klassische Level ab"
+      },
+      "classic_25": {
+        "NAME": "Klassischer Reisender",
+        "DESCRIPTION": "Schließe 25 klassische Level ab"
+      },
+      "classic_50": {
+        "NAME": "Klassischer Kartograf",
+        "DESCRIPTION": "Schließe 50 klassische Level ab"
+      },
+      "classic_100": {
+        "NAME": "Klassische Legende",
+        "DESCRIPTION": "Schließe 100 klassische Level ab"
+      },
+      "daily_completed": {
+        "NAME": "Täglicher Herausforderer",
+        "DESCRIPTION": "Schließe eine tägliche Herausforderung ab"
+      },
+      "daily_7": {
+        "NAME": "Wöchentliches Ritual",
+        "DESCRIPTION": "Schließe 7 tägliche Herausforderungen ab"
+      },
+      "daily_30": {
+        "NAME": "Tägliche Hingabe",
+        "DESCRIPTION": "Schließe 30 tägliche Herausforderungen ab"
+      },
+      "daily_100": {
+        "NAME": "Täglicher Wächter",
+        "DESCRIPTION": "Schließe 100 tägliche Herausforderungen ab"
+      },
+      "challenge_5": {
+        "NAME": "Herausforderungskletterer",
+        "DESCRIPTION": "Gewinne 5 tägliche Herausforderungen"
+      },
+      "challenge_25": {
+        "NAME": "Herausforderungsmeister",
+        "DESCRIPTION": "Gewinne 25 tägliche Herausforderungen"
+      },
+      "challenge_50": {
+        "NAME": "Herausforderungseroberer",
+        "DESCRIPTION": "Gewinne 50 tägliche Herausforderungen"
+      },
+      "perfect_guess": {
+        "NAME": "Beim ersten Versuch",
+        "DESCRIPTION": "Löse ein Rätsel beim ersten Versuch"
+      },
+      "classic_perfect": {
+        "NAME": "Klassischer Volltreffer",
+        "DESCRIPTION": "Löse ein klassisches Rätsel beim ersten Versuch"
+      },
+      "challenge_perfect": {
+        "NAME": "Täglicher Volltreffer",
+        "DESCRIPTION": "Löse eine tägliche Herausforderung beim ersten Versuch"
+      },
+      "last_chance": {
+        "NAME": "Letzte Chance",
+        "DESCRIPTION": "Löse ein Rätsel beim letzten Versuch"
+      },
+      "classic_last_chance": {
+        "NAME": "Klassische Aufholjagd",
+        "DESCRIPTION": "Löse ein klassisches Rätsel beim letzten Versuch"
+      },
+      "challenge_last_chance": {
+        "NAME": "Tägliche Aufholjagd",
+        "DESCRIPTION": "Löse eine tägliche Herausforderung beim letzten Versuch"
+      },
+      "lesson_learned": {
+        "NAME": "Lektion gelernt",
+        "DESCRIPTION": "Beende ein Rätsel, ohne es zu lösen"
+      },
+      "hint_user": {
+        "NAME": "Ich brauche einen Hinweis",
+        "DESCRIPTION": "Nutze einen Hinweis"
+      },
+      "hints_10": {
+        "NAME": "Hinweissammler",
+        "DESCRIPTION": "Nutze 10 Hinweise"
+      },
+      "hints_25": {
+        "NAME": "Hinweisarchivar",
+        "DESCRIPTION": "Nutze 25 Hinweise"
+      },
+      "level_5": {
+        "NAME": "Level fünf",
+        "DESCRIPTION": "Erreiche Spielerlevel 5"
+      },
+      "level_10": {
+        "NAME": "Zweistellig",
+        "DESCRIPTION": "Erreiche Spielerlevel 10"
+      },
+      "level_20": {
+        "NAME": "Orbitbrecher",
+        "DESCRIPTION": "Erreiche Spielerlevel 20"
+      },
+      "xp_1000": {
+        "NAME": "XP-Sammler",
+        "DESCRIPTION": "Verdiene 1000 XP"
+      },
+      "xp_5000": {
+        "NAME": "XP-Motor",
+        "DESCRIPTION": "Verdiene 5000 XP"
+      },
+      "coin_hoarder": {
+        "NAME": "Münzsammler",
+        "DESCRIPTION": "Besitze 1000 Münzen"
+      },
+      "treasure_vault": {
+        "NAME": "Schatzkammer",
+        "DESCRIPTION": "Besitze 2500 Münzen"
+      },
+      "first_purchase": {
+        "NAME": "Unterstützer",
+        "DESCRIPTION": "Kaufe einen Artikel im Shop"
+      }
+    }
   }
 }

@@ -1,0 +1,41 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/useHostAuthSession.test.ts
+  ● uses the saved profile only for its initial account while the server profile loads
+
+    expect(jest.fn()).toHaveBeenLastCalledWith(...expected)
+
+    Expected: {"profile": null, "user": {"isAnonymous": false, "uid": "Bob"}}
+    Received
+           1: {"profile": {"coins": 300}, "user": {"isAnonymous": false, "uid": "Alice"}}
+    ->     2
+              Object {
+            -   "profile": null,
+            +   "profile": Object {
+            +     "coins": 300,
+            +   },
+                "user": Object {
+                  "isAnonymous": false,
+                  "uid": "Bob",
+                },
+              },
+
+    Number of calls: 2
+
+      59 |   expect(mockSetSnapshot).toHaveBeenLastCalledWith({user: {uid: "Alice", isAnonymous: false}, profile: {coins: 300}});
+      60 |   listener({user: {uid: "Bob", isAnonymous: false}, profile: null});
+    > 61 |   expect(mockSetSnapshot).toHaveBeenLastCalledWith({user: {uid: "Bob", isAnonymous: false}, profile: null});
+         |                           ^
+      62 | });
+      63 |
+      64 | it("keeps one auth subscription when parent renders replace the commerce/service wrapper", () => {
+
+      at Object.<anonymous> (src/play/__tests__/useHostAuthSession.test.ts:61:27)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        0.19 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/useHostAuthSession.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/useHostAuthSession.test.ts

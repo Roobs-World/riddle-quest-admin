@@ -1,0 +1,66 @@
+{
+  "status": "verified",
+  "goalStatus": "active",
+  "portalUnitCases": 2707,
+  "portalUnitSuites": 296,
+  "portalSkippedCases": 121,
+  "injectedChecks": 1522,
+  "newTransitionChecks": 438,
+  "newTransitionJourneys": 42,
+  "regressionChecks": 1084,
+  "builtJourneys": 22,
+  "builtSuites": 4,
+  "reactModes": [
+    "development",
+    "production"
+  ],
+  "viewports": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "baselineRed": {
+    "width": 390,
+    "height": 568,
+    "scenario": "correct",
+    "name": "late composition cannot cross into a new question",
+    "actual": [
+      "\u306b",
+      "\u307b",
+      "\u3093",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "firefoxMcpVerified": true,
+  "compositionEventLimit": "IME composition uses injected DOM events; fresh Firefox typing and Backspace use native MCP input. OS keyboard certification was not performed.",
+  "builtTargets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "stableBuildInputs": 763,
+  "ownedSourceSha256": {
+    "packages/portal/src/play/race/components/RaceGameplay.tsx": "606e1140930307e988ce86c11cd1aee58938f1e1c676b2352897350a9f144234",
+    "packages/portal/src/play/race/hooks/useRaceAnswerEditor.ts": "3dbdf927638561684b91520cf8e7e653eb7cf096605c7fd9ce620a06a112b390",
+    "packages/portal/scripts/verify-live-question-input-browser.mjs": "f1a772bd02186df1d40577c8d056d4133710c4fc8585d004df8a9896379ac4df",
+    "packages/portal/package.json": "ce1d731fb804b9ff04a677c18ed90c602a90dbf741cba4090d8e25f9575a0117"
+  }
+}

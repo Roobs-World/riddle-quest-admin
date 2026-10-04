@@ -1,0 +1,43 @@
+{
+  "status": "passed",
+  "scope": "Retain composition trailing-input markers across non-editing native keys",
+  "matrices": {
+    "development": {
+      "assertions": 936,
+      "journeys": 78
+    },
+    "production": {
+      "assertions": 936,
+      "journeys": 78
+    }
+  },
+  "newJourneys": 156,
+  "regressions": {
+    "native-composition-delivery": 1080,
+    "native-composition-retirement": 408,
+    "native-cancelled-keys": 396,
+    "playable-ime-boundary": 336,
+    "race-ime-dialog": 348,
+    "race-action-focus": 684,
+    "rapid-answer-edits": 768,
+    "live-immediate-submit": 306,
+    "playable-action-focus": 462
+  },
+  "browserAssertions": 6660,
+  "portalUnits": 2724,
+  "builtJourneys": 37,
+  "isolatedBuilds": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube-fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "stableInputPaths": 765,
+  "firefoxProofVerified": true,
+  "ownedTabsClosed": true,
+  "ownedFixtureStopped": true,
+  "scriptHash": "e8b85c1087c5cf6a9bbeb8153ecece52d59c3397f260785f4fe4d599b1ec25d3",
+  "goal": "active"
+}

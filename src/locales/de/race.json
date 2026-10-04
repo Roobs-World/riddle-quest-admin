@@ -109,7 +109,6 @@
     "LIVE_START": "PvP-Match starten",
     "LIVE_FINDING": "Gegner wird gesucht…",
     "LIVE_STARTING": "Match startet",
-    "LIVE_WAIT": "Ein Gegner wird gesucht. Das kann bis zu 1 Minute dauern.",
     "LIVE_OPPONENT": "Gegner",
     "LIVE_REWARD": "+{coins} Münzen",
     "LIVE_MODE": "Live-PvP",

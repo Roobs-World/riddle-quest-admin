@@ -67,6 +67,12 @@ if (
 ) {
   throw new Error("fbapp-config.json must declare RICH_GAMEPLAY and NAV_FLOATING with dashboard-managed orientation");
 }
+const updateTemplates = config.instant_games.custom_update_templates;
+if (updateTemplates !== undefined && (!updateTemplates || typeof updateTemplates !== "object" || Array.isArray(updateTemplates) ||
+  Object.entries(updateTemplates).some(([id, value]) => !/^[A-Za-z0-9_-]{1,128}$/u.test(id) ||
+    !value || typeof value !== "object" || Array.isArray(value) || typeof value.example !== "string" || !value.example.trim()))) {
+  throw new Error("Facebook custom update templates require valid identifiers and nonempty example strings");
+}
 
 const licenseNoticePath = path.join(root, "third-party-licenses.txt");
 if (!files.includes(licenseNoticePath)) throw new Error("Facebook artifact is missing third-party software notices");

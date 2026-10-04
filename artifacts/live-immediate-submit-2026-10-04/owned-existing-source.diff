@@ -1,0 +1,104 @@
+--- packages/portal/src/play/race/LiveRaceGame.tsx (before this pass)
++++ packages/portal/src/play/race/LiveRaceGame.tsx
+@@ -16,6 +16,7 @@
+ import {useRaceGameplayFit} from "./hooks/useRaceGameplayFit";
+ import {useAnswerKeyboard} from "../game/hooks/useAnswerKeyboard";
+ import {createLiveRaceDraft, editLiveRaceDraft, reconcileLiveRaceDraft, rejectLiveRaceDraft, type LiveRaceDraft} from "./logic/liveRaceDraft";
++import {useLiveRaceDraft} from "./hooks/useLiveRaceDraft";
+ import {getRaceLetterStates} from "./logic/racePresentation";
+ 
+ /** Lobby and live race presentation use one target-owned authenticated transport. */
+@@ -40,7 +41,7 @@
+   /** Latest accepted snapshot available to asynchronous transport callbacks. */
+   const viewRef = useRef<LiveRaceView | null>(null);
+   /** Editable answer draft, preserved across rival progress polls. */
+-  const [draft, setDraft] = useState(() => createLiveRaceDraft(null));
++  const {draft, getDraft, updateDraft} = useLiveRaceDraft();
+   /** Original submitted word stays separate from letters composed while its receipt is pending. */
+   const submittedDraft = useRef<{
+     /** Original idempotent operation awaiting its owned receipt. */
+@@ -117,7 +118,7 @@
+     setNow(observedNow);
+     /** Capture the prior authority identity before queued React draft reconciliation runs. */
+     const previous = viewRef.current;
+-    setDraft(current => reconcileLiveRaceDraft(current, previous, next));
++    updateDraft(current => reconcileLiveRaceDraft(current, previous, next));
+     viewRef.current = next;
+     setView(next);
+     if (next.phase === "result" && !notified.current) {
+@@ -125,7 +126,7 @@
+       onCompleted?.(next);
+       window.dispatchEvent(new CustomEvent("riddle-quest:live-race-completed", {detail: {ownerId}}));
+     }
+-  }, [ownerId, onCompleted]);
++  }, [ownerId, onCompleted, updateDraft]);
+   /** Sends one owned join, progress poll or idempotent player command. */
+   const deliver = useCallback(async () => {
+     /** Stable command selected before starting an asynchronous delivery. */
+@@ -187,7 +188,7 @@
+         if (command && liveRaceCommandRejected(failure)) {
+           /** Definitive rejection can restore the submitted word without overwriting later input. */
+           const submitted = submittedDraft.current?.command === command ? submittedDraft.current : null;
+-          if (submitted) {setDraft(current => rejectLiveRaceDraft(current, submitted.draft)); submittedDraft.current = null;}
++          if (submitted) {updateDraft(current => rejectLiveRaceDraft(current, submitted.draft)); submittedDraft.current = null;}
+           pending.current = null;
+           refreshRequired.current = true;
+           reconcile = true;
+@@ -206,7 +207,7 @@
+         }
+       }
+     }
+-  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, onClose]);
++  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, onClose, updateDraft]);
+   /** Signals never bypass delivery ownership or outage backoff. */
+   const refresh = useCallback(() => {refreshQueued.current = true; if (performance.now() >= nextDeliveryAt.current) void deliver();}, [deliver]);
+   /** The platform owns the private authenticated listener. */
+@@ -291,19 +292,23 @@
+     const riddle = viewRef.current?.run?.currentRiddle;
+     if (riddle && canDraft && active.current && !closed.current && !closeRequested.current && pending.current?.action !== "leave" &&
+       (viewRef.current?.phase === "racing" || viewRef.current?.phase === "countdown" && serverNow() >= (viewRef.current.startsAtMs ?? Infinity)))
+-      setDraft(current => editLiveRaceDraft(riddle, current, kind, value));
++      updateDraft(current => editLiveRaceDraft(riddle, current, kind, value));
+   };
+   /** Stable command selected before starting an asynchronous delivery. */
+   const command = (action: "guess" | "hint" | "skip") => {
+     /** Snapshot whose ticket and prompt own the current interaction. */
+     const current = viewRef.current;
+-    if (!current?.run?.currentRiddle || pending.current || refreshRequired.current || !(current.phase === "racing" || current.phase === "countdown" && serverNow() >= (current.startsAtMs ?? Infinity))) return;
+-    if (action === "guess" && draft.letters.some(letter => !letter)) return;
++    /** Exact accepted prompt owns this command and the subsequent editable attempt. */
++    const riddle = current?.run?.currentRiddle;
++    if (!current || !riddle || pending.current || refreshRequired.current || !(current.phase === "racing" || current.phase === "countdown" && serverNow() >= (current.startsAtMs ?? Infinity))) return;
++    /** Every admitted input transition precedes the explicit submit, independently of rendering. */
++    const latestDraft = getDraft();
++    if (action === "guess" && latestDraft.letters.some(letter => !letter)) return;
+     pending.current = {ticketId: current.ticketId, action, requestId: createRequestId(`live-${action}`),
+-      riddleId: current.run.currentRiddle.riddleId, ...(action === "guess" ? {guess: draft.letters.join("")} : {})};
++      riddleId: riddle.riddleId, ...(action === "guess" ? {guess: latestDraft.letters.join("")} : {})};
+     if (action === "guess") {
+-      submittedDraft.current = {command: pending.current, draft: {...draft, letters: [...draft.letters]}};
+-      setDraft(createLiveRaceDraft(current.run.currentRiddle, draft.revision));
++      submittedDraft.current = {command: pending.current, draft: {...latestDraft, letters: [...latestDraft.letters]}};
++      updateDraft(() => createLiveRaceDraft(riddle, latestDraft.revision));
+     }
+     void deliver();
+   };
+--- packages/portal/package.json (before this pass)
++++ packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-composition-delivery:browser && pnpm test:rapid-answer-edits:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-composition-delivery:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -136,6 +136,7 @@
+     "test:race-ime-dialog:browser": "node scripts/verify-race-ime-dialog-browser.mjs && RACE_IME_DIALOG_REACT_MODE=production node scripts/verify-race-ime-dialog-browser.mjs",
+     "test:playable-text-capacity:browser": "node scripts/verify-playable-text-capacity-browser.mjs && PLAYABLE_CAPACITY_REACT_MODE=production node scripts/verify-playable-text-capacity-browser.mjs",
+     "test:live-clock:browser": "node scripts/verify-live-clock-visibility-browser.mjs && LIVE_CLOCK_REACT_MODE=production node scripts/verify-live-clock-visibility-browser.mjs",
++    "test:live-immediate-submit:browser": "node scripts/verify-live-immediate-submit-browser.mjs && LIVE_IMMEDIATE_REACT_MODE=production node scripts/verify-live-immediate-submit-browser.mjs",
+     "test:rapid-answer-edits:browser": "node scripts/verify-rapid-answer-edits-browser.mjs && RAPID_ANSWER_REACT_MODE=production node scripts/verify-rapid-answer-edits-browser.mjs",
+     "test:native-composition-delivery:browser": "node scripts/verify-native-composition-delivery-browser.mjs && COMPOSITION_DELIVERY_REACT_MODE=production node scripts/verify-native-composition-delivery-browser.mjs"
+   },

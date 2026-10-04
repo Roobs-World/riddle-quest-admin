@@ -1,0 +1,11 @@
+const assert = require('node:assert/strict');
+const path = require('node:path');
+const root = '/home/craig-beswetherick/.cache/riddle-quest-review/facebook-live-context-delivery-20261003/functions';
+const load = name => require(path.join(root, name));
+assert.equal(typeof load('race/facebookLiveContextBinding.js').prepareFacebookLiveContext, 'function');
+assert.equal(typeof load('race/facebookContextBoard.js').recordFacebookContextBoardBindingRun, 'function');
+assert.equal(typeof load('facebook/facebookLiveRaceDelivery.js').finishFacebookLiveRaceDelivery, 'function');
+assert.equal(typeof load('race/racePerformanceDelivery.js').deliverRacePerformance, 'function');
+assert.equal(typeof load('race/raceLiveCallables.js').joinLiveRace.run, 'function');
+assert.equal(typeof load('reddit/redditGameplayEndpoint.js').redditGameplay, 'function');
+console.log(JSON.stringify({node: process.version, moduleLoad: 'passed', handlerInvocation: false}));

@@ -49,6 +49,8 @@ class TestElement {
   public querySelectorAll(): TestElement[] {
     return this.focusable;
   }
+  /** Models optional descendants observed by the gameplay fit hook. */
+  public querySelector = jest.fn((_selector: string): TestElement | null => null);
 
   /** Models containment for the dialog and its interactive descendants. */
   public contains(element: TestElement | null): boolean {
@@ -308,6 +310,24 @@ describe("useRaceDialogFocus", () => {
     expect(harness.requestClose).not.toHaveBeenCalled();
   });
 
+  it.each(["Escape", "Tab"])("leaves IME boundary %s keys with their editor", key => {
+    /** Real dialog commands must not consume a native composition boundary. */
+    const harness = install();
+    /** A single edge control would normally trigger the Tab trap. */
+    const control = new TestElement();
+    harness.dialog.focusable = [control];
+    effects[0]();
+    testDocument.activeElement = control;
+    /** Some IMEs expose 229 while isComposing is still false. */
+    const event = {...keyboardEvent(key), keyCode: 229, isComposing: false};
+    control.focus.mockClear();
+    keydownHandler?.(event);
+    expect(harness.requestClose).not.toHaveBeenCalled();
+    expect(harness.dismissQuitConfirmation).not.toHaveBeenCalled();
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(control.focus).not.toHaveBeenCalled();
+  });
+
   it.each(["valid", "disabled", "disconnected", "outside", "missing"])("restores appropriate focus after confirmation for %s controls", state => {
     /** Provides harness behavior. */
     const harness = install(true);
@@ -413,6 +433,22 @@ describe("useRaceGameplayFit", () => {
     expect(harness.gameplay.style["--race-gameplay-scale"]).toBe("1");
     expect(harness.viewport.style.height).toBe("380px");
     expect(harness.viewport.dataset.viewportScale).toBe("1.0000");
+  });
+
+  it("observes a present scoreboard and refits when its wrapped height moves the viewport", () => {
+    /** Score wrapping reduces the space available below the unscaled scoreboard. */
+    const harness = install();
+    /** Optional scoreboard participates in the existing layout observer. */
+    const scoreboard = new TestElement();
+    harness.screen.querySelector.mockReturnValue(scoreboard);
+    effects[0]();
+    runLatestFrame();
+    expect(observe).toHaveBeenCalledWith(scoreboard);
+    harness.viewport.rect.top = 140;
+    resizeCallback?.();
+    runLatestFrame();
+    expect(harness.viewport.style.height).toBe("340px");
+    expect(harness.viewport.dataset.viewportScale).toBe("0.4474");
   });
 
   it("does nothing while inactive or while required elements are unavailable", () => {

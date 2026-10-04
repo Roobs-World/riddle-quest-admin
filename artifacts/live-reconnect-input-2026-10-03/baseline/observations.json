@@ -1,0 +1,10 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong",
+    "name": "held delivery leaves native composition enabled",
+    "actual": false,
+    "expected": true
+  }
+]

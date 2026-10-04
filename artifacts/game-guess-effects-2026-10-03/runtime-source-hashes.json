@@ -1,0 +1,5 @@
+{
+  "packages/portal/src/play/PlayHostApp.tsx": "ca439c49995d1ec892b80a3a2a360f9e4b844b9d16ac74d94c7674a0b0d9524f",
+  "packages/portal/src/play/hostMessageHandlers.ts": "955ab0253cb8a41ad2603c732605d0080eb33bbb3ae2e5d98e7df8de41fc0fc3",
+  "packages/portal/src/play/hostCompletionEffects.ts": "96f3267c35f653088f0b085fb0fd15a171d16a347d8eee6acf82d359b1cc51e1"
+}

@@ -1,0 +1,1403 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later wrong row is restored exactly once",
+    "actual": "ZZZZZ",
+    "expected": "ZZZZZ"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft survives victory dismissal",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft cursor survives victory dismissal",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restoring old journal gameplay preserves the authoritative completion balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later wrong row is restored exactly once",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft survives victory dismissal",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft cursor survives victory dismissal",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restoring old journal gameplay preserves the authoritative completion balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft-only edits remain durable after prefix retirement",
+    "actual": [
+      "C",
+      "L",
+      "O",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "O",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later wrong row is restored exactly once",
+    "actual": "ZZZZZ",
+    "expected": "ZZZZZ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft survives victory dismissal",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft cursor survives victory dismissal",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restoring old journal gameplay preserves the authoritative completion balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later wrong row is restored exactly once",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft survives victory dismissal",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft cursor survives victory dismissal",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restoring old journal gameplay preserves the authoritative completion balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft-only edits remain durable after prefix retirement",
+    "actual": [
+      "C",
+      "L",
+      "O",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "O",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later wrong row is restored exactly once",
+    "actual": "ZZZZZ",
+    "expected": "ZZZZZ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft survives victory dismissal",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft cursor survives victory dismissal",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restoring old journal gameplay preserves the authoritative completion balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later wrong row is restored exactly once",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft survives victory dismissal",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later draft cursor survives victory dismissal",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restoring old journal gameplay preserves the authoritative completion balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft-only edits remain durable after prefix retirement",
+    "actual": [
+      "C",
+      "L",
+      "O",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "O",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": false,
+    "rejected": false,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

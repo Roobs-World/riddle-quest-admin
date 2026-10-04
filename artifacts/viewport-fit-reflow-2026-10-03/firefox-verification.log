@@ -1,0 +1,30 @@
+1791033585430	geckodriver	INFO	Listening on 127.0.0.1:44181
+1791033585451	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/snap/firefox/current/ ... tion-ylrz3skr/firefox_devtools_mcp_profile" "--remote-debugging-port" "44413" "--remote-allow-hosts" "localhost" "-no-remote"
+*** You are running in headless mode.
+1791033585578	Marionette	INFO	Marionette enabled
+1791033585723	Marionette	INFO	Listening on port 45799
+WebDriver BiDi listening on ws://127.0.0.1:44413
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+Read port: 45799
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1791033586718	RemoteAgent	INFO	Perform WebSocket upgrade for incoming connection from 127.0.0.1:33560
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+1791033894178	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'interactive'.
+[WARN  audioipc2_server::server] Promotion of content process thread to real-time error
+1791034259121	Marionette	INFO	Stopped listening on port 45799
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+console.error: (new NotFoundError("No such JSProcessActor 'WebDriverProcessData'", (void 0), 23))
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null

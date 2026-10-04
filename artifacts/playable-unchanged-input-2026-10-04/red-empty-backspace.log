@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: unchanged edits avoid defensive save copies
+
+32 !== 0
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-playable-unchanged-input-browser.mjs:35:158)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-playable-unchanged-input-browser.mjs:46:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 32,
+  expected: 0,
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

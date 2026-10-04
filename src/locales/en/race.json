@@ -109,7 +109,6 @@
     "LIVE_START": "Start PvP match",
     "LIVE_FINDING": "Finding opponent…",
     "LIVE_STARTING": "Starting match",
-    "LIVE_WAIT": "Searching for an opponent. This may take up to 1 minute.",
     "LIVE_OPPONENT": "Opponent",
     "LIVE_REWARD": "+{coins} coins",
     "LIVE_MODE": "Live PvP",

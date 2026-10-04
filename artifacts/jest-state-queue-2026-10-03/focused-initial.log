@@ -1,0 +1,34 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/jest/__tests__/useJestPlayerStateWrites.test.ts
+  ● serializes rapid checkpoints and eventually flushes the newest snapshot
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "activeGame": Object {
+    -     "savedAt": 1,
+    +     "savedAt": 2,
+        },
+      }
+
+      123 |
+      124 |   expect(writePlayerData).toHaveBeenCalledTimes(1);
+    > 125 |   expect(writePlayerData.mock.calls[0]?.[0]).toMatchObject({activeGame: {savedAt: 1}});
+          |                                              ^
+      126 |
+      127 |   releaseFirstWrite();
+      128 |   await writes.drainAndClear();
+
+      at Object.<anonymous> (src/jest/__tests__/useJestPlayerStateWrites.test.ts:125:46)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 total
+Time:        0.196 s, estimated 1 s
+Ran all test suites within paths "src/jest/__tests__/useJestPlayerStateWrites.test.ts".
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --runInBand --runTestsByPath src/jest/__tests__/useJestPlayerStateWrites.test.ts

@@ -1,0 +1,106 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative-lifecycle",
+    "name": "one committed bridge listener survives StrictMode",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative-lifecycle",
+    "name": "unfinished callback replacement retains the committed host",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative-lifecycle",
+    "name": "lifecycle signals use committed delivery callbacks",
+    "actual": [
+      {
+        "version": "A",
+        "type": "host:pause"
+      },
+      {
+        "version": "A",
+        "type": "host:resume"
+      },
+      {
+        "version": "A",
+        "type": "host:pause"
+      },
+      {
+        "version": "A",
+        "type": "host:resume"
+      }
+    ],
+    "expected": [
+      {
+        "version": "A",
+        "type": "host:pause"
+      },
+      {
+        "version": "A",
+        "type": "host:resume"
+      },
+      {
+        "version": "A",
+        "type": "host:pause"
+      },
+      {
+        "version": "A",
+        "type": "host:resume"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative-lifecycle",
+    "name": "valid current account dispatch uses its committed ownership guard",
+    "actual": [
+      "A",
+      "A"
+    ],
+    "expected": [
+      "A",
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative-lifecycle",
+    "name": "callback commits retain the bridge and visibility subscriptions",
+    "actual": {
+      "bridge": 1,
+      "visibility": 1,
+      "active": 1
+    },
+    "expected": {
+      "bridge": 1,
+      "visibility": 1,
+      "active": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative-lifecycle",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative-lifecycle",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

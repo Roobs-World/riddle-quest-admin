@@ -109,7 +109,6 @@
     "LIVE_START": "PvP maçı başlat",
     "LIVE_FINDING": "Rakip aranıyor…",
     "LIVE_STARTING": "Maç başlıyor",
-    "LIVE_WAIT": "Rakip aranıyor. Bu işlem en fazla 1 dakika sürebilir.",
     "LIVE_OPPONENT": "Rakip",
     "LIVE_REWARD": "+{coins} jeton",
     "LIVE_MODE": "Canlı PvP",

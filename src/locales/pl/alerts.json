@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Przerwana passa",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Brak dostępnych produktów",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Aplikacja nie mogła dokończyć ładowania swoich zagadek. Sprawdź połączenie i spróbuj ponownie.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Baza danych Riddle jest niedostępna"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Baza danych Riddle jest niedostępna",
+    "PROGRESS_UNSAVED_MESSAGE": "Postęp nie został jeszcze zapisany. Nie zamykaj gry."
   }
 }

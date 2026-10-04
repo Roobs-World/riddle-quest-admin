@@ -1,0 +1,56 @@
+{
+  "beforePending": {
+    "version": "A",
+    "suspended": 1,
+    "retainedBoard": true
+  },
+  "beforeGuess": {
+    "version": "A",
+    "guesses": [
+      {
+        "version": "B",
+        "guess": "ZZZZZ",
+        "requestId": "guess-650e1735-91cd-491b-9b64-0ca66120d135"
+      }
+    ],
+    "feedback": "Z",
+    "errors": [],
+    "unhandled": []
+  },
+  "afterPending": {
+    "version": "A",
+    "suspended": 1,
+    "retainedBoard": true
+  },
+  "afterGuess": {
+    "version": "A",
+    "guesses": [
+      {
+        "version": "A",
+        "guess": "ZZZZZ",
+        "requestId": "guess-4f6cceab-8599-4493-9e4e-bc1cccff3b21"
+      }
+    ],
+    "feedback": "Z",
+    "errors": [],
+    "unhandled": []
+  },
+  "committedGuess": {
+    "version": "B",
+    "retainedBoard": true,
+    "guesses": [
+      {
+        "version": "A",
+        "guess": "ZZZZZ",
+        "requestId": "guess-4f6cceab-8599-4493-9e4e-bc1cccff3b21"
+      },
+      {
+        "version": "B",
+        "guess": "XXXXX",
+        "requestId": "guess-a8c656ca-131a-45b5-8b65-3c67e694901b"
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  }
+}

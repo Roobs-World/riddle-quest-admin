@@ -1,0 +1,430 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "final-letter",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "final-letter",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "final-letter",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "final-letter",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "final-letter",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "final-letter",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "replace-full",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "replace-full",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "replace-full",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "replace-full",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "replace-full",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "replace-full",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-mixed",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-mixed",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-mixed",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-mixed",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-mixed",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "software-mixed",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "global-keyboard",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "TEST"
+    ],
+    "expected": [
+      "TEST"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "global-keyboard",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "global-keyboard",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "global-keyboard",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "global-keyboard",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "global-keyboard",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint-burst",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint-burst",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint-burst",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint-burst",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "held-wrong",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "zzzz"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "held-wrong",
+    "name": "new same-task draft remains separate while receipt is held",
+    "actual": "te",
+    "expected": "te"
+  }
+]

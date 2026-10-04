@@ -1,0 +1,27 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/CommerceModalPages.test.tsx
+  ● offers the ordinary next action without advertising unavailable guest coin actions
+
+    expect(received).not.toContain(expected) // indexOf
+
+    Expected substring: not "loss-continue-action"
+    Received string:        "<div class=\"modal-actions continue-actions\"><p>Out of attempts. Get an extra go or skip this puzzle.</p><div class=\"continue-balance\"><strong>Total Coins:</strong><span>0</span></div><button class=\"play-primary loss-continue-action\" disabled=\"\">Use <!-- -->50<!-- --> Coins to Try Again</button><p>You do not have enough coins to continue.</p><button class=\"play-primary loss-shop-action\">Open Shop</button><p>You do not have enough coins to skip a level.</p><button class=\"play-primary loss-skip-action\" disabled=\"\">Use <!-- -->100<!-- --> coins to Skip Level</button></div>"
+
+      14 |   /** This actual dialog must omit unsupported paid choices even with no checkout products. */
+      15 |   const html = renderToString(<ContinueModalPage {...props} />);
+    > 16 |   expect(html).not.toContain("loss-continue-action");
+         |                    ^
+      17 |   expect(html).not.toContain("loss-skip-action");
+      18 |   expect(html).not.toContain("continue-balance");
+      19 |   expect(html).toContain("loss-next-action");
+
+      at Object.<anonymous> (src/play/__tests__/CommerceModalPages.test.tsx:16:20)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 10 passed, 11 total
+Snapshots:   0 total
+Time:        0.212 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/CommerceModalPages.test.tsx.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/CommerceModalPages.test.tsx

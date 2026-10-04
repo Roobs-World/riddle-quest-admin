@@ -259,21 +259,26 @@ function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean, targe
 
 /** Provides facebook artifact plugin behavior. */
 function facebookArtifactPlugin(): Plugin {
+  /** One source manifest supplies both provider review configuration and build-time consistency checks. */
+  const source = readFileSync(path.join(portalPackageDirectory, "targets/facebook/fbapp-config.json"), "utf8");
+  /** Only configured native update identifiers may be enabled by the client artifact. */
+  const templates = JSON.parse(source).instant_games.custom_update_templates;
   return {
     name: "riddle-quest-facebook-artifact",
+    /** Rejects environment overrides that refer to an undeclared provider template. */
+    configResolved(config) {
+      /** Vite's resolved environment includes both mode-file defaults and explicit build overrides. */
+      const template = config.env.VITE_FACEBOOK_CONTEXT_CHALLENGE_TEMPLATE;
+      if (template && (!/^[A-Za-z0-9_-]{1,128}$/u.test(template) || !Object.hasOwn(templates, template)))
+        throw new Error("Facebook context challenge template must be declared in fbapp-config.json");
+    },
     /** Provides generate bundle behavior. */
     generateBundle() {
       this.emitFile({
         type: "asset",
         fileName: "fbapp-config.json",
-        source: `${JSON.stringify({
-          instant_games: {
-            // Meta's upload validator uses the bundle platform enum, not the
-            // JavaScript SDK version. Orientation stays dashboard-managed.
-            platform_version: "RICH_GAMEPLAY",
-            navigation_menu_version: "NAV_FLOATING",
-          },
-        }, null, 2)}\n`,
+        // Keep the accepted platform/navigation values and review templates in the target's source manifest.
+        source,
       });
     },
   };

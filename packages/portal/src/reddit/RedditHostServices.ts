@@ -12,6 +12,8 @@ import {
   SubmitSinglePlayerGuessResponseDataSchema,
 } from "@qwordly/core/validation";
 import type {AuthSnapshot, HostServices} from "../play/types";
+import {tr} from "../play/i18n";
+import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
 import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
@@ -35,10 +37,11 @@ const protectedOperations = new Set(["riddle.classic", "riddle.classic-buffer", 
   "race.start", "race.ready", "race.guess", "race.hint", "race.skip", "race.resume"]);
 
 /** Provides post behavior. */
-const post = async (operation: string, body: unknown): Promise<unknown> => {
+const post = async (operation: string, body: unknown): Promise<unknown> => withRedditGatewayDeadline(async signal => {
   /** Provides response behavior. */
   const response = await fetch(`/api/game/${operation}`, {
     method: "POST",
+    signal,
     // Keep the selected operation on the same-origin gateway even when an intermediary redirects.
     redirect: "error",
     headers: {"content-type": "application/json"},
@@ -55,7 +58,7 @@ const post = async (operation: string, body: unknown): Promise<unknown> => {
     throw error;
   }
   return readProtectedContent(payload.result);
-};
+});
 
 /** Provides unavailable behavior. */
 const unavailable = async (): Promise<never> => {
@@ -71,6 +74,14 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
   const user: BridgeUser = {uid: "reddit-account", accountGeneration, displayName: "Riddle Quest player", isAnonymous: false};
   /** Provides profile behavior. */
   let profile: BridgeProfile | null = null;
+  /** Successful deletion permanently retires this account generation's adapter. */
+  let accountActive = true;
+  /** Only the latest admitted profile request may update the subscribed projection. */
+  let profileRevision = 0;
+  /** Retired content reads cannot return a puzzle or start follow-up traffic. */
+  const requireAccount = () => {
+    if (!accountActive) throw Object.assign(new Error(tr("ErrorMessages.UNABLE_TO_LOAD_RIDDLES")), {code: "cancelled"});
+  };
   /** The classic buffer used by the current operation. */
   let classicBuffer: {
     /** Content locale. */ locale: string;
@@ -93,8 +104,14 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     const day = new Date().toISOString().slice(0, 10);
     if (dailyPreload?.locale === locale && dailyPreload.day === day) return dailyPreload.promise;
     /** Request shared by concurrent callers. */
-    const promise = post("riddle.daily", {gameMode: "challenge", locale, includeEvaluation: true})
-      .then((value) => GetCurrentDailyChallengeResponseSchema.parse(value)).catch((error: unknown) => {
+    const promise = post("riddle.daily", {gameMode: "challenge", locale, includeEvaluation: true,
+      includeHintRecovery: true, includeGuessRecovery: true})
+      .then((value) => {
+        /** Only a confirmed completion remains cached when no playable question is returned. */
+        const data = GetCurrentDailyChallengeResponseSchema.parse(value);
+        if (data.error && data.hasCompletedToday !== true && dailyPreload?.promise === promise) dailyPreload = null;
+        return data;
+      }).catch((error: unknown) => {
         if (dailyPreload?.promise === promise) dailyPreload = null;
         throw error;
       });
@@ -105,10 +122,10 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
   const refreshClassicBuffer = (locale: string, force = false) => {
     if (!force && classicBufferInFlight?.locale === locale) return classicBufferInFlight.promise;
     /** Request shared by concurrent callers. */
-    const promise = post("riddle.classic-buffer", {locale}).then((value) => {
+    const promise = post("riddle.classic-buffer", {locale, includeHintRecovery: true, includeGuessRecovery: true}).then((value) => {
       /** Validated riddle response from the host. */
       const data = ClassicRiddleBufferResponseSchema.parse(value);
-      if (classicBuffer?.locale !== locale || data.confirmedClassicIndex >= classicBuffer.data.confirmedClassicIndex)
+      if (accountActive && (classicBuffer?.locale !== locale || data.confirmedClassicIndex >= classicBuffer.data.confirmedClassicIndex))
         classicBuffer = {locale, data};
       return data;
     }).finally(() => {
@@ -120,10 +137,16 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
   /** Provides subscribers behavior. */
   const subscribers = new Set<(snapshot: AuthSnapshot) => void>();
   /** Provides emit behavior. */
-  const emit = () => subscribers.forEach((subscriber) => subscriber({user, profile}));
+  const emit = () => subscribers.forEach((subscriber) => subscriber({user: accountActive ? user : null, profile}));
   /** Provides reload profile behavior. */
   const reloadProfile = async () => {
-    profile = BridgeProfileSchema.parse(await post("profile.load", {}));
+    if (!accountActive) return null;
+    /** Request order and adapter lifetime remain fixed through the transport. */
+    const revision = ++profileRevision;
+    /** Canonical profile is published only if a newer read has not superseded it. */
+    const loaded = BridgeProfileSchema.parse(await post("profile.load", {}));
+    if (!accountActive || revision !== profileRevision) return null;
+    profile = loaded;
     emit();
     return profile;
   };
@@ -131,7 +154,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
   const mutate = async <T>(operation: string, input: unknown, parse: (value: unknown) => T): Promise<T> => {
     /** Provides result behavior. */
     const result = parse(await post(operation, input));
-    await reloadProfile();
+    void reloadProfile().catch(() => undefined);
     return result;
   };
 
@@ -139,6 +162,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     products: [],
     /** Starts Daily and Classic downloads when the player session is ready. */
     preloadInitialRiddles(locale) {
+      if (!accountActive) return;
       void refreshClassicBuffer(locale).catch(() => undefined);
       void preloadDaily(locale).catch(() => undefined);
     },
@@ -146,16 +170,20 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
       /** Provides subscribe behavior. */
       subscribe(listener) {
         subscribers.add(listener);
-        listener({user, profile});
-        if (!profile) void reloadProfile().catch(() => undefined);
+        listener({user: accountActive ? user : null, profile});
+        if (accountActive && !profile) void reloadProfile().catch(() => undefined);
         return () => subscribers.delete(listener);
       },
     },
     /** Loads riddle. */
     async loadRiddle(input) {
+      requireAccount();
       if (input.gameMode === "classic" && input.authoritative) {
         /** The data used by the current operation. */
-        const data = await refreshClassicBuffer(input.locale);
+        const fetched = await refreshClassicBuffer(input.locale, true);
+        requireAccount();
+        /** Later authority may have confirmed a successor while this response was pending. */
+        const data = classicBuffer?.locale === input.locale ? classicBuffer.data : fetched;
         /** The issued used by the current operation. */
         const issued = data.riddles.find((item) => item.classicIndex === data.confirmedClassicIndex);
         if (!issued) throw new Error("classic-buffer-unavailable");
@@ -196,14 +224,21 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
           void pending.catch(() => undefined);
         }
       }
+      requireAccount();
       /** Provides raw behavior. */
       const raw = cached && !input.sessionToken && !input.riddleId
         ? GetCurrentDailyChallengeResponseSchema.parse({challenge: {questions: [cached.question], totalQuestions: 1}})
         : input.gameMode === "challenge" && !input.sessionToken && !input.riddleId
           ? await preloadDaily(input.locale)
         : GetCurrentDailyChallengeResponseSchema.parse(
-            await post(input.gameMode === "classic" ? "riddle.classic" : "riddle.daily", {...input, includeEvaluation: true}),
+            await post(input.gameMode === "classic" ? "riddle.classic" : "riddle.daily", {
+              ...input, includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true,
+              ...(input.gameMode === "classic" ? {includeClassicIndex: true} : {}),
+            }),
           );
+      requireAccount();
+      if (input.gameMode === "challenge" && raw.hasCompletedToday === true)
+        throw Object.assign(new Error(tr("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE")), {code: "daily-completed"});
       if (input.gameMode === "classic") void refreshClassicBuffer(input.locale).catch(() => undefined);
       /** Provides question behavior. */
       const question = raw.challenge?.questions[0];
@@ -217,7 +252,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     ...(question.acceptedGuesses ? {acceptedGuesses: question.acceptedGuesses} : {}),
         sessionToken: question.sessionToken,
         gameMode: input.gameMode,
-        index: input.gameMode === "classic" ? cached?.classicIndex ?? input.classicIndex ?? profile?.classicIndex ?? 1 : question.questionNumber,
+        index: input.gameMode === "classic" ? cached?.classicIndex ?? raw.classicIndex ?? requestedIndex : question.questionNumber,
         attemptsUsed: question.attemptsUsed,
         hasUsedContinue: question.hasUsedContinue,
         awaitingContinue: question.awaitingContinue,
@@ -285,16 +320,22 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     /** Deletes account. */
     async deleteAccount() {
       /** Provides response behavior. */
-      const response = await fetch("/api/account/delete", {
+      const response = await withRedditGatewayDeadline(signal => fetch("/api/account/delete", {
+        signal,
         method: "POST",
         // Redirects cannot turn an unrelated success response into confirmation of account deletion.
         redirect: "error",
         headers: {"content-type": "application/json"},
         body: JSON.stringify({accountGeneration}),
-      });
+      }));
       if (!response.ok) throw new Error("reddit-account-deletion-failed");
+      accountActive = false;
+      profileRevision += 1;
       profile = null;
-      subscribers.forEach((subscriber) => subscriber({user: null, profile: null}));
+      classicBuffer = null;
+      classicBufferInFlight = null;
+      dailyPreload = null;
+      emit();
     },
     /** Lists race categories. */
     async listRaceCategories(locale) {

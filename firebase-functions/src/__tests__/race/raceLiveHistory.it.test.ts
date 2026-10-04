@@ -1,9 +1,13 @@
-import {initializeApp, deleteApp, type App} from "firebase-admin/app";
+import {initializeApp, deleteApp, getApps, type App} from "firebase-admin/app";
+import {createHmac} from "node:crypto";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {listLiveRaceHistoryForUser} from "../../race/raceLiveHistory";
 import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
 import {LIVE_RACE_HISTORY_MS} from "@qwordly/core/race";
+import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
+import {redditProviderIdentityId} from "../../reddit/redditEndpoints";
+import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../reddit/redditSecurity";
 
 /** Local demo project is mandatory before any fixture cleanup. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
@@ -11,12 +15,15 @@ const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 const NOW = 1_800_000_000_000;
 /** Every fixture has its own explicitly configured application. */
 let app: App;
+/** Signed gateway fixture owns its default application independently of the service seam. */
+let gatewayApp: App | undefined;
 /** Real loopback Firestore stores game authority. */
 let db: FirebaseFirestore.Firestore;
 /** Delete only synthesized demo collections after validating the environment. */
 async function clear() {
   for (const collection of ["users", "localizedRiddles", "liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers",
-    "racePerformanceOutbox", JEST_ACCOUNT_DELETION_COLLECTION]) await db.recursiveDelete(db.collection(collection));
+    "racePerformanceOutbox", "providerIdentities", "redditGatewayNonces", "redditGatewayRateLimits", JEST_ACCOUNT_DELETION_COLLECTION]) await db.recursiveDelete(db.collection(collection));
+  await db.doc("raceConfig/rollout").delete();
 }
 beforeAll(() => {
   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? ""))
@@ -24,12 +31,12 @@ beforeAll(() => {
   app = initializeApp({projectId: PROJECT}, "live-history-fixture"); db = getFirestore(app);
 });
 beforeEach(clear);
-afterAll(async () => {if (db) await clear(); if (app) await deleteApp(app);});
+afterAll(async () => {if (db) await clear(); if (app) await deleteApp(app); if (gatewayApp) await deleteApp(gatewayApp);});
 
 /** A real match settles a forfeit once; history observes rather than reproducing its grant. */
-async function completed(provider: "facebook" | "reddit", suffix = "first", nowMs = NOW, locale: "en" | "fr" = "en") {
+async function completed(provider: "facebook" | "reddit", suffix = "first", nowMs = NOW, locale: "en" | "fr" = "en", accountIds?: string[]) {
   /** Canonical private account identities never appear in the returned history. */
-  const ids = [`${provider}_${"a".repeat(40)}`, `${provider}_${"b".repeat(40)}`];
+  const ids = accountIds ?? [`${provider}_${"a".repeat(40)}`, `${provider}_${"b".repeat(40)}`];
   /** Eligible catalog and current profiles are synthesized without provider information. */
   const batch = db.batch();
   for (let index = 0; index < 30; index++) batch.set(db.doc(`localizedRiddles/${locale}/riddles/history-${index}`), {
@@ -58,8 +65,69 @@ it.each(["facebook", "reddit"] as const)("projects both %s terminal seats withou
     expect(JSON.stringify(value)).not.toMatch(/facebook_|reddit_|userId|participantIds|riddles|guessHistory|answer|matchId/);
     for (let repeat = 0; repeat < 3; repeat++) expect(await listLiveRaceHistoryForUser(ids[index], {locale: "en", limit: 20}, {db, nowMs: NOW + 9000})).toEqual(value);
   }
-  expect((await db.doc(`users/${ids[0]}`).get()).data()!.coins).toBe(150);
-  expect((await db.doc(`users/${ids[1]}`).get()).data()!.coins).toBe(100);
+  expect((await db.doc(`users/${ids[0]}`).get()).data()!.coins).toBe(200);
+  expect((await db.doc(`users/${ids[1]}`).get()).data()!.coins).toBe(125);
+});
+
+it("projects a settled bot without making it a safety target or granting the losing human coins", async () => {
+  /** A completed human pair supplies the catalog before a distinct solo search. */
+  const {ids} = await completed("reddit");
+  /** Existing terminal pointer can be replaced by a new real public search. */
+  const seat = await joinLiveRaceForUser(ids[1], {locale: "en", categoryId: "history", requestId: "history-bot-search"}, {db, nowMs: NOW + 20_000});
+  await updateLiveRaceForUser(ids[1], {ticketId: seat.ticketId, action: "poll", requestId: "history-bot-fallback"}, {db, nowMs: NOW + 80_000});
+  await updateLiveRaceForUser(ids[1], {ticketId: seat.ticketId, action: "poll", requestId: "history-bot-finish"}, {db, nowMs: NOW + 210_000});
+  expect((await listLiveRaceHistoryForUser(ids[1], {locale: "en", limit: 20}, {db, nowMs: NOW + 211_000})).entries[0])
+    .toMatchObject({ticketId: seat.ticketId, result: "loss", rewardCoins: 0, opponentAvailable: false, opponent: {bot: true, correctCount: 10}});
+  expect((await db.doc(`users/${ids[1]}`).get()).data()!.coins).toBe(125);
+});
+
+it("returns the exact history response through the real signed Reddit gateway and rejects account selectors", async () => {
+  if (getApps().some(value => value.name === "[DEFAULT]")) throw new Error("Owned default fixture application required");
+  gatewayApp = initializeApp({projectId: PROJECT});
+  /** Restore every provider fixture environment after the signed transport exercise. */
+  const original = {REDDIT_GATEWAY_SECRET: process.env.REDDIT_GATEWAY_SECRET, REDDIT_UID_SECRET: process.env.REDDIT_UID_SECRET,
+    REDDIT_DISABLED_FEATURES: process.env.REDDIT_DISABLED_FEATURES};
+  /** These credentials and provider subjects exist only in the guarded demo project. */
+  const secret = "reddit-history-loopback-secret-at-least-32-characters", uidSecret = Buffer.alloc(32, 47).toString("base64"), userId = "t2_history";
+  /** Canonical generation-aware IDs are required by the real signed identity resolver. */
+  const ids = [userId, "t2_history_peer"].map(id => redditFirebaseUid(id, uidSecret, 1));
+  /** Minimal HTTP response seam retains real verifier, quota, dispatch and shared callable execution. */
+  let status = 200, body: unknown, sequence = 0;
+  /** Fluent Express response records only synthesized fixture results. */
+  const response = {set: () => response, status: (value: number) => {status = value; return response;},
+    json: (value: unknown) => {body = value; return response;}};
+  /** The assertion binds each exact request, including schema-invalid extra fields. */
+  const send = async (payload: unknown) => {
+    status = 200; body = undefined;
+    /** Approved server operation selects the authenticated account, never a browser UID. */
+    const assertion = {version: 1 as const, appName: "riddle-quest", installationId: "riddle-quest:t5_test", subredditId: "t5_test", postId: "t3_test",
+      userId, operation: "gameplay.race.live.history", issuedAtMs: NOW + 9000, nonce: `live_history_${++sequence}_${"n".repeat(32)}`,
+      payloadHash: hashRedditGatewayPayload(payload)};
+    /** Production canonicalization is used without bypassing signature verification. */
+    const signature = createHmac("sha256", secret).update("riddle-quest-reddit-gateway-v1\0")
+      .update(canonicalRedditGatewayAssertion(assertion)).digest("base64url");
+    await redditGameplay({method: "POST", body: {assertion, payload}, get: () => signature} as never, response as never);
+  };
+  try {
+    process.env.REDDIT_GATEWAY_SECRET = secret; process.env.REDDIT_UID_SECRET = uidSecret; process.env.REDDIT_DISABLED_FEATURES = "commerce,notifications";
+    await completed("reddit", "signed-history", NOW, "en", ids);
+    await db.doc(`providerIdentities/${redditProviderIdentityId("riddle-quest", userId)}`).set({provider: "reddit", appName: "riddle-quest",
+      providerUserId: userId, accountGeneration: 1, status: "active", uid: ids[0]});
+    await db.doc("raceConfig/rollout").set({enabled: true, percentage: 100, allowlistHashes: []});
+    jest.spyOn(Date, "now").mockReturnValue(NOW + 9000);
+    await send({locale: "en", limit: 20});
+    expect(status).toBe(200);
+    expect(body).toEqual({ok: true, result: await listLiveRaceHistoryForUser(ids[0], {locale: "en", limit: 20}, {db, nowMs: NOW + 9000})});
+    expect(JSON.stringify(body)).not.toMatch(/reddit_|profile|userId|riddles|answer|matchId/);
+    await send({locale: "en", limit: 20, userId: ids[1]});
+    expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
+    await getJestAccountDeletionRef(db, ids[0]).set({deletedAtMs: NOW + 9000});
+    await send({locale: "en", limit: 20});
+    expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
+  } finally {
+    jest.restoreAllMocks();
+    for (const [key, value] of Object.entries(original)) {if (value === undefined) delete process.env[key]; else process.env[key] = value;}
+  }
 });
 
 it.each(["blocked", "reverse-blocked", "deleted", "missing", "expired-peer"] as const)("anonymizes a %s human before projecting retained history", async kind => {
@@ -80,7 +148,9 @@ it.each(["blocked", "reverse-blocked", "deleted", "missing", "expired-peer"] as 
 it("omits active, unsettled, future, expired and foreign-locale tickets with a bounded newest-first result", async () => {
   /** Separate real matches retain distinct content languages and original creation clocks. */
   const first = await completed("reddit", "first", NOW);
+  /** A separate language cannot enter the English result window. */
   const french = await completed("reddit", "french", NOW + 20_000, "fr");
+  /** The most recently created completed match sorts before the original seat. */
   const newest = await completed("reddit", "newest", NOW + 40_000);
   /** A later unpaired live search has no terminal receipt and must not become history. */
   await joinLiveRaceForUser(first.ids[0], {locale: "en", categoryId: "history", requestId: "history-searching"}, {db, nowMs: NOW + 60_000});

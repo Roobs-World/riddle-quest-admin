@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Racha rota",
     "NO_PRODUCTS_AVAILABLE_TITLE": "No hay productos disponibles",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "La aplicación no podía terminar de cargar sus acertijos. Verifique su conexión e inténtelo nuevamente.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "La base de datos de Riddle no está disponible"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "La base de datos de Riddle no está disponible",
+    "PROGRESS_UNSAVED_MESSAGE": "El progreso aún no se ha guardado. Mantén el juego abierto."
   }
 }

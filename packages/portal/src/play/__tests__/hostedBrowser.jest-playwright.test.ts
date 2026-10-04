@@ -3,6 +3,8 @@ import {completeMockOnboarding, prepareProvisionalNextLevel} from "./mockOnboard
 import AxeBuilder from "@axe-core/playwright";
 import {chromium, type Page} from "@playwright/test";
 import {version as reactVersion} from "react";
+import {SOLO_COIN_COSTS} from "@qwordly/core/game";
+import {getProfileTour} from "../guidance/guidanceConfig";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 /** Provides hosted browser port behavior. */
@@ -338,414 +340,47 @@ describeBrowser("standalone Jest browser game", () => {
       await page.screenshot({path: "/tmp/jest-feedback-solo.png"});
       /** Provides main game coin balance behavior. */
       const mainGameCoinBalance = (await page.locator(".game-header .coin-pill strong").innerText()).trim();
-      await page.evaluate(() => localStorage.setItem("riddleQuest:activeRaceRun", "expired-run-from-previous-session"));
-      /** Provides multiplayer open duration ms behavior. */
+      await page.evaluate(() => {
+        localStorage.setItem("riddleQuest:activeRaceRun", "expired-run-from-previous-session");
+        Object.assign(window, {__multiplayerCommands: [] as string[]});
+        window.addEventListener("riddle-quest:game-to-host", event => {
+          /** Current multiplayer entry may load categories but cannot start a retired recorded race. */
+          const type = (event as CustomEvent).detail?.type;
+          if (typeof type === "string" && /race/i.test(type))
+            Reflect.get(window, "__multiplayerCommands").push(type);
+        });
+      });
+      /** Measures rendered entry latency without waiting for optional transport work. */
       const multiplayerOpenDurationMs = await page.getByRole("button", {name: /^multiplayer$/i}).evaluate(
-        (button) =>
-          new Promise<number>((resolve) => {
-            /** Provides opened at behavior. */
-            const openedAt = performance.now();
-            /** Provides observer behavior. */
-            const observer = new MutationObserver(() => {
-              if (!document.querySelector(".race-screen")) return;
-              observer.disconnect();
-              resolve(performance.now() - openedAt);
-            });
-            observer.observe(document.body, {childList: true, subtree: true});
-            (button as HTMLButtonElement).click();
-          }),
+        (button) => new Promise<number>(resolve => {
+          /** Monotonic start before the player's click. */
+          const openedAt = performance.now();
+          /** First rendered live intro ends the latency measurement. */
+          const observer = new MutationObserver(() => {
+            if (!document.querySelector(".race-screen")) return;
+            observer.disconnect();resolve(performance.now() - openedAt);
+          });
+          observer.observe(document.body, {childList: true, subtree: true});
+          (button as HTMLButtonElement).click();
+        }),
       );
       expect(multiplayerOpenDurationMs).toBeLessThan(100);
       expect(await page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
-      expect(await page.locator(".race-category-grid button").count()).toBeGreaterThan(0);
-      expect(await page.locator(".race-category-grid button small").count()).toBe(0);
-      expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
-      expect(await page.locator(".race-screen [role=alert]").count()).toBe(0);
-      expect((await page.locator(".race-coin-balance strong").innerText()).trim()).toBe(mainGameCoinBalance);
-      expect(await page.locator(".race-coin-balance").isVisible()).toBe(true);
-      await expectAccessible(page, "multiplayer category selection");
-      /** Provides penalty center offset behavior. */
-      const penaltyCenterOffset = await page.locator(".race-screen").evaluate((screen) => {
-        /** Provides penalty behavior. */
-        const penalty = document.createElement("div");
-        penalty.className = "race-penalty-flash";
-        penalty.style.animation = "none";
-        penalty.textContent = "+15s";
-        screen.append(penalty);
-        /** Provides rect behavior. */
-        const rect = penalty.getBoundingClientRect();
-        /** Provides offset behavior. */
-        const offset = {
-          horizontal: Math.abs(rect.left + rect.width / 2 - innerWidth / 2),
-          vertical: Math.abs(rect.top + rect.height / 2 - innerHeight / 2),
-        };
-        penalty.remove();
-        return offset;
-      });
-      expect(penaltyCenterOffset.horizontal).toBeLessThanOrEqual(0.5);
-      expect(penaltyCenterOffset.vertical).toBeLessThanOrEqual(0.5);
-
-      await page.locator(".race-category-grid button").first().click();
-      /** Provides native answer input behavior. */
-      const nativeAnswerInput = page.locator(".race-native-answer-input");
-      await nativeAnswerInput.waitFor({state: "attached"});
-      expect(await page.locator(".race-gameplay .race-coin-balance").count()).toBe(0);
-      expect(await page.locator(".race-actions button").last().isEnabled()).toBe(true);
-      /** Captures race layout for this regression check. */
-      const raceLayout = await page.locator(".race-gameplay").evaluate((game) => {
-        /** Captures bar for this regression check. */
-        const bar = game.querySelector(".race-scoreboard")!.getBoundingClientRect();
-        /** Captures riddle for this regression check. */
-        const riddle = game.querySelector(".race-riddle-surface")!.getBoundingClientRect();
-        return {above: bar.bottom <= riddle.top, widthDifference: Math.abs(bar.width - riddle.width)};
-      });
-      expect(raceLayout.above).toBe(true);
-      expect(raceLayout.widthDifference).toBeLessThanOrEqual(1);
-      await page.screenshot({path: "/tmp/jest-feedback-race.png"});
-
-      await page.evaluate(() => {
-        /** Real clock restored after proving creator runs have no competitive deadline. */
-        const realNow = Date.now;
-        Object.assign(window, {
-          __restoreRaceCreatorClock: () => {
-            Date.now = realNow;
-          },
-        });
-        Date.now = () => realNow() + 300_001;
-      });
-      await page.waitForTimeout(250);
-      expect(await page.locator(".race-gameplay").isVisible()).toBe(true);
-      expect(await page.getByText(/time.s up/i).count()).toBe(0);
-      await page.evaluate(() => Reflect.get(window, "__restoreRaceCreatorClock")());
-
-      for (const {committed, rendered} of [
-        {committed: "e\u0301", rendered: "é"},
-        {committed: "نَ", rendered: "نَ"},
-        {committed: "Ж", rendered: "Ж"},
-        {committed: "क्ष", rendered: "क्ष"},
-        {committed: "日", rendered: "日"},
-        {committed: "한", rendered: "한"},
-        {committed: "中", rendered: "中"},
-      ]) {
-        await nativeAnswerInput.evaluate((element, value) => {
-          /** Provides input behavior. */
-          const input = element as HTMLInputElement;
-          input.focus({preventScroll: true});
-          input.dispatchEvent(new CompositionEvent("compositionstart", {bubbles: true, data: value}));
-          input.value = value;
-          input.dispatchEvent(
-            new InputEvent("input", {
-              bubbles: true,
-              data: value,
-              inputType: "insertCompositionText",
-              isComposing: true,
-            }),
-          );
-          input.dispatchEvent(new CompositionEvent("compositionend", {bubbles: true, data: value}));
-        }, committed);
-        await page.locator(".race-gameplay .guess-row .cell", {hasText: rendered}).waitFor();
-        expect(
-          await page
-            .locator(".race-riddle-surface .guess-board")
-            .evaluate((element) => getComputedStyle(element).outlineStyle),
-        ).not.toBe("none");
-        await nativeAnswerInput.press("Backspace");
-        await page.waitForFunction(
-          (value) =>
-            !Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell")).some(
-              (cell) => cell.textContent === value,
-            ),
-          rendered,
-        );
-      }
-      await nativeAnswerInput.fill("日本語");
-      await page.waitForFunction(() => {
-        /** Provides values behavior. */
-        const values = Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell")).map(
-          (cell) => cell.textContent,
-        );
-        return values.includes("日") && values.includes("本") && values.includes("語");
-      });
-      for (let index = 0; index < 3; index += 1) await nativeAnswerInput.press("Backspace");
-      await page.waitForFunction(
-        () =>
-          !Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell")).some((cell) =>
-            ["日", "本", "語"].includes(cell.textContent ?? ""),
-          ),
-      );
-      await nativeAnswerInput.evaluate((element) => {
-        /** Provides input behavior. */
-        const input = element as HTMLInputElement;
-        input.dispatchEvent(new CompositionEvent("compositionstart", {bubbles: true, data: "한"}));
-        input.value = "한";
-        input.dispatchEvent(
-          new InputEvent("input", {
-            bubbles: true,
-            data: "한",
-            inputType: "insertCompositionText",
-            isComposing: true,
-          }),
-        );
-        input.dispatchEvent(new CompositionEvent("compositionend", {bubbles: true, data: "한"}));
-        input.value = "한";
-        input.dispatchEvent(
-          new InputEvent("input", {
-            bubbles: true,
-            data: "한",
-            inputType: "insertCompositionText",
-            isComposing: false,
-          }),
-        );
-      });
-      await page.waitForFunction(
-        () =>
-          Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell")).filter(
-            (cell) => cell.textContent === "한",
-          ).length === 1,
-      );
-      await nativeAnswerInput.press("Backspace");
-      await nativeAnswerInput.fill("CRANE");
-      await page.evaluate(() => {
-        Object.assign(window, {__raceGuessRequestCount: 0});
-        window.addEventListener("riddle-quest:game-to-host", (event) => {
-          if ((event as CustomEvent).detail?.type !== "game:submitRaceGuess") return;
-          Object.assign(window, {
-            __raceGuessRequestCount: Number(Reflect.get(window, "__raceGuessRequestCount")) + 1,
-          });
-        });
-      });
-      /** Stable gameplay anchors before answer feedback is rendered. */
-      const layoutBeforeRaceSubmit = await page.locator(".race-gameplay").evaluate((gameplay) => ({
-        keyboardTop: gameplay.querySelector(".keyboard")!.getBoundingClientRect().top,
-        riddleTop: gameplay.querySelector(".race-riddle-surface")!.getBoundingClientRect().top,
-      }));
-      await page.evaluate(() => {
-        /** Provides hold wrong guess behavior. */
-        const holdWrongGuess = (event: Event) => {
-          if ((event as CustomEvent).detail?.payload?.operation !== "raceGuess") return;
-          event.stopImmediatePropagation();
-          window.removeEventListener("riddle-quest:host-to-game", holdWrongGuess, true);
-          Object.assign(window, {__heldWrongRaceGuess: (event as CustomEvent).detail});
-        };
-        window.addEventListener("riddle-quest:host-to-game", holdWrongGuess, true);
-      });
-      await page.locator(".race-actions .submit-action").click();
-      await page.locator(".race-gameplay .guess-row").first().locator(".cell.red").first().waitFor();
-      await page.waitForFunction(() => Reflect.has(window, "__heldWrongRaceGuess"));
-      await nativeAnswerInput.fill("P");
-      await page.waitForFunction(
-        () => document.querySelectorAll(".race-gameplay .guess-row")[1]?.querySelector(".cell")?.textContent === "P",
-      );
-      await page.evaluate(() =>
-        window.dispatchEvent(
-          new CustomEvent("riddle-quest:host-to-game", {
-            detail: Reflect.get(window, "__heldWrongRaceGuess"),
-          }),
-        ),
-      );
-      await page.locator(".race-operation-loader").waitFor({state: "hidden"});
-      await page.evaluate(
-        () => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))),
-      );
-      /** Stable gameplay anchors after answer feedback is rendered. */
-      const layoutAfterRaceSubmit = await page.locator(".race-gameplay").evaluate((gameplay) => ({
-        keyboardTop: gameplay.querySelector(".keyboard")!.getBoundingClientRect().top,
-        riddleTop: gameplay.querySelector(".race-riddle-surface")!.getBoundingClientRect().top,
-      }));
-      expect(Math.abs(layoutAfterRaceSubmit.riddleTop - layoutBeforeRaceSubmit.riddleTop)).toBeLessThanOrEqual(1);
-      expect(Math.abs(layoutAfterRaceSubmit.keyboardTop - layoutBeforeRaceSubmit.keyboardTop)).toBeLessThanOrEqual(1);
-      expect(await page.locator(".race-gameplay .guess-row").nth(1).locator(".cell").allTextContents()).toEqual([
-        "P",
-        "",
-        "",
-        "",
-        "",
-      ]);
-      expect(await page.evaluate(() => Reflect.get(window, "__raceGuessRequestCount"))).toBe(1);
-      await page.evaluate(() => {
-        /** The hold guess used by this regression scenario. */
-        const holdGuess = (event: Event) => {
-          if ((event as CustomEvent).detail?.payload?.operation !== "raceGuess") return;
-          event.stopImmediatePropagation();
-          window.removeEventListener("riddle-quest:host-to-game", holdGuess, true);
-          Object.assign(window, {__heldRaceGuess: (event as CustomEvent).detail});
-        };
-        window.addEventListener("riddle-quest:host-to-game", holdGuess, true);
-      });
-      await nativeAnswerInput.press("Backspace");
-      await nativeAnswerInput.fill("PIANO");
-      expect(await page.locator(".race-gameplay .guess-row").nth(1).locator(".cell").allTextContents()).toEqual([
-        "P",
-        "I",
-        "A",
-        "N",
-        "O",
-      ]);
-      /** The race feedback ms used by this regression scenario. */
-      const raceFeedbackMs = await page.locator(".race-actions .submit-action").evaluate(async (button) => {
-        /** The started used by this regression scenario. */
-        const started = performance.now();
-        (button as HTMLButtonElement).click();
-        while (!document.querySelector(".race-riddle-surface h2")?.textContent?.match(/hands and a face/i)) {
-          if (performance.now() - started > 1_000) throw new Error("Next race riddle waited for server");
-          await new Promise((resolve) => requestAnimationFrame(resolve));
-        }
-        return performance.now() - started;
-      });
-      expect(raceFeedbackMs).toBeLessThan(100);
-      await page.waitForFunction(() => Reflect.has(window, "__heldRaceGuess"));
-      expect(await page.locator(".race-gameplay .guess-row").nth(1).locator(".cell").allTextContents()).toEqual([
-        "",
-        "",
-        "",
-        "",
-        "",
-      ]);
-      await page.getByText(/hands and a face/i).waitFor({timeout: 1_000});
-      expect(await page.locator(".race-scoreboard").innerText()).toContain("1");
-      await nativeAnswerInput.fill("C");
-      await page.waitForFunction(() => document.querySelector(".race-gameplay .guess-row .cell")?.textContent === "C");
-      await page.evaluate(() =>
-        window.dispatchEvent(
-          new CustomEvent("riddle-quest:host-to-game", {
-            detail: Reflect.get(window, "__heldRaceGuess"),
-          }),
-        ),
-      );
-      await page.getByText(/hands and a face/i).waitFor({timeout: 2_000});
-      expect(await page.locator(".race-gameplay .guess-row .cell").first().textContent()).toBe("C");
-      console.info(`Immediate Race feedback: ${raceFeedbackMs.toFixed(1)}ms with server response held`);
-      await page.locator(".race-close").click();
-      await page.getByRole("button", {name: /^quit race$/i}).click();
-      await page.locator(".race-screen").waitFor({state: "detached"});
-      await page.evaluate(() =>
-        window.dispatchEvent(
-          new CustomEvent("riddle-quest:host-to-game", {
-            detail: {
-              type: "host:operationResult",
-              requestId: "late-race-guess-after-close",
-              payload: {
-                operation: "raceGuess",
-                ok: false,
-                errorKind: "rejected",
-                error: "This Race to 10 run is no longer active. [400]",
-              },
-            },
-          }),
-        ),
-      );
-      await page.waitForTimeout(50);
-      expect(await page.getByText(/this race to 10 run is no longer active/i).count()).toBe(0);
-      await page.getByRole("button", {name: /^multiplayer$/i}).click();
       await page.locator(".race-category-grid button").first().waitFor();
-      /** Provides hub tablist behavior. */
-      const hubTablist = page.locator('.race-hub-tabs [role="tablist"]');
-      /** Provides play hub tab behavior. */
-      const playHubTab = hubTablist.getByRole("tab", {name: /^play$/i});
-      /** Provides activity hub tab behavior. */
-      const activityHubTab = hubTablist.getByRole("tab", {name: /^activity$/i});
-      expect(await hubTablist.getByRole("tab").count()).toBe(2);
-      await page.evaluate(() => {
-        /** Holds one delayed Activity response until the player has navigated away. */
-        const holdInbox = (event: Event) => {
-          if ((event as CustomEvent).detail?.payload?.operation !== "raceInbox") return;
-          event.stopImmediatePropagation();
-          window.removeEventListener("riddle-quest:host-to-game", holdInbox, true);
-          Object.assign(window, {__delayedRaceInbox: (event as CustomEvent).detail});
-        };
-        window.addEventListener("riddle-quest:host-to-game", holdInbox, true);
-      });
-      await playHubTab.focus();
-      await playHubTab.press("End");
-      await page.waitForFunction(
-        () => document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim() === "Activity",
-      );
-      expect(await activityHubTab.getAttribute("aria-selected")).toBe("true");
-      expect(await activityHubTab.evaluate((element) => element === document.activeElement)).toBe(true);
-      await page.waitForFunction(() => "__delayedRaceInbox" in window);
-      await playHubTab.click();
-      await page.evaluate(async () => {
-        /** Captures the delayed response without changing its request correlation. */
-        const delayedWindow = window as typeof window & {
-          /** Delayed harness-only host payload. */
-          __delayedRaceInbox?: unknown;
-        };
-        window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceInbox}));
-        delete delayedWindow.__delayedRaceInbox;
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      });
-      expect(await playHubTab.getAttribute("aria-selected")).toBe("true");
-      await playHubTab.focus();
-      await playHubTab.press("ArrowRight");
-      await page.waitForFunction(
-        () => document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim() === "Activity",
-      );
-      expect(await activityHubTab.getAttribute("aria-selected")).toBe("true");
-      await page.getByText("Nova", {exact: true}).waitFor();
-      await page.getByText("Safety options", {exact: true}).click();
-      await expectAccessible(page, "multiplayer safety actions");
-      await page.getByLabel("Reason for report").selectOption("spam");
-      await page.evaluate(() => {
-        /** Holds the next safety response so its initiating control can be inspected in flight. */
-        const holdSafetyResponse = (event: Event) => {
-          if ((event as CustomEvent).detail?.payload?.operation !== "raceReport") return;
-          event.stopImmediatePropagation();
-          window.removeEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
-          Object.assign(window, {__delayedRaceSafetyResponse: (event as CustomEvent).detail});
-        };
-        window.addEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
-      });
-      /** Report feedback is immediate while the server response remains deliberately held. */
-      const reportOpponent = page.getByRole("button", {name: /^report opponent$/i});
-      await reportOpponent.click();
-      // React commits pending UI on the next render; the held server response
-      // keeps it observable without assuming click completion is a render fence.
-      await page.locator('button[aria-busy="true"]').filter({hasText: /^report opponent$/i}).waitFor({timeout: 2_000});
-      expect(await reportOpponent.getAttribute("aria-busy")).toBe("true");
-      expect(await page.getByRole("button", {name: /^block opponent$/i}).isDisabled()).toBe(true);
-      await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
-      await page.evaluate(() => {
-        /** Replays the correlated safety response after the busy state has been verified. */
-        const delayedWindow = window as typeof window & {
-          /** Response held by the test harness until the initiating control is inspected. */
-          __delayedRaceSafetyResponse?: unknown;
-        };
-        window.dispatchEvent(
-          new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceSafetyResponse}),
-        );
-        delete delayedWindow.__delayedRaceSafetyResponse;
-      });
-      await page.getByRole("status").getByText("Report sent.", {exact: true}).waitFor();
-      await page.evaluate(() => {
-        /** Holds the block response independently from the preceding report response. */
-        const holdSafetyResponse = (event: Event) => {
-          if ((event as CustomEvent).detail?.payload?.operation !== "raceBlock") return;
-          event.stopImmediatePropagation();
-          window.removeEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
-          Object.assign(window, {__delayedRaceSafetyResponse: (event as CustomEvent).detail});
-        };
-        window.addEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
-      });
-      /** Block control inspected while its host response remains in flight. */
-      const blockOpponent = page.getByRole("button", {name: /^block opponent$/i});
-      await blockOpponent.click();
-      expect(await page.locator(".race-safety-actions button").first().getAttribute("aria-busy")).toBe("true");
-      await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
-      await page.evaluate(() => {
-        /** Releases the block response after immediate feedback has been verified. */
-        const delayedWindow = window as typeof window & {
-          /** Response held by the test harness until the initiating control is inspected. */
-          __delayedRaceSafetyResponse?: unknown;
-        };
-        window.dispatchEvent(
-          new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceSafetyResponse}),
-        );
-        delete delayedWindow.__delayedRaceSafetyResponse;
-      });
-      await page.getByRole("status").getByText("Opponent blocked.", {exact: true}).waitFor();
-      expect(await page.getByText(/no results yet/i).isVisible()).toBe(true);
+      // This generic host has no live matchmaking capability. Its live intro must explain
+      // that limitation and must never fall back to the retired recorded-race protocol.
+      expect(await page.getByRole("button", {name: "Start PvP match", exact: true}).isDisabled()).toBe(true);
+      expect(await page.locator(".race-category-grid button").evaluateAll(buttons =>
+        buttons.length > 0 && buttons.every(button => (button as HTMLButtonElement).disabled))).toBe(true);
+      expect(await page.locator(".race-screen [role=alert]").innerText()).toMatch(/unavailable/i);
+      expect(await page.locator(".race-gameplay,.race-inbox,.race-hub-tabs").count()).toBe(0);
+      expect((await page.locator(".race-coin-balance strong").innerText()).trim()).toBe(mainGameCoinBalance);
+      await expectAccessible(page, "live multiplayer capability unavailable");
+      expect(await page.evaluate(() => Reflect.get(window, "__multiplayerCommands")
+        .every((type: string) => type === "game:listRaceCategories"))).toBe(true);
+      await page.screenshot({path: "/tmp/jest-feedback-multiplayer-unavailable.png"});
 
-      await page.evaluate(() => {
+      await page.evaluate((newCoins) => {
         window.dispatchEvent(
           new CustomEvent("riddle-quest:host-to-game", {
             detail: {
@@ -757,24 +392,23 @@ describeBrowser("standalone Jest browser game", () => {
                 data: {
                   newlyUnlockedAchievementIds: ["race_debut"],
                   achievementCoinsAwarded: 25,
-                  newCoins: 205,
+                  newCoins,
                 },
               },
             },
           }),
         );
-      });
+      }, Number(mainGameCoinBalance) + 25);
       /** Provides multiplayer achievement popup behavior. */
       const multiplayerAchievementPopup = page.locator(".modal-reward");
+      // Live multiplayer keeps its own focus and interaction surface. Ancillary rewards
+      // remain queued until the player returns to the single-player surface.
+      expect(await multiplayerAchievementPopup.count()).toBe(0);
+      await page.locator(".race-close").click();
+      await page.locator(".race-screen").waitFor({state: "detached"});
       await multiplayerAchievementPopup.getByRole("heading", {name: /achievement unlocked/i}).waitFor();
       await expectAccessible(page, "achievement reward");
       expect(await multiplayerAchievementPopup.getByText("Race Debut", {exact: true}).isVisible()).toBe(true);
-      /** Provides [popup z index, race z index] behavior. */
-      const [popupZIndex, raceZIndex] = await Promise.all([
-        page.locator(".game-modal-backdrop").evaluate((element) => Number(getComputedStyle(element).zIndex)),
-        page.locator(".race-screen").evaluate((element) => Number(getComputedStyle(element).zIndex)),
-      ]);
-      expect(popupZIndex).toBeGreaterThan(raceZIndex);
       await multiplayerAchievementPopup.getByRole("button", {name: /^next$/i}).click();
       /** Provides multiplayer chest behavior. */
       const multiplayerChest = multiplayerAchievementPopup.getByRole("button", {name: /tap the chest/i});
@@ -791,12 +425,9 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
       await multiplayerContinue.waitFor({state: "visible"});
       await page.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
-      expect((await page.locator(".game-header .coin-pill strong").innerText()).trim()).toBe("205");
+      expect((await page.locator(".game-header .coin-pill strong").innerText()).trim()).toBe(String(Number(mainGameCoinBalance) + 25));
       await multiplayerContinue.click();
-      expect(await page.locator(".race-screen").isVisible()).toBe(true);
-
-      await page.locator(".race-close").click();
-      await page.locator(".race-screen").waitFor({state: "detached"});
+      await multiplayerAchievementPopup.waitFor({state: "detached"});
       /** Provides daily page behavior. */
       const dailyPage = await browser.newPage({viewport: {width: 390, height: 844}});
       // The SDK is injected by this mock harness; avoid an unrelated external startup request.
@@ -1173,7 +804,15 @@ describeBrowser("standalone Jest browser game", () => {
         const listRect = list.getBoundingClientRect();
         return Boolean(lastRow && lastRow.bottom <= listRect.bottom + 1);
       });
+      if (!firstPageFits) {
+        await page.screenshot({path: "/tmp/riddle-leaderboard-clipped.png"});
+        console.info("Clipped leaderboard bounds", await leaderboardList.evaluate(list => ({
+          list: list.getBoundingClientRect().toJSON(),
+          rows: [...list.children].map(row => ({bounds: row.getBoundingClientRect().toJSON(), text: row.textContent})),
+        })));
+      }
       expect(firstPageFits).toBe(true);
+      await page.screenshot({path: "/tmp/riddle-leaderboard-fixed.png"});
       await page.getByRole("button", {name: /next page/i}).click();
       expect(await leaderboardList.locator("li").count()).toBe(10);
       expect(await leaderboardList.locator("li").first().locator("b").textContent()).toBe("11");
@@ -1259,6 +898,12 @@ describeBrowser("standalone Jest browser game", () => {
         /** Original transport, restored when the harness releases the response. */
         const dispatch = window.dispatchEvent.bind(window);
         Object.assign(window, {__completionBeforeGuess: false});
+        window.addEventListener("riddle-quest:host-to-game", event => {
+          /** Canonical reward receipt survives release of the delayed-guess transport wrapper. */
+          const message = (event as CustomEvent).detail;
+          if (message?.payload?.operation === "completeGame" && message.payload.ok)
+            Object.assign(window, {__confirmedVictoryCoins: message.payload.data.coinsEarned});
+        });
         window.dispatchEvent = (event: Event) => {
           if (
             event.type === "riddle-quest:host-to-game" &&
@@ -1374,8 +1019,11 @@ describeBrowser("standalone Jest browser game", () => {
         balanceBeforeVictoryCollection,
       );
       await page.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
+      /** Displayed collection must match the authority receipt rather than a retired fixed reward. */
+      const confirmedVictoryCoins = await page.evaluate(() => Number(Reflect.get(window, "__confirmedVictoryCoins")));
+      expect(confirmedVictoryCoins).toBeGreaterThan(0);
       expect(Number((await page.locator(".game-header .coin-pill strong").innerText()).replace(/,/g, ""))).toBe(
-        balanceBeforeVictoryCollection + 50,
+        balanceBeforeVictoryCollection + confirmedVictoryCoins,
       );
       await page.getByRole("button", {name: /invite a friend/i}).click();
       await page.locator('[data-testid="server-activity-loader"]').waitFor({state: "detached"});
@@ -1601,7 +1249,7 @@ describeBrowser("standalone Jest browser game", () => {
       await lowEndPage.locator(".modal-continue").waitFor();
       expect(
         await lowEndPage.locator(".modal-continue").evaluate((panel) => getComputedStyle(panel).backgroundImage),
-      ).toContain(".svg");
+      ).toMatch(/(?:\.svg\b|data:image\/svg\+xml[,;])/);
       expect(await lowEndPage.locator(".game-modal-backdrop > .spinning-wheel-graphic").count()).toBe(0);
       expect(await lowEndPage.locator(".continue-balance img").count()).toBe(0);
       expect(
@@ -1641,10 +1289,10 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await lowEndPage.locator(".modal-skip").count()).toBe(0);
       await lowEndPage.waitForFunction(
         (expected) => document.querySelector("[data-coin-meter] strong")?.textContent === String(expected),
-        coinsBeforeLossSkip - 200,
+        coinsBeforeLossSkip - SOLO_COIN_COSTS.skip,
       );
       expect(Number((await lowEndPage.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""))).toBe(
-        coinsBeforeLossSkip - 200,
+        coinsBeforeLossSkip - SOLO_COIN_COSTS.skip,
       );
       await lowEndPage.waitForFunction(() => Reflect.has(window, "__heldLossSkip"));
       await lowEndPage.evaluate(() => Reflect.get(window, "__releaseLossSkip")());
@@ -1884,6 +1532,12 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await registeredPage.getByRole("button", {name: /cancel subscription/i}).count()).toBe(0);
       await registeredPage.getByRole("button", {name: "Close", exact: true}).click();
       await registeredPage.getByRole("button", {name: "Profile", exact: true}).click();
+      await registeredPage.locator(".tooltip-card").getByRole("heading", {name: /^profile$/i}).waitFor();
+      // This registered player opens Profile for the first time in the subscription scenario.
+      for (let step = 0; step < getProfileTour().length; step += 1) {
+        await registeredPage.locator(".tooltip-card").getByRole("button", {name: /got it/i}).click();
+      }
+      await registeredPage.locator(".tooltip-card").waitFor({state: "detached"});
       await registeredPage.getByRole("button", {name: /cancel subscription/i}).click();
       await registeredPage.getByText(/renewal cancelled/i).waitFor();
       expect(await registeredPage.getByText("Premium active", {exact: true}).isVisible()).toBe(true);

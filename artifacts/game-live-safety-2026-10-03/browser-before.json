@@ -1,0 +1,338 @@
+[
+  {
+    "width": 1280,
+    "name": "block expires and exposes retry",
+    "expected": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": true,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "report expires and exposes retry",
+    "expected": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": true,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "block current late authority receipt recovers without a retry",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "report current late authority receipt recovers without a retry",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "seat retires old accepted block callbacks",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "provider retires old accepted block callbacks",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "unmount retires old accepted block callbacks",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "sync optional callback cannot reject confirmed block",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "async optional callback cannot reject confirmed block",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "invalid authority receipt remains unconfirmed",
+    "expected": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "uncaught errors",
+    "expected": [],
+    "actual": [
+      "Injected confirmed-block callback failure"
+    ]
+  },
+  {
+    "width": 390,
+    "name": "block expires and exposes retry",
+    "expected": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": true,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "report expires and exposes retry",
+    "expected": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": true,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "block current late authority receipt recovers without a retry",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "report current late authority receipt recovers without a retry",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "seat retires old accepted block callbacks",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "provider retires old accepted block callbacks",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "unmount retires old accepted block callbacks",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "sync optional callback cannot reject confirmed block",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "async optional callback cannot reject confirmed block",
+    "expected": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 0,
+      "notices": 1,
+      "blocked": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "invalid authority receipt remains unconfirmed",
+    "expected": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    },
+    "actual": {
+      "busy": false,
+      "alerts": 1,
+      "notices": 0,
+      "blocked": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "uncaught errors",
+    "expected": [],
+    "actual": [
+      "Injected confirmed-block callback failure"
+    ]
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "exhausted attempts disable native input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "late input produces no browser exception",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "draft admission follows the current state",
+    "actual": "xxxx",
+    "expected": "xxxx"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "ephemeral input creates no material save",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "resumed native typing remains usable",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "resumed command records exactly one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

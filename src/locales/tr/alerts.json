@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Seri Kırıldı",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Mevcut Ürün Yok",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Uygulama bilmecelerini yüklemeyi tamamlayamadı. Lütfen bağlantınızı kontrol edin ve tekrar deneyin.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle veritabanı kullanılamıyor"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle veritabanı kullanılamıyor",
+    "PROGRESS_UNSAVED_MESSAGE": "İlerleme henüz kaydedilmedi. Oyunu açık tut."
   }
 }

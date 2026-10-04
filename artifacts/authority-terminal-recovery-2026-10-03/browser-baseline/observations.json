@@ -1,0 +1,11 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "provider": "missing",
+    "name": "host-accepted win opens victory without a current provider checkpoint",
+    "actual": 0,
+    "expected": 1
+  }
+]

@@ -1,0 +1,1952 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shift-tab-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composing-escape",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ordinary-escape",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ordinary-escape",
+    "name": "ordinary Escape leaves once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ordinary-escape",
+    "name": "ordinary Escape returns to the multiplayer intro",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ordinary-escape",
+    "name": "inner Escape does not also close the outer dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ordinary-escape",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ordinary-escape",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "ordinary Escape leaves once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "ordinary Escape returns to the multiplayer intro",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "inner Escape does not also close the outer dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shift-tab-229",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "composition key cannot send a leave command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "composition key cannot close the race",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "IME retains its key event",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "IME retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "uncommitted text leaves draft alone",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "IME commit reaches the same answer once",
+    "actual": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ],
+    "expected": [
+      "t",
+      "e",
+      "に",
+      "ほ"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "ordinary Backspace remains usable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "only the explicit answer submits",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "ordinary Tab still moves focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composing-escape",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "ordinary Escape leaves once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "ordinary Escape returns to the multiplayer intro",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "inner Escape does not also close the outer dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "ordinary-escape",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

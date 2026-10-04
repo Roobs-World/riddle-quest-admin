@@ -1,0 +1,572 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 386,
+  "failures": [
+    {
+      "width": 1280,
+      "name": "host-pause: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "hidden-document: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "hidden-document: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "hidden-document: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "hidden-document: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "hidden-document: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "hidden-document: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "hidden-document: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "motion-in-multiplayer: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "motion-in-multiplayer: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "motion-in-multiplayer: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "motion-in-multiplayer: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "motion-in-multiplayer: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "motion-in-multiplayer: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "motion-in-multiplayer: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: retired setup callbacks cannot construct a renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retired-before-resume: first eligible state initializes only its current owner",
+      "actual": 4,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: failed deferred setup releases partial resources",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: failed deferred setup has no frame chain",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: failed deferred setup has no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "deferred-driver-failure: failed deferred setup reports once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "host-pause: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "hidden-document: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "hidden-document: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "hidden-document: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "hidden-document: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "hidden-document: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "hidden-document: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "hidden-document: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "motion-in-multiplayer: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "motion-in-multiplayer: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "motion-in-multiplayer: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "motion-in-multiplayer: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "motion-in-multiplayer: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "motion-in-multiplayer: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "motion-in-multiplayer: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: retired setup callbacks cannot construct a renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retired-before-resume: first eligible state initializes only its current owner",
+      "actual": 4,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: blocked first render constructs no renderer",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: blocked first render owns no graphics allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: blocked first render requests no texture images",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: blocked first render schedules no frame",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: blocked first render attaches no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: retained setup callbacks cannot allocate while blocked",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: first eligible state initializes only its current owner",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: failed deferred setup releases partial resources",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: failed deferred setup has no frame chain",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: failed deferred setup has no canvas",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "deferred-driver-failure: failed deferred setup reports once",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}

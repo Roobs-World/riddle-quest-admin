@@ -1,0 +1,39 @@
+{
+  "source": "InputEvent constructor probes returned by Chromium shell and Firefox MCP tools during diagnosis.",
+  "chromium": [
+    {
+      "requested": "insertText",
+      "actual": "insertText"
+    },
+    {
+      "requested": "insertCompositionText",
+      "actual": "insertCompositionText"
+    },
+    {
+      "requested": "insertFromComposition",
+      "actual": ""
+    },
+    {
+      "requested": "deleteCompositionText",
+      "actual": ""
+    }
+  ],
+  "firefox": [
+    {
+      "requested": "insertText",
+      "actual": "insertText"
+    },
+    {
+      "requested": "insertCompositionText",
+      "actual": "insertCompositionText"
+    },
+    {
+      "requested": "insertFromComposition",
+      "actual": "insertFromComposition"
+    },
+    {
+      "requested": "deleteCompositionText",
+      "actual": "deleteCompositionText"
+    }
+  ]
+}

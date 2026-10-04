@@ -10,7 +10,8 @@ import {chromium} from "@playwright/test";
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 
 describeBrowser("solo coin collection and successor routing", () => {
-  it.each(["classic", "challenge"])("enables Next Level and loads a playable successor after %s coin collection", async (mode) => {
+  it.each([{mode: "classic", continued: false}, {mode: "challenge", continued: false}, {mode: "classic", continued: true}])(
+    "enables Next Level and loads a playable successor after $mode coin collection (continued=$continued)", async ({mode, continued}) => {
     /** Provides dist dir behavior. */
     const distDir = process.env.PORTAL_JEST_BUILD_DIR
       ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
@@ -84,6 +85,15 @@ describeBrowser("solo coin collection and successor routing", () => {
       await page.goto(`http://127.0.0.1:${address.port}/?harness=jest${mode === "classic" ? "&dailyCompleted=1" : ""}`);
       await completeMockOnboarding(page);
       await page.getByText(mode === "classic" ? /what has keys/i : /speak without a mouth/i).waitFor({timeout: 15_000});
+      if (continued) {
+        for (const letter of ["A", "B", "C", "D", "E"]) {
+          for (let index = 0; index < 5; index += 1) await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+          await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
+          if (letter === "A") await page.locator(".tooltip-card").getByRole("button", {name: /got it/i}).click();
+        }
+        await page.getByRole("button", {name: "Use 50 Coins to Try Again", exact: true}).click();
+        await page.locator(".modal-continue").waitFor({state: "hidden"});
+      }
       for (const letter of mode === "classic" ? "PIANO" : "ECHO") {
         await page
           .locator(".keyboard")

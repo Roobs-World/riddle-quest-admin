@@ -17,7 +17,7 @@
   place-items: center;
   overflow: hidden;
   padding: clamp(20px, 5vw, 32px) clamp(18px, 7vw, 70px);
-  border: 4px solid #ff9e2c;
+  border: 2px solid #ff9e2c;
   border-radius: clamp(22px, 6vw, 38px);
   background: #fff3cd;
   box-shadow:
@@ -57,6 +57,7 @@
   margin: 0;
   transform: translateY(-0.25em);
   text-align: center;
+  text-wrap: balance;
   color: #171717;
   font:
     400 clamp(22px, 6vw, 36px)/1.22 "Poetsen One",
@@ -81,7 +82,7 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  border: 3px solid #777;
+  border: 2px solid #a1a8b3;
   background: rgba(0, 0, 0, 0.18);
   color: #fff;
   font:
@@ -96,14 +97,15 @@
   opacity: 1;
 }
 .cell.active {
-  border-color: #fff;
+  border-color: var(--play-gold);
+  box-shadow: 0 0 0 3px #f4b83f30;
   outline: 0;
   outline-offset: 1px;
 }
 .cell.green,
 .key.green {
   background: var(--feedback-correct);
-  color: #fff;
+  color: #062a1e;
   border-color: var(--feedback-correct);
 }
 .cell.yellow,
@@ -117,6 +119,9 @@
   background: var(--feedback-absent);
   color: #fff;
   border-color: var(--feedback-absent);
+}
+:root[data-riddle-quest-high-contrast="true"] .game-app :is(.cell.green, .keyboard .key.green) {
+  color: #fff;
 }
 .game-input-actions {
   width: min(760px, 100%);
@@ -136,7 +141,7 @@
   min-width: 0;
   min-height: 64px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 18px;
   background: var(--play-panel);
   color: var(--play-ink);
   padding: 0 clamp(5px, 2vw, 14px);
@@ -153,6 +158,12 @@
 .game-input-actions button:hover:not(:disabled) {
   filter: brightness(1.05);
   transform: translateY(-2px);
+}
+.game-input-actions:not(:has(> button:nth-child(3))) {
+  grid-template-columns: 1fr 1.15fr;
+}
+.game-input-actions > button:only-child {
+  grid-column: 1 / -1;
 }
 .game-input-actions button:active:not(:disabled) {
   transform: translateY(1px);
@@ -188,7 +199,7 @@
   padding: 8px max(clamp(8px, 6vw, 48px), env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom))
     max(clamp(8px, 6vw, 48px), env(safe-area-inset-left));
   border: 0;
-  border-radius: 999px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow:
     0 16px 38px rgba(0, 0, 0, 0.34),
@@ -253,25 +264,27 @@
   width: min(760px, 100%);
   justify-self: center;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 2px;
   padding-bottom: 2px;
 }
 .keyboard > div {
+  min-width: 0;
   display: flex;
   justify-content: center;
   gap: clamp(2px, 1.4vw, 10px);
 }
 .key {
+  min-width: 0;
+  padding: 0;
   width: min(52px, 8vw);
-  height: 40px;
-  border: 0;
+  height: 48px;
+  border: 1px solid #ffffff57;
+  border-radius: 9px;
   background: transparent;
   color: #fff;
   box-shadow: none;
-  font:
-    400 22px/1 "Poetsen One",
-    "Poppins",
-    sans-serif;
+  font: 700 20px/1 var(--rq-font-body);
   transition:
     transform 90ms ease,
     background-color 120ms ease;

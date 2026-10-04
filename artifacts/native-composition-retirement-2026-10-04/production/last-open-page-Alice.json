@@ -1,0 +1,289 @@
+{
+  "text": "Race to 10\n×\n0:47.3\n+0:15.0\nYou\nRiddles completed:\n0 / 10\nBob\nRiddles completed:\n0 / 10\nA four-letter browser answer\nT\nE\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\n+15 seconds\nSubmit\nSkip\n+45 seconds",
+  "nativeValue": "xy",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Alice",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-baad3e5a-1e7c-4aa3-9834-e5cb9b0a1da8"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-1876fbb4-867a-4bd0-8f8f-95cdd5d78382"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "hint",
+        "requestId": "live-hint-75934f03-ed9f-4d15-8e35-36b154b8a491",
+        "riddleId": "q0"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "hint",
+        "requestId": "live-hint-75934f03-ed9f-4d15-8e35-36b154b8a491",
+        "riddleId": "q0"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-72f7e1b9-63ff-434a-9ee0-0608a102e3ff"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-eca58df7-bb7c-45d9-a4ec-78622126482f"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-12e4cfef-3a99-4e30-96ae-10dffdbe840c"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-494d3409-9ab6-41aa-8bad-7735635a039e"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-c9e16825-9578-4822-84e8-61466b4e3a9f"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-6fe55fef-15c8-4f04-a2e5-fca39ac91373"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-302aaeba-a152-446c-ab88-675ffa34c08f"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-288c9659-c430-4e3a-84b0-541078aa1fa8"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-e14402c4-eaf1-4c73-95e0-4926a2b1df43"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-6056c61f-6cb8-4ced-afdd-5bd5ad80993f"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-2120709f-0339-4112-9a49-e47d91c0dbe6"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-476caf37-ac07-4fba-8d24-8d8935d663ee"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-a0207319-91a9-4a4e-8b50-d7fae3b56851"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-fd720815-36ca-4850-baa8-0566cea7a6b3"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-02f1f2ef-d368-4173-a286-85d12f506405"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-00225e28-a882-4ad3-b23a-37d03fb393e0"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-17655a27-49fb-4fb9-9a9c-dddcca3c9695"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-abf9c029-9a6d-49f4-9859-75f266ff16c6"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-197e9744-376e-4bc6-b52a-82f9bbc9e375"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-91dea7d2-d687-4c6a-9dec-a705a1f1b54f"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-b1a253a8-67d0-461c-8067-36dacee55857"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-47f0bf35-4ebb-4a7d-b719-6fc93a317127"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-5dce8138-21b6-4558-a052-5615637bcb6b"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-a508209a-9adf-4447-9061-3dc9f527f1c1"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-d13d22eb-6424-403c-a6df-9d2a861e6566"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-56d285c5-bc3c-4d20-ac08-f5e6d7e25479"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-cb86f53f-fc2c-474d-9452-6817b314c9a1"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-135d7655-a99b-4055-9dbd-a1240af1d6fa"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-6ffa03a3-0dca-4441-96d7-701f7f6c613c"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-dfb39712-55ad-4d80-afac-450d82e6362f"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-84e49825-a11f-472e-abdf-69e404e27a82"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-38291404-c538-4442-959c-490e09392b4c"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-57f594e3-6726-4380-8c18-32c639409ca0"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-ccc34181-0498-42bf-baa9-dc2b962f0a50"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-7683472b-c0d1-488c-a00b-76e2f3c03a16"
+      }
+    ],
+    "saves": [],
+    "loads": 0,
+    "errors": [],
+    "unhandled": [],
+    "segmentYields": 0,
+    "countSegments": false
+  }
+}

@@ -1,0 +1,678 @@
+{
+  "mode": "production",
+  "checks": 426,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates do not add observations",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates retain the active subscription",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates do not retire the subscription",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "close-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "close-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "close-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "close-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "completed-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "completed-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "completed-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "completed-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-poll",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-poll",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-poll",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-guess",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-guess",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-result",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-result",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "actual": [
+        0
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-leave",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-leave",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-leave",
+      "name": "pending retirement uses the latest committed close callback",
+      "actual": [
+        0
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not add observations",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates retain the active subscription",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not retire the subscription",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-poll",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-poll",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-poll",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-guess",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-guess",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "actual": [
+        0
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "pending retirement uses the latest committed close callback",
+      "actual": [
+        0
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not add observations",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates retain the active subscription",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not retire the subscription",
+      "actual": 32,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "close-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates do not add observations",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "completed-parent",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-poll",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-poll",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-poll",
+      "name": "parent updates preserve native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-guess",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-guess",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "actual": [
+        0
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates retain the active subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates do not retire the subscription",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "pending retirement uses the latest committed close callback",
+      "actual": [
+        0
+      ],
+      "expected": [
+        1
+      ]
+    }
+  ]
+}

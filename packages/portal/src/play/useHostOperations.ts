@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {getHostErrorMessage, type HostOperationName} from "./hostMessageHandlers";
 
@@ -21,6 +21,8 @@ type PostOperation = (
 
 /** Configuration owned by the host-operation module. */
 type HostOperationOptions = Readonly<{
+  /** Opaque account-visit token changes only when identity ownership changes. */
+  owner?: unknown;
   /** Correlated result delivery function. */
   postOperation: PostOperation;
 }>;
@@ -40,17 +42,25 @@ export type HostOperations = Readonly<{
 }>;
 
 /** Owns server activity accounting and multiplayer operation delivery. */
-export function useHostOperations({postOperation}: HostOperationOptions): HostOperations {
-  /** Number of outstanding server operations. */
-  const [pendingOperations, setPendingOperations] = useState(0);
+export function useHostOperations({postOperation, owner}: HostOperationOptions): HostOperations {
+  /** Current visit is available to stable callbacks before any asynchronous result arrives. */
+  const currentOwner = useRef(owner);
+  currentOwner.current = owner;
+  /** Retired work cannot block a replacement account or decrement its active operation count. */
+  const [activity, setActivity] = useState({owner, pending: 0});
 
   /** Blocks duplicate input only for the actual operation lifetime. */
   const withActivity = useCallback(async <Result>(operation: () => Promise<Result>): Promise<Result> => {
-    setPendingOperations((current) => current + 1);
+    /** Activity belongs to the visit that actually admitted this operation. */
+    const admittedOwner = currentOwner.current;
+    setActivity(current => currentOwner.current !== admittedOwner ? current : {
+      owner: admittedOwner, pending: current.owner === admittedOwner ? current.pending + 1 : 1,
+    });
     try {
       return await operation();
     } finally {
-      setPendingOperations((current) => Math.max(0, current - 1));
+      setActivity(current => currentOwner.current !== admittedOwner || current.owner !== admittedOwner ? current :
+        {...current, pending: Math.max(0, current.pending - 1)});
     }
   }, []);
 
@@ -83,7 +93,7 @@ export function useHostOperations({postOperation}: HostOperationOptions): HostOp
   );
 
   return {
-    activityActive: pendingOperations > 0,
+    activityActive: activity.owner === owner && activity.pending > 0,
     withActivity,
     runRace,
   };

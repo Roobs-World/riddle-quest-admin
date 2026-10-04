@@ -1,0 +1,23 @@
+FAIL src/facebook/__tests__/contextEvents.test.ts
+  ● Facebook native context event ownership › notifies a mounted board after explicit selection on a host without native context events
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 1
+    Received number of calls: 0
+
+      61 |     value.coordinator.onContextChange(changed); value.emit(ok("b"));
+      62 |     await expect(value.coordinator.chooseContext()).resolves.toEqual(ok("b"));
+    > 63 |     expect(changed).toHaveBeenCalledTimes(1);
+         |                     ^
+      64 |     await expect(board).resolves.toEqual(ok("b"));
+      65 |     expect(value.backend.join).toHaveBeenCalledTimes(2);
+      66 |   });
+
+      at Object.<anonymous> (src/facebook/__tests__/contextEvents.test.ts:63:21)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 9 passed, 10 total
+Snapshots:   0 total
+Time:        0.2 s, estimated 1 s
+Ran all test suites within paths "src/facebook/__tests__/contextEvents.test.ts".

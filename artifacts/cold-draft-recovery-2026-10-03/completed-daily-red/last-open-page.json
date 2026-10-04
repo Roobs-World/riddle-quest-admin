@@ -1,0 +1,524 @@
+{
+  "text": "Classic\n400\nWhat has a face and hands but no arms?\nQ\nQ\nQ\nQ\nQ\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nSUBMIT\nService temporarily unavailable. Please try again.",
+  "probe": {
+    "variant": "completedDailyFallback",
+    "old": {
+      "riddleId": "daily-fake-1",
+      "text": "I speak without a mouth and hear without ears. What am I?",
+      "answerLength": 4,
+      "sessionToken": "00000000-0000-4000-8000-000000000003",
+      "gameMode": "challenge",
+      "index": 0,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "echo",
+        "locale": "en"
+      }
+    },
+    "issued": {
+      "riddleId": "daily-fake-1",
+      "text": "I speak without a mouth and hear without ears. What am I?",
+      "answerLength": 4,
+      "sessionToken": "00000000-0000-4000-8000-000000000003",
+      "gameMode": "challenge",
+      "index": 0,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "echo",
+        "locale": "en"
+      }
+    },
+    "currentProfile": {
+      "username": "Guest Solver",
+      "coins": 325,
+      "level": 3,
+      "xp": 510,
+      "winStreak": 2,
+      "gamesPlayed": 8,
+      "wins": 6,
+      "achievements": [
+        "first_win",
+        "daily_spark",
+        "wins_5",
+        "perfect_guess",
+        "classic_perfect"
+      ],
+      "classicIndex": 2,
+      "totalWins": 6,
+      "challengeWins": 0,
+      "dailyPuzzlesCompleted": 0,
+      "bestStreak": 2,
+      "totalWordsGuessed": 1,
+      "totalGuessesInWins": 1,
+      "winRate": 75,
+      "averageGuesses": 0.17,
+      "totalScore": 90,
+      "highestLevelClassic": 1
+    },
+    "guesses": [],
+    "hints": [],
+    "spends": [],
+    "completions": [],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-e801051b-3592-4ca7-a493-40c837063396",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062841507
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-70e65afa-f27a-4850-aed7-c2650c30963a",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062841508
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-b1585108-d03c-4a48-bdaf-8a938d7b972d",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062841522
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-cd1ddb50-9d6c-40a1-902a-ecadb632892c",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-ccdc38cd-2672-483e-b221-cf2808e4dfc8",
+          "locale": "en",
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          },
+          "gameMode": "challenge",
+          "products": []
+        },
+        "sentAt": 1791062841533
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "daily-fake-1",
+            "text": "I speak without a mouth and hear without ears. What am I?",
+            "answerLength": 4,
+            "sessionToken": "00000000-0000-4000-8000-000000000003",
+            "gameMode": "challenge",
+            "index": 0,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "echo",
+              "locale": "en"
+            }
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062841533
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "daily-fake-1"
+          }
+        },
+        "sentAt": 1791062841534
+      },
+      {
+        "type": "host:riddleLoaded",
+        "requestId": "reload-completed-daily",
+        "payload": {
+          "riddle": {
+            "riddleId": "classic-fake-2",
+            "text": "What has a face and hands but no arms?",
+            "answerLength": 5,
+            "sessionToken": "00000000-0000-4000-8000-000000000002",
+            "gameMode": "classic",
+            "index": 2,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "clock",
+              "locale": "en"
+            }
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062841647
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "reload-completed-daily",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "classic-fake-2"
+          }
+        },
+        "sentAt": 1791062841647
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-074a6be7-50eb-44ce-b6b2-7810bf6484b5",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 400,
+            "level": 3,
+            "xp": 600,
+            "winStreak": 3,
+            "gamesPlayed": 9,
+            "wins": 7,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect",
+              "daily_completed",
+              "challenge_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 7,
+            "challengeWins": 1,
+            "dailyPuzzlesCompleted": 1,
+            "bestStreak": 3,
+            "totalWordsGuessed": 2,
+            "totalGuessesInWins": 2,
+            "winRate": 77.78,
+            "averageGuesses": 0.29,
+            "totalScore": 180,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062841653
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-18cf60b8-c6cb-430b-9cb0-d84f5726c370",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-ccdc38cd-2672-483e-b221-cf2808e4dfc8",
+          "locale": "en",
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 400,
+            "level": 3,
+            "xp": 600,
+            "winStreak": 3,
+            "gamesPlayed": 9,
+            "wins": 7,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect",
+              "daily_completed",
+              "challenge_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 7,
+            "challengeWins": 1,
+            "dailyPuzzlesCompleted": 1,
+            "bestStreak": 3,
+            "totalWordsGuessed": 2,
+            "totalGuessesInWins": 2,
+            "winRate": 77.78,
+            "averageGuesses": 0.29,
+            "totalScore": 180,
+            "highestLevelClassic": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791062841653
+      }
+    ],
+    "outbound": [
+      {
+        "type": "game:ready",
+        "requestId": "ready-d5a3c9c4-722d-481f-842d-e65519a7f0ac",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791062841523
+      },
+      {
+        "type": "game:resize",
+        "requestId": "resize-19a627c0-952b-4b11-a9e8-a8da5d2a26be",
+        "payload": {
+          "width": 390,
+          "height": 568
+        },
+        "sentAt": 1791062841528
+      },
+      {
+        "type": "game:loadRiddle",
+        "requestId": "reload-completed-daily",
+        "payload": {
+          "gameMode": "challenge",
+          "locale": "en"
+        }
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "journal": {
+    "version": 1,
+    "scope": "jest-guest:1:en",
+    "riddle": {
+      "riddleId": "daily-fake-1",
+      "text": "I speak without a mouth and hear without ears. What am I?",
+      "answerLength": 4,
+      "sessionToken": "00000000-0000-4000-8000-000000000003",
+      "gameMode": "challenge",
+      "index": 0,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "echo",
+        "locale": "en"
+      }
+    },
+    "confirmedClassicIndex": 2,
+    "base": {
+      "currentLetters": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "activeSlotIndex": 0,
+      "guesses": [],
+      "engineSnapshot": {
+        "guesses": [],
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "gameOver": false
+      },
+      "modal": null,
+      "lastOutcome": null,
+      "completionAcknowledged": false,
+      "letterStates": {},
+      "profile": {
+        "username": "Guest Solver",
+        "coins": 300,
+        "level": 3,
+        "xp": 420,
+        "winStreak": 2,
+        "gamesPlayed": 7,
+        "wins": 5,
+        "achievements": [
+          "first_win",
+          "daily_spark"
+        ],
+        "classicIndex": 1
+      },
+      "lastRewards": null,
+      "optimisticAchievementIds": []
+    },
+    "draft": [
+      "E",
+      "",
+      "",
+      ""
+    ],
+    "draftActiveSlotIndex": 1,
+    "successors": [],
+    "queue": []
+  }
+}

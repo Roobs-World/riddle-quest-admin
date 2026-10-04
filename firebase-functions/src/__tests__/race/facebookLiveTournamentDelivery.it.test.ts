@@ -95,7 +95,7 @@ it.each([0, 1])("records winning seat %i with no browser score submission and no
   const receipt = await event();
   await Promise.all(Array.from({length: 4}, () => deliverRacePerformance(receipt.id, db, START + 16000)));
   expect((await entry(PLAYERS[seat]).get()).data()).toMatchObject({runId: tickets[seat].ticketId, adjustedTimeMs: 9000});
-  expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(225);
   expect((await receipt.ref.get()).data()).toMatchObject({delivered: true, deliveryState: "delivered"});
 });
 
@@ -109,7 +109,7 @@ it("records the official score when referrals are independently disabled", async
   await deliverRacePerformance(receipt.id, db, START + 16000);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(true);
   expect((await db.collection("facebookReferralSettlements").get()).empty).toBe(true);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(225);
 });
 
 
@@ -122,7 +122,7 @@ it("keeps referrals working when official tournaments are independently disabled
   const receipt = await event();
   await deliverRacePerformance(receipt.id, db, START + 16000);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
 });
 
@@ -135,7 +135,7 @@ it("does not record a nine-solve forfeit while preserving its valid first-win re
   const receipt = await event();
   await deliverRacePerformance(receipt.id, db, START + 16000);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(300);
 });
 
 it("retains the finish-day score through recovery after midnight", async () => {
@@ -175,12 +175,12 @@ it("retries a lost acknowledgement after the official write without a second ref
   await expect(deliverRacePerformance(receipt.id, db, START + 16000)).rejects.toThrow("lost-live-score-ack");
   spy.mockRestore();
   expect((await entry(PLAYERS[0]).get()).data()?.adjustedTimeMs).toBe(9000);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
   /** Owned asynchronous operation remains observable until it settles. */
   const pending = (await receipt.ref.get()).data()!;
   expect(pending.delivered).toBe(false);
   await deliverRacePerformance(receipt.id, db, pending.nextAttemptAtMs);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
   expect((await db.collectionGroup("entries").where("userId", "==", PLAYERS[0]).get()).size).toBe(1);
   expect((await receipt.ref.get()).data()?.delivered).toBe(true);
@@ -200,14 +200,14 @@ it("quarantines a corrupt frozen score source and recovers only after repair and
   await deliverRacePerformance(receipt.id, db, START + 16000);
   expect((await receipt.ref.get()).data()?.deliveryState).toBe("quarantined");
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(225);
   await expect(replayRaceDelivery(db, "racePerformanceOutbox", receipt.id, START + 17000, {dryRun: true})).rejects.toMatchObject({code: "data-loss"});
   await ref.set(original);
   await replayRaceDelivery(db, "racePerformanceOutbox", receipt.id, START + 17000, {dryRun: true});
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
   await replayRaceDelivery(db, "racePerformanceOutbox", receipt.id, START + 17000);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(true);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
 });
 
 it("holds an account lease until the official write drains and deletion removes the row", async () => {

@@ -9,6 +9,8 @@ import {readFacebookLiveTournamentRun} from "../race/facebookLiveTournament";
 import {assertFacebookTournamentDeck, deriveFacebookTournamentEntry, recordFacebookTournamentRun} from "../race/facebookTournament";
 import type {LiveMatch} from "../race/raceLiveState";
 import type {Firestore} from "../race/raceSetupService";
+import {recordFacebookContextBoardBindingRun} from "../race/facebookContextBoard";
+import {parseFacebookContextCompetition} from "../race/facebookContextService";
 
 /** Eligible solve delivery and administrator dry-run share the official source validator. */
 export async function readFacebookLiveTournamentDeliveryInput(transaction: FirebaseFirestore.Transaction, db: Firestore,
@@ -32,7 +34,36 @@ export async function readFacebookLiveTournamentDeliveryInput(transaction: Fireb
 
 /** The existing live winner receipt recovers official standings independently of a mounted browser. */
 export async function finishFacebookLiveRaceDelivery(db: Firestore, eventRef: FirebaseFirestore.DocumentReference,
-  userId: string, nowMs: number): Promise<void> {
+  userId: string, nowMs: number, hasContext = false): Promise<void> {
+  if (hasContext && isFacebookFeatureEnabled("matchmaking")) {
+    await runWithJestAccountOperationLease(userId, 120, async () => {
+      /** Deletion, receipt/source bindings and the original active board are re-read before delivery. */
+      const input = await db.runTransaction(async transaction => {
+        /** A retired receipt cannot reconstruct a deleted score. */
+        const current = await transaction.get(eventRef);
+        if (!current.exists || current.data()?.delivered === true) return undefined;
+        /** Only a retained Facebook winner receipt can carry a context destination. */
+        const receipt = parseRacePerformanceEvent(current.data(), eventRef.id);
+        if (receipt.userId !== userId || !receipt.facebookContext || receipt.expiresAt.toMillis() <= nowMs ||
+          !await validateFacebookLiveRaceReferralSource(transaction, db, receipt, nowMs)) return undefined;
+        /** Forfeit wins still grant the existing win receipt but never synthesize a context solve. */
+        const score = await readFacebookLiveTournamentDeliveryInput(transaction, db, receipt, nowMs);
+        if (!score) return undefined;
+        /** Expired, replaced or departed memberships suppress only the old context projection. */
+        const snapshot = await transaction.get(db.doc(`facebookContextCompetitions/${receipt.facebookContext.contextKey}`));
+        if (!snapshot.exists) return undefined;
+        /** Corrupt authoritative boards remain failures, rather than being silently acknowledged. */
+        const board = parseFacebookContextCompetition(snapshot.data());
+        /** Only the originally captured membership may receive a delayed score. */
+        const member = board.members.find(row => row.userId === userId && row.active);
+        if (board.contextKey !== receipt.facebookContext.contextKey || board.locale !== score.locale || nowMs < board.createdAtMs ||
+          nowMs >= board.expiresAtMs || board.createdAtMs !== receipt.facebookContext.createdAtMs ||
+          member?.joinedAtMs !== receipt.facebookContext.joinedAtMs) return undefined;
+        return {...score, binding: receipt.facebookContext};
+      });
+      if (input && isFacebookFeatureEnabled("matchmaking")) await recordFacebookContextBoardBindingRun(userId, input, {db, nowMs});
+    });
+  }
   if (isFacebookFeatureEnabled("tournaments")) {
     // Deletion waits for this lease before sweeping board entries. A late worker
     // cannot recreate deleted identity or tournament rows after that sweep.

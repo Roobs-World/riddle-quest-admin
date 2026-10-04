@@ -1,0 +1,20 @@
+$ node scripts/verify-single-player-recovery-browser.mjs
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+'victory' !== 'none'
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-single-player-recovery-browser.mjs:158:12 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'victory',
+  expected: 'none',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0
+[ELIFECYCLE] Command failed with exit code 1.

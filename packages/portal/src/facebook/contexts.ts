@@ -71,6 +71,10 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
   private reconciliation: Promise<PlatformResult<ContextValue>> | null = null;
   /** Stores requested revision. */
   private requestedRevision = 0;
+  /** One session owns the native subscription; board consumers only observe invalidation. */
+  private readonly contextListeners = new Set<() => void>();
+  /** Account deletion and unmount retire queued membership operations as well as callbacks. */
+  private sessionIsActive: () => boolean = () => true;
   /** Stores sdk social. */
   private readonly sdkSocial: NativeSocialCapability;
   /** Stores get locale. */
@@ -89,8 +93,47 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     this.backend = backend;
   }
 
+  /** Observes native changes for the entire authenticated session, including outside the race UI. */
+  startObserving(isActive: () => boolean): () => void {
+    /** This observation lifetime owns its native callback. */
+    let active = true;
+    /** The entry supplies its current account-operation gate. */
+    const ownsSession = () => active && isActive();
+    this.sessionIsActive = ownsSession;
+    /** Exactly one native registration serves all mounted board consumers. */
+    const stopSdk = this.sdkSocial.onContextChange?.(() => {
+      if (!ownsSession()) return;
+      /** Invalidate the old snapshot before notifying any consumer. */
+      const operation = this.synchronizeCurrent();
+      this.reconciliation = operation;
+      for (const listener of this.contextListeners) listener();
+      /** Native signals have no awaiting caller; consumers share this operation. */
+      void operation.then(
+        () => {if (this.reconciliation === operation) this.reconciliation = null;},
+        () => {if (this.reconciliation === operation) this.reconciliation = null;},
+      );
+    });
+    return () => {
+      if (!active) return;
+      active = false; stopSdk?.();
+      if (this.sessionIsActive === ownsSession) {
+        ++this.requestedRevision;
+        this.synchronizedContext = undefined;
+        this.synchronizedLocale = undefined;
+        this.reconciliation = null;
+      }
+    };
+  }
+
+  /** Invalidates mounted provider-neutral views without registering another SDK callback. */
+  onContextChange(callback: () => void): () => void {
+    this.contextListeners.add(callback);
+    return () => {this.contextListeners.delete(callback);};
+  }
+
   /** Provides current context behavior. */
   currentContext(): PlatformResult<ContextValue> {
+    if (!this.sessionIsActive()) return {status: "unavailable", message: "facebook-context-not-synchronized"};
     /** Provides sdk context behavior. */
     const sdkContext = this.sdkSocial.currentContext();
     if (
@@ -127,12 +170,27 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
 
   /** Provides choose context behavior. */
   async chooseContext(): Promise<PlatformResult<ContextValue>> {
-    return this.synchronize(await this.sdkSocial.chooseContext());
+    return this.reconcileChoice(await this.sdkSocial.chooseContext());
   }
 
   /** Provides match player behavior. */
   async matchPlayer(tag?: string): Promise<PlatformResult<ContextValue>> {
-    return this.synchronize(await this.sdkSocial.matchPlayer(tag));
+    return this.reconcileChoice(await this.sdkSocial.matchPlayer(tag));
+  }
+
+  /** Native events and chooser settlement share membership work without invalidating awaiting board consumers. */
+  private async reconcileChoice(result: PlatformResult<ContextValue>): Promise<PlatformResult<ContextValue>> {
+    if (result.status !== "success") return this.synchronize(result);
+    /** Event delivery may already own synchronization for the same SDK selection. */
+    const notify = !this.reconciliation && this.currentContext().status !== "success";
+    /** Starting reconciliation first lets listeners share it on hosts without native context events. */
+    const operation = this.ensureCurrent();
+    if (notify) for (const listener of this.contextListeners) listener();
+    /** A native event already notified its consumers and must not be repeated by chooser settlement. */
+    const current = await operation;
+    if (current.status !== "success") return current;
+    return current.value.contextId === result.value.contextId && current.value.contextType === result.value.contextType
+      ? current : {status: "unavailable", message: "facebook-context-not-synchronized"};
   }
 
   /** Provides synchronize behavior. */
@@ -155,8 +213,7 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     result: PlatformResult<ContextValue>,
     revision: number,
   ): Promise<PlatformResult<ContextValue>> {
-    if (result.status !== "success") return result;
-    if (revision !== this.requestedRevision) {
+    if (revision !== this.requestedRevision || !this.sessionIsActive()) {
       return {status: "unavailable", message: "facebook-context-not-synchronized"};
     }
     /** Provides previous context id behavior. */
@@ -164,7 +221,16 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     /** Provides locale behavior. */
     const locale = this.getLocale();
     try {
+      if (result.status !== "success") {
+        /** Returning to solo retires the former social membership, even with no mounted board. */
+        if (result.status === "unavailable" && previousContextId) {
+          await this.backend.leave({contextId: previousContextId});
+          this.currentContextId = undefined;
+        }
+        return result;
+      }
       await this.backend.join({...result.value, locale});
+      if (!this.sessionIsActive()) return {status: "unavailable", message: "facebook-context-not-synchronized"};
       if (previousContextId && previousContextId !== result.value.contextId) {
         await this.backend.leave({contextId: previousContextId});
       }

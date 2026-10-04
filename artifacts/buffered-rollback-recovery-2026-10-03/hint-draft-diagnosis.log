@@ -1,0 +1,126 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+  console.log
+    paid rejection checkpoint hint {
+      journals: [
+        {
+          version: 1,
+          scope: 'jest-guest:1:en',
+          riddle: [Object],
+          confirmedClassicIndex: 1,
+          base: [Object],
+          successors: [],
+          queue: [Array],
+          draft: [Array],
+          draftActiveSlotIndex: 2,
+          coinAction: [Object]
+        }
+      ],
+      rows: [ 'crane', 'PL', '', '', '' ]
+    }
+
+      at src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:483:19
+
+  console.log
+    paid rejection checkpoint skip {
+      journals: [
+        {
+          version: 1,
+          scope: 'jest-guest:1:en',
+          riddle: [Object],
+          confirmedClassicIndex: 1,
+          base: [Object],
+          successors: [],
+          queue: [Array],
+          draft: [Array],
+          draftActiveSlotIndex: 2,
+          coinAction: [Object]
+        }
+      ],
+      rows: []
+    }
+
+      at src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:483:19
+
+FAIL src/play/__tests__/queuedCoinActions.jest-playwright.test.ts
+  ● queued coin actions › keeps hint usable with reject recovery
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 5
+    + Received  + 5
+
+      Object {
+        "draft": Array [
+          "C",
+    -     "L",
+    -     "",
+    -     "",
+    -     "",
+    +     "R",
+    +     "A",
+    +     "N",
+    +     "E",
+        ],
+        "sameSession": true,
+    -   "slot": 2,
+    +   "slot": 0,
+      }
+
+      508 |             return {draft: journal.draft,slot: journal.draftActiveSlotIndex,
+      509 |               sameSession: journal.riddle.sessionToken === Reflect.get(window, "__heldGuess").payload.sessionToken};
+    > 510 |           })).toEqual({draft: ["C", "L", "", "", ""],slot: 2,sameSession: true});
+          |               ^
+      511 |           expect(await page.evaluate(() => Reflect.get(window, "__paidRequests").length)).toBe(0);
+      512 |           expect((await page.locator(".guess-row").first().locator(".cell").allTextContents()).join("").toUpperCase()).toBe("CL");
+      513 |           expect(await page.locator(".guess-row").first().locator("button[disabled]").count()).toBe(0);
+
+      at captureRawStack (../../node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+      at callMatcherAsStep (../../node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+      at Object.toEqual (../../node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+      at src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:510:15
+
+  ● queued coin actions › keeps skip usable with reject recovery
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 5
+    + Received  + 5
+
+      Object {
+        "draft": Array [
+          "C",
+    -     "L",
+    -     "",
+    -     "",
+    -     "",
+    +     "R",
+    +     "A",
+    +     "N",
+    +     "E",
+        ],
+        "sameSession": true,
+    -   "slot": 2,
+    +   "slot": 0,
+      }
+
+      508 |             return {draft: journal.draft,slot: journal.draftActiveSlotIndex,
+      509 |               sameSession: journal.riddle.sessionToken === Reflect.get(window, "__heldGuess").payload.sessionToken};
+    > 510 |           })).toEqual({draft: ["C", "L", "", "", ""],slot: 2,sameSession: true});
+          |               ^
+      511 |           expect(await page.evaluate(() => Reflect.get(window, "__paidRequests").length)).toBe(0);
+      512 |           expect((await page.locator(".guess-row").first().locator(".cell").allTextContents()).join("").toUpperCase()).toBe("CL");
+      513 |           expect(await page.locator(".guess-row").first().locator("button[disabled]").count()).toBe(0);
+
+      at captureRawStack (../../node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+      at callMatcherAsStep (../../node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+      at Object.toEqual (../../node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+      at src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:510:15
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 12 skipped, 14 total
+Snapshots:   0 total
+Time:        2.866 s, estimated 4 s
+Ran all test suites matching src/play/__tests__/queuedCoinActions.jest-playwright.test.ts with tests matching "reject recovery".
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/queuedCoinActions.jest-playwright.test.ts -t 'reject recovery'

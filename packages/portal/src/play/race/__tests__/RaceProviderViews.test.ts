@@ -57,6 +57,17 @@ const recorded = (): RecordFacebookTournamentRunResponse => ({tournamentId: "boa
   adjustedTimeMs: 10000, completedAtMs: 2000, improved: true, sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false});
 
 describe("owned multiplayer provider views", () => {
+  it("settles normal context absence without reporting a failed board or repeating a mutation", async () => {
+    /** Explicit null is supplied by the provider adapter, independently of transport failures. */
+    const h = harness();
+    /** A solo context cannot receive a server-owned board projection. */
+    const list = jest.fn(async () => null), record = jest.fn(async () => null);
+    h.views.enter({locale: "en", contextBoard: {list, record}});
+    h.views.selectStage("inbox"); await settle();
+    expect(h.views.getSnapshot()).toMatchObject({contextBoard: null, contextBoardLoading: false, failed: false});
+    expect(h.errors).not.toContain("RaceTo10.ERROR_GENERIC");
+    expect(record).not.toHaveBeenCalled(); expect(h.timers.size).toBe(0);
+  });
   it("preserves a newer account installed by an entry cleanup notification", async () => {
     /** Observable cleanup may synchronously replace authentication before the outer entry returns. */
     const h = harness();

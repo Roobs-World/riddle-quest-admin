@@ -1,0 +1,9 @@
+file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/live-race-emulator.mjs:7
+  if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Live browser tests require Firestore emulator");
+                                                  ^
+
+Error: Live browser tests require Firestore emulator
+    at createLiveRaceEmulator (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/live-race-emulator.mjs:7:51)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-invitations-browser.mjs:68:23
+
+Node.js v24.17.0

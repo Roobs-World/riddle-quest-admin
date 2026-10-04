@@ -21,7 +21,7 @@ import type {AchievementCriteriaType, AchievementDefinition} from "./achievement
 export type {AchievementCriteriaType, AchievementDefinition, AchievementPlayerData} from "./achievementTypes";
 
 /** Defines the achievement definitions value. */
-export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
+const achievementDefinitions: AchievementDefinition[] = [
   {
     id: "first_win",
     name: "First Win",
@@ -408,6 +408,13 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   ...MILESTONE_ACHIEVEMENT_DEFINITIONS,
   ...RACE_ACHIEVEMENT_DEFINITIONS,
 ];
+
+/** Localized display keys preserve the separate milestone and race catalogs. */
+export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = achievementDefinitions.map((definition) => ({
+  ...definition,
+  nameKey: definition.nameKey ?? `Achievements.SOLO.${definition.id}.NAME`,
+  descriptionKey: definition.descriptionKey ?? `Achievements.SOLO.${definition.id}.DESCRIPTION`,
+}));
 
 /** Terminal result fields that can be evaluated without trusting client rewards. */
 export type AchievementCompletionPreview = {

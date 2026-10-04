@@ -23,7 +23,7 @@ export async function commitJestStartupSession({
   /** Starts authenticated content preparation and hydrates authoritative progress alongside translations. */
   prepareSession?: (session: JestSession, locale: Locale) => Promise<JestSession>;
   /** Stores enable player state writes. */
-  enablePlayerStateWrites: (playerData: JestPlayerData | null) => void;
+  enablePlayerStateWrites: (playerData: JestPlayerData | null, playerId: string) => JestPlayerData | null | void;
   /** Stores set engagement progress. */
   setEngagementProgress: (progress: JestEngagementProgress) => void;
   /** Stores set session. */
@@ -55,15 +55,19 @@ export async function commitJestStartupSession({
         prepareSession?.(session, preferences.locale as Locale) ?? session,
       ]);
       if (!isActive() || !gate.isOpen()) return;
-      enablePlayerStateWrites(readySession.playerData);
+      /** The same target player may have a newer unsaved checkpoint from the retiring guest/session visit. */
+      const playerData = enablePlayerStateWrites(readySession.playerData, readySession.player.playerId);
+      /** Preserve the authority-hydrated session while installing the reconciled client checkpoint. */
+      const committedSession = playerData !== undefined && playerData !== readySession.playerData
+        ? {...readySession, playerData} : readySession;
       /** Saves d profile. */
-      const savedProfile = readySession.playerData?.profile;
+      const savedProfile = committedSession.playerData?.profile;
       setEngagementProgress({
         level: savedProfile?.level ?? 1,
         winStreak: savedProfile?.winStreak ?? 0,
         wins: savedProfile?.wins ?? 0,
       });
-      setSession(readySession);
+      setSession(committedSession);
       trackFunnelSafely("session_started", {
         registered: session.player.registered,
         campaign: session.entryIntent.campaign ?? "direct",

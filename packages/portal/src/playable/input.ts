@@ -1,4 +1,4 @@
-import {splitGraphemes} from "@qwordly/core/game";
+import {iterateGraphemes, splitGraphemes} from "@qwordly/core/game";
 /** Defines the answer grapheme pattern value. */
 const ANSWER_GRAPHEME_PATTERN = /^[\p{L}\p{M}]+$/u;
 /** Describes you tube input state. */
@@ -20,17 +20,24 @@ export function insertYouTubeAnswerText(
   lockedIndices: readonly number[],
   locale: string,
 ): YouTubeInputState {
-  /** Provides graphemes behavior. */
-  const graphemes = normalizeYouTubeAnswerText(text, locale);
-  if (graphemes.length === 0 || answerLength < 1) return state;
+  if (answerLength < 1) return state;
   /** Provides locked behavior. */
   const locked = new Set(lockedIndices);
   /** Provides letters behavior. */
   const letters = Array.from({length: answerLength}, (_, index) => state.letters[index] ?? "");
   /** Provides active behavior. */
   let active = Math.min(Math.max(0, state.activeSlotIndex), answerLength - 1);
+  /** One paste or composition may fill empty slots and replace its originally selected editable letter once. */
+  const capacity = letters.reduce((count, letter, index) => count + Number(!locked.has(index) && !letter), 0) +
+    Number(!locked.has(active) && Boolean(letters[active]));
 
-  for (const grapheme of graphemes) {
+  /** Accepted input and writes distinguish an ignored edit from a full or locked board. */
+  let received = false, written = 0;
+  /** Skip rejected graphemes without consuming capacity, and stop before enumerating unused text. */
+  for (const grapheme of iterateGraphemes(text, locale)) {
+    if (!ANSWER_GRAPHEME_PATTERN.test(grapheme)) continue;
+    received = true;
+    if (written === capacity) break;
     /** Provides target behavior. */
     const target = Array.from({length: answerLength}, (_, offset) => (active + offset) % answerLength).find(
       (index) => !locked.has(index) && (!letters[index] || index === active),
@@ -41,8 +48,9 @@ export function insertYouTubeAnswerText(
       Array.from({length: answerLength}, (_, offset) => (target + offset + 1) % answerLength).find(
         (index) => !locked.has(index) && !letters[index],
       ) ?? target;
+    if (++written === capacity) break;
   }
-  return {letters, activeSlotIndex: active};
+  return received ? {letters, activeSlotIndex: active} : state;
 }
 /** Deletes you tube answer letter. */
 export function deleteYouTubeAnswerLetter(

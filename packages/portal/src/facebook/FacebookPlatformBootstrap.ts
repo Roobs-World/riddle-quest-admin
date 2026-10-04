@@ -8,6 +8,7 @@ import type {
 } from "../platform/types";
 import {parsePlayerData} from "../platform/playerDataValidation";
 import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
+import {createFacebookLifecycle} from "./createFacebookLifecycle";
 import {resolveFacebookCapabilityVisibility, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookOverlayCapability} from "./FacebookOverlayCapability";
 import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
@@ -217,14 +218,22 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
           nativeSocial:
             Boolean(sdk.context) &&
             supportedApis.has("context.chooseAsync") &&
-            typeof sdk.matchPlayerAsync === "function" &&
-            supportedApis.has("matchPlayerAsync"),
+            typeof sdk.context?.chooseAsync === "function",
         },
       });
       /** Provides native social behavior. */
       const nativeSocial =
         sdk.context && visibility.nativeSocial
           ? {
+              ...(typeof sdk.onContextChange === "function" ? {
+                /** Native callbacks have no unregister API; retirement makes them inert. */
+                onContextChange(callback: () => void) {
+                  /** Native callback retirement is local because the SDK has no unsubscribe method. */
+                  let active = true;
+                  sdk.onContextChange!(() => {if (active) callback();}, () => {});
+                  return () => {active = false;};
+                },
+              } : {}),
               /** Provides current context behavior. */
               currentContext() {
                 return facebookContextResult(sdk);
@@ -244,6 +253,9 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
               async matchPlayer(tag?: string) {
                 if (tag !== undefined && !/^[A-Za-z0-9_]{1,100}$/u.test(tag)) {
                   return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
+                }
+                if (!supportedApis.has("matchPlayerAsync") || typeof sdk.matchPlayerAsync !== "function") {
+                  return {status: "unavailable" as const, message: "facebook-matchmaking-unavailable"};
                 }
                 return runFacebookSdkDialog(sdk, async () => {
                   try {
@@ -265,39 +277,9 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
         capabilities: {
           accountManagement: {username: true, avatar: false, deletion: true},
           ...(nativeSocial ? {nativeSocial} : {}),
-          ...(this.ageCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true})} : {}),
+          ...(this.ageCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true, liveRematch: true})} : {}),
           ...(overlay ? {overlay} : {}),
-          lifecycle: {
-            /** Provides on pause behavior. */
-            onPause(callback) {
-              /** Provides active behavior. */
-              let active = true;
-              sdk.onPause(() => {
-                if (active) void callback();
-              });
-              return () => {
-                active = false;
-              };
-            },
-            /** Provides on resume behavior. */
-            onResume(callback) {
-              /** Provides active behavior. */
-              let active = true;
-              if (sdk.onResume) {
-                sdk.onResume(() => {if (active) void callback();});
-                return () => {active = false;};
-              }
-              /** Handles visibility. */
-              const handleVisibility = () => {
-                if (active && document.visibilityState === "visible") void callback();
-              };
-              document.addEventListener("visibilitychange", handleVisibility);
-              return () => {
-                active = false;
-                document.removeEventListener("visibilitychange", handleVisibility);
-              };
-            },
-          },
+          lifecycle: createFacebookLifecycle(sdk),
         },
       });
     } catch (error) {

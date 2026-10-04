@@ -1,0 +1,6 @@
+
+Test Suites: 2 passed, 2 total
+Tests:       36 passed, 36 total
+Snapshots:   0 total
+Time:        2.564 s, estimated 10 s
+Ran all test suites matching src/__tests__/dailyChallenge.test.ts|src/__tests__/classicRiddleBufferLatency.test.ts.

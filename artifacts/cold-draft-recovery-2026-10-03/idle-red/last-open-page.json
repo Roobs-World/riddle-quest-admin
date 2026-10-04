@@ -1,0 +1,370 @@
+{
+  "text": "Classic\n325\nWhat has a face and hands but no arms?\nC\nL\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nSUBMIT",
+  "probe": {
+    "variant": "classicSame",
+    "old": {
+      "riddleId": "classic-fake-2",
+      "text": "What has a face and hands but no arms?",
+      "answerLength": 5,
+      "sessionToken": "00000000-0000-4000-8000-000000000002",
+      "gameMode": "classic",
+      "index": 2,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "clock",
+        "locale": "en"
+      }
+    },
+    "issued": {
+      "riddleId": "classic-fake-2",
+      "text": "What has a face and hands but no arms?",
+      "answerLength": 5,
+      "sessionToken": "00000000-0000-4000-8000-000000000002",
+      "gameMode": "classic",
+      "index": 2,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "clock",
+        "locale": "en"
+      }
+    },
+    "currentProfile": {
+      "username": "Guest Solver",
+      "coins": 325,
+      "level": 3,
+      "xp": 510,
+      "winStreak": 2,
+      "gamesPlayed": 8,
+      "wins": 6,
+      "achievements": [
+        "first_win",
+        "daily_spark",
+        "wins_5",
+        "perfect_guess",
+        "classic_perfect"
+      ],
+      "classicIndex": 2,
+      "totalWins": 6,
+      "challengeWins": 0,
+      "dailyPuzzlesCompleted": 0,
+      "bestStreak": 2,
+      "totalWordsGuessed": 1,
+      "totalGuessesInWins": 1,
+      "winRate": 75,
+      "averageGuesses": 0.17,
+      "totalScore": 90,
+      "highestLevelClassic": 1
+    },
+    "guesses": [],
+    "hints": [],
+    "spends": [],
+    "completions": [],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-c55c1605-4604-4515-9db0-c7890fbeaf52",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062286080
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-f1e39c02-6005-48a7-8b58-6fa5b6f5e2d8",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062286081
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-63179e2c-cee0-45c3-9c8e-eb4b68fb9c21",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062286101
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-79d3c43a-de9a-4658-9523-d2737a5f72d3",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-cfeefa49-1447-4480-a636-78dde8ed7be8",
+          "locale": "en",
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791062286114
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "classic-fake-2",
+            "text": "What has a face and hands but no arms?",
+            "answerLength": 5,
+            "sessionToken": "00000000-0000-4000-8000-000000000002",
+            "gameMode": "classic",
+            "index": 2,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "clock",
+              "locale": "en"
+            }
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791062286114
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "classic-fake-2"
+          }
+        },
+        "sentAt": 1791062286115
+      }
+    ],
+    "outbound": [
+      {
+        "type": "game:resize",
+        "requestId": "resize-af31d2c4-1917-4d28-a862-951261cce7dc",
+        "payload": {
+          "width": 390,
+          "height": 568
+        },
+        "sentAt": 1791062286103
+      },
+      {
+        "type": "game:ready",
+        "requestId": "ready-e9994c45-03f7-4715-80ef-1f20fe0d833b",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791062286104
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "journal": {
+    "version": 1,
+    "scope": "jest-guest:1:en",
+    "riddle": {
+      "riddleId": "classic-fake-2",
+      "text": "What has a face and hands but no arms?",
+      "answerLength": 5,
+      "sessionToken": "00000000-0000-4000-8000-000000000002",
+      "gameMode": "classic",
+      "index": 2,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "clock",
+        "locale": "en"
+      }
+    },
+    "confirmedClassicIndex": 2,
+    "base": {
+      "currentLetters": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "activeSlotIndex": 0,
+      "guesses": [],
+      "engineSnapshot": {
+        "guesses": [],
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "gameOver": false
+      },
+      "modal": null,
+      "lastOutcome": null,
+      "completionAcknowledged": false,
+      "letterStates": {},
+      "profile": {
+        "username": "Guest Solver",
+        "coins": 300,
+        "level": 3,
+        "xp": 420,
+        "winStreak": 2,
+        "gamesPlayed": 7,
+        "wins": 5,
+        "achievements": [
+          "first_win",
+          "daily_spark"
+        ],
+        "classicIndex": 1
+      },
+      "lastRewards": null,
+      "optimisticAchievementIds": []
+    },
+    "draft": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "draftActiveSlotIndex": 2,
+    "successors": [],
+    "queue": []
+  }
+}

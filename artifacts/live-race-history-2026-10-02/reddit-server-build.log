@@ -1,0 +1,13 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm --filter @qwordly/core build
+../../firebase-functions                 | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+$ vite build
+vite v8.3.1 building ssr environment for production...
+transforming...
+✓ 396 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/server/index.cjs  2,929.86 kB │ gzip: 356.01 kB
+
+✓ built in 115ms

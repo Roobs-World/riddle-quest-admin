@@ -1,0 +1,6 @@
+
+Test Suites: 4 passed, 4 total
+Tests:       35 passed, 35 total
+Snapshots:   0 total
+Time:        0.528 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/firebaseRiddleOwnership.test.ts|src/play/__tests__/firebaseServiceOwnership.test.ts|src/play/__tests__/firebaseCompletionDelivery.test.ts|src/reddit/__tests__/RedditHostServices.test.ts.

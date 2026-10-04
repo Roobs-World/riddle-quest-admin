@@ -148,3 +148,38 @@
   padding-top: 18px;
   border-top: 1px solid var(--play-line);
 }
+
+/* Failed-save recovery reserves its own row instead of covering game controls. */
+.player-save-layout {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #07131f;
+}
+.player-save-game { grid-row: 2; min-width: 0; min-height: 0; }
+.player-save-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: max(6px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 6px max(12px, env(safe-area-inset-left));
+  border-bottom: 1px solid #f0c1a0;
+  background: #fff0de;
+  color: #793813;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.player-save-notice p { margin: 0; max-width: 620px; overflow-wrap: anywhere; }
+.player-save-notice button { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; min-height: 44px; padding: 6px 12px; }
+.player-save-notice button:disabled { opacity: 0.65; cursor: default; }
+.player-save-notice .spinning-wheel-graphic { width: 16px; height: 16px; }
+
+.player-save-retry-icon { display: none; width: 20px; height: 20px; }
+@media (max-width: 360px) {
+  .player-save-notice button { width: 44px; min-width: 44px; justify-content: center; padding: 8px; }
+  .player-save-retry-label { display: none; }
+  .player-save-retry-icon { display: block; }
+}

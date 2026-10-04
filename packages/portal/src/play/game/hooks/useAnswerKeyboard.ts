@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useRef} from "react";
 
 /** Describes answer keyboard options. */
 export type AnswerKeyboardOptions = {
@@ -14,33 +14,41 @@ export type AnswerKeyboardOptions = {
 
 /** Maps physical keyboard input to a controlled answer editor while preserving text-field behavior. */
 export const useAnswerKeyboard = ({active, onLetter, onBackspace, onSubmit}: AnswerKeyboardOptions): void => {
+  /** Native subscriptions read the latest callbacks without replacement after each answer edit. */
+  const optionsRef = useRef({active, onLetter, onBackspace, onSubmit});
+  optionsRef.current = {active, onLetter, onBackspace, onSubmit};
   useEffect(() => {
     if (!active) return;
+    /** Removed browser callbacks cannot edit a later active answer. */
+    let listening = true;
     /** Handles key down. */
     const handleKeyDown = (event: KeyboardEvent) => {
+      /** Current editor ownership and callbacks, refreshed by rendering. */
+      const options = optionsRef.current;
+      if (!listening || !options.active) return;
       /** Provides target behavior. */
       const target = event.target;
       /** Provides editing behavior. */
       const editing =
         target instanceof HTMLElement &&
         (target.isContentEditable || target.matches("input, textarea, select, [role='textbox']"));
-      if (event.defaultPrevented || event.isComposing || event.ctrlKey || event.metaKey || event.altKey || editing) return;
+      if (event.defaultPrevented || event.isComposing || event.keyCode === 229 || event.ctrlKey || event.metaKey || event.altKey || editing) return;
       // Enter belongs to a focused control's native activation, including nested targets.
       if (event.key === "Enter" && target instanceof Element &&
         target.closest("button, a[href], summary, [role='button'], [role='link']")) return;
 
       if (/^[a-z]$/i.test(event.key)) {
         event.preventDefault();
-        onLetter(event.key.toUpperCase());
+        options.onLetter(event.key.toUpperCase());
       } else if (event.key === "Backspace") {
         event.preventDefault();
-        onBackspace();
+        options.onBackspace();
       } else if (event.key === "Enter") {
         event.preventDefault();
-        onSubmit();
+        options.onSubmit();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [active, onBackspace, onLetter, onSubmit]);
+    return () => { listening = false; window.removeEventListener("keydown", handleKeyDown); };
+  }, [active]);
 };

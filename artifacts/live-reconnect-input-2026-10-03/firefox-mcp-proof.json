@@ -1,0 +1,116 @@
+{
+  "verified": true,
+  "held": {
+    "raw": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"letters\": [\n    \"t\",\n    \"e\",\n    \"s\",\n    \"t\"\n  ],\n  \"inputEnabled\": true,\n  \"submitDisabled\": true,\n  \"commands\": [\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    },\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    },\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": [],\n  \"score\": \"Riddles completed: 0 / 10\"\n}\n```"
+        }
+      ]
+    },
+    "observation": {
+      "letters": [
+        "t",
+        "e",
+        "s",
+        "t"
+      ],
+      "inputEnabled": true,
+      "submitDisabled": true,
+      "commands": [
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        },
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        },
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        }
+      ],
+      "errors": [],
+      "unhandled": [],
+      "score": "Riddles completed: 0 / 10"
+    }
+  },
+  "released": {
+    "raw": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"letters\": [\n    \"t\",\n    \"e\",\n    \"s\",\n    \"t\"\n  ],\n  \"inputEnabled\": true,\n  \"submitDisabled\": false,\n  \"commands\": [\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    },\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    },\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": [],\n  \"score\": \"Riddles completed: 0 / 10\"\n}\n```"
+        }
+      ]
+    },
+    "observation": {
+      "letters": [
+        "t",
+        "e",
+        "s",
+        "t"
+      ],
+      "inputEnabled": true,
+      "submitDisabled": false,
+      "commands": [
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        },
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        },
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        }
+      ],
+      "errors": [],
+      "unhandled": [],
+      "score": "Riddles completed: 0 / 10"
+    }
+  },
+  "solved": {
+    "raw": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"letters\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"commands\": [\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    },\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    },\n    {\n      \"guess\": \"zzzz\",\n      \"id\": \"live-guess-31835dd9-9231-4efb-9e66-37cca3b42792\"\n    },\n    {\n      \"guess\": \"test\",\n      \"id\": \"live-guess-b4ca7506-cb2f-414e-b8de-f71aaebd69da\"\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": [],\n  \"score\": \"Riddles completed: 1 / 10\"\n}\n```"
+        }
+      ]
+    },
+    "observation": {
+      "letters": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "commands": [
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        },
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        },
+        {
+          "guess": "zzzz",
+          "id": "live-guess-31835dd9-9231-4efb-9e66-37cca3b42792"
+        },
+        {
+          "guess": "test",
+          "id": "live-guess-b4ca7506-cb2f-414e-b8de-f71aaebd69da"
+        }
+      ],
+      "errors": [],
+      "unhandled": [],
+      "score": "Riddles completed: 1 / 10"
+    }
+  }
+}

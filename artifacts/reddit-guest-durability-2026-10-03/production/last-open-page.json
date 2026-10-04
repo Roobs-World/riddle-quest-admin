@@ -1,0 +1,23 @@
+{
+  "body": "Guest play\nLog in to save progress\nClassic\n0\nWhat has keys but cannot open doors?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip\n1/3\nUse a hint\n\nTap Hint to reveal a helpful letter when you get stuck. Hints cost coins.\n\nGot it",
+  "probe": {
+    "fault": "blocked",
+    "writes": [],
+    "errors": [],
+    "unhandled": [],
+    "paths": [
+      "/api/session"
+    ],
+    "sessions": 1
+  },
+  "draft": "",
+  "durable": {
+    "preferences": {
+      "locale": "en",
+      "muted": true,
+      "reducedMotion": true,
+      "onboardingComplete": true
+    },
+    "playerData": null
+  }
+}

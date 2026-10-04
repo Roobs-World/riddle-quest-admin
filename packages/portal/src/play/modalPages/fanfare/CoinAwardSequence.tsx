@@ -4,7 +4,7 @@ import {createPortal} from "react-dom";
 import coinUrl from "../../../../../../assets/images/coin.svg";
 import treasureChestClosedUrl from "../../../../../../assets/images-web/chest-closed.png";
 import treasureChestUrl from "../../../../../../assets/images-web/chest-open.webp";
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 
 /** A coin's position and timing within the collection animation. */
 type CoinParticle = {
@@ -58,6 +58,8 @@ export type CoinAwardSequenceProps = {
 
 /** Renders the interactive treasure-chest coin collection sequence. */
 export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}: CoinAwardSequenceProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Provides [phase, set phase] behavior. */
   const [phase, setPhase] = useState<"waiting" | "collecting" | "collected">("waiting");
   /** Provides [particles, set particles] behavior. */

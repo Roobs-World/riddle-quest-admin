@@ -1,0 +1,28 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "native draft starts editable",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-229",
+    "name": "composition key cannot send a leave command",
+    "actual": 1,
+    "expected": 0
+  }
+]

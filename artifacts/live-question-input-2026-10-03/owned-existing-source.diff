@@ -1,0 +1,58 @@
+--- RaceGameplay.before.txt
++++ packages/portal/src/play/race/components/RaceGameplay.tsx
+@@ -1,12 +1,13 @@
+ import type {Feedback, ScoredGuess} from "@qwordly/core/game";
+ import type {RaceRunView} from "@qwordly/core/race";
+-import {useRef, type RefObject} from "react";
++import type {RefObject} from "react";
+ import {tr} from "../../i18n";
+ import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from "../../GameFrameControls";
+ import {raceBoardAttempts} from "../logic/raceBoardAttempts";
+ import {RaceScoreboard} from "./RaceScoreboard";
+ import {NativeAnswerInput} from "./NativeAnswerInput";
+ import type {LiveRaceClockAnchor} from "./LiveRaceElapsedTime";
++import {useRaceAnswerEditor} from "../hooks/useRaceAnswerEditor";
+ 
+ /** Renders the active riddle, controlled input, actions, and multiplayer rail. */
+ export function RaceGameplay({
+@@ -84,8 +85,8 @@
+   /** Stores on skip. */
+   onSkip: () => void;
+ }) {
+-  /** Provides native input ref behavior. */
+-  const nativeInputRef = useRef<HTMLInputElement>(null);
++  /** Each question owns its IME editor; same-question polls and hints keep it mounted. */
++  const {inputRef: nativeInputRef, attachInput} = useRaceAnswerEditor();
+   return (
+     <div ref={viewportRef} className="race-gameplay-viewport">
+       <div ref={gameplayRef} className="race-gameplay">
+@@ -118,7 +119,9 @@
+                 disabled={pending && !allowTypingWhilePending}
+               />
+               <NativeAnswerInput
+-                ref={nativeInputRef}
++                key={JSON.stringify([run.runId, run.locale, run.currentRiddle.riddleId,
++                  run.currentRiddle.position, run.currentRiddle.answerLength])}
++                ref={attachInput}
+                 disabled={pending && !allowTypingWhilePending}
+                 locale={run.locale}
+                 onText={onText}
+--- package.before.txt
++++ packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -71,6 +71,7 @@
+     "test:race:live:invitations:browser": "node scripts/verify-live-race-invitations-browser.mjs",
+     "test:challenge-notifications:browser": "node scripts/verify-challenge-notification-toggle-browser.mjs",
+     "test:challenge-push:browser": "node scripts/verify-closed-game-challenge-push-browser.mjs",
++    "test:live-question-input:browser": "node scripts/verify-live-question-input-browser.mjs && LIVE_QUESTION_REACT_MODE=production node scripts/verify-live-question-input-browser.mjs",
+     "test:live-reconnect-input:browser": "node scripts/verify-live-reconnect-input-browser.mjs && LIVE_DRAFT_REACT_MODE=production node scripts/verify-live-reconnect-input-browser.mjs",
+     "test:race:live:browser": "node scripts/verify-live-race-browser.mjs",
+     "test:single-player:recovery:browser": "node scripts/verify-single-player-recovery-browser.mjs",

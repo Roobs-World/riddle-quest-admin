@@ -1,0 +1,2 @@
+PASS 1280px: completion identity, profile rerenders, retired visits, and both callback ownership boundaries
+PASS 390px: completion identity, profile rerenders, retired visits, and both callback ownership boundaries

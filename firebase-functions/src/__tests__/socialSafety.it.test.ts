@@ -4,7 +4,14 @@ import {getFirestore} from "firebase-admin/firestore";
 import {blockKnownRival, reportKnownRival} from "../social/socialSafety";
 
 /** Defines the project id value. */
-const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "";
+// Every destructive fixture operation requires the private loopback demo services.
+if (
+  !PROJECT_ID.startsWith("demo-") ||
+  !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "") ||
+  !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "")
+)
+  throw new Error("Private demo presence emulators required");
 /** Renders the reporter interface. */
 const REPORTER = `facebook_${"c".repeat(40)}`;
 /** Renders the target interface. */
@@ -113,7 +120,8 @@ it("writes an immediate block only for the established rival", async () => {
     database.ref(`presenceViewers/${REPORTER}/${TARGET}`).get(),
     database.ref(`presenceViewers/${TARGET}/${REPORTER}`).get(),
   ]);
-  expect(revokedPresence.every((snapshot) => !snapshot.exists())).toBe(true);
+  expect(revokedPresence.slice(0, 2).every((snapshot) => snapshot.child("allowed").val() === false)).toBe(true);
+  expect(revokedPresence.slice(2).every((snapshot) => snapshot.val() === true)).toBe(true);
   await expect(blockKnownRival(REPORTER, `facebook_${"e".repeat(40)}`, {db, nowMs: NOW})).rejects.toMatchObject({
     code: "permission-denied",
   });

@@ -103,6 +103,8 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
                 ? "text/javascript"
                 : extension === ".css"
                   ? "text/css"
+                  : extension === ".svg"
+                    ? "image/svg+xml"
                   : "application/octet-stream",
         });
         response.end(body);
@@ -387,6 +389,8 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
           if (message?.type === "host:init") document.documentElement.dataset.redditHostLocale = message.payload.locale;
         });
       });
+      /** One actual same-origin storage rejection must recover without further input. */
+      let failDraftOnce = false, failedDrafts = 0, recoveredDrafts = 0;
       await expanded.route("**/api/**", async (route) => {
         /** Provides pathname behavior. */
         const pathname = new URL(route.request().url()).pathname;
@@ -427,8 +431,15 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
               playerData: null,
             }),
           });
-        if (pathname === "/api/storage/write")
+        if (pathname === "/api/storage/write") {
+          /** Observes the real Reddit adapter's versioned projection payload. */
+          const input = route.request().postDataJSON();
+          if (input.playerData?.activeGame?.currentLetters.join("") === "PIAN") {
+            if (failDraftOnce) {failDraftOnce = false; failedDrafts++; return route.fulfill({status: 503, contentType: "application/json", body: JSON.stringify({ok: false})});}
+            if (failedDrafts > 0) recoveredDrafts++;
+          }
           return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({ok: true})});
+        }
         if (pathname === "/api/game/profile.load")
           return route.fulfill({
             status: 200,
@@ -524,7 +535,14 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       expect(apiRequests).toContain("/api/game/presence.poll");
       expect(apiRequests.every((request) => request.startsWith("/api/"))).toBe(true);
       await expanded.waitForFunction(() => document.documentElement.lang === "ar");
-      await expanded.waitForFunction(() => document.documentElement.dataset.redditHostLocale === "ar");
+      try {
+        await expanded.waitForFunction(() => document.documentElement.dataset.redditHostLocale === "ar");
+      } catch (error) {
+        throw new Error(`${String(error)} ${JSON.stringify(await expanded.evaluate(() => ({
+          lang: document.documentElement.lang, hostLocale: document.documentElement.dataset.redditHostLocale,
+          body: document.body.innerText,
+        })))}`);
+      }
       expect(await expanded.locator("html").getAttribute("dir")).toBe("rtl");
       expect(await expanded.locator("html").getAttribute("data-riddle-quest-reduced-motion")).toBe("true");
       expect(await expanded.locator("html").getAttribute("data-riddle-quest-high-contrast")).toBe("true");
@@ -541,6 +559,20 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       await verifyRedditTournamentLiveResult(expanded);
       expect(apiRequests.every(request => request.startsWith("/api/"))).toBe(true);
       await verifyImmediateSoloFeedback(expanded, "Reddit");
+      failDraftOnce = true;
+      await expanded.evaluate(() => {
+        (document.activeElement as HTMLElement | null)?.blur();
+        Reflect.set(window, "__redditUnhandledProgress", []);
+        window.addEventListener("unhandledrejection", event => Reflect.get(window, "__redditUnhandledProgress").push(String(event.reason)));
+      });
+      await expanded.keyboard.type("ian");
+      await expanded.waitForResponse(response => response.url().endsWith("/api/storage/write") && response.status() === 200 &&
+        response.request().postDataJSON()?.playerData?.activeGame?.currentLetters.join("") === "PIAN");
+      expect(failedDrafts).toBe(1);
+      expect(recoveredDrafts).toBe(1);
+      expect(await expanded.evaluate(() => Reflect.get(window, "__redditUnhandledProgress"))).toEqual([]);
+      expect(await expanded.locator(".player-save-notice").count()).toBe(0);
+      for (let index = 0; index < 3; index++) await expanded.keyboard.press("Backspace");
       /** Sets tings button. */
       const settingsButton = expanded.locator(".game-bottom-navigation button").first();
       await settingsButton.click({force: true});

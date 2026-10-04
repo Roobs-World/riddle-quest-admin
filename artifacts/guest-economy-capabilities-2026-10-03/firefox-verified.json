@@ -1,0 +1,55 @@
+{
+  "verified": true,
+  "decision": {
+    "actions": [
+      "SUBMIT"
+    ],
+    "paidChoices": 0,
+    "decision": true,
+    "attempts": 5,
+    "next": {
+      "text": "Next",
+      "disabled": false,
+      "x": 46,
+      "y": 315.95001220703125,
+      "width": 408,
+      "height": 44,
+      "hit": true
+    },
+    "errors": [],
+    "unhandled": []
+  },
+  "next": {
+    "decision": false,
+    "riddle": "reddit-guest-2",
+    "index": 2,
+    "profile": {
+      "username": "Guest Solver",
+      "coins": 0,
+      "level": 1,
+      "xp": 0,
+      "winStreak": 0,
+      "gamesPlayed": 1,
+      "wins": 0,
+      "achievements": [],
+      "classicIndex": 2
+    },
+    "rows": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "input": {
+    "draft": "Q",
+    "actions": [
+      "SUBMIT"
+    ],
+    "errors": [],
+    "unhandled": []
+  }
+}

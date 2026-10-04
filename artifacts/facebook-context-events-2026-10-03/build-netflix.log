@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (18.707489ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.639977ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (5.424409ms)
+✔ rejects imports between different target owners (2.404386ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.868536ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.271609ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (3.158986ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (1.128849ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.972428ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.900326ms)
+✔ aggregates violations in deterministic file and source order (2.515847ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.56552
+Web Target boundary audit passed (289 files, 1268 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-en-DAIy-aa_.js   87.86 kB │ gzip: 47.69 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-pt-Wz3vCHOF.js   90.15 kB │ gzip: 48.94 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-nl-DngkKBWX.js   90.54 kB │ gzip: 49.16 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-id-yO5loPvG.js   91.21 kB │ gzip: 49.52 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-it-DfKUbRU2.js   91.35 kB │ gzip: 49.61 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-es-C8_69pcH.js   91.65 kB │ gzip: 49.76 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-de-BscYNGZd.js   92.15 kB │ gzip: 50.00 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-tr-BBg-LV8T.js   92.54 kB │ gzip: 50.25 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-pl-Cwh_KH0q.js   92.70 kB │ gzip: 50.34 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-fr-YWWp4Ias.js   93.56 kB │ gzip: 50.80 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-ja-Cf6qbFBa.js   94.66 kB │ gzip: 51.39 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-vi-CL60Vh_b.js   96.78 kB │ gzip: 52.55 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-ko-DqWWHhXu.js   97.36 kB │ gzip: 52.84 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-ar-BoLmBJ4z.js  102.12 kB │ gzip: 55.47 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/index-D92zJTIw.js             104.17 kB │ gzip: 34.78 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-ru-CeS1X4Qy.js  114.09 kB │ gzip: 61.93 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/playable-pack-hi-DHwTw88q.js  134.49 kB │ gzip: 72.96 kB
+../../../../.cache/riddle-quest-review/facebook-context-events-20261003/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.00s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

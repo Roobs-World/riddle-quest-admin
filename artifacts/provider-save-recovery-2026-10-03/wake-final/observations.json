@@ -1,0 +1,114 @@
+[
+  {
+    "provider": "reddit",
+    "width": 390,
+    "scenario": "wake-budget",
+    "name": "failed draft remains playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "provider": "reddit",
+    "width": 390,
+    "scenario": "wake-budget",
+    "name": "initial rejected draft is not durable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "provider": "reddit",
+    "width": 390,
+    "scenario": "wake-budget",
+    "name": "one visibility signal grants three recovery attempts",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "provider": "reddit",
+    "width": 390,
+    "scenario": "wake-budget",
+    "name": "save health does not restart initialization",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "provider": "reddit",
+    "width": 390,
+    "scenario": "wake-budget",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "reddit",
+    "width": 390,
+    "scenario": "wake-budget",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "reddit",
+    "width": 390,
+    "scenario": "wake-budget",
+    "name": "Reddit adapter stays in same-origin gateway paths",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "provider": "reddit",
+    "width": 1280,
+    "scenario": "wake-budget",
+    "name": "failed draft remains playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "provider": "reddit",
+    "width": 1280,
+    "scenario": "wake-budget",
+    "name": "initial rejected draft is not durable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "provider": "reddit",
+    "width": 1280,
+    "scenario": "wake-budget",
+    "name": "one visibility signal grants three recovery attempts",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "provider": "reddit",
+    "width": 1280,
+    "scenario": "wake-budget",
+    "name": "save health does not restart initialization",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "provider": "reddit",
+    "width": 1280,
+    "scenario": "wake-budget",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "reddit",
+    "width": 1280,
+    "scenario": "wake-budget",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "reddit",
+    "width": 1280,
+    "scenario": "wake-budget",
+    "name": "Reddit adapter stays in same-origin gateway paths",
+    "actual": true,
+    "expected": true
+  }
+]

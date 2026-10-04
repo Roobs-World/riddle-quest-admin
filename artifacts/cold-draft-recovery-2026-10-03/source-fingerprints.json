@@ -1,0 +1,7 @@
+{
+  "packages/portal/src/play/pendingGuessJournal.ts": "6471eb3e313799395a2e90666f9ffd7e9790706700df3f520502aa14960eae77",
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "bfc42413092dafd877614fd1be05861e9318e452acb2e3cd86597093a2bc9f83",
+  "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts": "f8b5a73ef8ac6e313a4566f0485678f0bae7285c0a5b4c3346d972b5520aaf0e",
+  "packages/portal/scripts/verify-cold-draft-recovery-browser.mjs": "0829081ba76bcf4b28f3240aa363c8e0069b09c5790685789e007240c28f02b3",
+  "packages/portal/package.json": "22ac6693502a5e5154f47f2f901027ed342d0407f62c818f8ffd464c65cd4845"
+}

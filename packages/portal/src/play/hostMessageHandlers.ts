@@ -1,11 +1,12 @@
-import {createHostMessageRouter, type HostMessageHandlers} from "./bridgeRouter";
+import {BridgeParserLoadError, createHostMessageRouter, type HostMessageHandlers} from "./bridgeRouter";
 import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import type {RaceOutcome} from "@qwordly/core/race";
-import type {AuthSnapshot, CompletionResult, PurchaseResult, WebGameMode} from "./types";
+import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "./types";
 import type {HostAuthorityModules} from "./HostAuthorityModules";
 import {captureBrowserException} from "../observability/browserErrorReporter";
+import type {HostCompletionInput} from "./hostCompletionEffects";
 /** Describes host operation name. */
 export type HostOperationName =
   | "loadRiddle"
@@ -38,6 +39,10 @@ export type HostOperationName =
   | "raceReport";
 /** Gets host error message. */
 export const getHostErrorMessage = (error: unknown): string => {
+  if (error instanceof BridgeParserLoadError) return tr("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE");
+  if (typeof error === "object" && error !== null && "code" in error &&
+    /(?:^|\/)(deadline-exceeded|unauthenticated)$/.test(String(error.code)))
+    return tr("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE");
   if (
     typeof error === "object" &&
     error !== null &&
@@ -157,23 +162,11 @@ export type CreateHostMessageHandlersOptions = {
   persistAchievementProjection: (achievementIds: string[]) => void;
   /** Stores on playable. */
   onPlayable?: () => void;
-  /** Runs when the backend confirms a correct single-player answer. */
-  onAuthoritativeGuessWin?: (input: {
-    /** Stores riddle id. */
-    riddleId: string;
-    /** Stores session token. */
-    sessionToken: string;
-    /** Stores game mode. */
-    gameMode: WebGameMode;
-  }) => void;
+  /** Runs optional account-owned effects after an accepted single-player guess. */
+  onAuthoritativeGuess?: (input: HostCompletionInput, result: SinglePlayerGuessResult) => void | Promise<void>;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
-    input: {
-      /** Stores riddle id. */
-      riddleId: string;
-      /** Stores game mode. */
-      gameMode: WebGameMode;
-    },
+    input: HostCompletionInput,
     result: CompletionResult,
   ) => void | Promise<void>;
   /** Notifies the platform after an authoritative race result has loaded. */
@@ -207,7 +200,7 @@ export const createPlayHostMessageHandlers = ({
   syncRaceAchievementProgress,
   persistAchievementProjection,
   onPlayable,
-  onAuthoritativeGuessWin,
+  onAuthoritativeGuess,
   onAuthoritativeComplete,
   onAuthoritativeRaceResult,
   onAccountDeleted,
@@ -240,19 +233,10 @@ export const createPlayHostMessageHandlers = ({
     try {
       /** Provides result behavior. */
       const result = await authority.gameplay.submitGuess(message.payload);
-      if (result.isCorrect) {
-        try {
-          onAuthoritativeGuessWin?.(message.payload);
-        } catch (error) {
-          reportHostOperationError(error, "guess");
-        }
-      }
       postOperation(message.requestId, "guess", true, result);
-      trackEvent("guess_submitted", {
-        game_mode: message.payload.gameMode,
-        success: result.isCorrect,
-        attempts: result.attempts,
-      });
+      void Promise.resolve()
+        .then(() => onAuthoritativeGuess?.(message.payload, result))
+        .catch((error) => reportHostOperationError(error, "guess"));
     } catch (error) {
       reportHostOperationError(error, "guess");
       /** The code used by the current operation. */
@@ -280,18 +264,6 @@ export const createPlayHostMessageHandlers = ({
       void Promise.resolve()
         .then(() => onAuthoritativeComplete?.(message.payload, result))
         .catch((error) => reportHostOperationError(error, "completeGame"));
-      trackEvent("level_end", {
-        game_mode: message.payload.gameMode,
-        success: result.isCorrect,
-        attempts: result.attempts,
-        level: result.newLevel,
-        xp: result.newXp,
-        win_streak: result.newWinStreak,
-      });
-      if (result.leveledUp) trackEvent("level_up", {level: result.newLevel});
-      for (const achievementId of result.newlyUnlockedAchievementIds) {
-        trackEvent("unlock_achievement", {achievement_id: achievementId});
-      }
     } catch (error) {
       reportHostOperationError(error, "completeGame");
       postOperation(message.requestId, "completeGame", false, undefined, getHostErrorMessage(error));

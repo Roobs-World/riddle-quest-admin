@@ -1,0 +1,35 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "initial draft is ready",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Enter",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Enter",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 1,
+    "expected": 0
+  }
+]

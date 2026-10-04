@@ -1,0 +1,764 @@
+[
+  {
+    "width": 1280,
+    "name": "unmeasured scene has no animation frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "unmeasured scene has not drawn",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-sized scene has no frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "zero-sized scene skips renderer resizing",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "healthy scene draws once when layout is ready",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "healthy scene maintains one next frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host pause cancels pending animation",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "three seconds of simulated paused display frames execute zero callbacks",
+    "actual": 180,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retained callbacks cannot draw while paused",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume creates one chain",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "cancelled pre-resume callbacks cannot duplicate the chain",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "cancelled pre-resume callbacks cannot draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resume advances by active time without a 60-second jump",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "name": "hidden scene cancels its frame",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden scene performs no draw",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "visible scene resumes one chain",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "layout collapse stops the loop",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "layout recovery resumes one chain",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "lost graphics context cancels work",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "context loss leaves puzzle input usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "context restoration respects host pause",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "restored unpaused scene resumes once",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "unmount cancels all frames",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired browser callbacks cannot draw",
+    "actual": 5,
+    "expected": 4
+  },
+  {
+    "width": 1280,
+    "name": "retired resize observer cannot touch the renderer",
+    "actual": 5,
+    "expected": 4
+  },
+  {
+    "width": 1280,
+    "name": "retired scene releases each shared resource once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "healthy retirement leaves no window errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "draw: failure retires pending callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "draw: failed scene removes its canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "draw: all geometry, material and texture cleanup runs",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "name": "draw: renderer disposal runs once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "draw: context release survives disposal errors",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "draw: drawing or resize diagnostic is bounded",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "draw: stale callbacks do not repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "draw: failure is contained outside the window error channel",
+    "actual": [
+      "Error: injected draw failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "draw: puzzle input remains editable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "name": "resize: failure retires pending callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resize: failed scene removes its canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resize: all geometry, material and texture cleanup runs",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "name": "resize: renderer disposal runs once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resize: context release survives disposal errors",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resize: drawing or resize diagnostic is bounded",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "resize: stale callbacks do not repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "resize: failure is contained outside the window error channel",
+    "actual": [
+      "Error: injected resize failure",
+      "Error: injected resize failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "resize: puzzle input remains editable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "name": "dispose: failure retires pending callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "dispose: failed scene removes its canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "dispose: all geometry, material and texture cleanup runs",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "name": "dispose: renderer disposal runs once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "dispose: context release survives disposal errors",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "dispose: drawing or resize diagnostic is bounded",
+    "actual": 0,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "dispose: stale callbacks do not repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "dispose: failure is contained outside the window error channel",
+    "actual": [
+      "Error: injected draw failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "dispose: puzzle input remains editable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "name": "async drawing failure preserves the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "async drawing failure preserves its authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "async drawing failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "async drawing failure reports once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "player finishes after asynchronous graphics failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "completion delivers one authoritative reward",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "graphics failure does not escape the browser callback",
+    "actual": [
+      "Error: injected draw failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "graphics failure produces no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "unmeasured scene has no animation frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "unmeasured scene has not drawn",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-sized scene has no frame chain",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "zero-sized scene skips renderer resizing",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "healthy scene draws once when layout is ready",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "healthy scene maintains one next frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host pause cancels pending animation",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "three seconds of simulated paused display frames execute zero callbacks",
+    "actual": 180,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retained callbacks cannot draw while paused",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume creates one chain",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "cancelled pre-resume callbacks cannot duplicate the chain",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "cancelled pre-resume callbacks cannot draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resume advances by active time without a 60-second jump",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "name": "hidden scene cancels its frame",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden scene performs no draw",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "visible scene resumes one chain",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "layout collapse stops the loop",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "layout recovery resumes one chain",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "lost graphics context cancels work",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "context loss leaves puzzle input usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "context restoration respects host pause",
+    "actual": 3,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "restored unpaused scene resumes once",
+    "actual": 3,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "unmount cancels all frames",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired browser callbacks cannot draw",
+    "actual": 5,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "name": "retired resize observer cannot touch the renderer",
+    "actual": 5,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "name": "retired scene releases each shared resource once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "healthy retirement leaves no window errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "draw: failure retires pending callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "draw: failed scene removes its canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "draw: all geometry, material and texture cleanup runs",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "name": "draw: renderer disposal runs once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "draw: context release survives disposal errors",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "draw: drawing or resize diagnostic is bounded",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "draw: stale callbacks do not repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "draw: failure is contained outside the window error channel",
+    "actual": [
+      "Error: injected draw failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "draw: puzzle input remains editable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "name": "resize: failure retires pending callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resize: failed scene removes its canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resize: all geometry, material and texture cleanup runs",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "name": "resize: renderer disposal runs once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resize: context release survives disposal errors",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resize: drawing or resize diagnostic is bounded",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "resize: stale callbacks do not repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "resize: failure is contained outside the window error channel",
+    "actual": [
+      "Error: injected resize failure",
+      "Error: injected resize failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "resize: puzzle input remains editable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "name": "dispose: failure retires pending callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "dispose: failed scene removes its canvas",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "dispose: all geometry, material and texture cleanup runs",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "name": "dispose: renderer disposal runs once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "dispose: context release survives disposal errors",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "dispose: drawing or resize diagnostic is bounded",
+    "actual": 0,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "dispose: stale callbacks do not repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "dispose: failure is contained outside the window error channel",
+    "actual": [
+      "Error: injected draw failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "dispose: puzzle input remains editable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "name": "async drawing failure preserves the game frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "async drawing failure preserves its authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "async drawing failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "async drawing failure reports once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "player finishes after asynchronous graphics failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "completion delivers one authoritative reward",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "graphics failure does not escape the browser callback",
+    "actual": [
+      "Error: injected draw failure"
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "graphics failure produces no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

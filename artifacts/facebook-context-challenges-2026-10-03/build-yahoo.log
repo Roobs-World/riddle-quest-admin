@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.441446ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.409985ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.948108ms)
+✔ rejects imports between different target owners (1.656017ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.643299ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.032455ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.102528ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.724923ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.991157ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.676231ms)
+✔ aggregates violations in deterministic file and source order (0.89755ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136.320967
+Web Target boundary audit passed (304 files, 1318 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-en-DAMZsj2j.js   87.86 kB │ gzip: 47.72 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-pt-DhWuLa7d.js   90.15 kB │ gzip: 48.95 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-nl-Bm3ihWmR.js   90.54 kB │ gzip: 49.18 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-id-DajRiSnI.js   91.21 kB │ gzip: 49.51 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-it-CJFjLSPJ.js   91.35 kB │ gzip: 49.61 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-es-9-4-xbuG.js   91.65 kB │ gzip: 49.75 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-de-B3Kmn0nO.js   92.15 kB │ gzip: 50.04 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-tr-CKHMQflo.js   92.54 kB │ gzip: 50.23 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-pl-CgzbPKCt.js   92.70 kB │ gzip: 50.33 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-fr-DZj8uP9_.js   93.56 kB │ gzip: 50.79 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-ja-B3oxXjOf.js   94.66 kB │ gzip: 51.39 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-vi-CxTC_4s7.js   96.78 kB │ gzip: 52.57 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-ko-CmpoEEyW.js   97.36 kB │ gzip: 52.84 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-ar-BcgKqX2l.js  102.12 kB │ gzip: 55.43 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/index-Bk8dWRCZ.js             104.18 kB │ gzip: 34.78 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-ru-BxJp3kVB.js  114.09 kB │ gzip: 61.89 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/playable-pack-hi-Bzu_ViOK.js  134.49 kB │ gzip: 72.99 kB
+../../../../../../tmp/riddle-quest-review-facebook-context-challenges-20261003/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 987ms
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

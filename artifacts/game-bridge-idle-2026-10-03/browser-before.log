@@ -1,0 +1,17 @@
+BASELINE development 1280px game readiness and resize lifetime
+BASELINE development 390px game readiness and resize lifetime
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Baseline game readiness regressions reproduced
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-game-ready-reporter-browser.mjs:109:22 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

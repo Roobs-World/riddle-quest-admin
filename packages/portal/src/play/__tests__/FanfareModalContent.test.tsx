@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
-import {createInitialGameSession} from "../gameSession";
+import {createInitialGameSession, gameSessionReducer} from "../gameSession";
 import {CoinAwardSequence} from "../modalPages/fanfare/CoinAwardSequence";
 import {
   AchievementFanfare,
@@ -21,6 +21,23 @@ const referralSharing: ReferralSharingCapability = {
 };
 
 describe("fanfare modal content", () => {
+  it.each([undefined, {kind: "victory" as const}])("waits for a recovered win's completion before its final Next action: %j", activeStep => {
+    /** Loaded host history independently establishes the winning session. */
+    const state = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+      riddleId: "recovered-win", sessionToken: "00000000-0000-4000-8000-000000000001", gameMode: "classic",
+      text: "Clue", answerLength: 5, attemptsUsed: 1, hasUsedContinue: false, awaitingContinue: false,
+      acceptedGuesses: [{attempt: 1, feedback: [..."PIANO"].map(letter => ({letter, status: "green"}))}],
+    }});
+    /** Content uses the same reducer-derived recovered state as the real modal shell. */
+    const props = {activeStep, state, activeCoinAward: null, coinCollectionPending: false,
+      onAdvance: noop, onBalancePreview: noop, onCoinCollected: noop, stepCount: 1, stepIndex: 0};
+    expect(renderToString(<VictoryFanfareContent {...props} />)).toContain('disabled=""');
+    expect(renderToString(<VictoryFanfareContent {...props}
+      state={gameSessionReducer(state, {type: "completionAcknowledged"})} />)).not.toContain('disabled=""');
+    expect(renderToString(<VictoryFanfareContent {...props} activeStep={{kind: "achievement", achievementId: "first_win"}}
+      stepCount={2} />)).not.toContain('disabled=""');
+  });
+
   it("renders known and fallback achievements", () => {
     expect(renderToString(<AchievementFanfare achievementId="first_win" />)).toContain("achievement-unlock");
     expect(renderToString(<AchievementFanfare achievementId="unknown-achievement" />)).toContain("unknown-achievement");

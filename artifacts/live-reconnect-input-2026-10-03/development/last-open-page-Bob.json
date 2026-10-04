@@ -1,0 +1,450 @@
+{
+  "text": "Race to 10\n×\n0:32.4\n+0:00.0\nYou\nRiddles completed:\n0 / 10\nAlice\nRiddles completed:\n0 / 10\nA four-letter browser answer\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\n+15 seconds\nSubmit\nSkip\n+45 seconds",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Bob",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-f74a231b-b1fe-4ece-9c00-74146a035b03"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-c208a234-38d4-4c0e-890b-6adee08f8b94"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-a6a52eb0-ef58-4b4a-89af-3be30b69f25c"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-67a83882-8171-4f9a-b65d-2a3895686b9f"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-a287e5c6-46f6-4fd9-b944-1ad2f41da66d"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-2a1bdf19-6cf1-4eaa-ba97-8202f1767c9e"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-4415a7d4-447a-43a3-8cbe-796150fceb73"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-f0d4aa6a-37cb-4d2b-b6b1-bfcd4686e35a"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-47bf58dd-4840-47ae-b2c5-1683d8654b46"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-2cf7a5dc-bbc3-4437-9d06-86c7528d1b0c"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-791ad6b4-00f7-41dd-a438-7641df3823f8"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-4740fb0c-6313-41cb-9f0c-62857879d681"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-90e00dc7-a1ca-4494-9da1-14f16bec53ef"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-9b438595-e813-40a8-8f25-78518cefd3a2"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-43e9dab0-4568-4758-a4ff-4d874d3fb1fe"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-7beae98f-92a7-479c-acdb-afe7d13a74ab"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-389044d1-31c7-48b6-ac52-8e1b0792225b"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-a2f37430-5cf6-4071-b5b0-948ac37dac16"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-cc05798b-5b3b-4cd2-a02d-7ea9bf0c0b6b"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-f9dde6c5-62ad-4914-ba8d-eae25c14f00d"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-c922b473-d50f-4143-8b4b-12fd6bef6b70"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-c3bb0369-cab3-4aab-a561-9b7b400844c8"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-3319c2ba-4a05-4afb-afd7-37bd046a6520"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-44e4f4b6-3597-4812-8f9e-3b00e3c6028a"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-540cd76b-64eb-45bf-a779-eaa0dc5c770e"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-e1ed6e68-09f9-4644-83cf-c6c647dfa3e8"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-352dc291-965b-44ff-b017-cda2f8923c5a"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-b0fa8872-7de3-4e8c-8384-15b7ef53c50d"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-08c84a46-6f30-43bc-87f4-d4c944908c8f"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-67531028-7917-4b3b-a37a-cdae97d55861"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-56701d41-0808-45f1-9105-5fdd65fd379e"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-4f759d6f-9654-4c8a-9323-8532d81d9e36"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-f73caaca-7d66-4e00-9eed-14f152b360b9"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-53426c17-60c8-47ad-8e5a-10066982cd24"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-76623875-9948-458a-bff8-ab386dd6f07c"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-72337575-e9d6-4582-959b-94551dc87344"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-c5e6dbe8-f2cb-49fe-a27d-8b4b4b06a81e"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-c60ad06c-7d87-45c4-94e4-4e08ab2f39e0"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-b931cd33-a3e9-4acb-abdc-5ceafced93c9"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-f5ca7ab8-4275-4c12-bccd-30b6054aa91b"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-395558d2-d3a2-4d0a-8329-4663b779e358"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-cea28e8d-1b69-42b6-8006-25a9b516e18f"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-0148eb2a-48e9-4b21-af36-5fec3e5bb0fb"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-9f480340-3a99-499c-acca-87e33a4d9d61"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-9922357f-9e2f-433d-a3ec-ccd32b3eda6b"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-970fe604-91c2-4abf-92d4-ac53036c3a44"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-0099f491-227b-478c-98a5-e8a75c3f0996"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-b97ba814-c759-4230-a3d5-1267b8d0a121"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-7c3fe823-4e24-40fe-8207-92dc2eb5852e"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-a7436c43-d3fe-4131-bf2a-0335b425d248"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-9cfc46b2-d21c-4242-bb0e-17773d324dbd"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-834a9149-d04a-4892-83c9-8059d14b15e4"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-acfbcb03-f6bc-47fb-a124-15ffc81514c3"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-b73d9897-5df6-40cf-95e6-1791dfeed9e0"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-7aad1988-a912-4190-9b43-f043ec103df1"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-0a197490-ab30-4a8f-bde0-8a29b57277b2"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-0b4709f5-bb8d-4639-a576-217ccd5f6b56"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-9669bbab-256d-4a90-9e6c-a1a07cf0e708"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-9689ef1b-ee2e-4a47-b942-b036c400f052"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-2cbc1afa-be2c-4a6d-885e-c7883f3de11c"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-7c685f6d-7fc8-4f40-bdf0-aa51ae41ca28"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-a5a26ee4-91d8-460f-af14-754e90e022d4"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-88e66f43-611d-49ea-8c5c-fd08defec9af"
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  }
+}

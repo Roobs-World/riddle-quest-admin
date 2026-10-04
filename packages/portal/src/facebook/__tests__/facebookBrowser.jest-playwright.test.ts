@@ -2,10 +2,12 @@ import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.
 import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support";
 import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support";
 import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
+import {verifyContextChallenges} from "./contextChallenges.jest-playwright.support";
 import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support";
 import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
+import type {PlayerData} from "../../platform/types";
 
 /** Documents global. */
 declare global {
@@ -353,6 +355,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           },
           riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 42, coins: 300},
         };
+        /** Held native storage exposes whether pause drains the app queue before provider flush. */
+        Reflect.set(window, "__facebookQueueEvents", []);
         window.FBInstant = {
           /** Provides initialize async behavior. */
           async initializeAsync() {
@@ -496,18 +500,40 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             /** Sets data async. */
             async setDataAsync(update) {
               window.__facebookEvents.push("write");
+              /** Player snapshot supplied by the actual target storage adapter. */
+              const value = Reflect.get(update, "riddleQuestPlayerState");
+              if (value?.activeGame?.currentLetters.join("") === "PIAN" && Reflect.get(window, "__facebookFailDraft")) {
+                Reflect.set(window, "__facebookFailDraft", false);
+                window.__facebookEvents.push("save-failure:PIAN");
+                throw new Error("injected-facebook-progress-save-failure");
+              }
+              if (Reflect.get(window, "__holdFacebookWrite")) {
+                Reflect.set(window, "__holdFacebookWrite", false);
+                Reflect.set(window, "__facebookQueueEvents", []);
+                Reflect.get(window, "__facebookQueueEvents").push(`write:${value?.activeGame?.currentLetters.join("")}`);
+                await new Promise<void>(resolve => Reflect.set(window, "__releaseFacebookWrite", resolve));
+              } else if (value && Reflect.get(window, "__releaseFacebookWrite")) {
+                Reflect.get(window, "__facebookQueueEvents").push(`write:${value.activeGame?.currentLetters.join("")}`);
+              }
               Object.assign(playerData, structuredClone(update));
             },
             /** Provides flush data async behavior. */
             async flushDataAsync() {
               window.__facebookEvents.push("flush");
+              Reflect.set(window, "__facebookAcknowledgedDraft", (playerData.riddleQuestPlayerState as PlayerData)?.activeGame?.currentLetters.join(""));
+              if (Reflect.get(window, "__releaseFacebookWrite")) {
+                Reflect.get(window, "__facebookQueueEvents").push(`flush:${(playerData.riddleQuestPlayerState as PlayerData)?.activeGame?.currentLetters.join("")}`);
+              }
             },
           },
         };
       });
       /** Current multiplayer journey crosses the authenticated Facebook live transport. */
       const verifyMultiplayer = await installLiveMultiplayerJourney(successPage, "Facebook");
-      await installRaceContextDialogs(successPage);
+      /** This variant proves context surfaces operate without an advertised or callable native matcher. */
+      const nativeMatching = process.env.FACEBOOK_BROWSER_CONTEXT_MATCHING !== "0";
+      await installRaceContextDialogs(successPage, nativeMatching, process.env.FACEBOOK_BROWSER_CONTEXT_EVENTS !== "0",
+        process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1");
       await installTournamentPresentation(successPage);
       await successPage.goto(`${origin}/?harness=race`);
       try {
@@ -530,6 +556,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         );
       }
       expect(await successPage.getByRole("alert").count()).toBe(0);
+      expect(await successPage.evaluate(() => ({chooser: window.FBInstant!.getSupportedAPIs().includes("context.chooseAsync"),
+        matcher: window.FBInstant!.getSupportedAPIs().includes("matchPlayerAsync"), callableMatcher: typeof window.FBInstant!.matchPlayerAsync === "function"})))
+        .toEqual({chooser: true, matcher: nativeMatching, callableMatcher: nativeMatching});
       await successPage.waitForFunction(() => window.__facebookEvents.some(event => event.startsWith("analytics:screen_view:")));
       expect((await successPage.evaluate(() => window.__facebookEvents)).filter(event => event.startsWith("analytics:session_started:"))).toHaveLength(1);
       expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(
@@ -622,7 +651,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await verifyMultiplayer("fr");
       await successPage.locator(".multiplayer-navigation-action").click();
       await verifyTournamentPresentation(successPage);
-      await verifyRaceContextDialogs(successPage);
+      await verifyRaceContextDialogs(successPage, process.env.FACEBOOK_CONTEXT_SCREENSHOT_PATH);
+      if (process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1") await verifyContextChallenges(successPage);
       await successPage.locator(".race-close").click();
       await verifyImmediateSoloFeedback(successPage, "Facebook");
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:button_press:")))).toBe(true);
@@ -630,12 +660,38 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(notificationClaims).toBe(0);
       expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);
       expect(await successPage.evaluate(() => window.__facebookEvents.includes("ads:show"))).toBe(false);
+      await successPage.evaluate(() => Reflect.set(window, "__holdFacebookWrite", true));
+      await successPage.locator(".keyboard").getByRole("button", {name: "I", exact: true}).click();
+      await successPage.waitForFunction(() => typeof Reflect.get(window, "__releaseFacebookWrite") === "function");
+      await successPage.locator(".keyboard").getByRole("button", {name: "A", exact: true}).click();
+      await successPage.waitForFunction(() => document.querySelectorAll(".guess-row")[1]?.textContent === "PIA");
       await successPage.evaluate(() => window.__facebookPause?.());
       await successPage.waitForFunction(() => window.__facebookEvents.includes("flush"));
       await successPage.locator(".game-app.paused").waitFor();
+      expect(await successPage.evaluate(() => Reflect.get(window, "__facebookQueueEvents"))).toEqual(["write:PI"]);
+      await successPage.evaluate(() => Reflect.get(window, "__releaseFacebookWrite")());
+      await successPage.waitForFunction(() => Reflect.get(window, "__facebookQueueEvents").filter((event: string) => event.startsWith("flush:")).length >= 3);
+      expect(await successPage.evaluate(() => Reflect.get(window, "__facebookQueueEvents"))).toEqual([
+        "write:PI", "flush:PI", "write:PIA", "flush:PIA", "flush:PIA",
+      ]);
+      await successPage.evaluate(() => Reflect.deleteProperty(window, "__releaseFacebookWrite"));
       expect(await successPage.evaluate(() => document.visibilityState)).toBe("visible");
       await successPage.evaluate(() => window.__facebookResume?.());
       await successPage.locator(".game-app.paused").waitFor({state: "detached"});
+      await successPage.evaluate(() => {
+        (document.activeElement as HTMLElement | null)?.blur();
+        Reflect.set(window, "__facebookFailDraft", true);
+        Reflect.set(window, "__facebookUnhandledProgress", []);
+        window.addEventListener("unhandledrejection", event => Reflect.get(window, "__facebookUnhandledProgress").push(String(event.reason)));
+      });
+      await successPage.keyboard.type("n");
+      await successPage.waitForFunction(() => window.__facebookEvents.includes("save-failure:PIAN"));
+      await successPage.waitForFunction(() => Reflect.get(window, "__facebookAcknowledgedDraft") === "PIAN");
+      expect(await successPage.evaluate(() => Reflect.get(window, "__facebookUnhandledProgress"))).toEqual([]);
+      expect(await successPage.locator(".player-save-notice").count()).toBe(0);
+      for (let index = 0; index < 3; index++) {
+        await successPage.keyboard.press("Backspace");
+      }
       // The prior feedback check left the next draft at P. Complete the fixture's
       // PIANO answer through the UI so only an authoritative win can cause a prompt.
       for (const letter of "IANO") {

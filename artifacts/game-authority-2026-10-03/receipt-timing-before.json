@@ -1,0 +1,57 @@
+{
+  "authority": "Production Firebase host adapter with injected SDK/callables and 300ms profile reads; not production latency",
+  "samples": [
+    {
+      "width": 1280,
+      "kind": "completion",
+      "optionalProfileDelayMs": 300,
+      "timingsMs": [
+        300,
+        300.09999999962747,
+        300.09999999962747,
+        300.19999999925494,
+        300.2000000011176
+      ],
+      "medianMs": 300.09999999962747
+    },
+    {
+      "width": 1280,
+      "kind": "spend",
+      "optionalProfileDelayMs": 300,
+      "timingsMs": [
+        300.09999999962747,
+        300.09999999962747,
+        300.09999999962747,
+        300.1000000014901,
+        300.2000000011176
+      ],
+      "medianMs": 300.09999999962747
+    },
+    {
+      "width": 390,
+      "kind": "completion",
+      "optionalProfileDelayMs": 300,
+      "timingsMs": [
+        300,
+        300.09999999962747,
+        300.1000000014901,
+        300.1000000014901,
+        300.19999999925494
+      ],
+      "medianMs": 300.1000000014901
+    },
+    {
+      "width": 390,
+      "kind": "spend",
+      "optionalProfileDelayMs": 300,
+      "timingsMs": [
+        300,
+        300.09999999962747,
+        300.09999999962747,
+        300.09999999962747,
+        300.1000000014901
+      ],
+      "medianMs": 300.09999999962747
+    }
+  ]
+}

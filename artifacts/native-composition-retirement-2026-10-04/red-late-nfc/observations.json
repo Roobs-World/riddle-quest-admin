@@ -1,0 +1,38 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "late-end",
+    "name": "composition setup retains the committed prefix",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "late-end",
+    "name": "interruption disables the same editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "late-end",
+    "name": "resume reuses the same editor node",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "late-end",
+    "name": "retired composition and trailing delivery preserve the answer prefix",
+    "actual": "roé",
+    "expected": "ro"
+  }
+]

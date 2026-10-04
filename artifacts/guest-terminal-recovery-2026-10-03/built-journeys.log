@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+Test Suites: 3 passed, 3 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        72.973 s
+Ran all test suites matching src/reddit/__tests__/redditBrowser.jest-playwright.test.ts|src/play/__tests__/profileTour.jest-playwright.test.ts|src/play/__tests__/hostedBrowser.jest-playwright.test.ts.

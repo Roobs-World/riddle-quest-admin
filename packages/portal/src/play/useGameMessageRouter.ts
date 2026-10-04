@@ -90,7 +90,7 @@ export function useGameMessageRouter({
             profile: message.requestId?.startsWith("skip-") ? undefined : message.payload.profile,
             preserveNotice: message.requestId?.startsWith("reconcile-")});
         },
-        operationResult: async (message) => {
+        operationResult: async (message, isCurrent) => {
           if (onGuessResult?.(message)) return;
           if (!message.payload.ok) {
             // Multiplayer owns its failures while mounted. Once its overlay is
@@ -98,7 +98,10 @@ export function useGameMessageRouter({
             if (message.payload.operation.startsWith("race")) return;
             if (message.payload.operation === "spendCoins" && message.requestId)
               dispatch({type: "rejectCoinSpend", requestId: message.requestId});
-            if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
+            if (message.payload.operation === "leaderboard") {
+              dispatch({type: "leaderboardLoadFailed", requestId: message.requestId});
+              return;
+            }
             if (message.payload.operation === "guess") dispatch({type: "guessFailed"});
             if (message.payload.operation === "completeGame") {
               onCompletionResult?.(false, message.requestId);
@@ -134,6 +137,11 @@ export function useGameMessageRouter({
             return;
           }
           if (message.payload.operation === "hint") {
+            if (message.payload.data === null) {
+              dispatch({type: "rejectHint"});
+              dispatch({type: "setNotice", notice: tr("GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE")});
+              return;
+            }
             /** Provides index behavior. */
             const index = getNumber(data.index);
             /** Provides revealed letter behavior. */
@@ -250,6 +258,7 @@ export function useGameMessageRouter({
           if (message.payload.operation === "leaderboard") {
             /** Provides {bridge leaderboard entry schema} behavior. */
             const {BridgeLeaderboardEntrySchema} = await import("@qwordly/core/bridge");
+            if (isCurrent && !isCurrent()) return;
             /** Provides entries behavior. */
             const entries = Array.isArray(data.entries)
               ? data.entries.flatMap((entry) => {
@@ -260,12 +269,13 @@ export function useGameMessageRouter({
               : [];
             /** Provides leaderboard type behavior. */
             const leaderboardType = data.type === "totalWins" || data.type === "bestStreak" || data.type === "multiplayerWins" ? data.type : "xp";
-            dispatch({type: "leaderboardLoaded", leaderboardType, entries});
+            dispatch({type: "leaderboardLoaded", leaderboardType, entries, requestId: message.requestId});
             return;
           }
           if (message.payload.operation === "profile") {
             /** Provides {bridge profile schema} behavior. */
             const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
+            if (isCurrent && !isCurrent()) return;
             /** Parses d. */
             const parsed = BridgeProfileSchema.safeParse(data.profile);
             if (parsed.success) {

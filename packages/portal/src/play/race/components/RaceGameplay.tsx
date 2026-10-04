@@ -1,12 +1,13 @@
 import type {Feedback, ScoredGuess} from "@qwordly/core/game";
 import type {RaceRunView} from "@qwordly/core/race";
-import {useRef, type RefObject} from "react";
+import type {RefObject} from "react";
 import {tr} from "../../i18n";
 import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from "../../GameFrameControls";
 import {raceBoardAttempts} from "../logic/raceBoardAttempts";
 import {RaceScoreboard} from "./RaceScoreboard";
 import {NativeAnswerInput} from "./NativeAnswerInput";
 import type {LiveRaceClockAnchor} from "./LiveRaceElapsedTime";
+import {useRaceAnswerEditor} from "../hooks/useRaceAnswerEditor";
 
 /** Renders the active riddle, controlled input, actions, and multiplayer rail. */
 export function RaceGameplay({
@@ -84,20 +85,21 @@ export function RaceGameplay({
   /** Stores on skip. */
   onSkip: () => void;
 }) {
-  /** Provides native input ref behavior. */
-  const nativeInputRef = useRef<HTMLInputElement>(null);
+  /** Each question owns its IME editor; same-question polls and hints keep it mounted. */
+  const {inputRef: nativeInputRef, attachInput} = useRaceAnswerEditor();
   return (
+    <>
+      <RaceScoreboard live={live}
+        run={run}
+        adjustedNow={adjustedNow}
+        liveClock={liveClock}
+        opponentCorrect={opponentCorrect}
+        feedback={feedback}
+        coins={coins}
+        onClose={onClose}
+      />
     <div ref={viewportRef} className="race-gameplay-viewport">
       <div ref={gameplayRef} className="race-gameplay">
-        <RaceScoreboard live={live}
-          run={run}
-          adjustedNow={adjustedNow}
-          liveClock={liveClock}
-          opponentCorrect={opponentCorrect}
-          feedback={feedback}
-          coins={coins}
-          onClose={onClose}
-        />
         {run.currentRiddle && (
           <>
             <section className="riddle-surface race-riddle-surface">
@@ -118,7 +120,9 @@ export function RaceGameplay({
                 disabled={pending && !allowTypingWhilePending}
               />
               <NativeAnswerInput
-                ref={nativeInputRef}
+                key={JSON.stringify([run.runId, run.locale, run.currentRiddle.riddleId,
+                  run.currentRiddle.position, run.currentRiddle.answerLength])}
+                ref={attachInput}
                 disabled={pending && !allowTypingWhilePending}
                 locale={run.locale}
                 onText={onText}
@@ -157,7 +161,11 @@ export function RaceGameplay({
           >
             {tr("RaceTo10.SUBMIT")}
           </button>
-          <button onClick={onSkip} disabled={pending || requiresRunRefresh || !run.currentRiddle}>
+          <button onClick={() => {
+            onSkip();
+            // Return to text entry now; question replacement preserves only its owned focus.
+            nativeInputRef.current?.focus({preventScroll: true});
+          }} disabled={pending || requiresRunRefresh || !run.currentRiddle}>
             <ForwardIcon />
             <span>
               {tr("RaceTo10.SKIP_BUTTON")} <small>{tr("RaceTo10.SKIP_PENALTY")}</small>
@@ -166,5 +174,6 @@ export function RaceGameplay({
         </div>
       </div>
     </div>
+    </>
   );
 }

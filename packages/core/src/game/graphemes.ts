@@ -56,6 +56,28 @@ export function splitGraphemes(value: string, locale: string = "en"): string[] {
 }
 
 /**
+ * Iterates NFC-normalized graphemes without allocating the complete result array.
+ *
+ * @param value - Text to segment; empty input produces no values.
+ * @param locale - Segmentation locale, with the same fallback as {@link splitGraphemes}.
+ * @returns Source-ordered graphemes; consumers can stop after their accepted capacity.
+ * @throws {@link RangeError} during iteration if the runtime rejects the locale.
+ * @remarks Normalization still processes the whole string. Without `Intl.Segmenter`,
+ * iteration preserves Unicode code points rather than full grapheme boundaries.
+ */
+export function* iterateGraphemes(value: string, locale: string = "en"): IterableIterator<string> {
+  if (!value) return;
+  /** One normalized string is shared by the lazy segmentation iterator. */
+  const normalizedValue = value.normalize("NFC");
+  /** Reuses the existing locale cache and runtime fallback. */
+  const segmenter = getSegmenter(locale);
+  if (segmenter) {
+    /** Only requested grapheme records are enumerated. */
+    for (const segment of segmenter.segment(normalizedValue)) yield segment.segment;
+  } else yield* normalizedValue;
+}
+
+/**
  * Splits text into NFC-normalized graphemes and lowercases each cluster.
  *
  * @param value - Text to normalize, segment, and lowercase.

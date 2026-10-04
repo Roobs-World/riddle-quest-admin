@@ -1,6 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {
   BRIDGE_PROTOCOL_VERSION,
+  BridgeRiddleSchema,
   GameToHostMessageSchema,
   HostToGameMessageSchema,
   isGameToHostMessage,
@@ -12,6 +13,20 @@ import {
 describe("bridge protocol", () => {
   /** Provides session token behavior. */
   const sessionToken = "00000000-0000-4000-8000-000000000001";
+
+  it("accepts a host-confirmed fifth-attempt win without a Continue decision", () => {
+    /** Actual recovery rows distinguish a winning cap from an exhausted wrong-answer cap. */
+    const riddle = {riddleId: "classic-1", text: "Clue", answerLength: 5, sessionToken,
+      gameMode: "classic", attemptsUsed: 5, hasUsedContinue: false, awaitingContinue: false,
+      acceptedGuesses: Array.from({length: 5}, (_, index) => ({attempt: index + 1,
+        feedback: [...(index === 4 ? "PIANO" : "QQQQQ")].map(letter => ({letter, status: index === 4 ? "green" : "red"}))})),
+    };
+    expect(BridgeRiddleSchema.safeParse(riddle).success).toBe(true);
+    expect(BridgeRiddleSchema.safeParse({...riddle, awaitingContinue: true}).success).toBe(false);
+    expect(BridgeRiddleSchema.safeParse({...riddle, acceptedGuesses: riddle.acceptedGuesses.map((row, index) =>
+      index === 0 ? {...row, feedback: row.feedback.map(cell => ({...cell, status: "green"}))} : row)}).success).toBe(false);
+    expect(BridgeRiddleSchema.safeParse({...riddle, acceptedGuesses: riddle.acceptedGuesses.slice(1)}).success).toBe(false);
+  });
 
   it("accepts a ready message from the game iframe", () => {
     /** Provides message behavior. */

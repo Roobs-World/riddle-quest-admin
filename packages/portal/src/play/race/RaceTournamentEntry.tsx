@@ -6,6 +6,8 @@ import {RaceTournamentPanel} from "./components/RaceLobbyPanels";
 import {tr} from "../i18n";
 import {RaceContextBoard} from "./RaceContextBoard";
 import {PlatformPlayerOverlay} from "./components/PlatformPlayerOverlay";
+import {LiveRaceGame} from "./LiveRaceGame";
+import type {LiveRaceHistory} from "./components/LiveRaceHistory";
 import {useRaceDialogFocus} from "./hooks/useRaceDialogFocus";
 
 /** Target-specific identifiers and fixed diagnostics keep provider logic outside shared presentation. */
@@ -31,6 +33,8 @@ type Destination = "play" | "activity" | "tournaments";
 function RaceTournamentDestination(props: RaceTournamentEntryProps) {
   /** A native tournament entry selects only the configured official board. */
   const [destination, setDestination] = useState<Destination>(props.tournaments && props.tournamentLocale ? "tournaments" : "play");
+  /** Immutable history selection retires Activity and owns one private live journey. */
+  const [rematch, setRematch] = useState<Parameters<NonNullable<Parameters<typeof LiveRaceHistory>[0]["onRematch"]>>[0] | null>(null);
   /** Keyboard selection retains focus across destination replacement. */
   const keyboardSelection = useRef(false);
   /** Tab changes retire late native-dialog feedback while retaining the SDK's dialog barrier. */
@@ -56,6 +60,10 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
     if (props.contextBoard) void Promise.resolve().then(() => props.contextBoard!.record(view.ticketId, props.locale))
       .catch(props.presentation.onContextRecordFailure ?? props.presentation.onRecordFailure);
   }, [props.tournaments, props.contextBoard, props.locale, props.onLiveResult, props.presentation]);
+  if (rematch && props.matchmaking?.live?.rematch) return <LiveRaceGame key={rematch.rematchOfTicketId}
+    transport={props.matchmaking.live} locale={props.locale} categoryId={rematch.categoryId} rematchOfTicketId={rematch.rematchOfTicketId}
+    coins={props.coins} ownerId={props.ownerId} onCompleted={completed}
+    onRematch={rematchOfTicketId => setRematch({...rematch, rematchOfTicketId})} onClose={() => setRematch(null)} />;
   /** The target adapter owns context synchronization and the actual native SDK dialog. */
   const choose = async () => {
     if (choosing.current || !props.nativeSocial) return;
@@ -72,19 +80,20 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
     finally {choosing.current = false; if (active.current) setBusy(false);}
   };
   if (!props.tournaments && !props.contextBoard && !props.nativeSocial && !props.matchmaking?.live?.history) return <RaceTo10Game {...props} />;
-  /** Only supported boards contribute tabs; Reddit retains its two existing destinations. */
+  /** Only supported Activity and tournament capabilities contribute tabs. */
   const destinations: Destination[] = ["play", ...(props.contextBoard || props.matchmaking?.live?.history ? ["activity" as const] : []),
     ...(props.tournaments ? ["tournaments" as const] : [])];
   /** Navigation and optional chooser are restricted to the race lobby and social boards. */
   const navigation = <>
     <RaceTournamentNavigation destination={destination} destinations={destinations} focusSelection={keyboardSelection.current}
       onSelect={(next, keyboard = false) => {revision.current++; setContextError(false); keyboardSelection.current = keyboard; setDestination(next);}} />
-    {props.nativeSocial && <div className="race-hub-social-actions"><button type="button" disabled={busy} onClick={() => void choose()}>
+    {props.nativeSocial && (destination !== "play" || !props.matchmaking?.live?.chooseChallenge) && <div className="race-hub-social-actions"><button type="button" disabled={busy} onClick={() => void choose()}>
       {tr("RaceTo10.CHOOSE_CONTEXT")}</button></div>}
     {contextError && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</div>}
   </>;
   return destination === "tournaments" ? <RaceTournamentBoard {...props} navigation={navigation} />
-    : destination === "activity" ? <RaceContextBoard key={contextRevision} {...props} navigation={navigation} />
+    : destination === "activity" ? <RaceContextBoard key={contextRevision} {...props} navigation={navigation}
+      onRematch={selection => {setDestination("play"); setRematch(selection);}} />
       : <RaceTo10Game {...props} introNavigation={navigation} onLiveResult={completed} />;
 }
 

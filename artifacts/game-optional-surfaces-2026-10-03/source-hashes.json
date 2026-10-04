@@ -1,0 +1,7 @@
+{
+  "packages/portal/src/play/DecorativeSolarSystem.tsx": "1b56ed28ea9094d7ebca50d02f6946c1314a76eddf38c14c00e6590e73e9211c",
+  "packages/portal/src/play/GameFrameApp.tsx": "2bb0275206f8cc1f2c79da6cc144cbbec35e1f7c829e95ab1e37e1dceaf652d4",
+  "packages/portal/src/play/game/hooks/useGameSurfaces.ts": "beb6c5ea4a1f61d679493a87a7e3d78d2e6d47cff2650bddc572d192c124530f",
+  "packages/portal/scripts/verify-optional-game-surfaces-browser.mjs": "e1375fde156991d480c61c1bbc1a11c3104b7abc6c634727ff3eb99925020dda",
+  "packages/portal/package.json": "872a735d7bf7d41e2c1a5aec6b274540a739b968709a15599fe12b6fecffd83d"
+}

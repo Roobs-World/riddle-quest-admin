@@ -1,0 +1,978 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "fit-reflow-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:38979/?locale=de&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:38979/?locale=de&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 8
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: main]\n\nuid=e81 main\n  uid=e79 div\n    uid=e5 header\n      uid=e0 img \"Logo-Schaltfl\u00e4che\" src=\"http://127.0.0.1:38979/asse...\"\n      uid=e1 button \"Ton ausschalten\"\n      uid=e2 div text=\"Klassisch\"\n      uid=e4 div \"300  Muenzen\"\n        uid=e3 img src=\"http://127.0.0.1:38979/asse...\"\n\n[+75 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {await document.fonts.ready;for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));window.fitTrace=[];return JSON.stringify({width:innerWidth,height:innerHeight,style:document.querySelector(\".game-content\").getAttribute(\"style\")});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"width\\\":1280,\\\"height\\\":832,\\\"style\\\":\\\"min-height: 844.16px; width: 101.461%; transform: scale(0.985596) translateX(-50%);\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({width:innerWidth,height:innerHeight,keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,trace:window.fitTrace});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"width\\\":500,\\\"height\\\":494,\\\"keyHeight\\\":24.849990844726562,\\\"trace\\\":[{\\\"availableHeight\\\":494,\\\"before\\\":\\\"min-height: 844.16px; width: 101.461%; transform: scale(0.985596) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.5625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"177.778%\\\"},{\\\"scale\\\":0.59375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"168.421%\\\"},{\\\"scale\\\":0.578125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"172.973%\\\"},{\\\"scale\\\":0.5859375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.667%\\\"},{\\\"scale\\\":0.58203125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"171.812%\\\"},{\\\"scale\\\":0.583984375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"171.237%\\\"},{\\\"scale\\\":0.5849609375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.952%\\\"},{\\\"scale\\\":0.58544921875,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.809%\\\"},{\\\"scale\\\":0.585205078125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.88%\\\"}],\\\"selected\\\":0.585205078125},{\\\"availableHeight\\\":494,\\\"before\\\":\\\"min-height: 844.149px; width: 170.88%; transform: scale(0.585205) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.5625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"177.778%\\\"},{\\\"scale\\\":0.59375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"168.421%\\\"},{\\\"scale\\\":0.578125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"172.973%\\\"},{\\\"scale\\\":0.5859375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.667%\\\"},{\\\"scale\\\":0.58203125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"171.812%\\\"},{\\\"scale\\\":0.583984375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"171.237%\\\"},{\\\"scale\\\":0.5849609375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.952%\\\"},{\\\"scale\\\":0.58544921875,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.809%\\\"},{\\\"scale\\\":0.585205078125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.88%\\\"}],\\\"selected\\\":0.585205078125},{\\\"availableHeight\\\":494,\\\"before\\\":\\\"min-height: 844.149px; width: 170.88%; transform: scale(0.585205) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.5625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"177.778%\\\"},{\\\"scale\\\":0.59375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"168.421%\\\"},{\\\"scale\\\":0.578125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"172.973%\\\"},{\\\"scale\\\":0.5859375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.667%\\\"},{\\\"scale\\\":0.58203125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"171.812%\\\"},{\\\"scale\\\":0.583984375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"171.237%\\\"},{\\\"scale\\\":0.5849609375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.952%\\\"},{\\\"scale\\\":0.58544921875,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.809%\\\"},{\\\"scale\\\":0.585205078125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"170.88%\\\"}],\\\"selected\\\":0.585205078125},{\\\"availableHeight\\\":437,\\\"before\\\":\\\"min-height: 844.149px; width: 170.88%; transform: scale(0.585205) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.5625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"177.778%\\\"},{\\\"scale\\\":0.53125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"188.235%\\\"},{\\\"scale\\\":0.515625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.939%\\\"},{\\\"scale\\\":0.5234375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"191.045%\\\"},{\\\"scale\\\":0.51953125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"192.481%\\\"},{\\\"scale\\\":0.517578125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.208%\\\"},{\\\"scale\\\":0.5185546875,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"192.844%\\\"},{\\\"scale\\\":0.51806640625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.025%\\\"},{\\\"scale\\\":0.517822265625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.116%\\\"}],\\\"selected\\\":0.517578125},{\\\"availableHeight\\\":437,\\\"before\\\":\\\"min-height: 844.317px; width: 193.208%; transform: scale(0.517578) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.5625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"177.778%\\\"},{\\\"scale\\\":0.53125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"188.235%\\\"},{\\\"scale\\\":0.515625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.939%\\\"},{\\\"scale\\\":0.5234375,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"191.045%\\\"},{\\\"scale\\\":0.51953125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"192.481%\\\"},{\\\"scale\\\":0.517578125,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.208%\\\"},{\\\"scale\\\":0.5185546875,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"192.844%\\\"},{\\\"scale\\\":0.51806640625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.025%\\\"},{\\\"scale\\\":0.517822265625,\\\"height\\\":844,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.116%\\\"}],\\\"selected\\\":0.517578125}]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:42703/?locale=de&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:42703/?locale=de&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({width:innerWidth,height:innerHeight,keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,trace:window.fitTrace.slice(-1)});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"width\\\":500,\\\"height\\\":494,\\\"keyHeight\\\":25.199996948242188,\\\"trace\\\":[{\\\"availableHeight\\\":437,\\\"before\\\":\\\"min-height: 832.149px; width: 190.423%; transform: scale(0.525147) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.5625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"177.778%\\\"},{\\\"scale\\\":0.53125,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"188.235%\\\"},{\\\"scale\\\":0.515625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.939%\\\"},{\\\"scale\\\":0.5234375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"191.045%\\\"},{\\\"scale\\\":0.52734375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"189.63%\\\"},{\\\"scale\\\":0.525390625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.335%\\\"},{\\\"scale\\\":0.5244140625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.689%\\\"},{\\\"scale\\\":0.52490234375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.512%\\\"},{\\\"scale\\\":0.525146484375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.423%\\\"}],\\\"selected\\\":0.525146484375}]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const x=document.querySelector(\".game-content\"),before=x.getAttribute(\"style\");x.style.minHeight=\"0px\";x.style.width=\"100%\";x.style.display=\"none\";const removed=x.offsetHeight;x.style.display=\"grid\";const height=x.offsetHeight;const computed=getComputedStyle(x).minHeight;x.setAttribute(\"style\",before);return JSON.stringify({removed,height,computed});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"removed\\\":0,\\\"height\\\":624,\\\"computed\\\":\\\"0px\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const x=document.querySelector(\".game-content\"),before=x.getAttribute(\"style\");x.removeAttribute(\"style\");const result={height:x.offsetHeight,scroll:x.scrollHeight,minHeight:getComputedStyle(x).minHeight,width:x.offsetWidth};x.setAttribute(\"style\",before);return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"height\\\":832,\\\"scroll\\\":832,\\\"minHeight\\\":\\\"calc(0% + 832.149px)\\\",\\\"width\\\":952}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const x=document.querySelector(\".game-content\"),c=getComputedStyle(x);return JSON.stringify({transitionProperty:c.transitionProperty,transitionDuration:c.transitionDuration,animationName:c.animationName,animationDuration:c.animationDuration,animations:x.getAnimations().map(a=>({type:a.constructor.name,playState:a.playState,currentTime:a.currentTime,timing:a.effect.getComputedTiming(),keyframes:a.effect.getKeyframes()}))});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"transitionProperty\\\":\\\"all\\\",\\\"transitionDuration\\\":\\\"0.000001s\\\",\\\"animationName\\\":\\\"none\\\",\\\"animationDuration\\\":\\\"0.000001s\\\",\\\"animations\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:38979/?locale=de&unsaved=1&zero-transition=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: BiDi error: \"unknown error\""
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const style=document.createElement(\"style\");style.textContent=\".game-content {transition-duration:0s !important; transition-delay:0s !important;}\";document.head.append(style);for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));window.fitTrace=[];return true;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\ntrue\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({width:innerWidth,height:innerHeight,keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,transition:getComputedStyle(document.querySelector(\".game-content\")).transitionDuration,trace:window.fitTrace.slice(-1)});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Script execution failed: TypeError: can't access property \"failed\", window.layoutRecovery is undefined\n\n```json\n\"[error]\"\n```"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:42703/?locale=de&unsaved=1&zero-transition=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: BiDi error: \"unknown error\""
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const style=document.createElement(\"style\");style.textContent=\".game-content {transition-duration:0s !important; transition-delay:0s !important;}\";document.head.append(style);for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));window.fitTrace=[];return true;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\ntrue\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({width:innerWidth,height:innerHeight,keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,transition:getComputedStyle(document.querySelector(\".game-content\")).transitionDuration,trace:window.fitTrace.slice(-1)});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Script execution failed: TypeError: can't access property \"failed\", window.layoutRecovery is undefined\n\n```json\n\"[error]\"\n```"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:33429/?locale=de&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:33429/?locale=de&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 26
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const style=document.createElement(\"style\");style.textContent=\".game-content {transition-duration:0s !important; transition-delay:0s !important;}\";document.head.append(style);for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));window.fitTrace=[];return true;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\ntrue\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 27
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 28
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({width:innerWidth,height:innerHeight,keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,transition:getComputedStyle(document.querySelector(\".game-content\")).transitionDuration,trace:window.fitTrace.slice(-1)});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"width\\\":500,\\\"height\\\":494,\\\"keyHeight\\\":25.199996948242188,\\\"transition\\\":\\\"0.000001s\\\",\\\"trace\\\":[{\\\"availableHeight\\\":437,\\\"before\\\":\\\"min-height: 832.149px; width: 190.423%; transform: scale(0.525147) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.5625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"177.778%\\\"},{\\\"scale\\\":0.53125,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"188.235%\\\"},{\\\"scale\\\":0.515625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"193.939%\\\"},{\\\"scale\\\":0.5234375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"191.045%\\\"},{\\\"scale\\\":0.52734375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"189.63%\\\"},{\\\"scale\\\":0.525390625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.335%\\\"},{\\\"scale\\\":0.5244140625,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.689%\\\"},{\\\"scale\\\":0.52490234375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.512%\\\"},{\\\"scale\\\":0.525146484375,\\\"height\\\":832,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"190.423%\\\"}],\\\"selected\\\":0.525146484375}]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 29
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const style=document.createElement(\"style\");style.textContent=\"html:root .game-content {transition-duration:0s !important; transition-delay:0s !important;}\";document.head.append(style);window.dispatchEvent(new Event(\"resize\"));for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,transition:getComputedStyle(document.querySelector(\".game-content\")).transitionDuration,trace:window.fitTrace.slice(-1)});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"keyHeight\\\":33.616668701171875,\\\"transition\\\":\\\"0s\\\",\\\"trace\\\":[{\\\"availableHeight\\\":437,\\\"before\\\":\\\"min-height: 624.112px; width: 142.817%; transform: scale(0.700195) translateX(-50%);\\\",\\\"candidates\\\":[{\\\"scale\\\":1,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"100%\\\"},{\\\"scale\\\":0.5,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"200%\\\"},{\\\"scale\\\":0.75,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"133.333%\\\"},{\\\"scale\\\":0.625,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"160%\\\"},{\\\"scale\\\":0.6875,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"145.455%\\\"},{\\\"scale\\\":0.71875,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"139.13%\\\"},{\\\"scale\\\":0.703125,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"142.222%\\\"},{\\\"scale\\\":0.6953125,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"143.82%\\\"},{\\\"scale\\\":0.69921875,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"143.017%\\\"},{\\\"scale\\\":0.701171875,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"142.618%\\\"},{\\\"scale\\\":0.7001953125,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"142.817%\\\"},{\\\"scale\\\":0.70068359375,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"142.718%\\\"},{\\\"scale\\\":0.700439453125,\\\"height\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":\\\"142.768%\\\"}],\\\"selected\\\":0.7001953125}]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 30
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 31
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:42081/?locale=de&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:42081/?locale=de&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 32
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 33
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));const boxes=[\".riddle-card\",\".guess-board\",\".keyboard\",\".game-input-actions\",\".game-bottom-navigation\"].map(s=>document.querySelector(s)?.getBoundingClientRect()).filter(Boolean);const result={case:\"app-de-desktop-to-short\",width:innerWidth,height:innerHeight,keys:Math.min(...Array.from(document.querySelectorAll(\".key\")).map(x=>x.getBoundingClientRect().height)),fits:boxes.every(b=>b.left>=-1&&b.right<=innerWidth+1&&b.bottom<=innerHeight+1),transition:getComputedStyle(document.querySelector(\".game-content\")).transitionDuration,systemReduced:matchMedia(\"(prefers-reduced-motion: reduce)\").matches,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks=[result];document.activeElement?.blur();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"app-de-desktop-to-short\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"keys\\\":33.616668701171875,\\\"fits\\\":true,\\\"transition\\\":\\\"0s\\\",\\\"systemReduced\\\":false,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 34
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 35
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.firefoxChecks.push({case:\"app-de-input\",draft:window.draft()});return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"app-de-desktop-to-short\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"keys\\\":33.616668701171875,\\\"fits\\\":true,\\\"transition\\\":\\\"0s\\\",\\\"systemReduced\\\":false,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"app-de-input\\\",\\\"draft\\\":\\\"PIAN\\\"}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 36
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T13-30-03-169Z.png (106.9KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 37
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 38
+    }
+  }
+]

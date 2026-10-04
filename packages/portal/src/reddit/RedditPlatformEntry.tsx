@@ -18,6 +18,8 @@ import {createRedditGuestHostServices} from "./RedditGuestHostServices";
 import {RedditPollingPresence} from "./RedditPollingPresence";
 import {readBrowserStorage} from "../platform/browserStorage";
 import {PlayerProjectionPersistence} from "../platform/PlayerProjectionPersistence";
+import {usePlayerProjectionRecovery} from "../platform/usePlayerProjectionRecovery";
+import {PlayerSaveRecoveryLayout} from "../play/PlayerSaveRecoveryLayout";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
 
 /** Load the provider-owned board only when multiplayer is opened. */
@@ -55,6 +57,11 @@ export function RedditPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides player persistence ref behavior. */
   const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
+  /** Inline posts retain progress but recovery runs only in the expanded target-owned view. */
+  const saveRecovery = usePlayerProjectionRecovery(startup.state === "ready" ? playerPersistenceRef.current : null, {
+    lifecycle: startup.state === "ready" ? startup.session.capabilities.lifecycle : undefined,
+    canRecover: () => getWebViewMode() === "expanded",
+  });
   /** Provides preferences ref behavior. */
   const preferencesRef = useRef<PlatformPreferences>({});
   /** Provides presence ref behavior. */
@@ -68,8 +75,10 @@ export function RedditPlatformEntry() {
   const [commerceProducts, setCommerceProducts] = useState<ProductSummary[]>([]);
   /** Provides guest host services behavior. */
   const guestHostServices = useMemo(
-    () => createRedditGuestHostServices(startup.state === "ready" ? startup.playerData?.profile : undefined),
-    [startup.state === "ready" ? startup.playerData?.profile : undefined],
+    () => createRedditGuestHostServices(startup.state === "ready" ? startup.playerData?.profile : undefined,
+      startup.state === "ready" ? startup.playerData?.activeGame : undefined),
+    [startup.state === "ready" ? startup.playerData?.profile : undefined,
+      startup.state === "ready" ? startup.playerData?.activeGame : undefined],
   );
 
   useEffect(() => {
@@ -189,6 +198,7 @@ export function RedditPlatformEntry() {
         }
         /** Provides player data behavior. */
         const playerData = await result.value.storage.readPlayerData();
+        if (!active) return;
         playerPersistenceRef.current = new PlayerProjectionPersistence(
           result.value.storage,
           playerData,
@@ -211,7 +221,8 @@ export function RedditPlatformEntry() {
       /** Provides persistence behavior. */
       const persistence = playerPersistenceRef.current;
       if (!persistence) return;
-      await persistence.update(update);
+      // The persistence owner exposes bounded recovery; fire-and-forget game callbacks never reject globally.
+      await persistence.update(update).catch(() => undefined);
     },
     [startup],
   );
@@ -235,66 +246,75 @@ export function RedditPlatformEntry() {
   if (expanded) {
     if (startup.session.playerId !== "reddit-guest") {
       return (
-        <PlayHostApp
-          raceSurface={RedditRaceEntry}
-          session={createHostedPlaySession({
-            hostServices,
-            platformProducts: commerceProducts,
-            platformPurchase:
-            startup.session.capabilities.commerce
-              ? async (productId) => {
-                  /** Provides before behavior. */
-                  const before = await hostServices.loadProfile(startup.session.playerId);
-                  /** Provides result behavior. */
-                  const result = await startup.session.capabilities.commerce!.purchase(productId);
-                  if (result.status === "cancelled")
-                    return {success: false, cancelled: true, productId, purchaseType: "consumable"};
-                  if (result.status !== "success") throw new Error(result.message);
-                  /** Provides after behavior. */
-                  const after = await hostServices.loadProfile(startup.session.playerId);
-                  return {
-                    success: true,
-                    productId,
-                    purchaseType: "consumable",
-                    coinsAwarded: Math.max(0, (after?.coins ?? 0) - (before?.coins ?? 0)),
-                    newCoins: after?.coins,
-                  };
-                }
-              : undefined,
-            platformCapabilities: startup.session.capabilities,
-            platformPlayerId: startup.session.playerId,
-            initialPlayerData: startup.playerData,
-            onPlayerDataChange: (update) => void writePlayerData(update),
-            raceLocalePolicy: "all",
-            presenceEnabled,
-            onTogglePresence: startup.session.capabilities.presence ? togglePresence : undefined,
-            onPresenceStateChange: (state) => void presenceRef.current?.setState(state).catch(() => undefined),
-          })}
-          onAccountDeletionRequested={() => playerPersistenceRef.current?.closeAndFlush()}
-        />
+        <PlayerSaveRecoveryLayout recovery={saveRecovery}>
+          <PlayHostApp
+            raceSurface={RedditRaceEntry}
+            session={createHostedPlaySession({
+              hostServices,
+              platformProducts: commerceProducts,
+              platformPurchase:
+              startup.session.capabilities.commerce
+                ? async (productId) => {
+                    /** Provides before behavior. */
+                    const before = await hostServices.loadProfile(startup.session.playerId);
+                    /** Provides result behavior. */
+                    const result = await startup.session.capabilities.commerce!.purchase(productId);
+                    if (result.status === "cancelled")
+                      return {success: false, cancelled: true, productId, purchaseType: "consumable"};
+                    if (result.status !== "success") throw new Error(result.message);
+                    /** Provides after behavior. */
+                    const after = await hostServices.loadProfile(startup.session.playerId);
+                    return {
+                      success: true,
+                      productId,
+                      purchaseType: "consumable",
+                      coinsAwarded: Math.max(0, (after?.coins ?? 0) - (before?.coins ?? 0)),
+                      newCoins: after?.coins,
+                    };
+                  }
+                : undefined,
+              platformCapabilities: startup.session.capabilities,
+              platformPlayerId: startup.session.playerId,
+              initialPlayerData: startup.playerData,
+              onPlayerDataChange: (update) => void writePlayerData(update),
+              raceLocalePolicy: "all",
+              presenceEnabled,
+              onTogglePresence: startup.session.capabilities.presence ? togglePresence : undefined,
+              onPresenceStateChange: (state) => void presenceRef.current?.setState(state).catch(() => undefined),
+            })}
+            onAccountDeletionRequested={() => playerPersistenceRef.current?.closeAndFlush()}
+          />
+        </PlayerSaveRecoveryLayout>
       );
     }
     return (
-      <>
+      <div className="reddit-guest-layout">
         <aside className="reddit-entry reddit-guest-banner" aria-label={tr("RedditPlatform.GUEST_ARIA")}>
-          <strong>{tr("RedditPlatform.GUEST_TITLE")}</strong> · {tr("RedditPlatform.GUEST_LIMITS")}
+          <details>
+            <summary><strong>{tr("RedditPlatform.GUEST_TITLE")}</strong></summary>
+            <div className="reddit-guest-details">
+              <p>{tr("RedditPlatform.GUEST_LIMITS")}</p>
+              <p>{tr("RedditPlatform.CONFIG_WARNING")}</p>
+            </div>
+          </details>
           <button type="button" onClick={() => showLoginPrompt()}>
             {tr("RedditPlatform.LOGIN")}
           </button>
         </aside>
-        <PlayHostApp
-          session={createHostedPlaySession({
-            hostServices: guestHostServices,
-            economyAvailable: false,
-            platformCapabilities: startup.session.capabilities,
-            platformPlayerId: startup.session.playerId,
-            initialPlayerData: startup.playerData,
-            onPlayerDataChange: (update) => void writePlayerData(update),
-            raceLocalePolicy: "english-only",
-            hostConfigurationWarning: tr("RedditPlatform.CONFIG_WARNING"),
-          })}
-        />
-      </>
+        <PlayerSaveRecoveryLayout recovery={saveRecovery}>
+          <PlayHostApp
+            session={createHostedPlaySession({
+              hostServices: guestHostServices,
+              economyAvailable: false,
+              platformCapabilities: startup.session.capabilities,
+              platformPlayerId: startup.session.playerId,
+              initialPlayerData: startup.playerData,
+              onPlayerDataChange: (update) => void writePlayerData(update),
+              raceLocalePolicy: "english-only",
+            })}
+          />
+        </PlayerSaveRecoveryLayout>
+      </div>
     );
   }
 

@@ -1,0 +1,2318 @@
+[
+  {
+    "width": 1280,
+    "name": "host-pause: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "hidden-document: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "motion-in-multiplayer: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retired pending setup releases its visibility subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retired pending setup attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retired setup callbacks cannot create resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retired setup callbacks cannot construct a renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: first eligible state initializes only its current owner",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: later visibility and pause changes never reconstruct",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retired callbacks never reconstruct the scene",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "retired-before-resume: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: failed deferred setup releases partial resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: failed deferred setup releases its context",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: failed deferred setup disposes its renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: failed deferred setup has no frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: failed deferred setup has no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: failed deferred setup reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: retained setup callbacks never repeat diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: retired callbacks never repeat diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "deferred-driver-failure: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "host-pause: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "host-pause: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "host-pause: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "host-pause: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "host-pause: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "hidden-document: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "motion-in-multiplayer: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retired pending setup releases its visibility subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retired pending setup attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retired setup callbacks cannot create resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retired setup callbacks cannot construct a renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: first eligible state initializes only its current owner",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: resumed scene draws actual Three objects",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: resumed scene owns one frame chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: resumed scene owns one attached canvas",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: later visibility and pause changes never reconstruct",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retained setup callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retired callbacks never reconstruct the scene",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: retired callbacks never repeat diagnostics",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "retired-before-resume: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: pending native download leaves typing usable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: pending download allocates no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: native module evaluates once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: native module uses one download",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: blocked first render constructs no renderer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: blocked first render owns no graphics allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: blocked first render requests no texture images",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: blocked first render creates no resize observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: blocked first render schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: blocked first render attaches no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: blocked construction preserves token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: retained setup callbacks cannot allocate while blocked",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: first eligible state initializes only its current owner",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: failed deferred setup releases partial resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: failed deferred setup releases its context",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: failed deferred setup disposes its renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: failed deferred setup has no frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: failed deferred setup has no canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: failed deferred setup reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: later visibility and pause changes never reconstruct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: retained setup callbacks never repeat diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: unmount releases every graphics allocation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: unmount releases every scene visibility listener",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: unmount retires the frame chain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: unmount removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: shared resources are never disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: retired callbacks never reconstruct the scene",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: retired callbacks never repeat diagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: draft survives slow loading and deferred setup",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: token survives slow loading and deferred setup",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: player completes the same answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: completion remains authoritative and singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: no browser callback error escapes",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "deferred-driver-failure: no promise rejection remains unhandled",
+    "actual": [],
+    "expected": []
+  }
+]

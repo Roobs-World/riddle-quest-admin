@@ -93,19 +93,19 @@ it.each([0, 1])("durably grants the first live-win referral for winning seat %i 
   /** Provides seats behavior. */
   const seats = await pair(), userId = PLAYERS[seat], winner = seats[seat];
   await finish(userId, winner.ticketId);
-  expect((await db.doc(`users/${userId}`).get()).data()).toMatchObject({coins: 150, stats: {wins: 0, multiplayerWins: 1}});
+  expect((await db.doc(`users/${userId}`).get()).data()).toMatchObject({coins: 225, stats: {wins: 0, multiplayerWins: 1}});
   /** Provides events behavior. */
   const events = await db.collection("racePerformanceOutbox").where("userId", "==", userId).get();
   expect(events.size).toBe(1);
   await Promise.all(Array.from({length: 4}, () => deliverRacePerformance(events.docs[0].id, db, START + 16000)));
-  expect((await db.doc(`users/${userId}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${userId}`).get()).data()?.coins).toBe(325);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
   expect((await db.collection("facebookReferralSettlements").get()).size).toBe(1);
   expect((await db.collection(`users/${userId}/raceMatchProfiles`).get()).empty).toBe(true);
   expect((await events.docs[0].ref.get()).data()).toMatchObject({delivered: true, deliveryState: "delivered"});
   await updateLiveRaceForUser(userId, {ticketId: winner.ticketId, action: "poll", requestId: "referral-terminal-retry"}, {db, nowMs: START + 17000});
   await deliverRacePerformance(events.docs[0].id, db, START + 18000);
-  expect((await db.doc(`users/${userId}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${userId}`).get()).data()?.coins).toBe(325);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
 });
 
@@ -120,7 +120,7 @@ it("settles a human fallback-bot win without rewarding the bot", async () => {
   const events = (await db.collection("racePerformanceOutbox").get()).docs;
   expect(events).toHaveLength(1);
   await deliverRacePerformance(events[0].id, db, matched.startsAtMs! + 10000);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
   expect((await db.doc("users/bot").get()).exists).toBe(false);
 });
 
@@ -132,8 +132,8 @@ it("uses an authoritative forfeit win without requiring an official ten-solve to
   const event = (await db.collection("racePerformanceOutbox").get()).docs[0];
   expect(event.data().userId).toBe(PLAYERS[0]);
   await deliverRacePerformance(event.id, db, START + 8000);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()).toMatchObject({coins: 250, stats: {multiplayerWins: 1}});
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()).toMatchObject({coins: 100, stats: {multiplayerWins: 0}});
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()).toMatchObject({coins: 300, stats: {multiplayerWins: 1}});
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()).toMatchObject({coins: 125, stats: {multiplayerWins: 0}});
 });
 
 it("keeps the referral lifetime grant settled when the same player wins another live match", async () => {
@@ -152,7 +152,7 @@ it("keeps the referral lifetime grant settled when the same player wins another 
   const events = (await db.collection("racePerformanceOutbox").get()).docs;
   expect(events).toHaveLength(2);
   await Promise.all(events.map(event => deliverRacePerformance(event.id, db, START + 36000)));
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()).toMatchObject({coins: 300, stats: {multiplayerWins: 2}});
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()).toMatchObject({coins: 375, stats: {multiplayerWins: 2}});
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
   expect((await db.collection("facebookReferralSettlements").get()).size).toBe(1);
 });
@@ -173,7 +173,7 @@ it("cannot collide with a chosen legacy recorded-race request ID", async () => {
   expect(events).toHaveLength(1);
   expect(events[0].id).not.toBe(alias);
   await deliverRacePerformance(events[0].id, db, START + 16000);
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(325);
 });
 
 it.each(["jest", "reddit"])("preserves %s live wins without Facebook referral work", async provider => {
@@ -182,7 +182,7 @@ it.each(["jest", "reddit"])("preserves %s live wins without Facebook referral wo
   /** Provides seats behavior. */
   const seats = await pair(players);
   await finish(players[1], seats[1].ticketId);
-  expect((await db.doc(`users/${players[1]}`).get()).data()).toMatchObject({coins: 150, stats: {multiplayerWins: 1}});
+  expect((await db.doc(`users/${players[1]}`).get()).data()).toMatchObject({coins: 225, stats: {multiplayerWins: 1}});
   expect((await db.collection("racePerformanceOutbox").where("source", "==", "facebook_live").get()).empty).toBe(true);
   /** Provides events behavior. */
   const events = (await db.collection("racePerformanceOutbox").get()).docs;
@@ -237,13 +237,13 @@ it.each(["grant", "acknowledgement"])("recovers live referral %s failure through
   const pending = (await event.ref.get()).data()!;
   expect(pending).toMatchObject({delivered: false, deliveryState: "pending", deliveryAttempts: 1});
   /** Provides expected before behavior. */
-  const expectedBefore = stage === "grant" ? 150 : 250;
+  const expectedBefore = stage === "grant" ? 225 : 325;
   expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(expectedBefore);
   await deliverRacePerformance(event.id, db, pending.nextAttemptAtMs - 1);
   expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(expectedBefore);
   await processRaceDeliveryQueue(db, "racePerformanceOutbox", id => deliverRacePerformance(id, db, pending.nextAttemptAtMs), pending.nextAttemptAtMs);
   expect((await event.ref.get()).data()).toMatchObject({delivered: true, deliveryState: "delivered"});
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()).toMatchObject({coins: 250, stats: {multiplayerWins: 1}});
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()).toMatchObject({coins: 325, stats: {multiplayerWins: 1}});
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
   expect((await db.collection("facebookReferralSettlements").get()).size).toBe(1);
 });
@@ -261,7 +261,7 @@ it.each(["disabled", "deleted", "expired", "missing-source"])("suppresses pendin
   await deliverRacePerformance(event.id, db, START + 16000);
   expect((await event.ref.get()).data()).toMatchObject({delivered: true, deliveryState: condition === "disabled" ? "delivered" : "suppressed"});
   expect((await db.collectionGroup("entries").where("userId", "==", PLAYERS[1]).get()).size).toBe(condition === "disabled" ? 1 : 0);
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(225);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(300);
   expect((await db.collection("facebookReferralSettlements").get()).empty).toBe(true);
 });
@@ -280,10 +280,10 @@ it("quarantines an altered source and replays only after restoring its private w
   await expect(replayRaceDelivery(db, "racePerformanceOutbox", event.id, START + 17000, {dryRun: true})).rejects.toMatchObject({code: "data-loss"});
   await event.ref.update({liveTicketId: original.liveTicketId});
   expect(await replayRaceDelivery(db, "racePerformanceOutbox", event.id, START + 17000, {dryRun: true})).toBe(false);
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(225);
   await replayRaceDelivery(db, "racePerformanceOutbox", event.id, START + 18000);
   await replayRaceDelivery(db, "racePerformanceOutbox", event.id, START + 19000);
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(325);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
 });
 
@@ -307,7 +307,7 @@ it.each(["winner", "clock", "retention", "profile", "bot"])("quarantines corrupt
   }
   await deliverRacePerformance(event.id, db, START + 16000);
   expect((await event.ref.get()).data()).toMatchObject({delivered: true, deliveryState: "quarantined"});
-  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(225);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(300);
 });
 
@@ -323,7 +323,7 @@ it("retains the five-inviter-per-UTC-day cap across six concurrent real live-win
   const events = (await db.collection("racePerformanceOutbox").get()).docs;
   expect(events).toHaveLength(6);
   await Promise.all(events.map(event => deliverRacePerformance(event.id, db, START + 16000)));
-  for (const event of events) expect((await db.doc(`users/${event.data().userId}`).get()).data()?.coins).toBe(250);
+  for (const event of events) expect((await db.doc(`users/${event.data().userId}`).get()).data()?.coins).toBe(325);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(800);
   expect((await db.collection("facebookReferralSettlements").get()).size).toBe(6);
   expect((await db.collection("facebookReferralDailyCaps").get()).docs[0].data().count).toBe(5);

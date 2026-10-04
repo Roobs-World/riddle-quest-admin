@@ -3,10 +3,11 @@ import {LiveRaceSafety} from "./components/LiveRaceSafety";
 import {LiveRaceIdentity} from "./components/LiveRaceIdentity";
 import {LIVE_RACE_POLL_TICK_MS} from "./logic/liveRacePolling";
 import {LiveRaceInviteShare} from "./components/LiveRaceInviteShare";
+import {LiveRaceSearchWheel} from "./components/LiveRaceSearchWheel";
 import {estimatedRaceServerNow} from "./logic/raceCountdown";
-import {liveRaceDeliveryDeadline, liveRaceCommandRejected} from "./logic/liveRaceDeliveryDeadline";
+import {liveRaceDeliveryDeadline, liveRaceCommandRejected, confirmUnavailableLiveInvitation} from "./logic/liveRaceDeliveryDeadline";
 import {liveRacePollInterval} from "./logic/liveRacePolling";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {LiveRaceViewSchema, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@qwordly/core/race";
 import {tr} from "../i18n";
 import {createRequestId} from "../requestIds";
@@ -15,20 +16,23 @@ import {RaceGameplay} from "./components/RaceGameplay";
 import {useRaceDialogFocus} from "./hooks/useRaceDialogFocus";
 import {useRaceGameplayFit} from "./hooks/useRaceGameplayFit";
 import {useAnswerKeyboard} from "../game/hooks/useAnswerKeyboard";
-import {editRaceInput} from "./logic/raceInput";
-import {createRaceAttempt, findFirstEditableRaceSlot, getRaceLetterStates} from "./logic/racePresentation";
+import {createLiveRaceDraft, editLiveRaceDraft, reconcileLiveRaceDraft, rejectLiveRaceDraft, type LiveRaceDraft} from "./logic/liveRaceDraft";
+import {useLiveRaceDraft} from "./hooks/useLiveRaceDraft";
+import {getRaceLetterStates} from "./logic/racePresentation";
 
 /** Lobby and live race presentation use one target-owned authenticated transport. */
-export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, coins, ownerId, onCompleted, onClose}: {
+export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, coins, ownerId, onCompleted, onRematch, onClose}: {
   /** Approved target transport. */ transport: LiveRaceCapability;
   /** Exact content language. */ locale: RaceLocale;
   /** Selected shared riddle category. */ categoryId: RaceCategoryId;
   /** Reserves a private lobby for a platform invitation. */ createChallenge?: boolean;
   /** Accepts the existing private lobby after the recipient confirms. */ challengeId?: string;
+  /** Own terminal source reserves its actual human opponent through the target adapter. */ rematchOfTicketId?: string;
   /** Current profile balance. */ coins: number;
   /** Account lifetime owning result refresh. */ ownerId?: string;
   /** Optional target-owned terminal effect; transport and scoring stay server authoritative. */
   onCompleted?: (view: LiveRaceView) => void;
+  /** Retires the completed view before opening a new private rematch journey. */ onRematch?: (ticketId: string) => void;
   /** Return to the multiplayer intro. */ onClose: () => void;
 }) {
   /** Viewer-specific snapshot from the authoritative match. */
@@ -38,24 +42,35 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   /** Latest accepted snapshot available to asynchronous transport callbacks. */
   const viewRef = useRef<LiveRaceView | null>(null);
   /** Editable answer draft, preserved across rival progress polls. */
-  const [draft, setDraft] = useState({letters: [] as string[], activeSlotIndex: 0});
+  const {draft, getDraft, updateDraft} = useLiveRaceDraft();
+  /** Original submitted word stays separate from letters composed while its receipt is pending. */
+  const submittedDraft = useRef<{
+    /** Original idempotent operation awaiting its owned receipt. */
+    command: UpdateLiveRace;
+    /** Immutable input checkpoint for definitive rejection recovery. */
+    draft: LiveRaceDraft;
+  } | null>(null);
   /** Initial join or player command currently awaiting confirmation. */
   const [busy, setBusy] = useState(false);
   /** A failed delivery that the player can retry with the same request id. */
   const [error, setError] = useState(false);
+  /** Definitively unavailable invitations do not own a seat or a retry loop. */
+  const [invitationUnavailable, setInvitationUnavailable] = useState(false);
+  /** Stops timer, reconnect and late delivery paths immediately after authoritative confirmation. */
+  const invitationUnavailableRef = useRef(false);
   /** Local animation clock adjusted to the latest server observation. */
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   /** Starts gameplay when the shared authoritative countdown reaches zero. */
   const phase = view?.phase === "countdown" && view.startsAtMs !== null && now >= view.startsAtMs ? "racing" : view?.phase;
   /** Server-owned help waits disable actions while preserving answer drafting. */
   /** Receipt anchor advances server time independently of device wall-clock changes. */
-  const clockAnchor = useRef({serverNowMs: Date.now(), receivedAtMs: performance.now()});
+  const [clockAnchor] = useState(() => ({current: {serverNowMs: Date.now(), receivedAtMs: performance.now()}}));
   /** Current server-time estimate shared by countdown, typing and command admission. */
   const serverNow = () => estimatedRaceServerNow(clockAnchor.current.serverNowMs, clockAnchor.current.receivedAtMs, performance.now());
   /** Stable join id preserved across retries and development effect replay. */
-  const requestId = useRef(createRequestId("live-join"));
+  const [requestId] = useState(() => ({current: createRequestId("live-join")}));
   /** Repeated retirement deliveries retain one idempotency key for this seat. */
-  const leaveId = useRef(createRequestId("live-leave"));
+  const [leaveId] = useState(() => ({current: createRequestId("live-leave")}));
   /** Exact player command retained until its delivery is confirmed. */
   const pending = useRef<UpdateLiveRace | null>(null);
   /** A rejected stale command requires fresh server state before another mutation. */
@@ -77,10 +92,29 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const nextDeliveryAt = useRef(0);
   /** Prevents updates after the mounted journey is retired. */
   const active = useRef(true);
-  /** Retires the lobby immediately when the player closes it. */
+  /** Retirement releases local waits for commands and superseded polls while their adapter receipts remain observed. */
+  const waitOwner = useRef<AbortController | null>(null);
+  useLayoutEffect(() => {
+    active.current = true;
+    // A receipt microtask can run before passive cleanup after a replacement commits.
+    return () => {active.current = false;};
+  }, []);
+  /** Closing retains the owned seat until the authority confirms its retirement. */
+  const closeRequested = useRef(false);
+  /** Closing immediately disables local editing even while an earlier command still owns delivery. */
+  const [closing, setClosing] = useState(false);
+  /** Prevents a confirmed retirement from accepting another delivery. */
   const closed = useRef(false);
   /** Delivers one profile refresh notification per completed match. */
   const notified = useRef(false);
+  /** Pending receipts use the latest committed completion effect without replacing delivery ownership. */
+  const completedCallback = useRef(onCompleted);
+  /** Ordinary parent updates must not restart polling, subscriptions or dialog focus. */
+  const closeCallback = useRef(onClose);
+  useLayoutEffect(() => {
+    completedCallback.current = onCompleted;
+    closeCallback.current = onClose;
+  }, [onCompleted, onClose]);
   /** Dialog surface owning focus and viewport fitting. */
   const dialogRef = useRef<HTMLElement | null>(null);
   /** Available viewport for the existing riddle gameplay. */
@@ -98,32 +132,27 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     const observedNow = viewRef.current ? Math.max(next.serverNowMs, serverNow()) : next.serverNowMs;
     clockAnchor.current = {serverNowMs: observedNow, receivedAtMs: performance.now()};
     setNow(observedNow);
-    /** Previous prompt used to distinguish progress polls from answer transitions. */
-    const before = viewRef.current?.run?.currentRiddle;
-    /** Current server-owned prompt and revealed letters. */
-    const riddle = next.run?.currentRiddle;
-    if (riddle?.riddleId !== before?.riddleId || riddle?.guessesUsed !== before?.guessesUsed)
-      setDraft({letters: createRaceAttempt(riddle ?? null), activeSlotIndex: findFirstEditableRaceSlot(riddle ?? null)});
-    else if (riddle) setDraft(current => ({...current,
-      activeSlotIndex: riddle.revealedLetters.some(reveal => reveal.index === current.activeSlotIndex) ? findFirstEditableRaceSlot(riddle) : current.activeSlotIndex,
-      letters: current.letters.map((letter, index) =>
-      riddle.revealedLetters.find(reveal => reveal.index === index)?.letter ?? letter)}));
+    /** Capture the prior authority identity before queued React draft reconciliation runs. */
+    const previous = viewRef.current;
+    updateDraft(current => reconcileLiveRaceDraft(current, previous, next));
     viewRef.current = next;
     setView(next);
     if (next.phase === "result" && !notified.current) {
       notified.current = true;
-      onCompleted?.(next);
+      completedCallback.current?.(next);
       window.dispatchEvent(new CustomEvent("riddle-quest:live-race-completed", {detail: {ownerId}}));
     }
-  }, [ownerId, onCompleted]);
+  }, [ownerId, updateDraft]);
   /** Sends one owned join, progress poll or idempotent player command. */
   const deliver = useCallback(async () => {
     /** Stable command selected before starting an asynchronous delivery. */
     const command = pending.current;
-    if (!active.current || closed.current || ["result", "cancelled"].includes(viewRef.current?.phase ?? "") ||
+    if (!active.current || closed.current || invitationUnavailableRef.current || ["result", "cancelled"].includes(viewRef.current?.phase ?? "") ||
       inFlight.current && (!inFlight.current.poll || !command)) return;
     /** Receipt ownership prevents a superseded poll from replacing an accepted answer. */
     const delivery = {poll: Boolean(viewRef.current && !command)};
+    /** All deliveries share the mounted journey's local cancellation boundary. */
+    const lifetime = waitOwner.current ??= new AbortController();
     /** Definitively rejected commands reconcile against the current authoritative question. */
     let reconcile = false;
     lastDeliveryAt.current = performance.now();
@@ -137,26 +166,47 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         if (!["result", "cancelled"].includes(result.phase)) void transport.update({ticketId: result.ticketId, action: "leave", requestId: leaveId.current}).catch(() => {});
         return;
       }
-      if (latestDelivery.current !== delivery) return;
+      if (latestDelivery.current !== delivery || invitationUnavailableRef.current) return;
       apply(result);
+      if (submittedDraft.current?.command === command) submittedDraft.current = null;
       if (pending.current === command) pending.current = null;
       refreshRequired.current = false;
       deliveryFailures.current = 0;
       nextDeliveryAt.current = 0;
       setError(false);
+      if (closeRequested.current && (command?.action === "leave" || ["result", "cancelled"].includes(result.phase))) {
+        closed.current = true;
+        pending.current = null;
+        closeCallback.current();
+      }
     };
     try {
       /** Viewer-specific result returned by the selected platform adapter. */
-      const result = await liveRaceDeliveryDeadline(!viewRef.current ? transport.join({locale, categoryId, requestId: requestId.current, ...(createChallenge ? {createChallenge: true} : {}), ...(challengeId ? {challengeId} : {})}) :
+      const result = await liveRaceDeliveryDeadline(!viewRef.current ? rematchOfTicketId
+        ? transport.rematch!({locale, categoryId, requestId: requestId.current, rematchOfTicketId})
+        : transport.join({locale, categoryId, requestId: requestId.current, ...(createChallenge ? {createChallenge: true} : {}), ...(challengeId ? {challengeId} : {})}) :
         transport.update(command ?? {ticketId: viewRef.current.ticketId, action: "poll", requestId: createRequestId("live-poll")}),
         Boolean(viewRef.current && !command), late => {
           // Owned late commands can recover before retry; polls remain superseded observations.
           if (closed.current || !active.current || !delivery.poll && pending.current === command) accept(late);
-        });
+        }, lifetime.signal);
       accept(result);
     } catch (failure) {
       if (inFlight.current === delivery && active.current && !closed.current) {
+        if (!viewRef.current && !command && challengeId &&
+          await confirmUnavailableLiveInvitation(failure, challengeId, transport, lifetime.signal)) {
+          // A close, account retirement or newer receipt may have superseded this read.
+          if (inFlight.current !== delivery || latestDelivery.current !== delivery || !active.current || closed.current || viewRef.current) return;
+          invitationUnavailableRef.current = true;
+          setInvitationUnavailable(true);
+          setError(false);
+          return;
+        }
+        if (inFlight.current !== delivery || !active.current || closed.current) return;
         if (command && liveRaceCommandRejected(failure)) {
+          /** Definitive rejection can restore the submitted word without overwriting later input. */
+          const submitted = submittedDraft.current?.command === command ? submittedDraft.current : null;
+          if (submitted) {updateDraft(current => rejectLiveRaceDraft(current, submitted.draft)); submittedDraft.current = null;}
           pending.current = null;
           refreshRequired.current = true;
           reconcile = true;
@@ -175,7 +225,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         }
       }
     }
-  }, [transport, locale, categoryId, createChallenge, challengeId, apply]);
+  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, updateDraft]);
   /** Signals never bypass delivery ownership or outage backoff. */
   const refresh = useCallback(() => {refreshQueued.current = true; if (performance.now() >= nextDeliveryAt.current) void deliver();}, [deliver]);
   /** The platform owns the private authenticated listener. */
@@ -209,7 +259,9 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       document.removeEventListener("visibilitychange", resume);
       // Strict Mode reactivates this lifetime synchronously; only a real unmount retires its seat.
       queueMicrotask(() => {
-        if (active.current || closed.current) return;
+        if (active.current) return;
+        waitOwner.current?.abort();
+        if (closed.current) return;
         /** Last accepted ticket remains owned by this retired account journey. */
         const current = viewRef.current;
         if (current && !["result", "cancelled"].includes(current.phase))
@@ -236,39 +288,57 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   }, [view?.phase, view?.startsAtMs, deliver]);
   /** Leaves the owned seat and returns to the multiplayer intro. */
   const close = () => {
-    if (closed.current) return;
-    closed.current = true;
+    if (closed.current || closeRequested.current) return;
     /** Snapshot whose ticket and prompt own the current interaction. */
     const current = viewRef.current;
-    if (current && !["result", "cancelled"].includes(current.phase))
-      void transport.update({ticketId: current.ticketId, action: "leave", requestId: leaveId.current}).catch(() => {});
+    if (current && !["result", "cancelled"].includes(current.phase)) {
+      closeRequested.current = true;
+      setClosing(true);
+      pending.current = {ticketId: current.ticketId, action: "leave", requestId: leaveId.current};
+      refreshRequired.current = false;
+      nextDeliveryAt.current = 0;
+      void deliver();
+      return;
+    }
+    closed.current = true;
     onClose();
   };
   useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: false, dismissQuitConfirmation: () => {}, requestClose: close});
+  /** Local composition can continue while server mutations and their exact receipts remain locked. */
+  const canDraft = phase === "racing" && Boolean(view?.run?.currentRiddle) && !closing && !closed.current && !closeRequested.current && pending.current?.action !== "leave";
   /** Edits the current prompt while preserving confirmed hint letters. */
   const input = (kind: "letter" | "text" | "backspace" | "slot", value: string | number = "") => {
     /** Current server-owned prompt and revealed letters. */
     const riddle = viewRef.current?.run?.currentRiddle;
-    if (riddle && !pending.current && (viewRef.current?.phase === "racing" || viewRef.current?.phase === "countdown" && serverNow() >= (viewRef.current.startsAtMs ?? Infinity)))
-      setDraft(current => editRaceInput(riddle, current, kind, value));
+    if (riddle && canDraft && active.current && !closed.current && !closeRequested.current && pending.current?.action !== "leave" &&
+      (viewRef.current?.phase === "racing" || viewRef.current?.phase === "countdown" && serverNow() >= (viewRef.current.startsAtMs ?? Infinity)))
+      updateDraft(current => editLiveRaceDraft(riddle, current, kind, value));
   };
   /** Stable command selected before starting an asynchronous delivery. */
   const command = (action: "guess" | "hint" | "skip") => {
     /** Snapshot whose ticket and prompt own the current interaction. */
     const current = viewRef.current;
-    if (!current?.run?.currentRiddle || pending.current || refreshRequired.current || !(current.phase === "racing" || current.phase === "countdown" && serverNow() >= (current.startsAtMs ?? Infinity))) return;
-    if (action === "guess" && draft.letters.some(letter => !letter)) return;
+    /** Exact accepted prompt owns this command and the subsequent editable attempt. */
+    const riddle = current?.run?.currentRiddle;
+    if (!current || !riddle || pending.current || refreshRequired.current || !(current.phase === "racing" || current.phase === "countdown" && serverNow() >= (current.startsAtMs ?? Infinity))) return;
+    /** Every admitted input transition precedes the explicit submit, independently of rendering. */
+    const latestDraft = getDraft();
+    if (action === "guess" && latestDraft.letters.some(letter => !letter)) return;
     pending.current = {ticketId: current.ticketId, action, requestId: createRequestId(`live-${action}`),
-      riddleId: current.run.currentRiddle.riddleId, ...(action === "guess" ? {guess: draft.letters.join("")} : {})};
+      riddleId: riddle.riddleId, ...(action === "guess" ? {guess: latestDraft.letters.join("")} : {})};
+    if (action === "guess") {
+      submittedDraft.current = {command: pending.current, draft: {...latestDraft, letters: [...latestDraft.letters]}};
+      updateDraft(() => createLiveRaceDraft(riddle, latestDraft.revision));
+    }
     void deliver();
   };
-  useAnswerKeyboard({active: phase === "racing" && !busy && !pending.current,
+  useAnswerKeyboard({active: canDraft,
     onLetter: letter => input("letter", letter), onBackspace: () => input("backspace"), onSubmit: () => command("guess")});
   useRaceGameplayFit({active: phase === "racing", screenRef: dialogRef, viewportRef, gameplayRef});
   /** Server-confirmed guesses shown in the existing answer board. */
-  const guesses = view?.run?.currentRiddle?.confirmedGuesses ?? [];
-  /** Whole seconds remaining until the authoritative shared start. */
-  const countdown = Math.max(0, Math.ceil(((view?.startsAtMs ?? now) - now) / 1000));
+  const guesses = view?.run?.currentRiddle?.confirmedGuesses;
+  /** Draft edits retain keyboard feedback until a new authoritative guess history arrives. */
+  const letterStates = useMemo(() => getRaceLetterStates(guesses ?? []), [guesses]);
   /** Local privacy masking cannot change private scoring or the server winner. */
   const shownView = blocked && view ? {...view, opponent: view.opponent ? {...view.opponent,
     displayName: tr("RaceTo10.BLOCK_SUCCESS"), avatarUrl: null, level: 1} : null,
@@ -276,24 +346,30 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   /** Only adapters with both safety operations expose human-opponent controls. */
   const hasSafety = shownView?.opponent?.bot === false && Boolean(transport.blockOpponent && transport.reportOpponent);
   return <section ref={dialogRef} className={`race-screen${hasSafety ? " race-screen-live-safety" : ""}${phase === "racing" ? " race-screen-gameplay" : !view || phase === "searching" || phase === "countdown" ? " race-screen-live-lobby" : ""}`}
-    role="dialog" aria-modal="true" aria-labelledby="race-title" tabIndex={-1} data-analytics-screen={`multiplayer_live_${phase ?? "searching"}`}>
+    role="dialog" aria-modal="true" aria-labelledby="race-title" tabIndex={-1} data-analytics-screen={`multiplayer_live_${invitationUnavailable ? "invitation_unavailable" : phase ?? "searching"}`}>
     {phase !== "racing" && <RaceTopbar live coins={shownView?.newCoins ?? coins} onClose={close} />}
     {error && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")} <button disabled={busy} onClick={() => void deliver()}>{tr("RaceTo10.RETRY")}</button></div>}
-    {(!view || phase === "searching" || phase === "countdown") && <div className="live-race-lobby">
+    {!invitationUnavailable && (!view || phase === "searching" || phase === "countdown") && <div className="live-race-lobby">
       <div className="live-race-self">{shownView ? <LiveRaceIdentity player={shownView.player} /> : <p role="status">{tr("Accessibility.LOADING")}</p>}</div>
       <div className="live-race-status" role="status" aria-live="polite">
         <h2>{tr(shownView?.phase === "countdown" ? "RaceTo10.LIVE_STARTING" : shownView?.challengeId ? "RaceTo10.CHALLENGE_FRIEND" : "RaceTo10.LIVE_FINDING")}</h2>
-        {shownView?.phase === "countdown" ? <strong className="live-race-countdown">{countdown}</strong> : <p>{tr(shownView?.challengeId ? "RaceTo10.LIVE_FRIEND_WAIT" : "RaceTo10.LIVE_WAIT")}</p>}
-      {shownView?.phase === "searching" && shownView.challengeId && <LiveRaceInviteShare challengeId={shownView.challengeId} transport={transport} />}
+        {shownView?.phase === "countdown" ? <LiveRaceSearchWheel endsAtMs={shownView.startsAtMs ?? undefined} now={now} starting /> :
+          shownView?.challengeId || createChallenge || challengeId ? <p>{tr("RaceTo10.LIVE_FRIEND_WAIT")}</p> :
+          <LiveRaceSearchWheel endsAtMs={shownView?.searchEndsAtMs} now={now} />}
+      {shownView?.phase === "searching" && shownView.challengeId && !rematchOfTicketId && <LiveRaceInviteShare challengeId={shownView.challengeId} transport={transport} />}
       </div>
       <div className="live-race-rival">{shownView?.opponent && <LiveRaceIdentity player={shownView.opponent} />}</div>
+    </div>}
+    {invitationUnavailable && <div className="race-panel race-result">
+      <p role="status">{tr("RaceTo10.INVITATION_EXPIRED")}</p>
+      <button className="race-primary" onClick={close}>{tr("RaceTo10.CLOSE")}</button>
     </div>}
     {phase === "racing" && shownView?.run && <RaceGameplay live viewportRef={viewportRef} gameplayRef={gameplayRef}
       run={shownView.opponent?.bot && shownView.run.opponent ? {...shownView.run, opponent: {...shownView.run.opponent, displayName: tr("RaceTo10.LIVE_OPPONENT")}} : shownView.run} adjustedNow={Math.max(0, now - (shownView.startsAtMs ?? now)) + shownView.run.totalPenaltyMs}
       liveClock={{...clockAnchor.current, startsAtMs: shownView.startsAtMs ?? now}}
       opponentCorrect={shownView.opponent?.correctCount ?? 0} feedback={null} coins={coins} currentLetters={draft.letters}
-      activeSlotIndex={draft.activeSlotIndex} guesses={guesses} letterStates={getRaceLetterStates(guesses)}
-      pending={busy || Boolean(pending.current)} requiresRunRefresh={Boolean(pending.current) || refreshRequired.current} allowTypingWhilePending={false}
+      activeSlotIndex={draft.activeSlotIndex} guesses={guesses ?? []} letterStates={letterStates}
+      pending={busy || Boolean(pending.current)} requiresRunRefresh={Boolean(pending.current) || refreshRequired.current} allowTypingWhilePending={canDraft}
       onClose={close} onSelectSlot={index => input("slot", index)} onLetter={letter => input("letter", letter)}
       onText={text => input("text", text)} onBackspace={() => input("backspace")} onSubmit={() => command("guess")}
       onHint={() => command("hint")} onSkip={() => command("skip")} />}
@@ -302,6 +378,8 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       <div className="race-result-score"><span>{shownView.player.displayName}<strong>{shownView.player.correctCount}/10</strong></span>
         <span>{shownView.opponent?.bot ? tr("RaceTo10.LIVE_OPPONENT") : shownView.opponent?.displayName}<strong>{shownView.opponent?.correctCount ?? 0}/10</strong></span></div>
       {shownView.rewardCoins === 50 && <p className="live-race-reward">{tr("RaceTo10.LIVE_REWARD", {coins: shownView.rewardCoins})}</p>}
+      {!blocked && shownView.opponent?.bot === false && transport.rematch && onRematch &&
+        <button className="race-secondary live-race-rematch" onClick={() => onRematch(shownView.ticketId)}>{tr("RaceTo10.REMATCH")}</button>}
       <button className="race-primary" onClick={close}>{tr("RaceTo10.CLOSE")}</button>
     </div>}
     {hasSafety && shownView &&

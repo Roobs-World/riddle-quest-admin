@@ -29,8 +29,17 @@ describe("guidance configuration", () => {
     expect(getGameTour("challenge")).toEqual(["gameCoins", "gameHint", "submitAnswer"]);
     expect(getGameTour("classic", false)).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
     expect(getGameTour("challenge", false)).toEqual(["gameHint", "submitAnswer"]);
+    expect(getGameTour("classic", false, false)).toEqual(["submitAnswer"]);
+    expect(getGameTour("classic", true, false)).toEqual(["submitAnswer"]);
     expect(getProfileTour()).toEqual(PROFILE_TOUR);
     expect(getProfileTour(false)).toEqual(PROFILE_TOUR.filter(id => id !== "profileTreasure"));
+  });
+
+  it("keeps wrong-answer hint guidance absent when the target has no economy", () => {
+    /** A real wrong answer would normally qualify for the paid hint reminder. */
+    const state = {...createInitialGameSession(), guesses: [{guess: ["Q"], feedback: ["red" as const]}]};
+    expect(getContextualTooltipCandidates(state, null, false).find(candidate=>candidate.id==="hintAfterWrongGuess")?.when).toBe(false);
+    expect(getContextualTooltipCandidates(state, null, true).find(candidate=>candidate.id==="hintAfterWrongGuess")?.when).toBe(true);
   });
 
   it("shows ranks immediately after achievements in the profile tour", () => {

@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useRef} from "react";
 import type {GameModal, GameSessionState} from "./gameSession";
 import {
   ContinueModalPage,
@@ -34,6 +34,8 @@ export type GameModalPagesProps = {
   onToggleMute: () => void;
   /** Stores commerce available. */
   commerceAvailable?: boolean;
+  /** Paid actions require an actual economy module in the owning host session. */
+  economyAvailable?: boolean;
   /** Stores on request hint. */
   onRequestHint: () => void;
   /** Stores on request skip. */
@@ -59,6 +61,7 @@ export function GameModalPages({
   onOpenModal,
   onToggleMute,
   commerceAvailable = true,
+  economyAvailable = true,
   onRequestHint,
   onRequestSkip,
   onRequestLeaderboard,
@@ -71,8 +74,13 @@ export function GameModalPages({
   /** Provides balance behavior. */
   const balance = profile?.coins ?? 0;
 
+  /** Page entry owns the initial read; metric clicks and Retry own subsequent reads. */
+  const previousModal = useRef<GameModal>(null);
   useEffect(() => {
-    if (state.modal === "leaderboard") onRequestLeaderboard(state.leaderboardType);
+    /** Initial reads belong to a page transition rather than repeated metric renders. */
+    const enteringLeaderboard = state.modal === "leaderboard" && previousModal.current !== "leaderboard";
+    previousModal.current = state.modal;
+    if (enteringLeaderboard) onRequestLeaderboard(state.leaderboardType);
   }, [onRequestLeaderboard, state.leaderboardType, state.modal]);
 
   return (
@@ -87,6 +95,8 @@ export function GameModalPages({
           onSkip={onRequestSkip}
           onOpenModal={onOpenModal}
           commerceAvailable={commerceAvailable}
+          economyAvailable={economyAvailable}
+          onDecline={onClose}
         />
       )}
 
@@ -124,6 +134,7 @@ export function GameModalPages({
           key={state.leaderboardType}
           entries={state.leaderboard}
           loading={state.leaderboardLoading}
+          loadError={state.leaderboardLoadError}
           leaderboardType={state.leaderboardType}
           onRequestLeaderboard={onRequestLeaderboard}
         />

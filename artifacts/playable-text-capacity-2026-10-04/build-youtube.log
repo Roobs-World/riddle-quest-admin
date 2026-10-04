@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YOUTUBE_BUILD=1 NODE_ENV=production vite build --mode youtube && pnpm audit:youtube-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.105872ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.918223ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.879418ms)
+✔ rejects imports between different target owners (1.439977ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.650262ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.926695ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.065037ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.71266ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.956351ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.646365ms)
+✔ aggregates violations in deterministic file and source order (0.743699ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 129.639217
+Web Target boundary audit passed (313 files, 1359 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for youtube...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-youtube/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+dist-youtube/index.html                             0.89 kB │ gzip:  0.44 kB
+dist-youtube/third-party-licenses.txt               1.73 kB │ gzip:  0.89 kB
+dist-youtube/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+dist-youtube/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+dist-youtube/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
+dist-youtube/assets/playable-pack-en-DVIes60K.js   87.86 kB │ gzip: 47.68 kB
+dist-youtube/assets/playable-pack-pt-ClA__jm8.js   90.15 kB │ gzip: 48.96 kB
+dist-youtube/assets/playable-pack-nl-DkOlH0rZ.js   90.54 kB │ gzip: 49.15 kB
+dist-youtube/assets/playable-pack-id-sY0SyVAY.js   91.21 kB │ gzip: 49.52 kB
+dist-youtube/assets/playable-pack-it-DfYeKyB0.js   91.35 kB │ gzip: 49.61 kB
+dist-youtube/assets/playable-pack-es-DXSce32h.js   91.65 kB │ gzip: 49.75 kB
+dist-youtube/assets/playable-pack-de-DVMVFX4j.js   92.15 kB │ gzip: 50.04 kB
+dist-youtube/assets/playable-pack-tr-CrKif9Iq.js   92.54 kB │ gzip: 50.23 kB
+dist-youtube/assets/playable-pack-pl-CI2Jn8uf.js   92.70 kB │ gzip: 50.33 kB
+dist-youtube/assets/playable-pack-fr-DDw4QxX0.js   93.56 kB │ gzip: 50.76 kB
+dist-youtube/assets/playable-pack-ja-CpbV2Ro8.js   94.66 kB │ gzip: 51.40 kB
+dist-youtube/assets/playable-pack-vi-9jprG3fm.js   96.78 kB │ gzip: 52.54 kB
+dist-youtube/assets/playable-pack-ko-DG46iodG.js   97.36 kB │ gzip: 52.86 kB
+dist-youtube/assets/playable-pack-ar-Oe2mP_yk.js  102.12 kB │ gzip: 55.45 kB
+dist-youtube/assets/index-C4wSZFG-.js             105.00 kB │ gzip: 35.00 kB
+dist-youtube/assets/playable-pack-ru-BhtyLCFG.js  114.09 kB │ gzip: 61.93 kB
+dist-youtube/assets/playable-pack-hi-DHT12NVx.js  134.49 kB │ gzip: 72.94 kB
+dist-youtube/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.04s
+$ node scripts/audit-youtube-artifact.mjs
+YouTube artifact audit passed: 24 files, 1.80 MiB total and conservative initial transfer, 16 locale(s)

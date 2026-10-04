@@ -1,0 +1,47 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "missing-end",
+    "name": "composition setup retains the committed prefix",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "missing-end",
+    "name": "interruption disables the same editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "missing-end",
+    "name": "resume reuses the same editor node",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "missing-end",
+    "name": "retired composition and trailing delivery preserve the answer prefix",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "missing-end",
+    "name": "fresh post-interruption text reaches the complete answer",
+    "actual": "ro",
+    "expected": "rome"
+  }
+]

@@ -10,10 +10,22 @@ export function createFirebaseRaceMatchmaking(
     liveSafety?: boolean;
     /** Only the owning provider opts into the retained live-results surface. */
     liveHistory?: boolean;
+    /** Only explicitly enabled targets may initiate a ticket-bound human rematch. */
+    liveRematch?: boolean;
   } = {},
 ): MatchmakingCapability {
   return {
   live: {
+    ...(options.liveRematch ? {
+      /** The existing authenticated join reserves the original private opponent server-side. */
+      async rematch(input: Pick<import("@qwordly/core/race").JoinLiveRace, "locale" | "categoryId" | "requestId"> & {
+        /** Caller-owned terminal seat. */ rematchOfTicketId: string;
+      }) {
+        /** Untrusted callable replies pass the existing strict live projection schema. */
+        const [{joinLiveRace}, {LiveRaceViewSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        return LiveRaceViewSchema.parse((await joinLiveRace(input)).data);
+      },
+    } : {}),
     ...(options.liveHistory ? {
       /** Lazy strict history remains outside startup and the default Jest surface. */
       async history(locale: import("@qwordly/core/race").RaceLocale) {

@@ -1,0 +1,497 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 6,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "solo",
+    "scenario": "feedback",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 192,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 6,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "transitions": 32,
+    "original": {
+      "segments": 192,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 0,
+      "splits": 32
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 0,
+      "splits": 32
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 0,
+      "splits": 2
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "solo",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "solo",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "solo",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 6,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "solo",
+    "scenario": "feedback",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "race",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "race",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 192,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "race",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 6,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "race",
+    "scenario": "feedback",
+    "transitions": 32,
+    "original": {
+      "segments": 192,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 0,
+      "splits": 32
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 0,
+      "splits": 32
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 0,
+      "splits": 2
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "solo",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "solo",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "solo",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 6,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "solo",
+    "scenario": "feedback",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "race",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 96,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "race",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 192,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "race",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 6,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "race",
+    "scenario": "feedback",
+    "transitions": 32,
+    "original": {
+      "segments": 192,
+      "splits": 0
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "typing",
+    "transitions": 32,
+    "original": {
+      "segments": 0,
+      "splits": 32
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "parent",
+    "transitions": 32,
+    "original": {
+      "segments": 0,
+      "splits": 32
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "shortcut",
+    "transitions": 2,
+    "original": {
+      "segments": 0,
+      "splits": 2
+    },
+    "updated": {
+      "segments": 0,
+      "splits": 0
+    }
+  }
+]

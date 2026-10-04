@@ -1,0 +1,74 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/CommerceModalPages.test.tsx
+  ● Console
+
+    console.error
+      Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+      1. You might have mismatching versions of React and the renderer (such as React DOM)
+      2. You might be breaking the Rules of Hooks
+      3. You might have more than one copy of React in the same app
+      See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem.
+
+      453 | /** Provides locale. */
+      454 | export const useLocale = (): Locale => {
+    > 455 |   return useSyncExternalStore(subscribe, getLocale, getLocale);
+          |                              ^
+      456 | };
+      457 |
+      458 | /** Gives compiled React renders an explicit locale dependency without remounting their state. */
+
+      at resolveDispatcher (../../node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.development.js:538:17)
+      at process.env.NODE_ENV.exports.useSyncExternalStore (../../node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.development.js:1316:14)
+      at useLocale (src/play/i18n.ts:455:30)
+      at useTranslator (src/play/i18n.ts:460:27)
+      at ContinueModalPage (src/play/modalPages/commerce/ContinueActions.tsx:47:27)
+      at Object.<anonymous> (src/play/__tests__/CommerceModalPages.test.tsx:126:43)
+
+  ● commerce modal pages › runs skip directly from the loss prompt and disables it when coins are insufficient
+
+    TypeError: Cannot read properties of null (reading 'useSyncExternalStore')
+
+      453 | /** Provides locale. */
+      454 | export const useLocale = (): Locale => {
+    > 455 |   return useSyncExternalStore(subscribe, getLocale, getLocale);
+          |                              ^
+      456 | };
+      457 |
+      458 | /** Gives compiled React renders an explicit locale dependency without remounting their state. */
+
+      at process.env.NODE_ENV.exports.useSyncExternalStore (../../node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.development.js:1316:33)
+      at useLocale (src/play/i18n.ts:455:30)
+      at useTranslator (src/play/i18n.ts:460:27)
+      at ContinueModalPage (src/play/modalPages/commerce/ContinueActions.tsx:47:27)
+      at Object.<anonymous> (src/play/__tests__/CommerceModalPages.test.tsx:126:43)
+
+
+Summary of all failing tests
+FAIL src/play/__tests__/CommerceModalPages.test.tsx
+  ● commerce modal pages › runs skip directly from the loss prompt and disables it when coins are insufficient
+
+    TypeError: Cannot read properties of null (reading 'useSyncExternalStore')
+
+      453 | /** Provides locale. */
+      454 | export const useLocale = (): Locale => {
+    > 455 |   return useSyncExternalStore(subscribe, getLocale, getLocale);
+          |                              ^
+      456 | };
+      457 |
+      458 | /** Gives compiled React renders an explicit locale dependency without remounting their state. */
+
+      at process.env.NODE_ENV.exports.useSyncExternalStore (../../node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.development.js:1316:33)
+      at useLocale (src/play/i18n.ts:455:30)
+      at useTranslator (src/play/i18n.ts:460:27)
+      at ContinueModalPage (src/play/modalPages/commerce/ContinueActions.tsx:47:27)
+      at Object.<anonymous> (src/play/__tests__/CommerceModalPages.test.tsx:126:43)
+
+
+Test Suites: 1 failed, 15 skipped, 295 passed, 296 of 311 total
+Tests:       1 failed, 121 skipped, 2706 passed, 2828 total
+Snapshots:   0 total
+Time:        8.92 s, estimated 101 s
+Ran all test suites.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand

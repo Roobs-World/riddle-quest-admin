@@ -115,6 +115,7 @@ import {
   type SinglePlayerSessionState,
 } from "../gameplay/singlePlayerSession";
 import {getCompletionBoundAuthoritativeSession} from "../gameplay/singlePlayerCompletionBinding";
+import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 
 /** Defines the user id value. */
 const USER_ID = "player-1";
@@ -542,9 +543,9 @@ describe("single-player session transactions", () => {
     ).resolves.toMatchObject({attempts: 1, isCorrect: true, gameOver: true});
   });
 
-  it("keeps a recorded Daily loss retryable on the same UTC entitlement", async () => {
+  it("keeps a recorded Daily loss retryable on the same locale entitlement", async () => {
     /** Provides challenge date behavior. */
-    const challengeDate = new Date().toISOString().slice(0, 10);
+    const challengeDate = getDailyDate("en");
     /** Provides prior behavior. */
     const prior = baseSession({
       gameMode: "challenge",
@@ -601,7 +602,7 @@ describe("single-player session transactions", () => {
 
   it("keeps a terminal win recoverable when a newer locale session is issued", async () => {
     /** Provides challenge date behavior. */
-    const challengeDate = new Date().toISOString().slice(0, 10);
+    const challengeDate = getDailyDate("fr");
     /** Provides completion key behavior. */
     const completionKey = `challenge:${challengeDate}`;
     /** Provides riddle id behavior. */

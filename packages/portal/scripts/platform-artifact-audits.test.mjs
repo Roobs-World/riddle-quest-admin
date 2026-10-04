@@ -83,7 +83,7 @@ test("the Web Target config resolves one isolated build profile for every releas
       outDir: "dist-jest",
       htmlEntry: "/targets/jest/index.html",
       shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
-      artifactPlugin: undefined,
+      artifactPlugin: "riddle-quest-jest-challenge-push-worker",
     },
     facebook: {
       outDir: "dist-facebook",
@@ -155,6 +155,27 @@ test("the Web Target config resolves one isolated build profile for every releas
   const youtube = createWebTargetViteConfig({command: "build", mode: "youtube", environment: {}});
   assert.equal(youtube.publicDir, false);
   assert.deepEqual(youtube.build.modulePreload, {polyfill: false});
+});
+
+test("every target config retains the Jest worker boundary guard", async () => {
+  const {createWebTargetViteConfig} = await import("../webTargetViteConfig.ts");
+  const workerImport = "virtual:jest-live-challenge-push-worker-url";
+  for (const command of ["build", "serve"]) {
+    for (const mode of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+      const config = createWebTargetViteConfig({command, mode, environment: {}});
+      const guards = config.plugins.flat(Infinity).filter(
+        plugin => plugin?.name === "riddle-quest-jest-challenge-push-worker",
+      );
+      assert.equal(guards.length, 1, `${mode}/${command} must retain exactly one worker boundary guard`);
+      const guard = guards[0];
+      assert.equal(guard.resolveId("unrelated-module"), null);
+      if (mode === "jest") {
+        assert.equal(guard.resolveId(workerImport), "\0virtual:jest-live-challenge-push-worker-url");
+      } else {
+        assert.throws(() => guard.resolveId(workerImport), /cannot emit the Jest notification worker/u);
+      }
+    }
+  }
 });
 
 test("the private HTML adapter emits host filenames with artifact-root-relative URLs", async () => {
@@ -551,6 +572,38 @@ test("Facebook audit rejects SDK-version bundle configuration", async () => {
     assert.notEqual(invalid.status, 0);
     assert.match(invalid.stderr, /RICH_GAMEPLAY/);
   });
+});
+
+test("Facebook audit accepts reviewed custom update templates and rejects malformed declarations", async () => {
+  await withFixture("facebook", async directory => {
+    const configPath = path.join(directory, "fbapp-config.json");
+    const config = JSON.parse(await readFile(configPath, "utf8"));
+    config.instant_games.custom_update_templates = {race_context_challenge: {example: "Race to 10 · Challenge a friend"}};
+    await writeFile(configPath, JSON.stringify(config));
+    const accepted = runAudit(facebookAudit, directory);
+    assert.equal(accepted.status, 0, accepted.stderr);
+    for (const templates of [[], null, {race_context_challenge: {}}, {race_context_challenge: {example: 42}},
+      {race_context_challenge: {example: " "}}, {"invalid name": {example: "Example"}}]) {
+      config.instant_games.custom_update_templates = templates;
+      await writeFile(configPath, JSON.stringify(config));
+      const invalid = runAudit(facebookAudit, directory);
+      assert.notEqual(invalid.status, 0);
+      assert.match(invalid.stderr, /custom update templates/);
+    }
+  });
+});
+
+test("Facebook client template overrides must match its bundled review configuration", async () => {
+  const {createWebTargetViteConfig} = await import("../webTargetViteConfig.ts");
+  const config = createWebTargetViteConfig({command: "build", mode: "facebook", environment: {}});
+  const plugin = config.plugins.flat(Infinity).find(candidate => candidate?.name === "riddle-quest-facebook-artifact");
+  assert.ok(plugin);
+  plugin.configResolved({env: {VITE_FACEBOOK_CONTEXT_CHALLENGE_TEMPLATE: "race_context_challenge"}});
+  plugin.configResolved({env: {VITE_FACEBOOK_CONTEXT_CHALLENGE_TEMPLATE: ""}});
+  for (const template of ["undeclared", "invalid name"]) {
+    assert.throws(() => plugin.configResolved({env: {VITE_FACEBOOK_CONTEXT_CHALLENGE_TEMPLATE: template}}),
+      /must be declared in fbapp-config.json/);
+  }
 });
 
 test("Facebook audit rejects direct parent-window messaging", async () => {

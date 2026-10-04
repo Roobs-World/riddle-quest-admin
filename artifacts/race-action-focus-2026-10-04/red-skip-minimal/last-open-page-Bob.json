@@ -1,0 +1,40 @@
+{
+  "text": "Race to 10\n×\n0:02.3\n+0:00.0\nYou\nRiddles completed:\n0 / 10\nAlice\nRiddles completed:\n0 / 10\nA four-letter browser answer\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\n+15 seconds\nSubmit\nSkip\n+45 seconds",
+  "active": {
+    "tag": "SECTION",
+    "className": "race-screen race-screen-gameplay",
+    "text": "Live PvPRace to 10×Adjusted time0:02.3+0:00.0 YouRiddles completed: 0 / 100/10AliceRiddles completed: 0 / 100/10A four-letter browser answerQWERTYUIOPASDFGHJKLZXCVBNMHint +15 secondsSubmitSkip +45 seconds"
+  },
+  "nativeValue": "",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Bob",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-5dfbc963-b55f-40fb-82d0-0e3cfc03abe2"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-dbffb392-75e1-4038-a251-b17c4697b3cb"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-ae186826-4161-4a68-898b-e207227c790b"
+      }
+    ],
+    "saves": [],
+    "loads": 0,
+    "errors": [],
+    "unhandled": [],
+    "segmentYields": 0,
+    "countSegments": false
+  }
+}

@@ -1,0 +1,2408 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "guest gameplay does not advertise unavailable hint and skip actions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 1 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 1 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 2 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 2 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 3 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 3 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "recycled content retains distinct round tokens",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "lost completion acknowledgement is retried without duplicate practice wins",
+    "actual": {
+      "dropped": 1,
+      "wins": 3
+    },
+    "expected": {
+      "dropped": 1,
+      "wins": 3
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "all guest currency and rewards remain zero",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "only the same-origin session gateway is requested",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "guest gameplay does not advertise unavailable hint and skip actions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "fifth wrong guess reaches the ordinary decision without bridge errors",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "five acknowledged wrong guesses survive decision reload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "guest decision does not advertise unavailable paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "guest decision offers the translated next action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "acknowledged loss advances automatically to an empty playable example",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "next round accepts native typing",
+    "actual": "Q",
+    "expected": "Q"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "all guest currency and rewards remain zero",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "only the same-origin session gateway is requested",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "loss",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "guest gameplay does not advertise unavailable hint and skip actions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "round 1 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "round 1 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "round 2 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "round 2 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "round 3 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "round 3 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "recycled content retains distinct round tokens",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "lost completion acknowledgement is retried without duplicate practice wins",
+    "actual": {
+      "dropped": 1,
+      "wins": 3
+    },
+    "expected": {
+      "dropped": 1,
+      "wins": 3
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "all guest currency and rewards remain zero",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "only the same-origin session gateway is requested",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cycle",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "guest gameplay does not advertise unavailable hint and skip actions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "fifth wrong guess reaches the ordinary decision without bridge errors",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "five acknowledged wrong guesses survive decision reload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "guest decision does not advertise unavailable paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "guest decision offers the translated next action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "acknowledged loss advances automatically to an empty playable example",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "next round accepts native typing",
+    "actual": "Q",
+    "expected": "Q"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "all guest currency and rewards remain zero",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "only the same-origin session gateway is requested",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "loss",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "guest gameplay does not advertise unavailable hint and skip actions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 1 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 1 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 2 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 2 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 3 starts with zero attempts",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "round 3 starts with an empty board",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "recycled content retains distinct round tokens",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "lost completion acknowledgement is retried without duplicate practice wins",
+    "actual": {
+      "dropped": 1,
+      "wins": 3
+    },
+    "expected": {
+      "dropped": 1,
+      "wins": 3
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "all guest currency and rewards remain zero",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "only the same-origin session gateway is requested",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cycle",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "guest gameplay does not advertise unavailable hint and skip actions",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "fifth wrong guess reaches the ordinary decision without bridge errors",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "five acknowledged wrong guesses survive decision reload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "guest decision does not advertise unavailable paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "guest decision offers the translated next action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "acknowledged loss advances automatically to an empty playable example",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "next round accepts native typing",
+    "actual": "Q",
+    "expected": "Q"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "all guest currency and rewards remain zero",
+    "actual": {
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "only the same-origin session gateway is requested",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "loss",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Next",
+    "expected": "Next"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Next",
+    "expected": "Next"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "التالي",
+    "expected": "التالي"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "التالي",
+    "expected": "التالي"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Weiter",
+    "expected": "Weiter"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Weiter",
+    "expected": "Weiter"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Siguiente",
+    "expected": "Siguiente"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Siguiente",
+    "expected": "Siguiente"
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "es",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Suivant",
+    "expected": "Suivant"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Suivant",
+    "expected": "Suivant"
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "fr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "अगला",
+    "expected": "अगला"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "अगला",
+    "expected": "अगला"
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Berikutnya",
+    "expected": "Berikutnya"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Berikutnya",
+    "expected": "Berikutnya"
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "id",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Avanti",
+    "expected": "Avanti"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Avanti",
+    "expected": "Avanti"
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "it",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "次",
+    "expected": "次"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "次",
+    "expected": "次"
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ja",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "다음",
+    "expected": "다음"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "다음",
+    "expected": "다음"
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ko",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Próximo",
+    "expected": "Próximo"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Próximo",
+    "expected": "Próximo"
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pt",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Далее",
+    "expected": "Далее"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Далее",
+    "expected": "Далее"
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "ru",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Volgende",
+    "expected": "Volgende"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Volgende",
+    "expected": "Volgende"
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "nl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Sonraki",
+    "expected": "Sonraki"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Sonraki",
+    "expected": "Sonraki"
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "tr",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Tiếp theo",
+    "expected": "Tiếp theo"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Tiếp theo",
+    "expected": "Tiếp theo"
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "vi",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Następny",
+    "expected": "Następny"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 568,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "guest Next uses the supported locale",
+    "actual": "Następny",
+    "expected": "Następny"
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next is reachable and at least 44px",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated guest dialog has no paid choices",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "locale": "pl",
+    "width": 390,
+    "height": 844,
+    "scenario": "localized-next",
+    "name": "translated Next advances the confirmed practice round",
+    "actual": 1,
+    "expected": 1
+  }
+]

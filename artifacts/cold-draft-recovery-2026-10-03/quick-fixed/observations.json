@@ -1,0 +1,96 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "native typing continues only the displayed session",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

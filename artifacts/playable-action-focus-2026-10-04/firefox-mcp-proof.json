@@ -1,0 +1,225 @@
+{
+  "verified": true,
+  "viewport": {
+    "width": 390,
+    "height": 568
+  },
+  "notes": "Game selection, Hint, Submit, typing, Enter and Shift+Tab used native Firefox MCP without refocusing before typing. Only holding/releasing a save used an injected SDK fixture control. This is not mobile OS keyboard or production latency certification.",
+  "steps": [
+    {
+      "name": "focus-ff-hint",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"focused\": true,\n  \"draft\": \"r\",\n  \"hint\": [\n    \"r\"\n  ],\n  \"saves\": 2,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "focused": true,
+        "draft": "r",
+        "hint": [
+          "r"
+        ],
+        "saves": 2,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "focused": true,
+        "draft": "r",
+        "hint": [
+          "r"
+        ],
+        "saves": 2,
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "focus-ff-typed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"focused\": true,\n  \"saves\": 2\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "rome",
+        "focused": true,
+        "saves": 2
+      },
+      "expected": {
+        "draft": "rome",
+        "focused": true,
+        "saves": 2
+      }
+    },
+    {
+      "name": "focus-ff-win",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"wins\": 1,\n  \"saves\": 3,\n  \"results\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "wins": 1,
+        "saves": 3,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "wins": 1,
+        "saves": 3,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "focus-ff-submit",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"focused\": true,\n  \"draft\": \"\",\n  \"confirmed\": 1,\n  \"saves\": 2\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "focused": true,
+        "draft": "",
+        "confirmed": 1,
+        "saves": 2
+      },
+      "expected": {
+        "focused": true,
+        "draft": "",
+        "confirmed": 1,
+        "saves": 2
+      }
+    },
+    {
+      "name": "focus-ff-submit-typed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"focused\": true,\n  \"saves\": 2\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "rome",
+        "focused": true,
+        "saves": 2
+      },
+      "expected": {
+        "draft": "rome",
+        "focused": true,
+        "saves": 2
+      }
+    },
+    {
+      "name": "focus-ff-submit-win",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"wins\": 1,\n  \"saves\": 3,\n  \"results\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "wins": 1,
+        "saves": 3,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "wins": 1,
+        "saves": 3,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "focus-ff-held",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"focused\": true,\n  \"busy\": \"true\",\n  \"saves\": 2\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "focused": true,
+        "busy": "true",
+        "saves": 2
+      },
+      "expected": {
+        "focused": true,
+        "busy": "true",
+        "saves": 2
+      }
+    },
+    {
+      "name": "focus-ff-tab",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"tile\": true,\n  \"focused\": false\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "tile": true,
+        "focused": false
+      },
+      "expected": {
+        "tile": true,
+        "focused": false
+      }
+    },
+    {
+      "name": "focus-ff-receipt",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"sameOwner\": true,\n  \"tile\": true,\n  \"focused\": false,\n  \"busy\": \"false\",\n  \"saves\": 2,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "sameOwner": true,
+        "tile": true,
+        "focused": false,
+        "busy": "false",
+        "saves": 2,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "sameOwner": true,
+        "tile": true,
+        "focused": false,
+        "busy": "false",
+        "saves": 2,
+        "errors": [],
+        "unhandled": []
+      }
+    }
+  ]
+}

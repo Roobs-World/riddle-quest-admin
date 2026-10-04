@@ -1,6 +1,7 @@
 import {countCoinRewardAchievements} from "@qwordly/core/game";
 import {splitGraphemes} from "@qwordly/core/game";
 import {findNewYouTubeAchievements} from "./achievements";
+import {insertYouTubeAnswerText, deleteYouTubeAnswerLetter} from "./input";
 import {
   YOUTUBE_ACHIEVEMENT_COINS,
   YOUTUBE_CLASSIC_SKIP_COST,
@@ -207,8 +208,33 @@ export class LocalSoloAuthority {
       active.hintRevealedIndices.includes(index)
     )
       return;
+    if (this.activeSlotIndex === index) return;
     this.activeSlotIndex = index;
     this.emit();
+  }
+  /** Applies committed text to the current draft without depending on React render timing. */
+  insertText(text: string): void {
+    if (!this.inputAllowed()) return;
+    /** Current authority-owned game supplies hint locks and answer length. */
+    const active = this.requireEditableGame(), riddle = this.requireActiveRiddle();
+    /** Projected letters include immutable hints without cloning the durable save. */
+    const letters = projectYouTubeDisplayLetters(this.draftLetters, active, riddle);
+    /** Each native event starts from the draft written by the preceding event. */
+    const next = insertYouTubeAnswerText({letters, activeSlotIndex: this.activeSlotIndex}, text,
+      letters.length, active.hintRevealedIndices, this.content.locale);
+    this.setInput(next.letters, next.activeSlotIndex);
+  }
+  /** Deletes from the current draft, including consecutive software-keyboard events. */
+  backspace(): void {
+    if (!this.inputAllowed()) return;
+    /** Current game owns deletion bounds and immutable revealed letters. */
+    const active = this.requireEditableGame(), riddle = this.requireActiveRiddle();
+    /** Hints remain projected into the editable answer before choosing the deletion target. */
+    const letters = projectYouTubeDisplayLetters(this.draftLetters, active, riddle);
+    /** Deletion observes the latest cursor even before React receives another render. */
+    const next = deleteYouTubeAnswerLetter({letters, activeSlotIndex: this.activeSlotIndex},
+      letters.length, active.hintRevealedIndices);
+    this.setInput(next.letters, next.activeSlotIndex);
   }
   /** Sets input. */
   setInput(letters: readonly string[], activeSlotIndex: number): void {
@@ -227,6 +253,10 @@ export class LocalSoloAuthority {
     /** Normalizes d. */
     const normalized = normalizeYouTubeDraftLetters(letters, active, riddle, this.content.locale);
     if (!normalized) return;
+    // Compare authority-owned letters after removing projected hints, so an
+    // unchanged display does not allocate another save snapshot in subscribers.
+    if (this.activeSlotIndex === activeSlotIndex && normalized.every((letter, index) => letter === this.draftLetters[index]))
+      return;
     this.draftLetters = normalized;
     this.activeSlotIndex = activeSlotIndex;
     this.emit();
@@ -463,9 +493,9 @@ export class LocalSoloAuthority {
     // never enter Cloud Save. Every durable/material transition is already
     // serialized before another action is enabled.
   }
-  /** Provides input allowed behavior. */
+  /** Late ephemeral edits require an editable game; ordinary in-flight saves still allow drafting. */
   private inputAllowed(): boolean {
-    return !this.paused && !this.saveGate.blocked;
+    return !this.paused && !this.saveGate.blocked && Boolean(this.save.activeGame && !this.save.activeGame.awaitingContinue);
   }
   /** Provides wait until active behavior. */
   private waitUntilActive(): Promise<void> {

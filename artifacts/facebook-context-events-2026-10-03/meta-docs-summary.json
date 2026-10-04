@@ -1,0 +1,10 @@
+{
+  "tool": "mcp__facebook_devtools__devtools_discovery",
+  "action": "search_docs",
+  "query": "Changing Contexts onContextChange",
+  "authType": "USER_ACCESS_TOKEN",
+  "title": "Changing Contexts",
+  "url": "https://developers.facebook.com/documentation/games/build/zero-permissions/social-features/changing-contexts",
+  "documentUpdated": "2026-03-25",
+  "finding": "Native context create/switch actions can occur outside game JavaScript. Register the success/failure onContextChange callbacks and reload current game state."
+}

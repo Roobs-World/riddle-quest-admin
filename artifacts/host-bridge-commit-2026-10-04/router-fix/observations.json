@@ -1,0 +1,398 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "B"
+    ],
+    "expected": [
+      "B"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "B"
+    ],
+    "expected": [
+      "B"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit",
+    "name": "suspended replacement retains the committed host UI",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit",
+    "name": "visible host submits through its committed authority adapter",
+    "actual": [
+      "B"
+    ],
+    "expected": [
+      "B"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit",
+    "name": "authoritative feedback reaches the still-visible game",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

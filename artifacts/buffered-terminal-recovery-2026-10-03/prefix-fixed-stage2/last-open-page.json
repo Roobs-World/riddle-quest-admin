@@ -1,0 +1,667 @@
+{
+  "text": "Classic\n325\nWhat has a face and hands but no arms?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nSUBMIT",
+  "probe": {
+    "outbound": [
+      {
+        "type": "game:resize",
+        "requestId": "resize-c5465aa3-87d1-4b63-adaf-b9f3d925d413",
+        "payload": {
+          "width": 390,
+          "height": 568
+        },
+        "sentAt": 1791057389585
+      },
+      {
+        "type": "game:ready",
+        "requestId": "ready-a81284ce-dfc8-4ebc-ad77-3f664a76d752",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791057389586
+      },
+      {
+        "type": "game:completeGame",
+        "requestId": "complete-37b6199d-4194-4c77-be7b-b6ee51d729b1",
+        "payload": {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001"
+        },
+        "sentAt": 1791057389610
+      },
+      {
+        "type": "game:submitGuess",
+        "requestId": "retained-next-guess",
+        "payload": {
+          "riddleId": "classic-fake-2",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000002",
+          "guess": "zzzzz",
+          "requestId": "retained-next-guess"
+        },
+        "sentAt": 1791057389650
+      },
+      {
+        "type": "game:loadRiddle",
+        "requestId": "load-a82ae5fa-c2f6-4ce7-bfbc-d1f4a27a9547",
+        "payload": {
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 2
+        },
+        "sentAt": 1791057390730
+      }
+    ],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-bd7a2adc-c322-4587-94e1-4f6c4555a8ea",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791057389569
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-48895575-145b-4ccb-ab84-045c1f483a7a",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791057389570
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-450cfa5f-3bf6-478f-b18d-a67de928d7a6",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791057389584
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-c5eb39ac-55ad-49eb-a617-b88f7db3894e",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-3c424a27-88a5-48cc-b761-fa8d5f8203a0",
+          "locale": "en",
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791057389593
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "classic-fake-1",
+            "text": "What has keys but cannot open doors?",
+            "answerLength": 5,
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "gameMode": "classic",
+            "index": 1,
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "piano",
+              "locale": "en"
+            },
+            "acceptedGuesses": [
+              {
+                "attempt": 1,
+                "feedback": [
+                  {
+                    "letter": "p",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "i",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "a",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "n",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "o",
+                    "status": "green"
+                  }
+                ]
+              }
+            ]
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 300,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791057389594
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "classic-fake-1"
+          }
+        },
+        "sentAt": 1791057389595
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "complete-37b6199d-4194-4c77-be7b-b6ee51d729b1",
+        "payload": {
+          "operation": "completeGame",
+          "ok": true,
+          "data": {
+            "attempts": 1,
+            "isCorrect": true,
+            "coinsEarned": 25,
+            "newlyUnlockedAchievementIds": [
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "newXp": 510,
+            "newLevel": 3,
+            "newWinStreak": 2,
+            "rewardBreakdown": {
+              "newBalance": 325,
+              "totalAwarded": 25
+            }
+          }
+        },
+        "sentAt": 1791057389641
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-1ac05df8-edf6-46c6-9dd7-6ef9af650d99",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791057389650
+      },
+      {
+        "type": "host:riddleLoaded",
+        "requestId": "load-a82ae5fa-c2f6-4ce7-bfbc-d1f4a27a9547",
+        "payload": {
+          "riddle": {
+            "riddleId": "classic-fake-2",
+            "text": "What has a face and hands but no arms?",
+            "answerLength": 5,
+            "sessionToken": "00000000-0000-4000-8000-000000000002",
+            "gameMode": "classic",
+            "index": 2,
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "clock",
+              "locale": "en"
+            }
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 325,
+            "level": 3,
+            "xp": 510,
+            "winStreak": 2,
+            "gamesPlayed": 8,
+            "wins": 6,
+            "achievements": [
+              "first_win",
+              "daily_spark",
+              "wins_5",
+              "perfect_guess",
+              "classic_perfect"
+            ],
+            "classicIndex": 2,
+            "totalWins": 6,
+            "challengeWins": 0,
+            "dailyPuzzlesCompleted": 0,
+            "bestStreak": 2,
+            "totalWordsGuessed": 1,
+            "totalGuessesInWins": 1,
+            "winRate": 75,
+            "averageGuesses": 0.17,
+            "totalScore": 90,
+            "highestLevelClassic": 1
+          }
+        },
+        "sentAt": 1791057390734
+      },
+      {
+        "type": "host:operationResult",
+        "requestId": "load-a82ae5fa-c2f6-4ce7-bfbc-d1f4a27a9547",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "classic-fake-2"
+          }
+        },
+        "sentAt": 1791057390734
+      }
+    ],
+    "errors": [],
+    "unhandled": [],
+    "saves": [
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791057389611,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "p",
+                "i",
+                "a",
+                "n",
+                "o"
+              ],
+              "feedback": [
+                "green",
+                "green",
+                "green",
+                "green",
+                "green"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "p",
+                  "i",
+                  "a",
+                  "n",
+                  "o"
+                ],
+                "feedback": [
+                  "green",
+                  "green",
+                  "green",
+                  "green",
+                  "green"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": true
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "p": "green",
+            "i": "green",
+            "a": "green",
+            "n": "green",
+            "o": "green"
+          },
+          "pendingOutcome": {
+            "id": "00000000-0000-4000-8000-000000000001-win-1",
+            "kind": "win",
+            "riddleId": "classic-fake-1",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "attempts": 1,
+            "isCorrect": true
+          }
+        }
+      },
+      {
+        "activeGame": null
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 325,
+          "level": 3,
+          "xp": 510,
+          "winStreak": 2,
+          "gamesPlayed": 8,
+          "wins": 6,
+          "achievements": [
+            "first_win",
+            "daily_spark",
+            "wins_5",
+            "perfect_guess",
+            "classic_perfect"
+          ],
+          "classicIndex": 2,
+          "totalWins": 6,
+          "challengeWins": 0,
+          "dailyPuzzlesCompleted": 0,
+          "bestStreak": 2,
+          "totalWordsGuessed": 1,
+          "totalGuessesInWins": 1,
+          "winRate": 75,
+          "averageGuesses": 0.17,
+          "totalScore": 90,
+          "highestLevelClassic": 1
+        }
+      }
+    ],
+    "guesses": [
+      {
+        "riddleId": "classic-fake-2",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000002",
+        "guess": "zzzzz",
+        "requestId": "retained-next-guess"
+      }
+    ],
+    "completions": [
+      {
+        "riddleId": "classic-fake-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001"
+      }
+    ],
+    "spends": [],
+    "before": {
+      "username": "Guest Solver",
+      "coins": 300,
+      "level": 3,
+      "xp": 420,
+      "winStreak": 2,
+      "gamesPlayed": 7,
+      "wins": 5,
+      "achievements": [
+        "first_win",
+        "daily_spark"
+      ],
+      "classicIndex": 1
+    },
+    "first": {
+      "riddleId": "classic-fake-1",
+      "text": "What has keys but cannot open doors?",
+      "answerLength": 5,
+      "sessionToken": "00000000-0000-4000-8000-000000000001",
+      "gameMode": "classic",
+      "index": 1,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "piano",
+        "locale": "en"
+      }
+    },
+    "next": {
+      "riddleId": "classic-fake-2",
+      "text": "What has a face and hands but no arms?",
+      "answerLength": 5,
+      "sessionToken": "00000000-0000-4000-8000-000000000002",
+      "gameMode": "classic",
+      "index": 2,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "clock",
+        "locale": "en"
+      }
+    },
+    "nextAccepted": {
+      "feedback": [
+        {
+          "letter": "z",
+          "status": "red"
+        },
+        {
+          "letter": "z",
+          "status": "red"
+        },
+        {
+          "letter": "z",
+          "status": "red"
+        },
+        {
+          "letter": "z",
+          "status": "red"
+        },
+        {
+          "letter": "z",
+          "status": "red"
+        }
+      ],
+      "attempts": 1,
+      "isCorrect": false,
+      "gameOver": false
+    }
+  },
+  "journal": {
+    "version": 1,
+    "scope": "jest-guest:1:en",
+    "riddle": {
+      "riddleId": "classic-fake-2",
+      "text": "What has a face and hands but no arms?",
+      "answerLength": 5,
+      "sessionToken": "00000000-0000-4000-8000-000000000002",
+      "gameMode": "classic",
+      "index": 2,
+      "attemptsUsed": 0,
+      "hasUsedContinue": false,
+      "awaitingContinue": false,
+      "evaluation": {
+        "answer": "clock",
+        "locale": "en"
+      }
+    },
+    "confirmedClassicIndex": 2,
+    "base": {
+      "currentLetters": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "activeSlotIndex": 0,
+      "guesses": [],
+      "engineSnapshot": {
+        "guesses": [],
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "gameOver": false
+      },
+      "modal": null,
+      "lastOutcome": null,
+      "completionAcknowledged": false,
+      "letterStates": {},
+      "profile": {
+        "username": "Guest Solver",
+        "coins": 300,
+        "level": 3,
+        "xp": 420,
+        "winStreak": 2,
+        "gamesPlayed": 7,
+        "wins": 5,
+        "achievements": [
+          "first_win",
+          "daily_spark"
+        ],
+        "classicIndex": 1
+      },
+      "lastRewards": null,
+      "optimisticAchievementIds": []
+    },
+    "draft": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "successors": [],
+    "queue": [
+      {
+        "message": {
+          "type": "game:submitGuess",
+          "requestId": "retained-next-guess",
+          "payload": {
+            "riddleId": "classic-fake-2",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000002",
+            "guess": "zzzzz",
+            "requestId": "retained-next-guess"
+          }
+        },
+        "attempts": 1,
+        "isCorrect": false,
+        "gameOver": false,
+        "canContinue": false,
+        "feedback": [
+          "red",
+          "red",
+          "red",
+          "red",
+          "red"
+        ]
+      }
+    ],
+    "draftActiveSlotIndex": 2
+  }
+}

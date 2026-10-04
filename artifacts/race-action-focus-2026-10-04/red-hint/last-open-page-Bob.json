@@ -1,0 +1,42 @@
+{
+  "text": "Race to 10\n×\n0:02.5\n+0:00.0\nYou\nRiddles completed:\n0 / 10\nAlice\nRiddles completed:\n1 / 10\nA four-letter browser answer\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\n+15 seconds\nSubmit\nSkip\n+45 seconds",
+  "nativeValue": "",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Bob",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-19e5657d-315c-4354-9467-e5e03603cc14"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-7609b1db-4348-4375-9c6d-771a40368a2f"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-6c49f85d-82fd-4c11-952a-06b4d7f57c7d"
+      },
+      {
+        "owner": "Bob",
+        "operation": "update",
+        "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "action": "poll",
+        "requestId": "live-poll-81aac901-4428-450b-a39e-673726231220"
+      }
+    ],
+    "saves": [],
+    "loads": 0,
+    "errors": [],
+    "unhandled": [],
+    "segmentYields": 0,
+    "countSegments": false
+  }
+}

@@ -57,6 +57,9 @@ export function useRaceGameplayFit({active, screenRef, viewportRef, gameplayRef}
     const observer = new ResizeObserver(fitGameplay);
     observer.observe(screen);
     observer.observe(gameplay);
+    /** Unscaled status can change height when a translated score wraps. */
+    const scoreboard = screen.querySelector(".race-scoreboard");
+    if (scoreboard) observer.observe(scoreboard);
     window.addEventListener("resize", fitGameplay);
     return () => {
       window.cancelAnimationFrame(frame);

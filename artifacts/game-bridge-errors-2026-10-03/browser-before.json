@@ -1,0 +1,442 @@
+[
+  {
+    "width": 1280,
+    "name": "foreign origin and foreign source are rejected",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "local: one synchronous dispatch under StrictMode",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "local: current rejection reaches the host once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "local: current rejection reaches telemetry once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "local: error keeps its current host and message",
+    "expected": {
+      "host": 0,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    },
+    "actual": {
+      "host": 0,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "local: replaced router cannot report late failures",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "local: replaced router cannot report late telemetry",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "local: replacement host retires old pending error replies",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "local: profile updates preserve a single current listener",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "local: synchronous router failure produces an error reply",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "local: non-Error rejection uses existing translated fallback",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 1280,
+    "name": "native: one synchronous dispatch under StrictMode",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: current rejection reaches the host once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: current rejection reaches telemetry once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: error keeps its current host and message",
+    "expected": {
+      "host": 1,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    },
+    "actual": {
+      "host": 1,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "native: replaced router cannot report late failures",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: replaced router cannot report late telemetry",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: replacement host retires old pending error replies",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: profile updates preserve a single current listener",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: synchronous router failure produces an error reply",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "native: non-Error rejection uses existing translated fallback",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 1280,
+    "name": "local: throw from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "local: reject from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "native: throw from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "native: reject from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "throwing host sender is reported without a recursive error reply",
+    "expected": "Error: host delivery failed",
+    "actual": "Error: original failure"
+  },
+  {
+    "width": 1280,
+    "name": "a failed error reply leaves the current listener usable",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 1280,
+    "name": "unmount suppresses both late error replies",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 1280,
+    "name": "unmount suppresses both late telemetry calls",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 1280,
+    "name": "unmount removes both message listeners",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "routing and reporting failures create no uncaught browser errors",
+    "expected": [],
+    "actual": [
+      "Uncaught Error: synchronous router failure",
+      "Uncaught Error: synchronous router failure",
+      "Error: telemetry adapter failed",
+      "Error: telemetry delivery failed",
+      "Error: telemetry adapter failed",
+      "Error: telemetry delivery failed",
+      "Error: host delivery failed"
+    ]
+  },
+  {
+    "width": 1280,
+    "name": "telemetry-triggered unmount retires the reply before host delivery",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "foreign origin and foreign source are rejected",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "local: one synchronous dispatch under StrictMode",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "local: current rejection reaches the host once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "local: current rejection reaches telemetry once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "local: error keeps its current host and message",
+    "expected": {
+      "host": 0,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    },
+    "actual": {
+      "host": 0,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "local: replaced router cannot report late failures",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "local: replaced router cannot report late telemetry",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "local: replacement host retires old pending error replies",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "local: profile updates preserve a single current listener",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "local: synchronous router failure produces an error reply",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "local: non-Error rejection uses existing translated fallback",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 390,
+    "name": "native: one synchronous dispatch under StrictMode",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: current rejection reaches the host once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: current rejection reaches telemetry once",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: error keeps its current host and message",
+    "expected": {
+      "host": 1,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    },
+    "actual": {
+      "host": 1,
+      "type": "game:error",
+      "message": "current failure",
+      "prefix": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "native: replaced router cannot report late failures",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: replaced router cannot report late telemetry",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: replacement host retires old pending error replies",
+    "expected": 0,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: profile updates preserve a single current listener",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: synchronous router failure produces an error reply",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "native: non-Error rejection uses existing translated fallback",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 390,
+    "name": "local: throw from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "local: reject from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "native: throw from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "native: reject from optional telemetry preserves error delivery",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "throwing host sender is reported without a recursive error reply",
+    "expected": "Error: host delivery failed",
+    "actual": "Error: original failure"
+  },
+  {
+    "width": 390,
+    "name": "a failed error reply leaves the current listener usable",
+    "expected": 1,
+    "actual": 1
+  },
+  {
+    "width": 390,
+    "name": "unmount suppresses both late error replies",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 390,
+    "name": "unmount suppresses both late telemetry calls",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 390,
+    "name": "unmount removes both message listeners",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "routing and reporting failures create no uncaught browser errors",
+    "expected": [],
+    "actual": [
+      "Uncaught Error: synchronous router failure",
+      "Uncaught Error: synchronous router failure",
+      "Error: telemetry adapter failed",
+      "Error: telemetry delivery failed",
+      "Error: telemetry adapter failed",
+      "Error: telemetry delivery failed",
+      "Error: host delivery failed"
+    ]
+  },
+  {
+    "width": 390,
+    "name": "telemetry-triggered unmount retires the reply before host delivery",
+    "expected": 0,
+    "actual": 1
+  }
+]

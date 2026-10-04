@@ -5,7 +5,7 @@ import {useProviderProfile} from "../../ProviderProfileContext";
 import {useContext, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
 import type {GameModal, GameSessionState} from "../../gameSession";
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel} from "../../ranks";
 import {RankedAvatar} from "../../RankedAvatar";
 import {RankIcon} from "../../RankIcon";
@@ -37,6 +37,8 @@ export function ProfileModalPage({
   onUpdateAvatar,
   onDeleteAccount,
 }: ProfileModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Target-owned display identity, when supplied. */
   const providerProfile = useProviderProfile();
   /** Provider name with a localized fallback. */

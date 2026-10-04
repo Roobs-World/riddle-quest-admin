@@ -1,0 +1,56 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "none",
+    "name": "exhausted round blocks Submit while completion is pending",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "none",
+    "name": "exhausted round has no editable board cells",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "none",
+    "name": "loss does not open victory",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "none",
+    "name": "paid exhausted round cannot buy another Continue",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "none",
+    "name": "native typing cannot reopen exhausted round",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "none",
+    "name": "sixth accepted row retains host feedback",
+    "actual": "Q\nQ\nQ\nQ\nQ",
+    "expected": "QQQQQ"
+  }
+]

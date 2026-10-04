@@ -109,9 +109,10 @@ export function getOnboardingTotalSteps(): number {
 }
 
 /** Omits actions unavailable in the current mode or platform's commerce capability. */
-export function getGameTour(gameMode: GameSessionState["gameMode"], commerceAvailable = true): TooltipId[] {
+export function getGameTour(gameMode: GameSessionState["gameMode"], commerceAvailable = true, economyAvailable = true): TooltipId[] {
   return GAME_TOUR.filter((id) =>
-    (gameMode !== "challenge" || id !== "gameSkip") && (commerceAvailable || id !== "gameCoins"));
+    (gameMode !== "challenge" || id !== "gameSkip") && (commerceAvailable || id !== "gameCoins") &&
+    (economyAvailable || id === "submitAnswer"));
 }
 
 /** Avoids advertising a coin shop when the active provider has no checkout. */
@@ -123,6 +124,7 @@ export function getProfileTour(commerceAvailable = true): TooltipId[] {
 export function getContextualTooltipCandidates(
   state: Pick<GameSessionState, "gameMode" | "guesses" | "lastOutcome" | "lastRewards" | "profile">,
   modal: GameModal,
+  economyAvailable = true,
 ): Array<{
   /** Stores id. */
   id: TooltipId; /** Stores when. */
@@ -147,7 +149,7 @@ export function getContextualTooltipCandidates(
     },
     {
       id: "hintAfterWrongGuess",
-      when: modal === null && state.guesses.length > 0 && !state.lastOutcome,
+      when: economyAvailable && modal === null && state.guesses.length > 0 && !state.lastOutcome,
     },
   ];
 }

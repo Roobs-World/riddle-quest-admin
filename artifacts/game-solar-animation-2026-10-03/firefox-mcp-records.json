@@ -1,0 +1,641 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "solar-animation-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "get_firefox_info",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Firefox Instance Configuration\n\nBinary: /snap/firefox/current/usr/lib/firefox/firefox\nFirefox version: 157.0\nHeadless: Yes\nProfile: /home/craig-beswetherick/snap/firefox/common/mcp-tmp/solar-animation-firefox-verification-rksyp9bh\nStart URL: about:blank\n\nOutput File: /home/craig-beswetherick/Documents/riddle-quest/artifacts/game-solar-animation-2026-10-03/firefox-verification.log\n  Size: 0.00 MB\n  Last Modified: 2026-10-03T05:47:37.945Z"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:37787?scene=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:37787?scene=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { window.firefoxChecks=[]; window.check=(name,actual,expected)=>{const row={name,actual,expected};window.firefoxChecks.push(row);if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(name+': '+JSON.stringify(row));};window.step();window.check('unmeasured scene has no pending chain',window.pendingFrames(),0);window.resizeScene(0,0);window.check('zero size avoids a graphics resize',window.probe.resizes,0);window.resizeScene(390,844);window.step();window.check('layout starts one draw',window.probe.draws,1);window.check('layout leaves one frame',window.pendingFrames(),1);window.check('no browser error on first draw',window.probe.windowErrors,[]);return {checks:window.firefoxChecks,draws:window.probe.draws}; }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"checks\": [\n    {\n      \"name\": \"unmeasured scene has no pending chain\",\n      \"actual\": 0,\n      \"expected\": 0\n    },\n    {\n      \"name\": \"zero size avoids a graphics resize\",\n      \"actual\": 0,\n      \"expected\": 0\n    },\n    {\n      \"name\": \"layout starts one draw\",\n      \"actual\": 1,\n      \"expected\": 1\n    },\n    {\n      \"name\": \"layout leaves one frame\",\n      \"actual\": 1,\n      \"expected\": 1\n    },\n    {\n      \"name\": \"no browser error on first draw\",\n      \"actual\": [],\n      \"expected\": []\n    }\n  ],\n  \"draws\": 1\n}\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "maxLines": 35
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot\n\nuid=e5 body\n  uid=e4 div\n    uid=e0 button \"Pause scene\" text=\"Pause scene\"\n    uid=e1 button \"Toggle scene\" text=\"Toggle scene\"\n    uid=e2 input \"Puzzle draft\" value=\"PIAN\"\n    uid=e3 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Timed out after 30000 ms"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { window.check('native pause click cancels the frame',window.pendingFrames(),0);const before=window.probe.callbacks;for(let i=0;i<180;i++)window.step(1000/60);window.check('paused scene runs zero callbacks across 180 display frames',window.probe.callbacks-before,0);window.check('paused scene performs no additional draw',window.probe.draws,1);window.replayFrames();window.check('cancelled callback cannot restart the chain',window.pendingFrames(),0);return window.firefoxChecks.slice(-4); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Script execution failed: Error: native pause click cancels the frame: {\"name\":\"native pause click cancels the frame\",\"actual\":1,\"expected\":0}\n\n```json\n\"[error]\"\n```"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Timed out after 30000 ms"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:44119?scene=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:44119?scene=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { window.firefoxChecks=[]; window.check=(name,actual,expected)=>{const row={name,actual,expected};window.firefoxChecks.push(row);if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(name+': '+JSON.stringify(row));};window.step();window.check('unmeasured scene has no pending chain',window.pendingFrames(),0);window.resizeScene(0,0);window.check('zero size avoids a graphics resize',window.probe.resizes,0);window.resizeScene(390,844);window.step();window.check('layout starts one draw',window.probe.draws,1);window.check('layout leaves one frame',window.pendingFrames(),1);window.check('no browser error on first draw',window.probe.windowErrors,[]);return window.firefoxChecks; }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n[\n  {\n    \"name\": \"unmeasured scene has no pending chain\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"zero size avoids a graphics resize\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"layout starts one draw\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"layout leaves one frame\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"no browser error on first draw\",\n    \"actual\": [],\n    \"expected\": []\n  }\n]\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "maxLines": 20
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot\n\nuid=e11 body\n  uid=e10 div\n    uid=e6 button \"Pause scene\" text=\"Pause scene\"\n    uid=e7 button \"Toggle scene\" text=\"Toggle scene\"\n    uid=e8 input \"Puzzle draft\" value=\"PIAN\"\n    uid=e9 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:42153?scene=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:42153?scene=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => { window.firefoxChecks=[];window.check=(name,actual,expected)=>{const row={name,actual,expected};window.firefoxChecks.push(row);if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(name+': '+JSON.stringify(row));};window.step();window.check('unmeasured scene has no pending chain',window.pendingFrames(),0);window.resizeScene(0,0);window.check('zero size avoids resizing',window.probe.resizes,0);window.resizeScene(390,844);window.step();window.check('layout starts one draw',window.probe.draws,1);window.check('layout leaves one frame',window.pendingFrames(),1);return new Promise(resolve=>requestAnimationFrame(()=>resolve(window.firefoxChecks))); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n[\n  {\n    \"name\": \"unmeasured scene has no pending chain\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"zero size avoids resizing\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"layout starts one draw\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"layout leaves one frame\",\n    \"actual\": 1,\n    \"expected\": 1\n  }\n]\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "maxLines": 20
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot\n\nuid=e17 body\n  uid=e16 div\n    uid=e12 button \"Pause scene\" text=\"Pause scene\"\n    uid=e13 button \"Toggle scene\" text=\"Toggle scene\"\n    uid=e14 input \"Puzzle draft\" value=\"PIAN\"\n    uid=e15 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e12"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e12"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.check('native pause click cancels its frame',window.pendingFrames(),0);const before=window.probe.callbacks;for(let i=0;i<180;i++)window.step(1000/60);window.check('180 paused display frames execute zero application callbacks',window.probe.callbacks-before,0);window.check('paused scene performs no extra draw',window.probe.draws,1);window.replayFrames();window.check('cancelled callbacks cannot restart paused animation',window.pendingFrames(),0);return window.firefoxChecks.slice(-4);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n[\n  {\n    \"name\": \"native pause click cancels its frame\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"180 paused display frames execute zero application callbacks\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"paused scene performs no extra draw\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"cancelled callbacks cannot restart paused animation\",\n    \"actual\": 0,\n    \"expected\": 0\n  }\n]\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e12"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e12"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.check('native resume click creates one frame chain',window.pendingFrames(),1);window.step();window.check('resume draws exactly once',window.probe.draws,2);window.visibility(true);window.check('hidden scene cancels work',window.pendingFrames(),0);window.step(60000);window.check('hidden wall time creates no draw',window.probe.draws,2);window.visibility(false);window.check('visible scene resumes one chain',window.pendingFrames(),1);document.querySelector('.solar-system canvas').dispatchEvent(new Event('webglcontextlost'));window.check('context loss cancels its frame',window.pendingFrames(),0);document.querySelector('.solar-system canvas').dispatchEvent(new Event('webglcontextrestored'));window.check('context restoration resumes one frame',window.pendingFrames(),1);window.probe.failDraw=true;window.step();window.check('draw failure retires the frame chain',window.pendingFrames(),0);window.check('draw failure removes the canvas',document.querySelectorAll('.solar-system canvas').length,0);window.check('draw failure reports once',window.probe.errors.filter(row=>row.operation==='animate_scene').length,1);window.replayFrames();window.resizeScene(400,300,true);window.check('retired callbacks cause no window errors',window.probe.windowErrors,[]);window.check('shared resource cleanup does not repeat',window.probe.duplicateReleases,0);return window.firefoxChecks.slice(-12);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n[\n  {\n    \"name\": \"native resume click creates one frame chain\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"resume draws exactly once\",\n    \"actual\": 2,\n    \"expected\": 2\n  },\n  {\n    \"name\": \"hidden scene cancels work\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"hidden wall time creates no draw\",\n    \"actual\": 2,\n    \"expected\": 2\n  },\n  {\n    \"name\": \"visible scene resumes one chain\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"context loss cancels its frame\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"context restoration resumes one frame\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"draw failure retires the frame chain\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"draw failure removes the canvas\",\n    \"actual\": 0,\n    \"expected\": 0\n  },\n  {\n    \"name\": \"draw failure reports once\",\n    \"actual\": 1,\n    \"expected\": 1\n  },\n  {\n    \"name\": \"retired callbacks cause no window errors\",\n    \"actual\": [],\n    \"expected\": []\n  },\n  {\n    \"name\": \"shared resource cleanup does not repeat\",\n    \"actual\": 0,\n    \"expected\": 0\n  }\n]\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "fill_by_uid",
+        "arguments": {
+          "uid": "e14",
+          "value": "PIANO"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "fill e14"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e13"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e13"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.check('native input remains editable after renderer failure',document.querySelector('input').value,'PIANO');window.check('native unmount leaves no scheduled work',window.pendingFrames(),0);window.check('renderer cleanup runs once',window.probe.disposals,1);window.check('graphics context is released once',window.probe.contextReleases,1);return {version:navigator.userAgent,checks:window.firefoxChecks};}",
+          "saveTo": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/game-solar-animation-2026-10-03/firefox-checks.json",
+          "preview": 800
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: saveTo \"/home/craig-beswetherick/Documents/riddle-quest/artifacts/game-solar-animation-2026-10-03/firefox-checks.json\" resolves outside the allowed location (/home/craig-beswetherick/Documents/riddle-quest/artifacts/game-solar-animation-2026-10-03/firefox-checks.json). Relative paths must stay within the current working directory and absolute paths within /home/craig-beswetherick/.firefox-devtools-mcp/output, and neither may reach the profiles, instance port files or captured output this server reads back. Start the server with --unrestricted-save-paths to write to arbitrary locations."
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/game-solar-animation-2026-10-03/firefox.png"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: saveTo \"/home/craig-beswetherick/Documents/riddle-quest/artifacts/game-solar-animation-2026-10-03/firefox.png\" resolves outside the allowed location (/home/craig-beswetherick/Documents/riddle-quest/artifacts/game-solar-animation-2026-10-03/firefox.png). Relative paths must stay within the current working directory and absolute paths within /home/craig-beswetherick/.firefox-devtools-mcp/output, and neither may reach the profiles, instance port files or captured output this server reads back. Start the server with --unrestricted-save-paths to write to arbitrary locations."
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.check('native input remains editable after renderer failure',document.querySelector('input').value,'PIANO');window.check('native unmount leaves no scheduled work',window.pendingFrames(),0);window.check('renderer cleanup runs once',window.probe.disposals,1);window.check('graphics context is released once',window.probe.contextReleases,1);return {version:navigator.userAgent,checks:window.firefoxChecks};}",
+          "saveTo": true,
+          "preview": 200
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page. Result saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/evaluate-script-2026-10-03T05-56-23-548Z.json (3.0KB)\nPreview:\n```json\n{\n  \"version\": \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:157.0) Gecko/20100101 Firefox/157.0\",\n  \"checks\": [\n    {\n      \"name\": \"unmeasured scene has no pending chain\",\n      \"actual\": 0,\n      ...\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T05-56-24-655Z.png (11.0KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  }
+]

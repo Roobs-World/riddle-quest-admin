@@ -1,0 +1,380 @@
+[
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "messageMatches",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "retryLabelMatches",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "noticeFits",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "noticeAboveGame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "controlsFit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "documentFits",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "initializationsUnchanged",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "status",
+    "actual": "unsaved",
+    "expected": "unsaved"
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "field": "retryHeight",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-held-retry",
+    "field": "status",
+    "actual": "saving",
+    "expected": "saving"
+  },
+  {
+    "case": "de-held-retry",
+    "field": "visible",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-held-retry",
+    "field": "disabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-held-retry",
+    "field": "busy",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "case": "de-playable-held-retry",
+    "field": "draft",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "de-playable-held-retry",
+    "field": "checkpoint",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "de-playable-held-retry",
+    "field": "visible",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-latest-ack",
+    "field": "initializationsUnchanged",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-latest-ack",
+    "field": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "de-latest-ack",
+    "field": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "de-latest-ack",
+    "field": "status",
+    "actual": "quiet",
+    "expected": "quiet"
+  },
+  {
+    "case": "de-latest-ack",
+    "field": "notice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "case": "de-latest-ack",
+    "field": "draft",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "de-latest-ack",
+    "field": "durable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "de-native-completion",
+    "field": "initializationsUnchanged",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "de-native-completion",
+    "field": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "de-native-completion",
+    "field": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "de-native-completion",
+    "field": "guesses",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "case": "de-native-completion",
+    "field": "completions",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "case": "de-native-completion",
+    "field": "activeGame",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "case": "de-native-completion",
+    "field": "status",
+    "actual": "quiet",
+    "expected": "quiet"
+  },
+  {
+    "case": "de-native-completion",
+    "field": "notice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "messageMatches",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "retryLabelMatches",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "noticeFits",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "noticeAboveGame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "controlsFit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "documentFits",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "initializationsUnchanged",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "status",
+    "actual": "unsaved",
+    "expected": "unsaved"
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "retryHeight",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-held-retry",
+    "field": "status",
+    "actual": "saving",
+    "expected": "saving"
+  },
+  {
+    "case": "ar-held-retry",
+    "field": "visible",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-held-retry",
+    "field": "disabled",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-held-retry",
+    "field": "busy",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "case": "ar-playable-held-retry",
+    "field": "draft",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "ar-playable-held-retry",
+    "field": "checkpoint",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "ar-playable-held-retry",
+    "field": "visible",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-latest-ack",
+    "field": "initializationsUnchanged",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "case": "ar-latest-ack",
+    "field": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "ar-latest-ack",
+    "field": "unhandled",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "case": "ar-latest-ack",
+    "field": "status",
+    "actual": "quiet",
+    "expected": "quiet"
+  },
+  {
+    "case": "ar-latest-ack",
+    "field": "notice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "case": "ar-latest-ack",
+    "field": "draft",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "ar-latest-ack",
+    "field": "durable",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "case": "ar-exhausted",
+    "field": "direction",
+    "actual": "rtl",
+    "expected": "rtl"
+  },
+  {
+    "case": "de-actual-viewport",
+    "field": "width",
+    "actual": 500,
+    "expected": 500
+  },
+  {
+    "case": "de-actual-viewport",
+    "field": "height",
+    "actual": 568,
+    "expected": 568
+  }
+]

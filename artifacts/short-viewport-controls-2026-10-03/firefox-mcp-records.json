@@ -1,0 +1,1274 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "short-viewport-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:46703/?locale=de&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:46703/?locale=de&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 10
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: main]\n\nuid=e81 main\n  uid=e79 div\n    uid=e5 header\n      uid=e0 img \"Logo-Schaltfl\u00e4che\" src=\"http://127.0.0.1:46703/asse...\"\n      uid=e1 button \"Ton ausschalten\"\n      uid=e2 div text=\"Klassisch\"\n      uid=e4 div \"300  Muenzen\"\n        uid=e3 img src=\"http://127.0.0.1:46703/asse...\"\n    uid=e39 section\n      uid=e7 div\n\n[+73 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<12;i++)await new Promise(resolve=>requestAnimationFrame(resolve));return JSON.stringify({width:innerWidth,height:innerHeight,portrait:matchMedia(\"(orientation: portrait)\").matches,keyHeight:Math.min(...Array.from(document.querySelectorAll(\".keyboard .key\")).map(x=>x.getBoundingClientRect().height)),board:getComputedStyle(document.querySelector(\".guess-board\")).maxWidth,scale:document.querySelector(\".game-content\").dataset.viewportScale});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"width\\\":500,\\\"height\\\":494,\\\"portrait\\\":false,\\\"keyHeight\\\":25.29998779296875,\\\"board\\\":\\\"min(100%, 206px)\\\",\\\"scale\\\":\\\"0.5271\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify(Object.fromEntries([\".game-content\",\".game-header\",\".riddle-surface\",\".riddle-card\",\".guess-board\",\".guess-row\",\".cell\",\".keyboard\",\".key\",\".game-input-actions\",\".game-bottom-navigation\"].map(s=>{const x=document.querySelector(s),c=getComputedStyle(x);return [s,{offsetHeight:x.offsetHeight,offsetWidth:x.offsetWidth,scrollHeight:x.scrollHeight,rectHeight:x.getBoundingClientRect().height,width:c.width,height:c.height,minHeight:c.minHeight,maxWidth:c.maxWidth,gridRows:c.gridTemplateRows,aspectRatio:c.aspectRatio}];})))"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\".game-content\\\":{\\\"offsetHeight\\\":829,\\\"offsetWidth\\\":949,\\\"scrollHeight\\\":829,\\\"rectHeight\\\":437,\\\"width\\\":\\\"948.583px\\\",\\\"height\\\":\\\"829.067px\\\",\\\"minHeight\\\":\\\"829.065px\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"52px 505.067px 152px 56px 52px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".game-header\\\":{\\\"offsetHeight\\\":52,\\\"offsetWidth\\\":933,\\\"scrollHeight\\\":52,\\\"rectHeight\\\":27.416671752929688,\\\"width\\\":\\\"932.583px\\\",\\\"height\\\":\\\"52px\\\",\\\"minHeight\\\":\\\"52px\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"52px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".riddle-surface\\\":{\\\"offsetHeight\\\":505,\\\"offsetWidth\\\":900,\\\"scrollHeight\\\":505,\\\"rectHeight\\\":266.2166748046875,\\\"width\\\":\\\"900px\\\",\\\"height\\\":\\\"505.067px\\\",\\\"minHeight\\\":\\\"auto\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"100px 403.067px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".riddle-card\\\":{\\\"offsetHeight\\\":100,\\\"offsetWidth\\\":900,\\\"scrollHeight\\\":104,\\\"rectHeight\\\":52.7166748046875,\\\"width\\\":\\\"900px\\\",\\\"height\\\":\\\"100px\\\",\\\"minHeight\\\":\\\"100px\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"76px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".guess-board\\\":{\\\"offsetHeight\\\":198,\\\"offsetWidth\\\":206,\\\"scrollHeight\\\":198,\\\"rectHeight\\\":104.36666870117188,\\\"width\\\":\\\"206px\\\",\\\"height\\\":\\\"198px\\\",\\\"minHeight\\\":\\\"auto\\\",\\\"maxWidth\\\":\\\"min(100%, 206px)\\\",\\\"gridRows\\\":\\\"38px 38px 38px 38px 38px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".guess-row\\\":{\\\"offsetHeight\\\":38,\\\"offsetWidth\\\":206,\\\"scrollHeight\\\":38,\\\"rectHeight\\\":20.033340454101562,\\\"width\\\":\\\"206px\\\",\\\"height\\\":\\\"38px\\\",\\\"minHeight\\\":\\\"auto\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"38px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".cell\\\":{\\\"offsetHeight\\\":38,\\\"offsetWidth\\\":38,\\\"scrollHeight\\\":34,\\\"rectHeight\\\":20.033340454101562,\\\"width\\\":\\\"38px\\\",\\\"height\\\":\\\"38px\\\",\\\"minHeight\\\":\\\"auto\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"none\\\",\\\"aspectRatio\\\":\\\"1 / 1\\\"},\\\".keyboard\\\":{\\\"offsetHeight\\\":152,\\\"offsetWidth\\\":933,\\\"scrollHeight\\\":152,\\\"rectHeight\\\":80.11665344238281,\\\"width\\\":\\\"932.583px\\\",\\\"height\\\":\\\"152px\\\",\\\"minHeight\\\":\\\"auto\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"48px 48px 48px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".key\\\":{\\\"offsetHeight\\\":48,\\\"offsetWidth\\\":91,\\\"scrollHeight\\\":46,\\\"rectHeight\\\":25.29998779296875,\\\"width\\\":\\\"90.55px\\\",\\\"height\\\":\\\"48px\\\",\\\"minHeight\\\":\\\"48px\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"none\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".game-input-actions\\\":{\\\"offsetHeight\\\":48,\\\"offsetWidth\\\":933,\\\"scrollHeight\\\":48,\\\"rectHeight\\\":25.300003051757812,\\\"width\\\":\\\"932.583px\\\",\\\"height\\\":\\\"48px\\\",\\\"minHeight\\\":\\\"auto\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"48px\\\",\\\"aspectRatio\\\":\\\"auto\\\"},\\\".game-bottom-navigation\\\":{\\\"offsetHeight\\\":52,\\\"offsetWidth\\\":933,\\\"scrollHeight\\\":52,\\\"rectHeight\\\":27.416671752929688,\\\"width\\\":\\\"932.583px\\\",\\\"height\\\":\\\"52px\\\",\\\"minHeight\\\":\\\"52px\\\",\\\"maxWidth\\\":\\\"none\\\",\\\"gridRows\\\":\\\"none\\\",\\\"aspectRatio\\\":\\\"auto\\\"}}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const x=document.querySelector(\".game-content\"),prev=x.getAttribute(\"style\");x.style.minHeight=\"0\";x.style.width=\"100%\";x.style.transform=\"none\";const result={contentHeight:x.offsetHeight,contentScrollHeight:x.scrollHeight,rows:getComputedStyle(x).gridTemplateRows,riddleHeight:document.querySelector(\".riddle-surface\").offsetHeight,riddleRows:getComputedStyle(document.querySelector(\".riddle-surface\")).gridTemplateRows,boardHeight:document.querySelector(\".guess-board\").offsetHeight};x.setAttribute(\"style\",prev);return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"contentHeight\\\":829,\\\"contentScrollHeight\\\":829,\\\"rows\\\":\\\"52px 505.067px 152px 56px 52px\\\",\\\"riddleHeight\\\":505,\\\"riddleRows\\\":\\\"100px 403.067px\\\",\\\"boardHeight\\\":198}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const style=document.createElement(\"style\");style.id=\"short-viewport-probe\";style.textContent=\".game-content .riddle-surface {grid-template-rows:auto auto;}\";document.head.append(style);window.dispatchEvent(new Event(\"resize\"));for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({keyHeight:Math.min(...Array.from(document.querySelectorAll(\".keyboard .key\")).map(x=>x.getBoundingClientRect().height)),scale:document.querySelector(\".game-content\").dataset.viewportScale,rows:getComputedStyle(document.querySelector(\".riddle-surface\")).gridTemplateRows});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"keyHeight\\\":25.29998779296875,\\\"scale\\\":\\\"0.5271\\\",\\\"rows\\\":\\\"100px 198px\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => { const x=document.querySelector(\".game-content\"),prev=x.getAttribute(\"style\");x.style.minHeight=\"0px\";x.style.width=\"100%\";x.style.transform=\"none\";x.style.height=\"auto\";const r=x.getBoundingClientRect(); const result={style:x.getAttribute(\"style\"),height:r.height,width:r.width,computedHeight:getComputedStyle(x).height,minHeight:getComputedStyle(x).minHeight,rows:getComputedStyle(x).gridTemplateRows,parentWidth:x.parentElement.getBoundingClientRect().width};x.setAttribute(\"style\",prev);return JSON.stringify(result); }"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"style\\\":\\\"min-height: 0px; width: 100%; transform: none; height: auto;\\\",\\\"height\\\":437,\\\"width\\\":500,\\\"computedHeight\\\":\\\"829.067px\\\",\\\"minHeight\\\":\\\"829.065px\\\",\\\"rows\\\":\\\"52px 505.067px 152px 56px 52px\\\",\\\"parentWidth\\\":500}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {document.querySelector(\"#short-viewport-probe\")?.remove(); const style=document.createElement(\"style\");style.id=\"short-viewport-probe\";style.textContent=\".game-content .riddle-surface {grid-template-rows:auto auto;} .game-content {height:auto !important;}\";document.head.append(style);window.dispatchEvent(new Event(\"resize\"));for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,scale:document.querySelector(\".game-content\").dataset.viewportScale,rows:getComputedStyle(document.querySelector(\".game-content\")).gridTemplateRows,riddleRows:getComputedStyle(document.querySelector(\".riddle-surface\")).gridTemplateRows});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"keyHeight\\\":25.29998779296875,\\\"scale\\\":\\\"0.5271\\\",\\\"rows\\\":\\\"52px 505.067px 152px 56px 52px\\\",\\\"riddleRows\\\":\\\"100px 198px\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {document.querySelector(\"#short-viewport-probe\")?.remove();const style=document.createElement(\"style\");style.id=\"short-viewport-probe\";style.textContent=\".game-content .riddle-surface {grid-template-rows:auto auto;align-self:start;} .game-content {grid-template-rows:auto auto auto auto auto !important;}\";document.head.append(style);window.dispatchEvent(new Event(\"resize\"));for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({keyHeight:document.querySelector(\".key\").getBoundingClientRect().height,scale:document.querySelector(\".game-content\").dataset.viewportScale,rows:getComputedStyle(document.querySelector(\".game-content\")).gridTemplateRows,riddleRows:getComputedStyle(document.querySelector(\".riddle-surface\")).gridTemplateRows});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"keyHeight\\\":25.300003051757812,\\\"scale\\\":\\\"0.5271\\\",\\\"rows\\\":\\\"93.0167px 341.017px 193.017px 97.0167px 93px\\\",\\\"riddleRows\\\":\\\"100px 198px\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {document.querySelector(\"#short-viewport-probe\")?.remove();const style=document.createElement(\"style\");style.id=\"short-viewport-probe\";style.textContent=\".game-content {min-height:0 !important;width:100% !important;transform:none !important;}\";document.head.append(style);for(let i=0;i<4;i++)await new Promise(r=>requestAnimationFrame(r)); const x=document.querySelector(\".game-content\");return JSON.stringify({height:x.offsetHeight,width:x.offsetWidth,rectHeight:x.getBoundingClientRect().height,minHeight:getComputedStyle(x).minHeight,rows:getComputedStyle(x).gridTemplateRows,boardHeight:document.querySelector(\".guess-board\").offsetHeight,riddleRows:getComputedStyle(document.querySelector(\".riddle-surface\")).gridTemplateRows,ready:document.readyState});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"height\\\":624,\\\"width\\\":500,\\\"rectHeight\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"rows\\\":\\\"52px 300px 152px 56px 52px\\\",\\\"boardHeight\\\":198,\\\"riddleRows\\\":\\\"100px 198px\\\",\\\"ready\\\":\\\"complete\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {document.querySelector(\"#short-viewport-probe\")?.remove();const x=document.querySelector(\".game-content\"); const clone=x.cloneNode(true);clone.id=\"measurement-clone\";clone.style.setProperty(\"min-height\",\"0px\",\"important\");clone.style.setProperty(\"width\",\"100%\",\"important\");clone.style.setProperty(\"transform\",\"none\",\"important\");clone.style.setProperty(\"visibility\",\"hidden\");x.parentElement.append(clone);await new Promise(r=>requestAnimationFrame(r));const result={height:clone.offsetHeight,scrollHeight:clone.scrollHeight,minHeight:getComputedStyle(clone).minHeight,width:clone.offsetWidth,rows:getComputedStyle(clone).gridTemplateRows};clone.remove();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"height\\\":624,\\\"scrollHeight\\\":624,\\\"minHeight\\\":\\\"0px\\\",\\\"width\\\":500,\\\"rows\\\":\\\"52px 300px 152px 56px 52px\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {const x=document.querySelector(\".game-content\"),old=x.getAttribute(\"style\");x.style.setProperty(\"min-height\",\"0px\",\"important\");x.style.setProperty(\"width\",\"100%\",\"important\");x.style.setProperty(\"transform\",\"none\",\"important\");const result={style:x.getAttribute(\"style\"),height:x.offsetHeight,scrollHeight:x.scrollHeight,minHeight:getComputedStyle(x).minHeight,width:x.offsetWidth};x.setAttribute(\"style\",old);return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"style\\\":\\\"min-height: 0px !important; width: 100% !important; transform: none !important;\\\",\\\"height\\\":624,\\\"scrollHeight\\\":624,\\\"minHeight\\\":\\\"624.112px\\\",\\\"width\\\":714}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const x=document.querySelector(\".game-content\"),old=x.getAttribute(\"style\");const points=[];x.style.minHeight=\"0px\";x.style.width=\"100%\";points.push({at:\"assigned\",style:x.getAttribute(\"style\")});points.push({at:\"rect\",rect:x.getBoundingClientRect().toJSON(),style:x.getAttribute(\"style\")});points.push({at:\"scroll\",height:x.scrollHeight,style:x.getAttribute(\"style\")});points.push({at:\"computed\",minHeight:getComputedStyle(x).minHeight,width:getComputedStyle(x).width,style:x.getAttribute(\"style\")});x.setAttribute(\"style\",old);return JSON.stringify(points);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"at\\\":\\\"assigned\\\",\\\"style\\\":\\\"min-height: 0px; width: 100%; transform: scale(0.700195) translateX(-50%);\\\"},{\\\"at\\\":\\\"rect\\\",\\\"rect\\\":{\\\"x\\\":0,\\\"y\\\":57,\\\"width\\\":500,\\\"height\\\":437,\\\"top\\\":57,\\\"right\\\":500,\\\"bottom\\\":494,\\\"left\\\":0},\\\"style\\\":\\\"min-height: 0px; width: 100%; transform: scale(0.700195) translateX(-50%);\\\"},{\\\"at\\\":\\\"scroll\\\",\\\"height\\\":624,\\\"style\\\":\\\"min-height: 0px; width: 100%; transform: scale(0.700195) translateX(-50%);\\\"},{\\\"at\\\":\\\"computed\\\",\\\"minHeight\\\":\\\"624.112px\\\",\\\"width\\\":\\\"714.083px\\\",\\\"style\\\":\\\"min-height: 0px; width: 100%; transform: scale(0.700195) translateX(-50%);\\\"}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:46703/?locale=de&unsaved=1&reload=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:46703/?locale=de&unsaved=1&reload=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({height:document.querySelector(\".key\").getBoundingClientRect().height,scale:document.querySelector(\".game-content\").dataset.viewportScale});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"height\\\":33.616668701171875,\\\"scale\\\":\\\"0.7002\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 501,
+          "height": 569
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "501x569"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({height:document.querySelector(\".key\").getBoundingClientRect().height,scale:document.querySelector(\".game-content\").dataset.viewportScale});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"height\\\":33.616668701171875,\\\"scale\\\":\\\"0.7002\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:40115/?locale=de&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:40115/?locale=de&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({height:document.querySelector(\".key\").getBoundingClientRect().height,scale:document.querySelector(\".game-content\").dataset.viewportScale});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"height\\\":25.199996948242188,\\\"scale\\\":\\\"0.5251\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:37717/?locale=de&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:37717/?locale=de&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 26
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 27
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));return JSON.stringify({height:document.querySelector(\".key\").getBoundingClientRect().height,scale:document.querySelector(\".game-content\").dataset.viewportScale});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"height\\\":25.199996948242188,\\\"scale\\\":\\\"0.5251\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 28
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:46703/?locale=ar",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:46703/?locale=ar (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 29
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 8
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: main]\n\nuid=e163 main\n  uid=e161 div\n    uid=e87 header\n      uid=e82 img \"\u0627\u0644\u0634\u0639\u0627\u0631\" src=\"http://127.0.0.1:46703/asse...\"\n      uid=e83 button \"\u0643\u062a\u0645 \u0627\u0644\u0635\u0648\u062a\"\n      uid=e84 div text=\"\u0643\u0644\u0627\u0633\u064a\u0643\u064a\"\n      uid=e86 div \"300 \u0639\u0645\u0644\u0627\u062a \u0645\u0639\u062f\u0646\u064a\u0629\"\n        uid=e85 img src=\"http://127.0.0.1:46703/asse...\"\n\n[+75 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 30
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {await document.fonts.ready;for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r)); const boxes=[\".riddle-card\",\".guess-board\",\".keyboard\",\".game-input-actions\",\".game-bottom-navigation\"].map(s=>document.querySelector(s)?.getBoundingClientRect()).filter(Boolean); const result={case:\"ar-solo-fresh\",width:innerWidth,height:innerHeight,direction:getComputedStyle(document.documentElement).direction,allControlsFit:boxes.every(b=>b.left>=-1&&b.right<=innerWidth+1&&b.bottom<=innerHeight+1),keyHeight:Math.min(...Array.from(document.querySelectorAll(\".keyboard .key\")).map(x=>x.getBoundingClientRect().height)),errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks=[result];document.activeElement?.blur();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"ar-solo-fresh\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"direction\\\":\\\"rtl\\\",\\\"allControlsFit\\\":true,\\\"keyHeight\\\":38,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 31
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 32
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const result={case:\"ar-solo-input\",draft:window.draft()};window.firefoxChecks.push(result);return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"ar-solo-input\\\",\\\"draft\\\":\\\"PIAN\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 33
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T13-11-31-485Z.png (109.7KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 34
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify(window.firefoxChecks)"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"ar-solo-fresh\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"direction\\\":\\\"rtl\\\",\\\"allControlsFit\\\":true,\\\"keyHeight\\\":38,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"ar-solo-input\\\",\\\"draft\\\":\\\"PIAN\\\"}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 35
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:46703/?locale=ar&unsaved=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:46703/?locale=ar&unsaved=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 36
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));const boxes=[\".riddle-card\",\".guess-board\",\".keyboard\",\".game-input-actions\",\".game-bottom-navigation\"].map(s=>document.querySelector(s)?.getBoundingClientRect()).filter(Boolean);const result={case:\"ar-unsaved-fresh\",width:innerWidth,height:innerHeight,direction:getComputedStyle(document.documentElement).direction,allControlsFit:boxes.every(b=>b.left>=-1&&b.right<=innerWidth+1&&b.bottom<=innerHeight+1),keyHeight:Math.min(...Array.from(document.querySelectorAll(\".keyboard .key\")).map(x=>x.getBoundingClientRect().height)),notice:document.querySelectorAll(\".player-save-notice\").length,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks=[result];document.activeElement?.blur();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"ar-unsaved-fresh\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"direction\\\":\\\"rtl\\\",\\\"allControlsFit\\\":true,\\\"keyHeight\\\":33.616668701171875,\\\"notice\\\":1,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 37
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 38
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const result={case:\"ar-unsaved-input\",draft:window.draft()};window.firefoxChecks.push(result);return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"ar-unsaved-fresh\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"direction\\\":\\\"rtl\\\",\\\"allControlsFit\\\":true,\\\"keyHeight\\\":33.616668701171875,\\\"notice\\\":1,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"ar-unsaved-input\\\",\\\"draft\\\":\\\"PIAN\\\"}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 39
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 40,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T13-11-57-977Z.png (102.0KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 40
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 41,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 844,
+          "height": 464
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "844x464"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 41
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 42,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:46703/?locale=ar&race=1",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:46703/?locale=ar&race=1 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 42
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 43,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".race-gameplay",
+          "maxLines": 20
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .race-gameplay]\n\nuid=e254 div\n  uid=e180 section \"\u0627\u0644\u0623\u0644\u063a\u0627\u0632 \u0627\u0644\u0645\u0643\u062a\u0645\u0644\u0629\"\n    uid=e166 div\n      uid=e164 h1 \"\u0633\u0628\u0627\u0642 \u0625\u0644\u0649 10\" text=\"\u0633\u0628\u0627\u0642 \u0625\u0644\u0649 10\"\n      uid=e165 button \"\u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0633\u0628\u0627\u0642\" text=\"\u00d7\"\n    uid=e179 div\n      uid=e169 div\n        uid=e167 span text=\"\u0627\u0644\u0648\u0642\u062a \u0627\u0644\u0645\u0639\u062f\u0651\u0644\"\n        uid=e168 small \"\u0627\u0644\u0639\u0642\u0648\u0628\u0627\u062a: 0:00.0\" text=\"+0:00.0\"\n      uid=e178 div\n        uid=e170 span \"\u0623\u0646\u062a\" text=\"\u0623\u0646\u062a\"\n        uid=e172 strong \"\u0627\u0644\u0623\u0644\u063a\u0627\u0632 \u0627\u0644\u0645\u0643\u062a\u0645\u0644\u0629: 0 / 10\" text=\"0 / 10\"\n          uid=e171 span text=\"\u0627\u0644\u0623\u0644\u063a\u0627\u0632 \u0627\u0644\u0645\u0643\u062a\u0645\u0644\u0629:\"\n        uid=e173 div\n        uid=e174 span \"Opponent\" text=\"Opponent\"\n        uid=e176 strong \"\u0627\u0644\u0623\u0644\u063a\u0627\u0632 \u0627\u0644\u0645\u0643\u062a\u0645\u0644\u0629: 0 / 10\" text=\"0 / 10\"\n          uid=e175 span text=\"\u0627\u0644\u0623\u0644\u063a\u0627\u0632 \u0627\u0644\u0645\u0643\u062a\u0645\u0644\u0629:\"\n        uid=e177 div\n  uid=e215 section\n    uid=e182 div\n\n[+72 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 43
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 44,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {await document.fonts.ready;for(let i=0;i<12;i++)await new Promise(r=>requestAnimationFrame(r));const boxes=[\".race-scoreboard\",\".riddle-card\",\".guess-board\",\".keyboard\",\".race-actions\"].map(s=>document.querySelector(s)?.getBoundingClientRect()).filter(Boolean);const result={case:\"ar-race-landscape\",width:innerWidth,height:innerHeight,direction:getComputedStyle(document.documentElement).direction,allControlsFit:boxes.every(b=>b.left>=-1&&b.right<=innerWidth+1&&b.bottom<=innerHeight+1),keyHeight:Math.min(...Array.from(document.querySelectorAll(\".keyboard .key\")).map(x=>x.getBoundingClientRect().height)),scale:document.querySelector(\".race-gameplay-viewport\").dataset.viewportScale,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks=[result];return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"ar-race-landscape\\\",\\\"width\\\":844,\\\"height\\\":390,\\\"direction\\\":\\\"rtl\\\",\\\"allControlsFit\\\":true,\\\"keyHeight\\\":41.01666259765625,\\\"scale\\\":\\\"0.9765\\\",\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 44
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 45,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".guess-row",
+          "maxLines": 8
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .guess-row]\n\nuid=e188 div\n  uid=e183 button \"\u062d\u0631\u0641 1\"\n  uid=e184 button \"\u062d\u0631\u0641 2\"\n  uid=e185 button \"\u062d\u0631\u0641 3\"\n  uid=e186 button \"\u062d\u0631\u0641 4\"\n  uid=e187 button \"\u062d\u0631\u0641 5\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 45
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 46,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e183"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e183"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 46
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 47,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 47
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 48,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const result={case:\"ar-race-input\",draft:window.raceLetters().join(\"\")};window.firefoxChecks.push(result);return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"ar-race-landscape\\\",\\\"width\\\":844,\\\"height\\\":390,\\\"direction\\\":\\\"rtl\\\",\\\"allControlsFit\\\":true,\\\"keyHeight\\\":41.01666259765625,\\\"scale\\\":\\\"0.9765\\\",\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"ar-race-input\\\",\\\"draft\\\":\\\"PIAN\\\"}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 48
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 49,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T13-12-43-867Z.png (102.6KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 49
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 50,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 50
+    }
+  }
+]

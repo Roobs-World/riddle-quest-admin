@@ -60,6 +60,14 @@ describe("callable request and response schemas", () => {
     ).toBeDefined();
   });
 
+  it("accepts optional canonical Classic progress while rejecting invalid positions", () => {
+    expect(GetCurrentDailyChallengeResponseSchema.parse({classicIndex: 17})).toEqual({classicIndex: 17});
+    for (const classicIndex of [0, -1, 1.5, "17"]) {
+      expect(GetCurrentDailyChallengeResponseSchema.safeParse({classicIndex}).success).toBe(false);
+    }
+    expect(GetCurrentDailyChallengeResponseSchema.parse({})).toEqual({});
+  });
+
   it("accepts daily, hint, skip, and currency contracts", () => {
     expect(
       GetCurrentDailyChallengeResponseSchema.parse({

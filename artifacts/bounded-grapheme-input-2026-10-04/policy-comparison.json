@@ -1,0 +1,30 @@
+{
+  "seed": 20261004,
+  "cases": 4096,
+  "comparisons": 8192,
+  "identityChecks": 8192,
+  "immutableChecks": 8192,
+  "locales": [
+    "en",
+    "es",
+    "pt",
+    "fr",
+    "de",
+    "ja",
+    "ko",
+    "hi",
+    "ru",
+    "tr",
+    "ar",
+    "id",
+    "it",
+    "nl",
+    "pl",
+    "vi"
+  ],
+  "segmenterModes": [
+    "native",
+    "code-point fallback"
+  ],
+  "status": "passed"
+}

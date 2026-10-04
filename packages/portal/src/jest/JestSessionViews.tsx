@@ -1,7 +1,9 @@
+import {useRef} from "react";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {tr} from "../play/i18n";
 import type {JestSession} from "./types";
 import type {JestStartupUpdate} from "./startup";
+import {useJestRegistrationDialogFocus} from "./useJestRegistrationDialogFocus";
 
 /** Provides jest startup error behavior. */
 export function JestStartupError({
@@ -73,9 +75,13 @@ export function JestRegistrationAlert({
   /** Stores on dismiss. */
   onDismiss: () => void;
 }) {
+  /** Registration choices that own focus while the prompt is open. */
+  const dialogRef = useRef<HTMLElement | null>(null);
+  useJestRegistrationDialogFocus(dialogRef, blocked);
   return (
     <div className="game-modal-backdrop jest-registration-backdrop" data-analytics-screen="registration_prompt">
       <section
+        ref={dialogRef}
         className="game-modal jest-registration-dialog"
         role="dialog"
         aria-modal="true"

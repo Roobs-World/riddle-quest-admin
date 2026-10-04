@@ -46,19 +46,30 @@ export function useHostAuthSession({
   const auth = services.auth;
   /** Latest authentication snapshot supplied by the active target adapter. */
   const [snapshot, setSnapshot] = useState<AuthSnapshot>({user: null, profile: initialProfile ?? null});
+  /** Target-restored progress is bound to its first account, never a replacement account. */
+  const restoredProfileOwner = useRef<{
+    /** Identity adapter responsible for restored target storage. */
+    auth: typeof auth;
+    /** First identified account that may use the restored profile. */
+    user: AuthSnapshot["user"];
+  }>({auth, user: null});
   /** Subscription ownership changes before queued React state is committed. */
   const currentAccount = useRef<{
     /** Identity adapter responsible for the current subscription. */ auth: typeof auth;
     /** Most recently subscribed UID, absent when signed out or disposed. */ uid: string | undefined;
+    /** Recreated accounts with the same UID retire the previous visit's callbacks. */
+    accountGeneration?: number;
   }>({auth, uid: undefined});
+  /** Published visit identity keeps render memoization in step with subscription ownership. */
+  const [accountVisit, setAccountVisit] = useState(currentAccount.current);
   /** Retired providers and unrendered account replacements cannot accept reward callbacks. */
   const ownsAccount = useCallback((ownerId: string) => currentAccount.current.auth === auth && currentAccount.current.uid === ownerId, [auth]);
   /** Retains one account visit rather than only comparing a possibly reused UID. */
   const captureAccount = useMemo(() => {
     /** Profile-only notifications retain this identity; account changes replace it. */
-    const selected = currentAccount.current;
+    const selected = accountVisit;
     return (ownerId?: string) => () => ownerId !== undefined && currentAccount.current === selected && selected.auth === auth && selected.uid === ownerId;
-  }, [auth, currentAccount.current]);
+  }, [auth, accountVisit]);
   /** User representation enriched only with target registration state. */
   const bridgeUser = useMemo(
     () => (snapshot.user ? {...snapshot.user, platformRegistered} : null),
@@ -69,11 +80,22 @@ export function useHostAuthSession({
     /** Retired subscription callbacks cannot restore an old account. */
     let active = true;
     currentAccount.current = {auth, uid: undefined};
+    if (restoredProfileOwner.current.auth !== auth) restoredProfileOwner.current = {auth, user: null};
     /** Subscribe only once per identity adapter/restored-profile lifetime. */
     const unsubscribe = auth.subscribe((nextSnapshot) => {
       if (!active) return;
-      if (currentAccount.current.auth !== auth || currentAccount.current.uid !== nextSnapshot.user?.uid) currentAccount.current = {auth, uid: nextSnapshot.user?.uid};
-      setSnapshot(restoreProfileWhileServerLoads(nextSnapshot, initialProfile ?? undefined));
+      if (currentAccount.current.auth !== auth || currentAccount.current.uid !== nextSnapshot.user?.uid ||
+        currentAccount.current.accountGeneration !== nextSnapshot.user?.accountGeneration)
+        currentAccount.current = {auth, uid: nextSnapshot.user?.uid, accountGeneration: nextSnapshot.user?.accountGeneration};
+      if (!restoredProfileOwner.current.user && nextSnapshot.user) restoredProfileOwner.current.user = nextSnapshot.user;
+      /** Only matching account identity may project saved progress before the server responds. */
+      const owner = restoredProfileOwner.current.user;
+      setAccountVisit(currentAccount.current);
+      // Publish the replacement visit even when the provider reuses its snapshot object.
+      // Otherwise React may skip the render that captures the new subscription owner.
+      setSnapshot({...restoreProfileWhileServerLoads(nextSnapshot,
+        owner?.uid === nextSnapshot.user?.uid && owner?.accountGeneration === nextSnapshot.user?.accountGeneration
+          ? initialProfile ?? undefined : undefined)});
     });
     return () => {
       active = false;

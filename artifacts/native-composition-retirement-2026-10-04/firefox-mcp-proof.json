@@ -1,0 +1,217 @@
+{
+  "verified": true,
+  "viewport": {
+    "width": 390,
+    "height": 568
+  },
+  "notes": "Composition start/end/trailing events and SDK pause/resume were injected. Actual disabled and enabled DOM intervals were separately observed. Choosing Classic, ordinary prefix/suffix typing and Enter used native Firefox controls with no explicit input refocus. This is resilience to controlled missing/late delivery, not evidence of an OS IME bug or production latency.",
+  "steps": [
+    {
+      "name": "retire-ff-paused",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"disabled\": true,\n  \"nativeValue\": \"\",\n  \"draft\": \"ro\",\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "disabled": true,
+        "nativeValue": "",
+        "draft": "ro",
+        "saves": 1
+      },
+      "expected": {
+        "disabled": true,
+        "nativeValue": "",
+        "draft": "ro",
+        "saves": 1
+      }
+    },
+    {
+      "name": "retire-ff-resumed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"disabled\": false,\n  \"focused\": true,\n  \"draft\": \"ro\",\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "disabled": false,
+        "focused": true,
+        "draft": "ro",
+        "saves": 1
+      },
+      "expected": {
+        "disabled": false,
+        "focused": true,
+        "draft": "ro",
+        "saves": 1
+      }
+    },
+    {
+      "name": "retire-ff-typed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"nativeValue\": \"\",\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "rome",
+        "nativeValue": "",
+        "saves": 1
+      },
+      "expected": {
+        "draft": "rome",
+        "nativeValue": "",
+        "saves": 1
+      }
+    },
+    {
+      "name": "retire-ff-win",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"wins\": 1,\n  \"saves\": 2,\n  \"results\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "wins": 1,
+        "saves": 2,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "wins": 1,
+        "saves": 2,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "retire-ff-late-paused-confirmed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"disabled\": true,\n  \"nativeValue\": \"\",\n  \"draft\": \"ro\",\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "disabled": true,
+        "nativeValue": "",
+        "draft": "ro",
+        "saves": 1
+      },
+      "expected": {
+        "disabled": true,
+        "nativeValue": "",
+        "draft": "ro",
+        "saves": 1
+      }
+    },
+    {
+      "name": "retire-ff-late-resumed-confirmed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"disabled\": false,\n  \"focused\": true,\n  \"draft\": \"ro\",\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "disabled": false,
+        "focused": true,
+        "draft": "ro",
+        "saves": 1
+      },
+      "expected": {
+        "disabled": false,
+        "focused": true,
+        "draft": "ro",
+        "saves": 1
+      }
+    },
+    {
+      "name": "retire-ff-late-confirmed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"ro\",\n  \"nativeValue\": \"\",\n  \"saves\": 1,\n  \"focused\": true\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "ro",
+        "nativeValue": "",
+        "saves": 1,
+        "focused": true
+      },
+      "expected": {
+        "draft": "ro",
+        "nativeValue": "",
+        "saves": 1,
+        "focused": true
+      }
+    },
+    {
+      "name": "retire-ff-late-typed-confirmed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"nativeValue\": \"\",\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "rome",
+        "nativeValue": "",
+        "saves": 1
+      },
+      "expected": {
+        "draft": "rome",
+        "nativeValue": "",
+        "saves": 1
+      }
+    },
+    {
+      "name": "retire-ff-late-win-confirmed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"wins\": 1,\n  \"saves\": 2,\n  \"results\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "wins": 1,
+        "saves": 2,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "wins": 1,
+        "saves": 2,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      }
+    }
+  ]
+}

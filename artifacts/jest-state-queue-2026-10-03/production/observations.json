@@ -1,0 +1,1794 @@
+[
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "waiting edits and profile need one newest SDK write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "newest stored draft is PIAN",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "independent cached profile survives coalescing",
+    "actual": 777,
+    "expected": 777
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "ordinary submission reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "completion clear reaches SDK",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "latest",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "new visit writes retained draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "old drain cannot clear new startup",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "waiting edits and profile need one newest SDK write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "newest stored draft is PIAN",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "independent cached profile survives coalescing",
+    "actual": 777,
+    "expected": 777
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "ordinary submission reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "completion clear reaches SDK",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "latest",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "new visit writes retained draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "old drain cannot clear new startup",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "waiting edits and profile need one newest SDK write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "newest stored draft is PIAN",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "independent cached profile survives coalescing",
+    "actual": 777,
+    "expected": 777
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "ordinary submission reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "completion clear reaches SDK",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "latest",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "new visit writes retained draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "same-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "other-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "old drain cannot clear new startup",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "scenario": "drain-restart",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "waiting edits and profile need one newest SDK write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "newest stored draft is PIAN",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "independent cached profile survives coalescing",
+    "actual": 777,
+    "expected": 777
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "ordinary submission reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "completion clear reaches SDK",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "latest",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "new visit writes retained draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "same-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "other-player",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "24 physical answer edits reach checkpoint hook",
+    "actual": 24,
+    "expected": 24
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "SDK initialized before queued state writes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "answer stays playable while SDK flush is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "held SDK call remains sole write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "held SDK flush acknowledges no snapshot",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "startup keeps fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "startup checkpoint remains isolated by target player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "host restores same-player draft without importing another player",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "new visit persists fresh authority profile",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "retired waiting snapshots do not replay into SDK",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "another player never receives retired answer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "old drain cannot clear new startup",
+    "actual": 80,
+    "expected": 80
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "no storage failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "scenario": "drain-restart",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

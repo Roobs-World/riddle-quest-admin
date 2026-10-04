@@ -1,0 +1,1928 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "initial draft is ready",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves the draft",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "initial draft is ready",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Enter",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Enter",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key preserves the draft",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "initial draft is ready",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "x",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "x",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves the draft",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "initial draft is ready",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves the draft",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "initial draft is ready",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Enter",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Enter",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key preserves the draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "enter",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "initial draft is ready",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "x",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "x",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves the draft",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "initial draft is ready",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves the draft",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "initial draft is ready",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Enter",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Enter",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key preserves the draft",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "initial draft is ready",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "x",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "x",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves the draft",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "initial draft is ready",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves the draft",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "initial draft is ready",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Enter",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Enter",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key preserves the draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "initial draft is ready",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "x",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "x",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves the draft",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "initial draft is ready",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves the draft",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "backspace",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "initial draft is ready",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Enter",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Enter",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key preserves the draft",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "enter",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "initial draft is ready",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "x",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "x",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves the draft",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition-marker",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "initial draft is ready",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Backspace",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves the draft",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "backspace",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "initial draft is ready",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "Enter",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "Enter",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key preserves the draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "enter",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "initial draft is ready",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "another handler consumed the key",
+    "actual": {
+      "key": "x",
+      "defaultPrevented": true
+    },
+    "expected": {
+      "key": "x",
+      "defaultPrevented": true
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves the draft",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "cancelled native key preserves composition ownership",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "consumed native value remains empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition-marker",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

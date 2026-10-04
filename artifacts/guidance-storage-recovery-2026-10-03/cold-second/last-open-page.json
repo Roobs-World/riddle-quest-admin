@@ -1,0 +1,62 @@
+{
+  "body": "Guest play\nLog in to save progress\n\nProgress isn't saved yet. Keep the game open.\n\nRetry\nClassic\n0\nWhat has keys but cannot open doors?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip\n1/2\n\nSolve engaging riddles by guessing the answer letter by letter. Use the colour clues to narrow down each guess.\n\nEarn coins, beat daily challenges, and climb the leaderboard.\n\nLet's Play",
+  "probe": {
+    "fault": "blocked",
+    "writes": [],
+    "errors": [],
+    "unhandled": [],
+    "paths": [
+      "/api/session",
+      "/api/session"
+    ],
+    "sessions": 2
+  },
+  "draft": "",
+  "durable": {
+    "preferences": {
+      "muted": false,
+      "highContrast": true,
+      "onboardingComplete": true
+    },
+    "playerData": {
+      "schemaVersion": 1,
+      "updatedAt": 1791046636014,
+      "profile": {
+        "username": "Guest Solver",
+        "coins": 0,
+        "level": 1,
+        "xp": 0,
+        "winStreak": 0,
+        "gamesPlayed": 0,
+        "wins": 0,
+        "achievements": [],
+        "classicIndex": 1
+      },
+      "activeGame": {
+        "schemaVersion": 1,
+        "savedAt": 1791046636007,
+        "riddleId": "reddit-guest-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "gameMode": "classic",
+        "currentLetters": [
+          "P",
+          "I",
+          "A",
+          "N",
+          ""
+        ],
+        "activeSlotIndex": 4,
+        "hintRevealedIndices": [],
+        "guesses": [],
+        "engineSnapshot": {
+          "guesses": [],
+          "attemptsUsed": 0,
+          "hasUsedContinue": false,
+          "gameOver": false
+        },
+        "awaitingContinue": false,
+        "letterStates": {}
+      }
+    }
+  }
+}

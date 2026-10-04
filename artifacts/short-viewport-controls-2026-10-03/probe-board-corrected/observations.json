@@ -1,0 +1,407 @@
+[
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 720,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  }
+]

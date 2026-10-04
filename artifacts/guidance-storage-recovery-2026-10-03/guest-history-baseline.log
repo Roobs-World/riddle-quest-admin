@@ -1,0 +1,43 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/reddit/__tests__/RedditGuestHostServices.test.ts
+  ● resumes the actual guest attempt count and feedback before accepting another answer
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 0
+
+      93 |   const riddle = await services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 1});
+      94 |   expect(BridgeRiddleSchema.safeParse(riddle).success).toBe(true);
+    > 95 |   expect(riddle.attemptsUsed).toBe(2);
+         |                               ^
+      96 |   expect(riddle.acceptedGuesses?.map(row => row.feedback.map(cell => cell.status))).toEqual([
+      97 |     ["green", "red", "red", "red", "red"], ["red", "red", "red", "red", "red"],
+      98 |   ]);
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditGuestHostServices.test.ts:95:31)
+
+  ● recomputes stored guest feedback from bundled content
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: ["red", "red", "red", "red", "red"]
+    Received: undefined
+
+      110 |   /** Public load returns recomputed evidence. */
+      111 |   const riddle = await services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 1});
+    > 112 |   expect(riddle.acceptedGuesses?.[1]?.feedback.map(cell => cell.status)).toEqual(["red", "red", "red", "red", "red"]);
+          |                                                                          ^
+      113 | });
+      114 |
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditGuestHostServices.test.ts:112:74)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 3 passed, 5 total
+Snapshots:   0 total
+Time:        0.25 s, estimated 1 s
+Ran all test suites matching src/reddit/__tests__/RedditGuestHostServices.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/reddit/__tests__/RedditGuestHostServices.test.ts

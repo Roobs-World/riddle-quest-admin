@@ -1,17 +1,17 @@
 firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
 $ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact
 $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
-✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (14.500852ms)
-✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.899243ms)
-✔ rejects shared-to-target imports across every supported TypeScript module syntax (7.837618ms)
-✔ rejects imports between different target owners (1.540899ms)
-✔ rejects the legacy platform entry while allowing the shop adapter (0.687062ms)
-✔ rejects Devvit imports outside Reddit-owned source (1.244167ms)
-✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.064296ms)
-✔ fails closed when a missing relative path lexically enters target-owned source (0.755892ms)
-✔ handles extensions and index modules with TypeScript-compatible resolution (0.986359ms)
-✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.969586ms)
-✔ aggregates violations in deterministic file and source order (5.192878ms)
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (16.300883ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.545898ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (7.110742ms)
+✔ rejects imports between different target owners (1.828715ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.980207ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.245841ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (4.599535ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (1.405563ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.338425ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.853106ms)
+✔ aggregates violations in deterministic file and source order (0.990246ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -19,7 +19,7 @@ $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && no
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 143.481699
+ℹ duration_ms 158.174667
 Web Target boundary audit passed (284 files, 1237 module references).
 $ node scripts/audit-locales.mjs
 Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
@@ -32,7 +32,7 @@ transforming...
 ✓ 1383 modules transformed.
 rendering chunks...
 computing gzip size...
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/index.html                                        1.29 kB │ gzip:   0.52 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/index.html                                        1.29 kB │ gzip:   0.51 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/tex_ring_b-BUHGHX-C.webp                   4.45 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/coin-BnaBYH65.svg                          6.30 kB │ gzip:   1.96 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/wheel-bg-BifSuxYC.svg                      7.74 kB │ gzip:   1.13 kB
@@ -65,7 +65,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/GameModalView-CEP3Nqf2.css                23.75 kB │ gzip:   5.84 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/RaceTo10Game-nhdg7qEI.css                 24.19 kB │ gzip:   6.04 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/jest-I8x3ob_V.css                         30.38 kB │ gzip:   7.20 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/index-C-Q9GXOO.js                          0.04 kB │ gzip:   0.06 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/index-BKU4VCbj.js                          0.04 kB │ gzip:   0.06 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/core-bridge-constants--aS0k-qf.js          0.10 kB │ gzip:   0.12 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/streakFanfare-D5FNWyR-.js                  0.24 kB │ gzip:   0.24 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/streakFanfare-nH51PXfP.js                  0.24 kB │ gzip:   0.22 kB
@@ -119,7 +119,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/levelUpFanfare-Cl0qa3XP.js                 0.45 kB │ gzip:   0.36 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/levelUpFanfare-CTGjhSJn.js                 0.45 kB │ gzip:   0.33 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/levelUpFanfare-Da_x7Jue.js                 0.45 kB │ gzip:   0.34 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebaseCopy-DaB4gf07.js                   0.46 kB │ gzip:   0.30 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebaseCopy-CYdnJhX6.js                   0.46 kB │ gzip:   0.30 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/levelUpFanfare-DyoO6WH1.js                 0.47 kB │ gzip:   0.35 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/levelUpFanfare-CHdstpWu.js                 0.47 kB │ gzip:   0.35 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/levelUpFanfare-BAlJ8D0X.js                 0.47 kB │ gzip:   0.36 kB
@@ -220,10 +220,10 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/common-vpljjTN8.js                         0.81 kB │ gzip:   0.54 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/common-Dz3UpTCl.js                         0.82 kB │ gzip:   0.55 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/loss-CWXPUZRX.js                           0.82 kB │ gzip:   0.52 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/JestFirebaseAppCheck-BgJkWm4u.js           0.82 kB │ gzip:   0.52 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/JestFirebaseAppCheck-eWvTr6_6.js           0.82 kB │ gzip:   0.52 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/credits-CPMr9j5i.js                        0.83 kB │ gzip:   0.59 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/navigation-MfKaCO-M.js                     0.83 kB │ gzip:   0.58 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebaseLiveRaceSignals-5vQQEQ53.js        0.87 kB │ gzip:   0.51 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebaseLiveRaceSignals-DcrO5kL2.js        0.87 kB │ gzip:   0.51 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/leaderboard-DDTHVAn4.js                    0.90 kB │ gzip:   0.56 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/settings-CS_i32e5.js                       0.91 kB │ gzip:   0.54 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/onboarding-DQLra8FR.js                     0.92 kB │ gzip:   0.59 kB
@@ -231,7 +231,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/stats-DhRrKJqk.js                          0.93 kB │ gzip:   0.59 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/stats-DGElKeRF.js                          0.94 kB │ gzip:   0.63 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/leaderboard-D4odGT_9.js                    0.95 kB │ gzip:   0.60 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/FirebasePresenceTransport-B62YiV-B.js      0.95 kB │ gzip:   0.50 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/FirebasePresenceTransport-Bt1S-yMm.js      0.95 kB │ gzip:   0.50 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/common-BdXkwqia.js                         0.95 kB │ gzip:   0.58 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/onboarding-DBG6CBbL.js                     0.95 kB │ gzip:   0.60 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/credits-BleaRYoH.js                        0.98 kB │ gzip:   0.63 kB
@@ -336,7 +336,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/errors-D4Az-shn.js                         2.45 kB │ gzip:   1.28 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/errors-vXKfe_fy.js                         2.48 kB │ gzip:   1.32 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/tooltips-BGKpbHhI.js                       2.49 kB │ gzip:   1.19 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/liveChallengePush-Ddh24pAM.js              2.49 kB │ gzip:   1.25 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/liveChallengePush-MBCvl0yN.js              2.49 kB │ gzip:   1.25 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/accessibility-CvNNiUKA.js                  2.51 kB │ gzip:   1.11 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/alerts-DGifcR-1.js                         2.53 kB │ gzip:   1.10 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/tooltips-D5Ywc9Vk.js                       2.53 kB │ gzip:   1.13 kB
@@ -380,7 +380,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/errors-DbyX3VtS.js                         4.47 kB │ gzip:   1.54 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/alerts-uYj0wuwT.js                         4.48 kB │ gzip:   1.38 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/tooltips-BtUE9qRL.js                       4.66 kB │ gzip:   1.37 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebase-8qCBTt6_.js                       5.00 kB │ gzip:   2.21 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebase-BW4TV-4p.js                       5.00 kB │ gzip:   2.21 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/race-Pgae0o3L.js                           5.47 kB │ gzip:   2.37 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/race-Cc0kLjnu.js                           5.64 kB │ gzip:   2.55 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/race-DOzzT6E3.js                           5.67 kB │ gzip:   2.53 kB
@@ -393,7 +393,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-D41XTaep.js                        5.94 kB │ gzip:   2.59 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-Cx0pRpKm.js                        5.96 kB │ gzip:   2.68 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/race-9urthsWn.js                           5.99 kB │ gzip:   2.61 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/validation-DWXnxUel.js                     6.01 kB │ gzip:   2.07 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/validation-iZglIhMX.js                     6.01 kB │ gzip:   2.07 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-B5OfPl3A.js                        6.06 kB │ gzip:   2.78 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-Daqs-cvK.js                        6.07 kB │ gzip:   2.62 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-CPQiAE5G.js                        6.12 kB │ gzip:   2.66 kB
@@ -407,7 +407,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-BaD_0pJD.js                        6.75 kB │ gzip:   2.86 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/race-BkeM9bpg.js                           6.76 kB │ gzip:   2.76 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-Bu5O4eN5.js                        7.07 kB │ gzip:   2.96 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebaseServices-gFX3UsRz.js               7.32 kB │ gzip:   2.78 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/firebaseServices-eque71CS.js               7.53 kB │ gzip:   2.91 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-Mwanf_dW.js                        7.57 kB │ gzip:   2.86 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/requestSchemas-mWakFd0b.js                 7.69 kB │ gzip:   2.24 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/race-Boy3G9j5.js                           8.13 kB │ gzip:   3.06 kB
@@ -420,27 +420,27 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/race-BGoY8M5s.js                          10.25 kB │ gzip:   2.98 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/profile-RYx2GXIC.js                       10.28 kB │ gzip:   3.07 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/achievements-zb3HfsZa.js                  12.51 kB │ gzip:   3.20 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/SolarSystem-Ds4hj_Ir.js                   12.80 kB │ gzip:   4.66 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/SolarSystem-6TRVvEwL.js                   12.80 kB │ gzip:   4.66 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-CkWfOPsS.js                  13.78 kB │ gzip:   4.55 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/LiveRacePushConsent-D-69psPn.js           17.06 kB │ gzip:   6.77 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/fakeServices-DKZP1Fpw.js                  20.68 kB │ gzip:   7.05 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/fakeServices-MYvW7e61.js                  20.68 kB │ gzip:   7.05 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-Y1Z8nY45.js                  20.91 kB │ gzip:   4.78 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/ReferralSharingCapability-B4X6LcT7.js     32.98 kB │ gzip:  13.46 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-DsdThxkc.js                  37.04 kB │ gzip:  11.77 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/RaceTo10Game-X7Vfb1YS.js                  37.49 kB │ gzip:  12.54 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/GameModalView-CwGR2PKQ.js                 51.39 kB │ gzip:  16.23 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/RaceTo10Game-OG4nrLUx.js                  37.49 kB │ gzip:  12.54 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/GameModalView-D7nbbP7J.js                 51.39 kB │ gzip:  16.23 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-B10rdh0-.js                  57.10 kB │ gzip:  14.92 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/localeModules-Bz4zpjX9.js                 57.34 kB │ gzip:   7.61 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-BChfjRca.js                  65.48 kB │ gzip:  18.35 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-j2n53szm.js                  74.63 kB │ gzip:  21.29 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-CPNFdt8a.js                  78.40 kB │ gzip:  23.15 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/sentry-BgH32AjR.js                        90.02 kB │ gzip:  30.84 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/sentry-BpZhPvNq.js                        90.02 kB │ gzip:  30.83 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/raceSchemas-VGLErhH6.js                  107.84 kB │ gzip:  31.02 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-three-D5TcQsOm.js                 192.57 kB │ gzip:  42.43 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-react-BsJIBMEs.js                 219.00 kB │ gzip:  68.35 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/jest-B6FS5PvB.js                         222.78 kB │ gzip:  67.09 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/jest-CydPQ72e.js                         222.31 kB │ gzip:  66.77 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/jest/assets/vendor-firebase-NTL0Yt-F.js              397.08 kB │ gzip: 118.60 kB
 
-✓ built in 2.00s
+✓ built in 2.32s
 $ node scripts/audit-jest-artifact.mjs
 Jest artifact audit passed: 408 files, 4.30 MB, 0.50 MB initial resources, relative entry paths, no native modules, external auth/ads, Google Analytics, install copy, secrets, source maps, or missing entry assets

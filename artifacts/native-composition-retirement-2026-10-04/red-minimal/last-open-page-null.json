@@ -1,0 +1,15 @@
+{
+  "text": "Riddle Quest\n🪙 300\n\nCLASSIC · RIDDLE\n\nWhich ancient city was the centre of an empire ruled by emperors such as Augustus?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\n⌫\nSubmit\nHint · 25\nSkip · 100",
+  "nativeValue": "rome",
+  "probe": {
+    "calls": [],
+    "saves": [
+      "{\"schemaVersion\":1,\"revision\":1,\"contentVersion\":\"youtube-content-v1-fixture-643b893f7ed0c15d\",\"progression\":{\"coins\":300,\"xp\":0,\"level\":1,\"classicIndex\":0,\"gamesPlayed\":0,\"totalWins\":0,\"challengeWins\":0,\"dailyPuzzlesCompleted\":0,\"currentDailyStreak\":0,\"bestDailyStreak\":0,\"totalGuesses\":0,\"totalGuessesInWins\":0,\"totalHintsUsed\":0,\"highestClassicLevel\":0,\"unlockedAchievementIds\":[]},\"activeGame\":{\"sessionRevision\":1,\"mode\":\"classic\",\"riddleId\":\"race:history:01\",\"contentFingerprint\":\"248f8b4719af643c4d0714da081554ed968edd4ec730d9b6b42f6fdaa2a36fb6\",\"hintRevealedIndices\":[],\"guesses\":[],\"attemptsUsed\":0,\"hasUsedContinue\":false,\"awaitingContinue\":false},\"operationReceipts\":[{\"id\":\"start:classic:0:1\",\"revision\":1}],\"preferences\":{\"reducedMotion\":false,\"highContrast\":false,\"guidanceComplete\":false}}"
+    ],
+    "loads": 1,
+    "errors": [],
+    "unhandled": [],
+    "segmentYields": 0,
+    "countSegments": false
+  }
+}

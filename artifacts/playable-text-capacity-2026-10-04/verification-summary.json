@@ -1,0 +1,46 @@
+{
+  "goalStatus": "active",
+  "newUnitCases": 3,
+  "portalUnitTests": 2717,
+  "unitSuites": 296,
+  "newBrowserChecks": 330,
+  "newJourneys": 36,
+  "injectedChecksTotal": 840,
+  "browserMatrices": {
+    "development": 165,
+    "production": 165,
+    "ime-development": 168,
+    "ime-production": 168,
+    "admission-development": 87,
+    "admission-production": 87
+  },
+  "builtJourneys": 37,
+  "builtSuites": 7,
+  "typesPassed": true,
+  "tsdocDeclarations": 25119,
+  "tsdocFiles": 1136,
+  "sixBuildsAndAuditsPassed": true,
+  "firefoxMcpVerified": true,
+  "sourceInputPaths": 763,
+  "runtimeAndConfigurationStable": true,
+  "concurrentTestChanges": [
+    "packages/portal/src/play/__tests__/useHostRiddleLifecycle.test.ts"
+  ],
+  "concurrentTestGatesRefreshed": true,
+  "concurrentDocRepairOnly": true,
+  "pasteInputEventMedianMs": {
+    "baseline": 1.7000000029802322,
+    "updated": 0.4000000022351742,
+    "characters": 5004,
+    "samplesPerRevision": 10,
+    "warmupSamplesPerRevision": 3,
+    "scope": "Synchronous native input-event dispatch; excludes asynchronous React commit and production network."
+  },
+  "ownedSourceSha256": {
+    "packages/portal/src/playable/input.ts": "2777e0404065a02fb1e27e5a85e1bebe4f66ba8629226b80bc781d9ccf5b4e79",
+    "packages/portal/src/youtube/__tests__/input.test.ts": "b16a5a51c766f30c182208464a98a3bff20ff3d93bd881a3e4a831a666a98aa4",
+    "packages/portal/scripts/verify-playable-text-capacity-browser.mjs": "ae121a9538db054e040400757518a402dd9b6e4a8514ecccbce2681fc13aad83",
+    "packages/portal/package.json": "eb73e1dcb74a3e92e3ac2854612a9247e13a8fc009aee4a1a4c2a16b54598a85",
+    "packages/portal/src/play/__tests__/useHostRiddleLifecycle.test.ts": "8b91987441acd51e6c9bf6582a2919cc09249ba05ce548726e4a3041ab1dffec"
+  }
+}

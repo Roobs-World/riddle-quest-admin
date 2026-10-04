@@ -1,0 +1,16 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 13 production declarations are undocumented.
+- firebase-functions/src/__tests__/presenceVisibility.test.ts:30 path
+- firebase-functions/src/__tests__/presenceVisibility.test.ts:46 next
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:58 released
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:66 reference
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:85 value
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:123 stale
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:126 owner
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:145 known
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:173 known
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:179 barrier
+- firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts:205 barrier
+- firebase-functions/src/__tests__/socialSafety.test.ts:36 path
+- firebase-functions/src/__tests__/socialSafety.test.ts:85 next
+[ELIFECYCLE] Command failed with exit code 1.

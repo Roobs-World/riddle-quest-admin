@@ -1,0 +1,634 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "resize-work-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "get_firefox_info",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Firefox Instance Configuration\n\nBinary: /snap/firefox/current/usr/lib/firefox/firefox\nFirefox version: 157.0\nHeadless: Yes\nProfile: /home/craig-beswetherick/snap/firefox/common/mcp-tmp/resize-work-firefox-verification-82psb2d2\nStart URL: about:blank\n\nOutput File: /home/craig-beswetherick/Documents/riddle-quest/artifacts/game-resize-work-2026-10-03/firefox-verification.log\n  Size: 0.00 MB\n  Last Modified: 2026-10-03T09:31:05.839Z"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:44381?custom=1&harness=race",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:44381?custom=1&harness=race (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".game-app",
+          "maxLines": 90
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .game-app]\n\nuid=e83 main\n  uid=e81 div\n    uid=e5 header\n      uid=e0 img \"Logo\" src=\"http://127.0.0.1:44381/asse...\"\n      uid=e1 button \"Mute sound\"\n      uid=e2 div text=\"Classic\"\n      uid=e4 div \"300  coins\"\n        uid=e3 img src=\"http://127.0.0.1:44381/asse...\"\n    uid=e39 section\n      uid=e7 div\n        uid=e6 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n      uid=e38 div\n        uid=e13 div\n          uid=e8 button \"Letter 1\"\n          uid=e9 button \"Letter 2\"\n          uid=e10 button \"Letter 3\"\n          uid=e11 button \"Letter 4\"\n          uid=e12 button \"Letter 5\"\n        uid=e19 div\n          uid=e14 button \"Letter 1\"\n          uid=e15 button \"Letter 2\"\n          uid=e16 button \"Letter 3\"\n          uid=e17 button \"Letter 4\"\n          uid=e18 button \"Letter 5\"\n        uid=e25 div\n          uid=e20 button \"Letter 1\"\n          uid=e21 button \"Letter 2\"\n          uid=e22 button \"Letter 3\"\n          uid=e23 button \"Letter 4\"\n          uid=e24 button \"Letter 5\"\n        uid=e31 div\n          uid=e26 button \"Letter 1\"\n          uid=e27 button \"Letter 2\"\n          uid=e28 button \"Letter 3\"\n          uid=e29 button \"Letter 4\"\n          uid=e30 button \"Letter 5\"\n        uid=e37 div\n          uid=e32 button \"Letter 1\"\n          uid=e33 button \"Letter 2\"\n          uid=e34 button \"Letter 3\"\n          uid=e35 button \"Letter 4\"\n          uid=e36 button \"Letter 5\"\n    uid=e71 section \"Virtual keyboard\"\n      uid=e50 div\n        uid=e40 button \"Q\" text=\"Q\"\n        uid=e41 button \"W\" text=\"W\"\n        uid=e42 button \"E\" text=\"E\"\n        uid=e43 button \"R\" text=\"R\"\n        uid=e44 button \"T\" text=\"T\"\n        uid=e45 button \"Y\" text=\"Y\"\n        uid=e46 button \"U\" text=\"U\"\n        uid=e47 button \"I\" text=\"I\"\n        uid=e48 button \"O\" text=\"O\"\n        uid=e49 button \"P\" text=\"P\"\n      uid=e60 div\n        uid=e51 button \"A\" text=\"A\"\n        uid=e52 button \"S\" text=\"S\"\n        uid=e53 button \"D\" text=\"D\"\n        uid=e54 button \"F\" text=\"F\"\n        uid=e55 button \"G\" text=\"G\"\n        uid=e56 button \"H\" text=\"H\"\n        uid=e57 button \"J\" text=\"J\"\n        uid=e58 button \"K\" text=\"K\"\n        uid=e59 button \"L\" text=\"L\"\n      uid=e70 div\n        uid=e61 button \"Z\" text=\"Z\"\n        uid=e62 button \"X\" text=\"X\"\n        uid=e63 button \"C\" text=\"C\"\n        uid=e64 button \"V\" text=\"V\"\n        uid=e65 button \"B\" text=\"B\"\n        uid=e66 button \"N\" text=\"N\"\n        uid=e67 button \"M\" text=\"M\"\n        uid=e69 button \"Backspace\"\n          uid=e68 img src=\"data:image/svg+xml,%3csvg%2...\"\n    uid=e75 section \"Game\"\n      uid=e72 button \"Hint\" text=\"Hint\"\n      uid=e73 button \"SUBMIT\" text=\"SUBMIT\"\n      uid=e74 button \"Skip\" text=\"Skip\"\n    uid=e80 nav \"Game\"\n      uid=e76 button \"Settings\"\n      uid=e78 button \"Multiplayer\"\n        uid=e77 span text=\"Multiplayer\"\n      uid=e79 button \"Profile\"\n  uid=e82 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e49"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e49"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e47"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e47"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e51"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e51"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e66"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e66"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.sizingChecks=[];window.checkSizing=(name,actual,expected)=>{window.sizingChecks.push({name,actual,expected});if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(name+': '+JSON.stringify(actual));};window.sizingToken=window.probe.saves.findLast(x=>x.activeGame).activeGame.sessionToken;const c=window.checkSizing;c('native keys preserve PIAN',window.probe.saves.findLast(x=>x.activeGame).activeGame.currentLetters.join('').toUpperCase(),'PIAN');window.controlFrames();window.releaseScene();for(let i=0;i<100&&!document.querySelector('.solar-system canvas');i++)await new Promise(r=>setTimeout(r,20));window.resizeScene(1279.7,843.8);window.step();c('healthy scene has drawn',window.probe.draws>0,true);window.initialResizes=window.probe.resizes;window.initialDraws=window.probe.draws;for(let i=0;i<180;i++)window.resizeScene(1279.1+(i%8)/10,843.1+(i%8)/10);c('180 equivalent measurements perform zero resets',window.probe.resizes,window.initialResizes);c('equivalent sizes retain one frame chain',window.pendingFrames(),1);window.resizeScene(0,0);c('collapse stops all frames',window.pendingFrames(),0);window.step(3000);c('collapse draws nothing',window.probe.draws,window.initialDraws);window.resizeScene(1279.9,843.9);c('same-size recovery avoids buffer reset',window.probe.resizes,window.initialResizes);c('same-size recovery resumes one chain',window.pendingFrames(),1);window.pause(true);for(let i=0;i<100&&!document.querySelector('.game-app.paused');i++)await new Promise(r=>setTimeout(r,20));for(let i=0;i<120;i++)window.resizeScene(400+i+.7,300+i+.8);c('paused resize storm performs zero resets',window.probe.resizes,window.initialResizes);c('paused resize storm owns no frame',window.pendingFrames(),0);window.pause(false);for(let i=0;i<100&&!window.pendingFrames();i++)await new Promise(r=>setTimeout(r,20));c('resume applies latest size once',window.probe.resizes,window.initialResizes+1);c('resume applies latest integer size',window.probe.sizes.at(-1),[519,419]);c('resume owns one chain',window.pendingFrames(),1);return 'deduplication, collapse and pause checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Script execution failed: Error: healthy scene has drawn: false\n\n```json\n\"[error]\"\n```"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e78"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e78"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "[data-testid=provider-race]",
+          "maxLines": 10
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: [data-testid=provider-race]]\n\nuid=e85 section\n  uid=e84 button \"Return to puzzle\" text=\"Return to puzzle\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({draws:window.probe.draws,resizes:window.probe.resizes,frames:window.pendingFrames(),sizes:window.probe.sizes,resources:window.liveResources(),errors:window.probe.errors})"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draws\\\":2,\\\"resizes\\\":2,\\\"frames\\\":0,\\\"sizes\\\":[[1366,682],[1279,843]],\\\"resources\\\":76,\\\"errors\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e84"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e84"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {await new Promise(r=>setTimeout(r,100));window.sizingChecks.pop();const c=window.checkSizing;window.step();c('healthy scene has drawn',window.probe.draws>0,true);window.initialResizes=window.probe.resizes;window.initialDraws=window.probe.draws;for(let i=0;i<180;i++)window.resizeScene(1279.1+(i%8)/10,843.1+(i%8)/10);c('180 equivalent measurements perform zero resets',window.probe.resizes,window.initialResizes);c('equivalent sizes retain one frame chain',window.pendingFrames(),1);window.resizeScene(0,0);c('collapse stops all frames',window.pendingFrames(),0);window.step(3000);c('collapse draws nothing',window.probe.draws,window.initialDraws);window.resizeScene(1279.9,843.9);c('same-size recovery avoids buffer reset',window.probe.resizes,window.initialResizes);c('same-size recovery resumes one chain',window.pendingFrames(),1);window.pause(true);for(let i=0;i<100&&!document.querySelector('.game-app.paused');i++)await new Promise(r=>setTimeout(r,20));for(let i=0;i<120;i++)window.resizeScene(400+i+.7,300+i+.8);c('paused resize storm performs zero resets',window.probe.resizes,window.initialResizes);c('paused resize storm owns no frame',window.pendingFrames(),0);window.pause(false);for(let i=0;i<100&&!window.pendingFrames();i++)await new Promise(r=>setTimeout(r,20));c('resume applies latest size once',window.probe.resizes,window.initialResizes+1);c('resume applies latest integer size',window.probe.sizes.at(-1),[519,419]);c('resume owns one chain',window.pendingFrames(),1);return 'deduplication, collapse and pause checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"deduplication, collapse and pause checks passed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e78"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e78"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<100&&!document.querySelector('[data-testid=provider-race]');i++)await new Promise(r=>setTimeout(r,20));const c=window.checkSizing;c('native Multiplayer opens provider',!!document.querySelector('[data-testid=provider-race]'),true);window.raceResizes=window.probe.resizes;for(let i=0;i<120;i++)window.resizeScene(500+i+.7,400+i+.8);c('multiplayer resize storm performs zero resets',window.probe.resizes,window.raceResizes);c('multiplayer resize storm owns no frame',window.pendingFrames(),0);return 'multiplayer sizing blocked';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"multiplayer sizing blocked\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "[data-testid=provider-race]",
+          "maxLines": 10
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: [data-testid=provider-race]]\n\nuid=e87 section\n  uid=e86 button \"Return to puzzle\" text=\"Return to puzzle\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e86"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e86"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<100&&document.querySelector('[data-testid=provider-race]');i++)await new Promise(r=>setTimeout(r,20));const c=window.checkSizing;c('return applies latest multiplayer size once',window.probe.resizes,window.raceResizes+1);c('return applies latest multiplayer dimensions',window.probe.sizes.at(-1),[619,519]);c('return owns one frame',window.pendingFrames(),1);window.visibility(true);const hiddenResizes=window.probe.resizes;for(let i=0;i<120;i++)window.resizeScene(600+i+.7,500+i+.8);c('hidden resize storm performs zero resets',window.probe.resizes,hiddenResizes);c('hidden resize storm owns no frame',window.pendingFrames(),0);window.visibility(false);c('visibility applies latest size once',window.probe.resizes,hiddenResizes+1);c('visibility applies latest dimensions',window.probe.sizes.at(-1),[719,619]);window.contextEvent('webglcontextlost');const lostResizes=window.probe.resizes;for(let i=0;i<120;i++)window.resizeScene(700+i+.7,600+i+.8);c('lost context performs zero resets',window.probe.resizes,lostResizes);c('lost context owns no frame',window.pendingFrames(),0);window.contextEvent('webglcontextrestored');c('restoration applies latest size once',window.probe.resizes,lostResizes+1);c('restoration applies latest dimensions',window.probe.sizes.at(-1),[819,719]);c('restoration owns one frame',window.pendingFrames(),1);window.step();c('restored scene still draws',window.probe.draws>window.initialDraws,true);window.probe.failResize=true;window.resizeScene(900,600);c('changed-size failure retires resources',window.liveResources(),0);c('changed-size failure removes context callbacks',window.activeContextCallbacks(),0);c('changed-size failure removes frames',window.pendingFrames(),0);c('changed-size failure reports once',window.probe.errors.length,1);c('diagnostic identifies resizing',window.probe.errors[0].operation,'resize_scene');const resizes=window.probe.resizes;window.resizeScene(1000,800,true);window.replayContextCallbacks();window.replayFrames();window.visibility(false);c('retained callbacks cannot resize',window.probe.resizes,resizes);c('retained callbacks cannot repeat error',window.probe.errors.length,1);c('no escaped browser error',window.probe.windowErrors,[]);c('draft preserved',window.probe.saves.findLast(x=>x.activeGame).activeGame.currentLetters.join('').toUpperCase(),'PIAN');c('token preserved',window.probe.saves.findLast(x=>x.activeGame).activeGame.sessionToken,window.sizingToken);return 'hidden/context/failure sizing checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"hidden/context/failure sizing checks passed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e48"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e48"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e73"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e73"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<100&&window.probe.completions!==1;i++)await new Promise(r=>setTimeout(r,20));const c=window.checkSizing;c('native Submit sends one answer',window.probe.guesses,1);c('native Submit completes once',window.probe.completions,1);c('no unhandled promise',window.probe.unhandled,[]);c('no duplicate releases',window.probe.duplicateReleases,0);return 'completion checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"completion checks passed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({checks:window.sizingChecks,probe:{draws:window.probe.draws,resizes:window.probe.resizes,sizes:window.probe.sizes,rendererConstructions:window.probe.rendererConstructions,disposals:window.probe.disposals,errors:window.probe.errors,windowErrors:window.probe.windowErrors,unhandled:window.probe.unhandled,guesses:window.probe.guesses,completions:window.probe.completions}})",
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page. Result saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/evaluate-script-2026-10-03T09-41-08-904Z.json (3.8KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T09-41-08-922Z.png (91.2KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  }
+]

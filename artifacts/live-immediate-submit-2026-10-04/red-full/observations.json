@@ -1,0 +1,15 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "replace-full",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "zzzz"
+    ],
+    "expected": [
+      "test"
+    ]
+  }
+]

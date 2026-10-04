@@ -1,4 +1,4 @@
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 
 /** One displayed project credit. */
 type Credit = readonly [name: string, roleKey: string];
@@ -31,6 +31,8 @@ export function InstructionsModalPage({
   /** Stores on close. */ /** Stores on close. */
   onClose: () => void;
 }) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   return (
     <div className="instructions-page">
       <p>{tr("Instructions.GOAL_DESCRIPTION")}</p>
@@ -58,6 +60,8 @@ export function InstructionsModalPage({
 
 /** Renders the project credits and acknowledgements. */
 export function CreditsModalPage() {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   return (
     <div className="credits-list">
       <p>{tr("Credits.SUBTITLE")}</p>
@@ -80,6 +84,8 @@ export function AboutModalPage({
   /** Stores on open modal. */ /** Stores on open modal. */
   onOpenModal: (modal: "profile") => void;
 }) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   return (
     <div className="about-list">
       {ABOUT_LEGAL_ROWS.map(([key, action]) => {

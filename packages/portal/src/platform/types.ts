@@ -378,6 +378,8 @@ export type SharingCapability = {
 
 /** Optional provider context selection that never exposes a social graph to game code. */
 export type NativeSocialCapability = {
+  /** Observes successful provider context changes; unsubscribe retires the callback. */
+  onContextChange?(callback: () => void): () => void;
   /** @returns The active provider thread/group, or `unavailable` outside one. */
   currentContext(): PlatformResult<{
     /** Stores context id. */
@@ -479,10 +481,12 @@ export type TournamentCapability = {
 
 /** Server-authoritative board for the currently active Facebook thread/group context. */
 export type ContextBoardCapability = {
-  /** Lists the identity-minimized board for the active provider context. */
-  list(locale: RaceLocale): Promise<ListFacebookContextBoardResponse>;
-  /** Records an idempotent completed run for the active provider context. */
-  record(runId: string, locale: RaceLocale): Promise<RecordFacebookContextRunResponse>;
+  /** Invalidates current rows immediately when the owning provider context changes. */
+  onContextChange?(callback: () => void): () => void;
+  /** Lists validated standings, or null when the provider has no active social context. */
+  list(locale: RaceLocale): Promise<ListFacebookContextBoardResponse | null>;
+  /** Records an idempotent run, or returns null when no social context can receive it. */
+  record(runId: string, locale: RaceLocale): Promise<RecordFacebookContextRunResponse | null>;
 };
 
 /**

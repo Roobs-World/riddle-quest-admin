@@ -375,3 +375,22 @@ The shared board contains no SDK; Facebook native presentation stays in its own
 adapter. Real cross-provider/gateway/deletion checks pass 119 cases, both injected
 provider browsers and all six isolated artifact audits pass. Ship the reviewed
 backend/client unit and verify hosted signed forwarding and device acceptance.
+
+The [recent Live PvP history follow-up](evidence/live-race-history-2026-10-02.md)
+restores Activity alongside Play and the game-owned Tournaments board. The
+browser reads only `/api/game/race.live.history`; the trusted signed gateway
+returns a bounded locale-bound public projection without rival account IDs,
+answers, copied stale identity or new grants. Owner deletion rejects the read;
+bilateral blocks and unavailable accounts retire opponent presentation/actions.
+History uses the existing default gateway budget, with no additional host or
+Firebase browser SDK. Local emulator/browser checks and all six isolated builds
+pass. The [live rematch follow-up](evidence/live-race-rematches-2026-10-03.md)
+adds a prior-human reserved lobby and explicit in-game inbox acceptance through
+the existing signed same-origin join/inbox/preview routes and account-operation
+lease. It adds no provider notification outbox or browser SDK. Stable retries,
+strict public projections, bilateral blocks and real cleanup for either deleting
+player pass in 64 emulator cases; both provider browser journeys, six selected
+Jest regressions and all six isolated builds/audits pass. Hosted signed forwarding,
+index readiness, deployed-source equivalence and device acceptance remain pending.
+
+For the shared presence mirror rollout, use the [presence permission reconciliation runbook](presence-visibility-reconciliation.md) after the matching backend/rules are staged and older writers have drained. Its local verification does not establish hosted inventory coverage or acceptance.

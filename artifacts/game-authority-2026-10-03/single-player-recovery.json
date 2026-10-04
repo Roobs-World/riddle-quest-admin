@@ -1,0 +1,29 @@
+{
+  "authority": "Injected local services and actual React hooks; timings exclude production network",
+  "samples": [
+    {
+      "width": 1280,
+      "completionReconnectMs": 1.099999999627471,
+      "startupReconnectMs": 1.400000000372529,
+      "effectReplayRecovered": true,
+      "synchronousAcknowledgementStoppedRetries": true,
+      "currentProfilePreserved": true,
+      "retiredLoadRejected": true,
+      "nativeDeletionAndImePreserved": true,
+      "restoredProfileAccountIsolated": true,
+      "accountVictoryAndReceiptsRetired": true
+    },
+    {
+      "width": 390,
+      "completionReconnectMs": 0.8000000007450581,
+      "startupReconnectMs": 1,
+      "effectReplayRecovered": true,
+      "synchronousAcknowledgementStoppedRetries": true,
+      "currentProfilePreserved": true,
+      "retiredLoadRejected": true,
+      "nativeDeletionAndImePreserved": true,
+      "restoredProfileAccountIsolated": true,
+      "accountVictoryAndReceiptsRetired": true
+    }
+  ]
+}

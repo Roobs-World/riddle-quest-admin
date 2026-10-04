@@ -1,0 +1,27 @@
+FAIL src/youtube/__tests__/LocalSoloAuthority.test.ts
+  ● LocalSoloAuthority › keeps observers quiet when rejected text, empty deletion, input or selection leaves the draft unchanged
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 4
+
+    1: called with 0 arguments
+    2: called with 0 arguments
+    3: called with 0 arguments
+
+      92 |     authority.setActiveSlot(0);
+      93 |     authority.setInput(["", "", "", ""], 0);
+    > 94 |     expect(notify).not.toHaveBeenCalled();
+         |                        ^
+      95 |     authority.insertText("rome");
+      96 |     expect(notify).toHaveBeenCalledTimes(1);
+      97 |     notify.mockClear();
+
+      at Object.<anonymous> (src/youtube/__tests__/LocalSoloAuthority.test.ts:94:24)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 28 passed, 29 total
+Snapshots:   0 total
+Time:        0.229 s, estimated 1 s
+Ran all test suites within paths "src/youtube/__tests__/LocalSoloAuthority.test.ts".

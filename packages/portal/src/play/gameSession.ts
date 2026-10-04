@@ -7,10 +7,17 @@ import {
   type ScoredGuess,
 } from "@qwordly/core/game";
 import type {BridgeRiddle, BridgeProfile} from "@qwordly/core/bridge";
-import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
+import type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
 import {predictCompletionAchievementIds} from "./achievements";
+import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";
 
 export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
+
+/** Player-owned utility pages remain open while an authoritative question changes underneath them. */
+const questionIndependentModals = new Set<GameModal>([
+  "profile", "settings", "instructions", "credits", "about", "statistics",
+  "achievements", "ranks", "leaderboard", "shop", "treasure", "username",
+]);
 
 /** Creates initial game session. */
 export const createInitialGameSession = (): GameSessionState => ({
@@ -25,7 +32,10 @@ export const createInitialGameSession = (): GameSessionState => ({
   leaderboard: [],
   leaderboardType: "xp",
   leaderboardLoading: false,
+  leaderboardRequestId: null,
+  leaderboardLoadError: false,
   riddle: null,
+  canRestoreCheckpoint: false,
   currentLetters: [],
   activeSlotIndex: 0,
   hintRevealedIndices: [],
@@ -66,6 +76,22 @@ const withProfileCoins = (profile: BridgeProfile | null, coins?: number): Bridge
 /** Keeps a pending deduction visible while unrelated profile refreshes arrive. */
 const preservePendingCoins = (state: GameSessionState, profile: BridgeProfile | null): BridgeProfile | null =>
   state.pendingCoinSpend ? withProfileCoins(profile, state.profile?.coins) : profile;
+
+/** Account-owned guesses, rewards and session tokens cannot migrate through an identity notification. */
+const resetAccountProgress = (state: GameSessionState): GameSessionState => ({
+  ...createInitialGameSession(),
+  initialized: state.initialized,
+  paused: state.paused,
+  locale: state.locale,
+  gameMode: state.gameMode,
+  products: state.products,
+  muted: state.muted,
+  leaderboardType: state.leaderboardType,
+});
+
+/** UID and creation generation together identify one gameplay account. */
+const sameGameAccount = (first: GameSessionState["user"], second: GameSessionState["user"]): boolean =>
+  first?.uid === second?.uid && first?.accountGeneration === second?.accountGeneration;
 
 /** Computes states. */
 const computeStates = (guesses: ScoredGuess[]): Record<string, Feedback> => {
@@ -125,20 +151,22 @@ export const canEditCurrentGuess = (state: GameSessionState): boolean =>
 /** Provides game session reducer behavior. */
 export const gameSessionReducer = (state: GameSessionState, action: GameSessionAction): GameSessionState => {
   switch (action.type) {
-    case "hostInit":
+    case "hostInit": {
+      /** Initialization can also arrive while recovering an account replacement. */
+      const current = sameGameAccount(state.user, action.user) ? state : resetAccountProgress(state);
       return {
-        ...state,
+        ...current,
         initialized: true,
         locale: action.locale,
         gameMode: action.gameMode,
         user: action.user,
-        profile: preservePendingCoins(state, action.profile),
+        profile: preservePendingCoins(current, action.profile),
         products: action.products,
       };
+    }
     case "authState": {
       /** The same account used by the current operation. */
-      const sameAccount = state.user?.uid === action.user?.uid &&
-        state.user?.accountGeneration === action.user?.accountGeneration;
+      const sameAccount = sameGameAccount(state.user, action.user);
       /** The same ranking used by the current operation. */
       const sameRanking = state.profile?.xp === action.profile?.xp &&
         state.profile?.wins === action.profile?.wins &&
@@ -147,23 +175,26 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         state.profile?.username === action.profile?.username &&
         state.profile?.avatarUrl === action.profile?.avatarUrl;
       return {
-        ...state,
+        ...(sameAccount ? state : resetAccountProgress(state)),
         user: action.user,
         profile: sameAccount ? preservePendingCoins(state, action.profile) : action.profile,
         pendingCoinSpend: sameAccount ? state.pendingCoinSpend : null,
         leaderboard: sameAccount && sameRanking ? state.leaderboard : [],
+        ...(!sameAccount ? {leaderboardLoading: false, leaderboardRequestId: null, leaderboardLoadError: false} : {}),
       };
     }
     case "loadRiddle": {
       // Background or late host loads must not replace a completed question before
       // the player has dismissed its victory and achievement sequence.
       if (state.modal === "victory" && state.lastOutcome?.kind === "win") return state;
+      /** Host-accepted terminal progress survives absent, stale or unrelated provider checkpoints. */
+      const confirmedOutcome = getConfirmedRiddleOutcome(action.riddle);
       /** Provides snapshot behavior. */
       const snapshot = {
         guesses: recoveredGuesses(action.riddle) ?? [],
         attemptsUsed: action.riddle.attemptsUsed,
         hasUsedContinue: action.riddle.hasUsedContinue,
-        gameOver: false,
+        gameOver: Boolean(confirmedOutcome),
       };
       /** Server-owned paid hint locks survive missing or other-language provider checkpoints. */
       const hints = action.riddle.revealedHints ?? [];
@@ -173,6 +204,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       return {
         ...state,
         riddle: action.riddle,
+        canRestoreCheckpoint: true,
         gameMode: action.riddle.gameMode,
         profile: action.profile === undefined ? state.profile : preservePendingCoins(state, action.profile),
         currentLetters: letters,
@@ -183,9 +215,10 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         pendingGuessState: null,
         pendingHintState: null,
         engineSnapshot: snapshot,
-        modal: action.riddle.awaitingContinue ? "continue" : null,
+        modal: confirmedOutcome?.kind === "win" ? "victory" : questionIndependentModals.has(state.modal) ? state.modal
+          : action.riddle.awaitingContinue ? "continue" : null,
         notice: action.preserveNotice ? state.notice : null,
-        lastOutcome: null,
+        lastOutcome: confirmedOutcome,
         completionAcknowledged: false,
         lastRewards: null,
         optimisticAchievementIds: [],
@@ -207,6 +240,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       currentLetters[state.activeSlotIndex] = letter;
       return {
         ...state,
+        canRestoreCheckpoint: false,
         currentLetters,
         activeSlotIndex: firstEditableSlot(
           currentLetters,
@@ -229,7 +263,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       /** Provides current letters behavior. */
       const currentLetters = [...state.currentLetters];
       currentLetters[target] = "";
-      return {...state, currentLetters, activeSlotIndex: target, notice: null};
+      return {...state, canRestoreCheckpoint: false, currentLetters, activeSlotIndex: target, notice: null};
     }
     case "selectSlot":
       if (
@@ -241,7 +275,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       ) {
         return state;
       }
-      return {...state, activeSlotIndex: action.index};
+      return {...state, canRestoreCheckpoint: false, activeSlotIndex: action.index};
     case "guessRequested":
       if (!state.riddle || (state.guessPending && !canDraftWhileConfirming(state)) ||
         state.currentLetters.some((letter) => !letter)) return state;
@@ -253,7 +287,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         /** Canonical answer normalized exactly as on the server. */
         const normalizedAnswer = lowerCaseGraphemes(answer.trim(), locale).join("");
         if (splitGraphemes(normalizedAnswer, locale).length !== state.riddle.answerLength) {
-          return {...state, guessPending: true, notice: null};
+          return {...state, canRestoreCheckpoint: false, guessPending: true, notice: null};
         }
         /** Predicted attempt number; the server remains authoritative. */
         const attempts = (state.engineSnapshot?.attemptsUsed ?? 0) + 1;
@@ -284,13 +318,16 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           },
         };
       }
-      return {...state, guessPending: true, notice: null};
+      return {...state, canRestoreCheckpoint: false, guessPending: true, notice: null};
     case "guessPreviewConfirmed":
       return {...state, guessPending: false, pendingGuessState: null};
     case "restoreQueuedGuesses": {
       if (!state.riddle || action.base.currentLetters.length !== state.riddle.answerLength) return state;
-      /** The restored used by the current operation. */
-      let restored: GameSessionState = {...state, ...action.base, guessPending: false, pendingGuessState: null};
+      // Pending-play receipts may settle after the host has already supplied their terminal history.
+      if (getConfirmedRiddleOutcome(state.riddle)) return state;
+      /** Journal gameplay is recoverable; its older profile must not replace the current host profile. */
+      let restored: GameSessionState = {...state, ...action.base, profile: state.profile,
+        guessPending: false, pendingGuessState: null, canRestoreCheckpoint: false};
       for (const guess of action.guesses) {
         /** The letters used by the current operation. */
         const letters = splitGraphemes(guess, state.riddle.evaluation?.locale).map((letter) => letter.toUpperCase());
@@ -307,12 +344,27 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           : firstEditableSlot(action.draft, restored.hintRevealedIndices);
         restored = {...restored, currentLetters: action.draft, activeSlotIndex};
       }
-      return restored;
+      if (!restored.engineSnapshot?.gameOver && state.riddle.revealedHints?.length) {
+        /** Current host hint letters remain authoritative even when the retained draft predates their purchase. */
+        const currentLetters = [...restored.currentLetters];
+        for (const hint of state.riddle.revealedHints) currentLetters[hint.index] = hint.letter;
+        restored = {...restored,currentLetters,activeSlotIndex: state.hintRevealedIndices.includes(restored.activeSlotIndex)
+          ? firstEditableSlot(currentLetters,state.hintRevealedIndices) : restored.activeSlotIndex};
+      }
+      // A saved gameplay checkpoint cannot dismiss a utility page opened since it was captured.
+      return questionIndependentModals.has(state.modal) ? {...restored, modal: state.modal} : restored;
     }
     case "restoreConfirmedRiddle": {
+      // A rollback's older issued copy cannot reopen this already confirmed terminal round.
+      if (state.riddle && getConfirmedRiddleOutcome(state.riddle) &&
+        state.riddle.riddleId === action.riddle.riddleId && state.riddle.sessionToken === action.riddle.sessionToken &&
+        state.riddle.gameMode === action.riddle.gameMode) return state;
       /** The loaded used by the current operation. */
       const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: action.riddle});
-      return {...loaded, ...action.base, guessPending: false, pendingGuessState: null,
+      if (loaded.riddle && getConfirmedRiddleOutcome(loaded.riddle)) return loaded;
+      return {...loaded, ...action.base, profile: loaded.profile, guessPending: false, pendingGuessState: null,
+        canRestoreCheckpoint: false,
+        modal: questionIndependentModals.has(state.modal) ? state.modal : action.base.modal,
         notice: null, lastRewards: null};
     }
     case "guessCheckpointAdvanced": {
@@ -337,7 +389,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         : null;
       // Replace only speculative gameplay, preserving non-outcome surfaces opened in the meantime.
       if (state.pendingGuessState) state = {
-        ...state, ...state.pendingGuessState,
+        ...state,
+        canRestoreCheckpoint: false, ...state.pendingGuessState,
         modal: state.lastOutcome ? state.pendingGuessState.modal : state.modal,
         pendingGuessState: null,
       };
@@ -376,6 +429,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
 
       return {
         ...state,
+        canRestoreCheckpoint: false,
         profile,
         currentLetters: draft?.currentLetters ?? nextLetters,
         activeSlotIndex: draft?.activeSlotIndex ?? firstEditableSlot(nextLetters, state.hintRevealedIndices),
@@ -460,8 +514,9 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "previewCoinSpend":
       if (state.pendingCoinSpend || !state.profile || !Number.isInteger(action.amount) ||
         action.amount <= 0 || state.profile.coins < action.amount) return state;
-      if (action.reason === "continue" && (state.modal !== "continue" || !state.riddle ||
-        !state.engineSnapshot || state.engineSnapshot.hasUsedContinue)) return state;
+      if (action.reason === "continue" && (!state.riddle || !state.engineSnapshot ||
+        state.engineSnapshot.attemptsUsed !== 5 || state.engineSnapshot.gameOver ||
+        state.engineSnapshot.hasUsedContinue)) return state;
       {
         /** Gameplay checkpoint restored if the provisional Continue is rejected. */
         const continueState = action.reason === "continue" ? {
@@ -475,7 +530,17 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         const charged = {...state, profile: withProfileCoins(state.profile, state.profile.coins - action.amount),
           pendingCoinSpend: {requestId: action.requestId, previousCoins: state.profile.coins,
             continueState, sessionToken: continueState ? state.riddle?.sessionToken : undefined}};
-        return continueState ? gameSessionReducer(charged, {type: "continueGranted"}) : charged;
+        if (!continueState) return charged;
+        /** Recovery grants the attempt before restoring letters typed during the interrupted charge. */
+        const continued = gameSessionReducer(charged, {type: "continueGranted"});
+        if (!action.draft || action.draft.length !== state.riddle?.answerLength) return continued;
+        /** Previously selected editable slot in the continued-attempt draft. */
+        const savedSlot = action.draftActiveSlotIndex;
+        /** Valid restored selection, or the first slot that remains editable. */
+        const activeSlotIndex = savedSlot !== undefined && Number.isInteger(savedSlot) &&
+          savedSlot >= 0 && savedSlot < action.draft.length && !continued.hintRevealedIndices.includes(savedSlot)
+          ? savedSlot : firstEditableSlot(action.draft, continued.hintRevealedIndices);
+        return {...continued, currentLetters: [...action.draft], activeSlotIndex};
       }
     case "confirmCoinSpend":
       if (state.pendingCoinSpend?.requestId !== action.requestId) return state;
@@ -492,16 +557,22 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         leaderboardType: action.leaderboardType,
         leaderboard: state.leaderboardType === action.leaderboardType ? state.leaderboard : [],
         leaderboardLoading: true,
+        leaderboardRequestId: action.requestId ?? null,
+        leaderboardLoadError: false,
       };
     case "leaderboardLoaded":
+      if (action.requestId && (!state.leaderboardLoading || state.leaderboardRequestId !== action.requestId)) return state;
       return {
         ...state,
         leaderboardType: action.leaderboardType,
         leaderboard: action.entries,
         leaderboardLoading: false,
+        leaderboardLoadError: false,
+        leaderboardRequestId: null,
       };
     case "leaderboardLoadFailed":
-      return {...state, leaderboardLoading: false};
+      if (action.requestId && (!state.leaderboardLoading || state.leaderboardRequestId !== action.requestId)) return state;
+      return {...state, leaderboardLoading: false, leaderboardLoadError: true, leaderboardRequestId: null};
     case "profileUpdated":
       return {...state, profile: preservePendingCoins(state, action.profile), leaderboard: []};
     case "completionReward":
@@ -532,7 +603,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "showAuxiliaryFanfare":
       return {...state, auxiliaryFanfare: action.fanfare, modal: "reward"};
     case "restoreSession":
-      if (!state.riddle || action.riddleId !== state.riddle.riddleId ||
+      // Journal recovery and player edits outrank an older provider or retained checkpoint.
+      if (!state.canRestoreCheckpoint || !state.riddle || action.riddleId !== state.riddle.riddleId ||
         action.sessionToken !== state.riddle.sessionToken || state.guessPending || state.lastOutcome ||
         (state.engineSnapshot?.attemptsUsed ?? 0) > state.riddle.attemptsUsed ||
         // A provider save may predate the replayed Continue grant for this session.
@@ -543,15 +615,16 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       {
         /** Provides guesses behavior. */
         const guesses = recoveredGuesses(state.riddle) ?? action.guesses.slice(0, state.riddle.attemptsUsed);
-        /** Provides pending outcome behavior. */
-        const pendingOutcome =
-          action.pendingOutcome?.kind === "loss" &&
-          !action.pendingOutcome.isCorrect &&
-          action.pendingOutcome.attempts === state.riddle.attemptsUsed &&
-          state.riddle.awaitingContinue &&
-          !state.riddle.hasUsedContinue
-            ? action.pendingOutcome
-            : null;
+        /** Completion intent must still belong to the loaded round and its accepted attempt count. */
+        const outcome = action.pendingOutcome;
+        /** Provider completion intent cannot cross a round, mode or accepted attempt count. */
+        const matchingOutcome = outcome?.riddleId === state.riddle.riddleId &&
+          outcome.sessionToken === state.riddle.sessionToken && outcome.gameMode === state.riddle.gameMode &&
+          outcome.attempts === state.riddle.attemptsUsed && action.engineSnapshot.gameOver;
+        /** Eligible terminal intent remains deliverable using the original completion identity. */
+        const pendingOutcome = getConfirmedRiddleOutcome(state.riddle) ??
+          (matchingOutcome && outcome.kind === "loss" && !outcome.isCorrect &&
+            state.riddle.awaitingContinue && !state.riddle.hasUsedContinue ? outcome : null);
         /** Provides awaiting continue behavior. */
         const awaitingContinue = state.riddle.awaitingContinue && !pendingOutcome;
         /** Provides current letters behavior. */
@@ -569,6 +642,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           ? firstEditableSlot(restoredLetters, hintIndices) : action.activeSlotIndex;
         return {
           ...state,
+          canRestoreCheckpoint: false,
           currentLetters: restoredLetters,
           activeSlotIndex: awaitingContinue ? 0 : activeSlotIndex,
           hintRevealedIndices: hintIndices,
@@ -581,7 +655,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
             hasUsedContinue: state.riddle.hasUsedContinue,
             gameOver: Boolean(pendingOutcome),
           },
-          modal: pendingOutcome ? null : awaitingContinue ? "continue" : state.modal,
+          modal: pendingOutcome ? pendingOutcome.kind === "win" ? "victory" : null : awaitingContinue ? "continue" : state.modal,
           lastOutcome: pendingOutcome,
           completionAcknowledged: false,
           letterStates: computeStates(guesses),
@@ -631,13 +705,15 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         completionAcknowledged: false,
       };
     case "openModal":
+      // A delayed fifth-guess acknowledgement must not reopen a consumed Continue offer.
+      if (action.modal === "continue" && state.engineSnapshot?.hasUsedContinue) return state;
       if ((action.modal === "skip" && state.gameMode === "challenge") ||
         (state.guessPending && !canDraftWhileConfirming(state) &&
           (action.modal === "hint" || action.modal === "skip"))) {
         return state;
       }
       return action.modal === "leaderboard"
-        ? {...state, modal: action.modal, leaderboardLoading: true}
+        ? {...state, modal: action.modal, leaderboardLoading: true, leaderboardLoadError: false}
         : {...state, modal: action.modal};
     case "closeModal":
       return {

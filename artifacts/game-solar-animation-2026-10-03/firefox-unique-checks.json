@@ -1,0 +1,127 @@
+{
+  "version": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:157.0) Gecko/20100101 Firefox/157.0",
+  "unique_checks": [
+    {
+      "name": "unmeasured scene has no pending chain",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "zero size avoids resizing",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "layout starts one draw",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "layout leaves one frame",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "native pause click cancels its frame",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "180 paused display frames execute zero application callbacks",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "paused scene performs no extra draw",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "cancelled callbacks cannot restart paused animation",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "native resume click creates one frame chain",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "resume draws exactly once",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "hidden scene cancels work",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "hidden wall time creates no draw",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "visible scene resumes one chain",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "context loss cancels its frame",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "context restoration resumes one frame",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "draw failure retires the frame chain",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "draw failure removes the canvas",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "draw failure reports once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "retired callbacks cause no window errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "shared resource cleanup does not repeat",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "native input remains editable after renderer failure",
+      "actual": "PIANO",
+      "expected": "PIANO"
+    },
+    {
+      "name": "native unmount leaves no scheduled work",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "renderer cleanup runs once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "graphics context is released once",
+      "actual": 1,
+      "expected": 1
+    }
+  ],
+  "unique_count": 24,
+  "raw_count": 28
+}

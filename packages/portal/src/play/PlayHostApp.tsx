@@ -1,4 +1,5 @@
 import {deliverHostRaceResult} from "./hostRaceResultEffects";
+import {createHostCompletionEffects, createHostGuessEffects, type HostCompletionInput} from "./hostCompletionEffects";
 import {useCallback, useEffect, useMemo, useRef, useState, type ComponentType} from "react";
 import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
@@ -6,7 +7,7 @@ import {detectDeviceLanguage, tr, useLocale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, HOST_TO_GAME_EVENT} from "./localBridge";
-import type {CompletionResult, WebGameMode} from "./types";
+import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "./types";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlayerData} from "../platform/types";
@@ -18,6 +19,8 @@ import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
 import {useHostRaceCoordination} from "./useHostRaceCoordination";
 import {useHostAuthSession} from "./useHostAuthSession";
 import {useHostBridgeLifecycle} from "./useHostBridgeLifecycle";
+import {useHostNotice} from "./useHostNotice";
+import {BridgeStartupRecovery} from "./BridgeStartupRecovery";
 import type {RaceTo10GameProps} from "./race/RaceTo10Game.types";
 import type {HostedPlaySession} from "./HostedPlaySession";
 /** Creates host message. */
@@ -72,16 +75,11 @@ export function PlayHostApp({
     /** Stores session token. */
     sessionToken: string;
     /** Stores game mode. */
-    gameMode: WebGameMode;
+      gameMode: WebGameMode;
   }) => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
-    input: {
-      /** Stores riddle id. */
-      riddleId: string;
-      /** Stores game mode. */
-      gameMode: WebGameMode;
-    },
+    input: HostCompletionInput,
     result: CompletionResult,
   ) => void | Promise<void>;
   /** Runs only after an authoritative single-player or multiplayer result is available. */
@@ -96,15 +94,22 @@ export function PlayHostApp({
   /** Provides locale behavior. */
   const locale = useLocale();
   /** Provides session id ref behavior. */
-  const sessionIdRef = useRef(createRequestId("session"));
-  /** Tracks the product catalog most recently projected into the game frame. */
-  const sentProductsRef = useRef<readonly import("./types").ProductSummary[] | undefined>(undefined);
+  const [sessionIdRef] = useState(() => ({current: createRequestId("session")}));
+  /** Tracks initialized game settings independently of profile-only host notifications. */
+  const sentInitializationRef = useRef<{
+    /** Last projected immutable target product catalog, absent when commerce is unavailable. */
+    products: readonly import("./types").ProductSummary[] | undefined;
+    /** Last content language actually delivered to the embedded game. */
+    locale: typeof locale;
+    /** Last mode actually delivered to the embedded game. */
+    gameMode: WebGameMode;
+  } | null>(null);
   /** Provides configuration warning behavior. */
   const configurationWarning = hostConfigurationWarning;
   /** Provides [frame ready, set frame ready] behavior. */
   const [frameReady, setFrameReady] = useState(false);
-  /** Provides [notice, set notice] behavior. */
-  const [notice, setNotice] = useState<string | null>(configurationWarning);
+  /** Failed browser module loading retires the game frame until the player reloads. */
+  const [bridgeUnavailable, setBridgeUnavailable] = useState(false);
   /** Loads ed user id ref. */
   const loadedUserIdRef = useRef<string | null>(null);
   /** Provides playable reported ref behavior. */
@@ -121,6 +126,9 @@ export function PlayHostApp({
     playableReportedRef.current = true;
     onStartupUnavailable();
   }, [onStartupUnavailable]);
+  useEffect(() => {
+    if (bridgeUnavailable) reportStartupUnavailable();
+  }, [bridgeUnavailable, reportStartupUnavailable]);
   /** Provides account deletion completed ref behavior. */
   const accountDeletionCompletedRef = useRef(false);
   /** Saves active game. */
@@ -155,6 +163,9 @@ export function PlayHostApp({
     onProfileChange: persistProfile,
     postToGame,
   });
+  /** A new authentication visit cannot inherit another player's transient notice or dismiss timer. */
+  const {notice, setNotice} = useHostNotice({owner: captureAccount, configurationWarning,
+    ownsMessage: authSnapshot.user ? captureAccount(authSnapshot.user.uid) : undefined});
   /** Caches immediate unlock presentation without mutating authoritative auth state. */
   const persistAchievementProjection = useCallback(
     (achievementIds: string[]) => {
@@ -201,7 +212,7 @@ export function PlayHostApp({
     activityActive: serverActivityActive,
     withActivity: withServerActivity,
     runRace: runRaceOperation,
-  } = useHostOperations({postOperation});
+  } = useHostOperations({postOperation, owner: captureAccount});
   /** Single-player riddle loading, recovery, and readiness module. */
   const {
     gameMode,
@@ -210,6 +221,7 @@ export function PlayHostApp({
     loadRiddle: loadAndPostRiddle,
   } = useHostRiddleLifecycle({
     userId: authSnapshot.user?.uid,
+    accountGeneration: authSnapshot.user?.accountGeneration,
     profile: authSnapshot.profile,
     initialGameMode,
     locale,
@@ -228,11 +240,12 @@ export function PlayHostApp({
     /** Dismisses a transient host notice. */
     const timer = window.setTimeout(() => setNotice(null), 4_000);
     return () => window.clearTimeout(timer);
-  }, [notice, configurationWarning, startupComplete]);
+  }, [notice, configurationWarning, startupComplete, setNotice]);
   /** Whether startup, server work, or the target lifecycle blocks interaction. */
   const serverInteractionActive = serverActivityActive || externalInteractionBlocked || (!startupComplete && !startupUnavailable);
   /** Sends the complete current host state to the game. */
   const sendInit = useCallback(() => {
+    sentInitializationRef.current = {products: authority.commerce?.products, locale, gameMode};
     postToGame({
       type: "host:init",
       requestId: createRequestId("init"),
@@ -249,17 +262,18 @@ export function PlayHostApp({
   }, [authSnapshot.profile, authority.commerce, bridgeUser, gameMode, locale, postToGame]);
   sendInitRef.current = sendInit;
 
-  // Catalog reads and subscription activation finish asynchronously. Re-send
-  // host state whenever that catalog identity changes so an open or reopened
-  // paywall cannot retain an offer the player now owns.
+  // Catalog and locale loads finish independently of the first ready message.
+  // Re-send changed game settings while profile-only notifications retain the
+  // current round through the separate authentication projection.
   useEffect(() => {
     if (!frameReady) return;
     /** Provides products behavior. */
     const products = authority.commerce?.products;
-    if (sentProductsRef.current === products) return;
-    sentProductsRef.current = products;
+    /** Commerce absence must not suppress an asynchronously loaded content locale. */
+    const sent = sentInitializationRef.current;
+    if (sent && sent.products === products && sent.locale === locale && sent.gameMode === gameMode) return;
     sendInit();
-  }, [authority.commerce, frameReady, sendInit]);
+  }, [authority.commerce, frameReady, gameMode, locale, sendInit]);
   /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback(
     (result: import("./types").PurchaseResult) => applyCoinBalance(result.newCoins),
@@ -284,21 +298,37 @@ export function PlayHostApp({
     captureAccount,
     postToGame,
   });
-  /** Handles authoritative complete. */
+  /** Consumption is durable hook state rather than an evictable render optimization. */
+  const singlePlayerEffectsRef = useRef<{
+    /** Profile-only renders retain the same authentication visit identity. */
+    owner: typeof captureAccount;
+    /** Optional completion work consumed during this account visit. */
+    deliver: ReturnType<typeof createHostCompletionEffects>;
+    /** Accepted guess effects retain the same visit ownership as completion effects. */
+    guess: ReturnType<typeof createHostGuessEffects>;
+  } | null>(null);
+  if (singlePlayerEffectsRef.current?.owner !== captureAccount) {
+    /** One captured guard rejects old callbacks before a replacement render commits. */
+    const owned = captureAccount(authSnapshot.user?.uid);
+    singlePlayerEffectsRef.current = {
+      owner: captureAccount,
+      deliver: createHostCompletionEffects(owned),
+      guess: createHostGuessEffects(owned),
+    };
+  }
+  /** Old handlers retain their retired consumer while new handlers own a fresh one. */
+  const {deliver: deliverCompletionEffects, guess: deliverGuessEffects} = singlePlayerEffectsRef.current;
+  /** Accepted guess retries cannot prompt a different account or duplicate telemetry. */
+  const handleAuthoritativeGuess = useCallback(
+    (input: HostCompletionInput, result: SinglePlayerGuessResult) =>
+      deliverGuessEffects(input, result, onAuthoritativeGuessWin),
+    [deliverGuessEffects, onAuthoritativeGuessWin],
+  );
+  /** Acknowledged retries retain their receipt without repeating target side effects. */
   const handleAuthoritativeComplete = useCallback(
-    async (
-      input: {
-        /** Stores riddle id. */
-        riddleId: string;
-        /** Stores game mode. */
-        gameMode: WebGameMode;
-      },
-      result: CompletionResult,
-    ) => {
-      await onAuthoritativeComplete?.(input, result);
-      await onResultScreen?.();
-    },
-    [onAuthoritativeComplete, onResultScreen],
+    (input: HostCompletionInput, result: CompletionResult) =>
+      deliverCompletionEffects(input, result, onAuthoritativeComplete, onResultScreen),
+    [deliverCompletionEffects, onAuthoritativeComplete, onResultScreen],
   );
   /** Handles authoritative race result. */
   const raceResultOwner = captureAccount(authSnapshot.user?.uid);
@@ -329,7 +359,7 @@ export function PlayHostApp({
         syncRaceAchievementProgress,
         persistAchievementProjection,
         onPlayable,
-        onAuthoritativeGuessWin,
+        onAuthoritativeGuess: handleAuthoritativeGuess,
         onAuthoritativeComplete: handleAuthoritativeComplete,
         onAuthoritativeRaceResult: handleAuthoritativeRaceResult,
         onAccountDeleted,
@@ -348,7 +378,7 @@ export function PlayHostApp({
       handleAuthoritativeRaceResult,
       onResultScreen,
       onPlayable,
-      onAuthoritativeGuessWin,
+      handleAuthoritativeGuess,
       postOperation,
       runRaceOperation,
       sendInit,
@@ -356,10 +386,13 @@ export function PlayHostApp({
       syncRaceAchievementProgress,
       persistAchievementProjection,
       withServerActivity,
+      setNotice,
     ],
   );
   /** Stable local message routing and document visibility projection. */
-  useHostBridgeLifecycle({router: commands.execute, postToGame, setNotice, lifecycle: platformCapabilities?.lifecycle});
+  useHostBridgeLifecycle({router: commands.execute, postToGame, setNotice,
+    ownsMessage: captureAccount(authSnapshot.user?.uid), onUnavailable: () => setBridgeUnavailable(true),
+    lifecycle: platformCapabilities?.lifecycle});
 
   useEffect(() => {
     if (!authSnapshot.user) {
@@ -379,6 +412,8 @@ export function PlayHostApp({
     });
   }, [authSnapshot.profile?.classicIndex, authSnapshot.user, frameReady, gameMode, loadAndPostRiddle, locale]);
 
+  if (bridgeUnavailable) return <BridgeStartupRecovery />;
+
   if (!authSnapshot.user) {
     return (
       <main className="route-loading" aria-live="polite">
@@ -394,7 +429,9 @@ export function PlayHostApp({
         <GameFrameApp
           raceSurface={raceSurface}
           raceOwnerId={authSnapshot.user?.uid}
+          onLiveRaceBalance={applyCoinBalance}
           localBridge
+          economyAvailable={Boolean(authority.economy)}
           startupError={startupUnavailable && !startupComplete && notice ? getHostNoticeMessage(notice) : undefined}
           interactionBlocked={serverInteractionActive}
           restoredGame={initialPlayerData?.activeGame}

@@ -24,16 +24,16 @@ export const NativeAnswerInput = forwardRef<
 >(function NativeAnswerInput({disabled, locale, onText, onBackspace, onSubmit}, forwardedRef) {
   /** Provides composing behavior. */
   const composing = useRef(false);
-  /** Native deletion events preserve software-keyboard editing without disturbing IME text. */
-  const inputRef = useNativeAnswerBackspace(forwardedRef, composing, onBackspace);
-  /** Provides just committed composition behavior. */
+  /** Retains one committed value until its trailing input or a new edit, across browser tasks. */
   const justCommittedComposition = useRef<string | null>(null);
+  /** Native deletion events preserve software-keyboard editing without disturbing IME text. */
+  const inputRef = useNativeAnswerBackspace(forwardedRef, composing, onBackspace, () => {justCommittedComposition.current = null;});
   /** Provides consume behavior. */
   const consume = (input: HTMLInputElement) => {
-    /** Provides graphemes behavior. */
-    const graphemes = nativeAnswerGraphemes(input.value);
+    /** The answer editor owns bounded segmentation; the native editor supplies normalized text once. */
+    const text = input.value.normalize("NFC");
     input.value = "";
-    if (graphemes.length > 0) onText(graphemes.join(""));
+    if (text) onText(text);
   };
 
   return (
@@ -51,16 +51,15 @@ export const NativeAnswerInput = forwardRef<
       dir={locale === "ar" ? "rtl" : "auto"}
       disabled={disabled}
       aria-label={tr("Accessibility.VIRTUAL_KEYBOARD")}
+      onPaste={() => {justCommittedComposition.current = null;}}
       onCompositionStart={() => {
+        justCommittedComposition.current = null;
         composing.current = true;
       }}
       onCompositionEnd={(event) => {
         composing.current = false;
         justCommittedComposition.current = event.currentTarget.value.normalize("NFC");
         consume(event.currentTarget);
-        queueMicrotask(() => {
-          justCommittedComposition.current = null;
-        });
       }}
       onInput={(event) => {
         if (composing.current) return;
@@ -72,10 +71,14 @@ export const NativeAnswerInput = forwardRef<
           justCommittedComposition.current = null;
           return;
         }
+        justCommittedComposition.current = null;
         consume(event.currentTarget);
       }}
       onKeyDown={(event) => {
-        if (event.nativeEvent.isComposing || composing.current) return;
+        if (event.defaultPrevented || event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229 || composing.current) return;
+        // Navigation and modifiers are not a new edit; a delayed IME tail still owns its marker.
+        if (event.key === "Backspace" || event.key === "Enter" ||
+          (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey)) justCommittedComposition.current = null;
         if (event.key === "Backspace") {
           event.preventDefault();
           onBackspace();

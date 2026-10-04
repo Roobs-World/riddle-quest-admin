@@ -1,0 +1,74 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/facebook/__tests__/FacebookPlatformBootstrap.test.ts
+  ● FacebookPlatformBootstrap › retains supported context selection when matchmaking is absent
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      79 |     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+      80 |     if (result.status !== "success") throw new Error("bootstrap failed");
+    > 81 |     expect(result.value.capabilities.nativeSocial).toBeDefined();
+         |                                                    ^
+      82 |     await expect(result.value.capabilities.nativeSocial?.chooseContext()).resolves.toMatchObject({status: "success", value: {contextId: "chooser-only", contextType: "GROUP"}});
+      83 |     expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
+      84 |     await expect(result.value.capabilities.nativeSocial?.matchPlayer("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
+
+      at src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:81:52
+
+  ● FacebookPlatformBootstrap › retains supported context selection when matchmaking is unadvertised
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      79 |     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+      80 |     if (result.status !== "success") throw new Error("bootstrap failed");
+    > 81 |     expect(result.value.capabilities.nativeSocial).toBeDefined();
+         |                                                    ^
+      82 |     await expect(result.value.capabilities.nativeSocial?.chooseContext()).resolves.toMatchObject({status: "success", value: {contextId: "chooser-only", contextType: "GROUP"}});
+      83 |     expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
+      84 |     await expect(result.value.capabilities.nativeSocial?.matchPlayer("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
+
+      at src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:81:52
+
+  ● FacebookPlatformBootstrap › retains supported context selection when matchmaking is wrong-namespace
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      79 |     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+      80 |     if (result.status !== "success") throw new Error("bootstrap failed");
+    > 81 |     expect(result.value.capabilities.nativeSocial).toBeDefined();
+         |                                                    ^
+      82 |     await expect(result.value.capabilities.nativeSocial?.chooseContext()).resolves.toMatchObject({status: "success", value: {contextId: "chooser-only", contextType: "GROUP"}});
+      83 |     expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
+      84 |     await expect(result.value.capabilities.nativeSocial?.matchPlayer("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
+
+      at src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:81:52
+
+  ● FacebookPlatformBootstrap › does not expose a chooser method that the host advertises without implementing
+
+    expect(received).toBeUndefined()
+
+    Received: {"chooseContext": [Function chooseContext], "currentContext": [Function currentContext], "matchPlayer": [Function matchPlayer]}
+
+       96 |     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+       97 |     if (result.status !== "success") throw new Error("bootstrap failed");
+    >  98 |     expect(result.value.capabilities.nativeSocial).toBeUndefined();
+          |                                                    ^
+       99 |   });
+      100 |
+      101 |   test("does not start context selection or native matching over an active result ad", async () => {
+
+      at Object.<anonymous> (src/facebook/__tests__/FacebookPlatformBootstrap.test.ts:98:52)
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 19 passed, 23 total
+Snapshots:   0 total
+Time:        0.275 s, estimated 1 s
+Ran all test suites matching src/facebook/__tests__/FacebookPlatformBootstrap.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/facebook/__tests__/FacebookPlatformBootstrap.test.ts

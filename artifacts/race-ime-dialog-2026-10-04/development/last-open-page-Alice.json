@@ -1,0 +1,30 @@
+{
+  "text": "LIVE PVP\nRace to 10\n100\n×\nChoose your category\n\nComplete 10 riddles. Lowest adjusted time wins.\n\nHistory\nPeople, events, and eras from the past\nGeography\nCountries, cities, landmarks, and the world\nMusic\nArtists, songs, instruments, and sounds\nFilm\nMovies, characters, actors, and directors\nScience\nDiscoveries, nature, space, and technology\nMixed\nA surprise from every category\nStart PvP match",
+  "probe": {
+    "calls": [
+      {
+        "owner": "Alice",
+        "operation": "join",
+        "locale": "en",
+        "categoryId": "mixed",
+        "requestId": "live-join-ba42cb23-8391-4271-957a-71d455746e73"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-a1165d08-87c2-421a-b066-e1ef0016972b"
+      },
+      {
+        "owner": "Alice",
+        "operation": "update",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "leave",
+        "requestId": "live-leave-e24e79e7-6530-4128-b871-894cb609a668"
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  }
+}

@@ -80,6 +80,117 @@ const createNearBudgetSave = (combiningMarks: number): YouTubeSaveV1 => {
 };
 
 describe("LocalSoloAuthority", () => {
+  it("keeps observers quiet when rejected text, empty deletion, input or selection leaves the draft unchanged", async () => {
+    /** The actual UI subscription should receive only a changed projection. */
+    const authority = await createAuthority();
+    await authority.start("classic");
+    /** Observer calls would require a fresh defensive save copy in the mounted view. */
+    const notify = jest.fn();
+    /** Removes the observer before the test authority is discarded. */
+    const unsubscribe = authority.subscribe(notify);
+    authority.insertText("!? 123");
+    authority.backspace();
+    authority.setActiveSlot(0);
+    authority.setInput(["", "", "", ""], 0);
+    expect(notify).not.toHaveBeenCalled();
+    authority.insertText("rome");
+    expect(notify).toHaveBeenCalledTimes(1);
+    notify.mockClear();
+    authority.insertText("e");
+    authority.setInput(["r", "o", "m", "e"], 3);
+    expect(notify).not.toHaveBeenCalled();
+    authority.setActiveSlot(0);
+    expect(notify).toHaveBeenCalledTimes(1);
+    unsubscribe();
+  });
+
+  it("compares hinted drafts after projection while still publishing a changed cursor", async () => {
+    /** A projected hint is not stored as an editable draft letter. */
+    const authority = await createAuthority();
+    await authority.start("classic");
+    await authority.requestHint();
+    /** Consumers retain defensive snapshot isolation even when no edit is published. */
+    const snapshot = authority.getSnapshot();
+    /** Only a genuinely different cursor should notify this observer. */
+    const notify = jest.fn();
+    /** Releases the projection observer after the comparison assertions. */
+    const unsubscribe = authority.subscribe(notify);
+    authority.setInput(snapshot.displayLetters!, snapshot.activeSlotIndex);
+    authority.backspace();
+    authority.setActiveSlot(snapshot.activeSlotIndex);
+    expect(notify).not.toHaveBeenCalled();
+    authority.setActiveSlot(2);
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(authority.getSnapshot().displayLetters).toEqual(["r", "", "", ""]);
+    snapshot.save.progression.coins = 0;
+    expect(authority.getSnapshot().save.progression.coins).toBe(275);
+    unsubscribe();
+  });
+
+  it("orders text, cursor selection and deletion before any subscriber render without material saves", async () => {
+    /** Save calls prove draft editing stays ephemeral. */
+    const saveData = jest.fn(async (_data: string) => undefined);
+    /** The real authority owns the sequence independently of React rendering. */
+    const authority = await createAuthority(saveData);
+    await authority.start("classic");
+    for (const letter of "rome") authority.insertText(letter);
+    expect(authority.getSnapshot().displayLetters).toEqual(["r", "o", "m", "e"]);
+    authority.backspace(); authority.backspace();
+    authority.insertText("me");
+    authority.setActiveSlot(0); authority.insertText("r");
+    expect(authority.getSnapshot().displayLetters).toEqual(["r", "o", "m", "e"]);
+    expect(saveData).toHaveBeenCalledTimes(1);
+    await expect(authority.submitGuess()).resolves.toMatchObject({kind: "win", attempts: 1});
+    expect(saveData).toHaveBeenCalledTimes(2);
+  });
+
+  it("preserves hinted letters and paused-input admission across ordered draft commands", async () => {
+    /** Actual material boundary, including a committed hint. */
+    const saveData = jest.fn(async (_data: string) => undefined);
+    /** Commands operate on the current hint projection. */
+    const authority = await createAuthority(saveData);
+    await authority.start("classic"); await authority.requestHint();
+    for (const letter of "ome") authority.insertText(letter);
+    expect(authority.getSnapshot().displayLetters).toEqual(["r", "o", "m", "e"]);
+    for (let index = 0; index < 5; index += 1) authority.backspace();
+    expect(authority.getSnapshot().displayLetters).toEqual(["r", "", "", ""]);
+    authority.setPaused(true);
+    authority.insertText("xxx"); authority.backspace();
+    expect(authority.getSnapshot().displayLetters).toEqual(["r", "", "", ""]);
+    expect(saveData).toHaveBeenCalledTimes(2);
+    authority.setPaused(false); authority.insertText("ome");
+    await expect(authority.submitGuess()).resolves.toMatchObject({kind: "win", attempts: 1});
+  });
+
+  it.each(["menu", "continue", "result"] as const)("ignores late ephemeral edits in the %s state", async state => {
+    /** Material writes remain independent of ignored late input events. */
+    const saveData = jest.fn(async (_data: string) => undefined);
+    /** Real local authority reached through its ordinary material transitions. */
+    const authority = await createAuthority(saveData);
+    if (state !== "menu") {
+      await authority.start("classic");
+      if (state === "continue") for (let attempt = 0; attempt < 5; attempt += 1) {
+        authority.setInput(["x", "x", "x", "x"], 3);
+        await authority.submitGuess();
+      }
+      else {authority.setInput(["r", "o", "m", "e"], 3); await authority.submitGuess();}
+    }
+    /** No projection, cursor, economy or write may change after retired input. */
+    const before = authority.getSnapshot(), writes = saveData.mock.calls.length;
+    expect(() => authority.setInput(["r", "o", "m", "e"], 3)).not.toThrow();
+    expect(() => authority.setActiveSlot(2)).not.toThrow();
+    expect(() => authority.insertText("rome")).not.toThrow();
+    expect(() => authority.backspace()).not.toThrow();
+    expect(authority.getSnapshot()).toEqual(before);
+    expect(saveData).toHaveBeenCalledTimes(writes);
+    if (state === "continue") {
+      await authority.buyContinue();
+      authority.setInput(["r", "o", "m", "e"], 3);
+      expect(authority.getSnapshot().displayLetters).toEqual(["r", "o", "m", "e"]);
+      await expect(authority.submitGuess()).resolves.toMatchObject({kind: "win", attempts: 6});
+    }
+  });
+
   it.each([['classic', 'medium', 40], ['classic', 'hard', 60], ['daily', 'medium', 100], ['daily', 'hard', 125]] as const)(
     "uses bundled %s %s difficulty for the base reward", async (mode, difficultyBand, expectedCoins) => {
       /** Isolated bundled content with authored difficulty for this scenario. */
@@ -177,7 +288,7 @@ describe("LocalSoloAuthority", () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(authority.getSnapshot().save.activeGame?.guesses).toHaveLength(1);
-    authority.setInput(["r", "", "", ""], 1);
+    authority.insertText("r");
     try {
       expect(authority.getSnapshot().displayLetters).toEqual(["r", "", "", ""]);
       await expect(authority.submitGuess()).rejects.toThrow("operation-pending");

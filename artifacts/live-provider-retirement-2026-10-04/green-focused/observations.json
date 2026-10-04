@@ -1,0 +1,1626 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "new provider joins an independent seat",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "new join has an independent idempotency key",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "new provider begins with a clean draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "new provider retains its own subscription after the old receipt",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "old receipt cannot advance the new seat",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "replacement journey remains playable",
+    "actual": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "new provider joins an independent seat",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "new join has an independent idempotency key",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "new provider begins with a clean draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "new provider retains its own subscription after the old receipt",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "old receipt cannot advance the new seat",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "replacement journey remains playable",
+    "actual": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "new provider joins an independent seat",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "new join has an independent idempotency key",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "new provider begins with a clean draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "new provider retains its own subscription after the old receipt",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "old receipt cannot advance the new seat",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "replacement journey remains playable",
+    "actual": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "poll",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "new provider joins an independent seat",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "new join has an independent idempotency key",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "new provider begins with a clean draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "new provider retains its own subscription after the old receipt",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "old receipt cannot advance the new seat",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "replacement journey remains playable",
+    "actual": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "guess",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "new provider joins an independent seat",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "new join has an independent idempotency key",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "new provider begins with a clean draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "new provider retains its own subscription after the old receipt",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "old receipt cannot advance the new seat",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "replacement journey remains playable",
+    "actual": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "new provider joins an independent seat",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "new join has an independent idempotency key",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "new provider begins with a clean draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "new provider retains its own subscription after the old receipt",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "old receipt cannot advance the new seat",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "replacement journey remains playable",
+    "actual": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "leave",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "new provider joins an independent seat",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "new join has an independent idempotency key",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "new provider begins with a clean draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "new provider retains its own subscription after the old receipt",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "old receipt cannot advance the new seat",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "replacement journey remains playable",
+    "actual": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "old seat retires under its original provider once",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "retirement retries share one key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "stable adapter keeps the native editor and focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "stable adapter preserves the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "ordinary profile updates do not restart delivery",
+    "actual": {
+      "requests": 0,
+      "subscriptions": 0,
+      "joins": 0
+    },
+    "expected": {
+      "requests": 0,
+      "subscriptions": 0,
+      "joins": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "stable journey advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "uncommitted provider replacement keeps the original journey",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "uncommitted replacement retains the owned subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "current receipt completes through the committed provider callback",
+    "actual": [
+      {
+        "generation": 1,
+        "owner": "Owner",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "owner": "Owner",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "current receipt emits one committed owner event",
+    "actual": [
+      {
+        "ownerId": "Owner"
+      }
+    ],
+    "expected": [
+      {
+        "ownerId": "Owner"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "uncommitted replacement never joins another seat",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

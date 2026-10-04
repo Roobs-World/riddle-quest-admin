@@ -2,7 +2,7 @@ import {LiveRacePushConsent} from "../../race/components/LiveRacePushConsent";
 import {useContext, type ChangeEvent} from "react";
 import {ProfileSubscriptionContext} from "../profile/ProfileSubscriptionContext";
 import type {GameModal} from "../../gameSession";
-import {LANGUAGE_OPTIONS, tr, type Locale} from "../../i18n";
+import {LANGUAGE_OPTIONS, useTranslator, type Locale} from "../../i18n";
 import {setPlayerLocale} from "../../playerPreferences";
 
 /** Props required by the settings modal page. */
@@ -27,6 +27,8 @@ export function SettingsModalPage({
   onToggleMute,
   commerceAvailable = true,
 }: SettingsModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Target-specific subscription management shared with Profile. */
   const subscriptionControls = useContext(ProfileSubscriptionContext);
   /** Persists and immediately activates the selected locale. */

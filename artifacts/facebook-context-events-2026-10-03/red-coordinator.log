@@ -1,0 +1,96 @@
+FAIL src/facebook/__tests__/contextEvents.test.ts
+  ● Facebook native context event ownership › synchronizes external context changes without any mounted board consumer
+
+    TypeError: observing.startObserving is not a function
+
+      23 |   const observing = coordinator as FacebookContextCoordinator & {startObserving(isActive: () => boolean): () => void; onContextChange(callback: () => void): () => void};
+      24 |   return {coordinator, observing, backend, social, stopSdk, setActive: () => {active = false;},
+    > 25 |     start: () => observing.startObserving(() => active),
+         |                            ^
+      26 |     emit: (value: PlatformResult<Context>) => {current = value; callback?.();}};
+      27 | }
+      28 |
+
+      at Object.start (src/facebook/__tests__/contextEvents.test.ts:25:28)
+      at Object.<anonymous> (src/facebook/__tests__/contextEvents.test.ts:31:36)
+
+  ● Facebook native context event ownership › retires old synchronization before notifying consumers and reconciles the last rapid switch
+
+    TypeError: observing.startObserving is not a function
+
+      23 |   const observing = coordinator as FacebookContextCoordinator & {startObserving(isActive: () => boolean): () => void; onContextChange(callback: () => void): () => void};
+      24 |   return {coordinator, observing, backend, social, stopSdk, setActive: () => {active = false;},
+    > 25 |     start: () => observing.startObserving(() => active),
+         |                            ^
+      26 |     emit: (value: PlatformResult<Context>) => {current = value; callback?.();}};
+      27 | }
+      28 |
+
+      at Object.start (src/facebook/__tests__/contextEvents.test.ts:25:28)
+      at Object.<anonymous> (src/facebook/__tests__/contextEvents.test.ts:38:36)
+
+  ● Facebook native context event ownership › leaves the previous social membership on an external return to solo
+
+    TypeError: observing.startObserving is not a function
+
+      23 |   const observing = coordinator as FacebookContextCoordinator & {startObserving(isActive: () => boolean): () => void; onContextChange(callback: () => void): () => void};
+      24 |   return {coordinator, observing, backend, social, stopSdk, setActive: () => {active = false;},
+    > 25 |     start: () => observing.startObserving(() => active),
+         |                            ^
+      26 |     emit: (value: PlatformResult<Context>) => {current = value; callback?.();}};
+      27 | }
+      28 |
+
+      at Object.start (src/facebook/__tests__/contextEvents.test.ts:25:28)
+      at Object.<anonymous> (src/facebook/__tests__/contextEvents.test.ts:52:36)
+
+  ● Facebook native context event ownership › unsubscribes board consumers and suppresses callbacks after session retirement
+
+    TypeError: observing.startObserving is not a function
+
+      23 |   const observing = coordinator as FacebookContextCoordinator & {startObserving(isActive: () => boolean): () => void; onContextChange(callback: () => void): () => void};
+      24 |   return {coordinator, observing, backend, social, stopSdk, setActive: () => {active = false;},
+    > 25 |     start: () => observing.startObserving(() => active),
+         |                            ^
+      26 |     emit: (value: PlatformResult<Context>) => {current = value; callback?.();}};
+      27 | }
+      28 |
+
+      at Object.start (src/facebook/__tests__/contextEvents.test.ts:25:28)
+      at Object.<anonymous> (src/facebook/__tests__/contextEvents.test.ts:61:49)
+
+  ● Facebook native context event ownership › does not deliver new membership or notify after the account operation gate closes
+
+    TypeError: observing.startObserving is not a function
+
+      23 |   const observing = coordinator as FacebookContextCoordinator & {startObserving(isActive: () => boolean): () => void; onContextChange(callback: () => void): () => void};
+      24 |   return {coordinator, observing, backend, social, stopSdk, setActive: () => {active = false;},
+    > 25 |     start: () => observing.startObserving(() => active),
+         |                            ^
+      26 |     emit: (value: PlatformResult<Context>) => {current = value; callback?.();}};
+      27 | }
+      28 |
+
+      at Object.start (src/facebook/__tests__/contextEvents.test.ts:25:28)
+      at Object.<anonymous> (src/facebook/__tests__/contextEvents.test.ts:70:36)
+
+  ● Facebook native context event ownership › retains explicit context reconciliation when the SDK has no event API
+
+    TypeError: observing.startObserving is not a function
+
+      23 |   const observing = coordinator as FacebookContextCoordinator & {startObserving(isActive: () => boolean): () => void; onContextChange(callback: () => void): () => void};
+      24 |   return {coordinator, observing, backend, social, stopSdk, setActive: () => {active = false;},
+    > 25 |     start: () => observing.startObserving(() => active),
+         |                            ^
+      26 |     emit: (value: PlatformResult<Context>) => {current = value; callback?.();}};
+      27 | }
+      28 |
+
+      at Object.start (src/facebook/__tests__/contextEvents.test.ts:25:28)
+      at Object.<anonymous> (src/facebook/__tests__/contextEvents.test.ts:78:73)
+
+Test Suites: 1 failed, 1 total
+Tests:       6 failed, 6 total
+Snapshots:   0 total
+Time:        0.186 s
+Ran all test suites within paths "src/facebook/__tests__/contextEvents.test.ts".

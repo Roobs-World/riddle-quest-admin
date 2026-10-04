@@ -1,0 +1,10 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "",
+    "expected": "test"
+  }
+]

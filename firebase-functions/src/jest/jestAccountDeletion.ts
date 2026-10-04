@@ -45,9 +45,8 @@ export async function runWithJestAccountOperationLease<Result>(
   userId: string,
   timeoutSeconds: number,
   operation: () => Result | Promise<Result>,
+  db: Firestore = admin.firestore(),
 ): Promise<Result> {
-  /** Provides db behavior. */
-  const db = admin.firestore();
   /** Provides deletion ref behavior. */
   const deletionRef = getJestAccountDeletionRef(db, userId);
   /** Provides lease ref behavior. */

@@ -1,0 +1,11 @@
+{
+  "packages/portal/src/play/bridgeRouter.ts": true,
+  "packages/portal/src/play/useHostBridgeLifecycle.ts": true,
+  "packages/portal/src/play/hostMessageHandlers.ts": true,
+  "packages/portal/src/play/BridgeStartupRecovery.tsx": true,
+  "packages/portal/src/play/PlayHostApp.tsx": true,
+  "packages/portal/src/styles.foundation.css": true,
+  "packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs": false,
+  "packages/portal/src/play/__tests__/bridgeParserLoadError.test.ts": true,
+  "packages/portal/package.json": true
+}

@@ -2,6 +2,7 @@ import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
 import {RaceCategoryIdSchema} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
+import {FacebookLiveContextBindingSchema} from "./facebookLiveContextBinding";
 
 /** Only opaque single-path IDs can be used to read delivery source/owner documents. */
 const Id = z.string().min(1).max(160).refine(value => !value.includes("/"));
@@ -25,9 +26,12 @@ const Settlement = Receipt.safeExtend({creatorId: Id, challengeId: Id, categoryI
   result: z.enum(["win", "loss", "tie"]), adjustedDeltaMs: z.number().int()});
 /** A Facebook reward retry can retain an already-committed owner projection. */
 const Performance = Receipt.safeExtend({facebookPerformanceRecorded: z.literal(true).optional(),
+  facebookContext: FacebookLiveContextBindingSchema.optional(),
   source: z.enum(["facebook_live", "reddit_live"]).optional(), liveTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   liveMatchId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
 }).superRefine((receipt, context) => {
+  if (receipt.facebookContext !== undefined && receipt.source !== "facebook_live")
+    context.addIssue({code: "custom", message: "Inconsistent Facebook context source."});
   if (receipt.source !== undefined ? !receipt.liveTicketId || !receipt.liveMatchId || receipt.facebookPerformanceRecorded !== undefined :
     receipt.liveTicketId !== undefined || receipt.liveMatchId !== undefined)
     context.addIssue({code: "custom", message: "Inconsistent live referral source."});

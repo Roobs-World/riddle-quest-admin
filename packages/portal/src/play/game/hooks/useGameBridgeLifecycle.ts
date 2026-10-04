@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import {useEffect, useLayoutEffect, useRef} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {createRequestId} from "../../requestIds";
 import {HOST_TO_GAME_EVENT} from "../../localBridge";
@@ -7,16 +7,23 @@ import {runWhenLayoutReady} from "../layoutReady";
 import {captureBrowserException} from "../../../observability/browserErrorReporter";
 
 /** Describes message router. */
-type MessageRouter = (message: unknown) => Promise<unknown>;
+type MessageRouter = (message: unknown, isCurrent?: () => boolean) => Promise<unknown>;
 
 /** Provides report bridge error behavior. */
-function reportBridgeError(error: unknown, requestPrefix: string, postToHost: (message: GameToHostMessage) => void) {
+function reportBridgeError(error: unknown, requestPrefix: string, postToHost: (message: GameToHostMessage) => void, ownsReply: () => boolean) {
+  if (!ownsReply()) return;
   captureBrowserException(error, {component: "game_bridge", operation: requestPrefix});
-  postToHost({
-    type: "game:error",
-    requestId: createRequestId(requestPrefix),
-    payload: {message: error instanceof Error ? error.message : tr("WebPortal.BRIDGE_ERROR")},
-  });
+  if (!ownsReply()) return;
+  try {
+    postToHost({
+      type: "game:error",
+      requestId: createRequestId(requestPrefix),
+      payload: {message: error instanceof Error ? error.message : tr("WebPortal.BRIDGE_ERROR")},
+    });
+  } catch (deliveryError) {
+    // A failed error reply must not recursively try the same host transport.
+    captureBrowserException(deliveryError, {component: "game_bridge", operation: "error_reply"});
+  }
 }
 
 /** Provides game ready reporter. */
@@ -37,22 +44,38 @@ export function useGameReadyReporter({
   initializedRef.current = initialized;
 
   useEffect(() => {
-    /** Reads y timer. */
-    const readyTimer = window.setTimeout(sendReady, 0);
-    /** Reads y interval. */
-    const readyInterval = window.setInterval(() => {
-      if (!initializedRef.current) sendReady();
-    }, 750);
-    /** Provides report size behavior. */
+    if (initialized) return;
+    /** Retired callbacks cannot emit through a replacement readiness sender. */
+    let active = true;
+    /** A committed initialization also suppresses callbacks queued before effect cleanup. */
+    const reportReady = () => {if (active && !initializedRef.current) sendReady();};
+    /** Lost initialization restarts the handshake immediately rather than waiting for an old interval. */
+    const readyTimer = window.setTimeout(reportReady, 0);
+    /** Retry cadence exists only while the host has not acknowledged initialization. */
+    const readyInterval = window.setInterval(reportReady, 750);
+    return () => {active = false; window.clearTimeout(readyTimer); window.clearInterval(readyInterval);};
+  }, [initialized, sendReady]);
+
+  useEffect(() => {
+    /** Resize callbacks remain independent of handshake status and callback replacement. */
+    let active = true;
+    /** Only changed viewport dimensions need another bridge message and request identity. */
+    let lastWidth = -1, lastHeight = -1;
+    /** Reports each actual viewport size once to its owning host. */
     const reportSize = () => {
+      if (!active) return;
+      /** The same rounded geometry is shared by native resize and body observation. */
+      const width = Math.ceil(document.documentElement.clientWidth), height = Math.ceil(document.documentElement.clientHeight);
+      if (width === lastWidth && height === lastHeight) return;
       postToHost({
         type: "game:resize",
         requestId: createRequestId("resize"),
         payload: {
-          width: Math.ceil(document.documentElement.clientWidth),
-          height: Math.ceil(document.documentElement.clientHeight),
+          width,
+          height,
         },
       });
+      lastWidth = width; lastHeight = height;
     };
     /** Provides observer behavior. */
     let observer: ResizeObserver | null = null;
@@ -64,13 +87,12 @@ export function useGameReadyReporter({
       observer.observe(document.body);
     });
     return () => {
+      active = false;
       stopWaitingForLayout();
-      window.clearTimeout(readyTimer);
-      window.clearInterval(readyInterval);
       window.removeEventListener("resize", reportSize);
       observer?.disconnect();
     };
-  }, [postToHost, sendReady]);
+  }, [postToHost]);
 }
 
 /** Provides game message listener. */
@@ -83,22 +105,35 @@ export function useGameMessageListener({
   /** Stores post to host. */
   postToHost: (message: GameToHostMessage) => void;
 }) {
-  useEffect(() => {
+  // Install before synchronous completion replies and retire before parent layout callbacks.
+  useLayoutEffect(() => {
+    /** Pending rejections belong only to the listener that dispatched their messages. */
+    let active = true;
+    /** Rechecks ownership after optional telemetry, which can synchronously close the game. */
+    const ownsReply = () => active;
+    /** Preserves immediate routing while observing synchronous throws and asynchronous rejection. */
+    const routeMessage = (message: unknown, requestPrefix: string) => {
+      if (!active) return;
+      try {
+        void Promise.resolve(router(message, ownsReply)).catch((error) => reportBridgeError(error, requestPrefix, postToHost, ownsReply));
+      } catch (error) {
+        reportBridgeError(error, requestPrefix, postToHost, ownsReply);
+      }
+    };
     /** Handles message. */
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin || event.source !== window.parent) return;
-      void router(event.data).catch((error) => reportBridgeError(error, "parse-error", postToHost));
+      routeMessage(event.data, "parse-error");
     };
     /** Handles local message. */
     const handleLocalMessage = (event: Event) => {
-      void router((event as CustomEvent<unknown>).detail).catch((error) =>
-        reportBridgeError(error, "local-parse-error", postToHost),
-      );
+      routeMessage((event as CustomEvent<unknown>).detail, "local-parse-error");
     };
 
     window.addEventListener("message", handleMessage);
     window.addEventListener(HOST_TO_GAME_EVENT, handleLocalMessage);
     return () => {
+      active = false;
       window.removeEventListener("message", handleMessage);
       window.removeEventListener(HOST_TO_GAME_EVENT, handleLocalMessage);
     };

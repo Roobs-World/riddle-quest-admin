@@ -1,0 +1,18 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Repeated paid retries must share one pending SDK call
+
+3 !== 1
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-firebase-gameplay-receipts-browser.mjs:222:14 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 1,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

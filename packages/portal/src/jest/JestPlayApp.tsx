@@ -1,3 +1,4 @@
+import {PlayerSaveRecoveryLayout} from "../play/PlayerSaveRecoveryLayout";
 import {JestProfileSubscriptions} from "./JestProfileSubscriptions";
 import {ProfileSubscriptionContext} from "../play/modalPages/profile/ProfileSubscriptionContext";
 import {completionPresentationKey} from "../play/completionPresentation";
@@ -9,6 +10,7 @@ import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
 import {
   JEST_SDK_INIT_TIMEOUT_MESSAGE,
+  exposeJestStartupFailure,
   markJestPlayable,
   startJestSession,
   stopJestLoadingHeartbeat,
@@ -214,7 +216,7 @@ export function JestPlayApp() {
     authHarness,
   });
   /** Provides [jest products, set jest products] behavior. */
-  const [jestProducts, setJestProducts, refreshProducts] = useJestProductCatalog({
+  const [jestProducts, setJestProducts, refreshProducts, catalogState] = useJestProductCatalog({
     purchases,
     session,
     subscriptionsEnabled,
@@ -225,6 +227,8 @@ export function JestPlayApp() {
   const subscriptionActions = useMemo(
     () => ({
       products: jestProducts,
+      catalogLoading: catalogState.loading,
+      catalogError: catalogState.error,
       refresh: refreshProducts,
       cancel: async (sku: string): Promise<"success" | "cancelled" | "unavailable" | "error"> => {
         /** Waits for the provider cancellation confirmation. */
@@ -234,7 +238,7 @@ export function JestPlayApp() {
         return result.status === "success" || result.status === "cancelled" ? result.status : "error";
       },
     }),
-    [platform, refreshProducts, withPlatformActivity, jestProducts],
+    [platform, refreshProducts, withPlatformActivity, jestProducts, catalogState],
   );
   /** Provides purchase product behavior. */
   const purchaseProduct = useJestPurchase({
@@ -383,13 +387,16 @@ export function JestPlayApp() {
           });
         } catch (commitError) {
           captureBrowserException(commitError, {component: "jest_startup_commit"});
+          exposeJestStartupFailure(platform);
           setError(tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR"));
         }
       } else {
         /** Provides message behavior. */
         const message = "message" in result ? result.message : tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN");
         setError(
-          message === JEST_SDK_INIT_TIMEOUT_MESSAGE ? tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN") : message,
+          message === JEST_SDK_INIT_TIMEOUT_MESSAGE
+            ? tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN")
+            : tr("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"),
         );
       }
     });
@@ -589,10 +596,11 @@ export function JestPlayApp() {
           onDismiss={dismissRegistration}
         />
       ) : null}
+      <PlayerSaveRecoveryLayout recovery={playerStateWrites.recovery}>
       <ProviderProfileContext.Provider
         value={{username: session.profile?.username ?? null, avatarUrl: session.profile?.avatarUrl ?? null}}
       >
-        <ShopSubscriptionContext.Provider value={subscriptionsEnabled ? subscriptionActions : null}>
+        <ShopSubscriptionContext.Provider value={subscriptionActions}>
           <ProfileSubscriptionContext.Provider value={subscriptionsEnabled ? <JestProfileSubscriptions /> : null}>
           <PlayHostApp
             session={createJestHostedPlaySession({
@@ -608,7 +616,7 @@ export function JestPlayApp() {
               platformPurchase: purchaseProduct,
               raceAvailable: true,
               platformCapabilities,
-              externalInteractionBlocked: pendingPlatformOperations > 0,
+              externalInteractionBlocked: pendingPlatformOperations > 0 || (!session.player.registered && showRegistration),
               initialPlayerData: session.playerData,
               onPlayerDataChange: playerStateWrites.savePlayerData,
               accountDeletionServiceGate: notificationOperationGate,
@@ -627,6 +635,7 @@ export function JestPlayApp() {
           </ProfileSubscriptionContext.Provider>
         </ShopSubscriptionContext.Provider>
       </ProviderProfileContext.Provider>
+      </PlayerSaveRecoveryLayout>
     </>
   );
 }

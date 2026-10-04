@@ -1,0 +1,558 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "deferred-restoration-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "get_firefox_info",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Firefox Instance Configuration\n\nBinary: /snap/firefox/current/usr/lib/firefox/firefox\nFirefox version: 157.0\nHeadless: Yes\nProfile: /home/craig-beswetherick/snap/firefox/common/mcp-tmp/deferred-restoration-firefox-verification-h4vm596x\nStart URL: about:blank\n\nOutput File: /home/craig-beswetherick/Documents/riddle-quest/artifacts/game-deferred-restoration-2026-10-03/firefox-verification.log\n  Size: 0.00 MB\n  Last Modified: 2026-10-03T09:10:12.779Z"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:42105?custom=1&harness=race",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:42105?custom=1&harness=race (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".game-app",
+          "maxLines": 90
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .game-app]\n\nuid=e83 main\n  uid=e81 div\n    uid=e5 header\n      uid=e0 img \"Logo\" src=\"http://127.0.0.1:42105/asse...\"\n      uid=e1 button \"Mute sound\"\n      uid=e2 div text=\"Classic\"\n      uid=e4 div \"300  coins\"\n        uid=e3 img src=\"http://127.0.0.1:42105/asse...\"\n    uid=e39 section\n      uid=e7 div\n        uid=e6 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n      uid=e38 div\n        uid=e13 div\n          uid=e8 button \"Letter 1\"\n          uid=e9 button \"Letter 2\"\n          uid=e10 button \"Letter 3\"\n          uid=e11 button \"Letter 4\"\n          uid=e12 button \"Letter 5\"\n        uid=e19 div\n          uid=e14 button \"Letter 1\"\n          uid=e15 button \"Letter 2\"\n          uid=e16 button \"Letter 3\"\n          uid=e17 button \"Letter 4\"\n          uid=e18 button \"Letter 5\"\n        uid=e25 div\n          uid=e20 button \"Letter 1\"\n          uid=e21 button \"Letter 2\"\n          uid=e22 button \"Letter 3\"\n          uid=e23 button \"Letter 4\"\n          uid=e24 button \"Letter 5\"\n        uid=e31 div\n          uid=e26 button \"Letter 1\"\n          uid=e27 button \"Letter 2\"\n          uid=e28 button \"Letter 3\"\n          uid=e29 button \"Letter 4\"\n          uid=e30 button \"Letter 5\"\n        uid=e37 div\n          uid=e32 button \"Letter 1\"\n          uid=e33 button \"Letter 2\"\n          uid=e34 button \"Letter 3\"\n          uid=e35 button \"Letter 4\"\n          uid=e36 button \"Letter 5\"\n    uid=e71 section \"Virtual keyboard\"\n      uid=e50 div\n        uid=e40 button \"Q\" text=\"Q\"\n        uid=e41 button \"W\" text=\"W\"\n        uid=e42 button \"E\" text=\"E\"\n        uid=e43 button \"R\" text=\"R\"\n        uid=e44 button \"T\" text=\"T\"\n        uid=e45 button \"Y\" text=\"Y\"\n        uid=e46 button \"U\" text=\"U\"\n        uid=e47 button \"I\" text=\"I\"\n        uid=e48 button \"O\" text=\"O\"\n        uid=e49 button \"P\" text=\"P\"\n      uid=e60 div\n        uid=e51 button \"A\" text=\"A\"\n        uid=e52 button \"S\" text=\"S\"\n        uid=e53 button \"D\" text=\"D\"\n        uid=e54 button \"F\" text=\"F\"\n        uid=e55 button \"G\" text=\"G\"\n        uid=e56 button \"H\" text=\"H\"\n        uid=e57 button \"J\" text=\"J\"\n        uid=e58 button \"K\" text=\"K\"\n        uid=e59 button \"L\" text=\"L\"\n      uid=e70 div\n        uid=e61 button \"Z\" text=\"Z\"\n        uid=e62 button \"X\" text=\"X\"\n        uid=e63 button \"C\" text=\"C\"\n        uid=e64 button \"V\" text=\"V\"\n        uid=e65 button \"B\" text=\"B\"\n        uid=e66 button \"N\" text=\"N\"\n        uid=e67 button \"M\" text=\"M\"\n        uid=e69 button \"Backspace\"\n          uid=e68 img src=\"data:image/svg+xml,%3csvg%2...\"\n    uid=e75 section \"Game\"\n      uid=e72 button \"Hint\" text=\"Hint\"\n      uid=e73 button \"SUBMIT\" text=\"SUBMIT\"\n      uid=e74 button \"Skip\" text=\"Skip\"\n    uid=e80 nav \"Game\"\n      uid=e76 button \"Settings\"\n      uid=e78 button \"Multiplayer\"\n        uid=e77 span text=\"Multiplayer\"\n      uid=e79 button \"Profile\"\n  uid=e82 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e49"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e49"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e47"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e47"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e51"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e51"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e66"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e66"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.restoreChecks=[];window.checkRestore=(name,actual,expected)=>{window.restoreChecks.push({name,actual,expected});if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(name);};window.restoreToken=window.probe.saves.findLast(x=>x.activeGame).activeGame.sessionToken;const c=window.checkRestore;c('native keys preserve PIAN',window.probe.saves.findLast(x=>x.activeGame).activeGame.currentLetters.join('').toUpperCase(),'PIAN');window.controlFrames();window.releaseScene();for(let i=0;i<100&&!document.querySelector('.solar-system canvas');i++)await new Promise(r=>setTimeout(r,20));window.resizeScene(1280,844);window.step();c('healthy draw',window.probe.draws,1);c('context loss canceled',window.contextEvent('webglcontextlost'),true);c('loss stops frames',window.pendingFrames(),0);window.visibility(true);window.contextEvent('webglcontextrestored');window.contextEvent('webglcontextrestored');c('hidden restore rebuilds no driver',window.probe.driverRestores,0);c('hidden restore schedules no frame',window.pendingFrames(),0);c('hidden restore retains healthy resources',window.liveResources(),76);window.visibility(false);c('visible restore rebuilds once',window.probe.driverRestores,1);c('visible restore schedules one frame',window.pendingFrames(),1);window.step();c('restored scene draws',window.probe.draws,2);return 'hidden restoration checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: Script execution failed: Error: healthy draw\n\n```json\n\"[error]\"\n```"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({draws:window.probe.draws,frames:window.pendingFrames(),resources:window.liveResources(),observers:window.probe.observers.map(x=>x.active),errors:window.probe.errors,windowErrors:window.probe.windowErrors})"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"draws\\\":17,\\\"frames\\\":1,\\\"resources\\\":76,\\\"observers\\\":[true],\\\"errors\\\":[],\\\"windowErrors\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.restoreChecks.pop();const c=window.checkRestore;window.initialDraws=window.probe.draws;c('healthy scene has drawn',window.initialDraws>0,true);c('healthy scene owns one controlled chain',window.pendingFrames(),1);c('context loss canceled',window.contextEvent('webglcontextlost'),true);c('loss stops frames',window.pendingFrames(),0);window.visibility(true);window.contextEvent('webglcontextrestored');window.contextEvent('webglcontextrestored');c('hidden restore rebuilds no driver',window.probe.driverRestores,0);c('hidden restore schedules no frame',window.pendingFrames(),0);c('hidden restore retains healthy resources',window.liveResources(),76);window.step(3000);c('hidden restore draws nothing',window.probe.draws,window.initialDraws);window.visibility(false);c('visible restore rebuilds once',window.probe.driverRestores,1);c('visible restore schedules one frame',window.pendingFrames(),1);window.step();c('restored scene draws once',window.probe.draws,window.initialDraws+1);return 'hidden restoration checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"hidden restoration checks passed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e78"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e78"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<100&&!document.querySelector('[data-testid=provider-race]');i++)await new Promise(r=>setTimeout(r,20));const c=window.checkRestore;c('native Multiplayer opens provider',!!document.querySelector('[data-testid=provider-race]'),true);window.contextEvent('webglcontextlost');window.contextEvent('webglcontextrestored');c('multiplayer defers driver rebuild',window.probe.driverRestores,1);c('multiplayer has no frame',window.pendingFrames(),0);return 'multiplayer blocked restoration passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"multiplayer blocked restoration passed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "[data-testid=provider-race]",
+          "maxLines": 10
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: [data-testid=provider-race]]\n\nuid=e85 section\n  uid=e84 button \"Return to puzzle\" text=\"Return to puzzle\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e84"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e84"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<100&&document.querySelector('[data-testid=provider-race]');i++)await new Promise(r=>setTimeout(r,20));const c=window.checkRestore;c('return rebuilds driver once',window.probe.driverRestores,2);c('return owns one frame',window.pendingFrames(),1);window.step();c('return draws again',window.probe.draws,window.initialDraws+2);window.contextEvent('webglcontextlost');window.pause(true);for(let i=0;i<100&&!document.querySelector('.game-app.paused');i++)await new Promise(r=>setTimeout(r,20));window.probe.failRestore=true;window.contextEvent('webglcontextrestored');c('paused failed driver read remains deferred',window.probe.driverRestores,2);c('deferred failure retains healthy resources',window.liveResources(),76);c('deferred failure emits no diagnostic',window.probe.errors.length,0);window.pause(false);for(let i=0;i<100&&window.liveResources();i++)await new Promise(r=>setTimeout(r,20));c('resume failure releases resources',window.liveResources(),0);c('resume failure removes context listeners',window.activeContextCallbacks(),0);c('resume failure removes frame chain',window.pendingFrames(),0);c('resume failure removes canvas',document.querySelectorAll('.solar-system canvas').length,0);c('resume failure reports once',window.probe.errors.length,1);c('failure identifies restoration',window.probe.errors[0].operation,'restore_context');const restored=window.probe.driverRestores;window.replayContextCallbacks();window.replayFrames();window.resizeScene(390,844,true);window.visibility(false);c('retained callbacks cannot rebuild',window.probe.driverRestores,restored);c('retained callbacks cannot repeat report',window.probe.errors.length,1);c('token preserved',window.probe.saves.findLast(x=>x.activeGame).activeGame.sessionToken,window.restoreToken);c('draft preserved',window.probe.saves.findLast(x=>x.activeGame).activeGame.currentLetters.join('').toUpperCase(),'PIAN');c('no escaped event errors',window.probe.windowErrors,[]);return 'failure and retirement checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"failure and retirement checks passed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e48"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e48"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e73"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e73"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<100&&window.probe.completions!==1;i++)await new Promise(r=>setTimeout(r,20));const c=window.checkRestore;c('native Submit sends one answer',window.probe.guesses,1);c('native Submit completes once',window.probe.completions,1);c('no unhandled promise',window.probe.unhandled,[]);c('no duplicate releases',window.probe.duplicateReleases,0);return 'completion checks passed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"completion checks passed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({checks:window.restoreChecks,probe:{draws:window.probe.draws,driverRestores:window.probe.driverRestores,driverLosses:window.probe.driverLosses,rendererConstructions:window.probe.rendererConstructions,disposals:window.probe.disposals,contextReleases:window.probe.contextReleases,errors:window.probe.errors,windowErrors:window.probe.windowErrors,unhandled:window.probe.unhandled,guesses:window.probe.guesses,completions:window.probe.completions}})",
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page. Result saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/evaluate-script-2026-10-03T09-19-54-728Z.json (3.1KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T09-19-54-752Z.png (91.2KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  }
+]

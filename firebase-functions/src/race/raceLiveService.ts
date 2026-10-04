@@ -2,14 +2,14 @@ import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_WAIT_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS,
+import {LIVE_RACE_WAIT_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
   type JoinLiveRace, type UpdateLiveRace} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, assertJestAccountActive} from "../jest/jestAccountDeletion";
 import {raceProviderScope} from "./raceEligibility";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "./raceEngine";
-import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent, readRaceCoinBalance,
-  requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
+import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent,
+  requestDocumentId, stripUndefined, prepareRaceAchievementEvent, type Firestore} from "./raceSetupService";
 import {liveRun, liveView, liveOperationAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {pendingRaceDelivery} from "./raceDeliveryFailures";
@@ -17,6 +17,8 @@ import {facebookLiveRaceReferralEventId} from "../facebook/facebookLiveRaceRefer
 import {isRedditFirebaseUid} from "../reddit/redditSecurity";
 import {redditLiveRaceReferralEventId} from "../reddit/redditLiveRaceReferralDelivery";
 import {settleLiveFinish} from "./raceLiveScoring";
+import {prepareLiveRaceRematch, createLiveRaceRematchInvitation} from "./raceLiveRematch";
+import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "./facebookLiveContextBinding";
 
 /** A short lobby heartbeat prevents matching players who already closed their game. */
 const LOBBY_LEASE_MS = 10_000;
@@ -42,7 +44,11 @@ function livePool(userId: string, input: JoinLiveRace): string {
 
 /** Enters one owned queue seat; retries and concurrent tabs recover the same active ticket. */
 export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, options: Options = {}) {
+  /** Other providers cannot select a Facebook board, including invitation recovery. */
+  const contextKey = facebookLiveContextSelection(userId, input.facebookContextId);
   if (input.challengeId) return acceptLiveRaceChallengeForUser(userId, input, options);
+  /** Rematches share private-lobby authority while preserving the default public join. */
+  const privateEntry = Boolean(input.createChallenge || input.rematchOfTicketId);
   /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
   /** Provides now ms behavior. */
@@ -75,6 +81,10 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       /** Provides ticket behavior. */
       const ticket = old.data() as LiveTicket | undefined;
       if (ticket && ticket.userId === userId) {
+        if (receipt.exists) assertFacebookLiveContextSelection(ticket.facebookContext, contextKey);
+        if (receipt.exists && (Boolean(ticket.privateChallenge) !== privateEntry ||
+          ticket.rematchOfTicketId !== input.rematchOfTicketId || ticket.pool !== pool))
+          throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
         /** Provides match behavior. */
         const match = ticket.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as LiveMatch : undefined;
         /** An unattended expired invitation must not strand the account's active-seat pointer. */
@@ -87,7 +97,8 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
           return liveView(id, ticket, undefined, options.nowMs ?? Date.now());
         }
         if (!privateExpired && (receipt.exists || !ticket.cancelled && (!match || match.winner === undefined))) {
-          if (Boolean(ticket.privateChallenge) !== Boolean(input.createChallenge))
+          assertFacebookLiveContextSelection(ticket.facebookContext, contextKey);
+          if (Boolean(ticket.privateChallenge) !== privateEntry || ticket.rematchOfTicketId !== input.rematchOfTicketId)
             throw new HttpsError("failed-precondition", "Finish the current live race first.");
           if (ticket.pool !== pool) throw new HttpsError("failed-precondition", "Finish the current live race first.");
           /** Reconnect observations renew this owned lease without rewinding either seat's clock. */
@@ -98,6 +109,10 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
         }
       }
     }
+    /** Recipient and source binding are validated atomically before preparing or publishing a new seat. */
+    const rematch = input.rematchOfTicketId ? await prepareLiveRaceRematch(transaction, db, userId, input, nowMs) : undefined;
+    /** Score destination is fixed before a queue seat or reserved invitation is published. */
+    const facebookContext = await prepareFacebookLiveContext(transaction, db, userId, input.locale, contextKey, nowMs);
     /** New seats validate one catalog per invocation; restored seats never start this query. */
     const deck = await (preparedDeck ??= loadEligibleContent(db, input.locale, input.categoryId)
       .then(content => buildDeterministicRaceDeck(content, {locale: input.locale, categoryId: input.categoryId, seed: ticketId})));
@@ -108,15 +123,18 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       level: typeof data.level === "number" && Number.isInteger(data.level) && data.level > 0 ? data.level : 1,
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
     /** Provides ticket behavior. */
-    const ticket: LiveTicket = {userId, pool, player, ...(input.createChallenge ? {privateChallenge: true} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
+    const ticket: LiveTicket = {userId, pool, player, ...(privateEntry ? {privateChallenge: true} : {}),
+      ...(facebookContext ? {facebookContext} : {}),
+      ...(rematch ? {rematchOfTicketId: input.rematchOfTicketId, inviteRecipientId: rematch.recipientId} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
       run: liveRun({...deck, locale: input.locale, categoryId: input.categoryId}, userId, ticketId)};
-    if (input.createChallenge) {
-      if (!["jest", "facebook"].includes(raceProviderScope(userId) ?? ""))
+    if (privateEntry) {
+      if (!rematch && !["jest", "facebook"].includes(raceProviderScope(userId) ?? ""))
         throw new HttpsError("permission-denied", "Platform invitations unavailable.");
       /** Private seats are recoverable but cannot be selected by public searches. */
       const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
       transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
       transaction.set(pointer, {ticketId, expiresAt});
+      if (rematch) createLiveRaceRematchInvitation(transaction, db, userId, ticketId, rematch, nowMs);
       publishLiveRaceSignals(db, transaction, [ticketId], expiresAt);
       return liveView(ticketId, ticket, undefined, nowMs);
     }
@@ -276,21 +294,58 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
       const winner = match.winner === null ? undefined : match.runs[match.winner];
       /** Provides winner ticket behavior. */
       const winnerTicket = match.winner === null ? null : match.tickets[match.winner];
-      /** Provides [owner, deleted] behavior. */
-      const [owner, deleted] = winner && winnerTicket ? await Promise.all([transaction.get(db.doc(`users/${winner.userId}`)),
-        transaction.get(getJestAccountDeletionRef(db, winner.userId))]) : [null, null];
-      match.rewardCoins = 0;
-      if (owner?.exists && !deleted?.exists) {
-        /** Provides coins behavior. */
-        const coins = readRaceCoinBalance(owner.data()!) + LIVE_RACE_WIN_COINS;
+      /** Read every human account before settlement writes; bots and deleted seats cannot gain statistics. */
+      const participants = await Promise.all(match.tickets.map(async (id, seat) => {
+        if (!id || match.deletedSeats?.[seat]) return null;
+        /** Human participant owns its canonical account and deletion boundary. */
+        const participantId = match.runs[seat]!.userId;
+        /** Deletion and account existence are read before any terminal settlement write. */
+        const [profile, deletion] = await Promise.all([transaction.get(db.doc(`users/${participantId}`)),
+          transaction.get(getJestAccountDeletionRef(db, participantId))]);
+        return profile.exists && !deletion.exists ? profile : null;
+      }));
+      /** Both seats share the one-time terminal receipt, including losses and draws. */
+      const profileUpdates = new Map<FirebaseFirestore.DocumentSnapshot, Record<string, unknown>>();
+      if (nowMs >= match.startsAtMs) for (const [seat, profile] of participants.entries()) {
+        if (!profile) continue;
+        /** Persisted account counters supply the authoritative achievement baseline. */
+        const data = profile.data()!;
+        for (const field of ["multiplayerGamesPlayed", "multiplayerWins"]) {
+          /** Reject corrupt counters before applying the one-time terminal increment. */
+          const count = data.stats?.[field] ?? 0;
+          /** Only a winner increments wins; every started match increments games played. */
+          const increment = field === "multiplayerGamesPlayed" || match.winner === seat ? 1 : 0;
+          if (!Number.isSafeInteger(count) || count < 0 || !Number.isSafeInteger(count + increment))
+            throw new HttpsError("data-loss", "Invalid multiplayer game total.");
+        }
+        /** Confirmed terminal seat state determines achievement eligibility. */
+        const run = match.runs[seat]!;
+        /** Computes idempotent achievement changes alongside the match settlement. */
+        const award = prepareRaceAchievementEvent(data, {kind: "completed", won: match.winner === seat,
+          cleanRun: run.status === "completed" && run.correctCount === RACE_RULES.targetCorrect && run.hintPenaltyMs === 0 && run.skipPenaltyMs === 0}, nowMs);
+        /** Winner coins combine with the account's validated achievement balance. */
+        const coins = award.newCoins + (match.winner === seat ? LIVE_RACE_WIN_COINS : 0);
         if (!Number.isSafeInteger(coins)) throw new HttpsError("data-loss", "Invalid coin balance.");
+        profileUpdates.set(profile, {coins, "stats.multiplayerGamesPlayed": award.stats.multiplayerGamesPlayed,
+          "stats.multiplayerWins": award.stats.multiplayerWins,
+          ...(award.unlockedAchievementEntries.length ? {
+            unlockedAchievements: admin.firestore.FieldValue.arrayUnion(...award.unlockedAchievementEntries),
+          } : {})});
+        // Retain each human's own confirmed balance without exposing the rival's currency.
+        run.settlementCoins = coins;
+      }
+      /** Only an existing, non-deleted human winner can receive coins and a win. */
+      const owner = match.winner === null ? null : participants[match.winner];
+      /** The winner's original destination may belong to the other private seat. */
+      const winnerSource = winner && winnerTicket ? winnerTicket === input.ticketId ? ticket :
+        (await transaction.get(db.doc(`liveRaceTickets/${winnerTicket}`))).data() as LiveTicket | undefined : undefined;
+      match.rewardCoins = 0;
+      if (owner) {
+        /** Provides coins behavior. */
+        const coins = match.winner === null ? null : match.runs[match.winner]?.settlementCoins;
+        if (typeof coins !== "number" || !Number.isSafeInteger(coins)) throw new HttpsError("data-loss", "Invalid coin balance.");
         match.rewardCoins = LIVE_RACE_WIN_COINS;
         match.newCoins = coins;
-        /** Count the victory under the same one-time settlement receipt as the coin grant. */
-        const multiplayerWins = owner.data()!.stats?.multiplayerWins ?? 0;
-        if (!Number.isSafeInteger(multiplayerWins) || multiplayerWins < 0 || !Number.isSafeInteger(multiplayerWins + 1))
-          throw new HttpsError("data-loss", "Invalid multiplayer win total.");
-        transaction.update(owner.ref, {coins, "stats.multiplayerWins": multiplayerWins + 1});
         if (winner && winnerTicket && (isFacebookFirebaseUid(winner.userId) || isRedditFirebaseUid(winner.userId))) {
           // Namespace this receipt separately from legacy recorded runs using the same request ID.
           /** Provides facebook behavior. */
@@ -299,10 +354,12 @@ export async function updateLiveRaceForUser(userId: string, input: UpdateLiveRac
           const eventId = facebook ? facebookLiveRaceReferralEventId(winner.userId, winnerTicket) : redditLiveRaceReferralEventId(winner.userId, winnerTicket);
           match[facebook ? "facebookReferral" : "redditReferral"] = {eventId, ticketId: winnerTicket, userId: winner.userId, createdAtMs: nowMs};
           transaction.create(db.doc(`racePerformanceOutbox/${eventId}`), {runId: eventId, userId: winner.userId,
+            ...(facebook && winnerSource?.facebookContext ? {facebookContext: winnerSource.facebookContext} : {}),
             source: facebook ? "facebook_live" : "reddit_live", liveTicketId: winnerTicket, liveMatchId: ticket.matchId, createdAtMs: nowMs,
             ...pendingRaceDelivery(nowMs), expiresAt: snapshot.data()!.expiresAt});
         }
       }
+      for (const [profile, update] of profileUpdates) transaction.update(profile.ref, update);
     }
     match.observedAtMs = nowMs;
     /** Provides response behavior. */

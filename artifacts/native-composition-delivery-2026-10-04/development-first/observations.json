@@ -1,0 +1,263 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "initial composition reaches the draft once",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "event delivery preserves duplicate versus new edit intent",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "same-stack",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "initial composition reaches the draft once",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "event delivery preserves duplicate versus new edit intent",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "microtask",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "initial composition reaches the draft once",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "event delivery preserves duplicate versus new edit intent",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "next-task",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-beforeinput",
+    "name": "initial composition reaches the draft once",
+    "actual": "ro",
+    "expected": "ro"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "playable",
+    "scenario": "composition-beforeinput",
+    "name": "event delivery preserves duplicate versus new edit intent",
+    "actual": "roro",
+    "expected": "ro"
+  }
+]

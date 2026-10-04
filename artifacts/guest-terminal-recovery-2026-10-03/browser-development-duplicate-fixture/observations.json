@@ -1,0 +1,177 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "accepted winning guess is durable before completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "blocked completion has not counted a practice win",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "replacement host preserves the accepted winning attempt count",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "winning board is restored from host feedback",
+    "actual": [
+      "P",
+      "I",
+      "A",
+      "N",
+      "O"
+    ],
+    "expected": [
+      "P",
+      "I",
+      "A",
+      "N",
+      "O"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "completion is delivered without replaying a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "recovered win completes once without economic rewards",
+    "actual": {
+      "gamesPlayed": 1,
+      "wins": 1,
+      "index": 2,
+      "coins": 0,
+      "xp": 0
+    },
+    "expected": {
+      "gamesPlayed": 1,
+      "wins": 1,
+      "index": 2,
+      "coins": 0,
+      "xp": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "Next opens an empty new practice round",
+    "actual": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "another reload does not count the previous win again",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "only the same-origin session gateway is requested",
+    "actual": true,
+    "expected": true
+  }
+]

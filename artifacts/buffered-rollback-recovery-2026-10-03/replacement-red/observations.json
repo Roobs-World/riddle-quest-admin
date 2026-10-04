@@ -1,0 +1,242 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "replacement": true,
+    "name": "replacement session retires the obsolete draft journal",
+    "actual": {
+      "version": 1,
+      "scope": "jest-guest:1:en",
+      "riddle": {
+        "riddleId": "classic-fake-2",
+        "text": "What has a face and hands but no arms?",
+        "answerLength": 5,
+        "sessionToken": "00000000-0000-4000-8000-000000000002",
+        "gameMode": "classic",
+        "index": 2,
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "awaitingContinue": false,
+        "evaluation": {
+          "answer": "clock",
+          "locale": "en"
+        }
+      },
+      "confirmedClassicIndex": 2,
+      "base": {
+        "currentLetters": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "activeSlotIndex": 0,
+        "guesses": [],
+        "engineSnapshot": {
+          "guesses": [],
+          "attemptsUsed": 0,
+          "hasUsedContinue": false,
+          "gameOver": false
+        },
+        "modal": null,
+        "lastOutcome": null,
+        "completionAcknowledged": false,
+        "letterStates": {},
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "lastRewards": null,
+        "optimisticAchievementIds": []
+      },
+      "draft": [
+        "C",
+        "L",
+        "",
+        "",
+        ""
+      ],
+      "successors": [],
+      "queue": [],
+      "draftActiveSlotIndex": 2
+    },
+    "expected": null
+  }
+]

@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "स्ट्रीक ब्रोकन",
     "NO_PRODUCTS_AVAILABLE_TITLE": "कोई उत्पाद उपलब्ध नहीं",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "ऐप अपनी पहेलियों को लोड करना समाप्त नहीं कर सका। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "पहेली डेटाबेस अनुपलब्ध है"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "पहेली डेटाबेस अनुपलब्ध है",
+    "PROGRESS_UNSAVED_MESSAGE": "प्रगति अभी सहेजी नहीं गई है। गेम खुला रखें।"
   }
 }

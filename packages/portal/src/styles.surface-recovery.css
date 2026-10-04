@@ -1,0 +1,38 @@
+.surface-recovery-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  overflow-y: auto;
+  background: #091319cc;
+}
+.surface-recovery {
+  display: grid;
+  gap: 16px;
+  width: min(460px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: 24px;
+  border: 1px solid var(--play-line);
+  border-radius: 20px;
+  background: var(--play-panel);
+  color: var(--play-ink);
+  text-align: center;
+  overscroll-behavior: contain;
+}
+.surface-recovery button {
+  min-height: 48px;
+  padding: 12px 16px;
+  white-space: normal;
+}
+.surface-recovery .continue-actions {
+  display: grid;
+  gap: 12px;
+}
+.surface-recovery .continue-balance {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}

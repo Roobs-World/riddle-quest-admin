@@ -5,11 +5,14 @@ import {captureBrowserException} from "../observability/browserErrorReporter";
 import {getHostErrorMessage} from "./hostMessageHandlers";
 import type {AuthSnapshot, HostServices, WebGameMode} from "./types";
 import {preloadGameModals} from "./preloadGameModals";
+import {riddleLoadDeadline} from "./riddleLoadDeadline";
 
 /** Input required to own the host's complete single-player riddle lifecycle. */
 type HostRiddleLifecycleOptions = Readonly<{
   /** Current authenticated player identifier, when available. */
   userId: string | undefined;
+  /** Recreated identities with the same UID start a fresh content lifetime. */
+  accountGeneration?: number;
   /** Current profile used in correlated riddle responses. */
   profile: AuthSnapshot["profile"];
   /** Initial mode selected by the release target. */
@@ -69,6 +72,7 @@ export type HostRiddleLifecycle = Readonly<{
 /** Owns deduplicated loading, stale-result rejection, recovery, and readiness. */
 export function useHostRiddleLifecycle({
   userId,
+  accountGeneration,
   profile,
   initialGameMode,
   onStartupUnavailable,
@@ -94,6 +98,9 @@ export function useHostRiddleLifecycle({
   const loadInFlightRef = useRef<Promise<boolean> | null>(null);
   /** Generation that rejects stale async load results. */
   const contextVersionRef = useRef(0);
+  /** Retires bounded content waits immediately when identity, locale, or host lifetime changes. */
+  const contextAbortRef = useRef<AbortController | null>(null);
+  if (!contextAbortRef.current) contextAbortRef.current = new AbortController();
   /** Profile changes during content delivery must not rewind confirmed balances or progression. */
   const profileRef = useRef(profile);
   profileRef.current = profile;
@@ -126,6 +133,9 @@ export function useHostRiddleLifecycle({
       if (!requestId && loadInFlightRef.current) return loadInFlightRef.current;
       /** Context generation captured before asynchronous work. */
       const contextVersion = contextVersionRef.current;
+      /** The admitting context owns both the first load and any completed-Daily fallback. */
+      const contextSignal = contextAbortRef.current!.signal;
+      if (contextSignal.aborted) return false;
       /** Complete pending load outcome. */
       const pending = (async () => {
         try {
@@ -134,8 +144,8 @@ export function useHostRiddleLifecycle({
           void preloadGameModals().catch(() => undefined);
           /** Authoritative riddle returned by the active target adapter. */
           const riddle = loadedRef.current && !input.authoritative
-            ? await services.loadRiddle(input)
-            : await withActivity(() => services.loadRiddle(input));
+            ? await riddleLoadDeadline(services.loadRiddle(input), contextSignal)
+            : await withActivity(() => riddleLoadDeadline(services.loadRiddle(input), contextSignal));
           if (contextVersion !== contextVersionRef.current) return false;
           loadedRef.current = true;
           postToGame({
@@ -171,9 +181,9 @@ export function useHostRiddleLifecycle({
             setGameMode("classic");
             try {
               /** Canonical next question supplied by the current authority-owned content state. */
-              const riddle = await withActivity(() => services.loadRiddle({
+              const riddle = await withActivity(() => riddleLoadDeadline(services.loadRiddle({
                 gameMode: "classic", locale: input.locale, classicIndex: classicIndexRef.current,
-              }));
+              }), contextSignal));
               if (contextVersion !== contextVersionRef.current) return false;
               loadedRef.current = true;
               postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}});
@@ -218,8 +228,13 @@ export function useHostRiddleLifecycle({
 
   useEffect(() => {
     contextVersionRef.current += 1;
+    contextAbortRef.current?.abort();
+    contextAbortRef.current = new AbortController();
     loadInFlightRef.current = null;
     loadedRef.current = false;
+    classicIndexRef.current = profileRef.current?.classicIndex;
+    setStartupComplete(false);
+    setStartupUnavailable(false);
     if (!userId) return;
     services.preloadInitialRiddles?.(locale);
     /** Whether this context generation has been disposed. */
@@ -264,12 +279,13 @@ export function useHostRiddleLifecycle({
       cancelled = true;
       // Invalidate pending requests even when this cleanup is a final unmount.
       contextVersionRef.current += 1;
+      contextAbortRef.current?.abort();
       scheduleRecoveryRef.current = () => undefined;
       if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
       window.removeEventListener("online", resumeRecovery);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [locale, onRecoveryAttempt, userId]);
+  }, [accountGeneration, locale, onRecoveryAttempt, userId]);
 
   return {gameMode, startupComplete, startupUnavailable, loadRiddle};
 }

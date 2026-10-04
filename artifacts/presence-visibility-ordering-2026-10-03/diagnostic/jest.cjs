@@ -1,0 +1,2 @@
+const base=require("/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/jest.config.js");
+module.exports={...base,rootDir:"/home/craig-beswetherick/Documents/riddle-quest/firebase-functions",testMatch:["**/__tests__/presenceVisibilityOrdering.it.test.ts","**/__tests__/presenceVisibility.it.test.ts","**/__tests__/socialSafety.it.test.ts","**/__tests__/databaseRules.it.test.ts","**/__tests__/redditPresence.it.test.ts","**/__tests__/race/liveRaceSafety.it.test.ts"]};

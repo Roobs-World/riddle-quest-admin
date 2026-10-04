@@ -1,0 +1,566 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "physical input starts the correct draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "mounted identities are initialized",
+    "actual": [
+      "live-join",
+      "live-leave"
+    ],
+    "expected": [
+      "live-join",
+      "live-leave"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "race initialization probe observes the actual mounted sources",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "edited draft is preserved",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "mounted lifetime identities add no repeated initialization",
+    "actual": {},
+    "expected": {},
+    "measurement": {
+      "transitions": 2
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "race rendering adds no repeated clock initialization or feedback reduction",
+    "actual": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    },
+    "expected": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "fixed keyboard DOM identity survives updates",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "editing does not submit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "fresh suffix completes the answer",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "explicit submission completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "one mounted join is delivered",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "join keeps its mounted identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "retirement delivers one leave",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "leave keeps its mounted identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "join and leave have distinct identities",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "typing",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "physical input starts the correct draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "mounted identities are initialized",
+    "actual": [
+      "live-join",
+      "live-leave"
+    ],
+    "expected": [
+      "live-join",
+      "live-leave"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "race initialization probe observes the actual mounted sources",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "edited draft is preserved",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "mounted lifetime identities add no repeated initialization",
+    "actual": {},
+    "expected": {},
+    "measurement": {
+      "transitions": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "race rendering adds no repeated clock initialization or feedback reduction",
+    "actual": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    },
+    "expected": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "fixed keyboard DOM identity survives updates",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "editing does not submit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "fresh suffix completes the answer",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "explicit submission completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "one mounted join is delivered",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "join keeps its mounted identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "retirement delivers one leave",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "leave keeps its mounted identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "join and leave have distinct identities",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "physical input starts the correct draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "mounted identities are initialized",
+    "actual": [
+      "live-join",
+      "live-leave"
+    ],
+    "expected": [
+      "live-join",
+      "live-leave"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "race initialization probe observes the actual mounted sources",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "confirmed feedback updates the fixed Z key",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "edited draft is preserved",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "mounted lifetime identities add no repeated initialization",
+    "actual": {},
+    "expected": {},
+    "measurement": {
+      "transitions": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "race rendering adds no repeated clock initialization or feedback reduction",
+    "actual": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    },
+    "expected": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "fixed keyboard DOM identity survives updates",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "editing does not submit",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "cached letters retain current confirmed feedback",
+    "actual": "key red",
+    "expected": "key red"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "fresh suffix completes the answer",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "explicit submission completes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "new authority prompt clears prior keyboard feedback",
+    "actual": "key",
+    "expected": "key"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "one mounted join is delivered",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "join keeps its mounted identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "retirement delivers one leave",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "leave keeps its mounted identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "join and leave have distinct identities",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "feedback",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

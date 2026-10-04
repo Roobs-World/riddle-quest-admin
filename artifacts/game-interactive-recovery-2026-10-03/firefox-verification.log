@@ -1,0 +1,62 @@
+1791009096638	geckodriver	INFO	Listening on 127.0.0.1:44107
+1791009096658	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/snap/firefox/current/ ... tion-ljk7isws/firefox_devtools_mcp_profile" "--remote-debugging-port" "37265" "--remote-allow-hosts" "localhost" "-no-remote"
+*** You are running in headless mode.
+1791009096783	Marionette	INFO	Marionette enabled
+1791009096942	Marionette	INFO	Listening on port 39519
+WebDriver BiDi listening on ws://127.0.0.1:37265
+Read port: 39519
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1791009097935	RemoteAgent	INFO	Perform WebSocket upgrade for incoming connection from 127.0.0.1:32932
+JavaScript warning: http://127.0.0.1:36807/assets/index-Ooxdd_Ej.js, line 17708: Failed to create WebGL context: WebGL creation failed: 
+* AllowWebgl2:false restricts context creation on this system. ()
+JavaScript warning: http://127.0.0.1:36807/assets/index-Ooxdd_Ej.js, line 17708: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+JavaScript warning: http://127.0.0.1:36815/assets/index-gDpW8Ih3.js, line 17709: Failed to create WebGL context: WebGL creation failed: 
+* AllowWebgl2:false restricts context creation on this system. ()
+JavaScript warning: http://127.0.0.1:36815/assets/index-gDpW8Ih3.js, line 17709: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+JavaScript warning: http://127.0.0.1:36401/assets/index-DYvZWCC0.js, line 17709: Failed to create WebGL context: WebGL creation failed: 
+* AllowWebgl2:false restricts context creation on this system. ()
+JavaScript warning: http://127.0.0.1:36401/assets/index-DYvZWCC0.js, line 17709: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+1791010225440	Marionette	INFO	Stopped listening on port 39519
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1791010547503	geckodriver	INFO	Listening on 127.0.0.1:39229
+1791010547515	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/snap/firefox/current/ ... tion-pvk57g57/firefox_devtools_mcp_profile" "--remote-debugging-port" "33383" "--remote-allow-hosts" "localhost" "-no-remote"
+*** You are running in headless mode.
+1791010547650	Marionette	INFO	Marionette enabled
+1791010547804	Marionette	INFO	Listening on port 41007
+WebDriver BiDi listening on ws://127.0.0.1:33383
+Read port: 41007
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1791010548882	RemoteAgent	INFO	Perform WebSocket upgrade for incoming connection from 127.0.0.1:55392
+JavaScript warning: http://127.0.0.1:37351/assets/index-iVHcvcIt.js, line 17709: Failed to create WebGL context: WebGL creation failed: 
+* AllowWebgl2:false restricts context creation on this system. ()
+JavaScript warning: http://127.0.0.1:37351/assets/index-iVHcvcIt.js, line 17709: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[WARN  rkv::backend::impl_safe::environment] `load_ratio()` is irrelevant for this storage backend.
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+1791010861368	Marionette	INFO	Stopped listening on port 41007
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null

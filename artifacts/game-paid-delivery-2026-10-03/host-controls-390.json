@@ -1,0 +1,53 @@
+[
+  {
+    "text": "Hint",
+    "color": "rgb(19, 32, 38)",
+    "background": "rgb(255, 253, 247)",
+    "opacity": "1",
+    "visibility": "visible",
+    "rect": {
+      "x": 16,
+      "y": 728,
+      "width": 108.5625,
+      "height": 60,
+      "top": 728,
+      "right": 124.5625,
+      "bottom": 788,
+      "left": 16
+    }
+  },
+  {
+    "text": "SUBMIT",
+    "color": "rgb(112, 119, 128)",
+    "background": "rgb(217, 222, 228)",
+    "opacity": "1",
+    "visibility": "visible",
+    "rect": {
+      "x": 132.5625,
+      "y": 728,
+      "width": 124.859375,
+      "height": 60,
+      "top": 728,
+      "right": 257.421875,
+      "bottom": 788,
+      "left": 132.5625
+    }
+  },
+  {
+    "text": "Skip",
+    "color": "rgb(19, 32, 38)",
+    "background": "rgb(255, 253, 247)",
+    "opacity": "1",
+    "visibility": "visible",
+    "rect": {
+      "x": 265.421875,
+      "y": 728,
+      "width": 108.5625,
+      "height": 60,
+      "top": 728,
+      "right": 373.984375,
+      "bottom": 788,
+      "left": 265.421875
+    }
+  }
+]

@@ -1,17 +1,17 @@
 firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
 $ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && REDDIT_BUILD=1 NODE_ENV=production vite build --mode reddit && pnpm audit:reddit-artifact
 $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
-✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.914627ms)
-✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.996202ms)
-✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.004186ms)
-✔ rejects imports between different target owners (1.788819ms)
-✔ rejects the legacy platform entry while allowing the shop adapter (0.62832ms)
-✔ rejects Devvit imports outside Reddit-owned source (0.99763ms)
-✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.019281ms)
-✔ fails closed when a missing relative path lexically enters target-owned source (0.682383ms)
-✔ handles extensions and index modules with TypeScript-compatible resolution (0.964477ms)
-✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.688675ms)
-✔ aggregates violations in deterministic file and source order (1.671256ms)
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.452275ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.160243ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (5.772406ms)
+✔ rejects imports between different target owners (1.598469ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.615957ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.99238ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.142806ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.783144ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.170938ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.713893ms)
+✔ aggregates violations in deterministic file and source order (0.796088ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -19,7 +19,7 @@ $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && no
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 134.542843
+ℹ duration_ms 138.072612
 Web Target boundary audit passed (284 files, 1237 module references).
 $ node scripts/audit-locales.mjs
 Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
@@ -433,7 +433,7 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/profile-C8J7su-P.js                       10.28 kB │ gzip:  3.08 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/SolarSystem-y2wlfn6x.js                   12.81 kB │ gzip:  4.67 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/vendor-three-BiCdcn-D.js                  13.78 kB │ gzip:  4.54 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/RedditRaceEntry-B5Jwsweq.js               14.75 kB │ gzip:  5.33 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/RedditRaceEntry-C4bcwyC2.js               14.81 kB │ gzip:  5.33 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/LiveRacePushConsent-BueaM9l3.js           17.06 kB │ gzip:  6.77 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/vendor-three-Adn5u5Zy.js                  20.91 kB │ gzip:  4.79 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/useAnswerKeyboard-CzQaDuYw.js             24.77 kB │ gzip:  7.82 kB
@@ -447,10 +447,10 @@ computing gzip size...
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/vendor-three-DJoh3hnH.js                  74.63 kB │ gzip: 21.29 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/vendor-three-Bsvtb-PI.js                  78.43 kB │ gzip: 23.20 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/raceSchemas-Y6nRRYVj.js                  107.56 kB │ gzip: 30.86 kB
-../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/game-DboSml6V.js                         129.49 kB │ gzip: 38.48 kB
+../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/game-B0wMkscZ.js                         129.01 kB │ gzip: 38.14 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/vendor-three-rp2wzGbr.js                 192.57 kB │ gzip: 42.43 kB
 ../../../../.cache/riddle-quest-review/live-race-history-20261002/reddit/assets/vendor-react-BaMjfHjM.js                 219.00 kB │ gzip: 68.35 kB
 
-✓ built in 1.96s
+✓ built in 2.29s
 $ node scripts/audit-reddit-artifact.mjs
-Reddit artifact audit passed: 420 regular files, 2 entry documents, 3.74 MB, 0.58 MB initial resources, isolated and same-origin only
+Reddit artifact audit passed: 420 regular files, 2 entry documents, 3.73 MB, 0.58 MB initial resources, isolated and same-origin only

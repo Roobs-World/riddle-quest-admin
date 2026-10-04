@@ -24,12 +24,15 @@ export async function deliverRacePerformance(runId: string, db: Firestore = admi
     let referralUserId: string | undefined;
     /** Facebook live winner work records official scores independently of referral enablement. */
     let facebookLiveUserId: string | undefined;
+    /** Only new bound Facebook seats need an additional context projection. */
+    let facebookLiveContext = false;
     /** Reddit live scores and referral grants retain independent provider switches. */
     let redditLiveUserId: string | undefined;
     /** Records whether the primary projection was newly applied. */
     const changed = await db.runTransaction(async (transaction) => {
       referralUserId = undefined;
       facebookLiveUserId = undefined;
+      facebookLiveContext = false;
       redditLiveUserId = undefined;
       /** Provides event behavior. */
       const event = await transaction.get(eventRef);
@@ -52,12 +55,13 @@ export async function deliverRacePerformance(runId: string, db: Firestore = admi
         const active = reddit ? await validateRedditLiveRaceReferralSource(transaction, db, receipt, nowMs) :
           await validateFacebookLiveRaceReferralSource(transaction, db, receipt, nowMs);
         if (!active || !(reddit ? needsRedditLiveRaceReferral(userId) || isRedditFeatureEnabled("tournaments") :
-          needsFacebookRaceReferral(userId, true) || isFacebookFeatureEnabled("tournaments"))) {
+          needsFacebookRaceReferral(userId, true) || isFacebookFeatureEnabled("tournaments") ||
+            receipt.facebookContext !== undefined && isFacebookFeatureEnabled("matchmaking"))) {
           transaction.update(eventRef, {delivered: true, deliveryState: "suppressed", suppressed: true, deliveredAtMs: nowMs});
           return false;
         }
         if (reddit) redditLiveUserId = userId;
-        else facebookLiveUserId = userId;
+        else {facebookLiveUserId = userId; facebookLiveContext = receipt.facebookContext !== undefined;}
         return true;
       }
       /** Provides [source, owner, deletion] behavior. */
@@ -99,7 +103,10 @@ export async function deliverRacePerformance(runId: string, db: Firestore = admi
         {delivered: true, deliveryState: "delivered", deliveredAtMs: nowMs});
       return true;
     });
-    if (facebookLiveUserId) await finishFacebookLiveRaceDelivery(db, eventRef, facebookLiveUserId, nowMs);
+    if (facebookLiveUserId) {
+      if (facebookLiveContext) await finishFacebookLiveRaceDelivery(db, eventRef, facebookLiveUserId, nowMs, true);
+      else await finishFacebookLiveRaceDelivery(db, eventRef, facebookLiveUserId, nowMs);
+    }
     if (redditLiveUserId) await finishRedditLiveRaceDelivery(db, eventRef, redditLiveUserId, nowMs);
     if (referralUserId) {
       if (isRedditFirebaseUid(referralUserId)) await finishRedditLiveRaceReferralDelivery(db, eventRef, referralUserId, nowMs);

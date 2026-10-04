@@ -1,0 +1,674 @@
+[
+  {
+    "width": 1280,
+    "name": "effect replay dispatches one owned preview request",
+    "expected": 1,
+    "actual": 2
+  },
+  {
+    "width": 1280,
+    "name": "ordinary rerender preserves a pending read",
+    "expected": 2,
+    "actual": 2
+  },
+  {
+    "width": 1280,
+    "name": "explicit acceptance uses the exact validated authority selection",
+    "expected": {
+      "categoryId": "mixed",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "actual": {
+      "categoryId": "mixed",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "width": 1280,
+    "name": "retirement before the queued read prevents transport dispatch",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 1280,
+    "name": "early retirement clears the local read deadline",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "transport commit removes the retired acceptance control",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "callback commit removes the retired acceptance control",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "challenge commit removes the retired acceptance control",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "late retired receipt cannot populate replacement preview",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "validated inbox preview uses no authority request",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "validated inbox preview allocates no read deadline",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 1280,
+    "name": "fresh unavailable inbox receipt retires acceptance in its first commit",
+    "expected": {
+      "names": [
+        "Carol challenged you"
+      ],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "unavailable server invitation remains unacceptable",
+    "expected": {
+      "names": [
+        "Carol challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Carol challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "malformed cached receipt exposes recovery without rendering an identity",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "explicit retry of malformed inbox data reads the canonical preview",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "cached receipt refresh preserves keyboard focus",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 1280,
+    "name": "refreshed cached preview accepts its current canonical category",
+    "expected": {
+      "categoryId": "history",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "actual": {
+      "categoryId": "history",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "width": 1280,
+    "name": "server available status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "server accepted status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "server unavailable status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "server own status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "content language mismatch hides acceptance immediately",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "stalled preview exposes bounded retry",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "explicit retry recovers a stalled authority preview",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    }
+  },
+  {
+    "width": 1280,
+    "name": "mismatched invitation receipt never exposes acceptance",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    }
+  },
+  {
+    "width": 1280,
+    "name": "unmount clears every preview deadline",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 1280,
+    "name": "uncaught errors",
+    "expected": [],
+    "actual": []
+  },
+  {
+    "width": 390,
+    "name": "effect replay dispatches one owned preview request",
+    "expected": 1,
+    "actual": 2
+  },
+  {
+    "width": 390,
+    "name": "ordinary rerender preserves a pending read",
+    "expected": 2,
+    "actual": 2
+  },
+  {
+    "width": 390,
+    "name": "explicit acceptance uses the exact validated authority selection",
+    "expected": {
+      "categoryId": "mixed",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "actual": {
+      "categoryId": "mixed",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "width": 390,
+    "name": "retirement before the queued read prevents transport dispatch",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 390,
+    "name": "early retirement clears the local read deadline",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "transport commit removes the retired acceptance control",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "callback commit removes the retired acceptance control",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "challenge commit removes the retired acceptance control",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "late retired receipt cannot populate replacement preview",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "validated inbox preview uses no authority request",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "validated inbox preview allocates no read deadline",
+    "expected": 0,
+    "actual": 2
+  },
+  {
+    "width": 390,
+    "name": "fresh unavailable inbox receipt retires acceptance in its first commit",
+    "expected": {
+      "names": [
+        "Carol challenged you"
+      ],
+      "canAccept": false,
+      "accepted": 0
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "accepted": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "unavailable server invitation remains unacceptable",
+    "expected": {
+      "names": [
+        "Carol challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Carol challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "malformed cached receipt exposes recovery without rendering an identity",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "explicit retry of malformed inbox data reads the canonical preview",
+    "expected": 1,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "cached receipt refresh preserves keyboard focus",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "width": 390,
+    "name": "refreshed cached preview accepts its current canonical category",
+    "expected": {
+      "categoryId": "history",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "actual": {
+      "categoryId": "history",
+      "locale": "en",
+      "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "width": 390,
+    "name": "server available status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "server accepted status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "server unavailable status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "server own status gates acceptance",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "content language mismatch hides acceptance immediately",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": false,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "stalled preview exposes bounded retry",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "explicit retry recovers a stalled authority preview",
+    "expected": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    },
+    "actual": {
+      "names": [
+        "Alice challenged you"
+      ],
+      "canAccept": true,
+      "retry": false
+    }
+  },
+  {
+    "width": 390,
+    "name": "mismatched invitation receipt never exposes acceptance",
+    "expected": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    },
+    "actual": {
+      "names": [],
+      "canAccept": false,
+      "retry": true
+    }
+  },
+  {
+    "width": 390,
+    "name": "unmount clears every preview deadline",
+    "expected": 0,
+    "actual": 0
+  },
+  {
+    "width": 390,
+    "name": "uncaught errors",
+    "expected": [],
+    "actual": []
+  }
+]

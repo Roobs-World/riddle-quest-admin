@@ -1,0 +1,122 @@
+[
+  {
+    "width": 1280,
+    "name": "native Three renderer is attached",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "native WebGL renderer draws with the real scene and local textures",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "native renderer maintains one next frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "native renderer issues actual WebGL draw calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "name": "native renderer cancels work while paused",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "native renderer draws nothing during pause",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "native renderer resumes drawing",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "native drawing causes no window errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "native renderer cleanup removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "native renderer cleanup cancels pending work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "native Three renderer is attached",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "native WebGL renderer draws with the real scene and local textures",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "native renderer maintains one next frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "native renderer issues actual WebGL draw calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "name": "native renderer cancels work while paused",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "native renderer draws nothing during pause",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "native renderer resumes drawing",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "native drawing causes no window errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "native renderer cleanup removes its canvas",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "native renderer cleanup cancels pending work",
+    "actual": 0,
+    "expected": 0
+  }
+]

@@ -1,0 +1,69 @@
+FAIL src/play/__tests__/GameSessionCheckpoints.test.ts
+  ● GameSessionCheckpoints › saves an already recovered journal draft instead of replaying an older checkpoint ({"draft":["C","L","","",""],"slot":2})
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 11
+    + Received  +  1
+
+      Object {
+    -   "game": Object {
+    -     "activeSlotIndex": 2,
+    -     "currentLetters": Array [
+    -       "C",
+    -       "L",
+    -       "",
+    -       "",
+    -       "",
+    -     ],
+    -   },
+    -   "kind": "save",
+    +   "kind": "restore",
+      }
+
+      68 |         completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds},
+      69 |       guesses: [], draft, draftActiveSlotIndex: slot});
+    > 70 |     expect(checkpoints.update(recovered)).toMatchObject({kind: "save", game: {
+         |                                           ^
+      71 |       currentLetters: draft, activeSlotIndex: slot,
+      72 |     }});
+      73 |   });
+
+      at src/play/__tests__/GameSessionCheckpoints.test.ts:70:43
+
+  ● GameSessionCheckpoints › saves an already recovered journal draft instead of replaying an older checkpoint ({"draft":["","","","",""],"slot":3})
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 11
+    + Received  +  1
+
+      Object {
+    -   "game": Object {
+    -     "activeSlotIndex": 3,
+    -     "currentLetters": Array [
+    -       "",
+    -       "",
+    -       "",
+    -       "",
+    -       "",
+    -     ],
+    -   },
+    -   "kind": "save",
+    +   "kind": "restore",
+      }
+
+      68 |         completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds},
+      69 |       guesses: [], draft, draftActiveSlotIndex: slot});
+    > 70 |     expect(checkpoints.update(recovered)).toMatchObject({kind: "save", game: {
+         |                                           ^
+      71 |       currentLetters: draft, activeSlotIndex: slot,
+      72 |     }});
+      73 |   });
+
+      at src/play/__tests__/GameSessionCheckpoints.test.ts:70:43
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 30 skipped, 32 total
+Snapshots:   0 total
+Time:        0.256 s, estimated 1 s

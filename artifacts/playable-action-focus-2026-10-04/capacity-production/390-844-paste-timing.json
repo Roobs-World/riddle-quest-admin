@@ -1,0 +1,21 @@
+{
+  "mode": "production",
+  "width": 390,
+  "height": 844,
+  "inputCharacters": 5004,
+  "warmup": 3,
+  "samples": [
+    0.29999999701976776,
+    0.19999999552965164,
+    0,
+    0.10000000149011612,
+    0.10000000149011612,
+    0,
+    0.10000000149011612,
+    0.10000000149011612,
+    0.09999999403953552,
+    0.10000000149011612
+  ],
+  "median": 0.10000000149011612,
+  "scope": "Synchronous native input-event dispatch; excludes asynchronous React commit and production network."
+}

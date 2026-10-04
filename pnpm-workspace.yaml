@@ -4,13 +4,14 @@ packages:
 
 autoInstallPeers: false
 
-# Upstream image-size is archived with no fixed release. These advisories are
-# ignored only because the exact transitive package is patched and regression
-# tested by scripts/image-size-security-patch.test.mjs.
+# These upstream packages have no fixed release. Each narrowly scoped exception
+# requires its exact installed patch and security regression checks to pass.
 audit:
   ignore:
     - GHSA-5p2g-fcmc-qvqq
     - GHSA-w3rx-r6r6-pgpr
+    # Depth guards backported from braces PR72; checked before production audit.
+    - GHSA-vfj7-8cjw-p6xm
 
 peerDependencyRules:
   allowedVersions:
@@ -41,7 +42,7 @@ overrides:
   jest-mock: "30.4.1"
   postcss: "8.5.25"
   protobufjs: "7.6.5"
-  qs: "6.15.3"
+  qs: "6.16.0"
   "minimatch@3>brace-expansion": "1.1.21"
   "minimatch@8>brace-expansion": "2.1.7"
   "minimatch@9>brace-expansion": "2.1.7"
@@ -71,4 +72,5 @@ allowBuilds:
   vnu-jar: false
 
 patchedDependencies:
+  braces@3.0.3: patches/braces@3.0.3.patch
   image-size@2.0.2: patches/image-size@2.0.2.patch

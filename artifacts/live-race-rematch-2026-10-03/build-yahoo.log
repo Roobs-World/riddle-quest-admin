@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (18.290165ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (4.75534ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (6.199606ms)
+✔ rejects imports between different target owners (2.209727ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.808392ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.352793ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.737212ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.84444ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.425872ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (1.026885ms)
+✔ aggregates violations in deterministic file and source order (0.968275ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.054415
+Web Target boundary audit passed (285 files, 1248 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/index-B9AIzvgi.css              7.27 kB │ gzip:  2.38 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/core-game-B_elbW7b.js           1.90 kB │ gzip:  0.84 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-en-d_iyEa1F.js   87.86 kB │ gzip: 47.66 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-pt-BBruRlpL.js   90.15 kB │ gzip: 48.94 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-nl-Bx9R176D.js   90.54 kB │ gzip: 49.17 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-id-CCL1ZCnL.js   91.21 kB │ gzip: 49.50 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-it-Ep6KbJm0.js   91.35 kB │ gzip: 49.59 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-es-CFaBUv5Q.js   91.65 kB │ gzip: 49.78 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-de-Dr_UCeI4.js   92.15 kB │ gzip: 50.03 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-tr-d2mQbwJN.js   92.54 kB │ gzip: 50.24 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-pl-C8FLipe1.js   92.70 kB │ gzip: 50.33 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-fr-y-XAgqoJ.js   93.56 kB │ gzip: 50.77 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-ja-C-WBddrW.js   94.66 kB │ gzip: 51.41 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-vi-pli1M1TU.js   96.78 kB │ gzip: 52.56 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-ko-BPTE7ME-.js   97.36 kB │ gzip: 52.86 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-ar-COJVJaCx.js  102.12 kB │ gzip: 55.42 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/index-CE6ZncAz.js             104.16 kB │ gzip: 34.77 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-ru-BJPgq9EZ.js  114.09 kB │ gzip: 61.89 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/playable-pack-hi-DIh_VAWA.js  134.49 kB │ gzip: 72.99 kB
+../../../../.cache/riddle-quest-review/live-race-rematch-20261003/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.35s
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

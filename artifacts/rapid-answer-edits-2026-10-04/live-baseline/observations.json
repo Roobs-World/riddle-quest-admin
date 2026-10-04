@@ -1,0 +1,78 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "rapid edits preserve the ordered answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "text-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

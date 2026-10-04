@@ -1,5 +1,5 @@
 import type {RaceRiddlePrompt} from "@qwordly/core/race";
-import {splitGraphemes} from "@qwordly/core/game";
+import {iterateGraphemes, splitGraphemes} from "@qwordly/core/game";
 
 /** Editable answer state controlled by the multiplayer race screen. */
 export type RaceInputState = {
@@ -43,9 +43,7 @@ export const insertRaceLetter = (riddle: RaceRiddlePrompt, state: RaceInputState
 
 /** Inserts one committed IME/paste unit atomically, ignoring text beyond the initially editable capacity. */
 export const insertRaceText = (riddle: RaceRiddlePrompt, state: RaceInputState, text: string): RaceInputState => {
-  /** Provides graphemes behavior. */
-  const graphemes = splitGraphemes(text.normalize("NFC")).filter((grapheme) => Boolean(grapheme.trim()));
-  if (graphemes.length === 0 || !isRaceSlotEditable(riddle, state.activeSlotIndex)) return state;
+  if (!isRaceSlotEditable(riddle, state.activeSlotIndex)) return state;
   /** Provides revealed indexes behavior. */
   const revealedIndexes = new Set(riddle.revealedLetters.map(({index}) => index));
   /** Provides initial letters behavior. */
@@ -54,7 +52,15 @@ export const insertRaceText = (riddle: RaceRiddlePrompt, state: RaceInputState, 
   const capacity =
     initialLetters.reduce((count, letter, index) => count + (!revealedIndexes.has(index) && !letter ? 1 : 0), 0) +
     (initialLetters[state.activeSlotIndex] ? 1 : 0);
-  return graphemes.slice(0, capacity).reduce((current, grapheme) => insertRaceLetter(riddle, current, grapheme), state);
+  /** Each accepted grapheme fills only the capacity that belonged to this committed edit. */
+  let current = state, accepted = 0;
+  /** Ignored whitespace does not consume capacity; ignored suffixes need not be enumerated. */
+  for (const grapheme of iterateGraphemes(text)) {
+    if (!grapheme.trim()) continue;
+    current = insertRaceLetter(riddle, current, grapheme);
+    if (++accepted === capacity) break;
+  }
+  return current;
 };
 
 /** Deletes the active letter or the nearest previous editable letter. */

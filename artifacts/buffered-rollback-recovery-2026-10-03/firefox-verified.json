@@ -1,0 +1,139 @@
+{
+  "status": "verified",
+  "viewport": {
+    "width": 390,
+    "height": 568
+  },
+  "mode": "production",
+  "Before": {
+    "requestIds": [
+      "retained-next-guess"
+    ],
+    "predecessorReplays": 0
+  },
+  "Rejected": {
+    "draft": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "queue": [],
+    "successors": [],
+    "paid": null,
+    "victory": true,
+    "reconcile": "function"
+  },
+  "Canonical": {
+    "rows": [
+      "qqqqq",
+      "CLo",
+      "",
+      "",
+      ""
+    ],
+    "selected": 8,
+    "hintLocked": true,
+    "balance": "325",
+    "journal": {
+      "version": 1,
+      "scope": "jest-guest:1:en",
+      "riddle": {
+        "riddleId": "classic-fake-2",
+        "text": "What has a face and hands but no arms?",
+        "answerLength": 5,
+        "sessionToken": "00000000-0000-4000-8000-000000000002",
+        "gameMode": "classic",
+        "index": 2,
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "awaitingContinue": false,
+        "evaluation": {
+          "answer": "clock",
+          "locale": "en"
+        }
+      },
+      "confirmedClassicIndex": 2,
+      "base": {
+        "currentLetters": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "activeSlotIndex": 0,
+        "guesses": [],
+        "engineSnapshot": {
+          "guesses": [],
+          "attemptsUsed": 0,
+          "hasUsedContinue": false,
+          "gameOver": false
+        },
+        "modal": null,
+        "lastOutcome": null,
+        "completionAcknowledged": false,
+        "letterStates": {},
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "lastRewards": null,
+        "optimisticAchievementIds": []
+      },
+      "draft": [
+        "C",
+        "L",
+        "o",
+        "",
+        ""
+      ],
+      "successors": [],
+      "queue": [],
+      "draftActiveSlotIndex": 3
+    },
+    "errors": [],
+    "unhandled": [],
+    "requestIds": [
+      "retained-next-guess"
+    ],
+    "predecessorReplays": 0
+  },
+  "Typed": {
+    "rows": [
+      "qqqqq",
+      "CLoC",
+      "",
+      "",
+      ""
+    ],
+    "selected": 9,
+    "balance": "325",
+    "draft": [
+      "C",
+      "L",
+      "o",
+      "C",
+      ""
+    ],
+    "queue": [],
+    "hintLocked": true,
+    "errors": [],
+    "unhandled": [],
+    "requestIds": [
+      "retained-next-guess"
+    ],
+    "spends": []
+  }
+}

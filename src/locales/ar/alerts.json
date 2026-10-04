@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "الخط المكسور",
     "NO_PRODUCTS_AVAILABLE_TITLE": "لا توجد منتجات متاحة",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "تعذر على التطبيق إنهاء تحميل الألغاز الخاصة به. الرجاء التحقق من الاتصال والمحاولة مرة أخرى.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "قاعدة بيانات Riddle غير متاحة"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "قاعدة بيانات Riddle غير متاحة",
+    "PROGRESS_UNSAVED_MESSAGE": "لم يُحفظ التقدم بعد. أبقِ اللعبة مفتوحة."
   }
 }

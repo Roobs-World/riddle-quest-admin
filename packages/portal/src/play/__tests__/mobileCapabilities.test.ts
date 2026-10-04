@@ -107,4 +107,17 @@ describe("runtime mobile capability detection", () => {
 
     expect(getMobileCapabilities().webGlAvailable).toBe(false);
   });
+
+  it.each([false, true])("releases the temporary probe without changing availability when cleanup fails: %s", (fails) => {
+    /** The real scene should receive the context budget consumed by this temporary probe. */
+    const loseContext = jest.fn(() => {if (fails) throw new Error("probe release blocked");});
+    Object.defineProperty(globalThis, "navigator", {configurable: true, value: {hardwareConcurrency: 8}});
+    Object.defineProperty(globalThis, "window", {configurable: true, value: {matchMedia: jest.fn(() => ({matches: false}))}});
+    Object.defineProperty(globalThis, "document", {configurable: true, value: {
+      createElement: jest.fn(() => ({getContext: jest.fn(() => ({getExtension: jest.fn(() => ({loseContext}))}))})),
+    }});
+    Object.defineProperty(globalThis, "WebGLRenderingContext", {configurable: true, value: class {}});
+    expect(getMobileCapabilities().webGlAvailable).toBe(true);
+    expect(loseContext).toHaveBeenCalledTimes(1);
+  });
 });

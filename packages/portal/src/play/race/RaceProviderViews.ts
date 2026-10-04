@@ -197,6 +197,7 @@ export class RaceProviderViews {
         }).catch(() => finish(true));
       } else {
         void entry.contextBoard!.list(entry.locale).then(contextBoard => {
+          if (contextBoard === null) {finish(false, {contextBoard: null}); return;}
           finish(contextBoard.locale !== entry.locale, contextBoard.locale === entry.locale ? {contextBoard} : {});
         }).catch(() => finish(true));
       }

@@ -6,26 +6,20 @@
   min-height: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at 18% 22%, #fff 0 1px, transparent 1.5px),
-    radial-gradient(circle at 72% 36%, #fff 0 1px, transparent 1.5px),
-    radial-gradient(circle at 46% 78%, #f1d700 0 1.5px, transparent 2px),
-    radial-gradient(circle at 86% 82%, #fff 0 1px, transparent 1.5px), #000;
-  background-size:
-    83px 83px,
-    127px 127px,
-    173px 173px,
-    211px 211px,
-    100% 100%,
-    100% 100%;
+    url("../../../assets/images/starfield.svg") center / cover no-repeat,
+    radial-gradient(ellipse at 20% 15%, #10192c 0, transparent 60%),
+    linear-gradient(165deg, #050a14, #02050b 75%);
   color: #f8fbf6;
 }
 .game-content {
-  position: relative;
+  /* Anchor physical centering before fitting, including expanded RTL layouts. */
+  position: absolute;
+  top: 0;
   left: 50%;
   width: 100%;
   min-height: 100%;
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
+  grid-template-rows: auto 1fr auto auto auto;
   gap: 10px;
   padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
     max(18px, env(safe-area-inset-left));
@@ -83,7 +77,6 @@
 .game-mode-label {
   justify-self: center;
   position: relative;
-  left: -17px;
   color: #fff;
   font:
     400 clamp(20px, 5vw, 30px)/1 "Poetsen One",
@@ -109,6 +102,9 @@
 .coin-pill img {
   width: clamp(34px, 7vw, 48px);
   height: clamp(28px, 6vw, 38px);
+}
+.coin-pill strong {
+  font-variant-numeric: tabular-nums;
 }
 .game-loading {
   min-height: 520px;

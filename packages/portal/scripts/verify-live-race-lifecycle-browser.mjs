@@ -103,7 +103,7 @@ try {
    reset();const context=await browser.newContext({viewport});const a=await context.newPage(),b=await context.newPage();const errors=[];
    for(const page of [a,b])page.on('pageerror',error=>errors.push(error.message));
    await a.goto(baseUrl+'/?user=Alice');await a.getByRole('button',{name:'Start PvP match',exact:true}).click();await a.locator('.live-race-self strong').waitFor();
-   await b.goto(baseUrl+'/?user=Bob');await b.getByRole('button',{name:'Start PvP match',exact:true}).click();await a.locator('.live-race-countdown').waitFor();
+   await b.goto(baseUrl+'/?user=Bob');await b.getByRole('button',{name:'Start PvP match',exact:true}).click();await a.locator('.live-race-search-wheel[data-phase=countdown]').waitFor();
    const remaining=started-Date.now();assert.ok(remaining>3000,'Fault must land before shared countdown ends');
    await a.evaluate(skew=>{window.freezePolls=true;const original=Date.now;Date.now=()=>original()+skew;},skew);
    await new Promise(resolve=>setTimeout(resolve,250));assert.equal(await a.locator('.race-gameplay').count(),0,'Clock change must not start gameplay early');

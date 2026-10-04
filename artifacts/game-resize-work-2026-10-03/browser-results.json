@@ -1,0 +1,82 @@
+[
+  {
+    "name": "sizing-production-production",
+    "exit": 0
+  },
+  {
+    "name": "sizing-baseline-development",
+    "exit": 0
+  },
+  {
+    "name": "native-sizing-production",
+    "exit": 0
+  },
+  {
+    "name": "native-baseline-production",
+    "exit": 0
+  },
+  {
+    "name": "animation-regression-development",
+    "exit": 0
+  },
+  {
+    "name": "animation-regression-production",
+    "exit": 0
+  },
+  {
+    "name": "resources-regression-development",
+    "exit": 0
+  },
+  {
+    "name": "resources-regression-production",
+    "exit": 0
+  },
+  {
+    "name": "motion-regression-development",
+    "exit": 0
+  },
+  {
+    "name": "motion-regression-production",
+    "exit": 0
+  },
+  {
+    "name": "initialization-regression-development",
+    "exit": 0
+  },
+  {
+    "name": "initialization-regression-production",
+    "exit": 0
+  },
+  {
+    "name": "layout-regression-development",
+    "exit": 0
+  },
+  {
+    "name": "layout-regression-production",
+    "exit": 0
+  },
+  {
+    "name": "restoration-regression-development",
+    "exit": 0
+  },
+  {
+    "name": "restoration-regression-production",
+    "exit": 0
+  },
+  {
+    "name": "context-regression-development",
+    "exit": 0
+  },
+  {
+    "name": "context-regression-production",
+    "exit": 0
+  },
+  {
+    "name": "native-context-production",
+    "exit": 0
+  },
+  {
+    "name": "native-renderer-production",
+    "exit": 0
+  }
+]

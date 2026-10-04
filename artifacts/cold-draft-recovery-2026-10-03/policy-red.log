@@ -1,0 +1,44 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/pendingGuessJournal.test.ts
+  ● pending guess journal › reconciles a cold draft without losing required or other-mode work (new-session)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: null
+    Received: {"base": {"activeSlotIndex": 0, "completionAcknowledged": false, "currentLetters": ["P", "I", "A", "N", "O"], "engineSnapshot": {"attemptsUsed": 0, "gameOver": false, "guesses": [], "hasUsedContinue": false}, "guesses": [], "lastOutcome": null, "letterStates": {}, "modal": null}, "confirmedClassicIndex": 4, "draft": ["C", "L", "", "", ""], "draftActiveSlotIndex": 2, "queue": [], "riddle": {"answerLength": 5, "attemptsUsed": 0, "awaitingContinue": false, "evaluation": {"answer": "piano", "locale": "en"}, "gameMode": "classic", "hasUsedContinue": false, "riddleId": "classic-4", "sessionToken": "00000000-0000-4000-8000-000000000001", "text": "Clue"}, "scope": "player-1:2:en", "successors": [], "version": 1}
+
+       99 |       /** Exact host identity retires only an obsolete, delivery-free same-mode root draft. */
+      100 |       const reconciled = reconcileConfirmedPendingPlay(pending,current);
+    > 101 |       expect(reconciled).toBe(boundary === "new-session" || boundary === "new-riddle" ? null : pending);
+          |                          ^
+      102 |       expect(JSON.stringify(pending)).toBe(original);
+      103 |     },
+      104 |   );
+
+      at src/play/__tests__/pendingGuessJournal.test.ts:101:26
+
+  ● pending guess journal › reconciles a cold draft without losing required or other-mode work (new-riddle)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: null
+    Received: {"base": {"activeSlotIndex": 0, "completionAcknowledged": false, "currentLetters": ["P", "I", "A", "N", "O"], "engineSnapshot": {"attemptsUsed": 0, "gameOver": false, "guesses": [], "hasUsedContinue": false}, "guesses": [], "lastOutcome": null, "letterStates": {}, "modal": null}, "confirmedClassicIndex": 4, "draft": ["C", "L", "", "", ""], "draftActiveSlotIndex": 2, "queue": [], "riddle": {"answerLength": 5, "attemptsUsed": 0, "awaitingContinue": false, "evaluation": {"answer": "piano", "locale": "en"}, "gameMode": "classic", "hasUsedContinue": false, "riddleId": "classic-4", "sessionToken": "00000000-0000-4000-8000-000000000001", "text": "Clue"}, "scope": "player-1:2:en", "successors": [], "version": 1}
+
+       99 |       /** Exact host identity retires only an obsolete, delivery-free same-mode root draft. */
+      100 |       const reconciled = reconcileConfirmedPendingPlay(pending,current);
+    > 101 |       expect(reconciled).toBe(boundary === "new-session" || boundary === "new-riddle" ? null : pending);
+          |                          ^
+      102 |       expect(JSON.stringify(pending)).toBe(original);
+      103 |     },
+      104 |   );
+
+      at src/play/__tests__/pendingGuessJournal.test.ts:101:26
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 48 passed, 50 total
+Snapshots:   0 total
+Time:        0.213 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/pendingGuessJournal.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/pendingGuessJournal.test.ts

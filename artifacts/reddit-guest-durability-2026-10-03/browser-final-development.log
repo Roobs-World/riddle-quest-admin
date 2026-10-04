@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: guest play starts with unavailable storage
+
+'' !== 'PIAN'
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-durability-browser.mjs:104:124)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-durability-browser.mjs:107:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '',
+  expected: 'PIAN',
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

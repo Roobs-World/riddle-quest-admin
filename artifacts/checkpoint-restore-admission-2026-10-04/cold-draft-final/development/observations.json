@@ -1,0 +1,3128 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "native typing continues only the displayed session",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicReplaced",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "native typing continues only the displayed session",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000002",
+      "riddleId": "classic-reissued-2"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000002",
+      "riddleId": "classic-reissued-2"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicRenamed",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "native typing continues only the displayed session",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "daily-fake-1"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "daily-fake-1"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailyReplaced",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "native typing continues only the displayed session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "E",
+    "expected": "E"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "native typing continues only the displayed session",
+    "actual": "EA",
+    "expected": "EA"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "EA",
+    "expected": "EA"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "dailySame",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "native typing continues only the displayed session",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "other-mode journal input remains untouched",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "foreignMode",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "only required held guess is delivered",
+    "actual": [
+      {
+        "id": "cold-held-guess",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "expected": [
+      {
+        "id": "cold-held-guess",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "only required deliveries own a retry interval",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "queued",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "only required held hint is delivered",
+    "actual": [
+      {
+        "id": "cold-held-hint",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "expected": [
+      {
+        "id": "cold-held-hint",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "only required deliveries own a retry interval",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "paid",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "native typing continues only the displayed session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "successor",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "E",
+    "expected": "E"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "mode handoff does not transfer the previous draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "mode handoff keeps the previous durable input until a new submission",
+    "actual": [
+      "E",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "E",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "new mode submission is delivered",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "previous in-memory draft does not block the new mode submission",
+    "actual": {
+      "mode": "classic",
+      "session": "00000000-0000-4000-8000-000000000002"
+    },
+    "expected": {
+      "mode": "classic",
+      "session": "00000000-0000-4000-8000-000000000002"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "Classic fallback confirms exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "completedDailyFallback",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "native typing continues only the displayed session",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "native typing continues only the displayed session",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000002",
+      "riddleId": "classic-reissued-2"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000002",
+      "riddleId": "classic-reissued-2"
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "native typing continues only the displayed session",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "daily-fake-1"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "daily-fake-1"
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "native typing continues only the displayed session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "E",
+    "expected": "E"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "native typing continues only the displayed session",
+    "actual": "EA",
+    "expected": "EA"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "EA",
+    "expected": "EA"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "native typing continues only the displayed session",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "other-mode journal input remains untouched",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "only required held guess is delivered",
+    "actual": [
+      {
+        "id": "cold-held-guess",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "expected": [
+      {
+        "id": "cold-held-guess",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "only required deliveries own a retry interval",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "queued",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "only required held hint is delivered",
+    "actual": [
+      {
+        "id": "cold-held-hint",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "expected": [
+      {
+        "id": "cold-held-hint",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "only required deliveries own a retry interval",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "paid",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "native typing continues only the displayed session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "successor",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "E",
+    "expected": "E"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "mode handoff does not transfer the previous draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "mode handoff keeps the previous durable input until a new submission",
+    "actual": [
+      "E",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "E",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "new mode submission is delivered",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "previous in-memory draft does not block the new mode submission",
+    "actual": {
+      "mode": "classic",
+      "session": "00000000-0000-4000-8000-000000000002"
+    },
+    "expected": {
+      "mode": "classic",
+      "session": "00000000-0000-4000-8000-000000000002"
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "Classic fallback confirms exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "native typing continues only the displayed session",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "classic-fake-2"
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicReplaced",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "native typing continues only the displayed session",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000002",
+      "riddleId": "classic-reissued-2"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000002",
+      "riddleId": "classic-reissued-2"
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicRenamed",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "superseded draft journal is retired on cold startup",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "native typing continues only the displayed session",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "new submission belongs to the host-issued session",
+    "actual": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "daily-fake-1"
+    },
+    "expected": {
+      "session": "00000000-0000-4000-8000-000000000099",
+      "riddleId": "daily-fake-1"
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailyReplaced",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "native typing continues only the displayed session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "classicSame",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "E",
+    "expected": "E"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "native typing continues only the displayed session",
+    "actual": "EA",
+    "expected": "EA"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "EA",
+    "expected": "EA"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "dailySame",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "native typing continues only the displayed session",
+    "actual": "A",
+    "expected": "A"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "other-mode journal input remains untouched",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "foreignMode",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "only required held guess is delivered",
+    "actual": [
+      {
+        "id": "cold-held-guess",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "expected": [
+      {
+        "id": "cold-held-guess",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "only required deliveries own a retry interval",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "queued",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "only required held hint is delivered",
+    "actual": [
+      {
+        "id": "cold-held-hint",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "expected": [
+      {
+        "id": "cold-held-hint",
+        "session": "00000000-0000-4000-8000-000000000002"
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "only required deliveries own a retry interval",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "paid",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "native typing continues only the displayed session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "successor",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "E",
+    "expected": "E"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "mode handoff does not transfer the previous draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "mode handoff keeps the previous durable input until a new submission",
+    "actual": [
+      "E",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "E",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "new mode submission is delivered",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "previous in-memory draft does not block the new mode submission",
+    "actual": {
+      "mode": "classic",
+      "session": "00000000-0000-4000-8000-000000000002"
+    },
+    "expected": {
+      "mode": "classic",
+      "session": "00000000-0000-4000-8000-000000000002"
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "Classic fallback confirms exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "variant": "completedDailyFallback",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

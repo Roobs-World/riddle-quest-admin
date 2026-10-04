@@ -1,0 +1,437 @@
+[
+  {
+    "stage": "desktop",
+    "width": 1280,
+    "height": 844,
+    "values": [
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 45.21502685546875,
+        "fits": true,
+        "scale": "0.9420",
+        "contentHeight": 828,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      }
+    ]
+  },
+  {
+    "stage": "short",
+    "width": 500,
+    "height": 494,
+    "values": [
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      }
+    ]
+  },
+  {
+    "stage": "landscape",
+    "width": 844,
+    "height": 390,
+    "values": [
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 41.22833251953125,
+        "fits": true,
+        "scale": "0.9816",
+        "contentHeight": 374,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      }
+    ]
+  },
+  {
+    "stage": "tall",
+    "width": 500,
+    "height": 720,
+    "values": [
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 40.8609619140625,
+        "fits": true,
+        "scale": "0.8513",
+        "contentHeight": 704.0133056640625,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      }
+    ]
+  },
+  {
+    "stage": "short-again",
+    "width": 500,
+    "height": 494,
+    "values": [
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      },
+      {
+        "keyHeight": 32.27001953125,
+        "fits": true,
+        "scale": "0.6723",
+        "contentHeight": 478,
+        "transitionDuration": "0s",
+        "transitionDelay": "0s",
+        "systemReduced": true,
+        "appReduced": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: one committed unit respects initially available answer slots
+
+'romz' !== 'rome'
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-playable-text-capacity-browser.mjs:36:113)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-playable-text-capacity-browser.mjs:64:4 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'romz',
+  expected: 'rome',
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

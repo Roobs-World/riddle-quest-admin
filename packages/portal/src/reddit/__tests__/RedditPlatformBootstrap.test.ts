@@ -171,7 +171,7 @@ it("creates transient guest storage without exposing optional platform capabilit
   expect(progress).toEqual([20, 80, 100]);
 });
 
-it("keeps guest state in memory when browser storage is unavailable", async () => {
+it("keeps guest state in memory while rejecting false durability acknowledgement", async () => {
   global.fetch = jest.fn(() => reply({ok: true, authenticated: false}));
   Object.defineProperty(window, "localStorage", {
     configurable: true,
@@ -186,7 +186,7 @@ it("keeps guest state in memory when browser storage is unavailable", async () =
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
 
-    await expect(result.value.storage.writePreferences({locale: "ar", muted: true})).resolves.toBeUndefined();
+    await expect(result.value.storage.writePreferences({locale: "ar", muted: true})).rejects.toThrow("reddit-guest-storage-unavailable");
     await expect(result.value.storage.readPreferences()).resolves.toEqual({locale: "ar", muted: true});
     await expect(result.value.storage.clear()).resolves.toBeUndefined();
     await expect(result.value.storage.readPreferences()).resolves.toEqual({});
@@ -567,4 +567,48 @@ it("preserves a valid guest solo snapshot across an expanded-view reload", async
     profile: {coins: 0, xp: 0, gamesPlayed: 2, wins: 1, classicIndex: 2},
     activeGame: null,
   });
+});
+it("preserves newer unsaved guest fields while an older stored record remains readable", async () => {
+  global.fetch = jest.fn(() => reply({ok: true, authenticated: false}));
+  /** Public guest bootstrap supplies the actual local adapter. */
+  const result = await new RedditPlatformBootstrap().initialize(() => undefined);
+  if (result.status !== "success") throw new Error("guest-startup-failed");
+  /** Older acknowledged progress remains readable during the injected quota failure. */
+  const oldProfile = {username: "Guest Solver", coins: 0, level: 1, xp: 0, winStreak: 0,
+    gamesPlayed: 1, wins: 0, achievements: [], classicIndex: 1};
+  await result.value.storage.writePreferences({locale: "en", muted: false});
+  await result.value.storage.writePlayerData({schemaVersion: 1, updatedAt: 1, profile: oldProfile, activeGame: null});
+  /** Writes fail independently of reads, reproducing a full localStorage quota. */
+  const blockedWrite = jest.spyOn(localStorage, "setItem").mockImplementation(() => {throw new DOMException("Quota full", "QuotaExceededError");});
+  /** Accepted new progress must not be overwritten by the older durable snapshot. */
+  const next = {schemaVersion: 1 as const, updatedAt: 2, profile: {...oldProfile, gamesPlayed: 2, wins: 1, classicIndex: 2}, activeGame: null};
+  await result.value.storage.writePlayerData(next).catch(() => undefined);
+  await result.value.storage.writePreferences({locale: "ar", muted: true}).catch(() => undefined);
+  await expect(result.value.storage.readPlayerData()).resolves.toMatchObject({profile: {classicIndex: 2, gamesPlayed: 2, wins: 1}});
+  await expect(result.value.storage.readPreferences()).resolves.toEqual({locale: "ar", muted: true});
+  expect(JSON.parse(values.get("riddleQuestRedditGuestV1")!).playerData.profile.classicIndex).toBe(1);
+  blockedWrite.mockRestore();
+  await result.value.storage.writePreferences({locale: "ar", muted: true});
+  /** A new adapter sees only the complete successfully recovered local record. */
+  const reloaded = await new RedditPlatformBootstrap().initialize(() => undefined);
+  if (reloaded.status !== "success") throw new Error("guest-reload-failed");
+  await expect(reloaded.value.storage.readPlayerData()).resolves.toMatchObject({profile: {classicIndex: 2, gamesPlayed: 2, wins: 1}});
+  await expect(reloaded.value.storage.readPreferences()).resolves.toEqual({locale: "ar", muted: true});
+});
+
+it("does not revive an older guest record after best-effort cleanup cannot remove it", async () => {
+  global.fetch = jest.fn(() => reply({ok: true, authenticated: false}));
+  /** The public adapter owns local guest storage, including login cleanup. */
+  const result = await new RedditPlatformBootstrap().initialize(() => undefined);
+  if (result.status !== "success") throw new Error("guest-startup-failed");
+  await result.value.storage.writePreferences({locale: "ar", muted: true});
+  /** Browser policy may reject removals while still exposing the older record to reads. */
+  const blockedRemoval = jest.spyOn(localStorage, "removeItem").mockImplementation(() => {throw new DOMException("Storage blocked", "SecurityError");});
+  await expect(result.value.storage.clear()).resolves.toBeUndefined();
+  expect(JSON.parse(values.get("riddleQuestRedditGuestV1")!).preferences.locale).toBe("ar");
+  await expect(result.value.storage.readPreferences()).resolves.toEqual({});
+  await expect(result.value.storage.readPlayerData()).resolves.toBeNull();
+  blockedRemoval.mockRestore();
+  await result.value.storage.writePreferences({locale: "en"});
+  expect(JSON.parse(values.get("riddleQuestRedditGuestV1")!)).toEqual({preferences: {locale: "en"}, playerData: null});
 });

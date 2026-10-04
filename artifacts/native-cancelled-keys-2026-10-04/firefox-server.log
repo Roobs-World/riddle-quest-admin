@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+{"url":"http://127.0.0.1:45981","scratch":"/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/native-cancelled-keys-bJBe6u","mode":"production"}
+{
+  "mode": "production",
+  "checks": 0,
+  "failures": []
+}

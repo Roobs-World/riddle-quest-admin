@@ -17,6 +17,8 @@ const refs: Array<{
 }> = [];
 /** Current ref position follows the hook call order. */
 let refIndex = 0;
+/** Captures each reducer-facing snapshot, including temporary restored-profile projections. */
+const mockSetSnapshot = jest.fn();
 
 jest.mock("react", () => ({
   useRef: (initial: unknown) => {
@@ -26,7 +28,7 @@ jest.mock("react", () => ({
   },
   useCallback: <T>(callback: T) => callback,
   useMemo: <T>(factory: () => T) => factory(),
-  useState: <T>(initial: T) => [initial, jest.fn()],
+  useState: <T>(initial: T) => [initial, mockSetSnapshot],
   useEffect: (effect: () => void | (() => void), dependencies: readonly unknown[]) => {
     /** Selects the retained effect for this hook call. */
     const index = effectIndex++;
@@ -43,6 +45,41 @@ import {useHostAuthSession} from "../useHostAuthSession";
 beforeEach(() => {
   effects.splice(0).forEach((effect) => effect.cleanup?.());
   effectIndex = 0; refIndex = 0; refs.splice(0);
+  mockSetSnapshot.mockClear();
+});
+
+it("uses the saved profile only for its initial account while the server profile loads", () => {
+  /** Account transitions may arrive before the replacement's remote profile. */
+  let listener: (snapshot: AuthSnapshot) => void = () => {};
+  /** Initial target storage belongs to the first account selected by this adapter. */
+  const auth = {subscribe: (next: typeof listener) => {
+    listener = next;next({user: {uid: "Alice", isAnonymous: false}, profile: null});return () => {};
+  }};
+  useHostAuthSession({services: {auth}, initialProfile: {coins: 300}, postToGame: jest.fn()});
+  expect(mockSetSnapshot).toHaveBeenLastCalledWith({user: {uid: "Alice", isAnonymous: false}, profile: {coins: 300}});
+  listener({user: {uid: "Bob", isAnonymous: false}, profile: null});
+  expect(mockSetSnapshot).toHaveBeenLastCalledWith({user: {uid: "Bob", isAnonymous: false}, profile: null});
+});
+
+it("retires captured callbacks when the same UID is recreated with a new generation", () => {
+  /** Account creation generation distinguishes the original and replacement UID visits. */
+  let listener: (snapshot: AuthSnapshot) => void = () => {};
+  /** First identity notification binds the saved profile and ownership to generation one. */
+  const auth = {subscribe: (next: typeof listener) => {
+    listener = next;next({user: {uid: "Alice", isAnonymous: false, accountGeneration: 1}, profile: null});return () => {};
+  }};
+  /** Target storage is stable across unrelated parent renders. */
+  const initialProfile = {coins: 300};
+  useHostAuthSession({services: {auth}, initialProfile, postToGame: jest.fn()});
+  effectIndex = 0;refIndex = 0;
+  /** Rendered host can capture the current account visit before replacement. */
+  const host = useHostAuthSession({services: {auth}, initialProfile, postToGame: jest.fn()});
+  /** Captured callback must become invalid even though the UID is unchanged. */
+  const originalVisit = host.captureAccount("Alice");
+  expect(originalVisit()).toBe(true);
+  listener({user: {uid: "Alice", isAnonymous: false, accountGeneration: 2}, profile: null});
+  expect(originalVisit()).toBe(false);
+  expect(mockSetSnapshot).toHaveBeenLastCalledWith({user: {uid: "Alice", isAnonymous: false, accountGeneration: 2}, profile: null});
 });
 
 it("keeps one auth subscription when parent renders replace the commerce/service wrapper", () => {

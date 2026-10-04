@@ -1,0 +1,57 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/reddit/__tests__/RedditPlatformBootstrap.test.ts
+  ● keeps guest state in memory while rejecting false durability acknowledgement
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+      187 |     if (result.status !== "success") return;
+      188 |
+    > 189 |     await expect(result.value.storage.writePreferences({locale: "ar", muted: true})).rejects.toThrow("reddit-guest-storage-unavailable");
+          |           ^
+      190 |     await expect(result.value.storage.readPreferences()).resolves.toEqual({locale: "ar", muted: true});
+      191 |     await expect(result.value.storage.clear()).resolves.toBeUndefined();
+      192 |     await expect(result.value.storage.readPreferences()).resolves.toEqual({});
+
+      at expect (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at Object.<anonymous> (src/reddit/__tests__/RedditPlatformBootstrap.test.ts:189:11)
+
+  ● preserves newer unsaved guest fields while an older stored record remains readable
+
+    expect(received).resolves.toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+        "profile": Object {
+    -     "classicIndex": 2,
+    -     "gamesPlayed": 2,
+    -     "wins": 1,
+    +     "classicIndex": 1,
+    +     "gamesPlayed": 1,
+    +     "wins": 0,
+        },
+      }
+
+      587 |   await result.value.storage.writePlayerData(next).catch(() => undefined);
+      588 |   await result.value.storage.writePreferences({locale: "ar", muted: true}).catch(() => undefined);
+    > 589 |   await expect(result.value.storage.readPlayerData()).resolves.toMatchObject({profile: {classicIndex: 2, gamesPlayed: 2, wins: 1}});
+          |                                                                ^
+      590 |   await expect(result.value.storage.readPreferences()).resolves.toEqual({locale: "ar", muted: true});
+      591 |   expect(JSON.parse(values.get("riddleQuestRedditGuestV1")!).playerData.profile.classicIndex).toBe(1);
+      592 |   blockedWrite.mockRestore();
+
+      at Object.toMatchObject (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2140:20)
+      at Object.<anonymous> (src/reddit/__tests__/RedditPlatformBootstrap.test.ts:589:64)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 31 passed, 33 total
+Snapshots:   0 total
+Time:        0.465 s
+Ran all test suites matching src/reddit/__tests__/RedditPlatformBootstrap.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/reddit/__tests__/RedditPlatformBootstrap.test.ts

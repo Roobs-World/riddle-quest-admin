@@ -24,10 +24,12 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
   /** Requests leaderboard. */
   const requestLeaderboard = useCallback(
     (leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins") => {
-      dispatch({type: "leaderboardRequested", leaderboardType});
+      /** Correlates ranking success or failure with this exact selection and retry. */
+      const requestId = createRequestId("leaderboard");
+      dispatch({type: "leaderboardRequested", leaderboardType, requestId});
       postToHost({
         type: "game:loadLeaderboard",
-        requestId: createRequestId("leaderboard"),
+        requestId,
         payload: {leaderboardType},
       });
     },

@@ -69,6 +69,57 @@ const createSdk = () => {
 };
 
 describe("FacebookPlatformBootstrap", () => {
+  test("observes native context successes and retires callbacks without treating cancellation as a switch", async () => {
+    /** Controlled native-event boundary for this adapter regression. */
+    const harness = createSdk();
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync"];
+    harness.sdk.context = {getID: () => "thread-a", getType: () => "THREAD", chooseAsync: async () => undefined};
+    /** Controlled native-event boundary for this adapter regression. */
+    let success!: (contextId: string | null) => void, failure!: (error: unknown) => void;
+    harness.sdk.onContextChange = (accepted, rejected) => {success = accepted; failure = rejected;};
+    /** Controlled native-event boundary for this adapter regression. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+    if (result.status !== "success") throw new Error("bootstrap failed");
+    /** Controlled native-event boundary for this adapter regression. */
+    const changed = jest.fn();
+    /** Controlled native-event boundary for this adapter regression. */
+    const stop = result.value.capabilities.nativeSocial?.onContextChange?.(changed);
+    expect(stop).toEqual(expect.any(Function));
+    success("thread-b"); success(null); failure({code: "USER_CANCELLED"});
+    expect(changed).toHaveBeenCalledTimes(2);
+    stop!(); success("thread-c");
+    expect(changed).toHaveBeenCalledTimes(2);
+  });
+
+  test.each(["absent", "unadvertised", "wrong-namespace"])("retains supported context selection when matchmaking is %s", async mode => {
+    /** Host capability combinations use the actual bootstrap rather than a replacement adapter. */
+    const harness = createSdk();
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", ...(mode === "wrong-namespace" ? ["context.matchPlayerAsync"] : [])];
+    if (mode === "unadvertised") harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
+    harness.sdk.context = {getID: () => "chooser-only", getType: () => "GROUP", chooseAsync: jest.fn(async () => undefined)};
+    /** Context selection must not depend on an unrelated native matchmaking API. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+    if (result.status !== "success") throw new Error("bootstrap failed");
+    expect(result.value.capabilities.nativeSocial).toBeDefined();
+    await expect(result.value.capabilities.nativeSocial?.chooseContext()).resolves.toMatchObject({status: "success", value: {contextId: "chooser-only", contextType: "GROUP"}});
+    expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
+    await expect(result.value.capabilities.nativeSocial?.matchPlayer("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
+    if (harness.sdk.matchPlayerAsync) expect(harness.sdk.matchPlayerAsync).not.toHaveBeenCalled();
+  });
+
+  test("does not expose a chooser method that the host advertises without implementing", async () => {
+    /** Runtime host availability must include a callable method as well as its advertised name. */
+    const harness = createSdk();
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync"];
+    harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
+    harness.sdk.context = {getID: () => "thread-1", getType: () => "THREAD", chooseAsync: jest.fn(async () => undefined)};
+    Object.defineProperty(harness.sdk.context, "chooseAsync", {value: undefined});
+    /** A malformed provider surface must not render an unusable chooser. */
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+    if (result.status !== "success") throw new Error("bootstrap failed");
+    expect(result.value.capabilities.nativeSocial).toBeUndefined();
+  });
+
   test("does not start context selection or native matching over an active result ad", async () => {
     /** Every provider adapter receives this exact SDK instance. */
     const harness = createSdk();
@@ -309,7 +360,7 @@ describe("FacebookPlatformBootstrap", () => {
     await expect(boundedResult.value.storage.readPlayerData()).resolves.toEqual({schemaVersion: 1, updatedAt: 42});
   });
 
-  test("exposes native social only with both SDK APIs and returns validated context metadata", async () => {
+  test("exposes supported context and matchmaking APIs with validated context metadata", async () => {
     /** Provides harness behavior. */
     const harness = createSdk();
     /** Provides context id behavior. */
@@ -481,7 +532,8 @@ describe("FacebookPlatformBootstrap", () => {
     /** Bootstrap result exposing target-specific capabilities. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     if (result.status !== "success") throw new Error("bootstrap failed");
-    expect(result.value.capabilities.nativeSocial).toBeUndefined();
+    expect(result.value.capabilities.nativeSocial).toBeDefined();
+    await expect(result.value.capabilities.nativeSocial?.matchPlayer()).resolves.toMatchObject({status: "unavailable"});
   });
 
   test("fails closed for invalid identity and retryably for SDK failures", async () => {

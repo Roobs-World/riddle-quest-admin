@@ -1,0 +1,330 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "stable adapter keeps the native editor and focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "stable adapter preserves the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "ordinary profile updates do not restart delivery",
+    "actual": {
+      "requests": 0,
+      "subscriptions": 0,
+      "joins": 0
+    },
+    "expected": {
+      "requests": 0,
+      "subscriptions": 0,
+      "joins": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "stable journey advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [
+      {
+        "generation": 1,
+        "owner": "Owner",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [
+      {
+        "ownerId": "Owner"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [
+      {
+        "generation": 1,
+        "owner": "Owner",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [
+      {
+        "ownerId": "Owner"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "old seat retires under its original provider once",
+    "actual": [],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "retirement retries share one key",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "old provider owns a native draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement retires the selected journey before a fresh explicit start",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement removes the old subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement never uses the retired ticket through a new adapter",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement cannot deliver a retired result to the current profile",
+    "actual": [
+      {
+        "generation": 1,
+        "owner": "Owner",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "replacement cannot emit a retired completion event",
+    "actual": [
+      {
+        "ownerId": "Owner"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "late retired receipt cannot grant a result",
+    "actual": [
+      {
+        "generation": 1,
+        "owner": "Owner",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "late retired receipt cannot notify completion",
+    "actual": [
+      {
+        "ownerId": "Owner"
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "late retired leave cannot close the replacement journey",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "old seat retires under its original provider once",
+    "actual": [],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "retirement retries share one key",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

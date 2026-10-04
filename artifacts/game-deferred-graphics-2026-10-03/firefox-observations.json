@@ -1,0 +1,258 @@
+{
+  "checks": [
+    {
+      "name": "Eligible puzzle has one deferred load",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Native keys enter PIA before download",
+      "actual": "PIA",
+      "expected": "PIA"
+    },
+    {
+      "name": "Pending download leaves PIAN usable",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "Pending download owns no renderer",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Actual lazy native module has not evaluated",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Lazy module evaluates while multiplayer is open",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Downloaded scene creates no hidden renderer",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Downloaded scene allocates no hidden resources",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Downloaded scene requests no texture images",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Downloaded scene creates no resize observer",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Downloaded scene has no frame chain",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Downloaded scene has no canvas",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Pending setup owns one visibility subscription",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Retained visibility callback cannot construct behind race",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Closing race preserves blocked host pause",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Host pause retains zero graphics resources",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Visibility alone cannot bypass host pause",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "First eligible deferred setup constructs once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Deferred setup failure returns exactly three resources",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "name": "Deferred setup failure releases all returned resources",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Deferred setup failure disposes renderer once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Deferred setup failure releases context once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Deferred setup failure attaches no canvas",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Deferred setup failure owns no visibility subscription",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Deferred setup failure owns no frames",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Deferred setup failure reports once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Resume cannot retry failed construction",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Retained callbacks cannot repeat diagnostic",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Failed setup preserves draft",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "Failed setup preserves authoritative token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "name": "Reduced motion removes retired scene mount",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Unmounted setup cannot reconstruct",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Re-enabled scene constructs one fresh owner",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "Native lazy module is reused",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Healthy scene mounts one canvas",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Healthy Three scene draws",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Healthy scene owns one frame chain",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Final unmount releases all resources",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Final unmount releases all visibility subscriptions",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Final unmount releases frame chain",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Resource identities are never disposed twice",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "Retirement creates no duplicate diagnostic",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "No browser callback error escapes",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "No promise rejection escapes",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "Native submit sends one answer after deferred failure",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Native submit completes once after deferred failure",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "Completion has no unhandled promise error",
+      "actual": [],
+      "expected": []
+    }
+  ],
+  "probe": {
+    "solarImports": 1,
+    "draws": 1,
+    "disposals": 2,
+    "constructors": 2,
+    "errors": [
+      {
+        "component": "solar_system",
+        "operation": "initialize_scene",
+        "error": "Error: injected MeshBasicMaterial setup failure"
+      }
+    ],
+    "unhandled": [],
+    "windowErrors": [],
+    "guesses": 1,
+    "completions": 1
+  },
+  "remainingResources": 0,
+  "token": "00000000-0000-4000-8000-000000000001"
+}

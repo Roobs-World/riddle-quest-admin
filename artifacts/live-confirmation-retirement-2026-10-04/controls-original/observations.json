@@ -1,0 +1,652 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "real invitation acceptance keeps its exact selector",
+    "actual": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "confirmation is issued once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "held confirmation owns its command deadline",
+    "actual": [
+      10000
+    ],
+    "expected": [
+      10000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "retirement releases the confirmation deadline",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "the retired adapter receipt remains held",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "late confirmation cannot revive unavailable presentation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "late confirmation preserves the new native editor and focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "late confirmation preserves the replacement draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "replacement journey accepts one fresh answer",
+    "actual": [
+      "piano"
+    ],
+    "expected": [
+      "piano"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no delivery deadline remains",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "unaccepted invitation never creates a leave",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "confirmation never emits completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "confirmation never grants a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "real invitation acceptance keeps its exact selector",
+    "actual": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "confirmation is issued once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "held confirmation owns its command deadline",
+    "actual": [
+      10000
+    ],
+    "expected": [
+      10000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "retirement releases the confirmation deadline",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "the retired adapter receipt remains held",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "late confirmation cannot revive unavailable presentation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "late confirmation preserves the new native editor and focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "late confirmation preserves the replacement draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "replacement journey accepts one fresh answer",
+    "actual": [
+      "piano"
+    ],
+    "expected": [
+      "piano"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no delivery deadline remains",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "unaccepted invitation never creates a leave",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "confirmation never emits completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "confirmation never grants a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "real invitation acceptance keeps its exact selector",
+    "actual": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "confirmation is issued once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "held confirmation owns its command deadline",
+    "actual": [
+      10000
+    ],
+    "expected": [
+      10000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "ordinary parent updates preserve the active confirmation",
+    "actual": {
+      "held": true,
+      "deadlines": 1,
+      "confirmations": 1,
+      "joins": 1
+    },
+    "expected": {
+      "held": true,
+      "deadlines": 1,
+      "confirmations": 1,
+      "joins": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "matching unavailable confirmation remains terminal",
+    "actual": "This invitation has expired.",
+    "expected": "This invitation has expired."
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "terminal confirmation does not retry joining",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no delivery deadline remains",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "unaccepted invitation never creates a leave",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "confirmation never emits completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "confirmation never grants a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "real invitation acceptance keeps its exact selector",
+    "actual": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "confirmation is issued once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "held confirmation owns its command deadline",
+    "actual": [
+      10000
+    ],
+    "expected": [
+      10000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "matching unavailable confirmation remains terminal",
+    "actual": "This invitation has expired.",
+    "expected": "This invitation has expired."
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "terminal confirmation does not retry joining",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "no delivery deadline remains",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "unaccepted invitation never creates a leave",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "confirmation never emits completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "confirmation never grants a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "real invitation acceptance keeps its exact selector",
+    "actual": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "confirmation is issued once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "held confirmation owns its command deadline",
+    "actual": [
+      10000
+    ],
+    "expected": [
+      10000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "unconfirmed unavailability remains retryable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "confirmation recovery remains playable",
+    "actual": [
+      "piano"
+    ],
+    "expected": [
+      "piano"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "no delivery deadline remains",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "unaccepted invitation never creates a leave",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "confirmation never emits completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "confirmation never grants a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "available",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "real invitation acceptance keeps its exact selector",
+    "actual": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "confirmation is issued once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "held confirmation owns its command deadline",
+    "actual": [
+      10000
+    ],
+    "expected": [
+      10000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "unconfirmed unavailability remains retryable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "confirmation recovery remains playable",
+    "actual": [
+      "piano"
+    ],
+    "expected": [
+      "piano"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "no delivery deadline remains",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "unaccepted invitation never creates a leave",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "confirmation never emits completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "confirmation never grants a result",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "invalid",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

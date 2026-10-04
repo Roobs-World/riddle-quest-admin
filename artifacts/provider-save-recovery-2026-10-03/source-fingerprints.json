@@ -1,0 +1,50 @@
+[
+  {
+    "file": "packages/portal/src/platform/PlayerProjectionPersistence.ts",
+    "sha256": "c66dd67cd7c226654408c8f18ab80493b11844c7bc8d8c9ea37d1328dc7b0a73"
+  },
+  {
+    "file": "packages/portal/src/platform/usePlayerProjectionRecovery.ts",
+    "sha256": "ff549a648dda6b0ebfe15c9ad8675b3360727d680bc837e0f8ea068346376964"
+  },
+  {
+    "file": "packages/portal/src/facebook/createFacebookLifecycle.ts",
+    "sha256": "7c494cbcd211f4b1fcae72fb527ff95c4003700e323f84c413f2f469aa95ce6f"
+  },
+  {
+    "file": "packages/portal/src/facebook/FacebookPlatformBootstrap.ts",
+    "sha256": "e2175b7e820959c9f74cae78fe8e6f82e5c519578c32368205e36cd9286b20f0"
+  },
+  {
+    "file": "packages/portal/src/facebook/FacebookPlatformEntry.tsx",
+    "sha256": "8a927e73895e2ce93b79b728e66abfd9512ddf772732a0148107ecb6c3eb76b1"
+  },
+  {
+    "file": "packages/portal/src/reddit/RedditPlatformEntry.tsx",
+    "sha256": "10e5d86238678239e48491fffa5549af76c3a8bebc38f938c1655bd56d654449"
+  },
+  {
+    "file": "packages/portal/src/platform/__tests__/PlayerProjectionRecovery.test.ts",
+    "sha256": "afcc7b81677b927b972bfabb74cbcf8c634122656d25390d2a285fe0e2b3ef3d"
+  },
+  {
+    "file": "packages/portal/src/facebook/__tests__/createFacebookLifecycle.test.ts",
+    "sha256": "16b71d96204e174ce3e31750526ec5018b419328647314fcfffe247b0297bd11"
+  },
+  {
+    "file": "packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+    "sha256": "20881225c1bddc1995976dfd752169a1e066962e2d5891a0ccd471cacd5a35b6"
+  },
+  {
+    "file": "packages/portal/src/reddit/__tests__/redditBrowser.jest-playwright.test.ts",
+    "sha256": "be23726710cd8547513dcd2ac5d096c0702b13072b843865e2ae40f94cb3bf18"
+  },
+  {
+    "file": "packages/portal/scripts/verify-provider-save-recovery-browser.mjs",
+    "sha256": "b1380bb423a7ccc6786f039c9e6171d959da921cc6e9faef870d6a9c051ed0d5"
+  },
+  {
+    "file": "packages/portal/package.json",
+    "sha256": "809aa8441108bb2d32ca149edd9313d8e96cfd7d0a748610071f22375e43d230"
+  }
+]

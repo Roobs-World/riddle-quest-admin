@@ -1,0 +1,179 @@
+{
+  "verified": true,
+  "viewport": {
+    "width": 390,
+    "height": 568
+  },
+  "notes": "Classic selection, rejected characters, empty Backspaces, active-slot selection, genuine cursor changes, ordinary typing, repeated letter and Enter used native Firefox MCP. Only resetting fixture counters was injected. Counters are private build instrumentation and do not establish production latency.",
+  "steps": [
+    {
+      "name": "unchanged-ff-rejected",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"clones\": 0,\n  \"renders\": 0,\n  \"draft\": \"\",\n  \"saves\": 1,\n  \"nativeValue\": \"\"\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "clones": 0,
+        "renders": 0,
+        "draft": "",
+        "saves": 1,
+        "nativeValue": ""
+      },
+      "expected": {
+        "clones": 0,
+        "renders": 0,
+        "draft": "",
+        "saves": 1,
+        "nativeValue": ""
+      }
+    },
+    {
+      "name": "unchanged-ff-backspace",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"clones\": 0,\n  \"renders\": 0,\n  \"draft\": \"\",\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "clones": 0,
+        "renders": 0,
+        "draft": "",
+        "saves": 1
+      },
+      "expected": {
+        "clones": 0,
+        "renders": 0,
+        "draft": "",
+        "saves": 1
+      }
+    },
+    {
+      "name": "unchanged-ff-same-slot",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"clones\": 0,\n  \"renders\": 0,\n  \"cursor\": 0,\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "clones": 0,
+        "renders": 0,
+        "cursor": 0,
+        "saves": 1
+      },
+      "expected": {
+        "clones": 0,
+        "renders": 0,
+        "cursor": 0,
+        "saves": 1
+      }
+    },
+    {
+      "name": "unchanged-ff-cursor",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"clones\": 1,\n  \"renders\": 1,\n  \"cursor\": 1,\n  \"saves\": 1\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "clones": 1,
+        "renders": 1,
+        "cursor": 1,
+        "saves": 1
+      },
+      "expected": {
+        "clones": 1,
+        "renders": 1,
+        "cursor": 1,
+        "saves": 1
+      }
+    },
+    {
+      "name": "unchanged-ff-typed",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"clones\": 6,\n  \"renders\": 6,\n  \"draft\": \"rome\",\n  \"saves\": 1,\n  \"nativeValue\": \"\"\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "clones": 6,
+        "renders": 6,
+        "draft": "rome",
+        "saves": 1,
+        "nativeValue": ""
+      },
+      "expected": {
+        "clones": 6,
+        "renders": 6,
+        "draft": "rome",
+        "saves": 1,
+        "nativeValue": ""
+      }
+    },
+    {
+      "name": "unchanged-ff-same-letter",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"clones\": 0,\n  \"renders\": 0,\n  \"draft\": \"rome\",\n  \"saves\": 1,\n  \"nativeValue\": \"\"\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "clones": 0,
+        "renders": 0,
+        "draft": "rome",
+        "saves": 1,
+        "nativeValue": ""
+      },
+      "expected": {
+        "clones": 0,
+        "renders": 0,
+        "draft": "rome",
+        "saves": 1,
+        "nativeValue": ""
+      }
+    },
+    {
+      "name": "unchanged-ff-win",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"wins\": 1,\n  \"saves\": 2,\n  \"results\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "wins": 1,
+        "saves": 2,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "wins": 1,
+        "saves": 2,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      }
+    }
+  ]
+}

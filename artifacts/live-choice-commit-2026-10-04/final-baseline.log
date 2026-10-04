@@ -1,0 +1,141 @@
+{
+  "mode": "production",
+  "checks": 339,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "speculative",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "abandon",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "accept-before-commit",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "speculative",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "abandon",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "accept-before-commit",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "speculative",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "abandon",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "accept-before-commit",
+      "name": "only committed chooser ownership may create its reserved seat",
+      "actual": [],
+      "expected": [
+        {
+          "generation": 1,
+          "audience": true,
+          "categoryId": "mixed",
+          "createChallenge": true
+        }
+      ]
+    }
+  ]
+}

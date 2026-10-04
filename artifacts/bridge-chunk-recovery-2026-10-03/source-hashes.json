@@ -1,0 +1,11 @@
+{
+  "packages/portal/src/play/bridgeRouter.ts": "748ee58968d9eda04d72f4240e783d3883698517c99e214ae01ce2bab101ea1e",
+  "packages/portal/src/play/useHostBridgeLifecycle.ts": "427cc7a3b947c12bdf6f103d9fccf84bc722fe4559730027f12ee513d1b12e23",
+  "packages/portal/src/play/hostMessageHandlers.ts": "46f5b4d70e14479dde23f1b931cbbb92a11b179cfd3f9cdc740993a777d6a4c7",
+  "packages/portal/src/play/BridgeStartupRecovery.tsx": "10c736f40c7287961718eda8038a7955f98c587d50790f624d70df4cb859dad3",
+  "packages/portal/src/play/PlayHostApp.tsx": "240855c6a9ab5ecb4b08a7ed0f0abff2c4212ea9e9a96f73b99ce0e70c206d4c",
+  "packages/portal/src/styles.foundation.css": "d71344c1cc87dbd771a36b8c9dafef0fea4521841c649cecc774d1e3b39694db",
+  "packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs": "e34b991d25bde581ce382401a06d5ed18e362d3480e6596cc6798917a2c9ebbb",
+  "packages/portal/src/play/__tests__/bridgeParserLoadError.test.ts": "94250804e20be14807b4d75820eb0b65ed6e9f105e484b9d4920210e2535f04e",
+  "packages/portal/package.json": "a7151a31d228208ded44a6306bed180c92a80f01c13264850011c055c7381a9f"
+}

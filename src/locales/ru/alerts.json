@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Последовательность прервана",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Нет доступных товаров",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Приложению не удалось завершить загрузку загадок. Пожалуйста, проверьте подключение и повторите попытку.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "База данных Riddle недоступна"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "База данных Riddle недоступна",
+    "PROGRESS_UNSAVED_MESSAGE": "Прогресс ещё не сохранён. Не закрывайте игру."
   }
 }

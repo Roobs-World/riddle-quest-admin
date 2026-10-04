@@ -1,4 +1,4 @@
-import {useSyncExternalStore} from "react";
+import {useCallback, useSyncExternalStore} from "react";
 import enAboutLegal from "../../../../src/locales/en/aboutLegal.json";
 import enAccessibility from "../../../../src/locales/en/accessibility.json";
 import enAchievements from "../../../../src/locales/en/achievements.json";
@@ -427,17 +427,20 @@ export const detectDeviceLanguage = (locale?: string): Locale => {
   return resolved;
 };
 
-/** Provides tr behavior. */
-export const tr = (key: string, params?: Record<string, string | number>): string => {
+/** Resolves copy from an explicit, fully loaded locale. */
+const translate = (locale: Locale, key: string, params?: Record<string, string | number>): string => {
   /** Provides active message behavior. */
-  const activeMessage = getValueAtPath(getCatalogForRender(currentLocale), key);
+  const activeMessage = getValueAtPath(getCatalogForRender(locale), key);
   /** Provides fallback message behavior. */
   const fallbackMessage = getValueAtPath(getCatalogForRender("en"), key);
   if (!activeMessage && !fallbackMessage) {
-    throw new Error(`Missing translation for key "${key}" in locale "${currentLocale}"`);
+    throw new Error(`Missing translation for key "${key}" in locale "${locale}"`);
   }
   return formatMessage(activeMessage ?? fallbackMessage!, params);
 };
+
+/** Resolves current copy for non-React platform coordinators and event handlers. */
+export const tr = (key: string, params?: Record<string, string | number>): string => translate(currentLocale, key, params);
 
 /** Provides subscribe behavior. */
 const subscribe = (listener: () => void): (() => void) => {
@@ -450,4 +453,11 @@ const subscribe = (listener: () => void): (() => void) => {
 /** Provides locale. */
 export const useLocale = (): Locale => {
   return useSyncExternalStore(subscribe, getLocale, getLocale);
+};
+
+/** Gives compiled React renders an explicit locale dependency without remounting their state. */
+export const useTranslator = (): typeof tr => {
+  /** Current locale keeps the compiled translation callback synchronized. */
+  const locale = useLocale();
+  return useCallback((key: string, params?: Record<string, string | number>) => translate(locale, key, params), [locale]);
 };

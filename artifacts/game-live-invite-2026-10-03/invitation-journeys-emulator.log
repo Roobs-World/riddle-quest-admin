@@ -1,0 +1,32 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-game-live-invite-goal", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9151.
+i  Running script: node /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-invitations-browser.mjs
+jest 1280px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok((await button.boundingBox()).height >= 48)
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-invitations-browser.mjs:164:100 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "node /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-invitations-browser.mjs" exited with code 1

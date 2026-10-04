@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Script ran on page and returned:\n```json\n{\n  \"index\": 2,\n  \"rows\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"victoryCount\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+    }
+  ]
+}

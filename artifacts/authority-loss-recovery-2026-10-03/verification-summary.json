@@ -1,0 +1,37 @@
+{
+  "status": "verified",
+  "goal": "active",
+  "unitTests": 2690,
+  "newRegressions": 24,
+  "unitSuites": 295,
+  "skippedBrowserChecks": 121,
+  "injectedAssertions": 3234,
+  "browserReports": {
+    "default-development": 696,
+    "default-production": 696,
+    "win-journals-verified": 690,
+    "buffered-rollback": 420,
+    "cold-verified-development": 366,
+    "cold-verified-production": 366
+  },
+  "builtJourneys": 22,
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "types": "passed",
+  "tsdoc": {
+    "documentedDeclarations": 25049,
+    "files": 1133
+  },
+  "firefox": "active MCP; raw and asserted final observations retained",
+  "stableBuildInputs": 760,
+  "redControl": "original sources still expose five editable cells on the exhausted round",
+  "processes": "all owned verification sessions completed; fixture servers and owned Firefox pages closed",
+  "scope": "host-confirmed terminal loss after granted sixth attempt",
+  "next": "Audit multiplayer reconnect recovery and input readiness"
+}

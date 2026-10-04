@@ -1,0 +1,72 @@
+{
+  "verified": true,
+  "raw": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"before\": [\n    10000\n  ],\n  \"held\": true,\n  \"after\": [],\n  \"intro\": true,\n  \"stillHeld\": true,\n  \"grants\": [],\n  \"events\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"pian\",\n  \"nativeFocus\": true,\n  \"deadlines\": [],\n  \"retirements\": [\n    1\n  ],\n  \"active\": [\n    0,\n    1\n  ],\n  \"grants\": [],\n  \"events\": [],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"score\": \"Riddles completed: 1 / 10\",\n  \"guesses\": [\n    {\n      \"generation\": 2,\n      \"guess\": \"piano\"\n    }\n  ],\n  \"deadlines\": [],\n  \"grants\": [],\n  \"events\": [],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    }
+  ],
+  "proof": [
+    {
+      "before": [
+        10000
+      ],
+      "held": true,
+      "after": [],
+      "intro": true,
+      "stillHeld": true,
+      "grants": [],
+      "events": []
+    },
+    {
+      "draft": "pian",
+      "nativeFocus": true,
+      "deadlines": [],
+      "retirements": [
+        1
+      ],
+      "active": [
+        0,
+        1
+      ],
+      "grants": [],
+      "events": [],
+      "errors": [],
+      "unhandled": []
+    },
+    {
+      "score": "Riddles completed: 1 / 10",
+      "guesses": [
+        {
+          "generation": 2,
+          "guess": "piano"
+        }
+      ],
+      "deadlines": [],
+      "grants": [],
+      "events": [],
+      "errors": [],
+      "unhandled": []
+    }
+  ]
+}

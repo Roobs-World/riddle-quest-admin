@@ -14,11 +14,10 @@ import {
 } from "./guidanceConfig";
 import {OnboardingOverlay} from "./OnboardingOverlay";
 import {TooltipOverlay} from "./TooltipOverlay";
+import {GuidanceSeenMarkers} from "./GuidanceSeenMarkers";
 import {
   completePlayerOnboarding,
   hasCompletedPlayerOnboarding,
-  safeBrowserStorageGet,
-  safeBrowserStorageSet,
 } from "../playerPreferences";
 
 export {getOnboardingTotalSteps} from "./guidanceConfig";
@@ -38,12 +37,16 @@ export type GuidanceOverlayProps = {
   interactionBlocked?: boolean;
   /** Preserves pending guidance while multiplayer owns presentation and focus. */
   suspended?: boolean;
+  /** Guidance must not advertise coin actions absent from the host's economy capability. */
+  economyAvailable?: boolean;
 };
 /** Coordinates onboarding, feature tours, and contextual guidance tooltips. */
-export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false, suspended = false}: GuidanceOverlayProps) {
+export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false, suspended = false, economyAvailable = true}: GuidanceOverlayProps) {
   useLocale();
   /** Provides r id. */
   const userId = state.user?.uid;
+  /** Completion releases this view even when browser storage rejects its marker; accounts have separate owners. */
+  const seenMarkers = useMemo(() => new GuidanceSeenMarkers(), [userId]);
   /** Provider checkout availability also controls purchase guidance. */
   const commerceAvailable = state.products.length > 0;
   /** Provides [onboarding step, set onboarding step] behavior. */
@@ -71,9 +74,9 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
 
   useEffect(() => {
     if (modal === "victory" && (state.lastRewards?.newlyUnlockedAchievementIds.length ?? 0) > 0) {
-      safeBrowserStorageSet("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId), "seen");
+      seenMarkers.markSeen("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId));
     }
-  }, [modal, state.lastRewards, userId]);
+  }, [modal, seenMarkers, state.lastRewards, userId]);
 
   useEffect(() => {
     /** Provides on victory dismissed behavior. */
@@ -88,12 +91,12 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       if (typeof key !== "string") return;
       // A reward may arrive after the player leaves the fanfare. Do not let its
       // achievement guidance interrupt the next riddle.
-      safeBrowserStorageSet("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId), "seen");
+      seenMarkers.markSeen("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId));
       setCompletionPopupsPending(key);
     };
     window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
     return () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
-  }, [userId]);
+  }, [seenMarkers, userId]);
 
   useEffect(() => {
     if (sequenceName !== "profileTour" || modal === "profile") return;
@@ -190,7 +193,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     }
     /** Indicates whether has completed onboarding. */
     const hasCompletedOnboarding = hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
-    if (safeBrowserStorageGet("session", createGuidanceStorageKey("welcomeSession", userId)) !== "seen") {
+    if (!seenMarkers.hasSeen("session", createGuidanceStorageKey("welcomeSession", userId))) {
       setWelcomeOnly(hasCompletedOnboarding);
       setOnboardingStep(0);
       return;
@@ -200,19 +203,19 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       setOnboardingStep(0);
       return;
     }
-    if (safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) !== "seen") {
-      setSequence(getGameTour(state.gameMode, commerceAvailable));
+    if (!seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId))) {
+      setSequence(getGameTour(state.gameMode, commerceAvailable, economyAvailable));
       setSequenceName("gameTour");
       setSequenceIndex(0);
     }
-  }, [commerceAvailable, onboardingStep, sequence.length, state.gameMode, state.riddle, userId]);
+  }, [commerceAvailable, economyAvailable, onboardingStep, seenMarkers, sequence.length, state.gameMode, state.riddle, userId]);
 
   useEffect(() => {
     if (
       modal === "profile" &&
       onboardingStep === null &&
       sequence.length === 0 &&
-      safeBrowserStorageGet("local", createTooltipTourStorageKey("profileTour", userId)) !== "seen"
+      !seenMarkers.hasSeen("local", createTooltipTourStorageKey("profileTour", userId))
     ) {
       /** Provides timer behavior. */
       const timer = window.setTimeout(() => {
@@ -223,23 +226,23 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       return () => window.clearTimeout(timer);
     }
     return undefined;
-  }, [commerceAvailable, modal, onboardingStep, sequence.length, userId]);
+  }, [commerceAvailable, modal, onboardingStep, seenMarkers, sequence.length, userId]);
 
   useEffect(() => {
     if (
       onboardingStep !== null ||
       sequence.length > 0 ||
       !hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) ||
-      safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) !== "seen"
+      !seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId))
     ) {
       return;
     }
     /** Provides candidates behavior. */
-    const candidates = getContextualTooltipCandidates(state, modal);
+    const candidates = getContextualTooltipCandidates(state, modal, economyAvailable);
     /** Provides candidate behavior. */
     const candidate = candidates.find(
       ({id, when}) =>
-        when && safeBrowserStorageGet("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
+        when && !seenMarkers.hasSeen("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)),
     );
     if (!candidate) {
       return;
@@ -249,8 +252,10 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     setSequenceIndex(0);
   }, [
     modal,
+    economyAvailable,
     onboardingStep,
     sequence.length,
+    seenMarkers,
     state.gameMode,
     state.guesses.length,
     state.lastOutcome,
@@ -264,13 +269,13 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     /** Provides contextual guidance ready behavior. */
     const contextualGuidanceReady =
       hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) &&
-      safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) === "seen";
+      seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId));
     /** Indicates whether has pending tooltip. */
     const hasPendingTooltip =
       contextualGuidanceReady &&
-      getContextualTooltipCandidates(state, modal).some(
+      getContextualTooltipCandidates(state, modal, economyAvailable).some(
         ({id, when}) =>
-          when && safeBrowserStorageGet("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
+          when && !seenMarkers.hasSeen("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)),
       );
     if (!hasPendingTooltip) {
       setCompletionPopupsPending(null);
@@ -280,7 +285,9 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     }
   }, [
     completionPopupsPending,
+    seenMarkers,
     modal,
+    economyAvailable,
     onboardingStep,
     sequence.length,
     state.gameMode,
@@ -341,13 +348,12 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   /** Provides finish sequence behavior. */
   const finishSequence = () => {
     if (sequenceName?.startsWith("contextual:")) {
-      safeBrowserStorageSet(
+      seenMarkers.markSeen(
         "local",
         createGuidanceStorageKey(`tooltipSeen:${sequenceName.slice("contextual:".length)}`, userId),
-        "seen",
       );
     } else if (sequenceName) {
-      safeBrowserStorageSet("local", createTooltipTourStorageKey(sequenceName, userId), "seen");
+      seenMarkers.markSeen("local", createTooltipTourStorageKey(sequenceName, userId));
     }
     setSequence([]);
     setSequenceName(null);
@@ -369,7 +375,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
         welcomeOnly={welcomeOnly}
         onAdvance={() => {
           if (isWelcome) {
-            safeBrowserStorageSet("session", createGuidanceStorageKey("welcomeSession", userId), "seen");
+            seenMarkers.markSeen("session", createGuidanceStorageKey("welcomeSession", userId));
             if (welcomeOnly) {
               setOnboardingStep(null);
               return;

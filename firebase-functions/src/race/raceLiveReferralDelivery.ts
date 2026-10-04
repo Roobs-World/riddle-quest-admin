@@ -8,6 +8,7 @@ import type {parseRacePerformanceEvent} from "./raceDeliveryRecords";
 import type {LiveMatch, LiveTicket} from "./raceLiveState";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {isRedditFirebaseUid} from "../reddit/redditSecurity";
+import {FacebookLiveContextBindingSchema} from "./facebookLiveContextBinding";
 
 /** Supported provider identity remains explicit in each live referral receipt. */
 type Provider = "facebook" | "reddit";
@@ -38,6 +39,14 @@ export async function validateLiveRaceReferralSource(transaction: FirebaseFirest
   if (ticketExpiry.toMillis() <= nowMs || matchExpiry.toMillis() <= nowMs) return false;
   /** Private ticket and match records establish the receipt source. */
   const ticket = ticketSnapshot.data() as LiveTicket, match = matchSnapshot.data() as LiveMatch;
+  if (provider === "facebook") {
+    /** A copied outbox binding must agree exactly with the immutable winner's private seat. */
+    const context = ticket.facebookContext === undefined ? undefined : FacebookLiveContextBindingSchema.safeParse(ticket.facebookContext);
+    if (context && !context.success || (context && context.success ? context.data.contextKey : undefined) !== receipt.facebookContext?.contextKey ||
+      (context && context.success ? context.data.createdAtMs : undefined) !== receipt.facebookContext?.createdAtMs ||
+      (context && context.success ? context.data.joinedAtMs : undefined) !== receipt.facebookContext?.joinedAtMs)
+      throw new HttpsError("data-loss", "Stored Facebook context receipt does not match its source.");
+  }
   /** Settled winner seat identifies the only qualifying run. */
   const seat = match.winner;
   /** Provider-specific immutable receipt binding committed with the reward. */

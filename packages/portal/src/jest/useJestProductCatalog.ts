@@ -31,6 +31,11 @@ export function useJestProductCatalog({
   const catalog = useState<ProductSummary[]>([]);
   /** Provides [, set products] behavior. */
   const [, setProducts] = catalog;
+  /** Confirmed consumables remain owned by one platform player across transient failures. */
+  const confirmed = useRef({playerId: session?.player.playerId, products: catalog[0]});
+  if (confirmed.current.playerId === session?.player.playerId) confirmed.current.products = catalog[0];
+  /** Distinguishes an unavailable refresh from an empty provider catalog. */
+  const [catalogState, setCatalogState] = useState({loading: false, error: false});
   /** Rejects responses from superseded refreshes and departed sessions. */
   const generation = useRef(0);
   /** Reloads authoritative catalog presentation without restarting the session. */
@@ -38,6 +43,11 @@ export function useJestProductCatalog({
     if (!session) return;
     /** Identifies this refresh for last-request-wins publication. */
     const request = ++generation.current;
+    if (confirmed.current.playerId !== session.player.playerId) {
+      confirmed.current = {playerId: session.player.playerId, products: []};
+      setProducts([]);
+    }
+    setCatalogState((current) => ({...current, loading: true}));
     await withPlatformActivity(async () => {
       /** Provides products behavior. */
       const products = await purchases.getProducts(navigator.language);
@@ -50,16 +60,27 @@ export function useJestProductCatalog({
     }).then(({products, subscriptions}) => {
       if (request !== generation.current) return;
       /** Provides next products behavior. */
-      const nextProducts = products.status === "success" ? products.value : [];
+      const nextProducts = products.status === "success" ? products.value :
+        confirmed.current.products.filter((product) => product.productType !== "subscription");
       /** Provides next subscriptions behavior. */
       const nextSubscriptions = subscriptions.status === "success" ? subscriptions.value : [];
-      setProducts([...nextSubscriptions, ...nextProducts]);
+      /** Combines confirmed subscription offers with the current consumable catalog. */
+      const nextCatalog = [...nextSubscriptions, ...nextProducts];
+      confirmed.current.products = nextCatalog;
+      setProducts(nextCatalog);
+      setCatalogState({loading: false, error: products.status !== "success" || subscriptions.status !== "success"});
       if (products.status !== "success") trackFunnel("products_load_failed", {status: products.status});
       if (subscriptions.status !== "success") {
         trackFunnel("subscriptions_load_failed", {status: subscriptions.status});
       }
     }).catch(() => {
-      if (request === generation.current) setProducts([]);
+      if (request === generation.current) {
+        /** Preserves confirmed consumables while hiding unconfirmed subscription offers. */
+        const consumables = confirmed.current.products.filter((product) => product.productType !== "subscription");
+        confirmed.current.products = consumables;
+        setProducts(consumables);
+        setCatalogState({loading: false, error: true});
+      }
       trackFunnel("subscriptions_load_failed", {status: "retryable-failure"});
     });
   }, [
@@ -75,5 +96,5 @@ export function useJestProductCatalog({
     void refresh();
     return () => { generation.current += 1; };
   }, [refresh]);
-  return [...catalog, refresh] as const;
+  return [...catalog, refresh, catalogState] as const;
 }

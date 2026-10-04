@@ -1,0 +1,1171 @@
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 514,
+  "failures": [
+    {
+      "width": 1280,
+      "name": "measurement: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid 1280,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid 1280,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid 1280,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: invalid 1280,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "measurement: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "measurement: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "measurement: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid 1280,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid 1280,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid 1280,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: invalid 1280,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: blocked positive allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid 1280,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid 1280,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid 1280,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: invalid 1280,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: blocked positive allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "document-hidden: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid 1280,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid 1280,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid 1280,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: invalid 1280,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: blocked positive allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid 1280,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid 1280,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid 1280,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: invalid 1280,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "retire-pending: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-constructor-failure: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-constructor-failure: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-constructor-failure: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-constructor-failure: observer failure renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-observe-failure: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-observe-failure: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-observe-failure: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "name": "observer-observe-failure: observer failure renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid 390,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid 390,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid 390,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: invalid 390,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "measurement: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "measurement: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "measurement: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "host-pause: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid 390,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid 390,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid 390,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: invalid 390,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: blocked positive allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "host-pause: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "host-pause: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "host-pause: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid 390,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid 390,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid 390,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: invalid 390,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: blocked positive allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "document-hidden: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid 390,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid 390,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid 390,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: invalid 390,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: blocked positive allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: positive layout constructs once",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: first measurement sizes buffer immediately",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: restore reuses renderer",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid 0,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid 0,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid -1,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid -1,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid 390,0 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid 390,0 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid Infinity,844 renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid Infinity,844 allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid Infinity,844 frames",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid 390,NaN renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: invalid 390,NaN allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "retire-pending: blocked positive renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-constructor-failure: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-constructor-failure: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-constructor-failure: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-constructor-failure: observer failure renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-observe-failure: unmeasured renderer count",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-observe-failure: unmeasured allocations",
+      "actual": 76,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-observe-failure: unmeasured texture requests",
+      "actual": 34,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "name": "observer-observe-failure: observer failure renderer count",
+      "actual": 2,
+      "expected": 0
+    }
+  ]
+}

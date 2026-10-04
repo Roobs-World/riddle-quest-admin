@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts '--testNamePattern=uses the restored language|localizes game-owned Shop|refreshes subscription changes|keeps play interactive while the product catalog|starts a guest through signed identity|schedules decodable inline daily and race cards'
+Test Suites: 1 passed, 1 total
+Tests:       68 skipped, 6 passed, 74 total
+Snapshots:   0 total
+Time:        38.738 s, estimated 101 s
+Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "uses the restored language|localizes game-owned Shop|refreshes subscription changes|keeps play interactive while the product catalog|starts a guest through signed identity|schedules decodable inline daily and race cards".

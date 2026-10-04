@@ -1,0 +1,34 @@
+{
+  "Before": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"requestIds\": [\n    \"retained-next-guess\"\n  ],\n  \"predecessorReplays\": 0\n}\n```"
+      }
+    ]
+  },
+  "Rejected": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": [\n    \"C\",\n    \"L\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"queue\": [],\n  \"successors\": [],\n  \"paid\": null,\n  \"victory\": true,\n  \"reconcile\": \"function\"\n}\n```"
+      }
+    ]
+  },
+  "Canonical": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"rows\": [\n    \"qqqqq\",\n    \"CLo\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"selected\": 8,\n  \"hintLocked\": true,\n  \"balance\": \"325\",\n  \"journal\": {\n    \"version\": 1,\n    \"scope\": \"jest-guest:1:en\",\n    \"riddle\": {\n      \"riddleId\": \"classic-fake-2\",\n      \"text\": \"What has a face and hands but no arms?\",\n      \"answerLength\": 5,\n      \"sessionToken\": \"00000000-0000-4000-8000-000000000002\",\n      \"gameMode\": \"classic\",\n      \"index\": 2,\n      \"attemptsUsed\": 0,\n      \"hasUsedContinue\": false,\n      \"awaitingContinue\": false,\n      \"evaluation\": {\n        \"answer\": \"clock\",\n        \"locale\": \"en\"\n      }\n    },\n    \"confirmedClassicIndex\": 2,\n    \"base\": {\n      \"currentLetters\": [\n        \"\",\n        \"\",\n        \"\",\n        \"\",\n        \"\"\n      ],\n      \"activeSlotIndex\": 0,\n      \"guesses\": [],\n      \"engineSnapshot\": {\n        \"guesses\": [],\n        \"attemptsUsed\": 0,\n        \"hasUsedContinue\": false,\n        \"gameOver\": false\n      },\n      \"modal\": null,\n      \"lastOutcome\": null,\n      \"completionAcknowledged\": false,\n      \"letterStates\": {},\n      \"profile\": {\n        \"username\": \"Guest Solver\",\n        \"coins\": 300,\n        \"level\": 3,\n        \"xp\": 420,\n        \"winStreak\": 2,\n        \"gamesPlayed\": 7,\n        \"wins\": 5,\n        \"achievements\": [\n          \"first_win\",\n          \"daily_spark\"\n        ],\n        \"classicIndex\": 1\n      },\n      \"lastRewards\": null,\n      \"optimisticAchievementIds\": []\n    },\n    \"draft\": [\n      \"C\",\n      \"L\",\n      \"o\",\n      \"\",\n      \"\"\n    ],\n    \"successors\": [],\n    \"queue\": [],\n    \"draftActiveSlotIndex\": 3\n  },\n  \"errors\": [],\n  \"unhandled\": [],\n  \"requestIds\": [\n    \"retained-next-guess\"\n  ],\n  \"predecessorReplays\": 0\n}\n```"
+      }
+    ]
+  },
+  "Typed": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script ran on page and returned:\n```json\n{\n  \"rows\": [\n    \"qqqqq\",\n    \"CLoC\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"selected\": 9,\n  \"balance\": \"325\",\n  \"draft\": [\n    \"C\",\n    \"L\",\n    \"o\",\n    \"C\",\n    \"\"\n  ],\n  \"queue\": [],\n  \"hintLocked\": true,\n  \"errors\": [],\n  \"unhandled\": [],\n  \"requestIds\": [\n    \"retained-next-guess\"\n  ],\n  \"spends\": []\n}\n```"
+      }
+    ]
+  }
+}

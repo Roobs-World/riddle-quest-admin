@@ -1,0 +1,17 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-live-rematch-review", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: pnpm exec jest --config jest.rules.config.js --runInBand --runTestsByPath src/__tests__/race/raceLiveRematch.it.test.ts src/__tests__/race/raceLiveInvitation.it.test.ts
+
+Test Suites: 2 passed, 2 total
+Tests:       21 passed, 21 total
+Snapshots:   0 total
+Time:        14.151 s
+Ran all test suites within paths "src/__tests__/race/raceLiveRematch.it.test.ts", "src/__tests__/race/raceLiveInvitation.it.test.ts".
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

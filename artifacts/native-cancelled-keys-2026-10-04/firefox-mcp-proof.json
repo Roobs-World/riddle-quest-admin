@@ -1,0 +1,301 @@
+{
+  "verified": true,
+  "viewport": {
+    "width": 390,
+    "height": 568
+  },
+  "notes": "Key presses used native Firefox MCP controls and were observed as trusted. An injected capture handler consumed selected keys before React; composition and trailing text events were injected. This does not certify OS IME behavior or provider-specific hotkeys.",
+  "steps": [
+    {
+      "name": "native-cancelled-ff-backspace",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"ro\",\n  \"saves\": 1,\n  \"results\": 0,\n  \"cancelled\": [\n    {\n      \"key\": \"Backspace\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "ro",
+        "saves": 1,
+        "results": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "draft": "ro",
+        "saves": 1,
+        "results": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "native-cancelled-ff-composition",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"ro\",\n  \"nativeValue\": \"\",\n  \"saves\": 1,\n  \"cancelled\": [\n    {\n      \"key\": \"Backspace\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    },\n    {\n      \"key\": \"x\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "ro",
+        "nativeValue": "",
+        "saves": 1,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "x",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "draft": "ro",
+        "nativeValue": "",
+        "saves": 1,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "x",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "native-cancelled-ff-enter",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"rome\",\n  \"saves\": 1,\n  \"results\": 0,\n  \"cancelled\": [\n    {\n      \"key\": \"Backspace\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    },\n    {\n      \"key\": \"x\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    },\n    {\n      \"key\": \"Enter\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "rome",
+        "saves": 1,
+        "results": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "x",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "Enter",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "draft": "rome",
+        "saves": 1,
+        "results": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "x",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "Enter",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "native-cancelled-ff-win",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"saves\": 2,\n  \"wins\": 1,\n  \"scoredGuesses\": 1,\n  \"results\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "saves": 2,
+        "wins": 1,
+        "scoredGuesses": 1,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "saves": 2,
+        "wins": 1,
+        "scoredGuesses": 1,
+        "results": 1,
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "native-cancelled-ff-live-backspace",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"te\",\n  \"guesses\": [],\n  \"leaves\": 0,\n  \"cancelled\": [\n    {\n      \"key\": \"Backspace\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "te",
+        "guesses": [],
+        "leaves": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "draft": "te",
+        "guesses": [],
+        "leaves": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "native-cancelled-ff-live-enter",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"test\",\n  \"guesses\": [],\n  \"leaves\": 0,\n  \"cancelled\": [\n    {\n      \"key\": \"Backspace\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    },\n    {\n      \"key\": \"Enter\",\n      \"defaultPrevented\": true,\n      \"trusted\": true\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "draft": "test",
+        "guesses": [],
+        "leaves": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "Enter",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "draft": "test",
+        "guesses": [],
+        "leaves": 0,
+        "cancelled": [
+          {
+            "key": "Backspace",
+            "defaultPrevented": true,
+            "trusted": true
+          },
+          {
+            "key": "Enter",
+            "defaultPrevented": true,
+            "trusted": true
+          }
+        ],
+        "errors": [],
+        "unhandled": []
+      }
+    },
+    {
+      "name": "native-cancelled-ff-live-normal",
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"count\": \"Riddles completed: 1 / 10\",\n  \"guesses\": [\n    \"test\"\n  ],\n  \"leaves\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "parsed": {
+        "count": "Riddles completed: 1 / 10",
+        "guesses": [
+          "test"
+        ],
+        "leaves": 0,
+        "errors": [],
+        "unhandled": []
+      },
+      "expected": {
+        "count": "Riddles completed: 1 / 10",
+        "guesses": [
+          "test"
+        ],
+        "leaves": 0,
+        "errors": [],
+        "unhandled": []
+      }
+    }
+  ]
+}

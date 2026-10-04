@@ -157,8 +157,14 @@ export const BridgeRiddleSchema = z
       riddle.acceptedGuesses.some((guess) => guess.feedback.length !== riddle.answerLength))) {
       context.addIssue({code: z.ZodIssueCode.custom, message: "Accepted guess recovery is inconsistent."});
     }
-    /** The base attempt cap requires a Continue decision before another guess. */
-    const expectedAwaiting = riddle.attemptsUsed === 5 && !riddle.hasUsedContinue;
+    /** Only a complete host-issued winning row ends the base cap without a Continue decision. */
+    const winningAttempt = riddle.acceptedGuesses?.findIndex(guess =>
+      guess.feedback.length === riddle.answerLength && guess.feedback.every(cell => cell.status === "green")) ?? -1;
+    if (winningAttempt >= 0 && winningAttempt !== riddle.attemptsUsed - 1) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Accepted guesses cannot continue after a win."});
+    }
+    /** The base attempt cap requires a decision only when the last accepted answer is wrong. */
+    const expectedAwaiting = riddle.attemptsUsed === 5 && !riddle.hasUsedContinue && winningAttempt < 0;
     if (riddle.awaitingContinue !== expectedAwaiting) {
       context.addIssue({code: z.ZodIssueCode.custom, message: "Continue recovery state is inconsistent."});
     }

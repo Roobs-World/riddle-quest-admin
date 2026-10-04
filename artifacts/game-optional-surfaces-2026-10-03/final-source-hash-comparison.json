@@ -1,0 +1,7 @@
+{
+  "packages/portal/src/play/DecorativeSolarSystem.tsx": true,
+  "packages/portal/src/play/GameFrameApp.tsx": true,
+  "packages/portal/src/play/game/hooks/useGameSurfaces.ts": true,
+  "packages/portal/scripts/verify-optional-game-surfaces-browser.mjs": true,
+  "packages/portal/package.json": true
+}

@@ -1,0 +1,6 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Test Suites: 1 passed, 1 total
+Tests:       17 passed, 17 total
+Snapshots:   0 total
+Time:        0.261 s, estimated 1 s
+Ran all test suites matching src/reddit/__tests__/RedditGuestHostServices.test.ts.

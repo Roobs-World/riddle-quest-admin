@@ -2,8 +2,6 @@ import {useRef, useState} from "react";
 import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST} from "./economy";
 import {youtubeDirection, youtubeText, type YouTubeCopyKey} from "./i18n";
 import {
-  deleteYouTubeAnswerLetter,
-  insertYouTubeAnswerText,
   canShowLatinShortcut,
   normalizeLatinShortcutKey,
 } from "./input";
@@ -12,6 +10,8 @@ import {YouTubeNativeAnswerInput} from "./YouTubeNativeAnswerInput";
 import {AchievementIcon, SaveBanner, StatusHeader} from "./YouTubePlayableViews";
 import {useYouTubePlayableBoot, type YouTubeRuntime} from "./useYouTubePlayableBoot";
 import {useYouTubeReadySession} from "./useYouTubeReadySession";
+/** Fixed Latin shortcut letters do not need splitting again for each answer or save projection. */
+const LATIN_SHORTCUT_KEYS = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
 /** Provides you tube playable app behavior. */
 export function YouTubePlayableApp({
   sdk,
@@ -163,30 +163,12 @@ function ReadyYouTubeApp({
   const materialDisabled = snapshot.busy || snapshot.paused || snapshot.saveBlocked;
   /** Ephemeral drafts remain editable while the previous result saves. */
   const inputDisabled = snapshot.paused || snapshot.saveBlocked;
-  /** Applies text. */
-  const applyText = (value: string): void => {
-    if (!active || !riddle || !displayLetters) return;
-    /** Updates d. */
-    const updated = insertYouTubeAnswerText(
-      {letters: [...displayLetters], activeSlotIndex: snapshot.activeSlotIndex},
-      value,
-      displayLetters.length,
-      active.hintRevealedIndices,
-      locale,
-    );
-    authority.setInput(updated.letters, updated.activeSlotIndex);
-  };
-  /** Provides backspace behavior. */
-  const backspace = (): void => {
-    if (!active || !displayLetters) return;
-    /** Updates d. */
-    const updated = deleteYouTubeAnswerLetter(
-      {letters: [...displayLetters], activeSlotIndex: snapshot.activeSlotIndex},
-      displayLetters.length,
-      active.hintRevealedIndices,
-    );
-    authority.setInput(updated.letters, updated.activeSlotIndex);
-  };
+  /** Each committed edit uses the latest authority draft rather than the last rendered projection. */
+  const applyText = (value: string): void => authority.insertText(value);
+  /** Consecutive native deletions share the same authority-owned cursor and draft. */
+  const backspace = (): void => authority.backspace();
+  /** A user-invoked editing action returns physical typing to the native editor immediately. */
+  const focusAnswerInput = (): void => inputRef.current?.focus();
 
   if (snapshot.lastResult) {
     /** Provides result behavior. */
@@ -261,7 +243,7 @@ function ReadyYouTubeApp({
             {text(active.mode === "classic" ? "classic" : "daily")} · {text("riddle")}
           </p>
           <h1>{riddle.text}</h1>
-          <div className="yt-guesses" aria-label={text("attempts")}>
+          <div className="yt-guesses" role="group" aria-label={text("attempts")}>
             {active.guesses.map((guess, row) => (
               <div className="yt-guess-row" key={row}>
                 {guess.letters.map((letter, index) => (
@@ -275,10 +257,11 @@ function ReadyYouTubeApp({
               {displayLetters.map((letter, index) => (
                 <button
                   className={`yt-tile ${snapshot.activeSlotIndex === index ? "active" : ""} ${active.hintRevealedIndices.includes(index) ? "hinted" : ""}`}
+                  aria-label={`${text("inputLabel")}: ${index + 1}${letter ? `: ${letter}` : ""}`}
                   disabled={inputDisabled || active.awaitingContinue || active.hintRevealedIndices.includes(index)}
                   onClick={() => {
                     authority.setActiveSlot(index);
-                    inputRef.current?.focus();
+                    focusAnswerInput();
                   }}
                   key={index}
                 >
@@ -300,17 +283,23 @@ function ReadyYouTubeApp({
           />
           {latinShortcut && (
             <div className="yt-keyboard" aria-hidden="true">
-              {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((letter) => (
+              {LATIN_SHORTCUT_KEYS.map((letter) => (
                 <button
                   tabIndex={-1}
                   disabled={inputDisabled || active.awaitingContinue}
-                  onClick={() => applyText(normalizeLatinShortcutKey(letter))}
+                  onClick={() => {
+                    applyText(normalizeLatinShortcutKey(letter));
+                    focusAnswerInput();
+                  }}
                   key={letter}
                 >
                   {letter}
                 </button>
               ))}
-              <button tabIndex={-1} disabled={inputDisabled || active.awaitingContinue} onClick={backspace}>
+              <button tabIndex={-1} disabled={inputDisabled || active.awaitingContinue} onClick={() => {
+                backspace();
+                focusAnswerInput();
+              }}>
                 ⌫
               </button>
             </div>
@@ -341,6 +330,7 @@ function ReadyYouTubeApp({
                 className="yt-primary"
                 disabled={materialDisabled || displayLetters.some((letter) => !letter)}
                 onClick={() => {
+                  focusAnswerInput();
                   void run(() => authority.submitGuess());
                 }}
               >
@@ -349,6 +339,7 @@ function ReadyYouTubeApp({
               <button
                 disabled={materialDisabled || progression.coins < YOUTUBE_HINT_COST}
                 onClick={() => {
+                  focusAnswerInput();
                   void run(() => authority.requestHint());
                 }}
               >

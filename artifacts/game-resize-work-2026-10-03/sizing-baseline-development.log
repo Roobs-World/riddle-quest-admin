@@ -1,0 +1,163 @@
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 86,
+  "failures": [
+    {
+      "width": 1280,
+      "name": "180 equivalent fractional measurements do not reset buffer",
+      "actual": 182,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "name": "changed integer dimensions reset once",
+      "actual": 183,
+      "expected": 3
+    },
+    {
+      "width": 1280,
+      "name": "collapse and same-size recovery do not reset buffer",
+      "actual": 184,
+      "expected": 183
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: 120 measurements do not resize inactive graphics",
+      "actual": 304,
+      "expected": 183
+    },
+    {
+      "width": 1280,
+      "name": "host-pause: first eligible refresh applies latest size once",
+      "actual": 304,
+      "expected": 184
+    },
+    {
+      "width": 1280,
+      "name": "hidden: 120 measurements do not resize inactive graphics",
+      "actual": 424,
+      "expected": 304
+    },
+    {
+      "width": 1280,
+      "name": "hidden: first eligible refresh applies latest size once",
+      "actual": 424,
+      "expected": 305
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: 120 measurements do not resize inactive graphics",
+      "actual": 544,
+      "expected": 424
+    },
+    {
+      "width": 1280,
+      "name": "multiplayer: first eligible refresh applies latest size once",
+      "actual": 544,
+      "expected": 425
+    },
+    {
+      "width": 1280,
+      "name": "lost context defers all resize work",
+      "actual": 664,
+      "expected": 544
+    },
+    {
+      "width": 1280,
+      "name": "restoration resizes once",
+      "actual": 664,
+      "expected": 545
+    },
+    {
+      "width": 1280,
+      "name": "same-size measurement after restoration does not reset",
+      "actual": 665,
+      "expected": 664
+    },
+    {
+      "width": 1280,
+      "name": "retained resize cannot touch retired buffer",
+      "actual": 666,
+      "expected": 665
+    },
+    {
+      "width": 390,
+      "name": "180 equivalent fractional measurements do not reset buffer",
+      "actual": 182,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "name": "changed integer dimensions reset once",
+      "actual": 183,
+      "expected": 3
+    },
+    {
+      "width": 390,
+      "name": "collapse and same-size recovery do not reset buffer",
+      "actual": 184,
+      "expected": 183
+    },
+    {
+      "width": 390,
+      "name": "host-pause: 120 measurements do not resize inactive graphics",
+      "actual": 304,
+      "expected": 183
+    },
+    {
+      "width": 390,
+      "name": "host-pause: first eligible refresh applies latest size once",
+      "actual": 304,
+      "expected": 184
+    },
+    {
+      "width": 390,
+      "name": "hidden: 120 measurements do not resize inactive graphics",
+      "actual": 424,
+      "expected": 304
+    },
+    {
+      "width": 390,
+      "name": "hidden: first eligible refresh applies latest size once",
+      "actual": 424,
+      "expected": 305
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: 120 measurements do not resize inactive graphics",
+      "actual": 544,
+      "expected": 424
+    },
+    {
+      "width": 390,
+      "name": "multiplayer: first eligible refresh applies latest size once",
+      "actual": 544,
+      "expected": 425
+    },
+    {
+      "width": 390,
+      "name": "lost context defers all resize work",
+      "actual": 664,
+      "expected": 544
+    },
+    {
+      "width": 390,
+      "name": "restoration resizes once",
+      "actual": 664,
+      "expected": 545
+    },
+    {
+      "width": 390,
+      "name": "same-size measurement after restoration does not reset",
+      "actual": 665,
+      "expected": 664
+    },
+    {
+      "width": 390,
+      "name": "retained resize cannot touch retired buffer",
+      "actual": 666,
+      "expected": 665
+    }
+  ]
+}

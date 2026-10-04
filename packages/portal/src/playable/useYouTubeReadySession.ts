@@ -58,9 +58,12 @@ export function useYouTubeReadySession(
     if (!snapshot.paused) sdk.gameReady();
   }, [sdk, snapshot.paused]);
 
+  /** Focus only when an answer becomes usable, not when an already editable save receipt arrives. */
+  const answerEditable = Boolean(snapshot.activeRiddle) && !snapshot.paused && !snapshot.saveBlocked &&
+    !snapshot.save.activeGame?.awaitingContinue && !snapshot.lastResult;
   useEffect(() => {
-    if (snapshot.activeRiddle && !snapshot.paused) inputRef.current?.focus();
-  }, [inputRef, snapshot.activeRiddle, snapshot.paused]);
+    if (answerEditable) inputRef.current?.focus();
+  }, [answerEditable, inputRef, snapshot.activeRiddle]);
 
   useEffect(() => {
     if (snapshot.paused) return;

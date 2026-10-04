@@ -1,0 +1,224 @@
+--- checkpoint.before.txt
++++ packages/portal/src/play/GameSessionCheckpoints.ts
+@@ -109,7 +109,7 @@
+       this.observedRiddle = state.riddle;
+       /** Current-session drafts take precedence over the startup-only provider snapshot. */
+       const retained = this.drafts.get(state.riddle.sessionToken) ?? restoredGame;
+-      if (!background && !state.lastOutcome && retained?.riddleId === state.riddle.riddleId &&
++      if (!background && state.canRestoreCheckpoint && !state.lastOutcome && retained?.riddleId === state.riddle.riddleId &&
+         retained.sessionToken === state.riddle.sessionToken) {
+         /** Restoration must update the provider's active checkpoint before a later reload. */
+         this.sessionToken = state.riddle.sessionToken;
+--- reducer.before.txt
++++ packages/portal/src/play/gameSession.ts
+@@ -35,6 +35,7 @@
+   leaderboardRequestId: null,
+   leaderboardLoadError: false,
+   riddle: null,
++  canRestoreCheckpoint: false,
+   currentLetters: [],
+   activeSlotIndex: 0,
+   hintRevealedIndices: [],
+@@ -203,6 +204,7 @@
+       return {
+         ...state,
+         riddle: action.riddle,
++        canRestoreCheckpoint: true,
+         gameMode: action.riddle.gameMode,
+         profile: action.profile === undefined ? state.profile : preservePendingCoins(state, action.profile),
+         currentLetters: letters,
+@@ -238,6 +240,7 @@
+       currentLetters[state.activeSlotIndex] = letter;
+       return {
+         ...state,
++        canRestoreCheckpoint: false,
+         currentLetters,
+         activeSlotIndex: firstEditableSlot(
+           currentLetters,
+@@ -260,7 +263,7 @@
+       /** Provides current letters behavior. */
+       const currentLetters = [...state.currentLetters];
+       currentLetters[target] = "";
+-      return {...state, currentLetters, activeSlotIndex: target, notice: null};
++      return {...state, canRestoreCheckpoint: false, currentLetters, activeSlotIndex: target, notice: null};
+     }
+     case "selectSlot":
+       if (
+@@ -272,7 +275,7 @@
+       ) {
+         return state;
+       }
+-      return {...state, activeSlotIndex: action.index};
++      return {...state, canRestoreCheckpoint: false, activeSlotIndex: action.index};
+     case "guessRequested":
+       if (!state.riddle || (state.guessPending && !canDraftWhileConfirming(state)) ||
+         state.currentLetters.some((letter) => !letter)) return state;
+@@ -284,7 +287,7 @@
+         /** Canonical answer normalized exactly as on the server. */
+         const normalizedAnswer = lowerCaseGraphemes(answer.trim(), locale).join("");
+         if (splitGraphemes(normalizedAnswer, locale).length !== state.riddle.answerLength) {
+-          return {...state, guessPending: true, notice: null};
++          return {...state, canRestoreCheckpoint: false, guessPending: true, notice: null};
+         }
+         /** Predicted attempt number; the server remains authoritative. */
+         const attempts = (state.engineSnapshot?.attemptsUsed ?? 0) + 1;
+@@ -315,7 +318,7 @@
+           },
+         };
+       }
+-      return {...state, guessPending: true, notice: null};
++      return {...state, canRestoreCheckpoint: false, guessPending: true, notice: null};
+     case "guessPreviewConfirmed":
+       return {...state, guessPending: false, pendingGuessState: null};
+     case "restoreQueuedGuesses": {
+@@ -324,7 +327,7 @@
+       if (getConfirmedRiddleOutcome(state.riddle)) return state;
+       /** Journal gameplay is recoverable; its older profile must not replace the current host profile. */
+       let restored: GameSessionState = {...state, ...action.base, profile: state.profile,
+-        guessPending: false, pendingGuessState: null};
++        guessPending: false, pendingGuessState: null, canRestoreCheckpoint: false};
+       for (const guess of action.guesses) {
+         /** The letters used by the current operation. */
+         const letters = splitGraphemes(guess, state.riddle.evaluation?.locale).map((letter) => letter.toUpperCase());
+@@ -360,6 +363,7 @@
+       const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: action.riddle});
+       if (loaded.riddle && getConfirmedRiddleOutcome(loaded.riddle)) return loaded;
+       return {...loaded, ...action.base, profile: loaded.profile, guessPending: false, pendingGuessState: null,
++        canRestoreCheckpoint: false,
+         modal: questionIndependentModals.has(state.modal) ? state.modal : action.base.modal,
+         notice: null, lastRewards: null};
+     }
+@@ -385,7 +389,8 @@
+         : null;
+       // Replace only speculative gameplay, preserving non-outcome surfaces opened in the meantime.
+       if (state.pendingGuessState) state = {
+-        ...state, ...state.pendingGuessState,
++        ...state,
++        canRestoreCheckpoint: false, ...state.pendingGuessState,
+         modal: state.lastOutcome ? state.pendingGuessState.modal : state.modal,
+         pendingGuessState: null,
+       };
+@@ -424,6 +429,7 @@
+ 
+       return {
+         ...state,
++        canRestoreCheckpoint: false,
+         profile,
+         currentLetters: draft?.currentLetters ?? nextLetters,
+         activeSlotIndex: draft?.activeSlotIndex ?? firstEditableSlot(nextLetters, state.hintRevealedIndices),
+@@ -597,7 +603,8 @@
+     case "showAuxiliaryFanfare":
+       return {...state, auxiliaryFanfare: action.fanfare, modal: "reward"};
+     case "restoreSession":
+-      if (!state.riddle || action.riddleId !== state.riddle.riddleId ||
++      // Journal recovery and player edits outrank an older provider or retained checkpoint.
++      if (!state.canRestoreCheckpoint || !state.riddle || action.riddleId !== state.riddle.riddleId ||
+         action.sessionToken !== state.riddle.sessionToken || state.guessPending || state.lastOutcome ||
+         (state.engineSnapshot?.attemptsUsed ?? 0) > state.riddle.attemptsUsed ||
+         // A provider save may predate the replayed Continue grant for this session.
+@@ -635,6 +642,7 @@
+           ? firstEditableSlot(restoredLetters, hintIndices) : action.activeSlotIndex;
+         return {
+           ...state,
++          canRestoreCheckpoint: false,
+           currentLetters: restoredLetters,
+           activeSlotIndex: awaitingContinue ? 0 : activeSlotIndex,
+           hintRevealedIndices: hintIndices,
+--- types.before.txt
++++ packages/portal/src/play/gameSessionTypes.ts
+@@ -52,6 +52,7 @@
+   /** Correlates results with the latest requested ranking. */ leaderboardRequestId: string | null;
+   /** Distinguishes an unavailable ranking from a successful empty result. */ leaderboardLoadError: boolean;
+   /** Answer-bearing riddle currently loaded into the local engine. */ riddle: BridgeRiddle | null;
++  /** Only a fresh authority load may accept checkpoint restoration before player or journal ownership. */ canRestoreCheckpoint: boolean;
+   /** Graphemes entered into the current guess. */ currentLetters: string[];
+   /** Slot that receives the next keyboard input. */ activeSlotIndex: number;
+   /** Answer positions locked by purchased hints. */ hintRevealedIndices: number[];
+--- test.before.txt
++++ packages/portal/src/play/__tests__/GameSessionCheckpoints.test.ts
+@@ -17,6 +17,85 @@
+ const activeSession = () => gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
+ 
+ describe("GameSessionCheckpoints", () => {
++  it.each([
++    {draft: ["C", "L", "", "", ""], slot: 2},
++    {draft: ["", "", "", "", ""], slot: 3},
++  ])("keeps journal-recovered drafts when an earlier checkpoint restore reaches the reducer (%j)", ({draft, slot}) => {
++    /** Checkpoint owner already retains the previously submitted answer. */
++    const checkpoints = new GameSessionCheckpoints();
++    /** Original issued question before its rejected operation is reconciled. */
++    let state = activeSession();
++    checkpoints.update(state);
++    for (const letter of "CRANE") state = gameSessionReducer(state, {type: "typeLetter", letter});
++    checkpoints.update(state);
++    /** Fresh authority load schedules restoration before the journal effect runs. */
++    const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: {...riddle}});
++    /** Restore action captured from the pre-journal React effect snapshot. */
++    const restore = checkpoints.update(loaded);
++    if (restore?.kind !== "restore") throw new Error("Expected retained checkpoint restoration.");
++    /** Journal owns gameplay fields without replacing the current authority object. */
++    const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
++      completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = loaded;
++    /** Current draft recovered before the older restore action is reduced. */
++    const recovered = gameSessionReducer(loaded, {type: "restoreQueuedGuesses",
++      base: {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
++        completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds},
++      guesses: [], draft, draftActiveSlotIndex: slot});
++    expect(gameSessionReducer(recovered, restore.action)).toBe(recovered);
++    expect(recovered.currentLetters).toEqual(draft);
++    expect(recovered.activeSlotIndex).toBe(slot);
++  });
++
++  it.each([
++    {draft: ["C", "L", "", "", ""], slot: 2},
++    {draft: ["", "", "", "", ""], slot: 3},
++  ])("saves an already recovered journal draft instead of replaying an older checkpoint (%j)", ({draft, slot}) => {
++    /** Retained provider draft belongs to the submitted, later rejected answer. */
++    const checkpoints = new GameSessionCheckpoints();
++    /** Original active draft before recovery reissues the same authority identity. */
++    let state = activeSession();
++    checkpoints.update(state);
++    for (const letter of "CRANE") state = gameSessionReducer(state, {type: "typeLetter", letter});
++    checkpoints.update(state);
++    /** Fresh load exists before the journal restores its newer unsubmitted letters. */
++    const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: {...riddle}});
++    /** Gameplay-only journal base preserves the current authority object. */
++    const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
++      completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = loaded;
++    /** Journal recovery has committed before the checkpoint owner observes the new riddle. */
++    const recovered = gameSessionReducer(loaded, {type: "restoreQueuedGuesses",
++      base: {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
++        completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds},
++      guesses: [], draft, draftActiveSlotIndex: slot});
++    expect(checkpoints.update(recovered)).toMatchObject({kind: "save", game: {
++      currentLetters: draft, activeSlotIndex: slot,
++    }});
++  });
++
++  it.each([false, true])("admits an unchanged draft but preserves a later player selection (selection changed=%s)", (selected) => {
++    /** Mounted owner retains a resumable answer for this issued session. */
++    const checkpoints = new GameSessionCheckpoints();
++    /** Typed predecessor checkpoint used by the fresh authority load. */
++    let state = activeSession();
++    checkpoints.update(state);
++    for (const letter of "CRANE") state = gameSessionReducer(state, {type: "typeLetter", letter});
++    checkpoints.update(state);
++    /** Utility-page updates do not alter the draft expected by restoration. */
++    const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: {...riddle}});
++    /** Deferred restore still belongs to the loaded draft and its original selection. */
++    const restore = checkpoints.update(loaded);
++    if (restore?.kind !== "restore") throw new Error("Expected retained checkpoint restoration.");
++    /** Later player-owned utility and selection state at restore admission. */
++    const current = gameSessionReducer(gameSessionReducer(loaded,
++      selected ? {type: "selectSlot", index: 3} : {type: "setNotice", notice: null}),
++      {type: "openModal", modal: "settings"});
++    /** Reducer admits only the still-current draft while retaining the utility page. */
++    const restored = gameSessionReducer(current, restore.action);
++    expect(restored.modal).toBe("settings");
++    expect(restored.currentLetters).toEqual(selected ? ["", "", "", "", ""] : [..."CRANE"]);
++    if (selected) expect(restored).toBe(current);
++  });
++
+   it("keeps retained drafts isolated from adapter mutation and authoritative hint updates", () => {
+     /** Fresh checkpoint owner for this recovery scenario. */
+     const checkpoints = new GameSessionCheckpoints();

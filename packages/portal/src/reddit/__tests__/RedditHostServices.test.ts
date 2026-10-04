@@ -199,6 +199,7 @@ it("binds account deletion to the authenticated account generation", async () =>
   global.fetch = jest.fn(async () => ({ok: true, json: async () => ({ok: true})}) as Response);
   await expect(createRedditHostServices(7).deleteAccount("reddit-account")).resolves.toBeUndefined();
   expect(global.fetch).toHaveBeenCalledWith("/api/account/delete", {
+    signal: expect.any(AbortSignal),
     method: "POST",
     redirect: "error",
     headers: {"content-type": "application/json"},
@@ -230,4 +231,22 @@ it("loads multiplayer rankings through the same-origin leaderboard gateway", asy
   global.fetch = jest.fn(() => response({entries: [entry], requestingUserId: "viewer"})) as typeof fetch;
   await expect(createRedditHostServices().loadLeaderboard("multiplayerWins")).resolves.toEqual([entry]);
   expect(global.fetch).toHaveBeenCalledWith("/api/game/leaderboard.list", expect.objectContaining({body: JSON.stringify({type: "multiplayerWins", limit: 25})}));
+});
+
+it("uses reconciled Classic progress from the same-origin authority", async () => {
+  global.fetch = jest.fn((input) => {
+    if (String(input) === "/api/game/riddle.classic-buffer") return response({confirmedClassicIndex: 17, riddles: []});
+    if (String(input) === "/api/game/riddle.classic") return response({classicIndex: 18, challenge: {totalQuestions: 1, questions: [{
+      riddleId: "classic-18", text: "Recovered successor", answerLength: 5,
+      sessionToken: "00000000-0000-4000-8000-000000000018", questionNumber: 1,
+      attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false,
+    }]}});
+    throw new Error(`unexpected route ${String(input)}`);
+  }) as typeof fetch;
+  /** Existing terminal session is reconciled by the canonical server. */
+  const services = createRedditHostServices();
+  await expect(services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 17,
+    riddleId: "classic-17", sessionToken: "00000000-0000-4000-8000-000000000017"}))
+    .resolves.toMatchObject({riddleId: "classic-18", index: 18});
+  expect((global.fetch as jest.Mock).mock.calls.every(([path]) => String(path).startsWith("/api/"))).toBe(true);
 });

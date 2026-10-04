@@ -1,0 +1,226 @@
+[
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PI",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PI",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PI",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "quota",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "accepted input remains playable during failed storage",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "failed write does not change durable draft",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "latest draft is recovered without another keystroke",
+    "actual": "PI",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "preference change survives recovery with the draft",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "guest requests only the same-origin session gateway",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "fault": "blocked",
+    "recovery": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

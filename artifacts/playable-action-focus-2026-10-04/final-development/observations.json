@@ -1,0 +1,478 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "physical typing continues after hint without an extra tap",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "hint leaves native input ready for typing",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "hint lock is retained",
+    "actual": [
+      "r"
+    ],
+    "expected": [
+      "r"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "typing does not add a material save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "native Enter completes one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "consumed native text is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "Tab can reach the hint action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "physical typing continues after hint without an extra tap",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "hint leaves native input ready for typing",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "hint lock is retained",
+    "actual": [
+      "r"
+    ],
+    "expected": [
+      "r"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "typing does not add a material save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "native Enter completes one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "consumed native text is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "physical typing resumes after toolbar submission",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "wrong submit retains native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "typing does not add a material save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "native Enter completes one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "consumed native text is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "switching from shortcut buttons to physical input preserves the answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "shortcut returns focus to native entry",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "typing does not add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "native Enter completes one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "consumed native text is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "switching from shortcut buttons to physical input preserves the answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "shortcut returns focus to native entry",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "typing does not add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "native Enter completes one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "consumed native text is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "exhausted attempts disable the answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "physical typing resumes after a paid continue",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "continue restores usable native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "typing does not add a material save",
+    "actual": 7,
+    "expected": 7
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "native Enter completes one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "consumed native text is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "hint focuses input before a held save completes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "save receipt preserves subsequent Tab navigation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "Tab moved to another action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "physical typing continues after hint without an extra tap",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "hint leaves native input ready for typing",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "hint lock is retained",
+    "actual": [
+      "r"
+    ],
+    "expected": [
+      "r"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "typing does not add a material save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "native Enter completes one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "consumed native text is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-pause",
+    "name": "pause disables native entry",
+    "actual": true,
+    "expected": true
+  }
+]

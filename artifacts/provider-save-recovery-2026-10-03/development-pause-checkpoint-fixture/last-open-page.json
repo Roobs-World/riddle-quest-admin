@@ -1,0 +1,313 @@
+{
+  "url": "http://127.0.0.1:42037/facebook/?scenario=hidden",
+  "body": "Classic\n300\nWhat has keys but cannot open doors?\nP\nI\nA\nN\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip\nPaused",
+  "probe": {
+    "writes": [
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "schemaVersion": 1,
+        "updatedAt": 1791037317321
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "schemaVersion": 1,
+        "updatedAt": 1791037317388,
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791037317388,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "schemaVersion": 1,
+        "updatedAt": 1791037317392,
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791037317392,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "schemaVersion": 1,
+        "updatedAt": 1791037317396,
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791037317396,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "schemaVersion": 1,
+        "updatedAt": 1791037317400,
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791037317400,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "N",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        },
+        "schemaVersion": 1,
+        "updatedAt": 1791037317403,
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791037317400,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "P",
+            "I",
+            "A",
+            "N",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      }
+    ],
+    "preferences": [
+      {
+        "locale": "en",
+        "muted": false,
+        "reducedMotion": true,
+        "onboardingComplete": true
+      }
+    ],
+    "failures": [
+      "Error: injected-provider-write-failure"
+    ],
+    "errors": [],
+    "unhandled": [],
+    "flushes": 6,
+    "guesses": 0,
+    "completions": 0,
+    "pauseConsumers": 0,
+    "resumeConsumers": 0,
+    "initializations": 2,
+    "nativePauseRegistrations": 1,
+    "nativeResumeRegistrations": 1,
+    "paths": [],
+    "failDraft": 0,
+    "failPreferences": 0,
+    "holdNext": false,
+    "holding": false,
+    "faultSignaled": true
+  },
+  "draft": "PIAN",
+  "status": "quiet",
+  "durable": {
+    "profile": {
+      "username": "Guest Solver",
+      "coins": 300,
+      "level": 3,
+      "xp": 420,
+      "winStreak": 2,
+      "gamesPlayed": 7,
+      "wins": 5,
+      "achievements": [
+        "first_win",
+        "daily_spark"
+      ],
+      "classicIndex": 1
+    },
+    "schemaVersion": 1,
+    "updatedAt": 1791037317403,
+    "activeGame": {
+      "schemaVersion": 1,
+      "savedAt": 1791037317400,
+      "riddleId": "classic-fake-1",
+      "gameMode": "classic",
+      "sessionToken": "00000000-0000-4000-8000-000000000001",
+      "currentLetters": [
+        "P",
+        "I",
+        "A",
+        "N",
+        ""
+      ],
+      "activeSlotIndex": 4,
+      "hintRevealedIndices": [],
+      "guesses": [],
+      "engineSnapshot": {
+        "guesses": [],
+        "attemptsUsed": 0,
+        "hasUsedContinue": false,
+        "gameOver": false
+      },
+      "awaitingContinue": false,
+      "letterStates": {}
+    }
+  }
+}

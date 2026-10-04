@@ -1,0 +1,36 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/useHostRiddleRecovery.test.ts
+  ● resets Classic recovery to the replacement account's confirmed position
+
+    expect(jest.fn()).toHaveBeenLastCalledWith(...expected)
+
+    Expected: {"classicIndex": 2, "gameMode": "classic", "locale": "en"}
+    Received
+           1: {"classicIndex": 17, "gameMode": "classic", "locale": "en"}
+    ->     2
+              Object {
+            -   "classicIndex": 2,
+            +   "classicIndex": 17,
+                "gameMode": "classic",
+                "locale": "en",
+              },
+
+    Number of calls: 2
+
+      155 |   cleanup = effects[0]() || undefined;
+      156 |   await jest.advanceTimersByTimeAsync(250);
+    > 157 |   expect(load).toHaveBeenLastCalledWith({gameMode: "classic", locale: "en", classicIndex: 2});
+          |                ^
+      158 | });
+      159 |
+
+      at Object.<anonymous> (src/play/__tests__/useHostRiddleRecovery.test.ts:157:16)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 4 passed, 5 total
+Snapshots:   0 total
+Time:        0.216 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/useHostRiddleRecovery.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/useHostRiddleRecovery.test.ts

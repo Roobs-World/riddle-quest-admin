@@ -79,6 +79,8 @@ export const createReleaseChildEnvironment = (
     "The isolated child runtime directory",
     isolatedRuntimeDirectory,
   );
+  // The frozen dependency graph is fingerprinted before and after the gate; release children must never reinstall it.
+  childEnvironment.pnpm_config_verify_deps_before_run = "false";
   return childEnvironment;
 };
 

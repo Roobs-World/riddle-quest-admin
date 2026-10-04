@@ -25,19 +25,19 @@ const entries = Array.from({length:23}, (_, index) => BridgeLeaderboardEntrySche
   userId:'player-'+index, username:'Player '+index, level:2, xp:100, totalWins:100-index,
   bestStreak:3, multiplayerWins:42-index}));
 function App() {
-  const [type, setType] = React.useState('xp'), [loading, setLoading] = React.useState(false), [empty, setEmpty] = React.useState(false);
-  window.injectLeaderboard = async (locale, noScores=false) => {
+  const [type, setType] = React.useState('xp'), [loading, setLoading] = React.useState(false), [empty, setEmpty] = React.useState(false), [failed, setFailed] = React.useState(false);
+  window.injectLeaderboard = async (locale, noScores=false, unavailable=false) => {
     await setLocaleAndWait(locale); document.documentElement.lang=locale;
-    document.documentElement.dir=locale==='ar'?'rtl':'ltr'; setEmpty(noScores); setType('xp');
+    document.documentElement.dir=locale==='ar'?'rtl':'ltr'; setEmpty(noScores); setFailed(unavailable); setType('xp');
     return tr('Leaderboard.TAB_MULTIPLAYER_WINS');
   };
   function request(type) {
     GameLoadLeaderboardMessageSchema.parse({type:'game:loadLeaderboard', payload:{leaderboardType:type}});
-    setLoading(true); setType(type); setTimeout(() => setLoading(false), 60);
+    setLoading(true); setType(type); setTimeout(() => { setFailed(false); setLoading(false); }, 60);
   }
   return <div className="game-modal-backdrop"><section className="game-modal modal-leaderboard" role="dialog" aria-labelledby="title">
     <h2 id="title">{tr('Leaderboard.TITLE')}</h2><LeaderboardModalPage entries={empty?[]:entries} loading={loading}
-      leaderboardType={type} onRequestLeaderboard={request}/></section></div>;
+      loadError={failed} leaderboardType={type} onRequestLeaderboard={request}/></section></div>;
 }
 createRoot(document.getElementById('root')).render(<App/>);
 `);
@@ -78,6 +78,27 @@ try {
     await page.waitForFunction(() => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false");
     assert.match(await page.locator(".leaderboard-list").innerText(), /No scores yet/);
     assert.equal(await page.locator(".leaderboard-pagination").count(), 0);
+    for (const locale of ["en", "ar", "de"]) {
+      await page.evaluate(locale => window.injectLeaderboard(locale, false, true), locale);
+      await page.getByRole("alert").waitFor();
+      assert.equal(await page.locator(".leaderboard-empty").count(), 0);
+      const retry = page.locator(".leaderboard-error button");
+      assert.equal(await retry.isEnabled(), true);
+      const geometry = await page.locator('.leaderboard-panel').evaluate(panel => {
+        const retry = panel.querySelector('.leaderboard-error button'), list = panel.querySelector('.leaderboard-list');
+        const retryRect = retry.getBoundingClientRect(), listRect = list.getBoundingClientRect();
+        return {noOverlap: retryRect.bottom <= listRect.top,
+          hittable: retry.contains(document.elementFromPoint(retryRect.x + retryRect.width / 2, retryRect.y + retryRect.height / 2))};
+      });
+      assert.deepEqual(geometry, {noOverlap: true, hittable: true}, `${locale} cached failure geometry at ${width}px`);
+      assert.match(await page.locator('.leaderboard-list').innerText(), /Player/);
+
+      await retry.click();
+      await page.getByRole("alert").waitFor({state: "hidden"});
+      await page.waitForFunction(() => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false");
+      assert.equal(await page.locator(".leaderboard-empty").count(), 0);
+      assert.equal(await page.locator(".leaderboard-list li").count(), 10);
+    }
     assert.deepEqual(errors, []);
     console.log(`Injected leaderboard component passed in all 16 locales at ${width}px, including empty scores and RTL.`);
     await page.close();

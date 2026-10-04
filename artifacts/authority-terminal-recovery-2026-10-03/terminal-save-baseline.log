@@ -1,0 +1,64 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/GameSessionCheckpoints.test.ts
+  ● GameSessionCheckpoints › recovers a host-accepted win on attempt 1 without a current provider checkpoint
+
+    expect(received).toMatchObject(expected)
+
+    Matcher error: received value must be a non-null object
+
+    Received has value: null
+
+      34 |       /** Startup may contain no provider save or only the pre-acceptance draft. */
+      35 |       const effect = owner.update(state, provider);
+    > 36 |       expect(effect).toMatchObject({kind: "save", game: {pendingOutcome: {kind: "win", attempts}}});
+         |                      ^
+      37 |       if(effect?.kind === "restore") state = gameSessionReducer(state, effect.action);
+      38 |       expect(state.modal).toBe("victory");
+      39 |       expect(state.engineSnapshot).toMatchObject({attemptsUsed: attempts, gameOver: true});
+
+      at src/play/__tests__/GameSessionCheckpoints.test.ts:36:22
+
+  ● GameSessionCheckpoints › recovers a host-accepted win on attempt 5 without a current provider checkpoint
+
+    expect(received).toMatchObject(expected)
+
+    Matcher error: received value must be a non-null object
+
+    Received has value: null
+
+      34 |       /** Startup may contain no provider save or only the pre-acceptance draft. */
+      35 |       const effect = owner.update(state, provider);
+    > 36 |       expect(effect).toMatchObject({kind: "save", game: {pendingOutcome: {kind: "win", attempts}}});
+         |                      ^
+      37 |       if(effect?.kind === "restore") state = gameSessionReducer(state, effect.action);
+      38 |       expect(state.modal).toBe("victory");
+      39 |       expect(state.engineSnapshot).toMatchObject({attemptsUsed: attempts, gameOver: true});
+
+      at src/play/__tests__/GameSessionCheckpoints.test.ts:36:22
+
+  ● GameSessionCheckpoints › recovers a host-accepted win on attempt 6 without a current provider checkpoint
+
+    expect(received).toMatchObject(expected)
+
+    Matcher error: received value must be a non-null object
+
+    Received has value: null
+
+      34 |       /** Startup may contain no provider save or only the pre-acceptance draft. */
+      35 |       const effect = owner.update(state, provider);
+    > 36 |       expect(effect).toMatchObject({kind: "save", game: {pendingOutcome: {kind: "win", attempts}}});
+         |                      ^
+      37 |       if(effect?.kind === "restore") state = gameSessionReducer(state, effect.action);
+      38 |       expect(state.modal).toBe("victory");
+      39 |       expect(state.engineSnapshot).toMatchObject({attemptsUsed: attempts, gameOver: true});
+
+      at src/play/__tests__/GameSessionCheckpoints.test.ts:36:22
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 11 passed, 14 total
+Snapshots:   0 total
+Time:        0.264 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/GameSessionCheckpoints.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/GameSessionCheckpoints.test.ts

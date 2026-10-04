@@ -15,6 +15,8 @@ const completionPath = path.join(root, "src/play/game/hooks/useCompletionDeliver
 const lifecyclePath = path.join(root, "src/play/useHostRiddleLifecycle.ts");
 const raceInputPath = path.join(root, "src/play/race/components/NativeAnswerInput.tsx");
 const playableInputPath = path.join(root, "src/playable/YouTubeNativeAnswerInput.tsx");
+const authPath = path.join(root, "src/play/useHostAuthSession.ts");
+const sessionPath = path.join(root, "src/play/gameSession.ts");
 const samples = [];
 const baselineFiles = new Set((process.env.SOLO_RECOVERY_BASELINE_FILES ?? "").split(",").filter(Boolean));
 const source = `
@@ -22,9 +24,14 @@ import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {useCompletionDelivery} from ${JSON.stringify(completionPath)};
 import {useHostRiddleLifecycle} from ${JSON.stringify(lifecyclePath)};
+import {RIDDLE_LOAD_DEADLINE_MS} from ${JSON.stringify(path.join(root, "src/play/riddleLoadDeadline.ts"))};
 import {NativeAnswerInput} from ${JSON.stringify(raceInputPath)};
 import {YouTubeNativeAnswerInput} from ${JSON.stringify(playableInputPath)};
+import {useHostAuthSession} from ${JSON.stringify(authPath)};
+import {useHostOperations} from ${JSON.stringify(path.join(root, "src/play/useHostOperations.ts"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(sessionPath)};
 window.probe={calls:[],messages:[],acknowledged:0,ready:false};
+window.contentDeadlineMs=RIDDLE_LOAD_DEADLINE_MS;
 const root=createRoot(document.getElementById('root'));
 const question={riddleId:'classic_2',text:'A tall animal',answerLength:7,
   sessionToken:'00000000-0000-4000-8000-000000000002',gameMode:'classic',index:2};
@@ -49,10 +56,11 @@ const options={userId:'player',initialGameMode:'classic',locale:'en',services,
   setNotice:()=>{},onRecoveryAttempt:()=>{}};
 function Startup(){
   const [profile,setProfile]=useState({coins:300});window.probe.updateProfile=setProfile;
-  const lifecycle=useHostRiddleLifecycle({...options,profile});
+  const operations=useHostOperations({postOperation:options.postOperation});
+  const lifecycle=useHostRiddleLifecycle({...options,profile,withActivity:operations.withActivity});
   window.probe.load=()=>lifecycle.loadRiddle({gameMode:'classic',locale:'en'},'held-load');
   useEffect(()=>{window.probe.ready=true;return()=>{window.probe.ready=false;};},[]);
-  return <p>Startup: {lifecycle.startupComplete?'playable':'waiting for authority'}</p>;
+  return <p data-activity={operations.activityActive}>Startup: {lifecycle.startupComplete?'playable':'waiting for authority'}</p>;
 }
 function NativeEditor({variant}){
   const [draft,setDraft]=useState('ABC');
@@ -64,8 +72,34 @@ function NativeEditor({variant}){
   useEffect(()=>{window.probe.ready=true;return()=>{window.probe.ready=false;};},[]);
   return <><output>{draft}</output>{variant==='race'?<NativeAnswerInput {...props}/>:<YouTubeNativeAnswerInput {...props} label='Answer'/>}</>;
 }
+const restoredProfile={coins:300};
+const authOptions={auth:{subscribe:callback=>{
+  window.probe.publishAuth=callback;callback({user:{uid:'Alice',isAnonymous:false},profile:null});return()=>{};
+}}};
+const postAuth=()=>{};
+function AuthHost(){
+  const {snapshot}=useHostAuthSession({services:authOptions,initialProfile:restoredProfile,postToGame:postAuth});
+  useEffect(()=>{window.probe.ready=true;return()=>{window.probe.ready=false;};},[]);
+  return <output data-owner={snapshot.user?.uid}>{snapshot.profile?.coins??'waiting for profile'}</output>;
+}
+function AccountSession(){
+  const [state,send]=React.useReducer(gameSessionReducer,undefined,()=>{
+    let current=gameSessionReducer(createInitialGameSession(),{type:'hostInit',locale:'en',gameMode:'classic',
+      user:{uid:'Alice',isAnonymous:false,accountGeneration:1},profile:null,products:[]});
+    current=gameSessionReducer(current,{type:'loadRiddle',riddle:question});
+    current=gameSessionReducer(current,{type:'guessRequested'});
+    return gameSessionReducer(current,{type:'guessResolved',attempts:1,isCorrect:true,gameOver:true,canContinue:false,
+      feedback:{guess:['G','I','R','A','F','F','E'],feedback:Array(7).fill('green')}});
+  });
+  window.probe.ack=useCompletionDelivery({outcome:state.lastOutcome,dispatch:send,postToHost:post,
+    ownerKey:JSON.stringify([state.user?.uid,state.user?.accountGeneration])});
+  window.probe.changeAccount=()=>send({type:'authState',user:{uid:'Bob',isAnonymous:false,accountGeneration:1},profile:{coins:800}});
+  window.probe.newQuestion=()=>send({type:'loadRiddle',riddle:{...question,riddleId:'bob-question',index:3}});
+  useEffect(()=>{window.probe.ready=true;return()=>{window.probe.ready=false;};},[]);
+  return <output data-owner={state.user?.uid} data-modal={state.modal??'none'} data-riddle={state.riddle?.riddleId??'none'}>{state.profile?.coins??'waiting'}</output>;
+}
 window.mount=(kind,config={})=>{window.probe={calls:[],messages:[],acknowledged:0,ready:false,...config};
-  root.render(<React.StrictMode>{kind==='completion'?<Completion/>:kind==='startup'?<Startup/>:<NativeEditor variant={kind}/>}</React.StrictMode>);};
+  root.render(<React.StrictMode>{kind==='completion'?<Completion/>:kind==='startup'?<Startup/>:kind==='auth'?<AuthHost/>:kind==='account-session'?<AccountSession/>:<NativeEditor variant={kind}/>}</React.StrictMode>);};
 window.retire=()=>root.render(null);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
@@ -79,7 +113,7 @@ try {
     resolveId(id) {if (id.endsWith("preloadGameModals")) return "\0modal-preload-stub";},
     async load(id) {
       if (id === "\0modal-preload-stub") return "export const preloadGameModals=async()=>undefined;";
-      if (process.env.SOLO_RECOVERY_BASELINE_DIR && [completionPath, lifecyclePath, raceInputPath, playableInputPath].includes(id) &&
+      if (process.env.SOLO_RECOVERY_BASELINE_DIR && [completionPath, lifecyclePath, raceInputPath, playableInputPath, authPath, sessionPath].includes(id) &&
         (!baselineFiles.size || baselineFiles.has(path.basename(id))))
         return readFile(path.join(process.env.SOLO_RECOVERY_BASELINE_DIR, path.basename(id)), "utf8");
     },
@@ -119,6 +153,32 @@ try {
     const acceptedCount = await page.evaluate(() => window.probe.calls.length);
     await page.waitForTimeout(1200);
     assert.equal(await page.evaluate(() => window.probe.calls.length), acceptedCount, "Acknowledgement stops all retry timers");
+    await mount("account-session");
+    await page.waitForFunction(() => window.probe.calls.length >= 1);
+    assert.notEqual(await page.locator('output').getAttribute('data-modal'), 'none');
+    const retiredReceipt = await page.evaluate(() => window.probe.calls[0].message.requestId);
+    await page.evaluate(() => window.probe.changeAccount());
+    await page.waitForFunction(() => document.querySelector('output').dataset.owner === 'Bob');
+    assert.equal(await page.locator('output').getAttribute('data-modal'), 'none');
+    assert.equal(await page.locator('output').getAttribute('data-riddle'), 'none');
+    assert.equal(await page.evaluate(id => window.probe.ack(true,id), retiredReceipt), false);
+    const retiredCount = await page.evaluate(() => window.probe.calls.length);
+    await page.evaluate(() => {window.probe.newQuestion();window.dispatchEvent(new Event('online'));});
+    await page.waitForFunction(() => document.querySelector('output').dataset.riddle === 'bob-question');
+    await page.waitForTimeout(1200);
+    assert.equal(await page.evaluate(() => window.probe.calls.length), retiredCount, 'Replaced accounts cannot resend old terminal outcomes');
+    await mount("startup", {hold: true});
+    await page.waitForFunction(() => typeof window.probe.release === 'function');
+    assert.equal(await page.locator('p').getAttribute('data-activity'), 'true', 'Held startup content owns the blocking activity boundary');
+    await page.evaluate(() => {window.probe.releaseExpired=window.probe.release;window.probe.hold=false;});
+    await page.waitForFunction(() => window.probe.messages.length === 1, null, {
+      timeout: await page.evaluate(() => window.contentDeadlineMs + 4000),
+    });
+    assert.equal(await page.evaluate(() => window.probe.calls.length), 2, 'Hanging content releases its wait and starts one bounded recovery');
+    await page.waitForFunction(() => document.querySelector('p').dataset.activity === 'false');
+    await page.evaluate(() => window.probe.releaseExpired());
+    await page.waitForTimeout(100);
+    assert.equal(await page.evaluate(() => window.probe.messages.length), 1, 'Expired content cannot replace a recovered question');
     await mount("startup", {fail: true});
     await page.waitForFunction(() => window.probe.calls.length >= 2);
     const recoveredAt = await page.evaluate(() => {
@@ -174,12 +234,20 @@ try {
       });
       assert.equal(await page.evaluate(() => window.probe.backspaces), 2, "Disabled editors cannot accept software deletions");
     }
+    await mount("auth");
+    await page.waitForFunction(() => document.querySelector('output')?.textContent === '300');
+    await page.evaluate(() => window.probe.publishAuth({user:{uid:'Bob',isAnonymous:false},profile:null}));
+    await page.waitForFunction(() => document.querySelector('output')?.dataset.owner === 'Bob');
+    assert.equal(await page.locator("output").innerText(), "waiting for profile", "A replacement account must not inherit restored coins");
+    await page.evaluate(() => window.probe.publishAuth({user:{uid:'Bob',isAnonymous:false},profile:{coins:800}}));
+    await page.waitForFunction(() => document.querySelector('output')?.textContent === '800');
     assert.deepEqual(errors, []);
     samples.push({width, completionReconnectMs, startupReconnectMs,
       effectReplayRecovered: true, synchronousAcknowledgementStoppedRetries: true,
-      currentProfilePreserved: true, retiredLoadRejected: true, nativeDeletionAndImePreserved: true});
+      currentProfilePreserved: true, retiredLoadRejected: true, nativeDeletionAndImePreserved: true,
+      restoredProfileAccountIsolated: true, accountVictoryAndReceiptsRetired: true, hangingContentRecovered: true});
     await context.close();
-    console.log(`PASS ${width}px: effect replay, completion/startup reconnect, fresh profile, and unmount ownership`);
+    console.log(`PASS ${width}px: effect replay, completion/startup reconnect, fresh profile, account retirement, and unmount ownership`);
   }
   await writeFile(path.join(output, "single-player-recovery.json"), JSON.stringify({
     authority: "Injected local services and actual React hooks; timings exclude production network", samples,

@@ -1,0 +1,10 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "physical typing resumes after toolbar submission",
+    "actual": "",
+    "expected": "rome"
+  }
+]

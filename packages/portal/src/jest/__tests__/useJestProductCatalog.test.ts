@@ -7,12 +7,14 @@ import type {JestSession} from "../types";
 const mockEffects: Array<() => void> = [];
 /** Provides mock set products behavior. */
 const mockSetProducts = jest.fn();
+/** Observes provider loading/error state independently of catalog publication. */
+const mockSetCatalogState = jest.fn();
 
 jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
-  useRef: () => ({current: 0}),
+  useRef: (current: unknown) => ({current}),
   useEffect: (effect: () => void) => mockEffects.push(effect),
-  useState: () => [[], mockSetProducts],
+  useState: (initial: unknown) => [initial, Array.isArray(initial) ? mockSetProducts : mockSetCatalogState],
 }));
 
 import {useJestProductCatalog} from "../useJestProductCatalog";
@@ -149,6 +151,7 @@ describe("useJestProductCatalog", () => {
 
 it("refreshes a Config-panel activation without restarting the player session", async () => {
   /** Keeps the same session while changing provider state. */
+  /** Exercises registered catalog refreshes with subscriptions enabled. */
   const {getProducts, getSubscriptions, state} = createHarness(session(true), true);
   /** Starts with an inactive subscription offer. */
   const offer = {...product("premium", "subscription"), subscriptionStatus: "inactive" as const};
@@ -181,4 +184,35 @@ it.each([false, true])("ignores departed-session responses (failure: %s)", async
   settle((fails ? new Error("offline") : {status: "success", value: []}) as never);
   await new Promise((resolve) => setTimeout(resolve, 0));
   expect(mockSetProducts).not.toHaveBeenCalled();
+});
+
+
+it("preserves confirmed consumables on a transient refresh failure and clears the error after recovery", async () => {
+  /** A previously confirmed consumable survives a transient SDK refresh failure. */
+  const coin = product("coins-250", "consumable");
+  /** Captures catalog refreshes for the current guest session. */
+  const {getProducts, state} = createHarness(session(false));
+  getProducts.mockResolvedValueOnce({status: "success", value: [coin]})
+    .mockResolvedValueOnce({status: "retryable-failure", message: "offline"})
+    .mockResolvedValueOnce({status: "success", value: []});
+  await state[2]();
+  await state[2]();
+  expect(mockSetProducts).toHaveBeenLastCalledWith([coin]);
+  expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: true});
+  await state[2]();
+  expect(mockSetProducts).toHaveBeenLastCalledWith([]);
+  expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: false});
+});
+
+it("preserves consumables when the SDK throws while keeping subscription offers closed", async () => {
+  /** A previously confirmed consumable survives a transient SDK refresh failure. */
+  const coin = product("coins-250", "consumable");
+  /** Exercises registered catalog refreshes with subscriptions enabled. */
+  const {getProducts, getSubscriptions, state} = createHarness(session(true), true);
+  getProducts.mockResolvedValueOnce({status: "success", value: [coin]}).mockRejectedValueOnce(new Error("offline"));
+  getSubscriptions.mockResolvedValue({status: "success", value: [product("premium", "subscription")]});
+  await state[2]();
+  await state[2]();
+  expect(mockSetProducts).toHaveBeenLastCalledWith([coin]);
+  expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: true});
 });

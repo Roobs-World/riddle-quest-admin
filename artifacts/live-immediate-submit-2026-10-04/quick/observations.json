@@ -1,0 +1,60 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "immediate answer advances one riddle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "input cannot create a material local save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "consumed next native editor is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

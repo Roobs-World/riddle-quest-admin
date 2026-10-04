@@ -12,8 +12,11 @@ import {captureBrowserException} from "../observability/browserErrorReporter";
 import {bindFacebookEntryReferral, facebookLaunchFromEntryData} from "./referrals";
 import {createFacebookReferralSharing} from "./FacebookReferralSharing";
 import {createFacebookLiveRaceSharing} from "./FacebookLiveRaceSharing";
+import {createFacebookContextChallenges} from "./contextChallenges";
 import {createFacebookTournamentPresentation} from "./FacebookTournamentPresentation";
 import {FacebookContextCoordinator} from "./contexts";
+import {createFacebookContextBoard} from "./contextBoard";
+import {createFacebookContextMatchmaking} from "./liveContextMatchmaking";
 import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
 import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
@@ -30,6 +33,8 @@ import {reconcilePresenceOptIn} from "../presence/reconcilePresenceOptIn";
 import {startOptionalPresence} from "../presence/startOptionalPresence";
 import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../play/services";
 import {PlayerProjectionPersistence} from "../platform/PlayerProjectionPersistence";
+import {usePlayerProjectionRecovery} from "../platform/usePlayerProjectionRecovery";
+import {PlayerSaveRecoveryLayout} from "../play/PlayerSaveRecoveryLayout";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
 import {installFacebookAnalytics} from "./analytics";
 
@@ -92,6 +97,11 @@ export function FacebookPlatformEntry() {
   const notificationPromptRef = useRef<FacebookNotificationPromptCoordinator | null>(null);
   /** Provides deletion gate ref behavior. */
   const deletionGateRef = useRef(new LocalAccountDeletionGate());
+  /** Recovery follows the initialized owner and rechecks the Facebook deletion epoch. */
+  const saveRecovery = usePlayerProjectionRecovery(startup.status === "ready" ? playerPersistenceRef.current : null, {
+    lifecycle: startup.status === "ready" ? startup.session.capabilities.lifecycle : undefined,
+    canRecover: () => deletionGateRef.current.isOpen(),
+  });
 
   useEffect(() => {
     /** Provides active behavior. */
@@ -104,6 +114,8 @@ export function FacebookPlatformEntry() {
     let unsubscribeResume: (() => void) | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
+    /** Native context events belong to this authenticated entry lifetime. */
+    let unsubscribeContext: (() => void) | undefined;
     /** Stops presence. */
     let stopPresence: (() => Promise<void>) | undefined;
     void (async () => {
@@ -260,10 +272,8 @@ export function FacebookPlatformEntry() {
         preferencesRef.current = preferences;
         unsubscribePreferences = subscribeToPlayerPreferenceChanges((change) => {
           if (!deletionGateRef.current.isOpen()) return;
-          void deletionGateRef.current
-            .run(async () => {
-              /** Provides next behavior. */
-              const next = await playerPersistenceRef.current?.updatePreferences(change);
+          void playerPersistenceRef.current?.updatePreferences(change)
+            .then(next => {
               if (!next) return;
               preferencesRef.current = next;
             })
@@ -279,6 +289,7 @@ export function FacebookPlatformEntry() {
             ? new FacebookContextCoordinator(session.capabilities.nativeSocial, getCurrentLocale)
             : undefined;
         if (contextCoordinator) {
+          unsubscribeContext = contextCoordinator.startObserving(() => active && deletionGateRef.current.isOpen());
           /** Provides context result behavior. */
           const contextResult = await contextCoordinator.synchronizeCurrent();
           if (contextResult.status === "retryable-failure") {
@@ -291,26 +302,17 @@ export function FacebookPlatformEntry() {
         /** Provides context board behavior. */
         const contextBoard =
           contextCoordinator && contextBoardApi
-            ? {
-                list: async (locale: import("@qwordly/core/race").RaceLocale) => {
-                  /** Provides current behavior. */
-                  const current = await contextCoordinator.ensureCurrent();
-                  if (current.status !== "success") throw new Error("facebook-context-board-unavailable");
-                  return (await contextBoardApi!.list({contextId: current.value.contextId, locale})).data;
-                },
-                record: async (runId: string, locale: import("@qwordly/core/race").RaceLocale) => {
-                  /** Provides current behavior. */
-                  const current = await contextCoordinator.ensureCurrent();
-                  if (current.status !== "success") throw new Error("facebook-context-board-unavailable");
-                  return (await contextBoardApi!.record({contextId: current.value.contextId, locale, runId})).data;
-                },
-              }
+            ? createFacebookContextBoard(contextCoordinator, contextBoardApi)
             : undefined;
         /** Provides base capabilities behavior. */
         const baseCapabilities = gateFacebookSessionCapabilities(session.capabilities, {
           matchmakingEnabled,
           configurationLoaded,
         });
+        /** Private native context selection uses the original authenticated join without retargeting. */
+        const originalLiveJoin = baseCapabilities.matchmaking?.live?.join;
+        if (baseCapabilities.matchmaking && contextCoordinator)
+          baseCapabilities.matchmaking = createFacebookContextMatchmaking(baseCapabilities.matchmaking, contextCoordinator, getCurrentLocale);
         /** Native friend invitations remain independent of referral reward configuration. */
         const shareChallenge = createFacebookLiveRaceSharing({sdk, enabled: matchmakingEnabled, ageCategory,
           isActive: () => active && deletionGateRef.current.isOpen(),
@@ -318,6 +320,16 @@ export function FacebookPlatformEntry() {
         if (baseCapabilities.matchmaking?.live && shareChallenge) {
           baseCapabilities.matchmaking = {...baseCapabilities.matchmaking,
             live: {...baseCapabilities.matchmaking.live, shareChallenge}};
+        }
+        if (baseCapabilities.matchmaking?.live && contextCoordinator && originalLiveJoin) {
+          /** The artifact declares its update template explicitly, independently of native SDK support. */
+          const chooseChallenge = createFacebookContextChallenges({sdk, coordinator: contextCoordinator,
+            live: baseCapabilities.matchmaking.live, join: originalLiveJoin,
+            template: import.meta.env.VITE_FACEBOOK_CONTEXT_CHALLENGE_TEMPLATE, enabled: matchmakingEnabled, ageCategory,
+            isActive: () => active && deletionGateRef.current.isOpen(), getLocale: getCurrentLocale,
+            reportFailure: error => captureBrowserException(error, {component: "facebook_multiplayer", operation: "context_invite"})});
+          if (chooseChallenge) baseCapabilities.matchmaking = {...baseCapabilities.matchmaking,
+            live: {...baseCapabilities.matchmaking.live, chooseChallenge}};
         }
         /** Provides synchronized session behavior. */
         const synchronizedSession = contextCoordinator
@@ -404,14 +416,18 @@ export function FacebookPlatformEntry() {
         }
         /** Provides player data behavior. */
         const playerData = await session.storage.readPlayerData();
-        playerPersistenceRef.current = new PlayerProjectionPersistence(
+        if (!active) return;
+        /** Pause drains the checkpoint owner belonging to this provider session. */
+        const playerPersistence = new PlayerProjectionPersistence(
           session.storage,
           playerData,
           preferencesRef.current,
+          deletionGateRef.current,
         );
+        playerPersistenceRef.current = playerPersistence;
         unsubscribePause = session.capabilities.lifecycle?.onPause(() =>
           settleFacebookPause({
-            flushStorage: () => session.storage.flush(),
+            flushStorage: () => playerPersistence.flush(),
             stopPresence,
             reportFailure: ({operation, error}) =>
               captureBrowserException(error, {
@@ -436,6 +452,7 @@ export function FacebookPlatformEntry() {
       unsubscribePause?.();
       unsubscribeResume?.();
       unsubscribePreferences?.();
+      unsubscribeContext?.();
       void stopPresence?.();
       presenceRef.current = null;
       notificationPromptRef.current = null;
@@ -446,12 +463,12 @@ export function FacebookPlatformEntry() {
   const writePlayerData = useCallback(
     async (update: PlayerDataUpdate) => {
       if (startup.status !== "ready" || !deletionGateRef.current.isOpen()) return;
-      await deletionGateRef.current.run(async () => {
-        /** Provides persistence behavior. */
-        const persistence = playerPersistenceRef.current;
-        if (!persistence) return;
-        await persistence.update(update);
-      });
+      /** Accepts checkpoints synchronously; target ownership is checked when the merged batch executes. */
+      try {
+        await playerPersistenceRef.current?.update(update);
+      } catch (error) {
+        if (deletionGateRef.current.isOpen()) captureBrowserException(error, {component: "facebook_progress", operation: "persist"});
+      }
     },
     [startup],
   );
@@ -461,30 +478,30 @@ export function FacebookPlatformEntry() {
     if (startup.status !== "ready" || !presenceRef.current || !deletionGateRef.current.isOpen()) return;
     /** Provides next behavior. */
     const next = !presenceEnabled;
-    void deletionGateRef.current
-      .run(async () => {
-        /** Complete merged preferences are owned by the persistence module. */
-        const preferences = await playerPersistenceRef.current?.updatePreferences({presenceEnabled: next});
+    void playerPersistenceRef.current?.updatePreferences({presenceEnabled: next})
+      .then(async preferences => {
         if (!preferences) return;
         preferencesRef.current = preferences;
-        /** Provides presence behavior. */
-        const presence = presenceRef.current;
-        await reconcilePresenceOptIn({
-          enabled: next,
-          canStart: true,
-          start: async () => {
-            await presence?.start(true);
-          },
-          stop: async () => {
-            await presence?.stop();
-          },
-          setConsent: async (enabled) => {
-            /** Provides {set presence consent} behavior. */
-            const {setPresenceConsent} = await import("../firebase");
-            await setPresenceConsent({enabled});
-          },
+        await deletionGateRef.current.run(async () => {
+          /** Provides presence behavior. */
+          const presence = presenceRef.current;
+          await reconcilePresenceOptIn({
+            enabled: next,
+            canStart: true,
+            start: async () => {
+              await presence?.start(true);
+            },
+            stop: async () => {
+              await presence?.stop();
+            },
+            setConsent: async (enabled) => {
+              /** Provides {set presence consent} behavior. */
+              const {setPresenceConsent} = await import("../firebase");
+              await setPresenceConsent({enabled});
+            },
+          });
+          setPresenceEnabled(next);
         });
-        setPresenceEnabled(next);
       })
       .catch((error) => {
         if (deletionGateRef.current.isOpen()) {
@@ -595,28 +612,30 @@ export function FacebookPlatformEntry() {
     );
   }
   return (
-    <PlayHostApp
-      raceSurface={raceSurface}
-      session={createHostedPlaySession({
-        hostServices,
-        hostConfigurationWarning,
-        platformCapabilities: startup.session.capabilities,
-        platformPlayerId: startup.session.playerId,
-        initialPlayerData: startup.playerData,
-        ...startup.launch,
-        referralSharing: startup.referralSharing,
-        onPlayerDataChange: (update) => void writePlayerData(update),
-        accountDeletionServiceGate: deletionGateRef.current,
-        presenceEnabled,
-        onTogglePresence: presenceAvailable ? togglePresence : undefined,
-        raceLocalePolicy: "all",
-        onPresenceStateChange: setPresenceState,
-      })}
-      onAccountDeletionRequested={requestAccountDeletion}
-      onAccountDeleted={completeAccountDeletion}
-      onResultScreen={showResultInterstitial}
-      onAuthoritativeComplete={handleAuthoritativeCompletion}
-      onAuthoritativeRaceResult={handleAuthoritativeRaceResult}
-    />
+    <PlayerSaveRecoveryLayout recovery={saveRecovery}>
+      <PlayHostApp
+        raceSurface={raceSurface}
+        session={createHostedPlaySession({
+          hostServices,
+          hostConfigurationWarning,
+          platformCapabilities: startup.session.capabilities,
+          platformPlayerId: startup.session.playerId,
+          initialPlayerData: startup.playerData,
+          ...startup.launch,
+          referralSharing: startup.referralSharing,
+          onPlayerDataChange: (update) => void writePlayerData(update),
+          accountDeletionServiceGate: deletionGateRef.current,
+          presenceEnabled,
+          onTogglePresence: presenceAvailable ? togglePresence : undefined,
+          raceLocalePolicy: "all",
+          onPresenceStateChange: setPresenceState,
+        })}
+        onAccountDeletionRequested={requestAccountDeletion}
+        onAccountDeleted={completeAccountDeletion}
+        onResultScreen={showResultInterstitial}
+        onAuthoritativeComplete={handleAuthoritativeCompletion}
+        onAuthoritativeRaceResult={handleAuthoritativeRaceResult}
+      />
+    </PlayerSaveRecoveryLayout>
   );
 }

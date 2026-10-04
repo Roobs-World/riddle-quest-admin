@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+Test Suites: 3 passed, 3 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        11.538 s, estimated 12 s
+Ran all test suites matching src/youtube/__tests__/youtubeBrowser.jest-playwright.test.ts|src/youtube/__tests__/standaloneCurrency.jest-playwright.test.ts|src/youtube/__tests__/achievementMilestones.jest-playwright.test.ts.

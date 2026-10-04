@@ -1041,30 +1041,30 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-S48u0VCt.js",
+      "file": "assets/index-AwvHABMl.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
-        "assets/facebook-CAb_lVek.js"
+        "assets/facebook-9lR3CmzR.js"
       ],
       "dynamicImports": [],
-      "sha256": "46b2b8e72528d080cf6a85947f8cb418d5438682a8c024267bbdcf83ca89d4f8"
+      "sha256": "ed42d1da4f9693056a6cfae79cb9eb76a6200c4ac167411605aefd3eff9b7ca2"
     },
     {
-      "file": "assets/FacebookFirebaseAppCheck-BEleBXJE.js",
+      "file": "assets/FacebookFirebaseAppCheck-T-AVah1X.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-CAb_lVek.js",
+        "assets/facebook-9lR3CmzR.js",
         "assets/vendor-firebase-C5F_jjbA.js",
-        "assets/firebase-MOeFk_Jj.js"
+        "assets/firebase-CH4-4rGi.js"
       ],
       "dynamicImports": [],
-      "sha256": "741acf546b782bc9a61d23c75fa507fd689e1927e59baf26e0100485a353f7ce"
+      "sha256": "62bf5f72a3924fbf2d77aa8f14ecab1bf31b0d60ee3860f2438f9d4992830ec0"
     },
     {
-      "file": "assets/FacebookRaceEntry-S1MHke5S.js",
+      "file": "assets/FacebookRaceEntry-CtqFUZbp.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
@@ -1073,27 +1073,27 @@
         "assets/ReferralSharingCapability-BPuwsT3q.js",
         "assets/raceSchemas-VGLErhH6.js",
         "assets/race-PBbb3u0_.js",
-        "assets/facebook-CAb_lVek.js",
-        "assets/RaceTo10Game-BhzvxeLN.js",
+        "assets/facebook-9lR3CmzR.js",
+        "assets/RaceTo10Game-BApncbOq.js",
         "assets/RankedAvatar-BdPCRi0_.js"
       ],
       "dynamicImports": [],
-      "sha256": "8926f1ea106402f59822fc785e0018bc95965fe6773753363d70f3119073e02e"
+      "sha256": "1f13da673e557444a2e07845e851baf7329f1b2ab90db2dea7bff948e203f97e"
     },
     {
-      "file": "assets/FirebasePresenceTransport-CtRQYMTb.js",
+      "file": "assets/FirebasePresenceTransport-J2qzKDH9.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
         "assets/vendor-firebase-C5F_jjbA.js",
-        "assets/firebase-MOeFk_Jj.js"
+        "assets/firebase-CH4-4rGi.js"
       ],
       "dynamicImports": [],
-      "sha256": "6bc4b061c9cc4b3ea59d913ac8eefe2c702eb9290a293add569e5a3053512c4e"
+      "sha256": "49e5355c5d70ff9052a9eca1e6fdbe7299fc8361c1fde6c02ceaad39c2bd2433"
     },
     {
-      "file": "assets/GameModalView-B6jGIrhM.js",
+      "file": "assets/GameModalView-Jn79oXhh.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
@@ -1103,12 +1103,12 @@
         "assets/achievements-zb3HfsZa.js",
         "assets/core-game-Di-PVjWZ.js",
         "assets/requestSchemas-mWakFd0b.js",
-        "assets/facebook-CAb_lVek.js",
+        "assets/facebook-9lR3CmzR.js",
         "assets/RankedAvatar-BdPCRi0_.js",
-        "assets/validation-BfMJZ7Ma.js"
+        "assets/validation-rjJE9wVw.js"
       ],
       "dynamicImports": [],
-      "sha256": "ecb5b327ef7564910023c67f9d1dac96c0d566690f429ac091f85155b6a7a967"
+      "sha256": "d33b2676a76555f8023fe2af07f6588135cba35edf5643eb6e799046467a232f"
     },
     {
       "file": "assets/PlatformPresenceSession-CzEhWnuL.js",
@@ -1121,7 +1121,7 @@
       "sha256": "52df05a575608dbd872f31e458127a4856f0819d7200623dc3cedc6a3381f037"
     },
     {
-      "file": "assets/RaceTo10Game-BhzvxeLN.js",
+      "file": "assets/RaceTo10Game-BApncbOq.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
@@ -1131,12 +1131,12 @@
         "assets/core-game-Di-PVjWZ.js",
         "assets/raceSchemas-VGLErhH6.js",
         "assets/race-PBbb3u0_.js",
-        "assets/facebook-CAb_lVek.js",
+        "assets/facebook-9lR3CmzR.js",
         "assets/bridge-GG2kXuiF.js",
         "assets/RankedAvatar-BdPCRi0_.js"
       ],
       "dynamicImports": [],
-      "sha256": "bd2ee62d91e163582224664f2cc1fd5154cd5c82a62a87b5f79c2880b84861e3"
+      "sha256": "434d2dd2db8bd9c04337068648c833a66a64b2f85965aa01bbe6e1ad33eeeee3"
     },
     {
       "file": "assets/RankedAvatar-BdPCRi0_.js",
@@ -1166,13 +1166,13 @@
       "sha256": "75c733b93743905980053f01c3d75ea3c4229db838296e0ccf88ab83ec6de842"
     },
     {
-      "file": "assets/SolarSystem-CEizMWIz.js",
+      "file": "assets/SolarSystem-C7ivJueE.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
         "assets/vendor-react-BsJIBMEs.js",
-        "assets/facebook-CAb_lVek.js",
+        "assets/facebook-9lR3CmzR.js",
         "assets/vendor-three-CqvblP5O.js",
         "assets/vendor-three-ByJ-Rtdi.js",
         "assets/vendor-three-BChfjRca.js",
@@ -1183,7 +1183,7 @@
         "assets/vendor-three-DdYm31wi.js"
       ],
       "dynamicImports": [],
-      "sha256": "aa6a3dc651b0df98944ebf91604a8846d01b4fef9ecd8b2f96ff6ed9b4baf8a8"
+      "sha256": "fa482564820e779498d06163cf90f9b5fecb04fd625a13477510f6a224bc2a3b"
     },
     {
       "file": "assets/aboutLegal-BAlSQDJA.js",
@@ -2441,7 +2441,7 @@
       "sha256": "bcbcd50c9cbb91a13121ae4e86295d4fb951c0217191f88fbf2a94efce388218"
     },
     {
-      "file": "assets/facebook-CAb_lVek.js",
+      "file": "assets/facebook-9lR3CmzR.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
@@ -2456,29 +2456,29 @@
         "assets/race-PBbb3u0_.js"
       ],
       "dynamicImports": [
-        "assets/sentry-IeS8Dd1k.js",
+        "assets/sentry-BNuXvzhN.js",
         "assets/bridge-GG2kXuiF.js",
-        "assets/GameModalView-B6jGIrhM.js",
-        "assets/RaceTo10Game-BhzvxeLN.js",
-        "assets/SolarSystem-CEizMWIz.js",
-        "assets/firebase-MOeFk_Jj.js",
+        "assets/GameModalView-Jn79oXhh.js",
+        "assets/RaceTo10Game-BApncbOq.js",
+        "assets/SolarSystem-C7ivJueE.js",
+        "assets/firebase-CH4-4rGi.js",
         "assets/race-PBbb3u0_.js",
-        "assets/firebaseLiveRaceSignals-Cu1YUbSQ.js",
+        "assets/firebaseLiveRaceSignals-vVK88QRw.js",
         "assets/raceMatchmakingFailure-6azYkzZo.js",
-        "assets/FacebookFirebaseAppCheck-BEleBXJE.js",
+        "assets/FacebookFirebaseAppCheck-T-AVah1X.js",
         "assets/vendor-firebase-C5F_jjbA.js",
         "assets/defaultBackend-BFqaAmDo.js",
-        "assets/firebaseServices-CLmc5qJc.js",
-        "assets/fakeServices-CXJcVX1y.js",
-        "assets/FacebookRaceEntry-S1MHke5S.js",
-        "assets/firebaseClient-CwAz7gnx.js",
-        "assets/FirebasePresenceTransport-CtRQYMTb.js",
+        "assets/firebaseServices-Be4PYO-P.js",
+        "assets/fakeServices-CreDMar_.js",
+        "assets/FacebookRaceEntry-CtqFUZbp.js",
+        "assets/firebaseClient-BQMtNfFv.js",
+        "assets/FirebasePresenceTransport-J2qzKDH9.js",
         "assets/PlatformPresenceSession-CzEhWnuL.js"
       ],
-      "sha256": "88e0036937e3963aebc79d6ad51edfffe39abf98406cbce9b25fccee4defdb83"
+      "sha256": "b5d7608d69221f2b7e78657b63110607cceb9b244172e0b12938c997280a6780"
     },
     {
-      "file": "assets/fakeServices-CXJcVX1y.js",
+      "file": "assets/fakeServices-CreDMar_.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
@@ -2487,60 +2487,60 @@
         "assets/core-game-Di-PVjWZ.js",
         "assets/raceSchemas-VGLErhH6.js",
         "assets/race-PBbb3u0_.js",
-        "assets/facebook-CAb_lVek.js"
+        "assets/facebook-9lR3CmzR.js"
       ],
       "dynamicImports": [],
-      "sha256": "376f7f7e23e399eec943855c1191061f182654266cf24aa382aef9047c32cc9a"
+      "sha256": "ee4881caa0272c9e4a288906e37d10973e5f0929ca61ed32e3e0cd50c0660516"
     },
     {
-      "file": "assets/firebase-MOeFk_Jj.js",
+      "file": "assets/firebase-CH4-4rGi.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-CAb_lVek.js",
+        "assets/facebook-9lR3CmzR.js",
         "assets/vendor-firebase-C5F_jjbA.js"
       ],
       "dynamicImports": [],
-      "sha256": "8b88450dffd44e5323108f35457bcf2f22594e72ea63ded241b6ffe9df819d4d"
+      "sha256": "f4b20daed6e015952d229b8665d1c9a906f1b42fb2cf1f4c0044432198864cdf"
     },
     {
-      "file": "assets/firebaseClient-CwAz7gnx.js",
+      "file": "assets/firebaseClient-BQMtNfFv.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-CAb_lVek.js",
+        "assets/facebook-9lR3CmzR.js",
         "assets/vendor-firebase-C5F_jjbA.js",
-        "assets/firebase-MOeFk_Jj.js"
+        "assets/firebase-CH4-4rGi.js"
       ],
       "dynamicImports": [],
-      "sha256": "e65b007936055c5b1107f3f542becf54d304e202351e79fc12b353ca93ec5bd4"
+      "sha256": "4572fe5f742515b975606e882e1b93d636aa3f4615c1b67edb4b0461498d27f9"
     },
     {
-      "file": "assets/firebaseLiveRaceSignals-Cu1YUbSQ.js",
+      "file": "assets/firebaseLiveRaceSignals-vVK88QRw.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-CAb_lVek.js",
-        "assets/firebase-MOeFk_Jj.js"
+        "assets/facebook-9lR3CmzR.js",
+        "assets/firebase-CH4-4rGi.js"
       ],
       "dynamicImports": [],
-      "sha256": "1a848e59935e76838ee5a93553c07a76a2e8c801cb0ebc3b4e7714d6bf7d90e8"
+      "sha256": "994b6fc5e9c584b5e169e5ba3f1ee96c09cd4c1f7da8a14036a4a1a22d1e06b3"
     },
     {
-      "file": "assets/firebaseServices-CLmc5qJc.js",
+      "file": "assets/firebaseServices-Be4PYO-P.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
         "assets/vendor-firebase-C5F_jjbA.js",
-        "assets/firebase-MOeFk_Jj.js",
-        "assets/validation-BfMJZ7Ma.js"
+        "assets/firebase-CH4-4rGi.js",
+        "assets/validation-rjJE9wVw.js"
       ],
       "dynamicImports": [],
-      "sha256": "ffae7a309e8c6805972c224cad65a41e7abe423904381d2324e2a590b787db11"
+      "sha256": "a30b1c05f9f83a5ef6550b66998e4badda78f0b326f16025cd7234ed77fb8f49"
     },
     {
       "file": "assets/game-1Y1gZeIn.js",
@@ -4147,15 +4147,15 @@
       "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
     },
     {
-      "file": "assets/sentry-IeS8Dd1k.js",
+      "file": "assets/sentry-BNuXvzhN.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-CAb_lVek.js"
+        "assets/facebook-9lR3CmzR.js"
       ],
       "dynamicImports": [],
-      "sha256": "0b4a406a6a0dcefc7041966fc283da3c41d1a5b9da71e1ad643a76b9d95a7736"
+      "sha256": "48665e5571280e97852ac092b10e0bd676b6dac0e62932124acd2f615d4d7936"
     },
     {
       "file": "assets/settings-BJfbarUe.js",
@@ -4908,17 +4908,17 @@
       "sha256": "d98506d32c16b78d0b62542dce41779bf75e156202d9715c07a03b26fc263e28"
     },
     {
-      "file": "assets/validation-BfMJZ7Ma.js",
+      "file": "assets/validation-rjJE9wVw.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
         "assets/raceSchemas-VGLErhH6.js",
         "assets/requestSchemas-mWakFd0b.js",
-        "assets/firebaseServices-CLmc5qJc.js"
+        "assets/firebaseServices-Be4PYO-P.js"
       ],
       "dynamicImports": [],
-      "sha256": "50018f99bc4d3d05f2deafca40c2a2987de9334300ac7a6e65e24eafa3307e93"
+      "sha256": "c39a0f73e5aaa22e9250f6bad319120d588d8701acfd120ae08a3eb5d593f16d"
     },
     {
       "file": "assets/vendor-firebase-C5F_jjbA.js",
@@ -5275,24 +5275,24 @@
   ],
   "files": [
     {
-      "file": "assets/FacebookFirebaseAppCheck-BEleBXJE.js",
-      "sha256": "741acf546b782bc9a61d23c75fa507fd689e1927e59baf26e0100485a353f7ce"
+      "file": "assets/FacebookFirebaseAppCheck-T-AVah1X.js",
+      "sha256": "62bf5f72a3924fbf2d77aa8f14ecab1bf31b0d60ee3860f2438f9d4992830ec0"
     },
     {
-      "file": "assets/FacebookRaceEntry-S1MHke5S.js",
-      "sha256": "8926f1ea106402f59822fc785e0018bc95965fe6773753363d70f3119073e02e"
+      "file": "assets/FacebookRaceEntry-CtqFUZbp.js",
+      "sha256": "1f13da673e557444a2e07845e851baf7329f1b2ab90db2dea7bff948e203f97e"
     },
     {
-      "file": "assets/FirebasePresenceTransport-CtRQYMTb.js",
-      "sha256": "6bc4b061c9cc4b3ea59d913ac8eefe2c702eb9290a293add569e5a3053512c4e"
-    },
-    {
-      "file": "assets/GameModalView-B6jGIrhM.js",
-      "sha256": "ecb5b327ef7564910023c67f9d1dac96c0d566690f429ac091f85155b6a7a967"
+      "file": "assets/FirebasePresenceTransport-J2qzKDH9.js",
+      "sha256": "49e5355c5d70ff9052a9eca1e6fdbe7299fc8361c1fde6c02ceaad39c2bd2433"
     },
     {
       "file": "assets/GameModalView-CEP3Nqf2.css",
       "sha256": "3f2b37f1526deef637eee8ba66e4ecead7891ed369c2080352b5885425fd3e53"
+    },
+    {
+      "file": "assets/GameModalView-Jn79oXhh.js",
+      "sha256": "d33b2676a76555f8023fe2af07f6588135cba35edf5643eb6e799046467a232f"
     },
     {
       "file": "assets/PlatformPresenceSession-CzEhWnuL.js",
@@ -5315,8 +5315,8 @@
       "sha256": "cb35688673341b84ed9c51cff84abf796c2c6c91dc1e5747efb4ee9d6fde7140"
     },
     {
-      "file": "assets/RaceTo10Game-BhzvxeLN.js",
-      "sha256": "bd2ee62d91e163582224664f2cc1fd5154cd5c82a62a87b5f79c2880b84861e3"
+      "file": "assets/RaceTo10Game-BApncbOq.js",
+      "sha256": "434d2dd2db8bd9c04337068648c833a66a64b2f85965aa01bbe6e1ad33eeeee3"
     },
     {
       "file": "assets/RaceTo10Game-nhdg7qEI.css",
@@ -5335,8 +5335,8 @@
       "sha256": "75c733b93743905980053f01c3d75ea3c4229db838296e0ccf88ab83ec6de842"
     },
     {
-      "file": "assets/SolarSystem-CEizMWIz.js",
-      "sha256": "aa6a3dc651b0df98944ebf91604a8846d01b4fef9ecd8b2f96ff6ed9b4baf8a8"
+      "file": "assets/SolarSystem-C7ivJueE.js",
+      "sha256": "fa482564820e779498d06163cf90f9b5fecb04fd625a13477510f6a224bc2a3b"
     },
     {
       "file": "assets/aboutLegal-BAlSQDJA.js",
@@ -5851,32 +5851,32 @@
       "sha256": "bcbcd50c9cbb91a13121ae4e86295d4fb951c0217191f88fbf2a94efce388218"
     },
     {
-      "file": "assets/facebook-CAb_lVek.js",
-      "sha256": "88e0036937e3963aebc79d6ad51edfffe39abf98406cbce9b25fccee4defdb83"
+      "file": "assets/facebook-9lR3CmzR.js",
+      "sha256": "b5d7608d69221f2b7e78657b63110607cceb9b244172e0b12938c997280a6780"
     },
     {
       "file": "assets/facebook-CLIP9yjv.css",
       "sha256": "3aa5e504467a50694dba04ea6450dd92a806e1f985730442a95728db7507b1ba"
     },
     {
-      "file": "assets/fakeServices-CXJcVX1y.js",
-      "sha256": "376f7f7e23e399eec943855c1191061f182654266cf24aa382aef9047c32cc9a"
+      "file": "assets/fakeServices-CreDMar_.js",
+      "sha256": "ee4881caa0272c9e4a288906e37d10973e5f0929ca61ed32e3e0cd50c0660516"
     },
     {
-      "file": "assets/firebase-MOeFk_Jj.js",
-      "sha256": "8b88450dffd44e5323108f35457bcf2f22594e72ea63ded241b6ffe9df819d4d"
+      "file": "assets/firebase-CH4-4rGi.js",
+      "sha256": "f4b20daed6e015952d229b8665d1c9a906f1b42fb2cf1f4c0044432198864cdf"
     },
     {
-      "file": "assets/firebaseClient-CwAz7gnx.js",
-      "sha256": "e65b007936055c5b1107f3f542becf54d304e202351e79fc12b353ca93ec5bd4"
+      "file": "assets/firebaseClient-BQMtNfFv.js",
+      "sha256": "4572fe5f742515b975606e882e1b93d636aa3f4615c1b67edb4b0461498d27f9"
     },
     {
-      "file": "assets/firebaseLiveRaceSignals-Cu1YUbSQ.js",
-      "sha256": "1a848e59935e76838ee5a93553c07a76a2e8c801cb0ebc3b4e7714d6bf7d90e8"
+      "file": "assets/firebaseLiveRaceSignals-vVK88QRw.js",
+      "sha256": "994b6fc5e9c584b5e169e5ba3f1ee96c09cd4c1f7da8a14036a4a1a22d1e06b3"
     },
     {
-      "file": "assets/firebaseServices-CLmc5qJc.js",
-      "sha256": "ffae7a309e8c6805972c224cad65a41e7abe423904381d2324e2a590b787db11"
+      "file": "assets/firebaseServices-Be4PYO-P.js",
+      "sha256": "a30b1c05f9f83a5ef6550b66998e4badda78f0b326f16025cd7234ed77fb8f49"
     },
     {
       "file": "assets/game-1Y1gZeIn.js",
@@ -5939,8 +5939,8 @@
       "sha256": "aa67a98e82fa3153c0cf7dc066c44f446ce5b7d967cd4a83467df5345cf8511f"
     },
     {
-      "file": "assets/index-S48u0VCt.js",
-      "sha256": "46b2b8e72528d080cf6a85947f8cb418d5438682a8c024267bbdcf83ca89d4f8"
+      "file": "assets/index-AwvHABMl.js",
+      "sha256": "ed42d1da4f9693056a6cfae79cb9eb76a6200c4ac167411605aefd3eff9b7ca2"
     },
     {
       "file": "assets/leaderboard-BRVy3Mmi.js",
@@ -6403,8 +6403,8 @@
       "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
     },
     {
-      "file": "assets/sentry-IeS8Dd1k.js",
-      "sha256": "0b4a406a6a0dcefc7041966fc283da3c41d1a5b9da71e1ad643a76b9d95a7736"
+      "file": "assets/sentry-BNuXvzhN.js",
+      "sha256": "48665e5571280e97852ac092b10e0bd676b6dac0e62932124acd2f615d4d7936"
     },
     {
       "file": "assets/settings-BJfbarUe.js",
@@ -6771,8 +6771,8 @@
       "sha256": "d98506d32c16b78d0b62542dce41779bf75e156202d9715c07a03b26fc263e28"
     },
     {
-      "file": "assets/validation-BfMJZ7Ma.js",
-      "sha256": "50018f99bc4d3d05f2deafca40c2a2987de9334300ac7a6e65e24eafa3307e93"
+      "file": "assets/validation-rjJE9wVw.js",
+      "sha256": "c39a0f73e5aaa22e9250f6bad319120d588d8701acfd120ae08a3eb5d593f16d"
     },
     {
       "file": "assets/vendor-firebase-C5F_jjbA.js",
@@ -6900,7 +6900,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "209cf5bf82fc26d8b2be8e05282ae424da05398a1ddd68b1000ed1d7cadbbc23"
+      "sha256": "228071fb5a60661fcebf5690cda553582bd5ca0312c0422cc6540ea205927f03"
     },
     {
       "file": "third-party-licenses.txt",

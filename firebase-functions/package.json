@@ -48,6 +48,8 @@
     "race:match:benchmark": "pnpm build && firebase emulators:exec --only firestore --project demo-riddle-quest-match-benchmark \"node scripts/race-match-benchmark.js\"",
     "race:match:calibrate": "pnpm build && node scripts/run-with-functions-node.js scripts/race-match-calibration.js",
     "race:delivery:replay": "pnpm build && node scripts/run-with-functions-node.js scripts/race-delivery-replay.js",
+    "test:presence-reconciliation": "node --test scripts/presence-visibility-reconcile.test.js",
+    "presence:reconcile": "pnpm build && node scripts/run-with-functions-node.js scripts/presence-visibility-reconcile.js",
     "leaderboard:privacy:purge-orphans": "pnpm build && node scripts/run-with-functions-node.js scripts/purge-orphan-leaderboard-rows.js",
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "usernames:migrate": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/migrate-username-reservations.js",
@@ -97,6 +99,11 @@
     "rimraf": "^6.1.3",
     "ts-jest": "^29.4.14",
     "typescript": "npm:@typescript/typescript6@6.0.2"
+  },
+  "overrides": {
+    "basic-ftp": "6.2.1",
+    "qs": "6.16.0",
+    "uuid": "11.1.1"
   },
   "private": true
 }

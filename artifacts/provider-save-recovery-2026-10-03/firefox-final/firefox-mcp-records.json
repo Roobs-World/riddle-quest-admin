@@ -1,0 +1,683 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "provider-save-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:38459/facebook/?scenario=auto",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[0] \u2192 http://127.0.0.1:38459/facebook/?scenario=auto (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<80&&!window.durableData()?.profile;i++)await new Promise(r=>setTimeout(r,50));window.firefoxChecks=[];window.firefoxInitializations=window.probe.initializations;window.probe.failDraft=1;document.activeElement?.blur();return JSON.stringify({ready:!!window.durableData()?.profile,initializations:window.probe.initializations});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"ready\\\":true,\\\"initializations\\\":2}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<120&&window.durableData()?.activeGame?.currentLetters.join('')!=='PIAN';i++)await new Promise(r=>setTimeout(r,50));const result={case:'facebook-auto',draft:window.draft(),durable:window.durableData()?.activeGame?.currentLetters.join(''),attempts:window.probe.writes.filter(x=>x.activeGame?.currentLetters.join('')==='PIAN').length,status:window.recovery.getSnapshot(),initializationsUnchanged:window.probe.initializations===window.firefoxInitializations,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result);return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"facebook-auto\\\",\\\"draft\\\":\\\"PIAN\\\",\\\"durable\\\":\\\"PIAN\\\",\\\"attempts\\\":2,\\\"status\\\":\\\"quiet\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "o"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<120&&!(window.probe.completions===1&&window.durableData()?.activeGame===null);i++)await new Promise(r=>setTimeout(r,50));const result={case:'facebook-completion',guesses:window.probe.guesses,completions:window.probe.completions,activeGame:window.durableData()?.activeGame,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result);return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"facebook-auto\\\",\\\"draft\\\":\\\"PIAN\\\",\\\"durable\\\":\\\"PIAN\\\",\\\"attempts\\\":2,\\\"status\\\":\\\"quiet\\\",\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"facebook-completion\\\",\\\"guesses\\\":1,\\\"completions\\\":1,\\\"activeGame\\\":null,\\\"errors\\\":[],\\\"unhandled\\\":[]}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:38459/reddit/?scenario=manual",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[0] \u2192 http://127.0.0.1:38459/reddit/?scenario=manual (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<80&&!window.durableData()?.profile;i++)await new Promise(r=>setTimeout(r,50));window.firefoxChecks=[];window.firefoxInitializations=window.probe.initializations;window.probe.failDraft=-1;document.activeElement?.blur();return JSON.stringify({ready:!!window.durableData()?.profile});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"ready\\\":true}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<60&&window.recovery.getSnapshot()!=='unsaved';i++)await new Promise(r=>setTimeout(r,50));return JSON.stringify({status:window.recovery.getSnapshot(),attempts:window.probe.writes.filter(x=>x?.activeGame?.currentLetters.join('')==='PIAN').length});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"status\\\":\\\"quiet\\\",\\\"attempts\\\":3}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<60&&window.recovery.getSnapshot()!=='unsaved';i++)await new Promise(r=>setTimeout(r,50));return JSON.stringify({status:window.recovery.getSnapshot(),attempts:window.probe.writes.filter(x=>x?.activeGame?.currentLetters.join('')==='PIAN').length});}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"status\\\":\\\"unsaved\\\",\\\"attempts\\\":4}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const b=document.querySelector('.player-save-notice button'),boxes=['.riddle-card','.guess-board','.keyboard','.game-input-actions','.game-bottom-navigation'].map(s=>document.querySelector(s)?.getBoundingClientRect()).filter(Boolean);const result={case:'reddit-exhausted',draft:window.draft(),durablePIAN:window.durableData()?.activeGame?.currentLetters.join('')==='PIAN',attempts:window.probe.writes.filter(x=>x.activeGame?.currentLetters.join('')==='PIAN').length,status:window.recovery.getSnapshot(),retryVisible:!!b,enabled:b&&!b.disabled,fits:boxes.every(b=>b.left>=-1&&b.right<=innerWidth+1&&b.bottom<=innerHeight+1),initializationsUnchanged:window.probe.initializations===window.firefoxInitializations,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result);window.probe.failDraft=0;window.probe.holdNext=true;return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"reddit-exhausted\\\",\\\"draft\\\":\\\"PIAN\\\",\\\"durablePIAN\\\":false,\\\"attempts\\\":4,\\\"status\\\":\\\"unsaved\\\",\\\"retryVisible\\\":true,\\\"enabled\\\":true,\\\"fits\\\":true,\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T14-44-40-796Z.png (176.4KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {document.querySelector('.player-save-notice button').focus();return 'retry focused';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"retry focused\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const b=document.querySelector('.player-save-notice button'),result={case:'reddit-retry-held',holding:window.probe.holding,status:window.recovery.getSnapshot(),disabled:b?.disabled,busy:b?.getAttribute('aria-busy')};window.firefoxChecks.push(result);document.activeElement?.blur();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"reddit-retry-held\\\",\\\"holding\\\":true,\\\"status\\\":\\\"saving\\\",\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Backspace"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Backspace"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {const result={case:'reddit-typing-while-held',draft:window.draft(),status:window.recovery.getSnapshot()};window.firefoxChecks.push(result);window.release();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"reddit-typing-while-held\\\",\\\"draft\\\":\\\"PIA\\\",\\\"status\\\":\\\"saving\\\"}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<60&&window.recovery.getSnapshot()!=='quiet';i++)await new Promise(r=>setTimeout(r,50));const result={case:'reddit-latest-ack',draft:window.draft(),durable:window.durableData()?.activeGame?.currentLetters.join(''),status:window.recovery.getSnapshot(),gatewayOnly:window.probe.paths.every(x=>x.startsWith('/api/')),errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result);return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"reddit-exhausted\\\",\\\"draft\\\":\\\"PIAN\\\",\\\"durablePIAN\\\":false,\\\"attempts\\\":4,\\\"status\\\":\\\"unsaved\\\",\\\"retryVisible\\\":true,\\\"enabled\\\":true,\\\"fits\\\":true,\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"reddit-retry-held\\\",\\\"holding\\\":true,\\\"status\\\":\\\"saving\\\",\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\"},{\\\"case\\\":\\\"reddit-typing-while-held\\\",\\\"draft\\\":\\\"PIA\\\",\\\"status\\\":\\\"saving\\\"},{\\\"case\\\":\\\"reddit-latest-ack\\\",\\\"draft\\\":\\\"PIA\\\",\\\"durable\\\":\\\"PIA\\\",\\\"status\\\":\\\"quiet\\\",\\\"gatewayOnly\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T14-44-48-518Z.png (170.3KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "no"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 2 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<60&&!(window.probe.completions===1&&window.durableData()?.activeGame===null);i++)await new Promise(r=>setTimeout(r,50));const result={case:'reddit-completion',guesses:window.probe.guesses,completions:window.probe.completions,activeGame:window.durableData()?.activeGame,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result);return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"reddit-exhausted\\\",\\\"draft\\\":\\\"PIAN\\\",\\\"durablePIAN\\\":false,\\\"attempts\\\":4,\\\"status\\\":\\\"unsaved\\\",\\\"retryVisible\\\":true,\\\"enabled\\\":true,\\\"fits\\\":true,\\\"initializationsUnchanged\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"reddit-retry-held\\\",\\\"holding\\\":true,\\\"status\\\":\\\"saving\\\",\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\"},{\\\"case\\\":\\\"reddit-typing-while-held\\\",\\\"draft\\\":\\\"PIA\\\",\\\"status\\\":\\\"saving\\\"},{\\\"case\\\":\\\"reddit-latest-ack\\\",\\\"draft\\\":\\\"PIA\\\",\\\"durable\\\":\\\"PIA\\\",\\\"status\\\":\\\"quiet\\\",\\\"gatewayOnly\\\":true,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"reddit-completion\\\",\\\"guesses\\\":1,\\\"completions\\\":1,\\\"activeGame\\\":null,\\\"errors\\\":[],\\\"unhandled\\\":[]}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 26
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 27
+    }
+  }
+]

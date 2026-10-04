@@ -109,7 +109,6 @@
     "LIVE_START": "Начать PvP-матч",
     "LIVE_FINDING": "Поиск соперника…",
     "LIVE_STARTING": "Матч начинается",
-    "LIVE_WAIT": "Поиск соперника. Это может занять до 1 минуты.",
     "LIVE_OPPONENT": "Соперник",
     "LIVE_REWARD": "+{coins} монет",
     "LIVE_MODE": "PvP в реальном времени",

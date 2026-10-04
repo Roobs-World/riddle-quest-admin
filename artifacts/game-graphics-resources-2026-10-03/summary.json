@@ -1,0 +1,30 @@
+{
+  "development": {
+    "checks": 418,
+    "failures": 0
+  },
+  "production": {
+    "checks": 418,
+    "failures": 0
+  },
+  "baseline": {
+    "checks": 418,
+    "failures": 96
+  },
+  "native-renderer": {
+    "checks": 20,
+    "failures": 0
+  },
+  "animation-development": {
+    "checks": 124,
+    "failures": 0
+  },
+  "animation-production": {
+    "checks": 124,
+    "failures": 0
+  },
+  "firefox": {
+    "checks": 24,
+    "failures": 0
+  }
+}

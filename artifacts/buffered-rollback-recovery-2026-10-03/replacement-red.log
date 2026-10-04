@@ -1,0 +1,139 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: replacement session retires the obsolete draft journal
++ actual - expected
+
++ {
++   base: {
++     activeSlotIndex: 0,
++     completionAcknowledged: false,
++     currentLetters: [
++       '',
++       '',
++       '',
++       '',
++       ''
++     ],
++     engineSnapshot: {
++       attemptsUsed: 0,
++       gameOver: false,
++       guesses: [],
++       hasUsedContinue: false
++     },
++     guesses: [],
++     lastOutcome: null,
++     lastRewards: null,
++     letterStates: {},
++     modal: null,
++     optimisticAchievementIds: [],
++     profile: {
++       achievements: [
++         'first_win',
++         'daily_spark'
++       ],
++       classicIndex: 1,
++       coins: 300,
++       gamesPlayed: 7,
++       level: 3,
++       username: 'Guest Solver',
++       winStreak: 2,
++       wins: 5,
++       xp: 420
++     }
++   },
++   confirmedClassicIndex: 2,
++   draft: [
++     'C',
++     'L',
++     '',
++     '',
++     ''
++   ],
++   draftActiveSlotIndex: 2,
++   queue: [],
++   riddle: {
++     answerLength: 5,
++     attemptsUsed: 0,
++     awaitingContinue: false,
++     evaluation: {
++       answer: 'clock',
++       locale: 'en'
++     },
++     gameMode: 'classic',
++     hasUsedContinue: false,
++     index: 2,
++     riddleId: 'classic-fake-2',
++     sessionToken: '00000000-0000-4000-8000-000000000002',
++     text: 'What has a face and hands but no arms?'
++   },
++   scope: 'jest-guest:1:en',
++   successors: [],
++   version: 1
++ }
+- null
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-buffered-terminal-recovery-browser.mjs:79:143)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-buffered-terminal-recovery-browser.mjs:112:6 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    version: 1,
+    scope: 'jest-guest:1:en',
+    riddle: {
+      riddleId: 'classic-fake-2',
+      text: 'What has a face and hands but no arms?',
+      answerLength: 5,
+      sessionToken: '00000000-0000-4000-8000-000000000002',
+      gameMode: 'classic',
+      index: 2,
+      attemptsUsed: 0,
+      hasUsedContinue: false,
+      awaitingContinue: false,
+      evaluation: { answer: 'clock', locale: 'en' }
+    },
+    confirmedClassicIndex: 2,
+    base: {
+      currentLetters: [ '', '', '', '', '' ],
+      activeSlotIndex: 0,
+      guesses: [],
+      engineSnapshot: {
+        guesses: [],
+        attemptsUsed: 0,
+        hasUsedContinue: false,
+        gameOver: false
+      },
+      modal: null,
+      lastOutcome: null,
+      completionAcknowledged: false,
+      letterStates: {},
+      profile: {
+        username: 'Guest Solver',
+        coins: 300,
+        level: 3,
+        xp: 420,
+        winStreak: 2,
+        gamesPlayed: 7,
+        wins: 5,
+        achievements: [ 'first_win', 'daily_spark' ],
+        classicIndex: 1
+      },
+      lastRewards: null,
+      optimisticAchievementIds: []
+    },
+    draft: [ 'C', 'L', '', '', '' ],
+    successors: [],
+    queue: [],
+    draftActiveSlotIndex: 2
+  },
+  expected: null,
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: node scripts/verify-buffered-terminal-recovery-browser.mjs

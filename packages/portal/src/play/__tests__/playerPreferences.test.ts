@@ -15,6 +15,7 @@ import {
   safeBrowserStorageRemove,
   safeBrowserStorageSet,
   subscribeToPlayerPreferenceChanges,
+  subscribeToPlayerReducedMotion,
 } from "../playerPreferences";
 
 /** Provides memory storage behavior. */
@@ -90,6 +91,64 @@ afterEach(() => {
     else delete (globalThis as Record<string, unknown>)[key];
   }
   originalDescriptors.clear();
+});
+
+it("observes applied motion preferences without echoing SDK reads to platform persistence", () => {
+  /** Effective snapshots delivered to the read-only consumer. */
+  const snapshots: boolean[] = [];
+  /** Platform writes must remain limited to player-initiated changes. */
+  const persist = jest.fn();
+  /** Releases the test platform adapter. */
+  const stopPersisting = subscribeToPlayerPreferenceChanges(persist);
+  /** Releases the read-only consumer and its media listener. */
+  const stopObserving = subscribeToPlayerReducedMotion(() => snapshots.push(isPlayerReducedMotionEnabled()));
+  try {
+    applyPlayerPreferences({reducedMotion: true});
+    expect(snapshots).toEqual([true]);
+    expect(persist).not.toHaveBeenCalled();
+    setPlayerReducedMotion(false);
+    expect(snapshots).toEqual([true, false]);
+    expect(persist).toHaveBeenCalledTimes(1);
+    expect(persist).toHaveBeenCalledWith({reducedMotion: false});
+    clearBrowserPlayerState();
+    expect(snapshots).toEqual([true, false, false]);
+    expect(persist).toHaveBeenCalledTimes(1);
+    stopObserving();
+    applyPlayerPreferences({reducedMotion: true});
+    expect(snapshots).toEqual([true, false, false]);
+  } finally {
+    stopObserving();
+    stopPersisting();
+  }
+});
+
+it("observes OS motion changes while preserving an explicit player override and removes its listener", () => {
+  /** Current OS motion preference. */
+  let matches = false;
+  /** Registered media-query callbacks. */
+  const listeners = new Set<() => void>();
+  installGlobal("window", {matchMedia: () => ({
+    /** Reflects the current OS setting. */
+    get matches() { return matches; },
+    addEventListener: (_event: string, callback: () => void) => listeners.add(callback),
+    removeEventListener: (_event: string, callback: () => void) => listeners.delete(callback),
+  })});
+  /** Effective snapshots delivered to the read-only consumer. */
+  const snapshots: boolean[] = [];
+  /** Releases the read-only consumer and its media listener. */
+  const stopObserving = subscribeToPlayerReducedMotion(() => snapshots.push(isPlayerReducedMotionEnabled()));
+  try {
+    matches = true;
+    listeners.forEach((callback) => callback());
+    expect(snapshots).toEqual([true]);
+    setPlayerReducedMotion(false);
+    listeners.forEach((callback) => callback());
+    expect(snapshots).toEqual([true, false, false]);
+    stopObserving();
+    expect(listeners.size).toBe(0);
+  } finally {
+    stopObserving();
+  }
 });
 
 it("applies validated platform preferences before play and overrides browser fallback", async () => {

@@ -1,0 +1,87 @@
+{
+  "verified": true,
+  "raw": {
+    "before": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"held\": true,\n  \"deadlines\": [\n    10000\n  ],\n  \"confirmations\": 1,\n  \"joins\": [\n    {\n      \"generation\": 1,\n      \"challengeId\": \"live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n    }\n  ],\n  \"events\": [],\n  \"grants\": []\n}\n```"
+        }
+      ]
+    },
+    "closed": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"intro\": true,\n  \"held\": true,\n  \"deadlines\": [],\n  \"leaves\": 0,\n  \"events\": [],\n  \"grants\": [],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    "late": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"pian\",\n  \"sameEditor\": true,\n  \"nativeFocus\": true,\n  \"deadlines\": [],\n  \"unavailable\": false,\n  \"leaves\": 0,\n  \"events\": [],\n  \"grants\": [],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    "playable": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"score\": \"Riddles completed: 1 / 10\",\n  \"guesses\": [\n    \"piano\"\n  ],\n  \"deadlines\": [],\n  \"events\": [],\n  \"grants\": [],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    }
+  },
+  "proof": {
+    "before": {
+      "held": true,
+      "deadlines": [
+        10000
+      ],
+      "confirmations": 1,
+      "joins": [
+        {
+          "generation": 1,
+          "challengeId": "live_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "events": [],
+      "grants": []
+    },
+    "closed": {
+      "intro": true,
+      "held": true,
+      "deadlines": [],
+      "leaves": 0,
+      "events": [],
+      "grants": [],
+      "errors": [],
+      "unhandled": []
+    },
+    "late": {
+      "draft": "pian",
+      "sameEditor": true,
+      "nativeFocus": true,
+      "deadlines": [],
+      "unavailable": false,
+      "leaves": 0,
+      "events": [],
+      "grants": [],
+      "errors": [],
+      "unhandled": []
+    },
+    "playable": {
+      "score": "Riddles completed: 1 / 10",
+      "guesses": [
+        "piano"
+      ],
+      "deadlines": [],
+      "events": [],
+      "grants": [],
+      "errors": [],
+      "unhandled": []
+    }
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "target": "facebook",
+    "exit": 0,
+    "log": "facebook-journey-final.log"
+  },
+  {
+    "target": "reddit",
+    "exit": 0,
+    "log": "reddit-journey-final.log"
+  }
+]

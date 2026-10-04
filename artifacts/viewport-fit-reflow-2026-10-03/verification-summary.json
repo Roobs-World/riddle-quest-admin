@@ -1,0 +1,70 @@
+{
+  "browser": [
+    {
+      "mode": "development",
+      "checks": 3840,
+      "unexpectedFailures": 0,
+      "expectedBaselineFailures": 0
+    },
+    {
+      "mode": "production",
+      "checks": 3840,
+      "unexpectedFailures": 0,
+      "expectedBaselineFailures": 0
+    },
+    {
+      "mode": "baseline",
+      "checks": 3840,
+      "unexpectedFailures": 0,
+      "expectedBaselineFailures": 540
+    }
+  ],
+  "firefox": {
+    "checks": 30,
+    "failures": 0
+  },
+  "portalUnitTestsPassed": 2532,
+  "builtBrowserJourneysPassed": 2,
+  "checks": [
+    {
+      "name": "types",
+      "exit": 0
+    },
+    {
+      "name": "tsdoc",
+      "exit": 0
+    },
+    {
+      "name": "file-sizes",
+      "exit": 0
+    },
+    {
+      "name": "portal-tests",
+      "exit": 0
+    },
+    {
+      "name": "build-jest",
+      "exit": 0
+    },
+    {
+      "name": "build-facebook",
+      "exit": 0
+    },
+    {
+      "name": "build-reddit",
+      "exit": 0
+    },
+    {
+      "name": "build-youtube",
+      "exit": 0
+    },
+    {
+      "name": "build-netflix",
+      "exit": 0
+    },
+    {
+      "name": "build-yahoo",
+      "exit": 0
+    }
+  ]
+}

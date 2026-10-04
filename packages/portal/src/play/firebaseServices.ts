@@ -1,5 +1,7 @@
 import {getDailyDate} from "@qwordly/core/validation";
 import {mapRiddleResponse} from "./riddleResponse";
+import {tr} from "./i18n";
+import {createGameplayAuthorityDelivery} from "./gameplayAuthorityDelivery";
 import {getRaceEntry, cancelRaceInvite} from "../firebase";
 import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
 import {onAuthStateChanged, signOut} from "firebase/auth";
@@ -62,6 +64,20 @@ const toBridgeUser = (user: typeof auth.currentUser): BridgeUser | null => {
 export const createFirebaseHostServices = (): HostServices => {
   /** Provides latest snapshot behavior. */
   let latestSnapshot: AuthSnapshot = {user: toBridgeUser(auth.currentUser), profile: null};
+  /** Identical renderer retries share a bounded, account-owned authority response. */
+  const gameplayDelivery = createGameplayAuthorityDelivery();
+  /** Account visits invalidate profile and content responses even after same-UID re-entry. */
+  let accountVisit = 0;
+  /** Complete request data prevents unrelated operations from sharing a pending receipt. */
+  const authorityKey = (operation: string, input: object) => JSON.stringify([latestSnapshot.user?.uid,
+    latestSnapshot.user?.accountGeneration, accountVisit, operation,
+    Object.entries(input).sort(([first], [second]) => first.localeCompare(second))]);
+  /** Only the most recently requested authoritative profile may update the subscribed snapshot. */
+  let profileRevision = 0;
+  /** Retired native subscription callbacks cannot publish into a later host lifetime. */
+  let authObserverVersion = 0;
+  /** All consumers of this adapter share one SDK observer and its cleanup. */
+  let unsubscribeAuth: (() => void) | null = null;
   /** The classic buffer used by the current operation. */
   let classicBuffer: {
     /** Account owning the issued sessions. */ uid: string;
@@ -103,9 +119,11 @@ export const createFirebaseHostServices = (): HostServices => {
   const refreshClassicBuffer = (uid: string, locale: string, force = false): Promise<ClassicRiddleBufferResponse> => {
     if (!force && classicBufferInFlight?.uid === uid && classicBufferInFlight.locale === locale)
       return classicBufferInFlight.promise;
+    /** Account lifetime admitting this content request. */
+    const visit = accountVisit;
     /** Request shared by concurrent callers. */
     const promise = getClassicRiddleBuffer({locale, includeHintRecovery: true, includeGuessRecovery: true}).then(({data}) => {
-      if (latestSnapshot.user?.uid === uid &&
+      if (visit === accountVisit && latestSnapshot.user?.uid === uid &&
         (classicBuffer?.uid !== uid || classicBuffer.locale !== locale ||
           data.confirmedClassicIndex >= classicBuffer.data.confirmedClassicIndex))
         classicBuffer = {uid, locale, data};
@@ -133,6 +151,37 @@ export const createFirebaseHostServices = (): HostServices => {
     return toBridgeProfile(user, await loadUserDocument(user.uid));
   };
 
+  /** Captures the admitted account visit before an authority operation starts. */
+  const captureAccount = () => {
+    /** UID and visit must both remain selected when asynchronous work finishes. */
+    const uid = latestSnapshot.user?.uid, visit = accountVisit;
+    return () => uid !== undefined && visit === accountVisit && latestSnapshot.user?.uid === uid;
+  };
+  /** Publishes only a current, latest-requested profile; optional callers isolate its failure. */
+  const refreshProfile = async (): Promise<BridgeProfile | null> => {
+    /** Account identity and request ordering retained through the profile transport. */
+    const user = latestSnapshot.user, visit = accountVisit, revision = ++profileRevision;
+    if (!user) return null;
+    /** Profile remains server authoritative even though its publication is asynchronous. */
+    const profile = await reloadProfile(user);
+    if (visit !== accountVisit || revision !== profileRevision || latestSnapshot.user?.uid !== user.uid) return null;
+    emit({user, profile});
+    return profile;
+  };
+  /** Immediately retires the previous account before loading the replacement's profile. */
+  const selectAccount = (user: BridgeUser | null) => {
+    /** Repeated notifications for the same account retain its confirmed profile and issued content. */
+    const sameAccount = latestSnapshot.user?.uid === user?.uid &&
+      latestSnapshot.user?.accountGeneration === user?.accountGeneration;
+    if (!sameAccount) {
+      accountVisit += 1;
+      classicBuffer = null;
+      classicBufferInFlight = null;
+      dailyPreload = null;
+    }
+    emit({user, profile: sameAccount ? latestSnapshot.profile : null});
+  };
+
   return {
     products: [],
     /** Starts Daily and Classic downloads when the player session is ready. */
@@ -146,27 +195,47 @@ export const createFirebaseHostServices = (): HostServices => {
     auth: {
       /** Provides subscribe behavior. */
       subscribe(listener) {
-        subscribers.add(listener);
+        // A host may remount after the SDK changed accounts while it had no subscribers.
+        if (subscribers.size === 0) selectAccount(toBridgeUser(auth.currentUser));
+        /** Each subscription owns a distinct registration even when callbacks are reused. */
+        const subscriptionListener = (snapshot: AuthSnapshot) => listener(snapshot);
+        subscribers.add(subscriptionListener);
         listener(latestSnapshot);
-        /** Provides unsubscribe behavior. */
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-          /** Provides r. */
-          const user = toBridgeUser(firebaseUser);
-          emit({user, profile: await reloadProfile(user)});
-        });
+        if (!unsubscribeAuth) {
+          /** One SDK observer belongs to the complete subscriber lifetime. */
+          const observerVersion = ++authObserverVersion;
+          unsubscribeAuth = onAuthStateChanged(auth, firebaseUser => {
+            if (observerVersion !== authObserverVersion) return;
+            selectAccount(toBridgeUser(firebaseUser));
+            void refreshProfile().catch(() => undefined);
+          });
+        }
         return () => {
-          subscribers.delete(listener);
-          unsubscribe();
+          subscribers.delete(subscriptionListener);
+          if (subscribers.size === 0 && unsubscribeAuth) {
+            authObserverVersion += 1;
+            accountVisit += 1;
+            unsubscribeAuth();
+            unsubscribeAuth = null;
+          }
         };
       },
     },
     /** Loads riddle. */
     async loadRiddle({gameMode, locale, classicIndex, sessionToken, riddleId, authoritative}) {
+      /** The selected account visit owns every receipt and follow-up in this content load. */
+      const ownsAccount = captureAccount();
+      /** A retired read cannot continue under the replacement SDK account. */
+      const requireOwner = () => {
+        if (!ownsAccount()) throw Object.assign(new Error(tr("ErrorMessages.UNABLE_TO_LOAD_RIDDLES")), {code: "cancelled"});
+      };
+      requireOwner();
       if (gameMode === "challenge") {
         /** Provides result behavior. */
         const data = !sessionToken && !riddleId && latestSnapshot.user
           ? await preloadDaily(latestSnapshot.user.uid, locale)
           : (await getCurrentDailyChallenge({locale, sessionToken, riddleId, includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true})).data;
+        requireOwner();
         return mapRiddleResponse(data, "challenge");
       }
 
@@ -174,7 +243,10 @@ export const createFirebaseHostServices = (): HostServices => {
       const uid = latestSnapshot.user?.uid;
       if (authoritative && uid) {
         /** Validated riddle response from the host. */
-        const data = await refreshClassicBuffer(uid, locale);
+        const fetched = await refreshClassicBuffer(uid, locale, true);
+        requireOwner();
+        /** A newer confirmed buffer may finish before this read; canonical progress cannot rewind. */
+        const data = classicBuffer?.uid === uid && classicBuffer.locale === locale ? classicBuffer.data : fetched;
         /** The issued used by the current operation. */
         const issued = data.riddles.find((item) => item.classicIndex === data.confirmedClassicIndex);
         if (!issued) throw new Error("classic-buffer-unavailable");
@@ -209,6 +281,7 @@ export const createFirebaseHostServices = (): HostServices => {
           void pending.catch(() => undefined);
         }
       }
+      requireOwner();
       if (cached && !sessionToken && !riddleId) {
         /** The riddle used by the current operation. */
         const riddle = mapRiddleResponse({challenge: {questions: [cached.question], totalQuestions: 1}}, "classic");
@@ -221,13 +294,15 @@ export const createFirebaseHostServices = (): HostServices => {
       const result = await getCurrentClassicRiddle({
         includeEvaluation: true,
         includeHintRecovery: true, includeGuessRecovery: true,
-        classicIndex: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1,
+        classicIndex: requestedIndex,
+        includeClassicIndex: true,
         locale,
         sessionToken,
         riddleId,
       });
+      requireOwner();
       if (uid) void refreshClassicBuffer(uid, locale).catch(() => undefined);
-      return {...mapRiddleResponse(result.data, "classic"), index: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1};
+      return {...mapRiddleResponse(result.data, "classic"), index: result.data.classicIndex ?? requestedIndex};
     },
     /** Loads profile. */
     async loadProfile(userId) {
@@ -237,65 +312,68 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     /** Completes game. */
     async completeGame(input) {
-      /** Provides result behavior. */
-      const result = await completeGame(input);
-      if (input.gameMode === "challenge") dailyPreload = null;
-      if (latestSnapshot.user) {
-        emit({user: latestSnapshot.user, profile: await reloadProfile(latestSnapshot.user)});
-      }
+      /** Only the admitting account visit owns optional completion follow-up. */
+      const ownsAccount = captureAccount();
+      /** Concurrent retries share one timely authority receipt and one profile refresh. */
+      const result = await gameplayDelivery.run(authorityKey("completion", input), () => completeGame(input), () => {
+        if (ownsAccount()) {
+          if (input.gameMode === "challenge") dailyPreload = null;
+          void refreshProfile().catch(() => undefined);
+        }
+      });
       return result.data;
     },
     /** Submits guess. */
     async submitGuess(input) {
-      /** The result used by the current operation. */
-      const result = (await submitSinglePlayerGuess(input)).data;
-      if (result.gameOver && latestSnapshot.user) {
-        if (input.gameMode === "challenge") dailyPreload = null;
-        /** The user used by the current operation. */
-        const user = latestSnapshot.user;
-        void reloadProfile(user).then((profile) => {
-          if (latestSnapshot.user?.uid === user.uid) emit({user, profile});
-        }).catch(() => undefined);
-        if (input.gameMode === "classic" && classicBuffer?.uid === user.uid)
-          void refreshClassicBuffer(user.uid, classicBuffer.locale, true).catch(() => undefined);
-      }
-      return result;
+      /** Terminal follow-up work belongs to the originally authenticated player. */
+      const ownsAccount = captureAccount();
+      /** One exact guessed request owns its response and terminal refresh work. */
+      const result = await gameplayDelivery.run(authorityKey("guess", input), () => submitSinglePlayerGuess(input), ({data}) => {
+        if (data.gameOver && ownsAccount() && latestSnapshot.user) {
+          if (input.gameMode === "challenge") dailyPreload = null;
+          /** Current authenticated player for the background refresh. */
+          const user = latestSnapshot.user;
+          void refreshProfile().catch(() => undefined);
+          if (input.gameMode === "classic" && classicBuffer?.uid === user.uid)
+            void refreshClassicBuffer(user.uid, classicBuffer.locale, true).catch(() => undefined);
+        }
+      });
+      return result.data;
     },
     /** Requests hint. */
     async requestHint(input) {
-      /** Provides result behavior. */
-      const result = await getHint(input);
-      if (latestSnapshot.user) {
-        /** Current authenticated player for the background refresh. */
-        const user = latestSnapshot.user;
-        void reloadProfile(user).then((profile) => {
-          if (latestSnapshot.user?.uid === user.uid) emit({user, profile});
-        }).catch(() => undefined);
-      }
+      /** Profile follow-up cannot cross an intervening account replacement. */
+      const ownsAccount = captureAccount();
+      /** Duplicate paid retries retain the same authority request identity. */
+      const result = await gameplayDelivery.run(authorityKey("hint", input), () => getHint(input), () => {
+        if (ownsAccount()) void refreshProfile().catch(() => undefined);
+      });
       return result.data;
     },
     /** Provides spend coins behavior. */
     async spendCoins(input) {
-      /** Provides result behavior. */
-      const result = await spendCoins(input);
-      if (latestSnapshot.user) {
-        emit({user: latestSnapshot.user, profile: await reloadProfile(latestSnapshot.user)});
-      }
+      /** The accepted debit receipt remains independent of later profile transport. */
+      const ownsAccount = captureAccount();
+      /** A held Continue cannot permanently retain the host's blocking activity. */
+      const result = await gameplayDelivery.run(authorityKey("spend", input), () => spendCoins(input), () => {
+        if (ownsAccount()) void refreshProfile().catch(() => undefined);
+      });
       return result.data;
     },
     /** Provides skip riddle behavior. */
     async skipRiddle(input) {
-      /** Provides result behavior. */
-      const result = await skipRiddle(input);
-      if (latestSnapshot.user) {
-        /** Current authenticated player for the background refresh. */
-        const user = latestSnapshot.user;
-        void reloadProfile(user).then((profile) => {
-          if (latestSnapshot.user?.uid === user.uid) emit({user, profile});
-        }).catch(() => undefined);
-        if (classicBuffer?.uid === user.uid)
-          void refreshClassicBuffer(user.uid, classicBuffer.locale, true).catch(() => undefined);
-      }
+      /** Only the admitting account may refresh progression after this paid skip. */
+      const ownsAccount = captureAccount();
+      /** A repeated Skip shares its pending receipt without starting duplicate refreshes. */
+      const result = await gameplayDelivery.run(authorityKey("skip", input), () => skipRiddle(input), () => {
+        if (ownsAccount() && latestSnapshot.user) {
+          /** Current authenticated player for the background refresh. */
+          const user = latestSnapshot.user;
+          void refreshProfile().catch(() => undefined);
+          if (classicBuffer?.uid === user.uid)
+            void refreshClassicBuffer(user.uid, classicBuffer.locale, true).catch(() => undefined);
+        }
+      });
       return result.data;
     },
     /** Requests purchase. */
@@ -310,31 +388,26 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     /** Updates username. */
     async updateUsername(username) {
+      /** Explicit profile edits retain their account while the callable executes. */
+      const ownsAccount = captureAccount();
       await updateUsernameCallable({username});
-      if (!latestSnapshot.user) {
-        return null;
-      }
-      /** Provides profile behavior. */
-      const profile = await reloadProfile(latestSnapshot.user);
-      emit({user: latestSnapshot.user, profile});
-      return profile;
+      return ownsAccount() ? refreshProfile() : null;
     },
     /** Updates avatar. */
     async updateAvatar(imageDataUrl) {
+      /** Explicit avatar edits retain their account while the callable executes. */
+      const ownsAccount = captureAccount();
       await updateAvatarCallable({imageDataUrl});
-      if (!latestSnapshot.user) {
-        return null;
-      }
-      /** Provides profile behavior. */
-      const profile = await reloadProfile(latestSnapshot.user);
-      emit({user: latestSnapshot.user, profile});
-      return profile;
+      return ownsAccount() ? refreshProfile() : null;
     },
     /** Deletes account. */
     async deleteAccount() {
+      /** A delayed deletion must never sign out a replacement account. */
+      const ownsAccount = captureAccount();
       await deleteAccountCallable({});
+      if (!ownsAccount()) return;
       await signOut(auth);
-      emit({user: null, profile: null});
+      if (!auth.currentUser) selectAccount(null);
     },
     /** Lists race categories. */
     async listRaceCategories(locale) {

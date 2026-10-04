@@ -1,0 +1,69 @@
+{
+  "status": "passed",
+  "goalStatus": "active",
+  "sourceInputs": 766,
+  "sourceEpochUnchanged": true,
+  "browser": {
+    "development": {
+      "checks": 240,
+      "failures": 0,
+      "journeys": 39
+    },
+    "host-ownership-development": {
+      "checks": 116,
+      "failures": 0
+    },
+    "production": {
+      "checks": 240,
+      "failures": 0,
+      "journeys": 39
+    },
+    "host-ownership-production": {
+      "checks": 116,
+      "failures": 0
+    }
+  },
+  "browserChecks": 712,
+  "baseline": {
+    "checks": 240,
+    "failures": 30,
+    "scenarios": [
+      "abandon",
+      "abandon-lifecycle",
+      "speculative",
+      "speculative-error",
+      "speculative-guard",
+      "speculative-lifecycle",
+      "speculative-unavailable"
+    ]
+  },
+  "firefox": "asserted native submission before/after and committed replacement; actual hosted game retained board",
+  "unitTests": 2756,
+  "unitSuites": 297,
+  "optionalBrowserTestsSkipped": 121,
+  "builtJourneys": 37,
+  "builtSuites": 7,
+  "types": "passed",
+  "tsdoc": {
+    "declarations": 25248,
+    "files": 1139
+  },
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube:fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "ownedFixtures": {
+    "stopped": true,
+    "pnpmExitCode": 130,
+    "scratchRemoved": true
+  },
+  "limitations": [
+    "Injected provider services",
+    "YouTube incomplete English fixture",
+    "No measured network latency claim"
+  ]
+}

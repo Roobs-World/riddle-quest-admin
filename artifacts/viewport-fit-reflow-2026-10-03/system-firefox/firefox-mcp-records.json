@@ -1,0 +1,411 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "fit-reflow-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:42081/?locale=ar&unsaved=1&motion=normal",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:42081/?locale=ar&unsaved=1&motion=normal (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 1280,
+          "height": 918
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "1280x918"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "main",
+          "maxLines": 8
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: main]\n\nuid=e81 main\n  uid=e79 div\n    uid=e5 header\n      uid=e0 img \"\u0627\u0644\u0634\u0639\u0627\u0631\" src=\"http://127.0.0.1:42081/asse...\"\n      uid=e1 button \"\u0643\u062a\u0645 \u0627\u0644\u0635\u0648\u062a\"\n      uid=e2 div text=\"\u0643\u0644\u0627\u0633\u064a\u0643\u064a\"\n      uid=e4 div \"300 \u0639\u0645\u0644\u0627\u062a \u0645\u0639\u062f\u0646\u064a\u0629\"\n        uid=e3 img src=\"http://127.0.0.1:42081/asse...\"\n\n[+75 lines hidden; maxLines to show more, selector to scope, saveTo to dump the full tree to a file]"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.layoutRecovery.failed();await document.fonts.ready;for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));const boxes=[\".riddle-card\",\".guess-board\",\".keyboard\",\".game-input-actions\",\".game-bottom-navigation\"].map(s=>document.querySelector(s)?.getBoundingClientRect()).filter(Boolean);const result={case:\"system-ar-desktop-to-short\",width:innerWidth,height:innerHeight,keys:Math.min(...Array.from(document.querySelectorAll(\".key\")).map(x=>x.getBoundingClientRect().height)),fits:boxes.every(b=>b.left>=-1&&b.right<=innerWidth+1&&b.bottom<=innerHeight+1),transition:getComputedStyle(document.querySelector(\".game-content\")).transitionDuration,systemReduced:matchMedia(\"(prefers-reduced-motion: reduce)\").matches,appReduced:document.documentElement.dataset.riddleQuestReducedMotion===\"true\",errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks=[result];document.activeElement?.blur();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"system-ar-desktop-to-short\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"keys\\\":33.616668701171875,\\\"fits\\\":true,\\\"transition\\\":\\\"0s\\\",\\\"systemReduced\\\":true,\\\"appReduced\\\":false,\\\"errors\\\":[],\\\"unhandled\\\":[]}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "pian"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 4 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.firefoxChecks.push({case:\"system-ar-input\",draft:window.draft()});return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"system-ar-desktop-to-short\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"keys\\\":33.616668701171875,\\\"fits\\\":true,\\\"transition\\\":\\\"0s\\\",\\\"systemReduced\\\":true,\\\"appReduced\\\":false,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"system-ar-input\\\",\\\"draft\\\":\\\"PIAN\\\"}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T13-34-41-640Z.png (102.0KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 794
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x794"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 500,
+          "height": 568
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "500x568"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));const result={case:\"system-ar-repeat-resize\",draft:window.draft(),keys:Math.min(...Array.from(document.querySelectorAll(\".key\")).map(x=>x.getBoundingClientRect().height)),width:innerWidth,height:innerHeight,initializations:window.storageProbe.initializations};window.firefoxChecks.push(result);window.releaseStorage();return JSON.stringify(result);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"{\\\"case\\\":\\\"system-ar-repeat-resize\\\",\\\"draft\\\":\\\"PIAN\\\",\\\"keys\\\":33.616668701171875,\\\"width\\\":500,\\\"height\\\":494,\\\"initializations\\\":2}\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "type_text",
+        "arguments": {
+          "text": "o"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type_text 1 chars"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "press_key",
+        "arguments": {
+          "key": "Enter"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "press_key Enter"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {for(let i=0;i<20;i++)await new Promise(r=>requestAnimationFrame(r));const result={case:\"system-ar-native-completion\",guesses:window.probe.guesses,completions:window.probe.completions,activeGame:window.durableData().riddleQuestPlayerState?.activeGame,errors:window.probe.errors,unhandled:window.probe.unhandled};window.firefoxChecks.push(result);return JSON.stringify(window.firefoxChecks);}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"[{\\\"case\\\":\\\"system-ar-desktop-to-short\\\",\\\"width\\\":500,\\\"height\\\":494,\\\"keys\\\":33.616668701171875,\\\"fits\\\":true,\\\"transition\\\":\\\"0s\\\",\\\"systemReduced\\\":true,\\\"appReduced\\\":false,\\\"errors\\\":[],\\\"unhandled\\\":[]},{\\\"case\\\":\\\"system-ar-input\\\",\\\"draft\\\":\\\"PIAN\\\"},{\\\"case\\\":\\\"system-ar-repeat-resize\\\",\\\"draft\\\":\\\"PIAN\\\",\\\"keys\\\":33.616668701171875,\\\"width\\\":500,\\\"height\\\":494,\\\"initializations\\\":2},{\\\"case\\\":\\\"system-ar-native-completion\\\",\\\"guesses\\\":1,\\\"completions\\\":1,\\\"activeGame\\\":null,\\\"errors\\\":[],\\\"unhandled\\\":[]}]\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  }
+]

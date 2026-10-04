@@ -1,0 +1,16 @@
+{
+  "sources": [
+    {
+      "title": "Custom Updates",
+      "url": "https://developers.facebook.com/documentation/games/retain/custom-updates",
+      "updated": "2026-04-06",
+      "summary": "SDK custom-update templates are declared under instant_games.custom_update_templates in the uploaded game manifest. Each identifier requires an example string. The SDK uses the same identifier and supplies actual translated text and opaque entry data."
+    },
+    {
+      "title": "Custom Updates, Invites, and Shares",
+      "url": "https://developers.facebook.com/documentation/games/build/zero-permissions/social-features/custom-updates-invites-shares",
+      "updated": "2026-03-25",
+      "summary": "updateAsync targets the current context. Entry data is limited to 1000 serialized characters. NO_PUSH is available. This older guide refers to dashboard templates, while the newer retention guide specifies the bundle configuration."
+    }
+  ]
+}

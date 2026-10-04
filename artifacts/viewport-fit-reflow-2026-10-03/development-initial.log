@@ -1,0 +1,23 @@
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 3840,
+  "failures": [
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "normal",
+      "name": "native input after repeated resize",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "app",
+      "name": "native input after repeated resize",
+      "actual": "",
+      "expected": "PIAN"
+    }
+  ]
+}

@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Streak Rusak",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Tidak Ada Produk yang Tersedia",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Aplikasi tidak dapat menyelesaikan pemuatan teka-tekinya. Silakan periksa koneksi Anda dan coba lagi.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Database teka-teki tidak tersedia"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Database teka-teki tidak tersedia",
+    "PROGRESS_UNSAVED_MESSAGE": "Progres belum tersimpan. Biarkan game tetap terbuka."
   }
 }

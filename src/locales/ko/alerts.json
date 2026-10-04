@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "연속 깨짐",
     "NO_PRODUCTS_AVAILABLE_TITLE": "사용 가능한 제품 없음",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "앱에서 수수께끼 로드를 완료할 수 없습니다. 연결을 확인하고 다시 시도해 주세요.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "수수께끼 데이터베이스를 사용할 수 없습니다."
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "수수께끼 데이터베이스를 사용할 수 없습니다.",
+    "PROGRESS_UNSAVED_MESSAGE": "진행 상황이 아직 저장되지 않았습니다. 게임을 열어 두세요."
   }
 }

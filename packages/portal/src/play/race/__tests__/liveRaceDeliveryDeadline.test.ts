@@ -68,3 +68,67 @@ it.each(["failed-precondition", "functions/failed-precondition", "invalid-argume
 it.each([null, {}, {code: 409}, {code: "unavailable"}, {code: "functions/deadline-exceeded"}, {code: "resource-exhausted"}, {code: "permission-denied"}])("retains uncertain or unavailable commands: %p", error => {
   expect(liveRaceCommandRejected(error)).toBe(false);
 });
+
+it("releases a retired local wait immediately without cancelling its adapter", async () => {
+  jest.useFakeTimers();
+  try {
+    /** The original SDK can still deliver after its local owner retires. */
+    const request = deferred(), owner = new AbortController(), late = jest.fn();
+    /** Cancellation is observed before retiring the local wait. */
+    const delivery = liveRaceDeliveryDeadline(request.promise, false, late, owner.signal);
+    /** Only presentation delivery is cancelled, not the server mutation. */
+    const cancelled = expect(delivery).rejects.toThrow("cancelled");
+    owner.abort(); await cancelled;
+    expect(jest.getTimerCount()).toBe(0);
+    request.resolve("late-authority"); await Promise.resolve();
+    expect(late).toHaveBeenCalledWith("late-authority");
+    await expect(delivery).rejects.toThrow("cancelled");
+  } finally {jest.useRealTimers();}
+});
+it("observes an adapter failure after local cancellation", async () => {
+  jest.useFakeTimers();
+  try {
+    /** Retired wait still owns an error handler for its original SDK promise. */
+    const request = deferred(), owner = new AbortController();
+    /** Delivery rejection retains cancellation independently of a later network failure. */
+    const delivery = liveRaceDeliveryDeadline(request.promise, false, undefined, owner.signal);
+    /** Observe cancellation before triggering the ownership transition. */
+    const cancelled = expect(delivery).rejects.toThrow("cancelled");
+    owner.abort(); await cancelled;
+    request.reject(new Error("late network failure")); await Promise.resolve();
+    expect(jest.getTimerCount()).toBe(0);
+    await expect(delivery).rejects.toThrow("cancelled");
+  } finally {jest.useRealTimers();}
+});
+it("does not allocate a deadline for an already retired wait", async () => {
+  jest.useFakeTimers();
+  try {
+    /** Owner was disposed before the selected adapter promise reached this boundary. */
+    const owner = new AbortController(); owner.abort();
+    await expect(liveRaceDeliveryDeadline(Promise.reject(new Error("late failure")), false, undefined, owner.signal)).rejects.toThrow("cancelled");
+    expect(jest.getTimerCount()).toBe(0);
+  } finally {jest.useRealTimers();}
+});
+it("removes cancellation listeners after timely acceptance", async () => {
+  /** Listener cleanup prevents an accepted result retaining its abandoned owner. */
+  const owner = new AbortController(), removed = jest.spyOn(owner.signal, "removeEventListener"), late = jest.fn();
+  /** Timely delivery remains accepted even when the old owner later aborts. */
+  const delivery = liveRaceDeliveryDeadline(Promise.resolve("accepted"), false, late, owner.signal);
+  await expect(delivery).resolves.toBe("accepted");
+  expect(removed).toHaveBeenCalledWith("abort", expect.any(Function));
+  owner.abort(); await expect(delivery).resolves.toBe("accepted"); expect(late).not.toHaveBeenCalled();
+});
+it("removes cancellation listeners after deadline expiry", async () => {
+  jest.useFakeTimers();
+  try {
+    /** Expired owners do not retain abort listeners while an adapter stays unavailable. */
+    const owner = new AbortController(), removed = jest.spyOn(owner.signal, "removeEventListener");
+    /** The pending adapter remains separate from local deadline ownership. */
+    const delivery = liveRaceDeliveryDeadline(new Promise(() => {}), false, undefined, owner.signal);
+    /** Observe expiry before advancing the deterministic command deadline. */
+    const expired = expect(delivery).rejects.toThrow("timed out");
+    await jest.advanceTimersByTimeAsync(LIVE_RACE_COMMAND_DEADLINE_MS); await expired;
+    expect(jest.getTimerCount()).toBe(0); expect(removed).toHaveBeenCalledWith("abort", expect.any(Function));
+    owner.abort(); await expect(delivery).rejects.toThrow("timed out");
+  } finally {jest.useRealTimers();}
+});

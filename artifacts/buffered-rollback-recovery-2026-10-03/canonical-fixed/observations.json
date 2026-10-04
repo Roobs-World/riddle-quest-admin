@@ -1,0 +1,283 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new accepted host history survives retained-draft restoration",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new host hint remains visible and locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLOC",
+    "expected": "CLOC"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

@@ -3,12 +3,17 @@ import {ListLiveRaceHistoryResponseSchema, type ListLiveRaceHistoryResponse, typ
 import {tr} from "../../i18n";
 import {LiveRaceSafety} from "./LiveRaceSafety";
 
-/** Locale-bound recent results remain read-only; only explicit safety controls can mutate. */
-export function LiveRaceHistory({transport, locale}: {
+/** Locale-bound result reads grant nothing; explicit safety and rematch actions use the owning transport. */
+export function LiveRaceHistory({transport, locale, onRematch}: {
   /** Owning provider supplies its authenticated history transport. */
   transport: LiveRaceCapability;
   /** Exact active content language. */
   locale: RaceLocale;
+  /** Explicit selection leaves Activity before opening an owned private lobby. */
+  onRematch?: (selection: {
+    /** Original validated content category. */ categoryId: ListLiveRaceHistoryResponse["entries"][number]["categoryId"];
+    /** Caller-owned retained terminal ticket. */ rematchOfTicketId: string;
+  }) => void;
 }) {
   /** A new read never exposes results from an earlier account, locale or tab. */
   const [history, setHistory] = useState<ListLiveRaceHistoryResponse | null>(null);
@@ -46,10 +51,13 @@ export function LiveRaceHistory({transport, locale}: {
       return <li key={entry.ticketId} className="live-race-history-entry">
         <header><strong>{tr(entry.result === "win" ? "RaceTo10.RESULT_PLAYER_WIN" : entry.result === "loss" ? "RaceTo10.RESULT_OPPONENT_WIN" : "RaceTo10.RESULT_TIE")}</strong>
           <time dateTime={new Date(entry.createdAtMs).toISOString()}>{new Intl.DateTimeFormat(locale, {dateStyle: "short", timeStyle: "short"}).format(entry.createdAtMs)}</time></header>
-        <div className="live-race-history-score"><span>{tr("RaceTo10.YOU")}<strong>{entry.correctCount}/10</strong></span>
-          <span>{masked || entry.opponent.bot ? tr("RaceTo10.LIVE_OPPONENT") : entry.opponent.displayName}
+        <div className="live-race-history-score"><span><span>{tr("RaceTo10.YOU")}</span><strong>{entry.correctCount}/10</strong></span>
+          <span><span>{masked || entry.opponent.bot ? tr("RaceTo10.LIVE_OPPONENT") : entry.opponent.displayName}</span>
             <strong>{masked ? "—" : `${entry.opponent.correctCount}/10`}</strong></span></div>
         {entry.rewardCoins === 50 && <p>{tr("RaceTo10.LIVE_REWARD", {coins: entry.rewardCoins})}</p>}
+        {entry.opponentAvailable && !entry.opponent.bot && transport.rematch && onRematch &&
+          <button className="race-secondary live-race-rematch" onClick={() => onRematch({categoryId: entry.categoryId, rematchOfTicketId: entry.ticketId})}>
+            {tr("RaceTo10.REMATCH")}</button>}
         {!masked && entry.opponentAvailable && transport.blockOpponent && transport.reportOpponent &&
           <LiveRaceSafety transport={transport} ticketId={entry.ticketId} onBlocked={() => {
             setHistory(null); setLoading(true); setBlockedNotice(true); setRetry(value => value + 1);

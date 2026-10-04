@@ -1,3 +1,10 @@
+// Lease draining is covered with the real deletion service in the ordering emulator suite.
+jest.mock("../jest/jestAccountDeletion", () => ({
+  ...jest.requireActual("../jest/jestAccountDeletion"),
+  runWithJestAccountOperationLease: (_owner: string, _timeout: number, operation: () => Promise<unknown>) =>
+    operation(),
+}));
+
 import {deletePresenceForUser, refreshPresenceVisibility} from "../presence/presenceVisibility";
 
 /** Renders the viewer interface. */
@@ -11,21 +18,46 @@ const fixture = (existing: string[], relationship?: Record<string, unknown>) => 
   const documents = new Set(existing);
   /** Provides update behavior. */
   const update = jest.fn();
+  /** A single fixture snapshot supplies coherent source reads. */
+  const readTime = {seconds: 1, nanoseconds: 2, isEqual: () => true};
+  /** Stored permission is asserted independently of transport calls. */
+  const values = new Map<string, unknown>();
   /** Provides firestore behavior. */
   const firestore = {
-    doc: (path: string) => ({
-      get: async () => ({
-        exists: documents.has(path),
-        data: () =>
-          path === `users/${VIEWER}/knownRivals/${TARGET}`
-            ? (relationship ?? {targetUserId: TARGET, source: "completed_race"})
-            : undefined,
+    doc: (path: string) => ({path}),
+    runTransaction: async (operation: (transaction: unknown) => Promise<unknown>) =>
+      operation({
+        getAll: async (
+          ...references: Array<{
+            /** Source document path. */
+            path: string;
+          }>
+        ) =>
+          references.map(({path}) => ({
+            exists: documents.has(path),
+            readTime,
+            data: () =>
+              path === `users/${VIEWER}/knownRivals/${TARGET}`
+                ? (relationship ?? {targetUserId: TARGET, source: "completed_race"})
+                : undefined,
+          })),
       }),
-    }),
   };
   /** Provides database behavior. */
-  const database = {ref: jest.fn(() => ({update}))};
-  return {firestore: firestore as never, database: database as never, update};
+  const database = {
+    ref: jest.fn((path?: string) => ({
+      update,
+      transaction: async (operation: (value: unknown) => unknown) => {
+        /** Applies the requested change to the independently stored fixture permission. */
+        const next = operation(values.get(path!) ?? null);
+        if (next !== undefined) values.set(path!, next);
+        return {
+          snapshot: {child: (key: string) => ({val: () => (values.get(path!) as Record<string, unknown>)?.[key]})},
+        };
+      },
+    })),
+  };
+  return {firestore: firestore as never, database: database as never, update, values};
 };
 
 it("publishes only a server-established directed known-rival edge", async () => {
@@ -33,17 +65,17 @@ it("publishes only a server-established directed known-rival edge", async () => 
   const allowed = fixture([`users/${VIEWER}/knownRivals/${TARGET}`]);
   await expect(refreshPresenceVisibility(VIEWER, TARGET, allowed.firestore, allowed.database)).resolves.toBe(true);
   expect(allowed.update).toHaveBeenCalledWith({
-    [`presenceVisibility/${VIEWER}/${TARGET}`]: true,
     [`presenceViewers/${TARGET}/${VIEWER}`]: true,
   });
 
+  expect(allowed.values.get(`presenceVisibility/${VIEWER}/${TARGET}`)).toMatchObject({allowed: true});
   /** Provides stranger behavior. */
   const stranger = fixture([]);
   await expect(refreshPresenceVisibility(VIEWER, TARGET, stranger.firestore, stranger.database)).resolves.toBe(false);
   expect(stranger.update).toHaveBeenCalledWith({
-    [`presenceVisibility/${VIEWER}/${TARGET}`]: null,
-    [`presenceViewers/${TARGET}/${VIEWER}`]: null,
+    [`presenceViewers/${TARGET}/${VIEWER}`]: true,
   });
+  expect(stranger.values.get(`presenceVisibility/${VIEWER}/${TARGET}`)).toMatchObject({allowed: false});
 });
 
 it.each([
@@ -54,11 +86,7 @@ it.each([
   /** Provides value behavior. */
   const value = fixture([`users/${VIEWER}/knownRivals/${TARGET}`], relationship);
   await expect(refreshPresenceVisibility(VIEWER, TARGET, value.firestore, value.database)).resolves.toBe(false);
-  expect(value.update).toHaveBeenCalledWith(
-    expect.objectContaining({
-      [`presenceVisibility/${VIEWER}/${TARGET}`]: null,
-    }),
-  );
+  expect(value.values.get(`presenceVisibility/${VIEWER}/${TARGET}`)).toMatchObject({allowed: false});
 });
 
 it.each([`users/${VIEWER}/blockedRivals/${TARGET}`, `users/${TARGET}/blockedRivals/${VIEWER}`])(
@@ -67,11 +95,7 @@ it.each([`users/${VIEWER}/blockedRivals/${TARGET}`, `users/${TARGET}/blockedRiva
     /** Provides blocked behavior. */
     const blocked = fixture([`users/${VIEWER}/knownRivals/${TARGET}`, blockPath]);
     await expect(refreshPresenceVisibility(VIEWER, TARGET, blocked.firestore, blocked.database)).resolves.toBe(false);
-    expect(blocked.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        [`presenceVisibility/${VIEWER}/${TARGET}`]: null,
-      }),
-    );
+    expect(blocked.values.get(`presenceVisibility/${VIEWER}/${TARGET}`)).toMatchObject({allowed: false});
   },
 );
 

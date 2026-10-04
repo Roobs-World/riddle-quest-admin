@@ -1049,8 +1049,46 @@ describe("Daily Challenge Functions", () => {
         ],
         totalQuestions: 1,
       });
+      expect(result.classicIndex).toBeUndefined();
       expect(mockGetClassicRiddleByIndex).toHaveBeenCalledWith(10, "en");
       expect(mockGetIssuedAuthoritativeSession).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns the reconciled Classic index after recovering a pending terminal completion", async () => {
+      mockGetUser.mockResolvedValueOnce(getDefaultPlayer("recoveryUser", {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      })).mockResolvedValue(getDefaultPlayer("recoveryUser", {
+        progress: {classicIndex: 11, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      mockRecoverPendingAuthoritativeCompletion.mockResolvedValue(true);
+      mockGetClassicRiddleByIndex.mockResolvedValue({riddleId: "classic-11", text: "Successor?", answer: "piano", locale: "en"});
+      /** Required recovery advances authority despite the older client hint. */
+      const result = await getCurrentClassicRiddle({auth: {uid: "recoveryUser"}, data: {classicIndex: 10, locale: "en", includeClassicIndex: true}});
+      expect(result.classicIndex).toBe(11);
+      expect(result.challenge?.questions[0]).toMatchObject({riddleId: "classic-11", questionNumber: 1});
+      expect(mockGetClassicRiddleByIndex).toHaveBeenCalledWith(11, "en");
+    });
+
+    it("anchors the buffer to its issued question when profile progress advances during assembly", async () => {
+      mockGetUser.mockResolvedValueOnce(getDefaultPlayer("bufferUser", {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      })).mockResolvedValue(getDefaultPlayer("bufferUser", {
+        progress: {classicIndex: 11, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      mockGetClassicRiddleByIndex.mockImplementation(async (index: number) => ({
+        riddleId: `classic-${index}`, text: `Question ${index}?`, answer: "piano", locale: "en",
+      }));
+      mockGetIssuedAuthoritativeSession.mockResolvedValue({locale: "en", gameMode: "classic", attempts: 0,
+        hasUsedContinue: false, awaitingContinue: false, terminal: false, isCorrect: false,
+        expiresAt: {toMillis: () => Date.now() + 600000}});
+      /** Later profile reads cannot relabel an already issued current question. */
+      const result = await getClassicRiddleBuffer({auth: {uid: "bufferUser"}, data: {locale: "en"}});
+      expect(result.confirmedClassicIndex).toBe(10);
+      expect(result.riddles.map((item: {
+        /** Issued index. */
+        classicIndex: number;
+      }) => item.classicIndex)).toEqual([10, 11, 12, 13]);
+      expect(result.riddles[0].question.riddleId).toBe("classic-10");
     });
 
     it("recovers from malformed optional legacy load hints using server-authoritative state", async () => {

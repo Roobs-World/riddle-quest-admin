@@ -1,0 +1,70 @@
+--- input.before.txt
++++ packages/portal/src/playable/input.ts
+@@ -29,8 +29,11 @@
+   const letters = Array.from({length: answerLength}, (_, index) => state.letters[index] ?? "");
+   /** Provides active behavior. */
+   let active = Math.min(Math.max(0, state.activeSlotIndex), answerLength - 1);
++  /** One paste or composition may fill empty slots and replace its originally selected editable letter once. */
++  const capacity = letters.reduce((count, letter, index) => count + Number(!locked.has(index) && !letter), 0) +
++    Number(!locked.has(active) && Boolean(letters[active]));
+ 
+-  for (const grapheme of graphemes) {
++  for (const grapheme of graphemes.slice(0, capacity)) {
+     /** Provides target behavior. */
+     const target = Array.from({length: answerLength}, (_, offset) => (active + offset) % answerLength).find(
+       (index) => !locked.has(index) && (!letters[index] || index === active),
+--- input.test.before.txt
++++ packages/portal/src/youtube/__tests__/input.test.ts
+@@ -19,6 +19,14 @@
+     expect(updated.letters.filter(Boolean)).toHaveLength(3);
+   });
+ 
++  it.each([
++    {letters: ["", "", "", ""], activeSlotIndex: 0, text: "romeEXTRAS", locked: [], locale: "en", expected: ["r", "o", "m", "e"]},
++    {letters: ["r", "o", "m", "x"], activeSlotIndex: 3, text: "eEXTRAS", locked: [], locale: "en", expected: ["r", "o", "m", "e"]},
++    {letters: ["", "月", "", ""], activeSlotIndex: 0, text: "猫犬鳥追加", locked: [1], locale: "ja", expected: ["猫", "月", "犬", "鳥"]},
++  ])("preserves the bounded prefix of one committed text unit: $text", ({letters, activeSlotIndex, text, locked, locale, expected}) => {
++    expect(insertYouTubeAnswerText({letters, activeSlotIndex}, text, 4, locked, locale).letters).toEqual(expected);
++  });
++
+   it("deletes only editable slots and limits QWERTY to Latin answers", () => {
+     expect(deleteYouTubeAnswerLetter({letters: ["a", "b", "c"], activeSlotIndex: 1}, 3, [1])).toEqual({
+       letters: ["", "b", "c"],
+--- package.before.txt
++++ packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -133,7 +133,8 @@
+     "test:terminal-journal-recovery:browser": "AUTHORITY_TERMINAL_JOURNAL_ONLY=1 AUTHORITY_TERMINAL_REPORT_DIR=../../artifacts/terminal-journal-recovery-2026-10-03/development node scripts/verify-authority-terminal-recovery-browser.mjs && AUTHORITY_TERMINAL_JOURNAL_ONLY=1 AUTHORITY_TERMINAL_REACT_MODE=production AUTHORITY_TERMINAL_REPORT_DIR=../../artifacts/terminal-journal-recovery-2026-10-03/production node scripts/verify-authority-terminal-recovery-browser.mjs",
+     "test:authority-loss-recovery:browser": "node scripts/verify-authority-loss-recovery-browser.mjs && AUTHORITY_LOSS_REACT_MODE=production node scripts/verify-authority-loss-recovery-browser.mjs",
+     "test:cold-draft-recovery:browser": "node scripts/verify-cold-draft-recovery-browser.mjs && COLD_DRAFT_REACT_MODE=production node scripts/verify-cold-draft-recovery-browser.mjs",
+-    "test:race-ime-dialog:browser": "node scripts/verify-race-ime-dialog-browser.mjs && RACE_IME_DIALOG_REACT_MODE=production node scripts/verify-race-ime-dialog-browser.mjs"
++    "test:race-ime-dialog:browser": "node scripts/verify-race-ime-dialog-browser.mjs && RACE_IME_DIALOG_REACT_MODE=production node scripts/verify-race-ime-dialog-browser.mjs",
++    "test:playable-text-capacity:browser": "node scripts/verify-playable-text-capacity-browser.mjs && PLAYABLE_CAPACITY_REACT_MODE=production node scripts/verify-playable-text-capacity-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- useHostRiddleLifecycle.test.before-doc.txt
++++ packages/portal/src/play/__tests__/useHostRiddleLifecycle.test.ts
+@@ -12,11 +12,14 @@
+   const services = {loadRiddle: async () => {throw Object.assign(new Error("deadline-exceeded"), {code});}};
+   /** Captures the notice and correlated failure delivered to the player. */
+   const notice = jest.fn();
++  /** Observes the correlated authority failure sent to the current question request. */
+   const operation = jest.fn();
++  /** Real lifecycle receives the injected callable timeout. */
+   const lifecycle = useHostRiddleLifecycle({userId: "player", profile: null, initialGameMode: "classic", locale: "en",
+     services, withActivity: callback => callback(), postToGame: jest.fn(),
+     postOperation: operation, configurationWarning: null, setNotice: notice, onRecoveryAttempt: jest.fn()});
+   expect(await lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "timed-out-question")).toBe(false);
++  /** Existing translated recovery copy expected for both callable timeout spellings. */
+   const expected = "Service temporarily unavailable. Please try again.";
+   expect(notice).toHaveBeenLastCalledWith(expected);
+   expect(operation).toHaveBeenLastCalledWith("timed-out-question", "loadRiddle", false, undefined, expected);

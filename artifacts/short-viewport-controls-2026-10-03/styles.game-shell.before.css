@@ -1,0 +1,262 @@
+.game-app {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    url("../../../assets/images/starfield.svg") center / cover no-repeat,
+    radial-gradient(ellipse at 20% 15%, #10192c 0, transparent 60%),
+    linear-gradient(165deg, #050a14, #02050b 75%);
+  color: #f8fbf6;
+}
+.game-content {
+  position: relative;
+  left: 50%;
+  width: 100%;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto auto;
+  gap: 10px;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
+    max(18px, env(safe-area-inset-left));
+  transform: translateX(-50%);
+  transform-origin: top left;
+}
+.game-header,
+.game-loading,
+.riddle-surface,
+.keyboard,
+.game-input-actions,
+.game-bottom-navigation,
+.pause-banner {
+  position: relative;
+  z-index: 1;
+}
+.solar-system {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 174, 63, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(1, 5, 15, 0.1), rgba(4, 11, 25, 0.58));
+}
+.solar-system canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.game-app.paused {
+  filter: saturate(0.75);
+}
+.game-header {
+  width: min(1200px, 100%);
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 68px 44px minmax(0, 1fr) 88px;
+  align-items: center;
+  justify-self: center;
+  gap: 10px;
+}
+.game-header .riddle-sound-button {
+  position: static;
+  width: 44px;
+  height: 44px;
+  justify-self: start;
+}
+.game-logo {
+  width: clamp(48px, 9vw, 68px);
+  height: clamp(48px, 9vw, 68px);
+  object-fit: contain;
+  display: block;
+}
+.game-mode-label {
+  justify-self: center;
+  position: relative;
+  color: #fff;
+  font:
+    400 clamp(20px, 5vw, 30px)/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.coin-pill {
+  justify-self: end;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 clamp(4px, 2vw, 12px);
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font:
+    400 clamp(19px, 4.5vw, 27px)/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.coin-pill img {
+  width: clamp(34px, 7vw, 48px);
+  height: clamp(28px, 6vw, 38px);
+}
+.coin-pill strong {
+  font-variant-numeric: tabular-nums;
+}
+.game-loading {
+  min-height: 520px;
+  overflow: hidden;
+}
+.spinning-wheel-loader {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  overflow: hidden;
+  background: rgba(4, 8, 19, 0.72);
+}
+.spinning-wheel-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 75;
+  min-height: 0;
+  cursor: wait;
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+.spinning-wheel-loader-status {
+  position: absolute;
+  top: calc(50% + 82px);
+  left: 50%;
+  z-index: 1;
+  width: min(360px, calc(100% - 40px));
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px 12px;
+  translate: -50% 0;
+  color: var(--play-panel);
+  text-align: center;
+}
+.spinning-wheel-loader-status strong {
+  grid-column: 1 / -1;
+  font:
+    400 20px/1.25 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.spinning-wheel-loader-status progress {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  accent-color: #ffb347;
+}
+.spinning-wheel-loader-status progress::-webkit-progress-bar {
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.2);
+}
+.spinning-wheel-loader-status progress::-webkit-progress-value {
+  border-radius: inherit;
+  background: #ffb347;
+}
+.spinning-wheel-loader-status progress::-moz-progress-bar {
+  border-radius: inherit;
+  background: #ffb347;
+}
+.spinning-wheel-loader-status span {
+  min-width: 42px;
+  font-weight: 800;
+}
+.pulsing-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  translate: -50% -50%;
+}
+.pulsing-spinner-dot {
+  --spinner-dot-angle: 0deg;
+  --spinner-dot-delay: 0ms;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin: -15px;
+  border-radius: 50%;
+  background: #ffb347;
+  transform: rotate(var(--spinner-dot-angle)) translateY(-45px) scale(1);
+  animation: pulsing-spinner-dot 1s linear infinite;
+  animation-delay: var(--spinner-dot-delay);
+}
+.pulsing-spinner-dot:nth-child(2) {
+  --spinner-dot-angle: 45deg;
+  --spinner-dot-delay: 125ms;
+}
+.pulsing-spinner-dot:nth-child(3) {
+  --spinner-dot-angle: 90deg;
+  --spinner-dot-delay: 250ms;
+}
+.pulsing-spinner-dot:nth-child(4) {
+  --spinner-dot-angle: 135deg;
+  --spinner-dot-delay: 375ms;
+}
+.pulsing-spinner-dot:nth-child(5) {
+  --spinner-dot-angle: 180deg;
+  --spinner-dot-delay: 500ms;
+}
+.pulsing-spinner-dot:nth-child(6) {
+  --spinner-dot-angle: 225deg;
+  --spinner-dot-delay: 625ms;
+}
+.pulsing-spinner-dot:nth-child(7) {
+  --spinner-dot-angle: 270deg;
+  --spinner-dot-delay: 750ms;
+}
+.pulsing-spinner-dot:nth-child(8) {
+  --spinner-dot-angle: 315deg;
+  --spinner-dot-delay: 875ms;
+}
+@keyframes pulsing-spinner-dot {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--spinner-dot-angle)) translateY(-45px) scale(1);
+  }
+  25% {
+    opacity: 0.2;
+    transform: rotate(var(--spinner-dot-angle)) translateY(-45px) scale(0.5);
+  }
+  25.01%,
+  100% {
+    opacity: 1;
+    transform: rotate(var(--spinner-dot-angle)) translateY(-45px) scale(1);
+  }
+}
+.spinning-wheel-graphic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150vmax;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: url("../../../assets/images/wheel-bg.svg") center / contain no-repeat;
+  opacity: 0.82;
+  pointer-events: none;
+  animation: guidance-wheel-spin 12s linear infinite;
+}
+.game-modal-backdrop > .spinning-wheel-graphic,
+.offline-backdrop > .spinning-wheel-graphic {
+  position: fixed;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulsing-spinner-dot {
+    animation: none;
+    opacity: 0.7;
+  }
+}

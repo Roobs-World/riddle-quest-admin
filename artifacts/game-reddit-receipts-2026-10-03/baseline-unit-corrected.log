@@ -1,0 +1,252 @@
+FAIL src/reddit/__tests__/RedditReceiptDelivery.test.ts (5.159 s)
+  ● delivers confirmed completion before a held profile read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      46 |   const pending = call(createRedditHostServices(), kind).then(value => {delivered = true;return value;});
+      47 |   await flush();
+    > 48 |   try {expect(delivered).toBe(true);} finally {held.resolve(response(profile));await pending;}
+         |                          ^
+      49 | });
+      50 |
+      51 | it.each(["completion", "spend"])("preserves confirmed %s through a profile outage", async kind => {
+
+      at src/reddit/__tests__/RedditReceiptDelivery.test.ts:48:26
+
+  ● delivers confirmed spend before a held profile read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      46 |   const pending = call(createRedditHostServices(), kind).then(value => {delivered = true;return value;});
+      47 |   await flush();
+    > 48 |   try {expect(delivered).toBe(true);} finally {held.resolve(response(profile));await pending;}
+         |                          ^
+      49 | });
+      50 |
+      51 | it.each(["completion", "spend"])("preserves confirmed %s through a profile outage", async kind => {
+
+      at src/reddit/__tests__/RedditReceiptDelivery.test.ts:48:26
+
+  ● preserves confirmed completion through a profile outage
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Injected optional read outage]
+
+      54 |     return response(kind === "completion" ? receipt : {newCoins: 275});
+      55 |   }) as typeof fetch;
+    > 56 |   await expect(call(createRedditHostServices(), kind)).resolves.toEqual(kind === "completion" ? receipt : {newCoins: 275});
+         |               ^
+      57 |   await flush();
+      58 | });
+      59 |
+
+      at expect (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/reddit/__tests__/RedditReceiptDelivery.test.ts:56:15
+
+  ● preserves confirmed spend through a profile outage
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Injected optional read outage]
+
+      54 |     return response(kind === "completion" ? receipt : {newCoins: 275});
+      55 |   }) as typeof fetch;
+    > 56 |   await expect(call(createRedditHostServices(), kind)).resolves.toEqual(kind === "completion" ? receipt : {newCoins: 275});
+         |               ^
+      57 |   await flush();
+      58 | });
+      59 |
+
+      at expect (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/reddit/__tests__/RedditReceiptDelivery.test.ts:56:15
+
+  ● does not publish an older profile after a newer requested profile completes
+
+    expect(received).toBeNull()
+
+    Received: {"achievements": [], "classicIndex": 17, "coins": 100, "gamesPlayed": 0, "level": 1, "username": "Solver", "winStreak": 0, "wins": 0, "xp": 0}
+
+      78 |   newer.resolve(response({...profile, coins: 500}));await second;
+      79 |   older.resolve(response({...profile, coins: 100}));
+    > 80 |   expect(await first).toBeNull();
+         |                       ^
+      81 |   expect(listener.mock.calls.at(-1)?.[0]).toMatchObject({profile: {coins: 500}});
+      82 | });
+      83 |
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:80:23)
+
+  ● does not restore a deleted account from a pending profile or later subscription
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  2
+    + Received  + 17
+
+      Object {
+    -   "profile": null,
+    -   "user": null,
+    +   "profile": Object {
+    +     "achievements": Array [],
+    +     "classicIndex": 17,
+    +     "coins": 300,
+    +     "gamesPlayed": 0,
+    +     "level": 1,
+    +     "username": "Solver",
+    +     "winStreak": 0,
+    +     "wins": 0,
+    +     "xp": 0,
+    +   },
+    +   "user": Object {
+    +     "accountGeneration": 1,
+    +     "displayName": "Riddle Quest player",
+    +     "isAnonymous": false,
+    +     "uid": "reddit-account",
+    +   },
+      }
+
+      92 |   await services.deleteAccount("reddit-account");
+      93 |   held.resolve(response(profile));await flush();
+    > 94 |   expect(listener.mock.calls.at(-1)?.[0]).toEqual({user: null, profile: null});
+         |                                           ^
+      95 |   /** Observes the existing account-owned delivery or subscription without changing its authority. */
+      96 |   /** Test-owned transport or adapter is retained through controlled delivery. */
+      97 |   const later = jest.fn();services.auth.subscribe(later);
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:94:43)
+
+  ● does not start a profile refresh when a pending mutation returns after deletion
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 2
+    Received number of calls: 3
+
+      114 |   held.resolve(response(receipt));
+      115 |   await expect(pending).resolves.toEqual(receipt);
+    > 116 |   expect(global.fetch).toHaveBeenCalledTimes(2);
+          |                        ^
+      117 | });
+      118 |
+      119 | it("issues a fresh authoritative buffer read alongside an older preload", async () => {
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:116:24)
+
+  ● issues a fresh authoritative buffer read alongside an older preload
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 1
+    Received array:  [["/api/game/riddle.classic-buffer", {"body": "{\"locale\":\"en\",\"contentProtection\":1}", "headers": {"content-type": "application/json"}, "method": "POST", "redirect": "error"}]]
+
+      128 |   /** Test-owned transport or adapter is retained through controlled delivery. */
+      129 |   const pending = services.loadRiddle({gameMode: "classic", locale: "en", authoritative: true});
+    > 130 |   expect((global.fetch as jest.Mock).mock.calls.filter(([path]) => String(path).endsWith("classic-buffer"))).toHaveLength(2);
+          |                                                                                                              ^
+      131 |   await expect(pending).resolves.toMatchObject({index: 18, riddleId: "classic-18"});
+      132 |   older.resolve(buffer(17));await flush();
+      133 | });
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:130:110)
+
+  ● uses newer confirmed progress when an older authoritative response arrives last
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at _getError (../../node_modules/.pnpm/jest-circus@30.5.2_supports-color@8.1.1/node_modules/jest-circus/build/jestAdapterInit.js:1985:12)
+          at Array.map (<anonymous>)
+
+    Cause:
+        thrown: "Exceeded timeout of 5000 ms for a test.
+        Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+          133 | });
+          134 |
+        > 135 | it("uses newer confirmed progress when an older authoritative response arrives last", async () => {
+              |   ^
+          136 |   /** Earlier current-progress response is delivered after its confirmed successor. */
+          137 |   const older = deferred<Response>();
+          138 |   global.fetch = jest.fn< typeof fetch >().mockReturnValueOnce(older.promise).mockResolvedValue(buffer(18));
+
+          at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:135:3)
+
+  ● retries unavailable cached Daily content instead of replaying its error
+
+    expect(received).resolves.toMatchObject()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE]
+
+      155 |   /** Test-owned transport or adapter is retained through controlled delivery. */
+      156 |   const services = createRedditHostServices();services.preloadInitialRiddles?.("en");await flush();
+    > 157 |   await expect(services.loadRiddle({gameMode: "challenge", locale: "en"})).resolves.toMatchObject({riddleId: "classic-1"});
+          |               ^
+      158 |   expect((global.fetch as jest.Mock).mock.calls.filter(([path]) => String(path).endsWith("riddle.daily"))).toHaveLength(2);
+      159 | });
+      160 |
+
+      at expect (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:157:15)
+
+  ● retains server-confirmed Daily completion and routes it with a typed outcome
+
+    expect(received).rejects.toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Object {
+    -   "code": "daily-completed",
+    - }
+    + [Error: Daily complete]
+
+      164 |   const services = createRedditHostServices();
+      165 |   for (let attempt = 0; attempt < 2; attempt++)
+    > 166 |     await expect(services.loadRiddle({gameMode: "challenge", locale: "en"})).rejects.toMatchObject({code: "daily-completed"});
+          |                                                                                      ^
+      167 |   expect(global.fetch).toHaveBeenCalledTimes(1);
+      168 | });
+      169 |
+
+      at Object.toMatchObject (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:166:86)
+
+  ● requests authoritative hint and accepted-guess recovery on every content seam
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   "includeGuessRecovery": true,
+    -   "includeHintRecovery": true,
+    +   "contentProtection": 1,
+    +   "locale": "en",
+      }
+
+      176 |   await services.loadRiddle({gameMode: "classic", locale: "en", sessionToken: question(17).sessionToken, riddleId: "classic-17"});
+      177 |   for (const [, init] of (global.fetch as jest.MockedFunction<typeof fetch>).mock.calls)
+    > 178 |     expect(JSON.parse(String(init?.body))).toMatchObject({includeHintRecovery: true, includeGuessRecovery: true});
+          |                                            ^
+      179 | });
+      180 |
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditReceiptDelivery.test.ts:178:44)
+
+Test Suites: 1 failed, 1 total
+Tests:       12 failed, 1 passed, 13 total
+Snapshots:   0 total
+Time:        5.264 s
+Ran all test suites matching src/reddit/__tests__/RedditReceiptDelivery.test.ts.

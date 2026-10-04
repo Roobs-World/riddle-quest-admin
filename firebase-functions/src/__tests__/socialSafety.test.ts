@@ -1,3 +1,10 @@
+// Real operation leases and permission delivery are exercised by emulator suites.
+jest.mock("../jest/jestAccountDeletion", () => ({
+  ...jest.requireActual("../jest/jestAccountDeletion"),
+  runWithJestAccountOperationLease: (_owner: string, _timeout: number, operation: () => Promise<unknown>) =>
+    operation(),
+}));
+
 import type {Database} from "firebase-admin/database";
 import {SOCIAL_REPORT_DAILY_LIMIT, blockKnownRival, reportKnownRival} from "../social/socialSafety";
 
@@ -19,11 +26,19 @@ const fakeDb = (known = true) => {
       establishedAtMs: NOW,
     });
   /** Provides snapshot behavior. */
-  const snapshot = (path: string) => ({exists: values.has(path), data: () => values.get(path)});
+  const readTime = {seconds: 1, nanoseconds: 2, isEqual: () => true};
+  /** Snapshot time is independent of caller-supplied reporting time. */
+  const snapshot = (path: string) => ({exists: values.has(path), readTime, data: () => values.get(path)});
   /** Provides ref behavior. */
   const ref = (path: string) => ({path, get: async () => snapshot(path)});
   /** Provides transaction behavior. */
   const transaction = {
+    getAll: async (
+      ...references: Array<{
+        /** Source document path. */
+        path: string;
+      }>
+    ) => references.map(({path}) => snapshot(path)),
     get: jest.fn(
       async ({
         path,
@@ -69,8 +84,16 @@ const fakeDb = (known = true) => {
   const presenceUpdates: Record<string, unknown> = {};
   /** Provides database behavior. */
   const database = {
-    ref: () => ({
+    ref: (path?: string) => ({
       update: jest.fn(async (value: Record<string, unknown>) => Object.assign(presenceUpdates, value)),
+      transaction: async (operation: (value: unknown) => unknown) => {
+        /** Applies the requested change to the independently stored fixture permission. */
+        const next = operation(presenceUpdates[path!] ?? null);
+        if (next !== undefined) presenceUpdates[path!] = next;
+        return {
+          snapshot: {child: (key: string) => ({val: () => (presenceUpdates[path!] as Record<string, unknown>)?.[key]})},
+        };
+      },
     }),
   } as unknown as Database;
   return {database, db, presenceUpdates, values};
@@ -83,10 +106,10 @@ describe("social safety service", () => {
     await expect(blockKnownRival(REPORTER, TARGET, {database, db, nowMs: NOW})).resolves.toEqual({blocked: true});
     expect(values.get(`users/${REPORTER}/blockedRivals/${TARGET}`)).toEqual({targetUserId: TARGET, blockedAtMs: NOW});
     expect(presenceUpdates).toMatchObject({
-      [`presenceVisibility/${REPORTER}/${TARGET}`]: null,
-      [`presenceViewers/${TARGET}/${REPORTER}`]: null,
-      [`presenceVisibility/${TARGET}/${REPORTER}`]: null,
-      [`presenceViewers/${REPORTER}/${TARGET}`]: null,
+      [`presenceVisibility/${REPORTER}/${TARGET}`]: expect.objectContaining({allowed: false}),
+      [`presenceViewers/${TARGET}/${REPORTER}`]: true,
+      [`presenceVisibility/${TARGET}/${REPORTER}`]: expect.objectContaining({allowed: false}),
+      [`presenceViewers/${REPORTER}/${TARGET}`]: true,
     });
     /** Provides unknown behavior. */
     const unknown = fakeDb(false);

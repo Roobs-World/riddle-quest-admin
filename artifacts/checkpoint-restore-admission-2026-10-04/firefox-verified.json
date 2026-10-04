@@ -1,0 +1,116 @@
+{
+  "raw": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"rows\": [\n    \"ZZZZZ\",\n    \"CL\"\n  ],\n  \"draft\": [\n    \"C\",\n    \"L\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"slot\": 2,\n  \"guesses\": [\n    \"retained-next-guess\",\n    \"retained-next-guess\",\n    \"retained-next-guess\",\n    \"retained-next-guess\",\n    \"retained-next-guess\"\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"rows\": [\n    \"CL\",\n    \"\"\n  ],\n  \"draft\": [\n    \"C\",\n    \"L\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"slot\": 2,\n  \"coins\": 325,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"rows\": [\n    \"CL\",\n    \"\"\n  ],\n  \"draft\": [\n    \"C\",\n    \"L\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"slot\": 2,\n  \"coins\": 325,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"CLO\",\n  \"journalDraft\": [\n    \"C\",\n    \"L\",\n    \"O\",\n    \"\",\n    \"\"\n  ],\n  \"slot\": 3,\n  \"guesses\": [\n    \"retained-next-guess\",\n    \"retained-next-guess\",\n    \"retained-next-guess\",\n    \"retained-next-guess\",\n    \"retained-next-guess\",\n    \"retained-next-guess\"\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    }
+  ],
+  "proof": [
+    {
+      "rows": [
+        "ZZZZZ",
+        "CL"
+      ],
+      "draft": [
+        "C",
+        "L",
+        "",
+        "",
+        ""
+      ],
+      "slot": 2,
+      "guesses": [
+        "retained-next-guess",
+        "retained-next-guess",
+        "retained-next-guess",
+        "retained-next-guess",
+        "retained-next-guess"
+      ],
+      "errors": [],
+      "unhandled": []
+    },
+    {
+      "rows": [
+        "CL",
+        ""
+      ],
+      "draft": [
+        "C",
+        "L",
+        "",
+        "",
+        ""
+      ],
+      "slot": 2,
+      "coins": 325,
+      "errors": [],
+      "unhandled": []
+    },
+    {
+      "rows": [
+        "CL",
+        ""
+      ],
+      "draft": [
+        "C",
+        "L",
+        "",
+        "",
+        ""
+      ],
+      "slot": 2,
+      "coins": 325,
+      "errors": [],
+      "unhandled": []
+    },
+    {
+      "draft": "CLO",
+      "journalDraft": [
+        "C",
+        "L",
+        "O",
+        "",
+        ""
+      ],
+      "slot": 3,
+      "guesses": [
+        "retained-next-guess",
+        "retained-next-guess",
+        "retained-next-guess",
+        "retained-next-guess",
+        "retained-next-guess",
+        "retained-next-guess"
+      ],
+      "errors": [],
+      "unhandled": []
+    }
+  ]
+}

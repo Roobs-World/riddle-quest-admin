@@ -1,0 +1,11 @@
+{
+  "packages/portal/src/play/bridgeRouter.ts": true,
+  "packages/portal/src/play/useHostBridgeLifecycle.ts": true,
+  "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts": true,
+  "packages/portal/src/play/useGameMessageRouter.ts": true,
+  "packages/portal/src/play/useHostNotice.ts": true,
+  "packages/portal/src/play/PlayHostApp.tsx": true,
+  "packages/portal/scripts/verify-bridge-dispatch-ownership-browser.mjs": true,
+  "packages/portal/src/play/__tests__/bridgeDispatchOwnership.test.ts": true,
+  "packages/portal/src/play/__tests__/useGameMessageRouter.test.ts": true
+}

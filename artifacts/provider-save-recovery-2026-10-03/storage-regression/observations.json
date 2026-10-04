@@ -1,0 +1,352 @@
+[
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "answer remains responsive while provider write is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "84 physical answer edits reach checkpoint adapter",
+    "actual": 84,
+    "expected": 84
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "held provider write stays the sole in-flight write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "no checkpoint is acknowledged while provider is held",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "in-flight snapshot cannot acquire later answer fields",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "84 waiting edits and profile update need one newest write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "newest stored draft is PIAN",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "newest profile merges with the draft",
+    "actual": 777,
+    "expected": 777
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "all accepted checkpoints acknowledge newest durable snapshot",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "later ordinary submission reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "completion clear reaches durable storage",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "normal gameplay has no save failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "latest",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "answer remains responsive while provider write is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "84 physical answer edits reach checkpoint adapter",
+    "actual": 84,
+    "expected": 84
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "held provider write stays the sole in-flight write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "no checkpoint is acknowledged while provider is held",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "in-flight snapshot cannot acquire later answer fields",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "deletion prevents new checkpoint acceptance",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "deletion clears storage after drain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "deletion does not resurrect old player data",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "deletion leaves no save failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "deletion",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "answer remains responsive while provider write is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "84 physical answer edits reach checkpoint adapter",
+    "actual": 84,
+    "expected": 84
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "held provider write stays the sole in-flight write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "no checkpoint is acknowledged while provider is held",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "in-flight snapshot cannot acquire later answer fields",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "84 waiting edits and profile update need one newest write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "newest stored draft is PIAN",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "newest profile merges with the draft",
+    "actual": 777,
+    "expected": 777
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "all accepted checkpoints acknowledge newest durable snapshot",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "later ordinary submission reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "completion clear reaches durable storage",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "normal gameplay has no save failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "latest",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "answer remains responsive while provider write is held",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "84 physical answer edits reach checkpoint adapter",
+    "actual": 84,
+    "expected": 84
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "held provider write stays the sole in-flight write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "no checkpoint is acknowledged while provider is held",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "in-flight snapshot cannot acquire later answer fields",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "deletion prevents new checkpoint acceptance",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "deletion clears storage after drain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "deletion does not resurrect old player data",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "deletion leaves no save failure",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "deletion",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

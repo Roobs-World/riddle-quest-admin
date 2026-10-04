@@ -407,6 +407,41 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("contains guest registration keyboard input until Play as guest dismisses the prompt", async () => {
+    /** Isolated injected game and its native keyboard surface. */
+    const {context, page} = await openHarness(browser);
+    await advanceToRegistration(page);
+    /** Registration prompt owning focus while visible. */
+    const dialog = page.locator(".jest-registration-dialog");
+    /** Gameplay input that must remain unchanged behind registration. */
+    const draft = page.locator(".guess-row").first();
+    /** Initial draft used to detect leaked keyboard input. */
+    const before = await draft.textContent();
+    await page.keyboard.type("ZI", {delay: 0});
+    expect(await draft.textContent()).toBe(before);
+    await page.keyboard.press("Backspace");
+    expect(await draft.textContent()).toBe(before);
+    await page.waitForFunction(() => document.querySelector(".jest-registration-dialog")?.contains(document.activeElement));
+    expect(await dialog.getByRole("button", {name: /^register$/i}).evaluate(button => button === document.activeElement)).toBe(true);
+    await page.keyboard.press("Shift+Tab");
+    expect(await dialog.getByRole("button", {name: /play as guest/i}).evaluate(button => button === document.activeElement)).toBe(true);
+    await page.keyboard.press("Tab");
+    expect(await dialog.getByRole("button", {name: /^register$/i}).evaluate(button => button === document.activeElement)).toBe(true);
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Enter");
+    await dialog.waitFor({state: "detached"});
+    expect(await draft.textContent()).toBe(before);
+    await page.getByRole("heading", {name: /what has keys/i}).click();
+    await page.keyboard.press("P");
+    await page.waitForFunction(() => document.querySelector(".guess-row")?.textContent?.trim() === "P");
+    expect(await draft.textContent()).toBe("P");
+    /** SDK calls verify guest dismissal did not start registration. */
+    const state = await getHarnessState(page);
+    expect(state.calls).toContain("sdk.registration.closeButtonAction");
+    expect(state.calls).not.toContain("sdk.registration.loginButtonAction");
+    await context.close();
+  });
+
   it("reports a guest Daily completion without opening registration", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {gameMode: "challenge"});
@@ -2459,10 +2494,10 @@ describeBrowser("Jest authentication integration", () => {
   });
 
   it.each([
-    ["SDK initialization", "init-failure", /sdk initialization failed/i],
+    ["SDK initialization", "init-failure", /service temporarily unavailable\. please try again\./i],
     ["SDK initialization timeout", "init-timeout", /please check your internet connection and try again/i],
-    ["signed player", "signed-player-failure", /signed player request failed/i],
-    ["identity exchange", "identity-failure", /identity exchange failed/i],
+    ["signed player", "signed-player-failure", /service temporarily unavailable\. please try again\./i],
+    ["identity exchange", "identity-failure", /service temporarily unavailable\. please try again\./i],
   ])("shows a retryable startup screen for %s failures", async (_name, scenario, message) => {
     /** Provides {context, page} behavior. */
     const {context, page, pageErrors} = await openHarness(browser, {

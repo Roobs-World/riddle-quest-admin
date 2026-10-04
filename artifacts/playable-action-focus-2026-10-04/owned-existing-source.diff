@@ -1,0 +1,130 @@
+--- packages/portal/src/playable/YouTubePlayableApp.tsx (captured before)
++++ packages/portal/src/playable/YouTubePlayableApp.tsx
+@@ -165,6 +165,8 @@
+   const applyText = (value: string): void => authority.insertText(value);
+   /** Consecutive native deletions share the same authority-owned cursor and draft. */
+   const backspace = (): void => authority.backspace();
++  /** A user-invoked editing action returns physical typing to the native editor immediately. */
++  const focusAnswerInput = (): void => inputRef.current?.focus();
+ 
+   if (snapshot.lastResult) {
+     /** Provides result behavior. */
+@@ -257,7 +259,7 @@
+                   disabled={inputDisabled || active.awaitingContinue || active.hintRevealedIndices.includes(index)}
+                   onClick={() => {
+                     authority.setActiveSlot(index);
+-                    inputRef.current?.focus();
++                    focusAnswerInput();
+                   }}
+                   key={index}
+                 >
+@@ -283,13 +285,19 @@
+                 <button
+                   tabIndex={-1}
+                   disabled={inputDisabled || active.awaitingContinue}
+-                  onClick={() => applyText(normalizeLatinShortcutKey(letter))}
++                  onClick={() => {
++                    applyText(normalizeLatinShortcutKey(letter));
++                    focusAnswerInput();
++                  }}
+                   key={letter}
+                 >
+                   {letter}
+                 </button>
+               ))}
+-              <button tabIndex={-1} disabled={inputDisabled || active.awaitingContinue} onClick={backspace}>
++              <button tabIndex={-1} disabled={inputDisabled || active.awaitingContinue} onClick={() => {
++                backspace();
++                focusAnswerInput();
++              }}>
+                 ⌫
+               </button>
+             </div>
+@@ -320,6 +328,7 @@
+                 className="yt-primary"
+                 disabled={materialDisabled || displayLetters.some((letter) => !letter)}
+                 onClick={() => {
++                  focusAnswerInput();
+                   void run(() => authority.submitGuess());
+                 }}
+               >
+@@ -328,6 +337,7 @@
+               <button
+                 disabled={materialDisabled || progression.coins < YOUTUBE_HINT_COST}
+                 onClick={() => {
++                  focusAnswerInput();
+                   void run(() => authority.requestHint());
+                 }}
+               >
+--- packages/portal/src/playable/useYouTubeReadySession.ts (captured before)
++++ packages/portal/src/playable/useYouTubeReadySession.ts
+@@ -58,9 +58,12 @@
+     if (!snapshot.paused) sdk.gameReady();
+   }, [sdk, snapshot.paused]);
+ 
++  /** Focus only when an answer becomes usable, not when an already editable save receipt arrives. */
++  const answerEditable = Boolean(snapshot.activeRiddle) && !snapshot.paused && !snapshot.saveBlocked &&
++    !snapshot.save.activeGame?.awaitingContinue && !snapshot.lastResult;
+   useEffect(() => {
+-    if (snapshot.activeRiddle && !snapshot.paused) inputRef.current?.focus();
+-  }, [inputRef, snapshot.activeRiddle, snapshot.paused]);
++    if (answerEditable) inputRef.current?.focus();
++  }, [answerEditable, inputRef, snapshot.activeRiddle]);
+ 
+   useEffect(() => {
+     if (snapshot.paused) return;
+--- packages/portal/package.json (captured before)
++++ packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-composition-delivery:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:host-bridge:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-composition-delivery:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:playable-action-focus:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -140,7 +140,8 @@
+     "test:rapid-answer-edits:browser": "node scripts/verify-rapid-answer-edits-browser.mjs && RAPID_ANSWER_REACT_MODE=production node scripts/verify-rapid-answer-edits-browser.mjs",
+     "test:native-cancelled-keys:browser": "node scripts/verify-native-cancelled-keys-browser.mjs && NATIVE_CANCELLED_REACT_MODE=production node scripts/verify-native-cancelled-keys-browser.mjs",
+     "test:bounded-grapheme-input:browser": "node scripts/verify-bounded-grapheme-input-browser.mjs && BOUNDED_GRAPHEME_REACT_MODE=production node scripts/verify-bounded-grapheme-input-browser.mjs",
+-    "test:native-composition-delivery:browser": "node scripts/verify-native-composition-delivery-browser.mjs && COMPOSITION_DELIVERY_REACT_MODE=production node scripts/verify-native-composition-delivery-browser.mjs"
++    "test:native-composition-delivery:browser": "node scripts/verify-native-composition-delivery-browser.mjs && COMPOSITION_DELIVERY_REACT_MODE=production node scripts/verify-native-composition-delivery-browser.mjs",
++    "test:playable-action-focus:browser": "node scripts/verify-playable-action-focus-browser.mjs && PLAYABLE_FOCUS_REACT_MODE=production node scripts/verify-playable-action-focus-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- packages/portal/src/play/race/__tests__/raceLayoutHooks.test.ts (captured before)
++++ packages/portal/src/play/race/__tests__/raceLayoutHooks.test.ts
+@@ -49,6 +49,8 @@
+   public querySelectorAll(): TestElement[] {
+     return this.focusable;
+   }
++  /** Models optional descendants observed by the gameplay fit hook. */
++  public querySelector = jest.fn((_selector: string): TestElement | null => null);
+ 
+   /** Models containment for the dialog and its interactive descendants. */
+   public contains(element: TestElement | null): boolean {
+@@ -433,6 +435,22 @@
+     expect(harness.viewport.dataset.viewportScale).toBe("1.0000");
+   });
+ 
++  it("observes a present scoreboard and refits when its wrapped height moves the viewport", () => {
++    /** Score wrapping reduces the space available below the unscaled scoreboard. */
++    const harness = install();
++    /** Optional scoreboard participates in the existing layout observer. */
++    const scoreboard = new TestElement();
++    harness.screen.querySelector.mockReturnValue(scoreboard);
++    effects[0]();
++    runLatestFrame();
++    expect(observe).toHaveBeenCalledWith(scoreboard);
++    harness.viewport.rect.top = 140;
++    resizeCallback?.();
++    runLatestFrame();
++    expect(harness.viewport.style.height).toBe("340px");
++    expect(harness.viewport.dataset.viewportScale).toBe("0.4474");
++  });
++
+   it("does nothing while inactive or while required elements are unavailable", () => {
+     install({active: false});
+     expect(effects[0]()).toBeUndefined();

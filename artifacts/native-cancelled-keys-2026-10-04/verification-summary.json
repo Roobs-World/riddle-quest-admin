@@ -1,0 +1,44 @@
+{
+  "goalStatus": "active",
+  "change": "Native answer editors respect keys already prevented by an earlier handler before editing, submission or composition ownership changes",
+  "browserChecks": {
+    "development": 198,
+    "production": 198,
+    "composition-development": 540,
+    "composition-production": 540,
+    "immediate-development": 153,
+    "immediate-production": 153,
+    "keyboard-development": 188,
+    "keyboard-production": 188,
+    "race-ime-development": 174,
+    "race-ime-production": 174,
+    "playable-ime-development": 168,
+    "playable-ime-production": 168,
+    "admission-development": 87,
+    "admission-production": 87
+  },
+  "totalBrowserChecks": 3016,
+  "portalUnitTests": 2719,
+  "portalUnitSuites": 296,
+  "builtJourneys": 37,
+  "builtJourneySuites": 7,
+  "types": "passed",
+  "tsdocDeclarations": 25141,
+  "tsdocFiles": 1137,
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "unchangedBuildInputPaths": 764,
+  "ownedFileSha256": {
+    "packages/portal/src/play/race/components/NativeAnswerInput.tsx": "f8adfd100dc5171c13a7606a1feed6f4714b6bb0fb23473babb9bf561000b644",
+    "packages/portal/src/playable/YouTubeNativeAnswerInput.tsx": "46fedcdead0f156248970c7f717476ab3ffd9fd3a5ef26f7e66b70a933716bc3",
+    "packages/portal/scripts/verify-native-cancelled-keys-browser.mjs": "b6165bff460f56907978d66aae39637e8e251b6ed7f3f602cfee731037e35e9f",
+    "packages/portal/package.json": "cdc8b2a88280b1b86006c3c4191229bf1e0f3202672e0d1fc852f382ea9fd142"
+  },
+  "firefoxVerified": true
+}

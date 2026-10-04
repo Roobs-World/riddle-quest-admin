@@ -37,6 +37,7 @@
     "STREAK_BROKEN_TITLE": "Streak Broken",
     "NO_PRODUCTS_AVAILABLE_TITLE": "No Products Available",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "The app could not finish loading its riddles. Please check your connection and try again.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle database unavailable"
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle database unavailable",
+    "PROGRESS_UNSAVED_MESSAGE": "Progress isn't saved yet. Keep the game open."
   }
 }

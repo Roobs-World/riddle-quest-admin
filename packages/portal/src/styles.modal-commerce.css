@@ -1,3 +1,19 @@
+.shop-catalog-error {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 2px solid #8c5dbe;
+  border-radius: 16px;
+  background: #fff8e4;
+  color: #401f40;
+}
+.shop-catalog-error p {
+  margin: 0;
+}
+.shop-catalog-error button {
+  justify-self: start;
+}
 .shop-balance {
   display: grid;
   grid-template-columns: 58px 1fr auto;

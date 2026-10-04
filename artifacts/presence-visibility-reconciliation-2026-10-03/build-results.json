@@ -1,0 +1,38 @@
+[
+  {
+    "target": "reddit",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/presence-visibility-reconciliation-20261003/reddit",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "jest",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/presence-visibility-reconciliation-20261003/jest",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "facebook",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/presence-visibility-reconciliation-20261003/facebook",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "youtube",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/presence-visibility-reconciliation-20261003/youtube",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "netflix",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/presence-visibility-reconciliation-20261003/netflix",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  },
+  {
+    "target": "yahoo",
+    "output": "/home/craig-beswetherick/.cache/riddle-quest-review/presence-visibility-reconciliation-20261003/yahoo",
+    "buildExitCode": 0,
+    "privateAuditExitCode": 0
+  }
+]

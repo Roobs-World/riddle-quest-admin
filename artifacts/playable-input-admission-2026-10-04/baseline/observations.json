@@ -1,0 +1,20 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "exhausted attempts disable native input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "continue",
+    "name": "late input produces no browser exception",
+    "actual": [
+      "YouTubeAuthorityError: continue-decision-required"
+    ],
+    "expected": []
+  }
+]

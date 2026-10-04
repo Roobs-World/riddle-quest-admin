@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: healthy newest snapshot cancels redundant retry
+
+3 !== 2
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-provider-save-recovery-browser.mjs:78:226)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-provider-save-recovery-browser.mjs:99:211 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 2,
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

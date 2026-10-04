@@ -1,0 +1,732 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "deferred-graphics-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "get_firefox_info",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Firefox Instance Configuration\n\nBinary: /snap/firefox/current/usr/lib/firefox/firefox\nFirefox version: 157.0\nHeadless: Yes\nProfile: /home/craig-beswetherick/snap/firefox/common/mcp-tmp/deferred-graphics-firefox-verification-9u0a9s83\nStart URL: about:blank\n\nOutput File: /home/craig-beswetherick/Documents/riddle-quest/artifacts/game-deferred-graphics-2026-10-03/firefox-verification.log\n  Size: 0.00 MB\n  Last Modified: 2026-10-03T08:03:06.190Z"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:39783/?custom=1&harness=race",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "new page [1] \u2192 http://127.0.0.1:39783/?custom=1&harness=race (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "maxLines": 90
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot\n\nuid=e86 body\n  uid=e85 div\n    uid=e84 div\n      uid=e83 main\n        uid=e81 div\n          uid=e5 header\n            uid=e0 img \"Logo\" src=\"http://127.0.0.1:39783/asse...\"\n            uid=e1 button \"Mute sound\"\n            uid=e2 div text=\"Classic\"\n            uid=e4 div \"300  coins\"\n              uid=e3 img src=\"http://127.0.0.1:39783/asse...\"\n          uid=e39 section\n            uid=e7 div\n              uid=e6 h1 \"What has keys but cannot op...\" text=\"What has keys but cannot op...\"\n            uid=e38 div\n              uid=e13 div\n                uid=e8 button \"Letter 1\"\n                uid=e9 button \"Letter 2\"\n                uid=e10 button \"Letter 3\"\n                uid=e11 button \"Letter 4\"\n                uid=e12 button \"Letter 5\"\n              uid=e19 div\n                uid=e14 button \"Letter 1\"\n                uid=e15 button \"Letter 2\"\n                uid=e16 button \"Letter 3\"\n                uid=e17 button \"Letter 4\"\n                uid=e18 button \"Letter 5\"\n              uid=e25 div\n                uid=e20 button \"Letter 1\"\n                uid=e21 button \"Letter 2\"\n                uid=e22 button \"Letter 3\"\n                uid=e23 button \"Letter 4\"\n                uid=e24 button \"Letter 5\"\n              uid=e31 div\n                uid=e26 button \"Letter 1\"\n                uid=e27 button \"Letter 2\"\n                uid=e28 button \"Letter 3\"\n                uid=e29 button \"Letter 4\"\n                uid=e30 button \"Letter 5\"\n              uid=e37 div\n                uid=e32 button \"Letter 1\"\n                uid=e33 button \"Letter 2\"\n                uid=e34 button \"Letter 3\"\n                uid=e35 button \"Letter 4\"\n                uid=e36 button \"Letter 5\"\n          uid=e71 section \"Virtual keyboard\"\n            uid=e50 div\n              uid=e40 button \"Q\" text=\"Q\"\n              uid=e41 button \"W\" text=\"W\"\n              uid=e42 button \"E\" text=\"E\"\n              uid=e43 button \"R\" text=\"R\"\n              uid=e44 button \"T\" text=\"T\"\n              uid=e45 button \"Y\" text=\"Y\"\n              uid=e46 button \"U\" text=\"U\"\n              uid=e47 button \"I\" text=\"I\"\n              uid=e48 button \"O\" text=\"O\"\n              uid=e49 button \"P\" text=\"P\"\n            uid=e60 div\n              uid=e51 button \"A\" text=\"A\"\n              uid=e52 button \"S\" text=\"S\"\n              uid=e53 button \"D\" text=\"D\"\n              uid=e54 button \"F\" text=\"F\"\n              uid=e55 button \"G\" text=\"G\"\n              uid=e56 button \"H\" text=\"H\"\n              uid=e57 button \"J\" text=\"J\"\n              uid=e58 button \"K\" text=\"K\"\n              uid=e59 button \"L\" text=\"L\"\n            uid=e70 div\n              uid=e61 button \"Z\" text=\"Z\"\n              uid=e62 button \"X\" text=\"X\"\n              uid=e63 button \"C\" text=\"C\"\n              uid=e64 button \"V\" text=\"V\"\n              uid=e65 button \"B\" text=\"B\"\n              uid=e66 button \"N\" text=\"N\"\n              uid=e67 button \"M\" text=\"M\"\n              uid=e69 button \"Backspace\"\n                uid=e68 img src=\"data:image/svg+xml,%3csvg%2...\"\n          uid=e75 section \"Game\"\n            uid=e72 button \"Hint\" text=\"Hint\"\n            uid=e73 button \"SUBMIT\" text=\"SUBMIT\"\n            uid=e74 button \"Skip\" text=\"Skip\"\n          uid=e80 nav \"Game\"\n            uid=e76 button \"Settings\"\n            uid=e78 button \"Multiplayer\"\n              uid=e77 span text=\"Multiplayer\"\n            uid=e79 button \"Profile\"\n        uid=e82 div\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {Object.defineProperty(navigator,'hardwareConcurrency',{configurable:true,value:8});Object.defineProperty(navigator,'deviceMemory',{configurable:true,value:8});window.firefoxChecks=[];window.checkFirefox=(name,actual,expected)=>{window.firefoxChecks.push({name,actual,expected});if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(name+' '+JSON.stringify(actual));};window.controlFrames();checkFirefox('Eligible puzzle has one deferred load',window.pendingIdle(),1);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n1\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e49"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e49"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e47"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e47"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e51"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e51"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.firefoxToken=window.probe.saves.findLast(row=>row.activeGame).activeGame.sessionToken;checkFirefox('Native keys enter PIA before download',window.probe.saves.findLast(row=>row.activeGame).activeGame.currentLetters.join('').toUpperCase(),'PIA');window.releaseScene();return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n2\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e66"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e66"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e78"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e78"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {checkFirefox('Pending download leaves PIAN usable',window.probe.saves.findLast(row=>row.activeGame).activeGame.currentLetters.join('').toUpperCase(),'PIAN');checkFirefox('Pending download owns no renderer',window.probe.rendererConstructions,0);checkFirefox('Actual lazy native module has not evaluated',window.probe.solarImports??0,0);await fetch('/__fixture/release-scene');return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n5\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {checkFirefox('Lazy module evaluates while multiplayer is open',window.probe.solarImports,1);checkFirefox('Downloaded scene creates no hidden renderer',window.probe.rendererConstructions,0);checkFirefox('Downloaded scene allocates no hidden resources',window.liveResources(),0);checkFirefox('Downloaded scene requests no texture images',window.probe.textureCallbacks.length,0);checkFirefox('Downloaded scene creates no resize observer',window.probe.observers.length,0);checkFirefox('Downloaded scene has no frame chain',window.pendingFrames(),0);checkFirefox('Downloaded scene has no canvas',document.querySelectorAll('.solar-system canvas').length,0);checkFirefox('Pending setup owns one visibility subscription',window.solarVisibilityListeners(),1);window.replayVisibility();checkFirefox('Retained visibility callback cannot construct behind race',window.probe.rendererConstructions,0);window.pause(true);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n14\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": "[data-testid=provider-race]",
+          "maxLines": 12
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: [data-testid=provider-race]]\n\nuid=e88 section\n  uid=e87 button \"Return to puzzle\" text=\"Return to puzzle\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e87"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e87"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {checkFirefox('Closing race preserves blocked host pause',window.probe.rendererConstructions,0);checkFirefox('Host pause retains zero graphics resources',window.liveResources(),0);window.visibility(true);window.visibility(false);checkFirefox('Visibility alone cannot bypass host pause',window.probe.rendererConstructions,0);window.failResource={kind:'MeshBasicMaterial',occurrence:1};window.pause(false);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n17\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {checkFirefox('First eligible deferred setup constructs once',window.probe.rendererConstructions,1);checkFirefox('Deferred setup failure returns exactly three resources',window.probe.allocations.length,3);checkFirefox('Deferred setup failure releases all returned resources',window.liveResources(),0);checkFirefox('Deferred setup failure disposes renderer once',window.probe.disposals,1);checkFirefox('Deferred setup failure releases context once',window.probe.contextReleases,1);checkFirefox('Deferred setup failure attaches no canvas',document.querySelectorAll('.solar-system canvas').length,0);checkFirefox('Deferred setup failure owns no visibility subscription',window.solarVisibilityListeners(),0);checkFirefox('Deferred setup failure owns no frames',window.pendingFrames(),0);checkFirefox('Deferred setup failure reports once',window.probe.errors.filter(row=>row.operation==='initialize_scene').length,1);window.visibility(true);window.visibility(false);window.replayVisibility();window.pause(true);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n26\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 17
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.pause(false);return 'resumed';}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n\"resumed\"\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 18
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {checkFirefox('Resume cannot retry failed construction',window.probe.rendererConstructions,1);checkFirefox('Retained callbacks cannot repeat diagnostic',window.probe.errors.filter(row=>row.operation==='initialize_scene').length,1);checkFirefox('Failed setup preserves draft',window.probe.saves.findLast(row=>row.activeGame).activeGame.currentLetters.join('').toUpperCase(),'PIAN');checkFirefox('Failed setup preserves authoritative token',window.probe.saves.findLast(row=>row.activeGame).activeGame.sessionToken,window.firefoxToken);window.setMotion(true);window.failResource=undefined;return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n30\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 19
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {checkFirefox('Reduced motion removes retired scene mount',document.querySelectorAll('[data-testid=solar-system]').length,0);window.replayVisibility();checkFirefox('Unmounted setup cannot reconstruct',window.probe.rendererConstructions,1);window.setMotion(false);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n32\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 20
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {checkFirefox('Re-enabled scene constructs one fresh owner',window.probe.rendererConstructions,2);checkFirefox('Native lazy module is reused',window.probe.solarImports,1);checkFirefox('Healthy scene mounts one canvas',document.querySelectorAll('.solar-system canvas').length,1);window.step();window.resizeScene(1280,844);window.step();checkFirefox('Healthy Three scene draws',window.probe.draws,1);checkFirefox('Healthy scene owns one frame chain',window.pendingFrames(),1);window.setMotion(true);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n37\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 21
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {window.replayVisibility();window.replayFrames();window.resizeScene(390,844,true);for(const row of window.probe.textureCallbacks)row.onError?.(Error('retained image error'));checkFirefox('Final unmount releases all resources',window.liveResources(),0);checkFirefox('Final unmount releases all visibility subscriptions',window.solarVisibilityListeners(),0);checkFirefox('Final unmount releases frame chain',window.pendingFrames(),0);checkFirefox('Resource identities are never disposed twice',window.probe.duplicateReleases,0);checkFirefox('Retirement creates no duplicate diagnostic',window.probe.errors.filter(row=>row.operation==='initialize_scene').length,1);checkFirefox('No browser callback error escapes',window.probe.windowErrors,[]);checkFirefox('No promise rejection escapes',window.probe.unhandled,[]);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n44\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 22
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".game-input-actions",
+          "maxLines": 15
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .game-input-actions]\n\nuid=e75 section \"Game\"\n  uid=e72 button \"Hint\" text=\"Hint\"\n  uid=e73 button \"SUBMIT\" text=\"SUBMIT\"\n  uid=e74 button \"Skip\" text=\"Skip\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 23
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e48"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e48"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 24
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e73"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e73"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 25
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => {checkFirefox('Native submit sends one answer after deferred failure',window.probe.guesses,1);checkFirefox('Native submit completes once after deferred failure',window.probe.completions,1);checkFirefox('Completion has no unhandled promise error',window.probe.unhandled,[]);return firefoxChecks.length;}"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n47\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 26
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => JSON.stringify({checks:window.firefoxChecks,probe:{solarImports:probe.solarImports,draws:probe.draws,disposals:probe.disposals,constructors:probe.rendererConstructions,errors:probe.errors,unhandled:probe.unhandled,windowErrors:probe.windowErrors,guesses:probe.guesses,completions:probe.completions},remainingResources:window.liveResources(),token:window.firefoxToken},null,2)",
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page. Result saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/evaluate-script-2026-10-03T08-07-52-424Z.json (6.3KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 27
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "tools/call",
+      "params": {
+        "name": "screenshot_page",
+        "arguments": {
+          "saveTo": true
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Screenshot saved to: /home/craig-beswetherick/.firefox-devtools-mcp/output/screenshot-2026-10-03T08-07-52-441Z.png (90.9KB)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 28
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 29
+    }
+  }
+]

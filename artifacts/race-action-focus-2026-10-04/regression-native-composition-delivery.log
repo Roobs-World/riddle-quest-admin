@@ -1,0 +1,11 @@
+$ node scripts/verify-native-composition-delivery-browser.mjs && COMPOSITION_DELIVERY_REACT_MODE=production node scripts/verify-native-composition-delivery-browser.mjs
+{
+  "mode": "development",
+  "checks": 540,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 540,
+  "failures": []
+}

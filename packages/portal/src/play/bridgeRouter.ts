@@ -3,12 +3,26 @@ import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 /** Describes bridge parsers. */
 type BridgeParsers = Pick<typeof import("@qwordly/core/bridge"), "parseGameToHostMessage" | "parseHostToGameMessage">;
 
+/** A failed lazy validation load requires a new document, distinct from invalid message data. */
+export class BridgeParserLoadError extends Error {
+  /** Keeps the underlying module failure available to the target-owned diagnostics adapter. */
+  constructor(cause: unknown) {
+    super("bridge-validation-unavailable", {cause});
+    this.name = "BridgeParserLoadError";
+  }
+}
+
 /** Provides bridge parsers promise behavior. */
 let bridgeParsersPromise: Promise<BridgeParsers> | null = null;
+/** Loaded validation functions let warm messages enter their handlers without another await. */
+let bridgeParsers: BridgeParsers | null = null;
 
 /** Loads bridge parsers. */
 const loadBridgeParsers = (): Promise<BridgeParsers> => {
-  bridgeParsersPromise ??= import("@qwordly/core/bridge");
+  bridgeParsersPromise ??= import("@qwordly/core/bridge").then((loaded) => {
+    bridgeParsers = loaded;
+    return loaded;
+  }).catch((error) => {throw new BridgeParserLoadError(error);});
   return bridgeParsersPromise;
 };
 
@@ -326,11 +340,12 @@ export type HostMessageHandlers = {
 
 /** Creates host message router. */
 export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
-  return async (value: unknown): Promise<GameToHostMessage> => {
+  return async (value: unknown, isCurrent?: () => boolean): Promise<GameToHostMessage> => {
     /** Provides {parse game to host message} behavior. */
-    const {parseGameToHostMessage} = await loadBridgeParsers();
+    const {parseGameToHostMessage} = bridgeParsers ?? await loadBridgeParsers();
     /** Provides message behavior. */
     const message = parseGameToHostMessage(value);
+    if (isCurrent && !isCurrent()) return message;
 
     switch (message.type) {
       case "game:ready":
@@ -481,6 +496,8 @@ export type GameMessageHandlers = {
         type: "host:operationResult";
       }
     >,
+    /** Rechecks the originating listener after any additional asynchronous schema work. */
+    isCurrent?: () => boolean,
   ): void | Promise<void>;
   /** Provides pause behavior. */
   pause(
@@ -506,11 +523,12 @@ export type GameMessageHandlers = {
 
 /** Creates game message router. */
 export const createGameMessageRouter = (handlers: GameMessageHandlers) => {
-  return async (value: unknown): Promise<HostToGameMessage> => {
+  return async (value: unknown, isCurrent?: () => boolean): Promise<HostToGameMessage> => {
     /** Provides {parse host to game message} behavior. */
-    const {parseHostToGameMessage} = await loadBridgeParsers();
+    const {parseHostToGameMessage} = bridgeParsers ?? await loadBridgeParsers();
     /** Provides message behavior. */
     const message = parseHostToGameMessage(value);
+    if (isCurrent && !isCurrent()) return message;
 
     switch (message.type) {
       case "host:init":
@@ -523,7 +541,7 @@ export const createGameMessageRouter = (handlers: GameMessageHandlers) => {
         await handlers.riddleLoaded(message);
         break;
       case "host:operationResult":
-        await handlers.operationResult(message);
+        await handlers.operationResult(message, isCurrent);
         break;
       case "host:pause":
         await handlers.pause(message);

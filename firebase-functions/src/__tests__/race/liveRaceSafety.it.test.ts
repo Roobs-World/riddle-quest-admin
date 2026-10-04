@@ -84,7 +84,8 @@ it("routes signed Reddit safety through strict shared callables and deletion lea
     await database.ref("presenceVisibility").set({[ids[0]]: {[ids[1]]: true}, [ids[1]]: {[ids[0]]: true}});
     await send("gameplay.safety.block", {liveTicketId: seats[0].ticketId});
     expect(status).toBe(200); expect(body).toEqual({ok: true, result: {blocked: true}});
-    expect((await database.ref("presenceVisibility").get()).exists()).toBe(false);
+    expect((await database.ref(`presenceVisibility/${ids[0]}/${ids[1]}`).get()).child("allowed").val()).toBe(false);
+    expect((await database.ref(`presenceVisibility/${ids[1]}/${ids[0]}`).get()).child("allowed").val()).toBe(false);
     await send("gameplay.safety.report", {...payload, targetUserId: ids[1]});
     expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
     /** Permanent owner deletion is rejected by the shared lease before another moderation record. */
@@ -147,7 +148,8 @@ it.each(["facebook", "reddit"] as const)("authorizes both %s human seats, preser
   /** Concurrent live blocks stay server-bound and return only after both presence edges are revoked. */
   expect(await Promise.all(Array.from({length: 2}, () => blockKnownRival(ids[0], {liveTicketId: seats[0].ticketId}, {db, database, nowMs: NOW + 3000}))))
     .toEqual([{blocked: true}, {blocked: true}]);
-  expect((await database.ref("presenceVisibility").get()).exists()).toBe(false);
+  expect((await database.ref(`presenceVisibility/${ids[0]}/${ids[1]}`).get()).child("allowed").val()).toBe(false);
+    expect((await database.ref(`presenceVisibility/${ids[1]}/${ids[0]}`).get()).child("allowed").val()).toBe(false);
   expect((await db.doc(`users/${ids[0]}/blockedRivals/${ids[1]}`).get()).exists).toBe(true);
   /** The real live engine immediately terminates the blocked pair without a forfeit reward. */
   for (const seat of [0, 1]) expect(await updateLiveRaceForUser(ids[seat], {ticketId: seats[seat].ticketId,

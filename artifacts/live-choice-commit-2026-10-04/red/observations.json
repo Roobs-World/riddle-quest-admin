@@ -1,0 +1,73 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

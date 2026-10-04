@@ -1,0 +1,234 @@
+{
+  "text": "Classic\n0\nWhat has keys but cannot open doors?\nP\nI\nA\nN\nO\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nSUBMIT\nNICE JOB!\n✦\nYOU WON!\nNext Level",
+  "probe": {
+    "outbound": [
+      {
+        "type": "game:ready",
+        "requestId": "ready-34beffa8-9c37-44e6-b216-9a9e4beb9607",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791054078593
+      },
+      {
+        "type": "game:resize",
+        "requestId": "resize-25b2041b-ba2b-40bf-b6dc-ec59c677a5a2",
+        "payload": {
+          "width": 390,
+          "height": 568
+        },
+        "sentAt": 1791054078595
+      },
+      {
+        "type": "game:completeGame",
+        "requestId": "complete-3a8b2013-a8e7-4ff6-843c-aca1eb00a346",
+        "payload": {
+          "riddleId": "reddit-guest-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001"
+        },
+        "sentAt": 1791054078615
+      }
+    ],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-b8ce7484-03c8-4f39-9643-defdef398830",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791054078578
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-0fb9c387-59e6-42a1-8a77-8e17f01c5efb",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791054078579
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-7e4f7ad3-119c-49aa-a661-ec262a91c578",
+        "payload": {
+          "user": {
+            "uid": "reddit-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791054078592
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-7e851330-59ea-4dc7-ad4d-35fa1f9d9374",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-353f3b59-e154-416d-8ebe-6c2d9cb352e4",
+          "locale": "en",
+          "user": {
+            "uid": "reddit-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791054078597
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "reddit-guest-1",
+            "text": "What has keys but cannot open doors?",
+            "answerLength": 5,
+            "evaluation": {
+              "answer": "piano",
+              "locale": "en"
+            },
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "gameMode": "classic",
+            "index": 1,
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "awaitingContinue": false,
+            "acceptedGuesses": [
+              {
+                "attempt": 1,
+                "feedback": [
+                  {
+                    "letter": "p",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "i",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "a",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "n",
+                    "status": "green"
+                  },
+                  {
+                    "letter": "o",
+                    "status": "green"
+                  }
+                ]
+              }
+            ]
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 0,
+            "level": 1,
+            "xp": 0,
+            "winStreak": 0,
+            "gamesPlayed": 0,
+            "wins": 0,
+            "achievements": [],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791054078598
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "reddit-guest-1"
+          }
+        },
+        "sentAt": 1791054078598
+      }
+    ],
+    "errors": [],
+    "unhandled": [],
+    "saves": [
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 0,
+          "level": 1,
+          "xp": 0,
+          "winStreak": 0,
+          "gamesPlayed": 0,
+          "wins": 0,
+          "achievements": [],
+          "classicIndex": 1
+        }
+      }
+    ],
+    "completions": [
+      {
+        "riddleId": "reddit-guest-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001"
+      }
+    ],
+    "spends": [],
+    "seedSpends": 0,
+    "before": {
+      "username": "Guest Solver",
+      "coins": 0,
+      "level": 1,
+      "xp": 0,
+      "winStreak": 0,
+      "gamesPlayed": 0,
+      "wins": 0,
+      "achievements": [],
+      "classicIndex": 1
+    },
+    "ready": true
+  }
+}

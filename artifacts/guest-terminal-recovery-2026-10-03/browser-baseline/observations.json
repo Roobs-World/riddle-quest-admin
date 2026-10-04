@@ -1,0 +1,29 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "accepted winning guess is durable before completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "blocked completion has not counted a practice win",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "attempts": 1,
+    "scenario": "terminal-win",
+    "name": "replacement host preserves the accepted winning attempt count",
+    "actual": 0,
+    "expected": 1
+  }
+]

@@ -47,7 +47,7 @@ describeBrowser("phone viewport fitting", () => {
       await unavailablePage.getByRole("button", {name: "Configuración", exact: true}).waitFor();
       expect(await unavailablePage.locator(".riddle-card h1").count()).toBe(0);
       await unavailablePage.close();
-      for (const [width, height] of [[384, 650], [412, 650], [360, 600], [360, 650], [320, 568], [390, 640], [412, 720]]) {
+      for (const [width, height] of [[384, 650], [412, 650], [360, 600], [360, 650], [320, 568], [390, 640], [412, 720], [424, 661]]) {
         /** Creates an isolated guest layout at each fixed phone size. */
         const page = await browser.newPage({viewport: {width, height}, isMobile: true, hasTouch: true});
         await page.route("https://cdn.jest.com/**", route => route.fulfill({status: 200, body: ""}));
@@ -120,6 +120,13 @@ describeBrowser("phone viewport fitting", () => {
         if (width === 412 && height === 720 && process.env.PORTAL_LAYOUT_SCREENSHOT) {
           await page.screenshot({path: process.env.PORTAL_LAYOUT_SCREENSHOT});
         }
+        // Focusing a scaled bottom control must not scroll its hidden, unscaled layout overflow.
+        await page.getByRole("button", {name: "Settings", exact: true}).click();
+        expect(await page.locator(".game-app").evaluate(shell => shell.scrollTop)).toBe(0);
+        await page.getByRole("dialog", {name: "Settings", exact: true}).getByRole("button", {name: "Close", exact: true}).click();
+        expect(await page.locator(".game-app").evaluate(shell => shell.scrollTop)).toBe(0);
+        expect(await page.locator(".game-header").evaluate(header => header.getBoundingClientRect().top)).toBeGreaterThanOrEqual(0);
+        expect(await page.getByRole("button", {name: "Settings", exact: true}).evaluate(button => document.activeElement === button)).toBe(true);
         await page.close();
       }
     } finally {

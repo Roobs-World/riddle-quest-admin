@@ -1,0 +1,413 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "optional-surfaces-firefox-verification",
+          "version": "1.0"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "@mozilla/firefox-devtools-mcp",
+          "version": "0.10.4"
+        },
+        "instructions": "Browse and debug the web with Firefox. Use this for any browser or web page task: opening a URL, automating a web flow, or debugging a page (console errors, network requests, DOM state). The task does not need to name Firefox, reach for these tools unless another browser is explicitly requested. Chrome-only browser tools do not control Firefox, do not assume they cover this.\n\nEnabled capabilities:\n- pages: Open, navigate, select, and close pages.\n- snapshot: Capture accessibility/DOM snapshots and resolve UIDs.\n- input: Interact with the page via UID-based clicks, typing, key presses, drag, and uploads.\n- screenshot: Capture screenshots of the page or specific elements.\n- downloads: Monitor and manage file downloads.\n- utilities: Handle dialogs, history navigation, and viewport sizing.\n- management: Inspect Firefox options and logs, and close the browser.\n- webextension: Install and uninstall web extensions.\n- screencast: Record screencasts of the page viewport (Firefox 154+).\n- script: Evaluate arbitrary JavaScript in the page context.\n\nWhen these tools are deferred, load the core set in one search rather than one at a time: list_pages, new_page, navigate_page, take_snapshot, get_page_text. Add task-specific tools to the same search: click_by_uid / fill_by_uid / hover_by_uid for interaction, screenshot_page / screenshot_by_uid for visuals, evaluate_script for one-off JS."
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "new_page",
+        "arguments": {
+          "url": "http://127.0.0.1:39983",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: BiDi error: \"unknown error\""
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 2
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "navigate_page",
+        "arguments": {
+          "url": "http://127.0.0.1:37799",
+          "wait": "complete"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[1] \u2192 http://127.0.0.1:37799 (waited for: complete)"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "set_viewport_size",
+        "arguments": {
+          "width": 390,
+          "height": 844
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "390x844"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".keyboard",
+          "maxLines": 40
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .keyboard]\n\nuid=e31 section \"Virtual keyboard\"\n  uid=e10 div\n    uid=e0 button \"Q\" text=\"Q\"\n    uid=e1 button \"W\" text=\"W\"\n    uid=e2 button \"E\" text=\"E\"\n    uid=e3 button \"R\" text=\"R\"\n    uid=e4 button \"T\" text=\"T\"\n    uid=e5 button \"Y\" text=\"Y\"\n    uid=e6 button \"U\" text=\"U\"\n    uid=e7 button \"I\" text=\"I\"\n    uid=e8 button \"O\" text=\"O\"\n    uid=e9 button \"P\" text=\"P\"\n  uid=e20 div\n    uid=e11 button \"A\" text=\"A\"\n    uid=e12 button \"S\" text=\"S\"\n    uid=e13 button \"D\" text=\"D\"\n    uid=e14 button \"F\" text=\"F\"\n    uid=e15 button \"G\" text=\"G\"\n    uid=e16 button \"H\" text=\"H\"\n    uid=e17 button \"J\" text=\"J\"\n    uid=e18 button \"K\" text=\"K\"\n    uid=e19 button \"L\" text=\"L\"\n  uid=e30 div\n    uid=e21 button \"Z\" text=\"Z\"\n    uid=e22 button \"X\" text=\"X\"\n    uid=e23 button \"C\" text=\"C\"\n    uid=e24 button \"V\" text=\"V\"\n    uid=e25 button \"B\" text=\"B\"\n    uid=e26 button \"N\" text=\"N\"\n    uid=e27 button \"M\" text=\"M\"\n    uid=e29 button \"Backspace\"\n      uid=e28 img src=\"data:image/svg+xml,%3csvg%2...\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e9"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e9"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e7"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e7"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e11"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e11"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e26"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e26"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "() => ({draft:window.probe.saves.findLast(row=>row.activeGame)?.activeGame.currentLetters.join('').toUpperCase(),token:window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken,guesses:window.probe.guesses,completions:window.probe.completions,errors:window.probe.errors})"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"draft\": \"PIAN\",\n  \"token\": \"00000000-0000-4000-8000-000000000001\",\n  \"guesses\": 0,\n  \"completions\": 0,\n  \"errors\": []\n}\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {window.releaseScene();await new Promise(resolve=>setTimeout(resolve,1200));return {questionVisible:document.body.innerText.includes('What has keys but cannot open doors?'),frame:!!document.querySelector('.game-app'),draft:window.probe.saves.findLast(row=>row.activeGame)?.activeGame.currentLetters.join('').toUpperCase(),token:window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken,guesses:window.probe.guesses,completions:window.probe.completions,sceneDiagnostics:window.probe.errors.filter(row=>row.component==='solar_system').length,fatalDiagnostics:window.probe.errors.filter(row=>row.errorKind==='react_render').length,unhandled:window.probe.unhandled,rawErrorVisible:document.body.innerText.includes('/assets/SolarSystem'),fits:document.documentElement.scrollWidth<=window.innerWidth};}",
+          "timeout": 5000
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"questionVisible\": true,\n  \"frame\": true,\n  \"draft\": \"PIAN\",\n  \"token\": \"00000000-0000-4000-8000-000000000001\",\n  \"guesses\": 0,\n  \"completions\": 0,\n  \"sceneDiagnostics\": 1,\n  \"fatalDiagnostics\": 0,\n  \"unhandled\": [],\n  \"rawErrorVisible\": false,\n  \"fits\": true\n}\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "take_snapshot",
+        "arguments": {
+          "selector": ".game-input-actions",
+          "maxLines": 15
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Snapshot [selector: .game-input-actions]\n\nuid=e35 section \"Game\"\n  uid=e32 button \"Hint\" text=\"Hint\"\n  uid=e33 button \"SUBMIT\" text=\"SUBMIT\"\n  uid=e34 button \"Skip\" text=\"Skip\"\n"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e8"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e8"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "tools/call",
+      "params": {
+        "name": "click_by_uid",
+        "arguments": {
+          "uid": "e33"
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "click e33"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 14
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "tools/call",
+      "params": {
+        "name": "evaluate_script",
+        "arguments": {
+          "function": "async () => {await new Promise(resolve=>setTimeout(resolve,1000));return {userAgent:window.navigator.userAgent,frame:!!document.querySelector('.game-app'),guesses:window.probe.guesses,completions:window.probe.completions,authorityCoins:window.probe.authorityCoins,coins:window.probe.saves.findLast(row=>row.profile)?.profile.coins,sceneDiagnostics:window.probe.errors.filter(row=>row.component==='solar_system').length,fatalDiagnostics:window.probe.errors.filter(row=>row.errorKind==='react_render').length,unhandled:window.probe.unhandled};}",
+          "timeout": 5000
+        }
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Script ran on page and returned:\n```json\n{\n  \"userAgent\": \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:157.0) Gecko/20100101 Firefox/157.0\",\n  \"frame\": true,\n  \"guesses\": 1,\n  \"completions\": 1,\n  \"authorityCoins\": 325,\n  \"coins\": 325,\n  \"sceneDiagnostics\": 1,\n  \"fatalDiagnostics\": 0,\n  \"unhandled\": []\n}\n```"
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 15
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "tools/call",
+      "params": {
+        "name": "close_firefox_session",
+        "arguments": {}
+      }
+    },
+    "response": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Closed the Firefox instance started by this server, a new session will start if you use browser tools again."
+          }
+        ]
+      },
+      "jsonrpc": "2.0",
+      "id": 16
+    }
+  }
+]

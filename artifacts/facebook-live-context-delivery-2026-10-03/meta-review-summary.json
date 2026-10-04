@@ -1,0 +1,15 @@
+{
+  "checkedAtUtc": "2026-10-03T00:32:00+00:00",
+  "source": "authenticated Meta Social Technologies MCP devtools_app_review status",
+  "appId": "1748953042991569",
+  "appName": "Riddle Quest",
+  "submissionStatus": "UNSUBMITTED",
+  "isApprovedBoolean": true,
+  "isPending": false,
+  "submittedTime": null,
+  "reviewCompletedTime": null,
+  "lastReviewedSubmissionId": null,
+  "interpretation": "The approval boolean alone does not establish completed review; explicit submission status and review timestamps show no completed submission.",
+  "providerMutation": false,
+  "credentialsRetained": false
+}

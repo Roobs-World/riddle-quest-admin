@@ -1,6 +1,6 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
 import type {GameSessionState} from "../../gameSession";
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS, RANK_MATERIAL_ORDER} from "../../ranks";
 import {RankedAvatar} from "../../RankedAvatar";
 import {RankIcon} from "../../RankIcon";
@@ -14,6 +14,8 @@ export type ProfileStatsModalPageProps = {
 
 /** Renders achievement unlock and progress state derived from the current profile. */
 export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Achievement evaluation input projected from the bridge profile. */
   const achievementPlayer = createAchievementPlayer(profile);
   /** Counts only recognized achievements recorded by the trusted profile. */
@@ -67,6 +69,8 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
 
 /** Renders the complete server-backed player statistics grid. */
 export function StatisticsModalPage({profile}: ProfileStatsModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Label and value pairs displayed in the statistics grid. */
   const statistics: Array<[string, string | number]> = [
     [tr("StatsModal.GAMES_PLAYED"), profile?.gamesPlayed ?? 0],
@@ -99,6 +103,8 @@ export function StatisticsModalPage({profile}: ProfileStatsModalPageProps) {
 
 /** Renders every rank and highlights the rank matching the current profile level. */
 export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Rank associated with the profile or default guest level. */
   const currentRank = getRankForLevel(profile?.level ?? 1);
   /** Current level and next threshold describe the player's rank journey. */

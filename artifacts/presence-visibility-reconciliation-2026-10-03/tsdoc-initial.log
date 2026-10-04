@@ -1,0 +1,17 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 14 production declarations are undocumented.
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:71 pair
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:90 pair
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:91 client
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:113 pair
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:115 guard
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:119 before
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:145 pair
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:164 pair
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:166 directory
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:168 cli
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:174 args
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:176 before
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:177 preview
+- firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts:180 applied
+[ELIFECYCLE] Command failed with exit code 1.

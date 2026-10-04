@@ -30,7 +30,7 @@ import {
   classifyRaceMatchFailure,
   UpdateLiveRaceSchema,
 } from "@qwordly/core/race";
-import {joinLiveRace, updateLiveRace, listLiveRaceHistory} from "../race/raceLiveCallables";
+import {joinLiveRace, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../race/raceLiveCallables";
 import {liveRaceGatewayFailure} from "../race/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
 import {assertRaceAccess} from "../race/raceRollout";
@@ -103,6 +103,8 @@ export const REDDIT_GAMEPLAY_OPERATIONS = [
   "gameplay.race.live.join",
   "gameplay.race.live.update",
   "gameplay.race.live.history",
+  "gameplay.race.live.inbox",
+  "gameplay.race.live.challenge",
   "gameplay.tournament.list",
   "gameplay.tournament.record",
   "gameplay.presence.poll",
@@ -248,6 +250,10 @@ const dispatch = async (
       return updateLiveRace.run(callableRequest(uid, payload) as never);
     case "gameplay.race.live.history":
       return listLiveRaceHistory.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.live.inbox":
+      return listLiveRaceChallenges.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.live.challenge":
+      return getLiveRaceChallenge.run(callableRequest(uid, payload) as never);
     case "gameplay.race.match": {
       /** Provides input behavior. */
       const input = FindRedditRaceMatchRequestSchema.parse(payload);

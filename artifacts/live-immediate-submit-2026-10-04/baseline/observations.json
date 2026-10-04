@@ -1,0 +1,13 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "fresh-burst",
+    "name": "immediate Enter submits the current complete answer once",
+    "actual": [],
+    "expected": [
+      "test"
+    ]
+  }
+]

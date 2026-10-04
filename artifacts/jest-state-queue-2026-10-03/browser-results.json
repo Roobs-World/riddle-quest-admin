@@ -1,0 +1,10 @@
+[
+  {
+    "name": "production",
+    "exit": 0
+  },
+  {
+    "name": "baseline",
+    "exit": 0
+  }
+]

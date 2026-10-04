@@ -243,12 +243,31 @@ export interface FacebookInstantSdk {
   shareAsync?(payload: FacebookSharePayload): Promise<void>;
   /** Opens Meta's native friend invitation picker when supported by this host. */
   inviteAsync?(payload: FacebookInvitePayload): Promise<void>;
+  /** Posts a player-requested custom update to the current native context. */
+  updateAsync?(payload: {
+    /** Native custom-update action. */ action: "CUSTOM";
+    /** Identifier declared in the uploaded game bundle's custom update templates. */ template: string;
+    /** Locally rendered PNG invitation image. */ image: string;
+    /** English fallback and the selected game's localized invitation copy. */ text: {
+      /** English fallback. */ default: string;
+      /** Provider locale codes mapped to existing translated copy. */ localizations: Record<string, string>;
+    };
+    /** Entry data contains no identity, economy or answer state. */
+    data: {
+      /** Opaque server invitation, with no identity or economy data. */
+      challengeId: string;
+    };
+    /** Explicit player requests are delivered immediately. */ strategy: "IMMEDIATE";
+    /** Context invitations never subscribe or send push notifications. */ notification: "NO_PUSH";
+  }): Promise<void>;
   /** Gets entry point data. */
   getEntryPointData?(): unknown;
   /** Provides on pause behavior. */
   onPause(callback: () => void): void;
   /** Registers the Meta v8 resume signal when the host supports it. */
   onResume?(callback: () => void): void;
+  /** Observes context switches from JavaScript and native overlay actions. */
+  onContextChange?(success: (contextId: string | null) => void, failure: (error: unknown) => void): void;
   /** Gets interstitial ad async. */
   getInterstitialAdAsync?(placementId: string): Promise<FacebookAdInstance>;
   /** Gets rewarded video async. */

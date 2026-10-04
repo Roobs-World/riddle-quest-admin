@@ -1,0 +1,56 @@
+  console.info
+    Immediate wrong-answer feedback: 7.1ms with server response held
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:606:15)
+
+  console.info
+    Clipped leaderboard bounds {
+      list: {
+        x: 47,
+        y: 195.65625,
+        width: 296,
+        height: 358.34375,
+        top: 195.65625,
+        right: 343,
+        bottom: 554,
+        left: 47
+      },
+      rows: [
+        { bounds: [Object], text: '1MiraLevel 82220' },
+        { bounds: [Object], text: '2SSolver 20Level 71975' },
+        { bounds: [Object], text: '3SSolver 19Level 61890' },
+        { bounds: [Object], text: '4SSolver 18Level 51805' },
+        { bounds: [Object], text: '5SSolver 17Level 41720' },
+        { bounds: [Object], text: '6SSolver 16Level 31635' },
+        { bounds: [Object], text: '7SSolver 15Level 21550' },
+        { bounds: [Object], text: '8TTalLevel 61540' },
+        { bounds: [Object], text: '9SSolver 14Level 81465' },
+        { bounds: [Object], text: '10SSolver 13Level 71380' }
+      ]
+    }
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:807:17)
+
+FAIL src/play/__tests__/hostedBrowser.jest-playwright.test.ts (38.02 s)
+  ● standalone Jest browser game › covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      810 |         })));
+      811 |       }
+    > 812 |       expect(firstPageFits).toBe(true);
+          |                             ^
+      813 |       await page.getByRole("button", {name: /next page/i}).click();
+      814 |       expect(await leaderboardList.locator("li").count()).toBe(10);
+      815 |       expect(await leaderboardList.locator("li").first().locator("b").textContent()).toBe("11");
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:812:29)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        38.169 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts.

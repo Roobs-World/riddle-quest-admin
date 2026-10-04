@@ -1,0 +1,74 @@
+[
+  {
+    "case": "de-280-exhausted",
+    "status": "unsaved",
+    "message": "Der Fortschritt ist noch nicht gespeichert. Lass das Spiel geöffnet.",
+    "expectedMessage": "Der Fortschritt ist noch nicht gespeichert. Lass das Spiel geöffnet.",
+    "retryLabel": "Erneut versuchen",
+    "expectedRetry": "Erneut versuchen",
+    "retryHeight": 44,
+    "keyboardMinHeight": 25.29998779296875,
+    "noticeFits": true,
+    "noticeAboveGame": true,
+    "controlsFit": true,
+    "documentFits": true,
+    "draft": "PIAN",
+    "initializations": 2,
+    "initialInitCount": 2,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "case": "de-exhausted-actual-viewport",
+    "width": 500,
+    "height": 568,
+    "status": "unsaved",
+    "messageMatches": true,
+    "retryLabelMatches": true,
+    "retryHeight": 44,
+    "keyboardMinHeight": 29.583328247070312,
+    "noticeFits": true,
+    "noticeAboveGame": true,
+    "controlsFit": true,
+    "documentFits": true,
+    "draft": "PIAN",
+    "initializationsUnchanged": true,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "case": "de-held-retry",
+    "status": "saving",
+    "visible": true,
+    "disabled": true,
+    "busy": "true",
+    "draft": "PIAN"
+  },
+  {
+    "case": "de-playable-held-retry",
+    "draft": "PIANO",
+    "checkpoint": "PIANO",
+    "visible": true
+  },
+  {
+    "case": "de-latest-ack",
+    "status": "quiet",
+    "notice": 0,
+    "draft": "PIANO",
+    "durable": "PIANO",
+    "initializationsUnchanged": true,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "case": "de-native-completion",
+    "guesses": 1,
+    "completions": 1,
+    "activeGame": null,
+    "status": "quiet",
+    "notice": 0,
+    "initializationsUnchanged": true,
+    "errors": [],
+    "unhandled": []
+  }
+]

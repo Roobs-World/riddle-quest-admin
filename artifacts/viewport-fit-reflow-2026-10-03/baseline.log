@@ -1,0 +1,4867 @@
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 3840,
+  "failures": [
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "solo",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "unsaved",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "both",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "both",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "both",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "solo",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "unsaved",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "desktop",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "landscape",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "tall",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "control geometry resolves without interpolation",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}

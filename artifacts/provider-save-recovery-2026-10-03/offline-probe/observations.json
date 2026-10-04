@@ -1,0 +1,146 @@
+[
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "failed draft remains playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "initial rejected draft is not durable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "unavailable or held owner does not start another draft write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "offline notice disables retry",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "draft recovers without another keystroke",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "save health does not restart initialization",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "offline",
+    "name": "native listeners share one pause registration",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "failed draft remains playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "initial rejected draft is not durable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "unavailable or held owner does not start another draft write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "offline notice disables retry",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "draft recovers without another keystroke",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "save health does not restart initialization",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "facebook",
+    "width": 1280,
+    "scenario": "offline",
+    "name": "native listeners share one pause registration",
+    "actual": 1,
+    "expected": 1
+  }
+]

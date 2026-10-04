@@ -1,13 +1,13 @@
 import type {CSSProperties, Dispatch} from "react";
-import {splitGraphemes, type Feedback, type ScoredGuess} from "@qwordly/core/game";
+import type {Feedback, ScoredGuess} from "@qwordly/core/game";
 import mascotUrl from "../../../../assets/images-web/riddlequest-r.webp";
 import coinUrl from "../../../../assets/images/coin.svg";
 import backspaceUrl from "../../../../assets/images/backspace-key.svg";
 import {tr} from "./i18n";
 import {canEditCurrentGuess, gameSessionReducer, type GameSessionState} from "./gameSession";
 
-/** Defines the keyboard rows value. */
-const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+/** Fixed Latin shortcut letters are prepared once, independently of draft and receipt renders. */
+const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"].map(id => ({id, letters: id.split("")}));
 
 /** Provides game header behavior. */
 export function GameHeader({
@@ -269,13 +269,13 @@ export function ControlledKeyboard({
   return (
     <section className="keyboard" aria-label={tr("Accessibility.VIRTUAL_KEYBOARD")}>
       {KEYBOARD_ROWS.map((row) => (
-        <div key={row}>
-          {splitGraphemes(row).map((letter) => (
+        <div key={row.id}>
+          {row.letters.map((letter) => (
             <button className={keyClass(letter)} key={letter} disabled={disabled} onClick={() => onLetter(letter)}>
               {letter}
             </button>
           ))}
-          {row === "ZXCVBNM" && (
+          {row.id === "ZXCVBNM" && (
             <button
               className="key utility"
               disabled={disabled}

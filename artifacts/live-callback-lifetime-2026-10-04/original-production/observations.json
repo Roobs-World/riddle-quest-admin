@@ -1,0 +1,3482 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "parent updates do not add observations",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "parent updates retain the active subscription",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "parent updates do not retire the subscription",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "entry-burst",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "parent updates preserve native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "completed-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "parent updates retain the active subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "parent updates do not retire the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "parent updates preserve native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "held observation preserves the completed draft",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable-poll",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "held observation preserves the completed draft",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-poll",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "explicit native submission advances exactly once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-guess",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "pending terminal receipt uses the latest committed completion callback",
+    "actual": [
+      0
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "terminal result dispatches one owned event",
+    "actual": [
+      {
+        "ownerId": "Alice"
+      }
+    ],
+    "expected": [
+      {
+        "ownerId": "Alice"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "terminal result releases the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-result",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "pending retirement uses the latest committed close callback",
+    "actual": [
+      0
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "explicit retirement sends one leave",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "confirmed retirement releases the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-leave",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-result",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-result",
+    "name": "retired receipt does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-result",
+    "name": "retired receipt does not dispatch an event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-result",
+    "name": "retired snapshot has no subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-result",
+    "name": "real retirement leaves the owned seat once",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-result",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-result",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "retired receipt does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "retired receipt does not dispatch an event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "retired snapshot has no subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "real retirement leaves the owned seat once",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "new account joins its own seat",
+    "actual": "Carol",
+    "expected": "Carol"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "new account owns one fresh subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "new account advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-change",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates do not add observations",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates retain the active subscription",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates do not retire the subscription",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates preserve native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates retain the active subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates do not retire the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates preserve native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "held observation preserves the completed draft",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "held observation preserves the completed draft",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "explicit native submission advances exactly once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "pending terminal receipt uses the latest committed completion callback",
+    "actual": [
+      0
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "terminal result dispatches one owned event",
+    "actual": [
+      {
+        "ownerId": "Alice"
+      }
+    ],
+    "expected": [
+      {
+        "ownerId": "Alice"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "terminal result releases the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "pending retirement uses the latest committed close callback",
+    "actual": [
+      0
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "explicit retirement sends one leave",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "confirmed retirement releases the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "retired receipt does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "retired receipt does not dispatch an event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "retired snapshot has no subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "real retirement leaves the owned seat once",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "retired receipt does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "retired receipt does not dispatch an event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "retired snapshot has no subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "real retirement leaves the owned seat once",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "new account joins its own seat",
+    "actual": "Carol",
+    "expected": "Carol"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "new account owns one fresh subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "new account advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates do not add observations",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates retain the active subscription",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates do not retire the subscription",
+    "actual": 32,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "entry-burst",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates preserve native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "completed-parent",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates retain the active subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates do not retire the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates preserve native focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "held observation preserves the completed draft",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable-poll",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates do not add observations",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates preserve native focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates preserve the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "typing continues without refocusing",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "held observation preserves the completed draft",
+    "actual": "piano",
+    "expected": "piano"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "explicit native submission advances exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-poll",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "explicit native submission advances exactly once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "incomplete race does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-guess",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "pending terminal receipt uses the latest committed completion callback",
+    "actual": [
+      0
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "terminal result dispatches one owned event",
+    "actual": [
+      {
+        "ownerId": "Alice"
+      }
+    ],
+    "expected": [
+      {
+        "ownerId": "Alice"
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "terminal result releases the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-result",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates do not add observations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates retain the active subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates do not retire the subscription",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "native editor is retained",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "parent updates do not join another seat",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "pending retirement uses the latest committed close callback",
+    "actual": [
+      0
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "explicit retirement sends one leave",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "confirmed retirement releases the subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-leave",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "retired receipt does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "retired receipt does not dispatch an event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "retired snapshot has no subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "real retirement leaves the owned seat once",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-result",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "native typing prepares the draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "retired receipt does not invoke completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "retired receipt does not dispatch an event",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "retired snapshot has no subscription",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "real retirement leaves the owned seat once",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "new account joins its own seat",
+    "actual": "Carol",
+    "expected": "Carol"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "new account owns one fresh subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "new account advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-change",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

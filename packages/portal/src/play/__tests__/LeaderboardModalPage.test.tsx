@@ -44,6 +44,25 @@ describe("LeaderboardModalPage", () => {
     ).toContain("No scores yet");
   });
 
+  it("offers Retry after a failed read instead of claiming there are no scores", () => {
+    /** Failed ranking renders a recoverable error rather than an empty result. */
+    const html = renderToString(<LeaderboardModalPage entries={[]} loading={false} loadError
+      leaderboardType="totalWins" onRequestLeaderboard={requestLeaderboard} />);
+    expect(html).toContain('role="alert"');
+    expect(html).toContain("Could not load leaderboard");
+    expect(html).toContain(">Retry</button>");
+    expect(html).not.toContain("No scores yet");
+  });
+
+  it("retains confirmed rows while a same-metric refresh is unavailable", () => {
+    /** Confirmed entries stay available alongside the failed refresh notice. */
+    const html = renderToString(<LeaderboardModalPage entries={createEntries(11)} loading={false} loadError
+      leaderboardType="totalWins" onRequestLeaderboard={requestLeaderboard} />);
+    expect(html).toContain("Player 1");
+    expect(html).toContain("Could not load leaderboard");
+    expect(html).toContain("leaderboard-pagination");
+  });
+
   it("renders multiplayer victories separately from solo wins and supports older rows", () => {
     /** Rendered multiplayer measurement with a legacy row. */
     const html = renderToString(

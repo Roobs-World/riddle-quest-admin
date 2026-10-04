@@ -132,22 +132,74 @@ it("withholds both players' first prompt until the shared server start", async (
 
 it("ends both players immediately on the tenth solved riddle and grants 50 coins once", async () => {
   /** Provides {a, b} behavior. */
-  await db.doc(`users/${A}`).update({"stats.multiplayerWins": 4, "stats.totalWins": 12});
+  await db.doc(`users/${A}`).update({"stats.multiplayerWins": 4, "stats.multiplayerGamesPlayed": 7, "stats.totalWins": 12});
   /** Matched live seats for an existing multiplayer winner. */
   const {a, b} = await pair();
   /** Latest accepted progress for this seat. */
   let current = a;
   for (let i = 0; i < 10; i++) current = await answer(A, current, NOW + 6000 + i * 1000, `answer-alice-${i}`);
-  expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50, newCoins: 150});
-  expect((await update(B, b, NOW + 16000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0});
+  expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50, newCoins: 250});
+  expect((await update(B, b, NOW + 16000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0, newCoins: 125});
   /** Provides replay behavior. */
   const replay = await answer(A, a, NOW + 17000, "answer-alice-9").catch(() => update(A, a, NOW + 17000));
   expect(replay.phase).toBe("result");
   await Promise.all([update(A, a, NOW + 18000), update(A, a, NOW + 18000)]);
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
-  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(100);
-  expect((await db.doc(`users/${A}`).get()).data()!.stats).toMatchObject({multiplayerWins: 5, totalWins: 12});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(250);
+  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(125);
+  expect((await db.doc(`users/${A}`).get()).data()!.stats).toMatchObject({multiplayerWins: 5, multiplayerGamesPlayed: 8, totalWins: 12});
   expect((await db.doc(`users/${B}`).get()).data()!.stats?.multiplayerWins ?? 0).toBe(0);
+  expect((await db.doc(`users/${B}`).get()).data()!.stats?.multiplayerGamesPlayed ?? 0).toBe(1);
+});
+
+it("grants eligible live race badges exactly once alongside terminal statistics", async () => {
+  // Retain a solo badge while repairing missing race milestones on the next authoritative settlement.
+  await db.doc(`users/${A}`).update({coins: 670, "stats.multiplayerGamesPlayed": 11,
+    "stats.multiplayerWins": 1, "stats.totalWins": 4,
+    unlockedAchievements: [{achievementId: "hint_user", unlockedAt: NOW - 1000}]});
+  /** Both authoritative seats establish one terminal settlement receipt. */
+  const {a, b} = await pair();
+  await update(B, b, NOW + 7000, "leave", "badge-terminal-forfeit");
+  /** Persisted balances and badges must remain unchanged on repeated result reads. */
+  const profiles = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
+  expect(profiles[0]!.data()!.unlockedAchievements).toEqual(expect.arrayContaining([
+    {achievementId: "hint_user", unlockedAt: NOW - 1000},
+    {achievementId: "race_debut", unlockedAt: NOW + 7000},
+    {achievementId: "race_first_win", unlockedAt: NOW + 7000},
+  ]));
+  expect(profiles[0]!.data()!.coins).toBe(770);
+  expect(profiles[0]!.data()!.stats).toMatchObject({multiplayerGamesPlayed: 12, multiplayerWins: 2, totalWins: 4});
+  expect(profiles[1]!.data()!.unlockedAchievements).toEqual([{achievementId: "race_debut", unlockedAt: NOW + 7000}]);
+  expect(profiles[1]!.data()!.coins).toBe(125);
+  await Promise.all([update(A, a, NOW + 8000), update(B, b, NOW + 8000), update(A, a, NOW + 8000)]);
+  expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(profiles.map(profile => profile.data()));
+});
+
+it("retains existing badge receipts across a new match and only grants its win reward", async () => {
+  /** Existing one-time badge receipts prevent duplicate achievement payouts. */
+  const badges = ["race_debut", "race_first_win"].map(achievementId => ({achievementId, unlockedAt: NOW - 1000}));
+  await db.doc(`users/${A}`).update({unlockedAchievements: badges, "stats.multiplayerWins": 1});
+  /** Both authoritative seats establish one terminal settlement receipt. */
+  const {a, b} = await pair();
+  await update(B, b, NOW + 7000, "leave", "already-earned-forfeit");
+  expect(await update(A, a, NOW + 8000)).toMatchObject({newCoins: 150, rewardCoins: 50});
+  /** The winning account projection confirms terminal rewards and counters. */
+  const profile = (await db.doc(`users/${A}`).get()).data()!;
+  expect(profile.unlockedAchievements).toEqual(badges);
+  expect(profile.stats).toMatchObject({multiplayerWins: 2, multiplayerGamesPlayed: 1});
+});
+
+it("does not backfill or pay an already settled legacy result", async () => {
+  /** Both authoritative seats establish one terminal settlement receipt. */
+  const {a, b} = await pair();
+  /** The authority-issued ticket identifies the already settled match. */
+  const ticket = (await db.doc(`liveRaceTickets/${a.ticketId}`).get()).data()!;
+  await db.doc(`liveRaceMatches/${ticket.matchId}`).update({winner: 0, rewardCoins: 50, newCoins: 150});
+  await db.doc(`users/${A}`).update({coins: 150, "stats.multiplayerWins": 1, "stats.multiplayerGamesPlayed": 1});
+  /** Captures account state before an idempotent read or rejected settlement. */
+  const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());
+  expect(await update(A, a, NOW + 8000)).toMatchObject({result: "win", newCoins: 150, rewardCoins: 50});
+  expect(await update(B, b, NOW + 8000)).not.toHaveProperty("newCoins");
+  expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(before);
 });
 
 it("serializes simultaneous finishes into one winner and one grant", async () => {
@@ -160,7 +212,7 @@ it("serializes simultaneous finishes into one winner and one grant", async () =>
   expect(results.map(result => result.result).sort()).toEqual(["loss", "win"]);
   /** Provides balances behavior. */
   const balances = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
-  expect(balances.reduce((sum, item) => sum + item.data()!.coins, 0)).toBe(250);
+  expect(balances.reduce((sum, item) => sum + item.data()!.coins, 0)).toBe(350);
   expect(balances.reduce((sum, item) => sum + (item.data()!.stats?.multiplayerWins ?? 0), 0)).toBe(1);
 });
 
@@ -172,8 +224,11 @@ it("waits exactly one minute before creating a bot and then starts a five-second
   const bot = await update(A, a, NOW + 60000);
   expect(bot).toMatchObject({phase: "countdown", startsAtMs: NOW + 65000, opponent: {bot: true, correctCount: 0}});
   expect((await update(A, a, NOW + 77000)).opponent?.correctCount).toBe(1);
-  expect((await update(A, a, NOW + 185000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0});
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+  expect((await update(A, a, NOW + 185000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0, newCoins: 125});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(125);
+  await Promise.all([update(A, a, NOW + 186000), update(A, a, NOW + 186000)]);
+  expect((await db.doc(`users/${A}`).get()).data()!.stats?.multiplayerGamesPlayed).toBe(1);
+  expect((await db.doc("users/bot").get()).exists).toBe(false);
 });
 
 it("replays queue joins and final guesses without duplicate seats or rewards", async () => {
@@ -239,10 +294,12 @@ it.each(["block", "delete"] as const)("settles an active %s privacy boundary wit
   const result = await update(A, a, NOW + 8000);
   expect(result).toMatchObject({phase: "result", result: "tie", rewardCoins: 0,
     opponent: {displayName: "Riddle Quest player", avatarUrl: null}});
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
-  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(100);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(125);
+  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(boundary === "delete" ? 100 : 125);
   if (boundary === "delete") await expect(update(B, b, NOW + 9000)).rejects.toThrow("account-deleted");
   else expect(await update(B, b, NOW + 9000)).toMatchObject({phase: "result", result: "tie", rewardCoins: 0});
+  expect((await db.doc(`users/${A}`).get()).data()!.stats.multiplayerGamesPlayed).toBe(1);
+  expect((await db.doc(`users/${B}`).get()).data()!.stats?.multiplayerGamesPlayed ?? 0).toBe(boundary === "delete" ? 0 : 1);
 });
 
 it("cancels a countdown without paying a win and rewards an in-game forfeit only once", async () => {
@@ -315,8 +372,8 @@ it.each(["skip", "exhaust"] as const)("resets question state after %s and settle
   const deadline = current.startsAtMs! + current.run!.adjustedElapsedMs;
   expect(await update(B, b, deadline - 1)).toMatchObject({phase: "racing", opponent: {correctCount: 10}, rewardCoins: 0});
   expect(await update(B, b, deadline)).toMatchObject({result: "loss", rewardCoins: 0});
-  expect(await update(A, a, deadline + 1)).toMatchObject({result: "win", newCoins: 150});
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+  expect(await update(A, a, deadline + 1)).toMatchObject({result: "win", newCoins: 200});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(200);
 });
 
 it("lets the rival beat ten rapid skips, including after the finisher reloads and closes", async () => {
@@ -337,10 +394,10 @@ it("lets the rival beat ten rapid skips, including after the finisher reloads an
   /** Rival continues solving after the first run has completed. */
   let rival = await update(B, b, NOW + 18000);
   for (let index = 0; index < 10; index++) rival = await answer(B, rival, NOW + 19000 + index * 1000, `rival-after-skips-${index}`);
-  expect(rival).toMatchObject({phase: "result", result: "win", rewardCoins: 50, newCoins: 150});
+  expect(rival).toMatchObject({phase: "result", result: "win", rewardCoins: 50, newCoins: 225});
   expect(await update(A, a, NOW + 29000)).toMatchObject({result: "loss", rewardCoins: 0});
   await Promise.all([update(A, a, NOW + 30000), update(B, b, NOW + 30000)]);
-  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(150);
+  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(225);
 });
 
 it("lets a later unassisted finish beat an earlier hinted finish", async () => {
@@ -424,7 +481,7 @@ it("recovers an expired search on reload and grants a bot victory once", async (
   for (let i = 0; i < 10; i++) current = await answer(A, current, NOW + 65000 + i * 1000, `bot-win-answer-${i}`);
   expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
   await answer(A, current, NOW + 78000, "bot-win-answer-9");
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(225);
 });
 
 it("keeps human matching and a simultaneous deadline poll exclusive", async () => {
@@ -459,7 +516,7 @@ it("recovers live progress and a settled result without rereading the current co
   for (let index = 1; index < 10; index++) current = await answer(A, current, NOW + 7000 + index * 1000, `catalog-answer-${index}`);
   expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
   expect(await join(A, "join-alice-1", NOW + 19000)).toMatchObject({ticketId: a.ticketId, phase: "result", result: "win", rewardCoins: 50});
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(225);
   expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
 });
 
@@ -485,7 +542,7 @@ it("does not turn an in-game forfeit back into a countdown cancellation", async 
   expect(older.serverNowMs).toBeGreaterThanOrEqual(NOW + 7000);
   await update(B, b, NOW + 2000, "leave", "clock-late-forfeit");
   expect(await update(A, a, NOW + 2000)).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(150);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(200);
 });
 
 it("admits reordered guesses after already accepted live progress without rewinding their event clocks", async () => {
@@ -523,4 +580,63 @@ it("derives a safe bot clock floor for records without an observation marker", a
   await ref.set(legacy);
   await db.doc(`liveRaceTickets/${a.ticketId}`).update({seenAtMs: NOW + 60000});
   expect(await update(A, a, NOW + 61000)).toMatchObject({phase: "racing", serverNowMs: NOW + 89000, opponent: {correctCount: 2}});
+});
+
+
+it("does not count a cancelled countdown as a played match", async () => {
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const {a, b} = await pair();
+  await update(A, a, NOW + 2000, "leave", "countdown-cancel-statistics");
+  await update(B, b, NOW + 7000);
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const profiles = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
+  expect(profiles.map(profile => profile.data()!.stats?.multiplayerGamesPlayed ?? 0)).toEqual([0, 0]);
+  expect(profiles.map(profile => profile.data()!.coins)).toEqual([100, 100]);
+});
+
+it("records both participants once on a started forfeit", async () => {
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const {a, b} = await pair();
+  await update(A, a, NOW + 7000, "leave", "started-forfeit-statistics");
+  await Promise.all([update(A, a, NOW + 8000), update(B, b, NOW + 8000)]);
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const profiles = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
+  expect(profiles.map(profile => profile.data()!.stats.multiplayerGamesPlayed)).toEqual([1, 1]);
+  expect(profiles.map(profile => profile.data()!.coins)).toEqual([125, 200]);
+});
+
+
+it("counts a timed-out human draw once without awarding a win reward", async () => {
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const {a, b} = await pair();
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const end = NOW + 6000 + RACE_RULES.maxAdjustedTimeMs;
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const results = await Promise.all([update(A, a, end), update(B, b, end)]);
+  expect(results.map(result => result.result)).toEqual(["tie", "tie"]);
+  expect(results.map(result => result.rewardCoins)).toEqual([0, 0]);
+  expect(results.map(result => result.newCoins)).toEqual([125, 125]);
+  await Promise.all([update(A, a, end + 1000), update(B, b, end + 1000)]);
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const profiles = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
+  expect(profiles.map(profile => profile.data()!.stats.multiplayerGamesPlayed)).toEqual([1, 1]);
+  expect(profiles.map(profile => profile.data()!.stats.multiplayerWins ?? 0)).toEqual([0, 0]);
+  expect(profiles.map(profile => profile.data()!.coins)).toEqual([125, 125]);
+});
+
+it.each([
+  {"stats.multiplayerGamesPlayed": -1}, {"stats.multiplayerWins": -1},
+  {coins: -1}, {coins: Number.MAX_SAFE_INTEGER}, {"stats.multiplayerGamesPlayed": Number.MAX_SAFE_INTEGER},
+])("rejects invalid or overflowing totals before recording any settlement grant: %j", async invalid => {
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const {a, b} = await pair();
+  await db.doc(`users/${A}`).update(invalid);
+  /** Captures account state before an idempotent read or rejected settlement. */
+  const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());
+  await expect(update(B, b, NOW + 7000, "leave", "invalid-game-total"))
+    .rejects.toMatchObject({code: "data-loss"});
+  expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(before);
+  /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+  const ticket = (await db.doc(`liveRaceTickets/${a.ticketId}`).get()).data()!;
+  expect((await db.doc(`liveRaceMatches/${ticket.matchId}`).get()).data()!.rewardCoins).toBeUndefined();
 });

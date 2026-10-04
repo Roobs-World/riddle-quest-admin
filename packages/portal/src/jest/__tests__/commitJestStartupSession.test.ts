@@ -65,7 +65,7 @@ it("commits restored progress and attributed invite analytics", async () => {
     ...dependencies,
   })).resolves.toBe(true);
 
-  expect(dependencies.enablePlayerStateWrites).toHaveBeenCalledWith(restoredSession.playerData);
+  expect(dependencies.enablePlayerStateWrites).toHaveBeenCalledWith(restoredSession.playerData, restoredSession.player.playerId);
   expect(dependencies.setEngagementProgress).toHaveBeenCalledWith({level: 7, winStreak: 3, wins: 12});
   expect(dependencies.setSession).toHaveBeenCalledWith(restoredSession);
   expect(dependencies.trackFunnel).toHaveBeenCalledWith(

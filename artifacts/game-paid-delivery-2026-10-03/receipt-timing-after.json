@@ -1,0 +1,57 @@
+{
+  "evidence": "Actual Reddit adapter with injected same-origin gateway; controlled profile delays are not production latency",
+  "samples": [
+    {
+      "width": 1280,
+      "kind": "completion",
+      "injectedOptionalProfileDelayMs": 300,
+      "timingsMs": [
+        0.19999999925494194,
+        0.19999999925494194,
+        0.2000000011175871,
+        0.2999999988824129,
+        3.700000001117587
+      ],
+      "medianMs": 0.2000000011175871
+    },
+    {
+      "width": 1280,
+      "kind": "spend",
+      "injectedOptionalProfileDelayMs": 300,
+      "timingsMs": [
+        0,
+        0.09999999962747097,
+        0.10000000149011612,
+        0.30000000074505806,
+        0.40000000037252903
+      ],
+      "medianMs": 0.10000000149011612
+    },
+    {
+      "width": 390,
+      "kind": "completion",
+      "injectedOptionalProfileDelayMs": 300,
+      "timingsMs": [
+        0.19999999925494194,
+        0.19999999925494194,
+        0.2000000011175871,
+        0.2000000011175871,
+        2.699999999254942
+      ],
+      "medianMs": 0.2000000011175871
+    },
+    {
+      "width": 390,
+      "kind": "spend",
+      "injectedOptionalProfileDelayMs": 300,
+      "timingsMs": [
+        0,
+        0.09999999962747097,
+        0.09999999962747097,
+        0.2000000011175871,
+        0.2000000011175871
+      ],
+      "medianMs": 0.09999999962747097
+    }
+  ]
+}

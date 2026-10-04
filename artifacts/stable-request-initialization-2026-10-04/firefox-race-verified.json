@@ -1,0 +1,35 @@
+[
+  {
+    "draft": "pian",
+    "sameInput": true,
+    "focused": true,
+    "repeated": [],
+    "guesses": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "draft": "pian",
+    "sameInput": true,
+    "focused": true,
+    "repeated": [],
+    "epoch": "1"
+  },
+  {
+    "guesses": 1,
+    "score": "Riddles completed: 1 / 10",
+    "repeated": [],
+    "joins": 1,
+    "joinKeepsIdentity": true,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "retired": true,
+    "leaves": 1,
+    "leaveKeepsIdentity": true,
+    "distinct": true,
+    "errors": [],
+    "unhandled": []
+  }
+]

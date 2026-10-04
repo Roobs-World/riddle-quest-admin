@@ -1,0 +1,40 @@
+--- 
++++ 
+@@ -92,6 +92,8 @@
+   const nextDeliveryAt = useRef(0);
+   /** Prevents updates after the mounted journey is retired. */
+   const active = useRef(true);
++  /** Retirement releases local waits for commands and superseded polls while their adapter receipts remain observed. */
++  const waitOwner = useRef<AbortController | null>(null);
+   useLayoutEffect(() => {
+     active.current = true;
+     // A receipt microtask can run before passive cleanup after a replacement commits.
+@@ -149,6 +151,8 @@
+       inFlight.current && (!inFlight.current.poll || !command)) return;
+     /** Receipt ownership prevents a superseded poll from replacing an accepted answer. */
+     const delivery = {poll: Boolean(viewRef.current && !command)};
++    /** All deliveries share the mounted journey's local cancellation boundary. */
++    const lifetime = waitOwner.current ??= new AbortController();
+     /** Definitively rejected commands reconcile against the current authoritative question. */
+     let reconcile = false;
+     lastDeliveryAt.current = performance.now();
+@@ -185,7 +189,7 @@
+         Boolean(viewRef.current && !command), late => {
+           // Owned late commands can recover before retry; polls remain superseded observations.
+           if (closed.current || !active.current || !delivery.poll && pending.current === command) accept(late);
+-        });
++        }, lifetime.signal);
+       accept(result);
+     } catch (failure) {
+       if (inFlight.current === delivery && active.current && !closed.current) {
+@@ -255,7 +259,9 @@
+       document.removeEventListener("visibilitychange", resume);
+       // Strict Mode reactivates this lifetime synchronously; only a real unmount retires its seat.
+       queueMicrotask(() => {
+-        if (active.current || closed.current) return;
++        if (active.current) return;
++        waitOwner.current?.abort();
++        if (closed.current) return;
+         /** Last accepted ticket remains owned by this retired account journey. */
+         const current = viewRef.current;
+         if (current && !["result", "cancelled"].includes(current.phase))

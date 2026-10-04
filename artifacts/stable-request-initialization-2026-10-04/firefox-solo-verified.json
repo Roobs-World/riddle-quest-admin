@@ -1,0 +1,24 @@
+[
+  {
+    "prefixes": [
+      "pending-owner",
+      "session"
+    ]
+  },
+  {
+    "draft": "pian",
+    "epoch": "1",
+    "repeated": [],
+    "guesses": 0,
+    "completions": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "guesses": 1,
+    "completions": 1,
+    "repeated": [],
+    "errors": [],
+    "unhandled": []
+  }
+]

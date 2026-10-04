@@ -1,0 +1,27 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: immediate Enter submits the current complete answer once
++ actual - expected
+
++ []
+- [
+-   'test'
+- ]
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-immediate-submit-browser.mjs:81:120)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-immediate-submit-browser.mjs:101:4 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [],
+  expected: [ 'test' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: node scripts/verify-live-immediate-submit-browser.mjs

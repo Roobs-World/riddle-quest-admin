@@ -1,0 +1,15 @@
+{
+  "packages/portal/src/play/ConfirmedRiddleOutcome.ts": "a1377b2c95afc69b8aa366c3e8ee923d6b6985a2b05bbff2d103cfaa3c26cb7d",
+  "packages/portal/src/play/gameSession.ts": "851ab98d12dbc1d436b0ac2806d9abd9bed3af1b0f826e8bdfe0f2d9bc9fa0d9",
+  "packages/portal/src/play/GameSessionCheckpoints.ts": "0c03ba8c47e8102bc9927775b466b63d3ac232e43389ac39bcf2347782ae6375",
+  "packages/portal/src/play/GameModalView.tsx": "97db324200fce55df0dbea561615dcffac8e373e7c3064001bfad8c19790750b",
+  "packages/portal/src/play/modalPages/fanfare/FanfareModalContent.tsx": "61ea86d34f0c5b9f05a3a0bec9ae52ec9ebbfc42048d1b90a2dfb5cd997a1b3e",
+  "packages/portal/src/play/__tests__/GameSessionCheckpoints.test.ts": "e256bbbe6c9fc495b3a20d5864112c61b588dc7611abe1cec24363f021f20ae7",
+  "packages/portal/src/play/__tests__/gameSession.test.ts": "7beeaf559b36256c5bb1d20848ce3a7f3b00e1c7664703fbc10ef0dfc5cddd1a",
+  "packages/portal/src/play/__tests__/FanfareModalContent.test.tsx": "5f8c36e5161d7642e0107619a9ddfd62069212a13c756b2a5f5ed990069fd137",
+  "packages/portal/scripts/verify-authority-terminal-recovery-browser.mjs": "3b1bacb0f8f1e0782dbe024b9ce66c75b7dddd9b5cdba4cc5fa2f48c2aca68cf",
+  "packages/portal/package.json": "2d7049969a35b08d4f4d16107da5dd0fc2dfd80e5e499c3719dab54d0b4e3d4e",
+  "packages/portal/src/play/gameSessionTypes.ts": "76f9590e226e9da131561d1124a2e8c4804d58fcfde2909b6013cf3cb310873c",
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "9187f626f1441d1986e5cd41be09eb032615e09d924b779da2cb7fb0c6bfdfab",
+  "packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts": "e33674af290397ceeae8c2a147f4ce121b36d5a1f5f996dfbf8eaefbc9822688"
+}

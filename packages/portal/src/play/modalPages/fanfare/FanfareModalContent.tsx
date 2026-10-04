@@ -1,10 +1,12 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
 import type {GameSessionState} from "../../gameSession";
-import {tr} from "../../i18n";
+import {useTranslator} from "../../i18n";
 import {getRankForLevel} from "../../ranks";
 import {CoinAwardSequence} from "./CoinAwardSequence";
 import type {FanfareCoinAward, FanfareStep} from "./fanfareSequence";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
+import {useMemo} from "react";
+import {getConfirmedRiddleWin} from "../../ConfirmedRiddleOutcome";
 
 /** Props shared by the two fanfare modal content variants. */
 type SharedFanfareProps = {
@@ -49,6 +51,8 @@ export function AchievementFanfare({
   /** Stores achievement id. */ /** Stores achievement id. */
   achievementId: string;
 }) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Provides achievement behavior. */
   const achievement = ACHIEVEMENT_DEFINITIONS.find((item) => item.id === achievementId);
   return (
@@ -76,10 +80,16 @@ export function VictoryFanfareContent({
   stepCount,
   stepIndex,
 }: VictoryFanfareContentProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
   /** Keeps the progress indicator coherent if reward details refresh mid-fanfare. */
   const displayedStepCount = Math.max(stepCount, stepIndex + 1);
+  /** Confirmed winning history is stable across reward animation and profile renders. */
+  const recoveredWin = useMemo(() => state.riddle ? getConfirmedRiddleWin(state.riddle) : null, [state.riddle]);
+  /** Buffered provisional wins retain early advancement; recovered wins wait for their completion receipt. */
+  const recoveredAdvancePending = Boolean(recoveredWin && !state.completionAcknowledged);
   /** Provides victory level behavior. */
   const victoryLevel = state.lastRewards?.newLevel;
   /** Provides victory rank behavior. */
@@ -94,7 +104,7 @@ export function VictoryFanfareContent({
         <>
           <strong className="fanfare-title" aria-live="polite">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
           {state.lastOutcome?.kind === "win" && (
-            <button className="play-primary reward-continue" onClick={onAdvance}>
+            <button className="play-primary reward-continue" disabled={recoveredAdvancePending} onClick={onAdvance}>
               {tr(state.riddle?.gameMode === "classic" ? "VictoryModal.NEXT_LEVEL_BUTTON" : "GameScreenAlerts.NEXT_BUTTON")}
             </button>
           )}
@@ -163,7 +173,8 @@ export function VictoryFanfareContent({
           <small className="sequence-progress">
             {stepIndex + 1}/{displayedStepCount}
           </small>
-          <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={onAdvance}>
+          <button className="play-primary reward-continue" disabled={coinCollectionPending ||
+            (recoveredAdvancePending && stepIndex + 1 >= displayedStepCount)} onClick={onAdvance}>
             {stepIndex + 1 < displayedStepCount ? tr("GameScreenAlerts.NEXT_BUTTON") :
               tr("VictoryModal.NEXT_LEVEL_BUTTON")}
           </button>
@@ -184,6 +195,8 @@ export function RewardFanfareContent({
   stepCount,
   stepIndex,
 }: RewardFanfareContentProps) {
+  /** Copy changes invalidate compiler caches while preserving local page state. */
+  const tr = useTranslator();
   return (
     <div className="fanfare-content">
       <div className="fanfare-burst" aria-hidden="true">

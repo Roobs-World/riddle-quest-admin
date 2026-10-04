@@ -1,0 +1,8 @@
+{
+  "packages/portal/src/platform/PlayerProjectionPersistence.ts": "a98431ae92ec6ac39b562611ffcfa6728e9022976707424e5eb609485a8e65c1",
+  "packages/portal/src/facebook/FacebookPlatformEntry.tsx": "6b0fbaeb24437c550066420be5e8a90334d31de0bf49021cdd7f6093f3aafce5",
+  "packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts": "8edc460627597b2de059792144212f11e43742263de489750fc9f117d26b4ef3",
+  "packages/portal/src/platform/__tests__/PlayerProjectionQueue.test.ts": "d83cf64126a9abf631a8109f7e617b969df3a0c2946b4586e8eef5c069c666d8",
+  "packages/portal/scripts/verify-game-storage-queue-browser.mjs": "1833b7d2aba2e0e9d4160586bdd2d0c4e4465acaabf7bf05e70b76abe0b82840",
+  "packages/portal/package.json": "c29d517c2b62c36dd586bc5bd1d67b20964dbea5a5bf1852727124e13a918277"
+}

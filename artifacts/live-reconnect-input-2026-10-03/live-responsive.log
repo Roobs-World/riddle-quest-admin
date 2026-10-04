@@ -1,0 +1,3 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Player guess bypassed hung poll in 100ms at 1280px.
+Player guess bypassed hung poll in 100ms at 390px.

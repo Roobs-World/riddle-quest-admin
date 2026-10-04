@@ -1,12 +1,15 @@
 import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
 import {raceOperationAtMs, toRaceRunView, type RaceRunRecord} from "./raceEngine";
 import {liveFinishMs} from "./raceLiveScoring";
+import type {FacebookLiveContextBinding} from "./facebookLiveContextBinding";
 
 /** Private ticket contains the immutable deck and authenticated owner. */
 export type LiveTicket = {
+  /** Original optional Facebook score destination, captured before play. */ facebookContext?: FacebookLiveContextBinding;
   /** Sanitized creator content is retained only as a surviving player's frozen deck source. */ deleted?: boolean;
   /** Private lobbies never enter the public queue or select a bot. */ privateChallenge?: boolean;
   /** Direct invitations reserve acceptance for one server-resolved recipient. */ inviteRecipientId?: string;
+  /** Immutable caller-owned terminal seat binds rematch retries and recipient selection. */ rematchOfTicketId?: string;
   /** Authenticated account. */ userId: string;
   /** Scope prevents cross-provider or cross-language pairing. */ pool: string;
   /** Creation and search deadline use the server clock. */ createdAtMs: number;
@@ -16,6 +19,10 @@ export type LiveTicket = {
   /** Server account identity snapshot. */ player: LiveRaceView["player"];
   /** Private authoritative riddle run. */ run: RaceRunRecord;
 };
+/** Private seat data is replaced as a whole by existing account deletion cleanup. */
+type LiveSeatRun = RaceRunRecord & {
+  /** Viewer-owned balance includes one-time badge grants after authoritative settlement. */ settlementCoins?: number;
+};
 /** Both runs and the victory receipt share one transaction lock. */
 export type LiveMatch = {
   /** Indexed authenticated participants support deletion even after a ticket is missing. */ participantIds?: string[];
@@ -24,7 +31,7 @@ export type LiveMatch = {
   /** Server start shared by both players. */ startsAtMs: number;
   /** Terminal winner seat, or null for a timed out match. */ winner?: number | null;
   /** Latest accepted observation is shared by both seats and survives clock corrections. */ observedAtMs?: number;
-  /** Both private server runs. */ runs: [RaceRunRecord, RaceRunRecord];
+  /** Both private server runs. */ runs: [LiveSeatRun, LiveSeatRun];
   /** Safe account identities. */ players: [LiveRaceView["player"], LiveRaceView["player"]];
   /** Reward grant committed with the winner decision. */ rewardCoins?: number;
   /** Winner balance at settlement, never used as client authority. */ newCoins?: number;
@@ -117,5 +124,6 @@ export function liveView(ticketId: string, ticket: LiveTicket, match: LiveMatch 
     ...(ticket.privateChallenge ? {challengeId: `live_${ticketId}`} : {}),
     run, result: terminal ? match.winner === null ? "tie" : match.winner === seat ? "win" : "loss" : null,
     rewardCoins: terminal && match.winner === seat ? match.rewardCoins ?? 0 : 0,
-    ...(terminal && match.winner === seat && match.rewardCoins === LIVE_RACE_WIN_COINS ? {newCoins: match.newCoins} : {})});
+    ...(terminal && own?.settlementCoins != null ? {newCoins: own.settlementCoins} :
+      terminal && match.winner === seat && match.rewardCoins === LIVE_RACE_WIN_COINS ? {newCoins: match.newCoins} : {})});
 }

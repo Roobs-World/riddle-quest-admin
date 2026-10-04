@@ -1,0 +1,64 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/__tests__/gameSession.test.ts
+  ● game session reducer › rolls back rejected gameplay without replacing the acknowledged host profile (profile available=false)
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: null
+    Received: {"achievements": ["first_win"], "classicIndex": 1, "coins": 300, "gamesPlayed": 7, "level": 3, "username": "Older", "winStreak": 2, "wins": 5, "xp": 420}
+
+      66 |       lastRewards: state.lastRewards,optimisticAchievementIds: state.optimisticAchievementIds};
+      67 |     state = reduce(state, {type: "restoreConfirmedRiddle",riddle,base});
+    > 68 |     expect(state.profile).toEqual(available ? profile : null);
+         |                           ^
+      69 |     expect(state.currentLetters).toEqual(Array(5).fill(""));
+      70 |     expect(state.guesses).toEqual([]);
+      71 |   });
+
+      at src/play/__tests__/gameSession.test.ts:68:27
+
+  ● game session reducer › rolls back rejected gameplay without replacing the acknowledged host profile (profile available=true)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 6
+    + Received  + 6
+
+      Object {
+        "achievements": Array [
+          "first_win",
+        ],
+    -   "classicIndex": 2,
+    -   "coins": 325,
+    -   "gamesPlayed": 8,
+    +   "classicIndex": 1,
+    +   "coins": 300,
+    +   "gamesPlayed": 7,
+        "level": 3,
+    -   "username": "Current",
+    +   "username": "Older",
+        "winStreak": 2,
+    -   "wins": 6,
+    -   "xp": 510,
+    +   "wins": 5,
+    +   "xp": 420,
+      }
+
+      66 |       lastRewards: state.lastRewards,optimisticAchievementIds: state.optimisticAchievementIds};
+      67 |     state = reduce(state, {type: "restoreConfirmedRiddle",riddle,base});
+    > 68 |     expect(state.profile).toEqual(available ? profile : null);
+         |                           ^
+      69 |     expect(state.currentLetters).toEqual(Array(5).fill(""));
+      70 |     expect(state.guesses).toEqual([]);
+      71 |   });
+
+      at src/play/__tests__/gameSession.test.ts:68:27
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 47 passed, 49 total
+Snapshots:   0 total
+Time:        0.234 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/__tests__/gameSession.test.ts

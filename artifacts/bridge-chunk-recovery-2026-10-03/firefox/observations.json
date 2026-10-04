@@ -1,0 +1,152 @@
+[
+  {
+    "phase": "failed",
+    "name": "alert",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "failed",
+    "name": "intervals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "failed",
+    "name": "hostDiagnostics",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "failed",
+    "name": "unavailable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "failed",
+    "name": "playable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "failed",
+    "name": "paid",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "idle",
+    "name": "touchHeight",
+    "actual": 48,
+    "expected": 48
+  },
+  {
+    "phase": "idle",
+    "name": "viewportFits",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "idle",
+    "name": "timerWakes",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "idle",
+    "name": "newReports",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "idle",
+    "name": "paid",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "recovered",
+    "name": "questionVisible",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "recovered",
+    "name": "recovery",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "phase": "recovered",
+    "name": "frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "phase": "recovered",
+    "name": "intervals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "recovered",
+    "name": "playable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "recovered",
+    "name": "unavailable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "recovered",
+    "name": "paid",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "phase": "recovered",
+    "name": "loads",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "phase": "recovered",
+    "name": "coins",
+    "actual": 300,
+    "expected": 300
+  },
+  {
+    "phase": "recovered",
+    "name": "gamesPlayed",
+    "actual": 7,
+    "expected": 7
+  },
+  {
+    "phase": "recovered",
+    "name": "errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "phase": "network",
+    "name": "documents",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "phase": "network",
+    "name": "validation",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "phase": "network",
+    "name": "failedValidation",
+    "actual": 1,
+    "expected": 1
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "auto",
+    "name": "failed draft remains playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "auto",
+    "name": "initial rejected draft is not durable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "auto",
+    "name": "draft recovers without another keystroke",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "auto",
+    "name": "save health does not restart initialization",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "auto",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "auto",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "provider": "facebook",
+    "width": 390,
+    "scenario": "auto",
+    "name": "native listeners share one pause registration",
+    "actual": 1,
+    "expected": 1
+  }
+]

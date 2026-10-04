@@ -9,6 +9,7 @@ import {raceClock, type RaceRunRecord} from "./raceEngine";
 import {parseRunRecord} from "./raceSetupService";
 import {readFacebookLiveTournamentRun} from "./facebookLiveTournament";
 import {assertFacebookTournamentDeck, type FacebookTournamentDeckBinding} from "./facebookTournament";
+import {FacebookLiveContextBindingSchema, type FacebookLiveContextBinding} from "./facebookLiveContextBinding";
 
 /** Defines the facebook context board sort order value. */
 export const FACEBOOK_CONTEXT_BOARD_SORT_ORDER = "LOWER_IS_BETTER" as const;
@@ -118,6 +119,35 @@ export async function recordFacebookContextBoardRun(
   /** Stores improved. */
   improved: boolean;
 }> {
+  return recordFacebookContextBoardKeyRun(userId, {...input, contextKey: facebookContextKey(input.contextId)}, options);
+}
+
+/** Durable delivery uses the original hashed destination without recovering or persisting a raw SDK ID. */
+export function recordFacebookContextBoardBindingRun(userId: string, input: {
+  /** Owned completed live seat. */ runId: string;
+  /** Original source language. */ locale: RaceLocale;
+  /** Server-captured board and membership epochs. */ binding: FacebookLiveContextBinding;
+}, options: {
+  /** Trusted authority store. */ db: Firestore;
+  /** Server observation clock. */ nowMs: number;
+}) {
+  return recordFacebookContextBoardKeyRun(userId, {runId: input.runId, locale: input.locale,
+    contextKey: input.binding.contextKey, binding: input.binding}, options);
+}
+
+/** Browser and durable delivery share the same transaction, source validation and fastest-score write. */
+async function recordFacebookContextBoardKeyRun(userId: string, input: {
+  /** Authenticated owner's immutable source. */ runId: string;
+  /** Exact content language. */ locale: RaceLocale;
+  /** Domain-separated original context identity. */ contextKey: string;
+  /** Worker receipt additionally proves the original selection. */ binding?: FacebookLiveContextBinding;
+}, options: {
+  /** Trusted authority store. */ db?: Firestore;
+  /** Server observation clock. */ nowMs?: number;
+}): Promise<{
+  /** Public score projection has no SDK context ID. */
+  entry: FacebookContextBoardEntry;
+  /** A slower or duplicate attempt never rewrites the score. */ improved: boolean}> {
   if (!isFacebookFirebaseUid(userId)) throw new HttpsError("permission-denied", "Facebook identity is required.");
   if (!/^[A-Za-z0-9_-]{1,160}$/.test(input.runId)) {
     throw new HttpsError("invalid-argument", "Facebook context run ID is invalid.");
@@ -130,7 +160,7 @@ export async function recordFacebookContextBoardRun(
     throw new HttpsError("invalid-argument", "Facebook context board time is invalid.");
   }
   /** Provides context key behavior. */
-  const contextKey = facebookContextKey(input.contextId);
+  const contextKey = input.contextKey;
   /** Provides context ref behavior. */
   const contextRef = db.doc(`facebookContextCompetitions/${contextKey}`);
   /** Provides run ref behavior. */
@@ -152,6 +182,17 @@ export async function recordFacebookContextBoardRun(
     /** Recorded and live sources share the same private, immutable deck validation. */
     const source = runSnapshot.exists ? {run: parseRunRecord(runSnapshot.data(), runSnapshot.id)} :
       await readFacebookLiveTournamentRun(transaction, db, userId, input.runId);
+    if (!runSnapshot.exists) {
+      /** Live source selection is immutable even when the browser later chooses another context. */
+      const ticket = (await transaction.get(db.doc(`liveRaceTickets/${input.runId}`))).data();
+      /** Missing binding preserves existing legacy live record behavior. */
+      const binding = ticket?.facebookContext === undefined ? undefined : FacebookLiveContextBindingSchema.parse(ticket.facebookContext);
+      if (binding && (binding.contextKey !== contextKey || binding.createdAtMs !== competition.createdAtMs || binding.joinedAtMs !== member.joinedAtMs))
+        throw new HttpsError("failed-precondition", "Original Facebook context selection is unavailable.");
+      if (input.binding && (!binding || binding.contextKey !== input.binding.contextKey ||
+        binding.createdAtMs !== input.binding.createdAtMs || binding.joinedAtMs !== input.binding.joinedAtMs))
+        throw new HttpsError("data-loss", "Stored Facebook context receipt is invalid.");
+    }
     /** Owned live winners bind both seats to the creator's frozen deck. */
     const run = source.run;
     /** Legacy recorded runs retain their independently stored deck contract. */

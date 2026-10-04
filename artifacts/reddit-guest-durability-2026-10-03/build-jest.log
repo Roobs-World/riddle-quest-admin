@@ -1,0 +1,54 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (23.443824ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (13.290479ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (9.793784ms)
+✔ rejects imports between different target owners (2.512911ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (1.259957ms)
+✔ rejects Devvit imports outside Reddit-owned source (2.076584ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (2.926845ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.871221ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.488009ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.784216ms)
+✔ aggregates violations in deterministic file and source order (0.922588ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 170.719786
+Web Target boundary audit passed (308 files, 1337 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: pnpm --filter @qwordly/portal licenses list --prod --json
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at execFileSync (node:child_process:961:15)
+    at readLicenseInventory (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/generate-third-party-licenses.mjs:73:18)
+    at createNotice (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/generate-third-party-licenses.mjs:102:21)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/generate-third-party-licenses.mjs:204:25
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:633:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  status: 1,
+  signal: null,
+  output: [ null, '', null ],
+  pid: 95,
+  stdout: '',
+  stderr: null
+}
+
+Node.js v24.17.0
+[ELIFECYCLE] Command failed with exit code 1.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 build:jest: `pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact`
+Exit status 1

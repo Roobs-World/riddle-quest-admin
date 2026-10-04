@@ -1,0 +1,132 @@
+{
+  "verified": true,
+  "raw": {
+    "Before": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"editable\": 0,\n  \"submitDisabled\": true,\n  \"rows\": [\n    \"vvvvv\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"journal\": 0,\n  \"pendingLoss\": {\n    \"id\": \"00000000-0000-4000-8000-000000000001-loss-6\",\n    \"kind\": \"loss\",\n    \"riddleId\": \"classic-fake-1\",\n    \"gameMode\": \"classic\",\n    \"sessionToken\": \"00000000-0000-4000-8000-000000000001\",\n    \"attempts\": 6,\n    \"isCorrect\": false\n  },\n  \"spends\": [],\n  \"completionIds\": [\n    \"complete-6d346278-1ea6-4908-9699-a656b396ef1e\",\n    \"complete-6d346278-1ea6-4908-9699-a656b396ef1e\",\n    \"complete-6d346278-1ea6-4908-9699-a656b396ef1e\"\n  ]\n}\n```"
+        }
+      ]
+    },
+    "Blocked": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"rows\": [\n    \"vvvvv\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"guesses\": [],\n  \"spends\": []\n}\n```"
+        }
+      ]
+    },
+    "After": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"profile\": {\n    \"username\": \"Guest Solver\",\n    \"coins\": 250,\n    \"level\": 3,\n    \"xp\": 420,\n    \"winStreak\": 2,\n    \"gamesPlayed\": 8,\n    \"wins\": 5,\n    \"achievements\": [\n      \"first_win\",\n      \"daily_spark\",\n      \"wins_5\",\n      \"lesson_learned\"\n    ],\n    \"classicIndex\": 1,\n    \"totalWins\": 5,\n    \"challengeWins\": 0,\n    \"dailyPuzzlesCompleted\": 0,\n    \"bestStreak\": 2,\n    \"totalWordsGuessed\": 6,\n    \"totalGuessesInWins\": 0,\n    \"winRate\": 62.5,\n    \"averageGuesses\": 0,\n    \"totalScore\": 0,\n    \"highestLevelClassic\": 0\n  },\n  \"guesses\": [\n    {\n      \"riddleId\": \"classic-fake-1\",\n      \"gameMode\": \"classic\",\n      \"sessionToken\": \"00000000-0000-4000-8000-000000000099\",\n      \"guess\": \"QQQQQ\",\n      \"requestId\": \"guess-b40b30d1-96fd-4e0c-b2fa-747a80dc8933\"\n    }\n  ],\n  \"completionIds\": [\n    \"complete-6d346278-1ea6-4908-9699-a656b396ef1e\",\n    \"complete-6d346278-1ea6-4908-9699-a656b396ef1e\",\n    \"complete-6d346278-1ea6-4908-9699-a656b396ef1e\",\n    \"complete-6d346278-1ea6-4908-9699-a656b396ef1e\"\n  ],\n  \"spends\": [],\n  \"rows\": [\n    \"qqqqq\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"loads\": [\n    {\n      \"sessionToken\": \"00000000-0000-4000-8000-000000000001\",\n      \"attempts\": 6\n    },\n    {\n      \"sessionToken\": \"00000000-0000-4000-8000-000000000099\",\n      \"attempts\": 0\n    }\n  ],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    }
+  },
+  "parsed": {
+    "Before": {
+      "editable": 0,
+      "submitDisabled": true,
+      "rows": [
+        "vvvvv",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "journal": 0,
+      "pendingLoss": {
+        "id": "00000000-0000-4000-8000-000000000001-loss-6",
+        "kind": "loss",
+        "riddleId": "classic-fake-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "attempts": 6,
+        "isCorrect": false
+      },
+      "spends": [],
+      "completionIds": [
+        "complete-6d346278-1ea6-4908-9699-a656b396ef1e",
+        "complete-6d346278-1ea6-4908-9699-a656b396ef1e",
+        "complete-6d346278-1ea6-4908-9699-a656b396ef1e"
+      ]
+    },
+    "Blocked": {
+      "rows": [
+        "vvvvv",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "guesses": [],
+      "spends": []
+    },
+    "After": {
+      "profile": {
+        "username": "Guest Solver",
+        "coins": 250,
+        "level": 3,
+        "xp": 420,
+        "winStreak": 2,
+        "gamesPlayed": 8,
+        "wins": 5,
+        "achievements": [
+          "first_win",
+          "daily_spark",
+          "wins_5",
+          "lesson_learned"
+        ],
+        "classicIndex": 1,
+        "totalWins": 5,
+        "challengeWins": 0,
+        "dailyPuzzlesCompleted": 0,
+        "bestStreak": 2,
+        "totalWordsGuessed": 6,
+        "totalGuessesInWins": 0,
+        "winRate": 62.5,
+        "averageGuesses": 0,
+        "totalScore": 0,
+        "highestLevelClassic": 0
+      },
+      "guesses": [
+        {
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000099",
+          "guess": "QQQQQ",
+          "requestId": "guess-b40b30d1-96fd-4e0c-b2fa-747a80dc8933"
+        }
+      ],
+      "completionIds": [
+        "complete-6d346278-1ea6-4908-9699-a656b396ef1e",
+        "complete-6d346278-1ea6-4908-9699-a656b396ef1e",
+        "complete-6d346278-1ea6-4908-9699-a656b396ef1e",
+        "complete-6d346278-1ea6-4908-9699-a656b396ef1e"
+      ],
+      "spends": [],
+      "rows": [
+        "qqqqq",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "loads": [
+        {
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "attempts": 6
+        },
+        {
+          "sessionToken": "00000000-0000-4000-8000-000000000099",
+          "attempts": 0
+        }
+      ],
+      "errors": [],
+      "unhandled": []
+    }
+  }
+}

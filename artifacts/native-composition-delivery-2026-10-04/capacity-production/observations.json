@@ -1,0 +1,1322 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "composition",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "occupied-slot",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "paid hint locks the first answer slot",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "editing does not add a material write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "explicit Enter makes one additional save",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hinted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "separate-keys",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "long-paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "composition",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "paid hint locks the first answer slot",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "editing does not add a material write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "explicit Enter makes one additional save",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "composition",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "occupied-slot",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "paid hint locks the first answer slot",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "editing does not add a material write",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "explicit Enter makes one additional save",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hinted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "separate-keys",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "one committed unit respects initially available answer slots",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "editing does not add a material write",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "editing does not submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "consumed native text does not remain in the editor",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "explicit Enter records one win",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "explicit Enter makes one additional save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "answer is scored on the first attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "long-paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

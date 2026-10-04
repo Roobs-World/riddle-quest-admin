@@ -6,6 +6,25 @@ import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 const cloneGuesses = (guesses: ScoredGuess[]): ScoredGuess[] =>
   guesses.map(row => ({guess: [...row.guess], feedback: [...row.feedback]}));
 
+/** Keeps retained drafts independent of adapter writes and reducer restoration. */
+const cloneCheckpoint = (game: SavedGame): SavedGame => ({
+  ...game,
+  currentLetters: [...game.currentLetters],
+  hintRevealedIndices: [...game.hintRevealedIndices],
+  guesses: cloneGuesses(game.guesses),
+  engineSnapshot: {...game.engineSnapshot, guesses: cloneGuesses(game.engineSnapshot.guesses)},
+  letterStates: {...game.letterStates},
+  ...(game.pendingOutcome ? {pendingOutcome: {...game.pendingOutcome}} : {}),
+});
+
+
+/** Immutable reducer fields read by createSavedGame, including speculative rollback inputs. */
+const checkpointFields = [
+  "riddle", "engineSnapshot", "lastOutcome", "completionAcknowledged", "gameMode",
+  "currentLetters", "activeSlotIndex", "hintRevealedIndices", "guesses", "letterStates",
+  "pendingGuessState", "pendingCoinSpend", "pendingHintState",
+] as const satisfies readonly (keyof GameSessionState)[];
+
 /** Projects an active game session into the versioned client-owned player-data snapshot. */
 export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): SavedGame | null => {
   if (state.pendingGuessState) state = {...state, ...state.pendingGuessState, pendingGuessState: null};
@@ -65,31 +84,65 @@ export class GameSessionCheckpoints {
   private signature: string | null = null;
   /** Identity for the baseline supplied when authority loads a question. */
   private sessionToken: string | null = null;
+  /** Recent issued sessions keep their latest confirmed drafts during locale changes. */
+  private drafts = new Map<string, SavedGame>();
+  /** A different account generation must never inherit retained drafts. */
+  private owner: string | null = null;
+
+  /** Last immutable inputs avoid cloning and serializing presentation-only updates. */
+  private progressState: GameSessionState | null = null;
 
   /** Returns one ordered restore/save decision; background saves bypass duplicate suppression. */
   update(state: GameSessionState, restoredGame?: SavedGame | null, background = false): GameSessionCheckpointEffect | null {
+    /** Account ownership is independent of refreshed profile object identities. */
+    const owner = `${state.user?.uid ?? ""}\u0000${state.user?.accountGeneration ?? ""}`;
+    if (this.owner !== owner) {
+      this.owner = owner;
+      this.drafts.clear();
+      this.observedRiddle = null;
+      this.sessionToken = null;
+      this.signature = null;
+      this.clearedOutcome = null;
+      this.progressState = null;
+    }
     if (state.riddle && this.observedRiddle !== state.riddle) {
       this.observedRiddle = state.riddle;
-      if (!background && restoredGame?.riddleId === state.riddle.riddleId &&
-        restoredGame.sessionToken === state.riddle.sessionToken) {
+      /** Current-session drafts take precedence over the startup-only provider snapshot. */
+      const retained = this.drafts.get(state.riddle.sessionToken) ?? restoredGame;
+      if (!background && state.canRestoreCheckpoint && !state.lastOutcome && retained?.riddleId === state.riddle.riddleId &&
+        retained.sessionToken === state.riddle.sessionToken) {
+        /** Restoration must update the provider's active checkpoint before a later reload. */
+        this.sessionToken = state.riddle.sessionToken;
+        /** Isolated checkpoint values transferred into the restored session. */
+        const restored = cloneCheckpoint(retained);
         return {kind: "restore", action: {
-          type: "restoreSession", riddleId: restoredGame.riddleId, sessionToken: restoredGame.sessionToken,
-          currentLetters: restoredGame.currentLetters,
-          activeSlotIndex: restoredGame.activeSlotIndex, hintRevealedIndices: restoredGame.hintRevealedIndices,
-          guesses: restoredGame.guesses, engineSnapshot: restoredGame.engineSnapshot,
-          awaitingContinue: restoredGame.awaitingContinue, letterStates: restoredGame.letterStates,
-          pendingOutcome: restoredGame.pendingOutcome,
+          type: "restoreSession", riddleId: restored.riddleId, sessionToken: restored.sessionToken,
+          currentLetters: restored.currentLetters,
+          activeSlotIndex: restored.activeSlotIndex, hintRevealedIndices: restored.hintRevealedIndices,
+          guesses: restored.guesses, engineSnapshot: restored.engineSnapshot,
+          awaitingContinue: restored.awaitingContinue, letterStates: restored.letterStates,
+          pendingOutcome: restored.pendingOutcome,
         }};
       }
     }
     if (state.lastOutcome && state.completionAcknowledged) {
       if (this.clearedOutcome === state.lastOutcome.id) return null;
       this.clearedOutcome = state.lastOutcome.id;
+      if (state.riddle) this.drafts.delete(state.riddle.sessionToken);
       return {kind: "save", game: null};
     }
+    /** Background checkpoints still produce a fresh isolated snapshot for the adapter. */
+    const previous = this.progressState;
+    if (!background && previous &&
+      checkpointFields.every(field => previous[field] === state[field])) return null;
     /** Only confirmed gameplay reaches durable target storage. */
     const game = createSavedGame(state);
     if (!game) return null;
+    this.drafts.delete(game.sessionToken);
+    this.drafts.set(game.sessionToken, cloneCheckpoint(game));
+    /** Bound retention independently of how many locales or questions are visited. */
+    if (this.drafts.size > 32) this.drafts.delete(this.drafts.keys().next().value!);
+    this.progressState = state;
     /** Save time changes alone do not create a new checkpoint. */
     const signature = JSON.stringify({...game, savedAt: 0});
     /** A newly issued question is already held by authority; subsequent changes need checkpoints. */
@@ -98,6 +151,7 @@ export class GameSessionCheckpoints {
     const changed = this.signature !== signature;
     this.sessionToken = game.sessionToken;
     this.signature = signature;
-    return background || (!baseline && changed) ? {kind: "save", game} : null;
+    // An authority-recovered win still needs its completion intent saved before acknowledgement.
+    return background || (changed && (!baseline || Boolean(game.pendingOutcome))) ? {kind: "save", game} : null;
   }
 }

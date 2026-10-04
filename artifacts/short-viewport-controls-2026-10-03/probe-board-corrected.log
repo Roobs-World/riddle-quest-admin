@@ -1,0 +1,25 @@
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 45,
+  "failures": [
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}

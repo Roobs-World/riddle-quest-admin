@@ -1,0 +1,740 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 292,
+  "failures": [
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "automatic",
+      "name": "one automatic retry without another edit",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "automatic",
+      "name": "retry makes newest draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "online",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "online",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "visibility",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "visibility",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "preferences",
+      "name": "two rejected preference flushes",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "preferences",
+      "name": "merged preference fields retry together",
+      "actual": {
+        "highContrast": false,
+        "reducedMotion": false
+      },
+      "expected": {
+        "highContrast": true,
+        "reducedMotion": false
+      }
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "clear",
+      "name": "completion clear retries without replaying authority",
+      "actual": {
+        "clear": {
+          "schemaVersion": 1,
+          "savedAt": 1791028325668,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "p",
+                "i",
+                "a",
+                "n",
+                "o"
+              ],
+              "feedback": [
+                "green",
+                "green",
+                "green",
+                "green",
+                "green"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "p",
+                  "i",
+                  "a",
+                  "n",
+                  "o"
+                ],
+                "feedback": [
+                  "green",
+                  "green",
+                  "green",
+                  "green",
+                  "green"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": true
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "p": "green",
+            "i": "green",
+            "a": "green",
+            "n": "green",
+            "o": "green"
+          },
+          "pendingOutcome": {
+            "id": "00000000-0000-4000-8000-000000000001-win-1",
+            "kind": "win",
+            "riddleId": "classic-fake-1",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "attempts": 1,
+            "isCorrect": true
+          }
+        },
+        "guesses": 1,
+        "completions": 1
+      },
+      "expected": {
+        "clear": null,
+        "guesses": 1,
+        "completions": 1
+      }
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "exhausted",
+      "name": "three automatic retries bound persistent failure",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "exhausted",
+      "name": "exhausted retries leave no ongoing polling",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "exhausted",
+      "name": "reconnection can recover after automatic budget expires",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "automatic",
+      "name": "one automatic retry without another edit",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "automatic",
+      "name": "retry makes newest draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "online",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "online",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "visibility",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "visibility",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "preferences",
+      "name": "two rejected preference flushes",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "preferences",
+      "name": "merged preference fields retry together",
+      "actual": {
+        "highContrast": false,
+        "reducedMotion": false
+      },
+      "expected": {
+        "highContrast": true,
+        "reducedMotion": false
+      }
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "clear",
+      "name": "completion clear retries without replaying authority",
+      "actual": {
+        "clear": {
+          "schemaVersion": 1,
+          "savedAt": 1791028327683,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "p",
+                "i",
+                "a",
+                "n",
+                "o"
+              ],
+              "feedback": [
+                "green",
+                "green",
+                "green",
+                "green",
+                "green"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "p",
+                  "i",
+                  "a",
+                  "n",
+                  "o"
+                ],
+                "feedback": [
+                  "green",
+                  "green",
+                  "green",
+                  "green",
+                  "green"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": true
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "p": "green",
+            "i": "green",
+            "a": "green",
+            "n": "green",
+            "o": "green"
+          },
+          "pendingOutcome": {
+            "id": "00000000-0000-4000-8000-000000000001-win-1",
+            "kind": "win",
+            "riddleId": "classic-fake-1",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "attempts": 1,
+            "isCorrect": true
+          }
+        },
+        "guesses": 1,
+        "completions": 1
+      },
+      "expected": {
+        "clear": null,
+        "guesses": 1,
+        "completions": 1
+      }
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "exhausted",
+      "name": "three automatic retries bound persistent failure",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "exhausted",
+      "name": "exhausted retries leave no ongoing polling",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "exhausted",
+      "name": "reconnection can recover after automatic budget expires",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "automatic",
+      "name": "one automatic retry without another edit",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "automatic",
+      "name": "retry makes newest draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "online",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "online",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "visibility",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "visibility",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "preferences",
+      "name": "two rejected preference flushes",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "preferences",
+      "name": "merged preference fields retry together",
+      "actual": {
+        "highContrast": false,
+        "reducedMotion": false
+      },
+      "expected": {
+        "highContrast": true,
+        "reducedMotion": false
+      }
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "clear",
+      "name": "completion clear retries without replaying authority",
+      "actual": {
+        "clear": {
+          "schemaVersion": 1,
+          "savedAt": 1791028329700,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "p",
+                "i",
+                "a",
+                "n",
+                "o"
+              ],
+              "feedback": [
+                "green",
+                "green",
+                "green",
+                "green",
+                "green"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "p",
+                  "i",
+                  "a",
+                  "n",
+                  "o"
+                ],
+                "feedback": [
+                  "green",
+                  "green",
+                  "green",
+                  "green",
+                  "green"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": true
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "p": "green",
+            "i": "green",
+            "a": "green",
+            "n": "green",
+            "o": "green"
+          },
+          "pendingOutcome": {
+            "id": "00000000-0000-4000-8000-000000000001-win-1",
+            "kind": "win",
+            "riddleId": "classic-fake-1",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "attempts": 1,
+            "isCorrect": true
+          }
+        },
+        "guesses": 1,
+        "completions": 1
+      },
+      "expected": {
+        "clear": null,
+        "guesses": 1,
+        "completions": 1
+      }
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "exhausted",
+      "name": "three automatic retries bound persistent failure",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "exhausted",
+      "name": "exhausted retries leave no ongoing polling",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "exhausted",
+      "name": "reconnection can recover after automatic budget expires",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "automatic",
+      "name": "one automatic retry without another edit",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "automatic",
+      "name": "retry makes newest draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "online",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "online",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "visibility",
+      "name": "real recovery signal retries pending draft",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "visibility",
+      "name": "resume makes draft durable",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "preferences",
+      "name": "two rejected preference flushes",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "preferences",
+      "name": "merged preference fields retry together",
+      "actual": {
+        "highContrast": false,
+        "reducedMotion": false
+      },
+      "expected": {
+        "highContrast": true,
+        "reducedMotion": false
+      }
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "clear",
+      "name": "completion clear retries without replaying authority",
+      "actual": {
+        "clear": {
+          "schemaVersion": 1,
+          "savedAt": 1791028331684,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "p",
+                "i",
+                "a",
+                "n",
+                "o"
+              ],
+              "feedback": [
+                "green",
+                "green",
+                "green",
+                "green",
+                "green"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "p",
+                  "i",
+                  "a",
+                  "n",
+                  "o"
+                ],
+                "feedback": [
+                  "green",
+                  "green",
+                  "green",
+                  "green",
+                  "green"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": true
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "p": "green",
+            "i": "green",
+            "a": "green",
+            "n": "green",
+            "o": "green"
+          },
+          "pendingOutcome": {
+            "id": "00000000-0000-4000-8000-000000000001-win-1",
+            "kind": "win",
+            "riddleId": "classic-fake-1",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "attempts": 1,
+            "isCorrect": true
+          }
+        },
+        "guesses": 1,
+        "completions": 1
+      },
+      "expected": {
+        "clear": null,
+        "guesses": 1,
+        "completions": 1
+      }
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "exhausted",
+      "name": "three automatic retries bound persistent failure",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "exhausted",
+      "name": "exhausted retries leave no ongoing polling",
+      "actual": 1,
+      "expected": 4
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "exhausted",
+      "name": "reconnection can recover after automatic budget expires",
+      "actual": "",
+      "expected": "PIAN"
+    }
+  ]
+}

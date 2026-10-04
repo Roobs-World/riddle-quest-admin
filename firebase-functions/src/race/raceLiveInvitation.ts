@@ -1,5 +1,6 @@
 import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
+import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "./facebookLiveContextBinding";
 import {LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LiveRaceChallengeSchema,
   type JoinLiveRace, type LiveRaceView} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
@@ -26,18 +27,26 @@ async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Tran
   const ticket = snapshot.data() as LiveTicket | undefined;
   if (!ticket?.privateChallenge || raceProviderScope(userId) !== raceProviderScope(ticket.userId) ||
     ticket.inviteRecipientId && ![ticket.userId, ticket.inviteRecipientId].includes(userId) ||
-    !["jest", "facebook"].includes(raceProviderScope(userId) ?? ""))
+    !(["jest", "facebook"].includes(raceProviderScope(userId) ?? "") ||
+      raceProviderScope(userId) === "reddit" && ticket.rematchOfTicketId && ticket.inviteRecipientId))
     throw new HttpsError("not-found", "Invitation unavailable.");
   /** Account deletion and blocks are checked in the same transaction as acceptance. */
-  const [viewerDeleted, creatorDeleted, blocked, reverseBlocked, creator] = await Promise.all([
+  const [viewerDeleted, creatorDeleted, blocked, reverseBlocked, creator, viewer] = await Promise.all([
     transaction.get(getJestAccountDeletionRef(db, userId)), transaction.get(getJestAccountDeletionRef(db, ticket.userId)),
     transaction.get(db.doc(`users/${userId}/blockedRivals/${ticket.userId}`)),
     transaction.get(db.doc(`users/${ticket.userId}/blockedRivals/${userId}`)), transaction.get(db.doc(`users/${ticket.userId}`)),
+    transaction.get(db.doc(`users/${userId}`)),
   ]);
   assertJestAccountActive(viewerDeleted);
-  if (creatorDeleted.exists || blocked.exists || reverseBlocked.exists || !creator.exists)
+  if (creatorDeleted.exists || blocked.exists || reverseBlocked.exists || !creator.exists || ticket.rematchOfTicketId && !viewer.exists)
     throw new HttpsError("not-found", "Invitation unavailable.");
-  return {snapshot, ticket};
+  /** Rematch notices use current game-owned identity, while legacy invitations retain their established projection. */
+  const data = creator.data()!;
+  /** No copied historical profile may outlive a current rematch account projection. */
+  const player = ticket.rematchOfTicketId ? {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
+    level: Number.isInteger(data.level) && data.level > 0 ? data.level : 1,
+    avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0} : ticket.player;
+  return {snapshot, ticket, player};
 }
 /** Reads a challenge notice without joining; the recipient chooses whether to accept. */
 export async function getLiveRaceChallengeForUser(userId: string, challengeId: string, options: Options = {}) {
@@ -45,12 +54,12 @@ export async function getLiveRaceChallengeForUser(userId: string, challengeId: s
   const db = options.db ?? admin.firestore();
   return db.runTransaction(async transaction => {
     /** Private invitation and creator are validated before returning any display identity. */
-    const {ticket} = await readInvitation(db, transaction, userId, invitationTicketId(challengeId));
+    const {ticket, player} = await readInvitation(db, transaction, userId, invitationTicketId(challengeId));
     /** The same persisted clock floor governs preview and acceptance. */
     const nowMs = liveOperationAtMs(ticket, undefined, options.nowMs ?? Date.now());
     /** Match determines whether this authenticated recipient already owns the second seat. */
     const match = ticket.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as LiveMatch | undefined : undefined;
-    return LiveRaceChallengeSchema.parse({challengeId, creator: ticket.player, locale: ticket.run.locale,
+    return LiveRaceChallengeSchema.parse({challengeId, creator: player, locale: ticket.run.locale,
       categoryId: ticket.run.categoryId, expiresAtMs: ticket.createdAtMs + LIVE_RACE_INVITE_MS,
       status: ticket.userId === userId ? "own" : match?.runs[1].userId === userId && match.winner === undefined ? "accepted" :
         ticket.cancelled || ticket.matchId || nowMs >= ticket.createdAtMs + LIVE_RACE_INVITE_MS ? "unavailable" : "available"});
@@ -58,13 +67,15 @@ export async function getLiveRaceChallengeForUser(userId: string, challengeId: s
 }
 /** Reserves the second seat atomically; concurrent recipients cannot replace an accepted rival. */
 export async function acceptLiveRaceChallengeForUser(userId: string, input: JoinLiveRace, options: Options = {}): Promise<LiveRaceView> {
+  /** Invitation recipients keep their own synchronized Facebook score destination. */
+  const contextKey = facebookLiveContextSelection(userId, input.facebookContextId);
   /** Approved database and authenticated invitation identity. */
   const db = options.db ?? admin.firestore();
   /** Existing creator ticket remains the canonical shared lobby and match id. */
   const creatorId = invitationTicketId(input.challengeId!);
   return db.runTransaction(async transaction => {
     /** Creator seat is locked together with the recipient's active-seat pointer. */
-    const {snapshot, ticket: creator} = await readInvitation(db, transaction, userId, creatorId);
+    const {snapshot, ticket: creator, player: creatorPlayer} = await readInvitation(db, transaction, userId, creatorId);
     if (creator.userId === userId) throw new HttpsError("failed-precondition", "Cannot accept your own challenge.");
     if (input.locale !== creator.run.locale || input.categoryId !== creator.run.categoryId)
       throw new HttpsError("failed-precondition", "Use the invitation's content selection.");
@@ -78,6 +89,7 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
       const ownId = existing.tickets[1]!;
       /** Server ticket supplies ownership, never the untrusted caller request id. */
       const own = (await transaction.get(db.doc(`liveRaceTickets/${ownId}`))).data() as LiveTicket;
+      assertFacebookLiveContextSelection(own.facebookContext, contextKey);
       return liveView(ownId, own, existing, nowMs);
     }
     if (creator.cancelled || nowMs >= creator.createdAtMs + LIVE_RACE_INVITE_MS)
@@ -101,6 +113,8 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
         (!match || match.winner === undefined))
         throw new HttpsError("failed-precondition", "Finish the current live race first.");
     }
+    /** Recipient membership is captured before any acceptance writes. */
+    const facebookContext = await prepareFacebookLiveContext(transaction, db, userId, input.locale, contextKey, nowMs);
     /** Identity comes from the authenticated server account. */
     const data = owner.data()!;
     /** Safe identity snapshot for the creator's lobby. */
@@ -110,10 +124,11 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     /** Both seats receive the creator's immutable deck and the same five-second countdown. */
     const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
     /** Private match uses the existing authoritative scoring and settlement lifecycle. */
-    const match: LiveMatch = {tickets: [creatorId, ownId], participantIds: [creator.userId, userId], startsAtMs, observedAtMs: nowMs, players: [creator.player, player],
+    const match: LiveMatch = {tickets: [creatorId, ownId], participantIds: [creator.userId, userId], startsAtMs, observedAtMs: nowMs, players: [creatorPlayer, player],
       runs: [liveRun(creator.run, creator.userId, creatorId, startsAtMs), liveRun(creator.run, userId, ownId, startsAtMs)]};
     /** Recipient seat does not expose the creator's share handle as its own invitation. */
-    const own: LiveTicket = {userId, pool: creator.pool, player, createdAtMs: nowMs, seenAtMs: nowMs, matchId: creatorId, run: match.runs[1]};
+    const own: LiveTicket = {userId, pool: creator.pool, player, ...(facebookContext ? {facebookContext} : {}),
+      createdAtMs: nowMs, seenAtMs: nowMs, matchId: creatorId, run: match.runs[1]};
     /** Reuse the creator's retention policy for both seats. */
     const expiresAt = snapshot.data()!.expiresAt;
     transaction.update(snapshot.ref, {matchId: creatorId});

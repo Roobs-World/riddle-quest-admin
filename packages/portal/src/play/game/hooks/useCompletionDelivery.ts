@@ -3,6 +3,7 @@ import type {Dispatch} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
 import {createRequestId} from "../../requestIds";
+import {completionPresentationKey} from "../../completionPresentation";
 
 /** Delays used for bounded-backoff completion delivery. */
 const COMPLETION_RETRY_DELAYS = [1_000, 2_000, 5_000, 10_000, 30_000] as const;
@@ -12,17 +13,19 @@ export function useCompletionDelivery({
   outcome,
   dispatch,
   postToHost,
+  ownerKey,
 }: {
   /** Unacknowledged authoritative terminal outcome. */ outcome: GameSessionState["lastOutcome"];
   /** Game-session reducer dispatcher. */ dispatch: Dispatch<GameSessionAction>;
   /** Sends a validated command to the host. */ postToHost: (message: GameToHostMessage) => void;
+  /** Account UID and creation generation owning every retained receipt. */ ownerKey?: string;
 }): (ok: boolean, requestId?: string) => boolean {
-  /** Completes d ids ref. */
-  const completedIdsRef = useRef(new Set<string>());
+  /** One completion belongs to an issued question, independent of projected attempts. */
+  const completedKeysRef = useRef(new Set<string>());
   /** Provides delivery ref behavior. */
   const deliveriesRef = useRef(new Map<string, {
     /** Stores outcome id. */
-    outcomeId: string; /** Stores request id. */
+    completionKey: string; /** Stores request id. */
     /** Stores request id. */
     requestId: string; /** Stores attempts. */
     /** Stores attempts. */
@@ -35,21 +38,27 @@ export function useCompletionDelivery({
   /** Provides current outcome ref behavior. */
   const currentOutcomeRef = useRef(outcome);
   currentOutcomeRef.current = outcome;
+  /** Render immediately revokes receipt acknowledgement for a replaced account. */
+  const currentOwnerRef = useRef(ownerKey);
+  currentOwnerRef.current = ownerKey;
+  /** Committed delivery scope owns timer cleanup when the account changes. */
+  const deliveryOwnerRef = useRef(ownerKey);
   /** Provides [retry signal, set retry signal] behavior. */
   const [retrySignal, setRetrySignal] = useState(0);
 
   /** Handles result. */
   const handleResult = useCallback(
     (ok: boolean, requestId?: string): boolean => {
-      if (!ok || !requestId) return false;
+      if (!ok || !requestId || currentOwnerRef.current !== deliveryOwnerRef.current) return false;
       /** Provides delivery behavior. */
       const delivery = [...deliveriesRef.current.values()].find((entry) => entry.requestId === requestId);
       if (!delivery) return false;
       if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
-      completedIdsRef.current.add(delivery.outcomeId);
-      deliveriesRef.current.delete(delivery.outcomeId);
+      completedKeysRef.current.add(delivery.completionKey);
+      deliveriesRef.current.delete(delivery.completionKey);
       /** Indicates whether is current. */
-      const isCurrent = currentOutcomeRef.current?.id === delivery.outcomeId;
+      const isCurrent = currentOutcomeRef.current !== null &&
+        completionPresentationKey(currentOutcomeRef.current) === delivery.completionKey;
       if (isCurrent) dispatch({type: "completionAcknowledged"});
       return isCurrent;
     },
@@ -57,9 +66,20 @@ export function useCompletionDelivery({
   );
 
   useEffect(() => {
-    if (outcome && !completedIdsRef.current.has(outcome.id) && !deliveriesRef.current.has(outcome.id))
-      deliveriesRef.current.set(outcome.id, {
-        outcomeId: outcome.id, outcome, requestId: createRequestId("complete"), attempts: 0,
+    if (deliveryOwnerRef.current !== ownerKey) {
+      for (const delivery of deliveriesRef.current.values())
+        if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
+      deliveriesRef.current.clear();
+      completedKeysRef.current.clear();
+      deliveryOwnerRef.current = ownerKey;
+    }
+    /** Question identity remains stable through canonical attempt reconciliation. */
+    const completionKey = outcome ? completionPresentationKey(outcome) : null;
+    // A canonical guess receipt may clear acknowledgement while updating attempts.
+    if (completionKey && completedKeysRef.current.has(completionKey)) dispatch({type: "completionAcknowledged"});
+    if (outcome && completionKey && !completedKeysRef.current.has(completionKey) && !deliveriesRef.current.has(completionKey))
+      deliveriesRef.current.set(completionKey, {
+        completionKey, outcome, requestId: createRequestId("complete"), attempts: 0,
       });
     for (const delivery of deliveriesRef.current.values()) {
       if (delivery.timer !== undefined) continue;
@@ -79,7 +99,7 @@ export function useCompletionDelivery({
         },
       });
     }
-  }, [outcome, postToHost, retrySignal]);
+  }, [outcome, ownerKey, postToHost, retrySignal, dispatch]);
 
   useEffect(() => {
     /** Clears scheduled timers while preserving receipts for effect replay and reconnection. */

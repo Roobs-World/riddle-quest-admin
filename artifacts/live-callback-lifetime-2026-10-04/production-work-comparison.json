@@ -1,0 +1,444 @@
+{
+  "asserted": true,
+  "originalDefectAssertions": 117,
+  "rows": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates do not add observations",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates retain the active subscription",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates do not retire the subscription",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "parent updates preserve the chosen focus",
+      "before": false,
+      "after": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "entry-burst",
+      "name": "native input focus matches the player choice",
+      "before": false,
+      "after": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-result",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-result",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-result",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "before": [
+        0
+      ],
+      "after": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "removed-result",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "removed-result",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "removed-result",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "removed-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "before": [
+        0
+      ],
+      "after": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-leave",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-leave",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-leave",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held-leave",
+      "name": "pending retirement uses the latest committed close callback",
+      "before": [
+        0
+      ],
+      "after": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not add observations",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates retain the active subscription",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not retire the subscription",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates preserve the chosen focus",
+      "before": false,
+      "after": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "native input focus matches the player choice",
+      "before": false,
+      "after": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "before": [
+        0
+      ],
+      "after": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "before": [
+        0
+      ],
+      "after": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "pending retirement uses the latest committed close callback",
+      "before": [
+        0
+      ],
+      "after": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not add observations",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates retain the active subscription",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates do not retire the subscription",
+      "before": 32,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "parent updates preserve the chosen focus",
+      "before": false,
+      "after": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "entry-burst",
+      "name": "native input focus matches the player choice",
+      "before": false,
+      "after": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "before": [
+        0
+      ],
+      "after": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "removed-result",
+      "name": "pending terminal receipt uses the latest committed completion callback",
+      "before": [
+        0
+      ],
+      "after": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates do not add observations",
+      "before": 0,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates retain the active subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "parent updates do not retire the subscription",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "held-leave",
+      "name": "pending retirement uses the latest committed close callback",
+      "before": [
+        0
+      ],
+      "after": [
+        1
+      ]
+    }
+  ]
+}

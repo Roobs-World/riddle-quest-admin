@@ -1,0 +1,11 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "missing-end",
+    "name": "composition setup retains the committed prefix",
+    "actual": "te",
+    "expected": "te"
+  }
+]

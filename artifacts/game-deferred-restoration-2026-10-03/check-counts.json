@@ -1,0 +1,97 @@
+[
+  {
+    "name": "native-restoration-production",
+    "checks": 98,
+    "failed": 0
+  },
+  {
+    "name": "motion-regression-production",
+    "checks": 168,
+    "failed": 0
+  },
+  {
+    "name": "development",
+    "checks": 280,
+    "failed": 0
+  },
+  {
+    "name": "animation-regression-production",
+    "checks": 124,
+    "failed": 0
+  },
+  {
+    "name": "context-regression-development",
+    "checks": 338,
+    "failed": 0
+  },
+  {
+    "name": "native-baseline",
+    "checks": 98,
+    "failed": 8
+  },
+  {
+    "name": "initialization-regression-production",
+    "checks": 386,
+    "failed": 0
+  },
+  {
+    "name": "initialization-regression-development",
+    "checks": 386,
+    "failed": 0
+  },
+  {
+    "name": "animation-regression-development",
+    "checks": 124,
+    "failed": 0
+  },
+  {
+    "name": "restoration-baseline-development",
+    "checks": 280,
+    "failed": 28
+  },
+  {
+    "name": "restoration-production-production",
+    "checks": 280,
+    "failed": 0
+  },
+  {
+    "name": "motion-regression-development",
+    "checks": 168,
+    "failed": 0
+  },
+  {
+    "name": "native-renderer-production",
+    "checks": 20,
+    "failed": 0
+  },
+  {
+    "name": "layout-regression-production",
+    "checks": 514,
+    "failed": 0
+  },
+  {
+    "name": "native-context-production",
+    "checks": 108,
+    "failed": 0
+  },
+  {
+    "name": "resources-regression-production",
+    "checks": 418,
+    "failed": 0
+  },
+  {
+    "name": "layout-regression-development",
+    "checks": 514,
+    "failed": 0
+  },
+  {
+    "name": "resources-regression-development",
+    "checks": 418,
+    "failed": 0
+  },
+  {
+    "name": "context-regression-production",
+    "checks": 338,
+    "failed": 0
+  }
+]

@@ -1,0 +1,134 @@
+{
+  "body": "Guest play\nLog in to save progress\nClassic\n0\nWhat has keys but cannot open doors?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip",
+  "probe": {
+    "fault": "none",
+    "messages": [
+      "game:ready",
+      "game:resize"
+    ],
+    "errors": [],
+    "unhandled": [],
+    "paths": [
+      "/api/session"
+    ],
+    "sessions": 1
+  },
+  "durable": {
+    "preferences": {
+      "locale": "en",
+      "muted": false,
+      "reducedMotion": true,
+      "onboardingComplete": true
+    },
+    "playerData": {
+      "schemaVersion": 1,
+      "updatedAt": 1791047321158,
+      "profile": {
+        "username": "Guest Solver",
+        "coins": 0,
+        "level": 1,
+        "xp": 0,
+        "winStreak": 0,
+        "gamesPlayed": 0,
+        "wins": 0,
+        "achievements": [],
+        "classicIndex": 1
+      },
+      "activeGame": {
+        "schemaVersion": 1,
+        "savedAt": 1791047317684,
+        "riddleId": "reddit-guest-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "gameMode": "classic",
+        "currentLetters": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "activeSlotIndex": 0,
+        "hintRevealedIndices": [],
+        "guesses": [
+          {
+            "guess": [
+              "p",
+              "p",
+              "p",
+              "p",
+              "p"
+            ],
+            "feedback": [
+              "green",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          },
+          {
+            "guess": [
+              "q",
+              "q",
+              "q",
+              "q",
+              "q"
+            ],
+            "feedback": [
+              "red",
+              "red",
+              "red",
+              "red",
+              "red"
+            ]
+          }
+        ],
+        "engineSnapshot": {
+          "guesses": [
+            {
+              "guess": [
+                "p",
+                "p",
+                "p",
+                "p",
+                "p"
+              ],
+              "feedback": [
+                "green",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "q",
+                "q",
+                "q",
+                "q",
+                "q"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "attemptsUsed": 2,
+          "hasUsedContinue": false,
+          "gameOver": false
+        },
+        "awaitingContinue": false,
+        "letterStates": {
+          "p": "green",
+          "q": "red"
+        }
+      }
+    }
+  },
+  "draft": ""
+}

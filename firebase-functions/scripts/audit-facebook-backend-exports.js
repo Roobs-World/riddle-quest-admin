@@ -32,7 +32,7 @@ const EXPECTED_FACEBOOK_EXPORTS = Object.freeze([
 ]);
 
 function readExportNames(source) {
-  const blocks = [...source.matchAll(/\bexport\s*\{([\s\S]*?)\};/gu)];
+  const blocks = [...source.matchAll(/\bexport\s*\{([^}]*)\}(?:\s*from\s*(?:"[^"]*"|'[^']*'))?\s*;/gu)];
   return blocks.flatMap((match) => match[1]
     .replace(/\/\*[\s\S]*?\*\//gu, "")
     .replace(/\/\/.*$/gmu, "")

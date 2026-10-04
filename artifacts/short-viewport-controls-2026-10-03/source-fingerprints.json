@@ -1,0 +1,8 @@
+{
+  "packages/portal/src/styles.game-shell.css": "ac56ccf07496b82d926e7819b26370cd9745d103de807fa69196bf44912453ac",
+  "packages/portal/src/styles.guidance.css": "670df929963ed5fb2a59278d9b097be4e01118cdefa205ca00ba67ccb85949b1",
+  "packages/portal/src/styles.race-gameplay.css": "d58bb888fcb71bc259c407a030fdb0454a099344bd841af0300c78aaa270d490",
+  "packages/portal/scripts/verify-short-viewport-controls-browser.mjs": "e6c8fe5c7fe2e891087f5bd7ec894facb5f2990fca8aba31d0a9f840d16ad327",
+  "packages/portal/package.json": "2c3baa79d595d48898c6f1a4f1c9e716d7b044b38016346c3eecdc1e9367869b",
+  "packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts": "ed5687032582ae8b09da8697f664ffccbaed4f13cbfa8cb6636dc47970477c3a"
+}

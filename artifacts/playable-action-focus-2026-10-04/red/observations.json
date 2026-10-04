@@ -1,0 +1,10 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "physical typing continues after hint without an extra tap",
+    "actual": "r",
+    "expected": "rome"
+  }
+]

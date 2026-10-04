@@ -1,0 +1,324 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+{
+  "mode": "development",
+  "baseline": true,
+  "checks": 224,
+  "failures": [
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "latest",
+      "name": "waiting edits and profile need one newest SDK write",
+      "actual": 28,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "startup checkpoint remains isolated by target player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "host restores same-player draft without importing another player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "new visit writes retained draft",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "other-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "other-player",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "drain-restart",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "drain-restart",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": false,
+      "scenario": "drain-restart",
+      "name": "old drain cannot clear new startup",
+      "expected": 80
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "latest",
+      "name": "waiting edits and profile need one newest SDK write",
+      "actual": 28,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "startup checkpoint remains isolated by target player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "host restores same-player draft without importing another player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "new visit writes retained draft",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "other-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "other-player",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "drain-restart",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "drain-restart",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "registered": true,
+      "scenario": "drain-restart",
+      "name": "old drain cannot clear new startup",
+      "expected": 80
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "latest",
+      "name": "waiting edits and profile need one newest SDK write",
+      "actual": 28,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "startup checkpoint remains isolated by target player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "host restores same-player draft without importing another player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "same-player",
+      "name": "new visit writes retained draft",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "other-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "other-player",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "drain-restart",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "drain-restart",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": false,
+      "scenario": "drain-restart",
+      "name": "old drain cannot clear new startup",
+      "expected": 80
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "latest",
+      "name": "waiting edits and profile need one newest SDK write",
+      "actual": 28,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "startup checkpoint remains isolated by target player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "host restores same-player draft without importing another player",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "same-player",
+      "name": "new visit writes retained draft",
+      "actual": "",
+      "expected": "PIAN"
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "other-player",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "other-player",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "drain-restart",
+      "name": "retired waiting snapshots do not replay into SDK",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "drain-restart",
+      "name": "another player never receives retired answer",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "registered": true,
+      "scenario": "drain-restart",
+      "name": "old drain cannot clear new startup",
+      "expected": 80
+    }
+  ]
+}

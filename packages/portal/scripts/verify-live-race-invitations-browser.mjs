@@ -7,7 +7,7 @@ import {build} from "vite";
 import {chromium} from "@playwright/test";
 import {createLiveRaceEmulator} from "./live-race-emulator.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const output = path.resolve(root, "../../artifacts/live-pvp-invitations/browser");
+const output = path.resolve(process.env.LIVE_RACE_REPORT_DIR ?? path.join(root, "../../artifacts/live-pvp-invitations/browser"));
 await mkdir(output, {recursive: true});
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-invitations-"));
@@ -108,7 +108,7 @@ try {
       assert.equal(await b.evaluate(() => window.commands.some(command => command.action === "join")), false, "Receiving a notification must not auto-accept");
       await b.screenshot({path: path.join(output, `${target}-received-${viewport.width}.png`), fullPage: true});
       await b.getByRole("button", {name: "Accept challenge", exact: true}).click();
-      await b.locator(".live-race-countdown").waitFor();
+      await b.locator(".live-race-search-wheel[data-phase=countdown]").waitFor();
       await a.locator(".live-race-rival strong").waitFor();
       assert.equal(await a.locator(".live-race-rival strong").innerText(), "Bob");
       assert.equal(await b.locator(".live-race-rival strong").innerText(), "Alice");
@@ -165,7 +165,7 @@ try {
       await recipient.locator(".race-screen").evaluate(element => {element.scrollTop = 0;});
       await recipient.screenshot({path: path.join(output, `${target}-direct-inbox-${viewport.width}.png`), fullPage: true});
       await recipient.getByRole("button", {name: "Accept challenge", exact: true}).click();
-      await recipient.locator(".live-race-countdown").waitFor();
+      await recipient.locator(".live-race-search-wheel[data-phase=countdown]").waitFor();
       await sender.locator(".live-race-rival strong").waitFor();
       assert.equal(await sender.locator(".live-race-rival strong").innerText(), "Bob");
       console.log(`${target} ${viewport.width}px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.`);

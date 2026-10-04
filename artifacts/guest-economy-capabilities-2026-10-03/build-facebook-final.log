@@ -1,0 +1,448 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:facebook-commerce-activation && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && FACEBOOK_BUILD=1 NODE_ENV=production vite build --mode facebook && pnpm audit:facebook-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (23.531104ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (4.000217ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.288454ms)
+✔ rejects imports between different target owners (1.787005ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.846874ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.692266ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.485554ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (1.454135ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (5.046099ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (1.070227ms)
+✔ aggregates violations in deterministic file and source order (2.147127ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 166.968551
+Web Target boundary audit passed (309 files, 1341 module references).
+$ node ../../scripts/audit-facebook-commerce-activation.mjs
+Facebook commerce-activation audit passed: unverified commerce remains unreachable.
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+Third-party notices are current (107162 bytes)
+vite v8.3.1 building client environment for facebook...
+transforming...
+✓ 1399 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-facebook/fbapp-config.json                                 0.25 kB │ gzip:   0.19 kB
+dist-facebook/index.html                                        1.53 kB │ gzip:   0.54 kB
+dist-facebook/assets/tex_ring_b-BUHGHX-C.webp                   4.45 kB
+dist-facebook/assets/coin-BnaBYH65.svg                          6.30 kB │ gzip:   1.96 kB
+dist-facebook/assets/wheel-bg-BifSuxYC.svg                      7.74 kB │ gzip:   1.13 kB
+dist-facebook/assets/tex_ring_a-DuvJN49d.webp                   8.03 kB
+dist-facebook/assets/starfield-DlHqVHED.svg                     9.29 kB │ gzip:   1.81 kB
+dist-facebook/assets/tex_sun_corona-v2-BMfKNPFY.webp           14.24 kB
+dist-facebook/assets/tex_moon_h-DGScgJpd.webp                  14.81 kB
+dist-facebook/assets/tex_moon_g-B0h_U8wT.webp                  14.99 kB
+dist-facebook/assets/tex_sun_spots_02-CCRhajmp.webp            18.87 kB
+dist-facebook/assets/tex_planet_u-BzJmFwqP.webp                18.90 kB
+dist-facebook/assets/tex_planet_v-DtVH6iTD.webp                19.84 kB
+dist-facebook/assets/tex_planet_a-CKSLcGca.webp                25.73 kB
+dist-facebook/third-party-licenses.txt                         25.82 kB │ gzip:   6.30 kB
+dist-facebook/assets/main-logo-DeVvp0Z6.webp                   26.72 kB
+dist-facebook/assets/tex_moon_f-i48T7jJA.webp                  29.64 kB
+dist-facebook/assets/tex_planet_s-fmsfCdSp.webp                31.28 kB
+dist-facebook/assets/tex_planet_k-BTSVj7tG.webp                32.65 kB
+dist-facebook/assets/tex_planet_r-k9FTlMLw.webp                32.83 kB
+dist-facebook/assets/tex_moon_d-C8et7CUZ.webp                  36.81 kB
+dist-facebook/assets/chest-open-CQnbBCSD.webp                  38.74 kB
+dist-facebook/assets/riddlequest-r-kPbkvcmu.webp               42.31 kB
+dist-facebook/assets/tex_moon_c-CbidFNBi.webp                  45.87 kB
+dist-facebook/assets/PoetsenOne-Regular-C2losmxN.woff2         48.38 kB
+dist-facebook/assets/Poppins-Bold-ryPfWsYm.woff2               51.20 kB
+dist-facebook/assets/Poppins-SemiBold-9BRRzCnb.woff2           51.80 kB
+dist-facebook/assets/Poppins-Regular-B-jQUxpD.woff2            51.85 kB
+dist-facebook/assets/chest-closed-GI3XjnpL.png                 56.64 kB
+dist-facebook/assets/tex_planet_d-Bc6RyclI.webp                60.96 kB
+dist-facebook/assets/music-DoaAtikm.webm                    1,139.48 kB
+dist-facebook/assets/RankedAvatar-BYYEKjVK.css                  1.90 kB │ gzip:   0.75 kB
+dist-facebook/assets/GameModalView-CVwlBp5V.css                24.45 kB │ gzip:   5.97 kB
+dist-facebook/assets/RaceTo10Game-71PuwFE8.css                 24.70 kB │ gzip:   6.14 kB
+dist-facebook/assets/facebook-BQGngjDq.css                     31.78 kB │ gzip:   7.64 kB
+dist-facebook/assets/index-DKlepx_g.js                          0.04 kB │ gzip:   0.06 kB
+dist-facebook/assets/core-bridge-constants--aS0k-qf.js          0.10 kB │ gzip:   0.12 kB
+dist-facebook/assets/streakFanfare-D5FNWyR-.js                  0.24 kB │ gzip:   0.24 kB
+dist-facebook/assets/streakFanfare-nH51PXfP.js                  0.24 kB │ gzip:   0.22 kB
+dist-facebook/assets/streakFanfare-D8ya_JNu.js                  0.24 kB │ gzip:   0.22 kB
+dist-facebook/assets/streakFanfare-DWbUNWIe.js                  0.24 kB │ gzip:   0.25 kB
+dist-facebook/assets/streakFanfare-BYE0U2nU.js                  0.24 kB │ gzip:   0.22 kB
+dist-facebook/assets/streakFanfare-DOWwEDty.js                  0.24 kB │ gzip:   0.23 kB
+dist-facebook/assets/streakFanfare-BDik9euY.js                  0.25 kB │ gzip:   0.22 kB
+dist-facebook/assets/streakFanfare-CBBbHWwq.js                  0.25 kB │ gzip:   0.22 kB
+dist-facebook/assets/streakFanfare-jg_xLRQF.js                  0.25 kB │ gzip:   0.22 kB
+dist-facebook/assets/streakFanfare-BbL7_7k5.js                  0.25 kB │ gzip:   0.22 kB
+dist-facebook/assets/streakFanfare-DTPGIncA.js                  0.26 kB │ gzip:   0.23 kB
+dist-facebook/assets/streakFanfare-DnqoM55A.js                  0.26 kB │ gzip:   0.25 kB
+dist-facebook/assets/coinPurchase-C7Vy1ASc.js                   0.27 kB │ gzip:   0.25 kB
+dist-facebook/assets/streakFanfare-Cub-Q8ZC.js                  0.27 kB │ gzip:   0.26 kB
+dist-facebook/assets/coinPurchase-BYVVINHp.js                   0.27 kB │ gzip:   0.25 kB
+dist-facebook/assets/coinPurchase-_IHX8OXJ.js                   0.27 kB │ gzip:   0.26 kB
+dist-facebook/assets/coinPurchase-BZVNlz11.js                   0.28 kB │ gzip:   0.24 kB
+dist-facebook/assets/coinPurchase-DLij0XrJ.js                   0.28 kB │ gzip:   0.25 kB
+dist-facebook/assets/coinPurchase-CnSXfRTK.js                   0.28 kB │ gzip:   0.28 kB
+dist-facebook/assets/coinPurchase-DaUuHEwu.js                   0.28 kB │ gzip:   0.25 kB
+dist-facebook/assets/coinPurchase-CK7PF9KX.js                   0.28 kB │ gzip:   0.25 kB
+dist-facebook/assets/coinPurchase-Dphs8PuT.js                   0.28 kB │ gzip:   0.26 kB
+dist-facebook/assets/streakFanfare-Cs_VA6tJ.js                  0.28 kB │ gzip:   0.27 kB
+dist-facebook/assets/coinPurchase-BdFq5bZC.js                   0.28 kB │ gzip:   0.28 kB
+dist-facebook/assets/aboutLegal-DDFGPNCH.js                     0.29 kB │ gzip:   0.26 kB
+dist-facebook/assets/coinPurchase-xYGMEqwZ.js                   0.29 kB │ gzip:   0.26 kB
+dist-facebook/assets/aboutLegal-DRIFyWzN.js                     0.29 kB │ gzip:   0.29 kB
+dist-facebook/assets/coinPurchase-ByeNUhlf.js                   0.29 kB │ gzip:   0.29 kB
+dist-facebook/assets/aboutLegal-D5ciQ0bv.js                     0.30 kB │ gzip:   0.28 kB
+dist-facebook/assets/aboutLegal-bOd9o3D2.js                     0.30 kB │ gzip:   0.26 kB
+dist-facebook/assets/aboutLegal-BxoJ25GD.js                     0.30 kB │ gzip:   0.26 kB
+dist-facebook/assets/aboutLegal-Dhd71lSG.js                     0.30 kB │ gzip:   0.27 kB
+dist-facebook/assets/aboutLegal-CM4qvqpd.js                     0.30 kB │ gzip:   0.26 kB
+dist-facebook/assets/aboutLegal-DlF3CX7M.js                     0.31 kB │ gzip:   0.27 kB
+dist-facebook/assets/aboutLegal-pVkVSjy8.js                     0.31 kB │ gzip:   0.26 kB
+dist-facebook/assets/aboutLegal-a1B-pdoH.js                     0.31 kB │ gzip:   0.28 kB
+dist-facebook/assets/coinPurchase-BrtYGPPp.js                   0.31 kB │ gzip:   0.30 kB
+dist-facebook/assets/aboutLegal-BAlSQDJA.js                     0.32 kB │ gzip:   0.30 kB
+dist-facebook/assets/rolldown-runtime-BX80bFGj.js               0.32 kB │ gzip:   0.24 kB
+dist-facebook/assets/streakFanfare-BzlSgn3C.js                  0.32 kB │ gzip:   0.28 kB
+dist-facebook/assets/raceMatchmakingFailure-DSRdwW9t.js         0.33 kB │ gzip:   0.24 kB
+dist-facebook/assets/aboutLegal-DPa59xbr.js                     0.33 kB │ gzip:   0.32 kB
+dist-facebook/assets/aboutLegal-DWAsypAb.js                     0.33 kB │ gzip:   0.30 kB
+dist-facebook/assets/coinPurchase-O2VpNloi.js                   0.34 kB │ gzip:   0.30 kB
+dist-facebook/assets/aboutLegal-BWcOtV6z.js                     0.40 kB │ gzip:   0.33 kB
+dist-facebook/assets/coinPurchase-BV6JOECJ.js                   0.40 kB │ gzip:   0.32 kB
+dist-facebook/assets/aboutLegal-CafrKBIi.js                     0.40 kB │ gzip:   0.35 kB
+dist-facebook/assets/levelUpFanfare-B4mmyPlr.js                 0.44 kB │ gzip:   0.34 kB
+dist-facebook/assets/levelUpFanfare-BPKjiUsq.js                 0.44 kB │ gzip:   0.35 kB
+dist-facebook/assets/levelUpFanfare-Cl0qa3XP.js                 0.45 kB │ gzip:   0.36 kB
+dist-facebook/assets/levelUpFanfare-CTGjhSJn.js                 0.45 kB │ gzip:   0.33 kB
+dist-facebook/assets/levelUpFanfare-Da_x7Jue.js                 0.45 kB │ gzip:   0.34 kB
+dist-facebook/assets/levelUpFanfare-DyoO6WH1.js                 0.47 kB │ gzip:   0.35 kB
+dist-facebook/assets/levelUpFanfare-CHdstpWu.js                 0.47 kB │ gzip:   0.35 kB
+dist-facebook/assets/levelUpFanfare-BAlJ8D0X.js                 0.47 kB │ gzip:   0.36 kB
+dist-facebook/assets/levelUpFanfare-v2MHtQSQ.js                 0.47 kB │ gzip:   0.36 kB
+dist-facebook/assets/levelUpFanfare-K9Nos2mF.js                 0.49 kB │ gzip:   0.36 kB
+dist-facebook/assets/levelUpFanfare-Bue1Atdb.js                 0.51 kB │ gzip:   0.44 kB
+dist-facebook/assets/levelUpFanfare-DycDwaw7.js                 0.57 kB │ gzip:   0.45 kB
+dist-facebook/assets/loss-CAEFvJIw.js                           0.57 kB │ gzip:   0.38 kB
+dist-facebook/assets/loss-k7gnV9d7.js                           0.60 kB │ gzip:   0.37 kB
+dist-facebook/assets/navigation-LHo0RTEh.js                     0.60 kB │ gzip:   0.46 kB
+dist-facebook/assets/loss-BMJNzftc.js                           0.60 kB │ gzip:   0.38 kB
+dist-facebook/assets/navigation-BQYz0n7p.js                     0.60 kB │ gzip:   0.46 kB
+dist-facebook/assets/levelUpFanfare-BCJJmg6G.js                 0.60 kB │ gzip:   0.44 kB
+dist-facebook/assets/navigation-Ba8oafGm.js                     0.60 kB │ gzip:   0.45 kB
+dist-facebook/assets/levelUpFanfare-MEWTAVKQ.js                 0.60 kB │ gzip:   0.45 kB
+dist-facebook/assets/settings-BJfbarUe.js                       0.61 kB │ gzip:   0.41 kB
+dist-facebook/assets/loss-uWLV7_IN.js                           0.61 kB │ gzip:   0.39 kB
+dist-facebook/assets/loss-Chv-L1hH.js                           0.61 kB │ gzip:   0.43 kB
+dist-facebook/assets/leaderboard-BRdR07-x.js                    0.61 kB │ gzip:   0.45 kB
+dist-facebook/assets/navigation-BR5T4TtI.js                     0.61 kB │ gzip:   0.47 kB
+dist-facebook/assets/loss-0ziv21kt.js                           0.61 kB │ gzip:   0.39 kB
+dist-facebook/assets/settings-TXvA79Ew.js                       0.61 kB │ gzip:   0.44 kB
+dist-facebook/assets/navigation-G4mMFInB.js                     0.62 kB │ gzip:   0.47 kB
+dist-facebook/assets/loss-B40AggAB.js                           0.62 kB │ gzip:   0.40 kB
+dist-facebook/assets/settings-DPn3bYut.js                       0.62 kB │ gzip:   0.42 kB
+dist-facebook/assets/navigation-uBJWS9jJ.js                     0.62 kB │ gzip:   0.47 kB
+dist-facebook/assets/settings-Cb6Q_l6B.js                       0.63 kB │ gzip:   0.42 kB
+dist-facebook/assets/navigation-BvduCtS3.js                     0.63 kB │ gzip:   0.46 kB
+dist-facebook/assets/settings-Dxn-nmrz.js                       0.63 kB │ gzip:   0.44 kB
+dist-facebook/assets/settings-C0q_S8jl.js                       0.63 kB │ gzip:   0.44 kB
+dist-facebook/assets/leaderboard-CVOdB_vV.js                    0.63 kB │ gzip:   0.45 kB
+dist-facebook/assets/leaderboard-DjcuQLRV.js                    0.63 kB │ gzip:   0.45 kB
+dist-facebook/assets/loss-CD2x3gjV.js                           0.63 kB │ gzip:   0.39 kB
+dist-facebook/assets/navigation-BAKuJQ0V.js                     0.63 kB │ gzip:   0.48 kB
+dist-facebook/assets/navigation-y3_6efZc.js                     0.63 kB │ gzip:   0.52 kB
+dist-facebook/assets/loss-DlbT0guL.js                           0.64 kB │ gzip:   0.43 kB
+dist-facebook/assets/credits-voYHsFUT.js                        0.64 kB │ gzip:   0.44 kB
+dist-facebook/assets/settings-EAZRhExY.js                       0.65 kB │ gzip:   0.49 kB
+dist-facebook/assets/leaderboard-Tve_fJmi.js                    0.65 kB │ gzip:   0.48 kB
+dist-facebook/assets/settings-DJXuQjmJ.js                       0.65 kB │ gzip:   0.44 kB
+dist-facebook/assets/navigation-NcmlwEhr.js                     0.65 kB │ gzip:   0.52 kB
+dist-facebook/assets/credits-D4cBsewH.js                        0.65 kB │ gzip:   0.45 kB
+dist-facebook/assets/stats-ChGB28Me.js                          0.65 kB │ gzip:   0.52 kB
+dist-facebook/assets/loss-BH98FRri.js                           0.65 kB │ gzip:   0.39 kB
+dist-facebook/assets/settings-D34B027x.js                       0.65 kB │ gzip:   0.45 kB
+dist-facebook/assets/loss-BbszsdYQ.js                           0.65 kB │ gzip:   0.47 kB
+dist-facebook/assets/navigation-DrtwLq4d.js                     0.65 kB │ gzip:   0.49 kB
+dist-facebook/assets/leaderboard-Dip51uU5.js                    0.66 kB │ gzip:   0.49 kB
+dist-facebook/assets/FacebookFirebaseAppCheck-Cx1sqgpm.js       0.66 kB │ gzip:   0.41 kB
+dist-facebook/assets/leaderboard-DHMrlBIz.js                    0.66 kB │ gzip:   0.52 kB
+dist-facebook/assets/leaderboard-CePY92Zg.js                    0.66 kB │ gzip:   0.51 kB
+dist-facebook/assets/settings-z81bey13.js                       0.66 kB │ gzip:   0.46 kB
+dist-facebook/assets/leaderboard-xz2rxIEE.js                    0.67 kB │ gzip:   0.48 kB
+dist-facebook/assets/loss-BC08gz35.js                           0.67 kB │ gzip:   0.47 kB
+dist-facebook/assets/leaderboard-Cm2XrxOq.js                    0.67 kB │ gzip:   0.47 kB
+dist-facebook/assets/common-yo3SbgUa.js                         0.67 kB │ gzip:   0.44 kB
+dist-facebook/assets/credits-Cl-jOBH2.js                        0.67 kB │ gzip:   0.47 kB
+dist-facebook/assets/credits-CwKzye_a.js                        0.68 kB │ gzip:   0.46 kB
+dist-facebook/assets/credits-DAs-qgR8.js                        0.68 kB │ gzip:   0.47 kB
+dist-facebook/assets/credits-LEc_FZAv.js                        0.68 kB │ gzip:   0.48 kB
+dist-facebook/assets/credits-D5Qv8qTc.js                        0.68 kB │ gzip:   0.47 kB
+dist-facebook/assets/settings-CgqA2j0A.js                       0.68 kB │ gzip:   0.50 kB
+dist-facebook/assets/stats-zFYbm85S.js                          0.69 kB │ gzip:   0.48 kB
+dist-facebook/assets/credits-CamtRNro.js                        0.69 kB │ gzip:   0.50 kB
+dist-facebook/assets/credits-DxN1dYl-.js                        0.69 kB │ gzip:   0.48 kB
+dist-facebook/assets/common-Dxz7TG0R.js                         0.69 kB │ gzip:   0.45 kB
+dist-facebook/assets/common-CcQuILuh.js                         0.69 kB │ gzip:   0.46 kB
+dist-facebook/assets/common-nPezcvFs.js                         0.69 kB │ gzip:   0.45 kB
+dist-facebook/assets/settings-DTBGSsux.js                       0.70 kB │ gzip:   0.52 kB
+dist-facebook/assets/stats-C840pk2y.js                          0.70 kB │ gzip:   0.50 kB
+dist-facebook/assets/stats-BUW-2iCW.js                          0.70 kB │ gzip:   0.48 kB
+dist-facebook/assets/stats-sP4O4uOB.js                          0.70 kB │ gzip:   0.49 kB
+dist-facebook/assets/credits-tP6PVopg.js                        0.71 kB │ gzip:   0.55 kB
+dist-facebook/assets/stats-tSVkZ_F2.js                          0.71 kB │ gzip:   0.50 kB
+dist-facebook/assets/leaderboard-DooQ9gVw.js                    0.71 kB │ gzip:   0.53 kB
+dist-facebook/assets/common-Dn2o5t3O.js                         0.71 kB │ gzip:   0.47 kB
+dist-facebook/assets/leaderboard-BRVy3Mmi.js                    0.71 kB │ gzip:   0.49 kB
+dist-facebook/assets/common--aEQLWh2.js                         0.71 kB │ gzip:   0.48 kB
+dist-facebook/assets/navigation-CUOYuFbf.js                     0.71 kB │ gzip:   0.57 kB
+dist-facebook/assets/loss-Da8541eN.js                           0.71 kB │ gzip:   0.45 kB
+dist-facebook/assets/common-y4a6s1oN.js                         0.72 kB │ gzip:   0.49 kB
+dist-facebook/assets/stats-DlS2WGcR.js                          0.72 kB │ gzip:   0.56 kB
+dist-facebook/assets/common-KiRJYwtM.js                         0.72 kB │ gzip:   0.52 kB
+dist-facebook/assets/common-MpoR7pbE.js                         0.72 kB │ gzip:   0.47 kB
+dist-facebook/assets/stats-CtSj4RI_.js                          0.72 kB │ gzip:   0.51 kB
+dist-facebook/assets/stats-xSvk09Tu.js                          0.73 kB │ gzip:   0.51 kB
+dist-facebook/assets/stats-DVIQvc1k.js                          0.73 kB │ gzip:   0.51 kB
+dist-facebook/assets/settings-B_BGKgyc.js                       0.74 kB │ gzip:   0.49 kB
+dist-facebook/assets/common-ffIM6-e_.js                         0.74 kB │ gzip:   0.50 kB
+dist-facebook/assets/levelUpFanfare-DQ8np8Rb.js                 0.74 kB │ gzip:   0.46 kB
+dist-facebook/assets/stats-fRNVYmj2.js                          0.74 kB │ gzip:   0.54 kB
+dist-facebook/assets/navigation-DBkwvqdy.js                     0.76 kB │ gzip:   0.55 kB
+dist-facebook/assets/leaderboard-BXC6Nr9l.js                    0.77 kB │ gzip:   0.55 kB
+dist-facebook/assets/credits-DqWadySW.js                        0.77 kB │ gzip:   0.52 kB
+dist-facebook/assets/common-C3xPfGc-.js                         0.78 kB │ gzip:   0.50 kB
+dist-facebook/assets/settings-D0_UhizG.js                       0.79 kB │ gzip:   0.54 kB
+dist-facebook/assets/credits-DAfyC-CK.js                        0.80 kB │ gzip:   0.58 kB
+dist-facebook/assets/stats-B1V3WjYh.js                          0.80 kB │ gzip:   0.57 kB
+dist-facebook/assets/common-vpljjTN8.js                         0.81 kB │ gzip:   0.54 kB
+dist-facebook/assets/common-Dz3UpTCl.js                         0.82 kB │ gzip:   0.55 kB
+dist-facebook/assets/loss-CWXPUZRX.js                           0.82 kB │ gzip:   0.52 kB
+dist-facebook/assets/credits-CPMr9j5i.js                        0.83 kB │ gzip:   0.59 kB
+dist-facebook/assets/navigation-MfKaCO-M.js                     0.83 kB │ gzip:   0.58 kB
+dist-facebook/assets/firebaseLiveRaceSignals-DotZLXzq.js        0.88 kB │ gzip:   0.51 kB
+dist-facebook/assets/leaderboard-DDTHVAn4.js                    0.90 kB │ gzip:   0.56 kB
+dist-facebook/assets/settings-CS_i32e5.js                       0.91 kB │ gzip:   0.54 kB
+dist-facebook/assets/onboarding-DQLra8FR.js                     0.92 kB │ gzip:   0.59 kB
+dist-facebook/assets/navigation-BQVuBhL8.js                     0.93 kB │ gzip:   0.57 kB
+dist-facebook/assets/stats-DhRrKJqk.js                          0.93 kB │ gzip:   0.59 kB
+dist-facebook/assets/stats-DGElKeRF.js                          0.94 kB │ gzip:   0.63 kB
+dist-facebook/assets/leaderboard-D4odGT_9.js                    0.95 kB │ gzip:   0.60 kB
+dist-facebook/assets/FirebasePresenceTransport-DbO9tiwr.js      0.95 kB │ gzip:   0.50 kB
+dist-facebook/assets/common-BdXkwqia.js                         0.95 kB │ gzip:   0.58 kB
+dist-facebook/assets/onboarding-DBG6CBbL.js                     0.95 kB │ gzip:   0.60 kB
+dist-facebook/assets/credits-BleaRYoH.js                        0.98 kB │ gzip:   0.63 kB
+dist-facebook/assets/stats-CuYOugsp.js                          0.98 kB │ gzip:   0.59 kB
+dist-facebook/assets/onboarding-DRBoez9o.js                     0.99 kB │ gzip:   0.60 kB
+dist-facebook/assets/onboarding-Dh8uBuI7.js                     0.99 kB │ gzip:   0.67 kB
+dist-facebook/assets/shop-B7pKqerD.js                           1.00 kB │ gzip:   0.67 kB
+dist-facebook/assets/onboarding-CvwH3JRg.js                     1.01 kB │ gzip:   0.63 kB
+dist-facebook/assets/shop-Bxc6Vazv.js                           1.01 kB │ gzip:   0.64 kB
+dist-facebook/assets/shop-Br7kjNqm.js                           1.01 kB │ gzip:   0.66 kB
+dist-facebook/assets/shop-2t-QOlLl.js                           1.02 kB │ gzip:   0.63 kB
+dist-facebook/assets/loss-yasTnJNB.js                           1.03 kB │ gzip:   0.53 kB
+dist-facebook/assets/shop-BBAL6gd1.js                           1.03 kB │ gzip:   0.65 kB
+dist-facebook/assets/shop-DogN41pu.js                           1.03 kB │ gzip:   0.66 kB
+dist-facebook/assets/leaderboard-DgAQ8B8R.js                    1.04 kB │ gzip:   0.56 kB
+dist-facebook/assets/credits-BbaTbmS6.js                        1.05 kB │ gzip:   0.59 kB
+dist-facebook/assets/onboarding-Dz1I3NHF.js                     1.06 kB │ gzip:   0.72 kB
+dist-facebook/assets/shop-CxNt_bIa.js                           1.06 kB │ gzip:   0.71 kB
+dist-facebook/assets/shop-CI3rvyFj.js                           1.06 kB │ gzip:   0.70 kB
+dist-facebook/assets/shop-CGQR-1WH.js                           1.06 kB │ gzip:   0.66 kB
+dist-facebook/assets/onboarding-Bc53XwVf.js                     1.06 kB │ gzip:   0.63 kB
+dist-facebook/assets/onboarding-GaDlHPGX.js                     1.07 kB │ gzip:   0.65 kB
+dist-facebook/assets/onboarding-Db1bojX4.js                     1.07 kB │ gzip:   0.66 kB
+dist-facebook/assets/onboarding-9zKAd3CI.js                     1.07 kB │ gzip:   0.66 kB
+dist-facebook/assets/victory-aH2F2ifU.js                        1.08 kB │ gzip:   0.71 kB
+dist-facebook/assets/victory-DC9vM_Tc.js                        1.08 kB │ gzip:   0.68 kB
+dist-facebook/assets/victory-D0qqLXEz.js                        1.08 kB │ gzip:   0.68 kB
+dist-facebook/assets/victory-CeF9v80c.js                        1.08 kB │ gzip:   0.71 kB
+dist-facebook/assets/victory-Bgt1szQl.js                        1.09 kB │ gzip:   0.69 kB
+dist-facebook/assets/shop-mGKFaann.js                           1.09 kB │ gzip:   0.70 kB
+dist-facebook/assets/common-Bd-x9vS3.js                         1.09 kB │ gzip:   0.58 kB
+dist-facebook/assets/victory-BKzUbbGR.js                        1.10 kB │ gzip:   0.72 kB
+dist-facebook/assets/onboarding-B_FvyPF8.js                     1.11 kB │ gzip:   0.74 kB
+dist-facebook/assets/victory-5LBKH9w4.js                        1.11 kB │ gzip:   0.76 kB
+dist-facebook/assets/onboarding-D4A7IRHO.js                     1.12 kB │ gzip:   0.74 kB
+dist-facebook/assets/victory-DSoKnGoZ.js                        1.12 kB │ gzip:   0.69 kB
+dist-facebook/assets/victory-WnOT0bNz.js                        1.14 kB │ gzip:   0.71 kB
+dist-facebook/assets/shop-VeWXLU1X.js                           1.14 kB │ gzip:   0.77 kB
+dist-facebook/assets/shop-MKpBYOPd.js                           1.14 kB │ gzip:   0.78 kB
+dist-facebook/assets/victory-9FrSpGI7.js                        1.15 kB │ gzip:   0.72 kB
+dist-facebook/assets/shop-Y5kENKLF.js                           1.21 kB │ gzip:   0.83 kB
+dist-facebook/assets/victory-BpkYhsKD.js                        1.22 kB │ gzip:   0.80 kB
+dist-facebook/assets/victory-Dp0Ltz6A.js                        1.22 kB │ gzip:   0.83 kB
+dist-facebook/assets/onboarding-BI5ouef1.js                     1.24 kB │ gzip:   0.79 kB
+dist-facebook/assets/shop-C7LFLzdx.js                           1.26 kB │ gzip:   0.73 kB
+dist-facebook/assets/victory-hVbmD5ZC.js                        1.26 kB │ gzip:   0.79 kB
+dist-facebook/assets/onboarding-BtmL5mvj.js                     1.33 kB │ gzip:   0.77 kB
+dist-facebook/assets/preload-helper-ClC2XIXo.js                 1.33 kB │ gzip:   0.75 kB
+dist-facebook/assets/firebaseClient-B0pIenFH.js                 1.40 kB │ gzip:   0.54 kB
+dist-facebook/assets/victory-BZ8a1RcW.js                        1.47 kB │ gzip:   0.89 kB
+dist-facebook/assets/accessibility-CN_qPQIa.js                  1.49 kB │ gzip:   0.89 kB
+dist-facebook/assets/accessibility-CI4Rdj-4.js                  1.50 kB │ gzip:   0.88 kB
+dist-facebook/assets/accessibility-ByCyVLjU.js                  1.53 kB │ gzip:   0.94 kB
+dist-facebook/assets/accessibility-CTMqWnYu.js                  1.55 kB │ gzip:   0.91 kB
+dist-facebook/assets/accessibility-cpV5YSgo.js                  1.56 kB │ gzip:   1.01 kB
+dist-facebook/assets/accessibility-C-xuQOx7.js                  1.57 kB │ gzip:   0.91 kB
+dist-facebook/assets/vendor-three-TwbJShIZ.js                   1.59 kB │ gzip:   0.57 kB
+dist-facebook/assets/accessibility-B4kwDiAE.js                  1.59 kB │ gzip:   0.92 kB
+dist-facebook/assets/accessibility-BDiNWZUD.js                  1.60 kB │ gzip:   0.98 kB
+dist-facebook/assets/accessibility-DRGqP7K6.js                  1.65 kB │ gzip:   0.98 kB
+dist-facebook/assets/victory-Ftg8wV6N.js                        1.67 kB │ gzip:   0.84 kB
+dist-facebook/assets/accessibility-TZIdKuXU.js                  1.68 kB │ gzip:   0.98 kB
+dist-facebook/assets/shop-9skbhZF9.js                           1.72 kB │ gzip:   0.81 kB
+dist-facebook/assets/PlatformPresenceSession-CzEhWnuL.js        1.72 kB │ gzip:   0.63 kB
+dist-facebook/assets/onboarding-P14NxbMr.js                     1.73 kB │ gzip:   0.80 kB
+dist-facebook/assets/accessibility-BOUSxXiL.js                  1.76 kB │ gzip:   1.06 kB
+dist-facebook/assets/accessibility-CHIGdDnq.js                  1.77 kB │ gzip:   1.05 kB
+dist-facebook/assets/accessibility-CqzKbFrh.js                  2.00 kB │ gzip:   1.04 kB
+dist-facebook/assets/game-CBQVCHEu.js                           2.00 kB │ gzip:   1.16 kB
+dist-facebook/assets/game-DugrZVK-.js                           2.01 kB │ gzip:   1.15 kB
+dist-facebook/assets/game-BoliY9mL.js                           2.02 kB │ gzip:   1.15 kB
+dist-facebook/assets/game-UuXq4gLU.js                           2.02 kB │ gzip:   1.13 kB
+dist-facebook/assets/game-Zz4k6Y4h.js                           2.02 kB │ gzip:   1.20 kB
+dist-facebook/assets/game-DWXtL8EX.js                           2.04 kB │ gzip:   1.16 kB
+dist-facebook/assets/game-C6APJE3p.js                           2.07 kB │ gzip:   1.18 kB
+dist-facebook/assets/game-Bg5MD8Zo.js                           2.07 kB │ gzip:   1.18 kB
+dist-facebook/assets/game-CB8rHK4q.js                           2.13 kB │ gzip:   1.22 kB
+dist-facebook/assets/accessibility-DkfdKGJd.js                  2.21 kB │ gzip:   1.15 kB
+dist-facebook/assets/game-WiBThsXY.js                           2.21 kB │ gzip:   1.30 kB
+dist-facebook/assets/game-DaxQ3avs.js                           2.31 kB │ gzip:   1.32 kB
+dist-facebook/assets/errors-BHxLQ1l1.js                         2.36 kB │ gzip:   1.20 kB
+dist-facebook/assets/game-1Y1gZeIn.js                           2.37 kB │ gzip:   1.36 kB
+dist-facebook/assets/errors-BzNiYrkL.js                         2.38 kB │ gzip:   1.23 kB
+dist-facebook/assets/errors-A__uqMgo.js                         2.40 kB │ gzip:   1.26 kB
+dist-facebook/assets/errors-BwB4svYZ.js                         2.41 kB │ gzip:   1.26 kB
+dist-facebook/assets/errors-D4Az-shn.js                         2.45 kB │ gzip:   1.28 kB
+dist-facebook/assets/errors-vXKfe_fy.js                         2.48 kB │ gzip:   1.32 kB
+dist-facebook/assets/tooltips-BGKpbHhI.js                       2.49 kB │ gzip:   1.19 kB
+dist-facebook/assets/accessibility-CvNNiUKA.js                  2.51 kB │ gzip:   1.11 kB
+dist-facebook/assets/tooltips-D5Ywc9Vk.js                       2.53 kB │ gzip:   1.13 kB
+dist-facebook/assets/errors-oQC0fBdQ.js                         2.54 kB │ gzip:   1.28 kB
+dist-facebook/assets/core-game-Di-PVjWZ.js                      2.55 kB │ gzip:   1.14 kB
+dist-facebook/assets/game-DH8bVra0.js                           2.55 kB │ gzip:   1.31 kB
+dist-facebook/assets/tooltips-8zDXHXQO.js                       2.56 kB │ gzip:   1.17 kB
+dist-facebook/assets/tooltips-BR608YHT.js                       2.57 kB │ gzip:   1.21 kB
+dist-facebook/assets/tooltips-Cyrlx-wK.js                       2.58 kB │ gzip:   1.11 kB
+dist-facebook/assets/tooltips-BhmGk7Xr.js                       2.60 kB │ gzip:   1.20 kB
+dist-facebook/assets/defaultBackend-BFqaAmDo.js                 2.60 kB │ gzip:   1.22 kB
+dist-facebook/assets/alerts-Vplz2Vh_.js                         2.61 kB │ gzip:   1.14 kB
+dist-facebook/assets/errors-f00H2M3H.js                         2.62 kB │ gzip:   1.35 kB
+dist-facebook/assets/tooltips-BUGcpZPI.js                       2.62 kB │ gzip:   1.19 kB
+dist-facebook/assets/alerts-q9MO4qcu.js                         2.65 kB │ gzip:   1.24 kB
+dist-facebook/assets/alerts-CW9WPJBo.js                         2.66 kB │ gzip:   1.18 kB
+dist-facebook/assets/alerts-LkYGHeho.js                         2.66 kB │ gzip:   1.15 kB
+dist-facebook/assets/tooltips-SnS9dCw5.js                       2.67 kB │ gzip:   1.19 kB
+dist-facebook/assets/game-C0mAiFP_.js                           2.68 kB │ gzip:   1.39 kB
+dist-facebook/assets/alerts-Db69BYs5.js                         2.68 kB │ gzip:   1.20 kB
+dist-facebook/assets/errors-BXMrGLsG.js                         2.69 kB │ gzip:   1.33 kB
+dist-facebook/assets/alerts-Bs9viBjA.js                         2.69 kB │ gzip:   1.20 kB
+dist-facebook/assets/tooltips-C3horsHg.js                       2.70 kB │ gzip:   1.31 kB
+dist-facebook/assets/errors-D3vm-yFo.js                         2.70 kB │ gzip:   1.37 kB
+dist-facebook/assets/tooltips-25N5gaMS.js                       2.72 kB │ gzip:   1.22 kB
+dist-facebook/assets/alerts-MlOWYfKx.js                         2.77 kB │ gzip:   1.29 kB
+dist-facebook/assets/errors-CyHn_m_Y.js                         2.79 kB │ gzip:   1.39 kB
+dist-facebook/assets/alerts-Bsb_ob3r.js                         2.81 kB │ gzip:   1.23 kB
+dist-facebook/assets/tooltips-BTbd_UlK.js                       2.84 kB │ gzip:   1.23 kB
+dist-facebook/assets/tooltips-DB9tD47Z.js                       2.90 kB │ gzip:   1.43 kB
+dist-facebook/assets/alerts-DRR1JnuX.js                         2.93 kB │ gzip:   1.26 kB
+dist-facebook/assets/alerts-h574sSGn.js                         2.93 kB │ gzip:   1.28 kB
+dist-facebook/assets/alerts-FrzO_tOr.js                         2.95 kB │ gzip:   1.33 kB
+dist-facebook/assets/errors-C81yRJEE.js                         3.00 kB │ gzip:   1.45 kB
+dist-facebook/assets/tooltips-BR6mt4Wg.js                       3.03 kB │ gzip:   1.36 kB
+dist-facebook/assets/errors-BY0IQe4V.js                         3.23 kB │ gzip:   1.43 kB
+dist-facebook/assets/alerts-Wd945iJd.js                         3.26 kB │ gzip:   1.38 kB
+dist-facebook/assets/tooltips-CpMS91Nr.js                       3.27 kB │ gzip:   1.36 kB
+dist-facebook/assets/alerts-CxR1C9Tr.js                         3.30 kB │ gzip:   1.33 kB
+dist-facebook/assets/game-CXsaVaB7.js                           3.35 kB │ gzip:   1.41 kB
+dist-facebook/assets/errors-Bs_CAkn2.js                         3.85 kB │ gzip:   1.59 kB
+dist-facebook/assets/alerts-BfJrctns.js                         3.89 kB │ gzip:   1.54 kB
+dist-facebook/assets/achievements-C-fyuymw.js                   4.43 kB │ gzip:   1.39 kB
+dist-facebook/assets/errors-DbyX3VtS.js                         4.47 kB │ gzip:   1.54 kB
+dist-facebook/assets/alerts-QYlR2Eci.js                         4.62 kB │ gzip:   1.42 kB
+dist-facebook/assets/tooltips-BtUE9qRL.js                       4.66 kB │ gzip:   1.37 kB
+dist-facebook/assets/achievements-6RmjYSGq.js                   4.82 kB │ gzip:   1.55 kB
+dist-facebook/assets/achievements-DEzHdCii.js                   4.84 kB │ gzip:   1.46 kB
+dist-facebook/assets/achievements-C6G_vsmC.js                   4.84 kB │ gzip:   1.48 kB
+dist-facebook/assets/achievements-CkIqW37X.js                   4.87 kB │ gzip:   1.49 kB
+dist-facebook/assets/achievements-Ytt0GaZp.js                   4.90 kB │ gzip:   1.52 kB
+dist-facebook/assets/achievements-BWrQAU5a.js                   5.00 kB │ gzip:   1.50 kB
+dist-facebook/assets/firebase-CV0dqdp-.js                       5.01 kB │ gzip:   2.21 kB
+dist-facebook/assets/achievements-DCjJr2DA.js                   5.05 kB │ gzip:   1.53 kB
+dist-facebook/assets/achievements-Cel50toA.js                   5.06 kB │ gzip:   1.56 kB
+dist-facebook/assets/achievements-BVL8_glA.js                   5.11 kB │ gzip:   1.62 kB
+dist-facebook/assets/achievements-ym6lLXEz.js                   5.45 kB │ gzip:   1.64 kB
+dist-facebook/assets/race-Pgae0o3L.js                           5.47 kB │ gzip:   2.37 kB
+dist-facebook/assets/achievements-rMNNu3C2.js                   5.56 kB │ gzip:   1.71 kB
+dist-facebook/assets/race-Cc0kLjnu.js                           5.64 kB │ gzip:   2.55 kB
+dist-facebook/assets/race-DOzzT6E3.js                           5.67 kB │ gzip:   2.53 kB
+dist-facebook/assets/race-cwF2ng2r.js                           5.72 kB │ gzip:   2.50 kB
+dist-facebook/assets/achievements-CdPp9Nbb.js                   5.72 kB │ gzip:   1.74 kB
+dist-facebook/assets/race-D1d8khZv.js                           5.75 kB │ gzip:   2.65 kB
+dist-facebook/assets/race-BEI2Frqs.js                           5.76 kB │ gzip:   2.51 kB
+dist-facebook/assets/race-CbEKKmoN.js                           5.76 kB │ gzip:   2.50 kB
+dist-facebook/assets/profile-CWoPx0tb.js                        5.80 kB │ gzip:   2.46 kB
+dist-facebook/assets/race-RKBj9bV2.js                           5.93 kB │ gzip:   2.59 kB
+dist-facebook/assets/profile-D41XTaep.js                        5.94 kB │ gzip:   2.59 kB
+dist-facebook/assets/profile-Cx0pRpKm.js                        5.96 kB │ gzip:   2.68 kB
+dist-facebook/assets/race-9urthsWn.js                           5.99 kB │ gzip:   2.61 kB
+dist-facebook/assets/validation-AuSTryld.js                     6.01 kB │ gzip:   2.07 kB
+dist-facebook/assets/profile-B5OfPl3A.js                        6.06 kB │ gzip:   2.78 kB
+dist-facebook/assets/profile-Daqs-cvK.js                        6.07 kB │ gzip:   2.62 kB
+dist-facebook/assets/profile-CPQiAE5G.js                        6.12 kB │ gzip:   2.66 kB
+dist-facebook/assets/race-CaDTv51Z.js                           6.13 kB │ gzip:   2.70 kB
+dist-facebook/assets/profile-7wyIyA7o.js                        6.17 kB │ gzip:   2.69 kB
+dist-facebook/assets/profile-BQe9K_JJ.js                        6.21 kB │ gzip:   2.69 kB
+dist-facebook/assets/achievements-CZDQ5PMR.js                   6.28 kB │ gzip:   1.71 kB
+dist-facebook/assets/profile-CRrvshbt.js                        6.35 kB │ gzip:   2.75 kB
+dist-facebook/assets/race-DdfKtnWG.js                           6.40 kB │ gzip:   2.65 kB
+dist-facebook/assets/vendor-three-C1-YGrJJ.js                   6.48 kB │ gzip:   2.48 kB
+dist-facebook/assets/profile-CgUGG0CW.js                        6.56 kB │ gzip:   2.89 kB
+dist-facebook/assets/race-BXAluQ53.js                           6.66 kB │ gzip:   2.86 kB
+dist-facebook/assets/profile-BaD_0pJD.js                        6.75 kB │ gzip:   2.86 kB
+dist-facebook/assets/race-BkeM9bpg.js                           6.76 kB │ gzip:   2.76 kB
+dist-facebook/assets/profile-Bu5O4eN5.js                        7.07 kB │ gzip:   2.96 kB
+dist-facebook/assets/achievements-BfD8I-4b.js                   7.25 kB │ gzip:   1.91 kB
+dist-facebook/assets/profile-Mwanf_dW.js                        7.57 kB │ gzip:   2.86 kB
+dist-facebook/assets/requestSchemas-B96yqZAJ.js                 7.73 kB │ gzip:   2.24 kB
+dist-facebook/assets/achievements-BFYI4mHN.js                   7.93 kB │ gzip:   1.73 kB
+dist-facebook/assets/race-Boy3G9j5.js                           8.13 kB │ gzip:   3.06 kB
+dist-facebook/assets/profile-Cp1G-NTZ.js                        8.70 kB │ gzip:   3.23 kB
+dist-facebook/assets/bridge-BDykH6Lw.js                         8.92 kB │ gzip:   2.92 kB
+dist-facebook/assets/race-Dmw-xooh.js                           9.05 kB │ gzip:   3.26 kB
+dist-facebook/assets/vendor-three-BiLsvv9t.js                   9.76 kB │ gzip:   3.08 kB
+dist-facebook/assets/vendor-three-D-mxgd2y.js                   9.91 kB │ gzip:   3.46 kB
+dist-facebook/assets/race-BGoY8M5s.js                          10.25 kB │ gzip:   2.98 kB
+dist-facebook/assets/profile-RYx2GXIC.js                       10.28 kB │ gzip:   3.07 kB
+dist-facebook/assets/firebaseServices-DQVm51LC.js              10.47 kB │ gzip:   3.85 kB
+dist-facebook/assets/achievements-DoHJGtrA.js                  11.47 kB │ gzip:   2.86 kB
+dist-facebook/assets/vendor-three-xMnH1CgV.js                  13.78 kB │ gzip:   4.54 kB
+dist-facebook/assets/FacebookRaceEntry-BgZPXkwa.js             15.90 kB │ gzip:   5.67 kB
+dist-facebook/assets/RankedAvatar-DWulwDq5.js                  17.06 kB │ gzip:   6.78 kB
+dist-facebook/assets/SolarSystem-CPlzN3HS.js                   17.95 kB │ gzip:   6.16 kB
+dist-facebook/assets/fakeServices-VecIuCoA.js                  20.69 kB │ gzip:   7.08 kB
+dist-facebook/assets/vendor-three-DhQwfZ_W.js                  20.91 kB │ gzip:   4.77 kB
+dist-facebook/assets/i18n-ChD0_3Ge.js                          31.97 kB │ gzip:  13.00 kB
+dist-facebook/assets/vendor-three-DVT6gsgu.js                  37.04 kB │ gzip:  11.77 kB
+dist-facebook/assets/RaceTo10Game-CMWX6GKt.js                  44.30 kB │ gzip:  14.37 kB
+dist-facebook/assets/GameModalView-CMqxA36Z.js                 50.16 kB │ gzip:  16.12 kB
+dist-facebook/assets/vendor-three-14j5cCLD.js                  57.11 kB │ gzip:  14.93 kB
+dist-facebook/assets/localeModules-DAB2zKDQ.js                 57.34 kB │ gzip:   7.61 kB
+dist-facebook/assets/vendor-three-2rjE_d5x.js                  65.48 kB │ gzip:  18.35 kB
+dist-facebook/assets/vendor-three-J1_gq1pb.js                  74.16 kB │ gzip:  21.24 kB
+dist-facebook/assets/vendor-three-CxCSEef7.js                  78.41 kB │ gzip:  23.16 kB
+dist-facebook/assets/sentry-CDwD1XYK.js                        90.03 kB │ gzip:  30.83 kB
+dist-facebook/assets/raceSchemas-VGLErhH6.js                  107.84 kB │ gzip:  31.02 kB
+dist-facebook/assets/vendor-three-DuOo2BUN.js                 192.56 kB │ gzip:  42.42 kB
+dist-facebook/assets/facebook-lsNL_3b-.js                     217.30 kB │ gzip:  63.92 kB
+dist-facebook/assets/vendor-react-BsJIBMEs.js                 219.00 kB │ gzip:  68.35 kB
+dist-facebook/assets/vendor-firebase-C5F_jjbA.js              367.00 kB │ gzip: 109.80 kB
+
+✓ built in 2.17s
+$ node scripts/audit-facebook-artifact.mjs
+Facebook artifact audit passed: 410 files, 4.36 MB, 0.61 MB initial resources, isolated SDK/config, and no Jest/native/secrets leakage

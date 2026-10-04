@@ -1,0 +1,21 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: retired composition and trailing delivery preserve the answer prefix
+
+'roé' !== 'ro'
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-native-composition-retirement-browser.mjs:83:120)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-native-composition-retirement-browser.mjs:116:136
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'roé',
+  expected: 'ro',
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

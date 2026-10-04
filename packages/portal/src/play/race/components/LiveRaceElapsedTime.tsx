@@ -17,14 +17,35 @@ export function LiveRaceElapsedTime({anchor, penaltyMs}: {
   /** Monotonic sample used only to animate this text. */
   const [sample, setSample] = useState(() => performance.now());
   useEffect(() => {
-    /** Updates the visible clock after an animation interval or foreground transition. */
-    const tick = () => setSample(performance.now());
-    /** Clock animation has no effect on gameplay or transport admission. */
-    const timer = window.setInterval(tick, 100);
-    document.addEventListener("visibilitychange", tick);
+    /** Retired effects and cancelled timer generations cannot publish a clock sample. */
+    let disposed = false, generation = 0;
+    /** A hidden clock retains its monotonic anchor without scheduling animation. */
+    let timer: number | null = null;
+    /** Stops the current animation and invalidates callbacks already queued by the browser. */
+    const stop = () => {
+      generation++;
+      if (timer !== null) window.clearInterval(timer);
+      timer = null;
+    };
+    /** Foregrounding immediately samples elapsed time and owns exactly one visible animation. */
+    const refresh = () => {
+      if (disposed) return;
+      stop();
+      if (document.hidden) return;
+      setSample(performance.now());
+      /** Only this interval may update the still-mounted visible clock. */
+      const ownedGeneration = generation;
+      timer = window.setInterval(() => {
+        if (disposed || generation !== ownedGeneration || document.hidden) return;
+        setSample(performance.now());
+      }, 100);
+    };
+    document.addEventListener("visibilitychange", refresh);
+    refresh();
     return () => {
-      window.clearInterval(timer);
-      document.removeEventListener("visibilitychange", tick);
+      disposed = true;
+      stop();
+      document.removeEventListener("visibilitychange", refresh);
     };
   }, []);
   return formatRaceTime(Math.max(0, estimatedRaceServerNow(anchor.serverNowMs, anchor.receivedAtMs,

@@ -1,0 +1,39 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-letter",
+    "name": "unchanged edits preserve the displayed answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-letter",
+    "name": "unchanged edits preserve the active slot",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-letter",
+    "name": "unchanged edits add no material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-letter",
+    "name": "unchanged edits avoid defensive save copies",
+    "actual": 32,
+    "expected": 0,
+    "measurement": {
+      "events": 32,
+      "cloneCopies": 32,
+      "readyRenders": 32
+    }
+  }
+]

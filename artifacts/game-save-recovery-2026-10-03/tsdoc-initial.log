@@ -1,0 +1,52 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 49 production declarations are undocumented.
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:297 write
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:299 {writes, trackFailure}
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:300 cleanups
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:301 warn
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:317 preferences
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:320 {trackFailure}
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:321 cleanups
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:322 warn
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:338 write
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:339 {writes}
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:340 cleanups
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:341 warn
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:354 held
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:355 write
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:357 {writes, sessionRef}
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:358 cleanups
+- packages/portal/src/jest/__tests__/useJestPlayerStateWrites.test.ts:359 warn
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:61 recovery
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:93 currentSession
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:95 generation
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:96 write
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:114 currentSession
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:117 preferences
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:183 currentSession
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:184 generation
+- packages/portal/src/jest/useJestPlayerStateWrites.ts:197 wake
+- packages/portal/src/platform/PlayerSaveRecovery.ts:57 token
+- packages/portal/src/platform/PlayerSaveRecovery.ts:58 revision
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:8 retry
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:9 recovery
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:27 available
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:28 retry
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:29 recovery
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:46 release
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:47 held
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:48 retry
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:49 recovery
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:63 reject
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:64 held
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:65 retry
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:66 recovery
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:79 available
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:80 retry
+- packages/portal/src/platform/__tests__/PlayerSaveRecovery.test.ts:81 recovery
+- firebase-functions/src/race/raceLiveService.ts:311 data
+- firebase-functions/src/race/raceLiveService.ts:313 count
+- firebase-functions/src/race/raceLiveService.ts:317 run
+- firebase-functions/src/race/raceLiveService.ts:318 award
+- firebase-functions/src/race/raceLiveService.ts:320 coins
+[ELIFECYCLE] Command failed with exit code 1.

@@ -1,0 +1,6 @@
+{
+  "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts": "b605f7432d1fa1d173bc7c19fc51a18b5bf3ac34800212306dab354a059866bb",
+  "packages/portal/src/observability/browserErrorReporter.ts": "fbe0addfe7e9ed0531382b4dd3f2d10704987ab117e3f4d2fe0bc8ad3225bfc5",
+  "packages/portal/src/observability/__tests__/browserErrorReporter.test.ts": "3d22807ff99898e8b0968f58574ef80f5d16c7c9cedd1b9bf6cc50eaa099a373",
+  "packages/portal/scripts/verify-game-bridge-errors-browser.mjs": "aff1582d5a5e01822baf0d659a759138916741b04362c3aaeb8e36af48d4ba5a"
+}

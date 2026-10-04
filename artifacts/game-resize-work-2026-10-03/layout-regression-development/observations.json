@@ -1,0 +1,3086 @@
+[
+  {
+    "width": 1280,
+    "name": "measurement: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 1280,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 1280,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 1280,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 1280,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 1280,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: invalid 1280,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "measurement: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "measurement: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "measurement: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "measurement: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "measurement: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "measurement: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "measurement: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 1280,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 1280,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 1280,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 1280,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 1280,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: invalid 1280,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "host-pause: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 1280,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 1280,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 1280,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 1280,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 1280,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: invalid 1280,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "document-hidden: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 1280,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 1280,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 1280,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 1280,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 1280,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: invalid 1280,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "multiplayer: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 1280,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 1280,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 1280,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 1280,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 1280,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: invalid 1280,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retained callbacks cannot construct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "retire-pending: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: observer failure renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: observer failure allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: observer failure frame count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: observer failure disconnects observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: observer failure reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: observer failure operation",
+    "actual": "observe_scene",
+    "expected": "observe_scene"
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: retained callbacks cannot construct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: diagnostic count stable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "observer-constructor-failure: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: observer failure renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: observer failure allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: observer failure frame count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: observer failure disconnects observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: observer failure reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: observer failure operation",
+    "actual": "observe_scene",
+    "expected": "observe_scene"
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: retained callbacks cannot construct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: diagnostic count stable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "observer-observe-failure: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "measurement: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 390,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 390,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 390,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 390,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 390,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: invalid 390,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "measurement: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "measurement: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "measurement: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "measurement: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "measurement: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "measurement: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "measurement: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "host-pause: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 390,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 390,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 390,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 390,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 390,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: invalid 390,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "host-pause: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "host-pause: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "host-pause: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "host-pause: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "host-pause: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "host-pause: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "host-pause: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 390,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 390,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 390,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 390,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 390,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: invalid 390,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "document-hidden: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 390,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 390,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 390,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 390,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 390,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: invalid 390,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: positive layout constructs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: positive layout live resources",
+    "actual": 76,
+    "expected": 76
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: first measurement sizes buffer immediately",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: one animation chain",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: first draw",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: collapse stops frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: collapse draws nothing",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: restored layout draws again",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: restore reuses renderer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retained callbacks cannot construct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "multiplayer: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: active measurement subscription",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: no measurement polling frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 0,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 0,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 0,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid -1,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid -1,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid -1,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 390,0 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 390,0 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 390,0 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid Infinity,844 renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid Infinity,844 allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid Infinity,844 frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 390,NaN renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 390,NaN allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: invalid 390,NaN frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked positive renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked positive allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: blocked positive frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retained callbacks cannot construct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: diagnostic count stable",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "retire-pending: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: observer failure renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: observer failure allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: observer failure frame count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: observer failure disconnects observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: observer failure reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: observer failure operation",
+    "actual": "observe_scene",
+    "expected": "observe_scene"
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: retained callbacks cannot construct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: diagnostic count stable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "observer-constructor-failure: no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: unmeasured renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: unmeasured allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: unmeasured texture requests",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: one layout callback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: observer failure renderer count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: observer failure allocations",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: observer failure frame count",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: observer failure disconnects observer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: observer failure reports once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: observer failure operation",
+    "actual": "observe_scene",
+    "expected": "observe_scene"
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: retained callbacks cannot construct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: retired resources",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: retired frames",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: retired observers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: diagnostic count stable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: no duplicate disposals",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: draft retained",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: token retained",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: answer submits once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: completion once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "observer-observe-failure: no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

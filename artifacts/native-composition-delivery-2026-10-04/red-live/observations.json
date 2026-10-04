@@ -1,0 +1,20 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask",
+    "name": "initial composition reaches the draft once",
+    "actual": "te",
+    "expected": "te"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "microtask",
+    "name": "event delivery preserves duplicate versus new edit intent",
+    "actual": "tete",
+    "expected": "te"
+  }
+]

@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: controls use the requested locale:th
+
+'en' !== 'th'
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-durability-browser.mjs:95:146)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-durability-browser.mjs:100:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'en',
+  expected: 'th',
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

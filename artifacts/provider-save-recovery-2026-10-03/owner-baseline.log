@@ -1,0 +1,27 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/platform/__tests__/PlayerProjectionRecovery.test.ts
+  ● provider projection save recovery › recovers a rejected clear without requiring another accepted update
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 2
+    Received number of calls: 1
+
+      24 |     await expect(owner.update({activeGame: null})).rejects.toThrow("injected-provider-save-failure");
+      25 |     await jest.advanceTimersByTimeAsync(1000);
+    > 26 |     expect(write).toHaveBeenCalledTimes(2);
+         |                   ^
+      27 |     expect(write).toHaveBeenLastCalledWith(expect.objectContaining({activeGame: null}));
+      28 |   });
+      29 |
+
+      at Object.<anonymous> (src/platform/__tests__/PlayerProjectionRecovery.test.ts:26:19)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 total
+Time:        0.178 s
+Ran all test suites matching src/platform/__tests__/PlayerProjectionRecovery.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/platform/__tests__/PlayerProjectionRecovery.test.ts

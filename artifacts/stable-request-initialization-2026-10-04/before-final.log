@@ -1,0 +1,360 @@
+{
+  "mode": "production",
+  "checks": 582,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "target": "solo",
+      "scenario": "typing",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "solo",
+      "scenario": "parent",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "session": 32,
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "solo",
+      "scenario": "shortcut",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "pending-owner": 2
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 2
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "solo",
+      "scenario": "feedback",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "session": 32,
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "typing",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "parent",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "shortcut",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 2,
+        "live-leave": 2
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 2
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "target": "race",
+      "scenario": "feedback",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "solo",
+      "scenario": "typing",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "solo",
+      "scenario": "parent",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "session": 32,
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "solo",
+      "scenario": "shortcut",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "pending-owner": 2
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 2
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "solo",
+      "scenario": "feedback",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "session": 32,
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "race",
+      "scenario": "typing",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "race",
+      "scenario": "parent",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "race",
+      "scenario": "shortcut",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 2,
+        "live-leave": 2
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 2
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "target": "race",
+      "scenario": "feedback",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "solo",
+      "scenario": "typing",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "solo",
+      "scenario": "parent",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "session": 32,
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "solo",
+      "scenario": "shortcut",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "pending-owner": 2
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 2
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "solo",
+      "scenario": "feedback",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "session": 32,
+        "pending-owner": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "race",
+      "scenario": "typing",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "race",
+      "scenario": "parent",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "race",
+      "scenario": "shortcut",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 2,
+        "live-leave": 2
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 2
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "target": "race",
+      "scenario": "feedback",
+      "name": "mounted lifetime identities add no repeated initialization",
+      "actual": {
+        "live-join": 32,
+        "live-leave": 32
+      },
+      "expected": {},
+      "measurement": {
+        "transitions": 32
+      }
+    }
+  ]
+}

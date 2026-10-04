@@ -1,0 +1,44 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/reddit/__tests__/RedditGuestHostServices.test.ts
+  ● recovers an accepted win on attempt 1 before completion delivery
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+      26 |   const replacement = createRedditGuestHostServices(await original.loadProfile("reddit-guest"), checkpoint);
+      27 |   const recovered = await replacement.loadRiddle({gameMode: "classic", locale: "en"});
+    > 28 |   expect(recovered.attemptsUsed).toBe(count);
+         |                                  ^
+      29 |   expect(BridgeRiddleSchema.safeParse(recovered).success).toBe(true);
+      30 |   state = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: recovered});
+      31 |   state = gameSessionReducer(state, {type: "restoreSession", ...checkpoint});
+
+      at src/reddit/__tests__/RedditGuestHostServices.test.ts:28:34
+
+  ● recovers an accepted win on attempt 5 before completion delivery
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 5
+    Received: 0
+
+      26 |   const replacement = createRedditGuestHostServices(await original.loadProfile("reddit-guest"), checkpoint);
+      27 |   const recovered = await replacement.loadRiddle({gameMode: "classic", locale: "en"});
+    > 28 |   expect(recovered.attemptsUsed).toBe(count);
+         |                                  ^
+      29 |   expect(BridgeRiddleSchema.safeParse(recovered).success).toBe(true);
+      30 |   state = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: recovered});
+      31 |   state = gameSessionReducer(state, {type: "restoreSession", ...checkpoint});
+
+      at src/reddit/__tests__/RedditGuestHostServices.test.ts:28:34
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 18 passed, 20 total
+Snapshots:   0 total
+Time:        0.263 s, estimated 1 s
+Ran all test suites matching src/reddit/__tests__/RedditGuestHostServices.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/reddit/__tests__/RedditGuestHostServices.test.ts

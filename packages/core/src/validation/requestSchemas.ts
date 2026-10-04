@@ -185,6 +185,7 @@ export const DailyChallengeDataSchema = z
 export const GetCurrentDailyChallengeResponseSchema = z
   .object({
     challenge: DailyChallengeDataSchema.optional(),
+    classicIndex: z.number().int().positive().optional(),
     currentQuestion: z.number().int().nonnegative().optional(),
     hasCompletedToday: z.boolean().optional(),
     questionsCompleted: z.number().int().nonnegative().optional(),

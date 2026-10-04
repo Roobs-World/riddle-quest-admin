@@ -1,0 +1,17 @@
+BASELINE observations 1280px: completion identity, profile rerenders, retired visits, and both callback ownership boundaries
+BASELINE observations 390px: completion identity, profile rerenders, retired visits, and both callback ownership boundaries
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Baseline completion callback regressions reproduced
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-completion-effects-browser.mjs:120:22 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

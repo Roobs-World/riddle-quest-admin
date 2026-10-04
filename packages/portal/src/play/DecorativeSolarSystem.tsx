@@ -1,0 +1,42 @@
+import {Component, lazy, Suspense, type ErrorInfo, type ReactNode} from "react";
+import {captureBrowserException} from "../observability/browserErrorReporter";
+
+/** Optional scene code stays outside the initial game bundle. */
+const LazySolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
+
+/** A rejected import or render error removes only the decorative scene for this frame's lifetime. */
+class DecorationBoundary extends Component<{
+  /** Optional visual subtree, independent of puzzle and multiplayer state. */
+  children: ReactNode;
+}, {
+  /** Failed native module loads cannot be repaired by remounting a lazy component in this document. */
+  failed: boolean;
+}> {
+  /** Keeps failed decoration retired across pause, resume and profile updates. */
+  override state = {failed: false};
+
+  /** Falls back to the game's existing CSS background without changing gameplay. */
+  static getDerivedStateFromError() {
+    return {failed: true};
+  }
+
+  /** Uses the active target's diagnostics without adding analytics or a provider SDK. */
+  override componentDidCatch(error: Error, info: ErrorInfo): void {
+    captureBrowserException(error, {component: "solar_system", operation: "render_decoration", componentStack: info.componentStack});
+  }
+
+  /** An unavailable decoration must not unmount the game frame or erase its draft. */
+  override render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+/** Loads and renders the optional scene without allowing its failure to interrupt play. */
+export function DecorativeSolarSystem({paused, enabled = true}: {
+  /** Current host or visibility pause state, forwarded to a healthy scene. */
+  paused: boolean;
+  /** Turning off optional motion releases its resources while retaining any failed-import boundary. */
+  enabled?: boolean;
+}) {
+  return <DecorationBoundary>{enabled && <Suspense fallback={null}><LazySolarSystem paused={paused} /></Suspense>}</DecorationBoundary>;
+}

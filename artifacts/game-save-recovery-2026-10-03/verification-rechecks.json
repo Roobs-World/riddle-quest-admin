@@ -1,0 +1,8 @@
+[
+  {
+    "name": "tsdoc",
+    "exit": 0,
+    "evidence": "tsdoc-final.log",
+    "reason": "Documented existing terminal-settlement locals and fixtures; comments only."
+  }
+]

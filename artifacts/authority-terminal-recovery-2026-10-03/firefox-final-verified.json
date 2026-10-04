@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "viewport": [
+    390,
+    568
+  ],
+  "attempts": 6,
+  "provider": "forged older checkpoint",
+  "canonicalWinningRowRecovered": true,
+  "paidGrantBeforeRecovery": 1,
+  "repeatedCharges": 0,
+  "replayedGuesses": 0,
+  "completionRequestIdentityCount": 1,
+  "practiceCompletionDelta": 1,
+  "pendingCheckpointClearedAfterAcknowledgement": true,
+  "nativeCoinCollectionAndNext": true,
+  "nextIndex": 2,
+  "nativeDraft": "Q",
+  "browserErrors": []
+}

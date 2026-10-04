@@ -1,0 +1,39 @@
+{
+  "goalStatus": "active",
+  "portalUnitTests": 2717,
+  "unitSuites": 296,
+  "newBrowserChecks": 1080,
+  "newJourneys": 120,
+  "injectedChecksTotal": 2734,
+  "browserMatrices": {
+    "development": 540,
+    "production": 540,
+    "keyboard-development": 188,
+    "keyboard-production": 188,
+    "question-development": 219,
+    "question-production": 219,
+    "ime-development": 168,
+    "ime-production": 168,
+    "admission-development": 87,
+    "admission-production": 87,
+    "capacity-development": 165,
+    "capacity-production": 165
+  },
+  "builtJourneys": 37,
+  "builtSuites": 7,
+  "typesPassed": true,
+  "tsdocDeclarations": 25123,
+  "tsdocFiles": 1136,
+  "sixBuildsAndAuditsPassed": true,
+  "firefoxMcpVerified": true,
+  "sourceInputPaths": 763,
+  "sourceStable": true,
+  "reactReview": "Transient markers remain in refs; existing native listener reads latest callbacks, guards retirement, and preserves cleanup. No new global subscription or SDK.",
+  "ownedSourceSha256": {
+    "packages/portal/src/play/race/components/NativeAnswerInput.tsx": "112d1bd59730af53ea44276fb9d26422a87b92081c0af685c26ac186672fea61",
+    "packages/portal/src/playable/YouTubeNativeAnswerInput.tsx": "dbbe64a57944668f5061a6f21ef41881547259d431a07a9be0893a17cd057fb3",
+    "packages/portal/src/input/useNativeAnswerBackspace.ts": "965c71b2051b9412a5fd4cd9560d6b9d68d6879c839823f986c2d9719019b939",
+    "packages/portal/scripts/verify-native-composition-delivery-browser.mjs": "115177b78a1424a516b16af00d9109d89ec31f7d94a128c78eab2df7beed70d8",
+    "packages/portal/package.json": "7e3759f62e2919b06f11988d639a041a5927da09549f66595b3394e12566a5c3"
+  }
+}

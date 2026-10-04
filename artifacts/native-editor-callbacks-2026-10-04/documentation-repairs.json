@@ -1,0 +1,10 @@
+{
+  "declarations": 36,
+  "files": [
+    "packages/portal/src/play/GameSessionCheckpoints.ts",
+    "packages/portal/src/play/__tests__/GameSessionCheckpoints.test.ts",
+    "packages/portal/src/play/__tests__/gameSession.test.ts",
+    "packages/portal/src/play/__tests__/useProvisionalPlayRecovery.test.ts"
+  ],
+  "changes": "Comments only"
+}

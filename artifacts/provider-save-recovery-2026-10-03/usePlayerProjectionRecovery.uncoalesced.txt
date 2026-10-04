@@ -1,0 +1,48 @@
+import {useEffect, useMemo, useRef} from "react";
+import type {LifecycleCapability} from "./types";
+import type {PlayerProjectionPersistence} from "./PlayerProjectionPersistence";
+import {PlayerSaveRecovery} from "./PlayerSaveRecovery";
+
+/** Binds browser/provider signals to one persistence owner without changing startup dependencies. */
+export function usePlayerProjectionRecovery(
+  persistence: PlayerProjectionPersistence | null,
+  {
+    lifecycle,
+    canRecover = () => true,
+  }: {
+    /** Pause/resume belong to the target adapter rather than another provider's SDK. */
+    lifecycle?: LifecycleCapability;
+    /** Target account gates and expanded-view checks are re-read before a retry. */
+    canRecover?: () => boolean;
+  } = {},
+): PlayerSaveRecovery {
+  /** Latest availability closure does not restart listener ownership during ordinary renders. */
+  const availableRef = useRef(canRecover);
+  availableRef.current = canRecover;
+  /** An absent/cleared owner remains quiet while keeping the game layout mounted. */
+  const quiet = useMemo(() => new PlayerSaveRecovery(async () => undefined, () => false), []);
+  useEffect(() => {
+    if (!persistence) return;
+    /** Provider pause can leave browser visibility unchanged. */
+    let paused = false;
+    /** Every queued attempt checks the current view, connection and account boundary. */
+    const available = () => !paused && availableRef.current() && navigator.onLine !== false && document.visibilityState !== "hidden";
+    persistence.attachRecovery(available);
+    /** A real recovery signal grants a fresh bounded episode only while this view is available. */
+    const wake = () => {if (available()) persistence.recovery.wake();};
+    /** Native pause blocks retries even when browser visibility stays visible. */
+    const stopPause = lifecycle?.onPause(() => {paused = true;});
+    /** Native resume reopens this provider view's bounded retry episode. */
+    const stopResume = lifecycle?.onResume?.(() => {paused = false; wake();});
+    window.addEventListener("online", wake);
+    document.addEventListener("visibilitychange", wake);
+    return () => {
+      persistence.detachRecovery();
+      stopPause?.();
+      stopResume?.();
+      window.removeEventListener("online", wake);
+      document.removeEventListener("visibilitychange", wake);
+    };
+  }, [persistence, lifecycle]);
+  return persistence?.recovery ?? quiet;
+}

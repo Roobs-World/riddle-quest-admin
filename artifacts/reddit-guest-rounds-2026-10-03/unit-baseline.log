@@ -1,0 +1,71 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/reddit/__tests__/RedditGuestHostServices.test.ts
+  ● starts a fresh round when the two-example guest deck cycles
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      20 |   const third = await services.loadRiddle({gameMode: "classic", locale: "en"});
+      21 |   expect(third.riddleId).toBe(first.riddleId);
+    > 22 |   expect(third.attemptsUsed).toBe(0);
+         |                              ^
+      23 |   expect(third.acceptedGuesses ?? []).toEqual([]);
+      24 |   expect(third.sessionToken).not.toBe(first.sessionToken);
+      25 | });
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditGuestHostServices.test.ts:22:30)
+
+  ● completes a declined five-guess guest round without requiring an unavailable paid attempt
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      34 |   /** Loading at the boundary must remain compatible with the strict bridge contract. */
+      35 |   const boundary = await services.loadRiddle({gameMode: "classic", locale: "en"});
+    > 36 |   expect(BridgeRiddleSchema.safeParse(boundary).success).toBe(true);
+         |                                                          ^
+      37 |   expect(boundary.awaitingContinue).toBe(true);
+      38 |   await expect(services.completeGame({riddleId: riddle.riddleId, gameMode: "classic",
+      39 |     sessionToken: riddle.sessionToken})).resolves.toMatchObject({attempts: 5, isCorrect: false, coinsEarned: 0});
+
+      at Object.<anonymous> (src/reddit/__tests__/RedditGuestHostServices.test.ts:36:58)
+
+  ● counts a guest round once when completion is retried
+
+    expect(received).resolves.toMatchObject(expected)
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   "classicIndex": 2,
+    -   "gamesPlayed": 1,
+    -   "wins": 1,
+    +   "classicIndex": 3,
+    +   "gamesPlayed": 2,
+    +   "wins": 2,
+      }
+
+      50 |   const payload = {riddleId: riddle.riddleId, gameMode: "classic" as const, sessionToken: riddle.sessionToken};
+      51 |   expect(await services.completeGame(payload)).toEqual(await services.completeGame(payload));
+    > 52 |   await expect(services.loadProfile("reddit-guest")).resolves.toMatchObject({gamesPlayed: 1, wins: 1, classicIndex: 2});
+         |                                                               ^
+      53 | });
+      54 |
+      55 | /** Real checkpoint projection containing two confirmed local wrong answers and a later draft. */
+
+      at Object.toMatchObject (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2140:20)
+      at Object.<anonymous> (src/reddit/__tests__/RedditGuestHostServices.test.ts:52:63)
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 12 passed, 15 total
+Snapshots:   0 total
+Time:        0.252 s, estimated 1 s
+Ran all test suites matching src/reddit/__tests__/RedditGuestHostServices.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/reddit/__tests__/RedditGuestHostServices.test.ts

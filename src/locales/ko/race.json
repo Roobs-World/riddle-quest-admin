@@ -109,7 +109,6 @@
     "LIVE_START": "PvP 대전 시작",
     "LIVE_FINDING": "상대를 찾는 중…",
     "LIVE_STARTING": "대전 시작",
-    "LIVE_WAIT": "상대를 찾고 있습니다. 최대 1분이 걸릴 수 있습니다.",
     "LIVE_OPPONENT": "상대",
     "LIVE_REWARD": "+{coins} 코인",
     "LIVE_MODE": "실시간 PvP",

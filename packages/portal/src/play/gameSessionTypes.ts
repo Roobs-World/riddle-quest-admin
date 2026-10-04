@@ -49,7 +49,10 @@ export type GameSessionState = {
   /** Current leaderboard page. */ leaderboard: BridgeLeaderboardEntry[];
   /** Metric used to rank the current leaderboard page. */ leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
   /** Indicates whether a leaderboard request is in flight. */ leaderboardLoading: boolean;
+  /** Correlates results with the latest requested ranking. */ leaderboardRequestId: string | null;
+  /** Distinguishes an unavailable ranking from a successful empty result. */ leaderboardLoadError: boolean;
   /** Answer-bearing riddle currently loaded into the local engine. */ riddle: BridgeRiddle | null;
+  /** Only a fresh authority load may accept checkpoint restoration before player or journal ownership. */ canRestoreCheckpoint: boolean;
   /** Graphemes entered into the current guess. */ currentLetters: string[];
   /** Slot that receives the next keyboard input. */ activeSlotIndex: number;
   /** Answer positions locked by purchased hints. */ hintRevealedIndices: number[];
@@ -261,6 +264,8 @@ export type GameSessionAction =
       /** Paid request identifier. */ requestId: string;
       /** Cost displayed before the server responds. */ amount: number;
       /** The paid action whose local gameplay should be previewed. */ reason?: "continue" | "skip";
+      /** Unsubmitted continued-attempt letters retained by the paid-action journal. */ draft?: string[];
+      /** Editable selection restored together with the continued-attempt draft. */ draftActiveSlotIndex?: number;
     }
   | {
       /** Replaces the preview with the server balance. */ type: "confirmCoinSpend";
@@ -273,7 +278,8 @@ export type GameSessionAction =
     }
   | {
       /** Stores type. */
-      type: "leaderboardLoaded"; /** Stores leaderboard type. */
+      type: "leaderboardLoaded";
+      /** Correlated host request identifier. */ requestId?: string; /** Stores leaderboard type. */
       /** Stores leaderboard type. */
       leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins"; /** Stores entries. */
       /** Stores entries. */
@@ -281,13 +287,15 @@ export type GameSessionAction =
     }
   | {
       /** Stores type. */
-      type: "leaderboardRequested"; /** Stores leaderboard type. */
+      type: "leaderboardRequested";
+      /** Correlated host request identifier. */ requestId?: string; /** Stores leaderboard type. */
       /** Stores leaderboard type. */
       leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
     }
   | {
       /** Stores type. */
       type: "leaderboardLoadFailed";
+      /** Correlated host request identifier. */ requestId?: string;
     }
   | {
       /** Stores type. */

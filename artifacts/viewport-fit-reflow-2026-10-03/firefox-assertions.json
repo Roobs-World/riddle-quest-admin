@@ -1,0 +1,168 @@
+{
+  "checks": 30,
+  "failures": [],
+  "observations": [
+    {
+      "name": "baseline reproduces small keys",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "baseline uses a nonzero global transition",
+      "actual": "0.000001s",
+      "expected": "0.000001s"
+    },
+    {
+      "name": "baseline candidates keep the prior fitted height",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "controlled zero-duration probe resolves immediately",
+      "actual": "0s",
+      "expected": "0s"
+    },
+    {
+      "name": "controlled probe restores usable key height",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "controlled probe releases the prior minimum height",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "app measured viewport",
+      "actual": [
+        500,
+        494
+      ],
+      "expected": [
+        500,
+        494
+      ]
+    },
+    {
+      "name": "app usable key height",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "app controls fit",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "app no geometry interpolation",
+      "actual": "0s",
+      "expected": "0s"
+    },
+    {
+      "name": "app actual system preference",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "app no page errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "app no unhandled rejection",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "app accepts native input",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "system measured viewport",
+      "actual": [
+        500,
+        494
+      ],
+      "expected": [
+        500,
+        494
+      ]
+    },
+    {
+      "name": "system usable key height",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "system controls fit",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "system no geometry interpolation",
+      "actual": "0s",
+      "expected": "0s"
+    },
+    {
+      "name": "system actual system preference",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "system no page errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "system no unhandled rejection",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "system accepts native input",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "system-only case disables the app setting",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "repeated resize preserves the draft",
+      "actual": "PIAN",
+      "expected": "PIAN"
+    },
+    {
+      "name": "repeated resize keeps usable keys",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "native submission happens once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "completion happens once",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "completed draft is acknowledged clear",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "name": "completion has no page errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "name": "completion has no unhandled rejection",
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

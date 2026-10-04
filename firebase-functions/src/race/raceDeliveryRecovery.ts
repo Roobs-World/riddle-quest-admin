@@ -49,7 +49,8 @@ export async function replayRaceDelivery(db: Firestore, collection: RaceDelivery
         await validateFacebookLiveRaceReferralSource(transaction, db, liveReceipt, nowMs);
       if (!active)
         throw new HttpsError("failed-precondition", "Replay requires an active canonical live winner.");
-      if (receipt.source === "facebook_live" && isFacebookFeatureEnabled("tournaments"))
+      if (receipt.source === "facebook_live" && (isFacebookFeatureEnabled("tournaments") ||
+        liveReceipt.facebookContext !== undefined && isFacebookFeatureEnabled("matchmaking")))
         await readFacebookLiveTournamentDeliveryInput(transaction, db, liveReceipt, nowMs);
       if (receipt.source === "reddit_live" && isRedditFeatureEnabled("tournaments"))
         await readRedditLiveTournamentDeliveryInput(transaction, db, liveReceipt, nowMs);

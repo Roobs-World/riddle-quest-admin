@@ -59,6 +59,176 @@
         "DESCRIPTION": "Gagnez 10000 XP"
       }
     },
-    "UNLOCKED_LABEL": "Débloqué"
+    "UNLOCKED_LABEL": "Débloqué",
+    "SOLO": {
+      "first_win": {
+        "NAME": "Première victoire",
+        "DESCRIPTION": "Gagnez votre première énigme"
+      },
+      "wins_5": {
+        "NAME": "Premiers pas",
+        "DESCRIPTION": "Gagnez 5 énigmes"
+      },
+      "wins_25": {
+        "NAME": "Maître des énigmes",
+        "DESCRIPTION": "Gagnez 25 énigmes"
+      },
+      "wins_50": {
+        "NAME": "Grand solveur",
+        "DESCRIPTION": "Gagnez 50 énigmes"
+      },
+      "wins_100": {
+        "NAME": "Cent victoires",
+        "DESCRIPTION": "Gagnez 100 énigmes"
+      },
+      "win_rate_80": {
+        "NAME": "Palmarès brillant",
+        "DESCRIPTION": "Maintenez 80 % de victoires après 10 parties"
+      },
+      "efficient_10": {
+        "NAME": "Solveur efficace",
+        "DESCRIPTION": "Faites en moyenne 3 essais ou moins après 10 victoires"
+      },
+      "games_25": {
+        "NAME": "Habitué des énigmes",
+        "DESCRIPTION": "Jouez à 25 énigmes"
+      },
+      "games_100": {
+        "NAME": "Passionné des énigmes",
+        "DESCRIPTION": "Jouez à 100 énigmes"
+      },
+      "streak_3": {
+        "NAME": "Sur une lancée",
+        "DESCRIPTION": "Atteignez une série de victoires de 3 jours"
+      },
+      "streak_7": {
+        "NAME": "Inarrêtable",
+        "DESCRIPTION": "Atteignez une série de victoires de 7 jours"
+      },
+      "streak_14": {
+        "NAME": "Étincelle de deux semaines",
+        "DESCRIPTION": "Atteignez une série de victoires de 14 jours"
+      },
+      "streak_30": {
+        "NAME": "Élan mensuel",
+        "DESCRIPTION": "Atteignez une série de victoires de 30 jours"
+      },
+      "classic_10": {
+        "NAME": "Explorateur classique",
+        "DESCRIPTION": "Terminez 10 niveaux classiques"
+      },
+      "classic_25": {
+        "NAME": "Voyageur classique",
+        "DESCRIPTION": "Terminez 25 niveaux classiques"
+      },
+      "classic_50": {
+        "NAME": "Cartographe classique",
+        "DESCRIPTION": "Terminez 50 niveaux classiques"
+      },
+      "classic_100": {
+        "NAME": "Légende classique",
+        "DESCRIPTION": "Terminez 100 niveaux classiques"
+      },
+      "daily_completed": {
+        "NAME": "Challenger quotidien",
+        "DESCRIPTION": "Terminez un défi quotidien"
+      },
+      "daily_7": {
+        "NAME": "Rituel hebdomadaire",
+        "DESCRIPTION": "Terminez 7 défis quotidiens"
+      },
+      "daily_30": {
+        "NAME": "Dévouement quotidien",
+        "DESCRIPTION": "Terminez 30 défis quotidiens"
+      },
+      "daily_100": {
+        "NAME": "Sentinelle quotidienne",
+        "DESCRIPTION": "Terminez 100 défis quotidiens"
+      },
+      "challenge_5": {
+        "NAME": "Grimpeur de défis",
+        "DESCRIPTION": "Gagnez 5 défis quotidiens"
+      },
+      "challenge_25": {
+        "NAME": "Champion des défis",
+        "DESCRIPTION": "Gagnez 25 défis quotidiens"
+      },
+      "challenge_50": {
+        "NAME": "Conquérant des défis",
+        "DESCRIPTION": "Gagnez 50 défis quotidiens"
+      },
+      "perfect_guess": {
+        "NAME": "Du premier coup",
+        "DESCRIPTION": "Résolvez une énigme dès le premier essai"
+      },
+      "classic_perfect": {
+        "NAME": "Dans le mille classique",
+        "DESCRIPTION": "Résolvez une énigme classique dès le premier essai"
+      },
+      "challenge_perfect": {
+        "NAME": "Dans le mille quotidien",
+        "DESCRIPTION": "Résolvez un défi quotidien dès le premier essai"
+      },
+      "last_chance": {
+        "NAME": "Dernière chance",
+        "DESCRIPTION": "Résolvez une énigme au dernier essai"
+      },
+      "classic_last_chance": {
+        "NAME": "Retour classique",
+        "DESCRIPTION": "Résolvez une énigme classique au dernier essai"
+      },
+      "challenge_last_chance": {
+        "NAME": "Retour quotidien",
+        "DESCRIPTION": "Résolvez un défi quotidien au dernier essai"
+      },
+      "lesson_learned": {
+        "NAME": "Leçon apprise",
+        "DESCRIPTION": "Terminez une énigme sans la résoudre"
+      },
+      "hint_user": {
+        "NAME": "Un indice, s’il vous plaît",
+        "DESCRIPTION": "Utilisez un indice"
+      },
+      "hints_10": {
+        "NAME": "Collectionneur d’indices",
+        "DESCRIPTION": "Utilisez 10 indices"
+      },
+      "hints_25": {
+        "NAME": "Archiviste des indices",
+        "DESCRIPTION": "Utilisez 25 indices"
+      },
+      "level_5": {
+        "NAME": "Niveau cinq",
+        "DESCRIPTION": "Atteignez le niveau de joueur 5"
+      },
+      "level_10": {
+        "NAME": "Deux chiffres",
+        "DESCRIPTION": "Atteignez le niveau de joueur 10"
+      },
+      "level_20": {
+        "NAME": "Briseur d’orbite",
+        "DESCRIPTION": "Atteignez le niveau de joueur 20"
+      },
+      "xp_1000": {
+        "NAME": "Collectionneur de XP",
+        "DESCRIPTION": "Gagnez 1000 XP"
+      },
+      "xp_5000": {
+        "NAME": "Moteur de XP",
+        "DESCRIPTION": "Gagnez 5000 XP"
+      },
+      "coin_hoarder": {
+        "NAME": "Collectionneur de pièces",
+        "DESCRIPTION": "Possédez 1000 pièces"
+      },
+      "treasure_vault": {
+        "NAME": "Coffre au trésor",
+        "DESCRIPTION": "Possédez 2500 pièces"
+      },
+      "first_purchase": {
+        "NAME": "Soutien",
+        "DESCRIPTION": "Achetez un article dans la boutique"
+      }
+    }
   }
 }

@@ -1,0 +1,364 @@
+{
+  "text": "Classic\n250\nWhat has keys but cannot open doors?\nV\nV\nV\nV\nV\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip",
+  "probe": {
+    "outbound": [
+      {
+        "type": "game:resize",
+        "requestId": "resize-69a10bf9-8f98-43e4-a7f2-c47eb930611a",
+        "payload": {
+          "width": 390,
+          "height": 568
+        },
+        "sentAt": 1791065460779
+      },
+      {
+        "type": "game:ready",
+        "requestId": "ready-3fdcb2a4-d7d2-4b7f-961d-f63ccbbba265",
+        "payload": {
+          "protocolVersion": 1,
+          "surface": "html5"
+        },
+        "sentAt": 1791065460780
+      }
+    ],
+    "inbound": [
+      {
+        "type": "host:authState",
+        "requestId": "auth-93fc2240-4311-492d-83a1-d3c7c953fd92",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 250,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791065460763
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-a9ff700d-0aa9-4b30-a1dc-de0884f4f944",
+        "payload": {
+          "user": null,
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 250,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791065460764
+      },
+      {
+        "type": "host:authState",
+        "requestId": "auth-dc280653-9044-4e63-80cf-b8d1b6b2f2d5",
+        "payload": {
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 250,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791065460777
+      },
+      {
+        "type": "host:init",
+        "requestId": "init-0197346b-6391-4dc7-a50b-844768c8f723",
+        "payload": {
+          "protocolVersion": 1,
+          "sessionId": "session-5de4a54b-2dfe-4ebc-aaef-667a277d6dff",
+          "locale": "en",
+          "user": {
+            "uid": "jest-guest",
+            "displayName": "Guest Solver",
+            "isAnonymous": true
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 250,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          },
+          "gameMode": "classic",
+          "products": []
+        },
+        "sentAt": 1791065460791
+      },
+      {
+        "type": "host:riddleLoaded",
+        "payload": {
+          "riddle": {
+            "riddleId": "classic-fake-1",
+            "text": "What has keys but cannot open doors?",
+            "answerLength": 5,
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "gameMode": "classic",
+            "index": 1,
+            "attemptsUsed": 6,
+            "hasUsedContinue": true,
+            "awaitingContinue": false,
+            "evaluation": {
+              "answer": "piano",
+              "locale": "en"
+            },
+            "acceptedGuesses": [
+              {
+                "attempt": 1,
+                "feedback": [
+                  {
+                    "letter": "q",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "q",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "q",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "q",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "q",
+                    "status": "red"
+                  }
+                ]
+              },
+              {
+                "attempt": 2,
+                "feedback": [
+                  {
+                    "letter": "r",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "r",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "r",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "r",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "r",
+                    "status": "red"
+                  }
+                ]
+              },
+              {
+                "attempt": 3,
+                "feedback": [
+                  {
+                    "letter": "s",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "s",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "s",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "s",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "s",
+                    "status": "red"
+                  }
+                ]
+              },
+              {
+                "attempt": 4,
+                "feedback": [
+                  {
+                    "letter": "t",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "t",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "t",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "t",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "t",
+                    "status": "red"
+                  }
+                ]
+              },
+              {
+                "attempt": 5,
+                "feedback": [
+                  {
+                    "letter": "u",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "u",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "u",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "u",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "u",
+                    "status": "red"
+                  }
+                ]
+              },
+              {
+                "attempt": 6,
+                "feedback": [
+                  {
+                    "letter": "v",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "v",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "v",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "v",
+                    "status": "red"
+                  },
+                  {
+                    "letter": "v",
+                    "status": "red"
+                  }
+                ]
+              }
+            ]
+          },
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 250,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        },
+        "sentAt": 1791065460792
+      },
+      {
+        "type": "host:operationResult",
+        "payload": {
+          "operation": "loadRiddle",
+          "ok": true,
+          "data": {
+            "riddleId": "classic-fake-1"
+          }
+        },
+        "sentAt": 1791065460793
+      }
+    ],
+    "errors": [],
+    "unhandled": [],
+    "saves": [
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 250,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        }
+      }
+    ],
+    "completions": [],
+    "spends": [],
+    "seedSpends": 1,
+    "before": {
+      "username": "Guest Solver",
+      "coins": 250,
+      "level": 3,
+      "xp": 420,
+      "winStreak": 2,
+      "gamesPlayed": 7,
+      "wins": 5,
+      "achievements": [
+        "first_win",
+        "daily_spark"
+      ],
+      "classicIndex": 1
+    },
+    "ready": true
+  }
+}

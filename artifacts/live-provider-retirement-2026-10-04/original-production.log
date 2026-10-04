@@ -1,0 +1,1386 @@
+{
+  "mode": "production",
+  "checks": 393,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "idle",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "idle",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "idle",
+      "name": "replacement never uses the retired ticket through a new adapter",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "idle",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "idle",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "join",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "join",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "join",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "poll",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "poll",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "poll",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "poll",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "guess",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "guess",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "guess",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "guess",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "leave",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "leave",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner-commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner-commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner-commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner-commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner-commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner-commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remove-commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remove-commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remove-commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remove-commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remove-commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remove-commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "idle",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "idle",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "idle",
+      "name": "replacement never uses the retired ticket through a new adapter",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "idle",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "idle",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "join",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "join",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "join",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "poll",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "poll",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "poll",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "poll",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "guess",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "guess",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "guess",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "guess",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "leave",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "leave",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "idle",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "idle",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "idle",
+      "name": "replacement never uses the retired ticket through a new adapter",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "idle",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "idle",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "join",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "join",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "join",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "poll",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "poll",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "poll",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "poll",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "guess",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "guess",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "guess",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "guess",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "leave",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "leave",
+      "name": "replacement removes the old subscription",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "commit",
+      "name": "replacement retires the selected journey before a fresh explicit start",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 2,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "owner-commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "replacement cannot deliver a retired result to the current profile",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "replacement cannot emit a retired completion event",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "late retired receipt cannot grant a result",
+      "actual": [
+        {
+          "generation": 1,
+          "owner": "Owner",
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "late retired receipt cannot notify completion",
+      "actual": [
+        {
+          "ownerId": "Owner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remove-commit",
+      "name": "retirement retries share one key",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}

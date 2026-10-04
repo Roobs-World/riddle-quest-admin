@@ -2,11 +2,13 @@ import {createFirebaseRaceMatchmaking} from "../firebaseRaceMatchmaking";
 
 it("exposes retained live history through the explicitly enabled Facebook live surface", () => {
   /** The owning target opts into live social features; the default adapter stays unchanged. */
-  const options = {liveSafety: true, liveHistory: true};
+  const options = {liveSafety: true, liveHistory: true, liveRematch: true};
   /** Target-owned capability surface under inspection. */
   const target = createFirebaseRaceMatchmaking(undefined, options);
   expect(typeof Reflect.get(target.live!, "history")).toBe("function");
   expect(Reflect.get(createFirebaseRaceMatchmaking().live!, "history")).toBeUndefined();
+  expect(typeof target.live!.rematch).toBe("function");
+  expect(createFirebaseRaceMatchmaking().live!.rematch).toBeUndefined();
 });
 import {raceMatchFailure} from "@qwordly/core/race";
 

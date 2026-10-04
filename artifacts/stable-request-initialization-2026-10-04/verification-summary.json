@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "newBrowserAssertions": 1164,
+  "newJourneys": 84,
+  "regressions": {
+    "regression-cold-draft": 732,
+    "regression-live-callback": 1116,
+    "regression-live-reconnect": 708,
+    "regression-static-keyboard": 708
+  },
+  "browserAssertions": 4428,
+  "portalUnits": 2727,
+  "builtJourneys": 37,
+  "isolatedBuilds": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube-fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "stableSourceInputs": 765,
+  "firefoxVerified": true,
+  "firefoxProofObservations": 7,
+  "fixtureStopped": true,
+  "ownedTabsClosed": true,
+  "scriptHash": "3354a9e69b5c03f105ac19e8a8a912574780e5277834e926c199b45edc7f96c2",
+  "goal": "active"
+}

@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: switching from shortcut buttons to physical input preserves the answer
+
+'r' !== 'rome'
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-playable-action-focus-browser.mjs:35:112)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-playable-action-focus-browser.mjs:52:4 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'r',
+  expected: 'rome',
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

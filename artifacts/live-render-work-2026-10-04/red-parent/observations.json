@@ -1,0 +1,73 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "physical input starts the correct draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "fixed key order is unchanged",
+    "actual": "QWERTYUIOPASDFGHJKLZXCVBNM",
+    "expected": "QWERTYUIOPASDFGHJKLZXCVBNM"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "mounted identities are initialized",
+    "actual": [
+      "live-join",
+      "live-leave"
+    ],
+    "expected": [
+      "live-join",
+      "live-leave"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "edited draft is preserved",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "mounted lifetime identities add no repeated initialization",
+    "actual": {},
+    "expected": {},
+    "measurement": {
+      "transitions": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "parent",
+    "name": "race rendering adds no repeated clock initialization or feedback reduction",
+    "actual": {
+      "wall": 4,
+      "monotonic": 2,
+      "feedback": 2
+    },
+    "expected": {
+      "wall": 0,
+      "monotonic": 0,
+      "feedback": 0
+    }
+  }
+]

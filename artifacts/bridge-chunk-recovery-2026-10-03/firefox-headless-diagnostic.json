@@ -1,0 +1,12 @@
+{
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Firefox Instance Configuration\n\nBinary: /snap/firefox/current/usr/lib/firefox/firefox\nFirefox version: 157.0\nHeadless: Yes\nProfile: /home/craig-beswetherick/snap/firefox/common/mcp-tmp/bridge-firefox-diagnostic-304aqqqn\nStart URL: about:blank\n\nOutput File: /home/craig-beswetherick/Documents/riddle-quest/artifacts/bridge-chunk-recovery-2026-10-03/firefox-headless.log\n  Size: 0.00 MB\n  Last Modified: 2026-10-03T04:27:03.036Z"
+      }
+    ]
+  },
+  "jsonrpc": "2.0",
+  "id": 2
+}

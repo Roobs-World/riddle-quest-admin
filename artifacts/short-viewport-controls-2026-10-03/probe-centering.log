@@ -1,0 +1,79 @@
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 150,
+  "failures": [
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "unsaved",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "width": 844,
+      "height": 390,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "unsaved",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 844,
+      "height": 390,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}

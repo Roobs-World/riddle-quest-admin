@@ -1,0 +1,27 @@
+# Guest economy capability presentation — 2026-10-03
+
+Reddit guest play now presents the actions its adapter actually supports. Gameplay shows Submit, the introduction teaches Submit, and wrong guesses do not trigger an unavailable paid-hint reminder. After five wrong answers, the guest decision offers the existing translated Next action through the ordinary decline/completion path. Supported hosted economies retain their Hint, Skip, paid Continue, and provider-funded recovery controls.
+
+## Cause and implementation
+
+The previous goal turn made verified progress on round lifecycle and retries. This pass reproduced paid controls in a session with no economy: the actual Continue component's regression test initially failed while its ten existing tests passed. The ranked cause was authority availability reaching the host but not the frame/modal/guidance presentation, with stale product state and generic button composition as alternatives. Replacing only the frame with its captured original in the real Reddit entry reproduced **12 expected capability-presentation failures across 72 assertions**.
+
+`PlayHostApp` derives presentation availability from `authority.economy`. The frame passes that value to the modal pages, their existing surface-error recovery composition, and guidance. Existing/default economy-capable callers retain their behavior. Guest Hint and Skip entry controls are omitted, and the sole Submit button spans the existing action grid. Game-tour and contextual-tooltip selection use the same capability, so they do not direct a guest toward a missing action.
+
+The non-economic Continue variant uses `GameScreenAlerts.NEXT_BUTTON`, calls the existing decline handler, and waits while final-guess confirmation or continuation is pending. The normal shared completion acknowledgement still issues the next example. It does not grant an extra attempt, synthesize currency, add a provider SDK, or call a spending service. Existing translated paid-action keys remain used by supported economies; no locale keys were removed or newly added.
+
+## Verification
+
+Evidence is under `artifacts/guest-economy-capabilities-2026-10-03/`. Captured originals isolate this pass from other work in the shared checkout. `source-hashes.json` fingerprints the final production sources and browser verifiers.
+
+- **2,568 portal unit tests passed**, 294 suites; 118 browser-gated tests skipped. Focused commerce/guidance tests: **17 passed**, including preserved default economy behavior and absent guest hint guidance. Portal types and repository TSDoc audit passed.
+- Injected native round lifecycle checks: **72 assertions per React mode**, **144 total**, including three victories, a dropped completion response, fifth-guess reload, absent paid controls, native Next, automatic fresh-round issuance, and keyboard input.
+- Storage/guidance recovery: **114 assertions per mode**, **228 total**, against the actual guest entry. Its guest assertions now follow the available one-step Submit tour and require the paid-hint reminder to remain absent; profile-tour marker and durable-guess recovery remain checked.
+- Production translated Next checks additionally exercise all **16 supported locales at 390×568 and 390×844**: translated copy, a reachable button of at least 44px, absence of paid choices, native click, and confirmed practice advancement. That run has **200 assertions**, including its standard 72-assertion lifecycle matrix. A first fixture read checked durable counts before asynchronous publication settled; a second checked pointer hits while the real locale-preparation overlay still covered the dialog. The final verifier waits for those specific authoritative lifecycle transitions before retaining the geometry and native-click assertions. Both failed logs are preserved.
+- Previous guest durability/layout matrix: **398 assertions per mode, 796 total**, across all supported locales. Combined final browser runs: **1,368 assertions passed**. All owned verification processes terminated; `verification-summary.json` records final results. The registered guest-round browser command now includes the production locale matrix.
+- Native Firefox independently submitted five distinct wrong answers, confirmed Submit was the sole game action, measured the enabled guest Next button at **408×44px** with a successful center hit test, clicked it, observed one non-economic loss and index-2 issuance with an empty board, then saved a native `Q` draft. Paid choices and browser error arrays were empty. Raw MCP outputs, parsed/checked JSON, and screenshots are retained. The owned tab/server were closed and the pre-existing `about:blank` tab was preserved.
+- Jest, Facebook, Reddit, YouTube, Netflix, and Yahoo isolated builds and embedded artifact audits passed. Selected built Reddit and supported Jest/profile journeys: **8 tests passed across three suites**. The React changes preserve unconditional hook order, derive availability from the owning host, keep modal callbacks guarded, and reuse the existing accessible modal and translated native controls.
+
+## Remaining work
+
+The broad improvement goal remains active. Winning terminal-checkpoint reloads and cold locale input ownership still need their own reproductions. Guest introduction/profile guidance also merits further checks against identity, achievement, and Daily capability gaps. This pass resolves economy-action presentation and does not claim those other seams are complete. No commit, release, or deployment was performed.

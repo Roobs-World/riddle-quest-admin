@@ -1,0 +1,297 @@
+{
+  "generatedAtUtc": "2026-10-03T01:06:51.562176+00:00",
+  "head": "88d12d438435f9c71862fa1918a070f02e0cd4a3",
+  "sourceBuildProvenanceConfirmed": false,
+  "provenanceNote": "Shared dirty tree changed concurrently; builds are not an atomic source snapshot.",
+  "uploadEligible": false,
+  "deploymentPerformedByThisChat": false,
+  "providerWritesPerformedByThisChat": false,
+  "checks": {
+    "baselineFailingCases": 4,
+    "baselinePassingExistingCases": 19,
+    "focusedTests": 42,
+    "focusedSuites": 4,
+    "portalUnitTests": 2338,
+    "portalUnitSuites": 273,
+    "skippedBrowserTestsInUnitRun": 118,
+    "freshFacebookSdkVariants": 2,
+    "redditBrowserJourneys": 1,
+    "selectedJestBrowserTests": 6,
+    "unselectedJestBrowserTests": 68,
+    "fullJestBrowserAcceptanceEstablished": false,
+    "targetBuildsAndAudits": 6
+  },
+  "browserNote": "Injected Chromium with runtime SDK inventory assertions; Firefox is not exposed to this session.",
+  "sources": [
+    {
+      "path": "packages/portal/src/facebook/FacebookPlatformBootstrap.ts",
+      "sha256": "b2f24f2a967fb8fb9dc368cf8c250f488dc0e9a05649d70f9c9782a69c588198"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookPlatformEntry.tsx",
+      "sha256": "d191f5f696803213c1119989ad93befb7334eb7d133ba6895ba307e8e94a50fe"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookCapabilityPolicy.ts",
+      "sha256": "8efedc514623ee846c0d38f703892c088b3bcc3b976dfd34a206e9c1a0e0e974"
+    },
+    {
+      "path": "packages/portal/src/facebook/contexts.ts",
+      "sha256": "9648469b1cb91d67446109267c46399b055b1aa997bcba60ea8ba9bd9ed0fa09"
+    },
+    {
+      "path": "packages/portal/src/facebook/liveContextMatchmaking.ts",
+      "sha256": "d1948a39080f31170442563caf81acc7f87a78ec61ab9d905013095f754a5e15"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/FacebookPlatformBootstrap.test.ts",
+      "sha256": "f793d9e89cb358cdd0aafc4f89998a36c932d14b82be61ad5f88512e49e89ec0"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/FacebookCapabilityPolicy.test.ts",
+      "sha256": "7690c324a3dbeca79b58160dfa624e7b8b1aa46b35cc0bf1ec7cead76159107a"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/contexts.test.ts",
+      "sha256": "a00c51313c6abf4d16f19e774716bf478893b2acfd14d9959b3442a58dd31fe6"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/liveContextMatchmaking.test.ts",
+      "sha256": "a750604d96bc9301c2ebd6bbdd3264164508a612b27d04f2abbd4cf6b34b8ac2"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+      "sha256": "30f0bfdc0291af5f67ea6c0825aa8cd7c8857a768b204d619e70d520aefa1c91"
+    },
+    {
+      "path": "packages/portal/src/facebook/__tests__/raceDialogs.jest-playwright.support.ts",
+      "sha256": "a344f13362d7271400dd972423862b56c7852c33b58ce2905989cc196c686eee"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceTournamentEntry.tsx",
+      "sha256": "f6d783a3d0826eda2c3967fdf6de31b12e5d65980090c815fa52120aecdb6d5d"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceContextBoard.tsx",
+      "sha256": "25c431f9c68ad2770eeaa4d98667cc7bfcb2ee2728ce09198eca9caf4c28931e"
+    },
+    {
+      "path": "docs/evidence/facebook-context-capabilities-2026-10-03.md",
+      "sha256": "76fc17adc8fac6973f894bf6b3964fa4808d6933ce777cb5342946134962a089"
+    },
+    {
+      "path": "docs/facebook-instant-games-operations.md",
+      "sha256": "9c735889319809ad0a8220fc3ac2fa526189789cd7e90791a46ec6b0cdbdfb1d"
+    },
+    {
+      "path": "docs/facebook-instant-games-progress.html",
+      "sha256": "f54e75c7d11bcc6e4113322bdb7d6de84d7cbdb82ecb949a6b1ce45461d3e2e5"
+    }
+  ],
+  "outputs": [
+    {
+      "target": "jest",
+      "directory": "/home/craig-beswetherick/.cache/riddle-quest-review/facebook-context-capabilities-20261003/jest",
+      "files": 409,
+      "bytes": 4511118,
+      "treeSha256": "3f7b27b25816c35eda25df2190d9ff75b1f381af8cba54e53e232c4a5db16e42"
+    },
+    {
+      "target": "facebook",
+      "directory": "/home/craig-beswetherick/.cache/riddle-quest-review/facebook-context-capabilities-20261003/facebook",
+      "files": 409,
+      "bytes": 4463199,
+      "treeSha256": "fc54ffcc6529f284227d347b0b4ea30b58e2bf711a16957746c135cb82dfbbe2"
+    },
+    {
+      "target": "reddit",
+      "directory": "/home/craig-beswetherick/.cache/riddle-quest-review/facebook-context-capabilities-20261003/reddit",
+      "files": 420,
+      "bytes": 3923194,
+      "treeSha256": "76f42479be96a821ef1357e5ec1d4ab9974b44d733c0a83a6810755b89825aaa"
+    },
+    {
+      "target": "youtube",
+      "directory": "/home/craig-beswetherick/.cache/riddle-quest-review/facebook-context-capabilities-20261003/youtube",
+      "files": 24,
+      "bytes": 1889345,
+      "treeSha256": "58f17e7882b3e6074c68baf16244bb93bca67d209194ae6e9b525f79a724a944"
+    },
+    {
+      "target": "netflix",
+      "directory": "/home/craig-beswetherick/.cache/riddle-quest-review/facebook-context-capabilities-20261003/netflix",
+      "files": 24,
+      "bytes": 1888695,
+      "treeSha256": "3dd65e761e87a039a0b7d93be6352e6c6a826191daa0ac376d30c37218bab1c5"
+    },
+    {
+      "target": "yahoo",
+      "directory": "/home/craig-beswetherick/.cache/riddle-quest-review/facebook-context-capabilities-20261003/yahoo",
+      "files": 24,
+      "bytes": 1888689,
+      "treeSha256": "68e1f33347dfa3aab21b1e264e9cfc0e714443a9a52cc2365059b84f4f9f451c"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "README.md",
+      "sha256": "a50a416e0b729cd245341aeb89fb45d9a4dc1e91fc4390d6643dac7a89364eca"
+    },
+    {
+      "path": "audit-facebook.log",
+      "sha256": "0b4ce7dc0adef45d798b76adc4991f71bfed2757a115e2ca1a27a7f89b3138bd"
+    },
+    {
+      "path": "audit-jest.log",
+      "sha256": "301bc38c79c98e1f840f7b40e36e13a71056eaf40d3eb4577a85450065ce918a"
+    },
+    {
+      "path": "audit-netflix.log",
+      "sha256": "65bad85041ec92748abdfc1190838aaa296aca6d652451ac9a7d87131519cd81"
+    },
+    {
+      "path": "audit-reddit.log",
+      "sha256": "df00b847280e9b1a343e50703049c951eed7d175ef6caed918ea81fd680635f6"
+    },
+    {
+      "path": "audit-yahoo.log",
+      "sha256": "fb778a39418371b1870d5760c6bafe8500c75356a80248fa15738fbb02d6dbb5"
+    },
+    {
+      "path": "audit-youtube.log",
+      "sha256": "4903c08bceadbfd2591d6d978457a9bfe396b0bb216f977fbb76e81ae333e973"
+    },
+    {
+      "path": "baseline.log",
+      "sha256": "c009bfd70ff0c04ee6809e020ac0034e64a4d502e53c4829a941294537461832"
+    },
+    {
+      "path": "build-facebook.log",
+      "sha256": "587139bbf6e7a9a810f34e171218bbd76161fb3fd2e49fe2e442a10b79ce9b40"
+    },
+    {
+      "path": "build-jest.log",
+      "sha256": "4a41d73c040f4033c70347ad2b431a3db00bb6771ec0a826c465b95ccd1eafa0"
+    },
+    {
+      "path": "build-netflix.log",
+      "sha256": "3fa798ef0904f5b572ea70c9d6e818550bcea2d2e6ad2e29bd3905572d1cc422"
+    },
+    {
+      "path": "build-reddit.log",
+      "sha256": "d014d20a2284350c6b2addeef5a974ea5c9d7939c75f1d5af6c0f9b6bc633aba"
+    },
+    {
+      "path": "build-results.json",
+      "sha256": "efb0709c2d58524ce1fb3ccccee4b981d641c0dc9dbbdf2528920a5a2b7c959f"
+    },
+    {
+      "path": "build-summary.log",
+      "sha256": "8c4e6dc40192ec137bca6f15c9e3d23b8a9dfc4e96636e194d21005f3b8e16ea"
+    },
+    {
+      "path": "build-yahoo.log",
+      "sha256": "92f5ea280fd7be9aed3f39f0d6d407e12bd324c27d941abc6b26b92256f68c02"
+    },
+    {
+      "path": "build-youtube.log",
+      "sha256": "b1a3c235095d0310d57cca6e7e439884573deda9a83952af9c6db2e82734b6f0"
+    },
+    {
+      "path": "diagnostic/build-targets.cjs",
+      "sha256": "1f78cfc6ba48447d3b6ebf173adcf623dc4b558a39d4bab9d19d1bf56383460f"
+    },
+    {
+      "path": "diagnostic/write-manifest.py",
+      "sha256": "07894d079287dc351957a9bffd99faa5e1a8bd27bc34f366204592a6a000b401"
+    },
+    {
+      "path": "facebook-chooser-only-browser.log",
+      "sha256": "aac9b0fb353b0b7143f5089c05d64c4f1243d544111382c434f1186b114d9c94"
+    },
+    {
+      "path": "facebook-full-sdk-browser.log",
+      "sha256": "a1997a84f210c0d6b15bce3590dbc08cfd96e36e64547ba73ee478d71fb0e7bd"
+    },
+    {
+      "path": "file-sizes.log",
+      "sha256": "4c9bbeecbc223e14f93dfa2d5f63b7245b77b642c43f6219020d8b46d9418d1d"
+    },
+    {
+      "path": "focused.log",
+      "sha256": "f68801fb58007fddbf1a61729f020a41d4035f4f4bb8b3512fc5a34c2efe1389"
+    },
+    {
+      "path": "jest-browser.log",
+      "sha256": "53133b2d6cd3ba428bf7f42644ee4a5e2d00d7b1ab0717a2e903b218f133e3a6"
+    },
+    {
+      "path": "meta-docs-summary.json",
+      "sha256": "ce204eb26ec05f118cdb61a245214f138e3e2e04f7067d50c3244b7b170421ba"
+    },
+    {
+      "path": "portal-types.log",
+      "sha256": "ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+    },
+    {
+      "path": "portal-units-final.log",
+      "sha256": "98e4e20c0bebc9ad0fd04caf1eb790e54eda7cbae05a075f4d76cd049bebb509"
+    },
+    {
+      "path": "portal-units.log",
+      "sha256": "6727ee801b28f89ea0a62a9f301e56ddf9305ab1accddd064eb413cec943d820"
+    },
+    {
+      "path": "progress-check.log",
+      "sha256": "18b48e6256f5ad2e8a2e21bfbad6c3beb9cf2a2943e0e96e61c7622a9ae60a3f"
+    },
+    {
+      "path": "reddit-browser.log",
+      "sha256": "e66449da278b1bc37b16be0a9e9d52207f16eb4a891dd0102ba204b66ba938e9"
+    },
+    {
+      "path": "screenshots/chooser-only-context-board.png",
+      "sha256": "ff9dd9fcb1d189ed481e3e6f9b241e29872f98e734d82ecea204117d5833988d"
+    },
+    {
+      "path": "screenshots/chooser-only-context-board.png.json",
+      "sha256": "bfe33ddc04bfd29f2e288ce5b5fb98ad13650326d24f5d4d7843acc294b6c23d"
+    },
+    {
+      "path": "screenshots/chooser-only-context-board.png.repaint.png",
+      "sha256": "ff9dd9fcb1d189ed481e3e6f9b241e29872f98e734d82ecea204117d5833988d"
+    },
+    {
+      "path": "screenshots/full-sdk-context-board.png",
+      "sha256": "ff9dd9fcb1d189ed481e3e6f9b241e29872f98e734d82ecea204117d5833988d"
+    },
+    {
+      "path": "screenshots/full-sdk-context-board.png.json",
+      "sha256": "bfe33ddc04bfd29f2e288ce5b5fb98ad13650326d24f5d4d7843acc294b6c23d"
+    },
+    {
+      "path": "screenshots/full-sdk-context-board.png.panel.png",
+      "sha256": "f133234ac48f074ecddbbc370b7a7074845ae8e67f2ec251f0f1a2bd9a5b168b"
+    },
+    {
+      "path": "screenshots/full-sdk-context-board.png.repaint.png",
+      "sha256": "ff9dd9fcb1d189ed481e3e6f9b241e29872f98e734d82ecea204117d5833988d"
+    },
+    {
+      "path": "screenshots/owned-capture-before-paint-check.png",
+      "sha256": "ff9dd9fcb1d189ed481e3e6f9b241e29872f98e734d82ecea204117d5833988d"
+    },
+    {
+      "path": "screenshots/shared-temp-capture-diagnostic.png",
+      "sha256": "ff9dd9fcb1d189ed481e3e6f9b241e29872f98e734d82ecea204117d5833988d"
+    },
+    {
+      "path": "tsdoc.log",
+      "sha256": "5eff2a148263d575659d9f509f9a95fae78fd13108c4ae32ccb4ac5a759a530c"
+    },
+    {
+      "path": "whitespace.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "target": "jest",
+    "exitCode": 0,
+    "durationSeconds": 4.97
+  },
+  {
+    "target": "facebook",
+    "exitCode": 0,
+    "durationSeconds": 4.58
+  },
+  {
+    "target": "reddit",
+    "exitCode": 0,
+    "durationSeconds": 4.19
+  },
+  {
+    "target": "youtube",
+    "exitCode": 0,
+    "durationSeconds": 3.3
+  },
+  {
+    "target": "netflix",
+    "exitCode": 0,
+    "durationSeconds": 3.28
+  },
+  {
+    "target": "yahoo",
+    "exitCode": 0,
+    "durationSeconds": 3.28
+  }
+]
