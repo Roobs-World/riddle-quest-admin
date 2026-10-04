@@ -53,7 +53,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-DU2D8YaA.js",
+      "file": "assets/index-2XQutIjq.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -62,17 +62,17 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "f3799aca98e8d77e114c206f74c68e08e2e46526fd37ecc10f5ddd1b217293c2"
+      "sha256": "c1d324b7fd8bfe4630a64d4f3f17759d70c09781c2470da376f3cb01dfd0ac17"
     },
     {
-      "file": "assets/playable-pack-en-CNyMKg14.js",
+      "file": "assets/playable-pack-en-DmZgXD94.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "54992c59601860e93c46055ff7e1e1f850d72094fb5caca64fab34132f448d40"
+      "sha256": "cc098e72bd4caddf85e610f299f89d02ef2e1ffebd6fd7fd206b6b5a9ed6169e"
     },
     {
       "file": "assets/core-game-i9VZudrA.js",
@@ -109,16 +109,16 @@
       "sha256": "ebfee2562975648de640ab529a486ed37a4b00f805f7410309348dae83a53f3b"
     },
     {
+      "file": "assets/index-2XQutIjq.js",
+      "sha256": "c1d324b7fd8bfe4630a64d4f3f17759d70c09781c2470da376f3cb01dfd0ac17"
+    },
+    {
       "file": "assets/index-BzWrKCb1.css",
       "sha256": "5d55828d145e2f616074da57a79fe3be40e1fc6db0cf6f0e3306f0d3813d35f1"
     },
     {
-      "file": "assets/index-DU2D8YaA.js",
-      "sha256": "f3799aca98e8d77e114c206f74c68e08e2e46526fd37ecc10f5ddd1b217293c2"
-    },
-    {
-      "file": "assets/playable-pack-en-CNyMKg14.js",
-      "sha256": "54992c59601860e93c46055ff7e1e1f850d72094fb5caca64fab34132f448d40"
+      "file": "assets/playable-pack-en-DmZgXD94.js",
+      "sha256": "cc098e72bd4caddf85e610f299f89d02ef2e1ffebd6fd7fd206b6b5a9ed6169e"
     },
     {
       "file": "assets/rolldown-runtime-Czjbc987.js",
@@ -130,7 +130,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "14adbd3fd38bd6f2a95cd5215f168b42bbca9868213767f0e37c3533086336c0"
+      "sha256": "61fa6ae9698a9168289b1aabf7cbf084c4eb5040cfeceee9decea3b1867c9422"
     },
     {
       "file": "third-party-licenses.txt",

@@ -1,0 +1,1334 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "only an active committed surface prevents the key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "only an active committed surface prevents the key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "first committed Tab wraps to the active first control",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cover",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cover",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cover",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cover",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cover",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cover",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cover",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "uncover",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      2
+    ],
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "only an active committed surface prevents the key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "only an active committed surface prevents the key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "first committed Tab wraps to the active first control",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cover",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cover",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cover",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cover",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cover",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cover",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cover",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      2
+    ],
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "only an active committed surface prevents the key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "only an active committed surface prevents the key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "first committed Tab wraps to the active first control",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "first-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cover",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cover",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cover",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cover",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cover",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cover",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cover",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "uncover",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      2
+    ],
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "only an active committed surface prevents the key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retired listeners are absent before parent layout keys",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "32 parent updates keep one stable keyboard registration",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "fresh native Escape follows current visible ownership",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "fresh native Tab wraps to first",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "fresh reverse Tab wraps to last",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

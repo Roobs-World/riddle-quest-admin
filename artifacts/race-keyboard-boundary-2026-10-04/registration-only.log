@@ -1,0 +1,48 @@
+{
+  "mode": "development",
+  "checks": 51,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cover",
+      "name": "committed surface handles or yields boundary Escape",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cover",
+      "name": "only an active committed surface prevents the key",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cover",
+      "name": "fresh native Escape follows current visible ownership",
+      "actual": 2,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Committed multiplayer keyboard boundary
+
+3 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-keyboard-boundary-browser.mjs:55:228 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

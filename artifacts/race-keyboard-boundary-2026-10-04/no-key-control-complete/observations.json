@@ -1,0 +1,34 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "committed surface handles or yields boundary Escape",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "only an active committed surface prevents the key",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

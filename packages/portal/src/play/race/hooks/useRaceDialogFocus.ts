@@ -1,4 +1,4 @@
-import {useEffect, useEffectEvent, type RefObject} from "react";
+import {useEffect, useEffectEvent, useLayoutEffect, type RefObject} from "react";
 
 /** Parameters used to manage focus within the multiplayer dialogs. */
 export type RaceDialogFocusOptions = {
@@ -27,6 +27,10 @@ export function useRaceDialogFocus({
 }: RaceDialogFocusOptions): void {
   /** Handles keys using the latest dialog state without restarting the focus lifecycle. */
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (event.key !== "Escape" && event.key !== "Tab") return;
+    /** Only the currently committed, interactive multiplayer surface owns shortcuts. */
+    const raceDialog = dialogRef.current;
+    if (!raceDialog?.isConnected || raceDialog.closest("[inert]")) return;
     // Composition and an earlier control retain ownership of their keyboard event.
     if (event.isComposing || event.keyCode === 229 || event.defaultPrevented) return;
     if (event.key === "Escape") {
@@ -66,13 +70,25 @@ export function useRaceDialogFocus({
     }
   });
 
+  useLayoutEffect(() => {
+    /** Captured callbacks retire synchronously with their native subscription. */
+    let listening = true;
+    /** Committed Effect Event routing keeps ordinary callback updates subscription-free. */
+    const keyDown = (event: KeyboardEvent) => {
+      if (listening) handleKeyDown(event);
+    };
+    document.addEventListener("keydown", keyDown);
+    return () => {
+      listening = false;
+      document.removeEventListener("keydown", keyDown);
+    };
+  }, [dialogRef]);
+
   useEffect(() => {
     /** Element focused before the modal race experience opened. */
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dialogRef.current?.focus();
-    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
       previousFocus?.focus();
     };
   }, [dialogRef]);

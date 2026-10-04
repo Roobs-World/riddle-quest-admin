@@ -6,8 +6,12 @@ type Effect = () => void | (() => void);
 /** Provides effects behavior. */
 const effects: Effect[] = [];
 
+/** Committed native subscriptions have a separate layout phase from deferred focus. */
+const layoutEffects: Effect[] = [];
+
 jest.mock("react", () => ({
   useEffect: (effect: Effect) => effects.push(effect),
+  useLayoutEffect: (effect: Effect) => layoutEffects.push(effect),
   useEffectEvent: <Callback extends (...args: never[]) => unknown>(callback: Callback) => callback,
 }));
 
@@ -38,6 +42,8 @@ class TestElement {
   public disabled = false;
   /** Provides matches behavior. */
   public matches(): boolean {return this.disabled;}
+  /** Models a mounted dialog without a covering inert ancestor. */
+  public closest(): TestElement | null {return null;}
   /** Stores focusable. */
   public focusable: TestElement[] = [];
   /** Stores offset height. */
@@ -133,6 +139,7 @@ const keyboardEvent = (key: string, shiftKey = false) =>
 
 beforeEach(() => {
   effects.length = 0;
+  layoutEffects.length = 0;
   frames.clear();
   nextFrame = 1;
   keydownHandler = undefined;
@@ -151,6 +158,17 @@ beforeEach(() => {
 });
 
 describe("useRaceDialogFocus", () => {
+  /** Exercises native registration before deferred focus and releases both phases. */
+  const mountRaceEffects = () => {
+    /** Layout subscription owns native keys before passive focus work. */
+    const keyboardCleanup = layoutEffects[0]?.();
+    /** Deferred focus retains its independent return target. */
+    const focusCleanup = effects[0]?.();
+    return () => {
+      if (typeof keyboardCleanup === "function") keyboardCleanup();
+      if (typeof focusCleanup === "function") focusCleanup();
+    };
+  };
   /** Provides install behavior. */
   const install = (quitConfirmationOpen = false) => {
     /** Provides previous behavior. */
@@ -182,7 +200,7 @@ describe("useRaceDialogFocus", () => {
     /** Provides harness behavior. */
     const harness = install();
     /** Provides cleanup behavior. */
-    const cleanup = effects[0]() as () => void;
+    const cleanup = mountRaceEffects() as () => void;
     /** Provides escape behavior. */
     const escape = keyboardEvent("Escape");
 
@@ -200,7 +218,7 @@ describe("useRaceDialogFocus", () => {
   it("dismisses an open confirmation and focuses it on the next frame", () => {
     /** Provides harness behavior. */
     const harness = install(true);
-    effects[0]();
+    mountRaceEffects();
     /** Provides cancel focus behavior. */
     const cancelFocus = effects[1]() as () => void;
     /** Provides escape behavior. */
@@ -226,7 +244,7 @@ describe("useRaceDialogFocus", () => {
     /** Provides last behavior. */
     const last = new TestElement();
     harness.dialog.focusable = [first, middle, last];
-    effects[0]();
+    mountRaceEffects();
 
     testDocument.activeElement = first;
     /** Provides reverse tab behavior. */
@@ -251,7 +269,7 @@ describe("useRaceDialogFocus", () => {
   it("ignores unrelated keys and retains focus in dialogs without controls", () => {
     /** Provides harness behavior. */
     const harness = install();
-    effects[0]();
+    mountRaceEffects();
 
     keydownHandler?.(keyboardEvent("Enter"));
     keydownHandler?.(keyboardEvent("Tab"));
@@ -260,6 +278,7 @@ describe("useRaceDialogFocus", () => {
     expect(harness.requestClose).not.toHaveBeenCalled();
 
     effects.length = 0;
+    layoutEffects.length = 0;
     testDocument.activeElement = null;
     useRaceDialogFocus({
       dialogRef: {current: null},
@@ -269,12 +288,13 @@ describe("useRaceDialogFocus", () => {
       requestClose: jest.fn(),
     });
     /** Provides cleanup missing dialog behavior. */
-    const cleanupMissingDialog = effects[0]() as () => void;
+    const cleanupMissingDialog = mountRaceEffects() as () => void;
     keydownHandler?.(keyboardEvent("Tab"));
     cleanupMissingDialog();
     expect(effects[1]()).toBeUndefined();
 
     effects.length = 0;
+    layoutEffects.length = 0;
     /** Provides mounted dialog behavior. */
     const mountedDialog = new TestElement();
     useRaceDialogFocus({
@@ -284,7 +304,7 @@ describe("useRaceDialogFocus", () => {
       dismissQuitConfirmation: jest.fn(),
       requestClose: jest.fn(),
     });
-    effects[0]();
+    mountRaceEffects();
     /** Provides tab before confirmation mount behavior. */
     const tabBeforeConfirmationMount = keyboardEvent("Tab");
     keydownHandler?.(tabBeforeConfirmationMount);
@@ -296,7 +316,7 @@ describe("useRaceDialogFocus", () => {
     /** Provides first behavior. */
     const first = new TestElement(), last = new TestElement();
     harness.dialog.focusable = [first, last];
-    effects[0]();
+    mountRaceEffects();
     for (const reverse of [false, true]) {
       testDocument.activeElement = harness.previous;
       /** Provides event behavior. */
@@ -316,7 +336,7 @@ describe("useRaceDialogFocus", () => {
     /** A single edge control would normally trigger the Tab trap. */
     const control = new TestElement();
     harness.dialog.focusable = [control];
-    effects[0]();
+    mountRaceEffects();
     testDocument.activeElement = control;
     /** Some IMEs expose 229 while isComposing is still false. */
     const event = {...keyboardEvent(key), keyCode: 229, isComposing: false};
@@ -336,7 +356,7 @@ describe("useRaceDialogFocus", () => {
     harness.dialog.focusable = state === "outside" ? [] : [control];
     control.disabled = state === "disabled";
     control.isConnected = state !== "disconnected";
-    effects[0]();
+    mountRaceEffects();
     testDocument.activeElement = state === "missing" ? null : control;
     /** Provides cleanup behavior. */
     const cleanup = effects[1]() as () => void;
@@ -350,7 +370,7 @@ describe("useRaceDialogFocus", () => {
   it("leaves outer focus restoration in charge after the race dialog unmounts", () => {
     /** Provides harness behavior. */
     const harness = install(true);
-    effects[0]();
+    mountRaceEffects();
     /** Provides cleanup behavior. */
     const cleanup = effects[1]() as () => void;
     harness.dialogRef.current = null;
