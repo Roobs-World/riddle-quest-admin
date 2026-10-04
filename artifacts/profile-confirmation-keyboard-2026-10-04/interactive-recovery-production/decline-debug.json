@@ -1,0 +1,3307 @@
+{
+  "probe": {
+    "errors": [
+      {
+        "component": "game_frame",
+        "operation": "render_interactive_surface",
+        "surface": "modal",
+        "componentStack": "\n    at GameModalView (http://127.0.0.1:33351/assets/GameModalView-DC0IDOsa.js:3:8)\n    at Suspense (<anonymous>)\n    at GameSurfaceBoundary (http://127.0.0.1:33351/assets/index-Bm7SmuNe.js:18983:27)\n    at div (<anonymous>)\n    at main (<anonymous>)\n    at GameFrameApp (http://127.0.0.1:33351/assets/index-Bm7SmuNe.js:19104:56)\n    at div (<anonymous>)\n    at ReferralSharingProvider (http://127.0.0.1:33351/assets/index-Bm7SmuNe.js:19969:36)\n    at PlayHostApp (http://127.0.0.1:33351/assets/index-Bm7SmuNe.js:20790:33)\n    at FatalErrorBoundary (http://127.0.0.1:33351/assets/index-Bm7SmuNe.js:46632:26)",
+        "error": "Error: modal surface render failed"
+      }
+    ],
+    "unhandled": [],
+    "windowErrors": [],
+    "saves": [
+      {
+        "profile": {
+          "username": "Guest Solver",
+          "coins": 300,
+          "level": 3,
+          "xp": 420,
+          "winStreak": 2,
+          "gamesPlayed": 7,
+          "wins": 5,
+          "achievements": [
+            "first_win",
+            "daily_spark"
+          ],
+          "classicIndex": 1
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904453,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "A",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904454,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "A",
+            "A",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904455,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "A",
+            "A",
+            "A",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904456,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "A",
+            "A",
+            "A",
+            "A",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904456,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "A",
+            "A",
+            "A",
+            "A",
+            "A"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [],
+          "engineSnapshot": {
+            "guesses": [],
+            "attemptsUsed": 0,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {}
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904501,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904518,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "B",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904518,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "B",
+            "B",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904519,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "B",
+            "B",
+            "B",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904520,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "B",
+            "B",
+            "B",
+            "B",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904520,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 1,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904568,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 2,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904584,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "C",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 2,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904585,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "C",
+            "C",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 2,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904585,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "C",
+            "C",
+            "C",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 2,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904586,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "C",
+            "C",
+            "C",
+            "C",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 2,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904587,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "C",
+            "C",
+            "C",
+            "C",
+            "C"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 2,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904634,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 3,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904651,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "D",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 3,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904652,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "D",
+            "D",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 3,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904653,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "D",
+            "D",
+            "D",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 3,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904653,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "D",
+            "D",
+            "D",
+            "D",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 3,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904654,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "D",
+            "D",
+            "D",
+            "D",
+            "D"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 3,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904701,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 4,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904718,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "E",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 1,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 4,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904719,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "E",
+            "E",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 2,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 4,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904719,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "E",
+            "E",
+            "E",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 3,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 4,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904720,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "E",
+            "E",
+            "E",
+            "E",
+            ""
+          ],
+          "activeSlotIndex": 4,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 4,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904720,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "E",
+            "E",
+            "E",
+            "E",
+            "E"
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 4,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904768,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "e",
+                "e",
+                "e",
+                "e",
+                "e"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "e",
+                  "e",
+                  "e",
+                  "e",
+                  "e"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 5,
+            "hasUsedContinue": false,
+            "gameOver": false
+          },
+          "awaitingContinue": true,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red",
+            "e": "red"
+          }
+        }
+      },
+      {
+        "activeGame": {
+          "schemaVersion": 1,
+          "savedAt": 1791148904819,
+          "riddleId": "classic-fake-1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "currentLetters": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "activeSlotIndex": 0,
+          "hintRevealedIndices": [],
+          "guesses": [
+            {
+              "guess": [
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "green",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "b",
+                "b",
+                "b",
+                "b",
+                "b"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "c",
+                "c",
+                "c",
+                "c",
+                "c"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "d",
+                "d",
+                "d",
+                "d",
+                "d"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            },
+            {
+              "guess": [
+                "e",
+                "e",
+                "e",
+                "e",
+                "e"
+              ],
+              "feedback": [
+                "red",
+                "red",
+                "red",
+                "red",
+                "red"
+              ]
+            }
+          ],
+          "engineSnapshot": {
+            "guesses": [
+              {
+                "guess": [
+                  "a",
+                  "a",
+                  "a",
+                  "a",
+                  "a"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "green",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "b",
+                  "b",
+                  "b",
+                  "b",
+                  "b"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "c",
+                  "c",
+                  "c",
+                  "c",
+                  "c"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "d",
+                  "d",
+                  "d",
+                  "d",
+                  "d"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              },
+              {
+                "guess": [
+                  "e",
+                  "e",
+                  "e",
+                  "e",
+                  "e"
+                ],
+                "feedback": [
+                  "red",
+                  "red",
+                  "red",
+                  "red",
+                  "red"
+                ]
+              }
+            ],
+            "attemptsUsed": 5,
+            "hasUsedContinue": false,
+            "gameOver": true
+          },
+          "awaitingContinue": false,
+          "letterStates": {
+            "a": "green",
+            "b": "red",
+            "c": "red",
+            "d": "red",
+            "e": "red"
+          },
+          "pendingOutcome": {
+            "id": "00000000-0000-4000-8000-000000000001-loss-5",
+            "kind": "loss",
+            "riddleId": "classic-fake-1",
+            "gameMode": "classic",
+            "sessionToken": "00000000-0000-4000-8000-000000000001",
+            "attempts": 5,
+            "isCorrect": false
+          }
+        }
+      }
+    ],
+    "guesses": 5,
+    "completions": 1,
+    "spends": [],
+    "skips": [],
+    "hints": [],
+    "loads": [
+      {
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      }
+    ],
+    "sceneRenders": 0,
+    "customRenders": 0
+  },
+  "text": "Classic\n300\nWhat has keys but cannot open doors?\nA\nA\nA\nA\nA\nB\nB\nB\nB\nB\nC\nC\nC\nC\nC\nD\nD\nD\nD\nD\nE\nE\nE\nE\nE\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip",
+  "journal": {
+    "riddleQuest:tooltipSeen:achievementEarned:jest-guest": "seen",
+    "riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:leaderboardFifthCorrectAnswer:jest-guest": "seen",
+    "riddleQuest:reducedMotion": "false",
+    "riddleQuest:tooltipSeen:gameCoins:jest-guest": "seen",
+    "riddleQuest:highContrast": "false",
+    "riddleQuest:tooltipSeen:profileStatistics:jest-guest": "seen",
+    "appLanguage": "en",
+    "riddleQuest:tooltipSeen:profileRanks:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:profileProgression:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:profileStats:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:classicFromDaily:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:gameSkip:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:submitAnswer:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:profileAchievements:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:profileTreasure:jest-guest": "seen",
+    "riddleQuest:tooltipSequenceSeen:profileTour:v3:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:profileIdentity:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:profileDailyPuzzles:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:profileLeaderboard:jest-guest": "seen",
+    "riddleQuest:tooltipSeen:gameHint:jest-guest": "seen",
+    "riddleQuest:soundEnabled": "true"
+  }
+}

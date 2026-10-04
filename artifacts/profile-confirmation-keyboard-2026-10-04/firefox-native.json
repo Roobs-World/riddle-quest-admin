@@ -1,0 +1,143 @@
+{
+  "Upload": {
+    "active": {
+      "tag": "BUTTON",
+      "text": "Edit",
+      "className": "play-text-button"
+    },
+    "upload": {
+      "tabIndex": -1,
+      "focused": false
+    },
+    "focus": [
+      {
+        "tag": "BUTTON",
+        "className": "",
+        "placeholder": null
+      },
+      {
+        "tag": "BUTTON",
+        "className": "modal-x",
+        "placeholder": null
+      },
+      {
+        "tag": "DIV",
+        "className": "profile-page",
+        "placeholder": null
+      },
+      {
+        "tag": "BUTTON",
+        "className": "profile-avatar-button",
+        "placeholder": null
+      },
+      {
+        "tag": "BUTTON",
+        "className": "play-text-button",
+        "placeholder": null
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "Original": {
+    "confirmation": 0,
+    "profile": 1,
+    "closes": 0,
+    "consumed": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true,
+        "target": ""
+      }
+    ],
+    "deletes": 0,
+    "focus": "profile-delete-account-button",
+    "errors": [],
+    "unhandled": []
+  },
+  "OriginalIME": {
+    "confirmation": 0,
+    "profile": 1,
+    "closes": 0,
+    "metadata": [
+      {
+        "key": "Escape",
+        "shiftKey": false,
+        "isComposing": true,
+        "keyCode": 0,
+        "defaultPrevented": true
+      }
+    ],
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "Final": {
+    "confirmation": 1,
+    "profile": 1,
+    "cancelFocused": true,
+    "closes": 0,
+    "consumed": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true,
+        "target": ""
+      }
+    ],
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalReverse": {
+    "deleteSelected": true,
+    "deletes": 0
+  },
+  "FinalForward": {
+    "cancelSelected": true,
+    "deletes": 0
+  },
+  "FinalNestedEscape": {
+    "confirmation": 0,
+    "profile": 1,
+    "closes": 0,
+    "deleteTriggerFocused": true,
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalClose": {
+    "dialogs": 0,
+    "closes": 1,
+    "gameTriggerFocused": true,
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalIME": {
+    "confirmation": 1,
+    "profile": 1,
+    "cancelFocused": true,
+    "closes": 0,
+    "metadata": [
+      {
+        "key": "Escape",
+        "shiftKey": false,
+        "isComposing": true,
+        "keyCode": 0,
+        "defaultPrevented": false
+      }
+    ],
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalIMEFresh": {
+    "confirmation": 0,
+    "profile": 1,
+    "closes": 0,
+    "deleteTriggerFocused": true,
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  }
+}
