@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import {useLayoutEffect, useRef} from "react";
 
 /** Describes answer keyboard options. */
 export type AnswerKeyboardOptions = {
@@ -14,16 +14,18 @@ export type AnswerKeyboardOptions = {
 
 /** Maps physical keyboard input to a controlled answer editor while preserving text-field behavior. */
 export const useAnswerKeyboard = ({active, onLetter, onBackspace, onSubmit}: AnswerKeyboardOptions): void => {
-  /** Native subscriptions read the latest callbacks without replacement after each answer edit. */
+  /** Native subscriptions follow the committed editor without replacement after each answer edit. */
   const optionsRef = useRef({active, onLetter, onBackspace, onSubmit});
-  optionsRef.current = {active, onLetter, onBackspace, onSubmit};
-  useEffect(() => {
+  useLayoutEffect(() => {optionsRef.current = {active, onLetter, onBackspace, onSubmit};},
+    [active, onLetter, onBackspace, onSubmit]);
+  useLayoutEffect(() => {
+    // Retire the listener before parent layout callbacks can reach a removed editor.
     if (!active) return;
     /** Removed browser callbacks cannot edit a later active answer. */
     let listening = true;
     /** Handles key down. */
     const handleKeyDown = (event: KeyboardEvent) => {
-      /** Current editor ownership and callbacks, refreshed by rendering. */
+      /** Current editor ownership and callbacks, refreshed when its visible state commits. */
       const options = optionsRef.current;
       if (!listening || !options.active) return;
       /** Provides target behavior. */

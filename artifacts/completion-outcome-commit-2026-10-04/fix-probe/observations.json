@@ -1,0 +1,100 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

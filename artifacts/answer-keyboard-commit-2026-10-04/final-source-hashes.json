@@ -1,0 +1,5 @@
+{
+  "packages/portal/src/play/game/hooks/useAnswerKeyboard.ts": "40d4586e0e89b4f4b848910c4928d7c6c3d158552305be77aad2547d49ee4a3e",
+  "packages/portal/package.json": "31425fa8037b0cfa85fc222cd3f99929fa6f59c9ce9a56c26abd25e8ffb350c4",
+  "packages/portal/scripts/verify-answer-keyboard-commit-browser.mjs": "d66e03dccb9538e725889617ba4a7e526da23a0777a4ccedd6bc5fd5d8465a4e"
+}

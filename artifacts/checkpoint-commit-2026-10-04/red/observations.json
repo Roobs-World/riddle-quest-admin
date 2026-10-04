@@ -1,0 +1,80 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "mounted game owns one background listener",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "suspended change keeps question A visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "suspended change retains the original DOM",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "suspended change keeps old receipt acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "background writes belong to the committed game and adapter",
+    "actual": [
+      {
+        "version": "A",
+        "riddle": "classic_2",
+        "draft": "",
+        "outcome": null
+      }
+    ],
+    "expected": [
+      {
+        "version": "A",
+        "riddle": "classic_1",
+        "draft": "PIAN",
+        "outcome": null
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "retirement releases the background listener",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-state",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

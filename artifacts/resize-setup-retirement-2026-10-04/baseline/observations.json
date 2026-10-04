@@ -1,0 +1,1370 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 568
+    },
+    "expected": {
+      "width": 390,
+      "height": 568
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": false,
+      "version": null
+    },
+    "expected": {
+      "game": false,
+      "version": null
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A",
+      "B"
+    ],
+    "expected": [
+      "A",
+      "B"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 568
+    },
+    "expected": {
+      "width": 390,
+      "height": 568
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": true,
+      "version": "B"
+    },
+    "expected": {
+      "game": true,
+      "version": "B"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 2,
+      "observers": 2
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 568
+    },
+    "expected": {
+      "width": 390,
+      "height": 568
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": false,
+      "version": null
+    },
+    "expected": {
+      "game": false,
+      "version": null
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "remount owns one fresh listener and observer",
+    "actual": {
+      "listeners": 2,
+      "observers": 2
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remount",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "live",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "live",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 568
+    },
+    "expected": {
+      "width": 390,
+      "height": 568
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "live",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "live",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 0,
+      "observers": 0
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "live",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 568
+    },
+    "expected": {
+      "width": 390,
+      "height": 568
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "ordinary parent updates preserve observation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 0,
+      "observers": 0
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 844
+    },
+    "expected": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": false,
+      "version": null
+    },
+    "expected": {
+      "game": false,
+      "version": null
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A",
+      "B"
+    ],
+    "expected": [
+      "A",
+      "B"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 844
+    },
+    "expected": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": true,
+      "version": "B"
+    },
+    "expected": {
+      "game": true,
+      "version": "B"
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 2,
+      "observers": 2
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 844
+    },
+    "expected": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": false,
+      "version": null
+    },
+    "expected": {
+      "game": false,
+      "version": null
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "remount owns one fresh listener and observer",
+    "actual": {
+      "listeners": 2,
+      "observers": 2
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remount",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "live",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "live",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 844
+    },
+    "expected": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "live",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "live",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 0,
+      "observers": 0
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "live",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 390,
+      "height": 844
+    },
+    "expected": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "ordinary parent updates preserve observation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 0,
+      "observers": 0
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 1280,
+      "height": 844
+    },
+    "expected": {
+      "width": 1280,
+      "height": 844
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": false,
+      "version": null
+    },
+    "expected": {
+      "game": false,
+      "version": null
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A",
+      "B"
+    ],
+    "expected": [
+      "A",
+      "B"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 1280,
+      "height": 844
+    },
+    "expected": {
+      "width": 1280,
+      "height": 844
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": true,
+      "version": "B"
+    },
+    "expected": {
+      "game": true,
+      "version": "B"
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 2,
+      "observers": 2
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 1280,
+      "height": 844
+    },
+    "expected": {
+      "width": 1280,
+      "height": 844
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "host response actually commits removal or replacement",
+    "actual": {
+      "game": false,
+      "version": null
+    },
+    "expected": {
+      "game": false,
+      "version": null
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "remount owns one fresh listener and observer",
+    "actual": {
+      "listeners": 2,
+      "observers": 2
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remount",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "live",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "live",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 1280,
+      "height": 844
+    },
+    "expected": {
+      "width": 1280,
+      "height": 844
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "live",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "live",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 0,
+      "observers": 0
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "live",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "initial viewport belongs to the current game",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "initial viewport uses actual browser geometry",
+    "actual": {
+      "width": 1280,
+      "height": 844
+    },
+    "expected": {
+      "width": 1280,
+      "height": 844
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "setup leaves resources only for the current reporter",
+    "actual": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "expected": {
+      "listeners": 1,
+      "observers": 1
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "ordinary parent updates preserve observation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "final removal releases every resize resource",
+    "actual": {
+      "listeners": 0,
+      "observers": 0
+    },
+    "expected": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retired callbacks do not emit after viewport change",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

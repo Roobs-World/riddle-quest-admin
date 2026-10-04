@@ -1,0 +1,32 @@
+{
+  "mode": "development",
+  "checks": 6,
+  "failures": [
+    {
+      "width": 320,
+      "height": 400,
+      "scenario": "settings-guess",
+      "name": "the current page retains its native reading position",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Modal reading position
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-modal-scroll-retention-browser.mjs:69:227 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

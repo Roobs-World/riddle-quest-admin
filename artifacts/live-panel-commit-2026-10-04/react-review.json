@@ -1,0 +1,13 @@
+{
+  "checkedComponents": [
+    "LiveRaceInbox",
+    "LiveRaceInvitationCard",
+    "LiveRaceDirectInvite",
+    "LiveRaceSafety"
+  ],
+  "hooks": "Prepared ownership state is isolated by React; conditional render updates compare every existing lifetime selector and terminate once aligned. Lazy initializers avoid repeated ownership-object initialization.",
+  "rendering": "Committed ownership changes still key a fresh panel before old provider state can appear. Cached receipt changes still update in place.",
+  "adapters": "Provider calls, schema validation, retained immutable intents and idempotency keys stay inside the original panels.",
+  "accessibility": "Existing controls, labels, disabled states and translated text retained; browser harnesses check real interactions.",
+  "typescript": "No new casts or public interface changes; unused useRef import removed from the preview component."
+}

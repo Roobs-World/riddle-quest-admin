@@ -1,0 +1,10 @@
+{
+  "before": 180,
+  "after": 180,
+  "sameFocus": true,
+  "dimensions": {
+    "height": 319,
+    "content": 1030
+  },
+  "scrollCalls": []
+}

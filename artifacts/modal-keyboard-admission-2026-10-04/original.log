@@ -1,0 +1,681 @@
+{
+  "mode": "development",
+  "checks": 372,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "escape-cancelled",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "tab-cancelled",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "escape-composing",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "escape-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "escape-legacy",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "escape-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "tab-composing",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "tab-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "tab-legacy",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "tab-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "inert",
+      "name": "inert dialog cannot dismiss beneath another surface",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot consume a parent layout Escape",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot prevent a later owner key",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "escape-cancelled",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "tab-cancelled",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "escape-composing",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "escape-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "escape-legacy",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "escape-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "tab-composing",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "tab-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "tab-legacy",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "tab-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot consume a parent layout Escape",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot prevent a later owner key",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-cancelled",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-cancelled",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-composing",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-legacy",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-composing",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-legacy",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "inert",
+      "name": "inert dialog cannot dismiss beneath another surface",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot consume a parent layout Escape",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot prevent a later owner key",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-cancelled",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-cancelled",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-composing",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-legacy",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-composing",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-legacy",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot consume a parent layout Escape",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot prevent a later owner key",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-cancelled",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-cancelled",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-composing",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-legacy",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "escape-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-composing",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-legacy",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "tab-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "inert",
+      "name": "inert dialog cannot dismiss beneath another surface",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot consume a parent layout Escape",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot prevent a later owner key",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-cancelled",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-cancelled",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-composing",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-legacy",
+      "name": "owned or composing key cannot dismiss the dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "escape-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-composing",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-composing",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-legacy",
+      "name": "owned or composing Tab preserves native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "tab-legacy",
+      "name": "composing event stays uncancelled for its owner",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot consume a parent layout Escape",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "retired-layout",
+      "name": "removed dialog cannot prevent a later owner key",
+      "actual": true,
+      "expected": false
+    }
+  ]
+}

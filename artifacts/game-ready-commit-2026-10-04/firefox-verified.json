@@ -1,0 +1,85 @@
+{
+  "before": {
+    "speculative": {
+      "version": "A",
+      "initialized": "false",
+      "suspended": 1,
+      "ready": [],
+      "resizeSenders": [
+        "A"
+      ],
+      "intervals": 1,
+      "observers": 1,
+      "errors": [],
+      "unhandled": []
+    },
+    "retired": {
+      "phase": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "retired": true,
+      "ready": [
+        "A"
+      ],
+      "resizeSenders": [
+        "A"
+      ],
+      "intervals": 0,
+      "observers": 0,
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "after": {
+    "speculative": {
+      "version": "A",
+      "initialized": "false",
+      "suspended": 1,
+      "ready": [
+        "A"
+      ],
+      "resizeSenders": [
+        "A"
+      ],
+      "intervals": 1,
+      "observers": 1,
+      "errors": [],
+      "unhandled": []
+    },
+    "retired": {
+      "phase": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "retired": true,
+      "ready": [],
+      "resizeSenders": [],
+      "intervals": 0,
+      "observers": 0,
+      "errors": [],
+      "unhandled": []
+    },
+    "replaced": {
+      "phase": {
+        "removed": false,
+        "intervals": 1,
+        "observers": 1
+      },
+      "version": "B",
+      "initialized": "false",
+      "ready": [
+        "B"
+      ],
+      "resizeSenders": [
+        "B"
+      ],
+      "intervals": 1,
+      "observers": 1,
+      "errors": [],
+      "unhandled": []
+    }
+  }
+}

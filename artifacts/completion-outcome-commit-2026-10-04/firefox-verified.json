@@ -1,0 +1,99 @@
+{
+  "before": {
+    "waiting": {
+      "version": "A",
+      "riddle": "classic_1",
+      "kind": "loss",
+      "ack": "false",
+      "suspended": 1,
+      "requests": []
+    },
+    "receipt": {
+      "version": "A",
+      "riddle": "classic_1",
+      "kind": "loss",
+      "ack": "false",
+      "results": [
+        false
+      ],
+      "effects": [],
+      "requests": [],
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "after": {
+    "waiting": {
+      "version": "A",
+      "riddle": "classic_1",
+      "kind": "loss",
+      "ack": "false",
+      "suspended": 1,
+      "requests": []
+    },
+    "receipt": {
+      "version": "A",
+      "riddle": "classic_1",
+      "kind": "loss",
+      "ack": "true",
+      "results": [
+        true
+      ],
+      "effects": [
+        {
+          "version": "A",
+          "type": "completionAcknowledged"
+        },
+        {
+          "version": "A",
+          "type": "completionReward"
+        }
+      ],
+      "requests": [
+        "A"
+      ],
+      "errors": [],
+      "unhandled": []
+    },
+    "replay": {
+      "ack": "true",
+      "results": [
+        true,
+        false
+      ],
+      "rewards": 1,
+      "requests": [
+        "A"
+      ],
+      "errors": [],
+      "unhandled": []
+    },
+    "committedNext": {
+      "version": "B",
+      "riddle": "classic_2",
+      "kind": "none",
+      "ack": "false",
+      "results": [
+        false
+      ],
+      "effects": [],
+      "requests": [],
+      "errors": [],
+      "unhandled": []
+    },
+    "accountReplacement": {
+      "version": "A",
+      "riddle": "classic_1",
+      "kind": "loss",
+      "ack": "false",
+      "results": [
+        false
+      ],
+      "effects": [],
+      "requests": [],
+      "suspended": 2,
+      "errors": [],
+      "unhandled": []
+    }
+  }
+}

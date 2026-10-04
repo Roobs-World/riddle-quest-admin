@@ -1,0 +1,766 @@
+[
+  {
+    "width": 1280,
+    "name": "identical issued completions",
+    "expected": {
+      "records": 1,
+      "shows": 1,
+      "acks": 3,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 1,
+      "acks": 3,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "profile and callback updates retain consumed identity",
+    "expected": {
+      "records": 1,
+      "shows": 1,
+      "acks": 4,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 1,
+      "acks": 4,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "distinct sessions remain eligible",
+    "expected": {
+      "records": 2,
+      "shows": 2,
+      "acks": 5,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    },
+    "actual": {
+      "records": 2,
+      "shows": 2,
+      "acks": 5,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    }
+  },
+  {
+    "width": 1280,
+    "name": "replacement retires pending callbacks",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "same-UID-return retires pending callbacks",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "same-UID-generation retires pending callbacks",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "account change during notification prevents result action",
+    "expected": {
+      "records": 1,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "replacement account owns independent result",
+    "expected": {
+      "records": 2,
+      "shows": 1,
+      "acks": 2,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    },
+    "actual": {
+      "records": 2,
+      "shows": 1,
+      "acks": 2,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    }
+  },
+  {
+    "width": 1280,
+    "name": "optional rejection cannot mask receipt or replay partial effects",
+    "expected": {
+      "records": 1,
+      "shows": 0,
+      "acks": 2,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 0,
+      "acks": 2,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "unmounted host retires pending provider work",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "same accepted guess produces one win and one event",
+    "expected": {
+      "wins": 1,
+      "acks": 3,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 3,
+      "events": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "guess consumption survives profile and callback updates",
+    "expected": {
+      "wins": 1,
+      "acks": 4,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 4,
+      "events": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "new issued guess session remains eligible",
+    "expected": {
+      "wins": 2,
+      "acks": 5,
+      "events": 2
+    },
+    "actual": {
+      "wins": 2,
+      "acks": 5,
+      "events": 2
+    }
+  },
+  {
+    "width": 1280,
+    "name": "replacement retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "replacement permits independent current-visit guesses",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "same-UID-return retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "same-UID-return permits independent current-visit guesses",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "same-UID-generation retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "same-UID-generation permits independent current-visit guesses",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "unmount retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 1280,
+    "name": "wrong guess semantic retries retain one attempt event",
+    "expected": {
+      "wins": 0,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 1280,
+    "name": "distinct accepted wrong attempts remain observable",
+    "expected": {
+      "wins": 0,
+      "acks": 3,
+      "events": 2
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 3,
+      "events": 2
+    }
+  },
+  {
+    "width": 1280,
+    "name": "failed guess callback cannot reject acceptance or replay partial effects",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "identical issued completions",
+    "expected": {
+      "records": 1,
+      "shows": 1,
+      "acks": 3,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 1,
+      "acks": 3,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "profile and callback updates retain consumed identity",
+    "expected": {
+      "records": 1,
+      "shows": 1,
+      "acks": 4,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 1,
+      "acks": 4,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "distinct sessions remain eligible",
+    "expected": {
+      "records": 2,
+      "shows": 2,
+      "acks": 5,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    },
+    "actual": {
+      "records": 2,
+      "shows": 2,
+      "acks": 5,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    }
+  },
+  {
+    "width": 390,
+    "name": "replacement retires pending callbacks",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "same-UID-return retires pending callbacks",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "same-UID-generation retires pending callbacks",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "account change during notification prevents result action",
+    "expected": {
+      "records": 1,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "replacement account owns independent result",
+    "expected": {
+      "records": 2,
+      "shows": 1,
+      "acks": 2,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    },
+    "actual": {
+      "records": 2,
+      "shows": 1,
+      "acks": 2,
+      "levelEnds": 2,
+      "levelUps": 2,
+      "unlocks": 2
+    }
+  },
+  {
+    "width": 390,
+    "name": "optional rejection cannot mask receipt or replay partial effects",
+    "expected": {
+      "records": 1,
+      "shows": 0,
+      "acks": 2,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    },
+    "actual": {
+      "records": 1,
+      "shows": 0,
+      "acks": 2,
+      "levelEnds": 1,
+      "levelUps": 1,
+      "unlocks": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "unmounted host retires pending provider work",
+    "expected": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    },
+    "actual": {
+      "records": 0,
+      "shows": 0,
+      "acks": 1,
+      "levelEnds": 0,
+      "levelUps": 0,
+      "unlocks": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "same accepted guess produces one win and one event",
+    "expected": {
+      "wins": 1,
+      "acks": 3,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 3,
+      "events": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "guess consumption survives profile and callback updates",
+    "expected": {
+      "wins": 1,
+      "acks": 4,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 4,
+      "events": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "new issued guess session remains eligible",
+    "expected": {
+      "wins": 2,
+      "acks": 5,
+      "events": 2
+    },
+    "actual": {
+      "wins": 2,
+      "acks": 5,
+      "events": 2
+    }
+  },
+  {
+    "width": 390,
+    "name": "replacement retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "replacement permits independent current-visit guesses",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "same-UID-return retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "same-UID-return permits independent current-visit guesses",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "same-UID-generation retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "same-UID-generation permits independent current-visit guesses",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "unmount retires guess target callbacks and analytics",
+    "expected": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 1,
+      "events": 0
+    }
+  },
+  {
+    "width": 390,
+    "name": "wrong guess semantic retries retain one attempt event",
+    "expected": {
+      "wins": 0,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 2,
+      "events": 1
+    }
+  },
+  {
+    "width": 390,
+    "name": "distinct accepted wrong attempts remain observable",
+    "expected": {
+      "wins": 0,
+      "acks": 3,
+      "events": 2
+    },
+    "actual": {
+      "wins": 0,
+      "acks": 3,
+      "events": 2
+    }
+  },
+  {
+    "width": 390,
+    "name": "failed guess callback cannot reject acceptance or replay partial effects",
+    "expected": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    },
+    "actual": {
+      "wins": 1,
+      "acks": 2,
+      "events": 1
+    }
+  }
+]

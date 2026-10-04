@@ -1,0 +1,11 @@
+$ node scripts/verify-live-provider-retirement-browser.mjs && LIVE_PROVIDER_REACT_MODE=production node scripts/verify-live-provider-retirement-browser.mjs
+{
+  "mode": "development",
+  "checks": 603,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 603,
+  "failures": []
+}

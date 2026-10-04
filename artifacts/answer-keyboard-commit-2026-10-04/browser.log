@@ -1,0 +1,11 @@
+$ node scripts/verify-answer-keyboard-commit-browser.mjs && ANSWER_COMMIT_REACT_MODE=production node scripts/verify-answer-keyboard-commit-browser.mjs
+{
+  "mode": "development",
+  "checks": 255,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 255,
+  "failures": []
+}

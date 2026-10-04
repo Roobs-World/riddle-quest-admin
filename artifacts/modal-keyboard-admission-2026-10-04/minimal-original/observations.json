@@ -1,0 +1,48 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "escape-cancelled",
+    "name": "child consumes the real native key",
+    "actual": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "escape-cancelled",
+    "name": "owned or composing key cannot dismiss the dialog",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "escape-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "escape-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

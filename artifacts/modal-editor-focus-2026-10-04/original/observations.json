@@ -1,0 +1,402 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "username editor remains focused after its deferred frame",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "native typing retains the entire username draft",
+    "actual": "",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "fresh native activation submits the username once",
+    "actual": [],
+    "expected": [
+      "Rival"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "outer dismissal restores the surviving gameplay trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "outer dismissal occurs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "focus changes never delete an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "game update preserves input focus and its caret",
+    "actual": {
+      "focused": false,
+      "start": 5,
+      "end": 5
+    },
+    "expected": {
+      "focused": true,
+      "start": 5,
+      "end": 5
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "native typing retains the entire username draft",
+    "actual": "Rival",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "fresh native activation submits the username once",
+    "actual": [],
+    "expected": [
+      "Rival"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "outer dismissal restores the surviving gameplay trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "outer dismissal occurs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "focus changes never delete an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-input",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "player focuses enabled Save before update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "game update preserves the selected enabled Save control",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "native typing retains the entire username draft",
+    "actual": "Rival",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "fresh native activation submits the username once",
+    "actual": [],
+    "expected": [
+      "Rival"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "outer dismissal restores the surviving gameplay trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "outer dismissal occurs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "focus changes never delete an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "refresh-save",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "covered editor yields focus outside the inert surface",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "uncovering restores the previous editable input",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "native typing retains the entire username draft",
+    "actual": "Rival",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "fresh native activation submits the username once",
+    "actual": [],
+    "expected": [
+      "Rival"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "outer dismissal restores the surviving gameplay trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "outer dismissal occurs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "focus changes never delete an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "blocked-editor",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "switch-page",
+    "name": "replacement page retires the username editor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "switch-page",
+    "name": "replacement page focuses its own Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "switch-page",
+    "name": "outer dismissal restores the surviving gameplay trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "switch-page",
+    "name": "outer dismissal occurs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "switch-page",
+    "name": "focus changes never delete an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "switch-page",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "switch-page",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "lost-control",
+    "name": "ready loss prompt focuses its Shop control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "lost-control",
+    "name": "removed control falls back to the active Close control",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "lost-control",
+    "name": "outer dismissal restores the surviving gameplay trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "lost-control",
+    "name": "outer dismissal occurs once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "lost-control",
+    "name": "focus changes never delete an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "lost-control",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "lost-control",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

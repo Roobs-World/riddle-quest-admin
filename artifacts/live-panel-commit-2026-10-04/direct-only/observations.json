@@ -1,0 +1,662 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "selected recipient remains intact",
+    "actual": "Rival",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "pending or confirmed selection remains excluded",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "selected recipient remains intact",
+    "actual": "Rival",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "pending or confirmed selection remains excluded",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "owned authority confirmation survives an abandoned or ordinary update",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "owned mutation is not dispatched twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-pending",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "selected recipient remains intact",
+    "actual": "Rival",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "pending or confirmed selection remains excluded",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "owned authority confirmation survives an abandoned or ordinary update",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "owned mutation is not dispatched twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-confirmed",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-category",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-category",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-category",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-category",
+    "change": "abandon",
+    "name": "selected report reason remains intact",
+    "actual": "harassment",
+    "expected": "spam"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-category",
+    "change": "abandon",
+    "name": "confirmed block remains excluded",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-category",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-category",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "selected report reason remains intact",
+    "actual": "harassment",
+    "expected": "spam"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "confirmed block remains excluded",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "owned authority confirmation survives an abandoned or ordinary update",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "owned mutation is not dispatched twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-pending",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "selected report reason remains intact",
+    "actual": "harassment",
+    "expected": "spam"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "confirmed block remains excluded",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "owned authority confirmation survives an abandoned or ordinary update",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "owned mutation is not dispatched twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "confirmed parent effect remains once",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "safety-confirmed",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "inbox",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "inbox",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "inbox",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "inbox",
+    "change": "abandon",
+    "name": "loaded invitations stay available without another receipt",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "inbox",
+    "change": "abandon",
+    "name": "explicit acceptance stays with its visible provider",
+    "actual": [],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "inbox",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "inbox",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-network",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-network",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-network",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-network",
+    "change": "abandon",
+    "name": "loaded invitations stay available without another receipt",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-network",
+    "change": "abandon",
+    "name": "explicit acceptance stays with its visible provider",
+    "actual": [],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-network",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-network",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-cached",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-cached",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-cached",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-cached",
+    "change": "abandon",
+    "name": "loaded invitations stay available without another receipt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-cached",
+    "change": "abandon",
+    "name": "explicit acceptance stays with its visible provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-cached",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "preview-cached",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

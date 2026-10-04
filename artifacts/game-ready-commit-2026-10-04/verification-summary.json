@@ -1,0 +1,106 @@
+{
+  "scope": "Game readiness and resize callback ownership under suspended render, commit replacement and removal",
+  "fix": "Commit initialization ref updates and revoke exact callback ownership in layout cleanup; keep timer/observer setup passive",
+  "baseline": {
+    "checks": 138,
+    "failures": 21,
+    "minimalChecks": 6,
+    "minimalFailures": 1
+  },
+  "browser": {
+    "new": {
+      "checks": 276,
+      "failures": 0,
+      "reports": [
+        "development/observations.json",
+        "production/observations.json"
+      ]
+    },
+    "cadenceAndResize": {
+      "checks": 120,
+      "failures": 0,
+      "reports": [
+        "regression-ready/development/browser-after.json",
+        "regression-ready/production/browser-after.json"
+      ]
+    },
+    "completionListener": {
+      "checks": 564,
+      "failures": 0,
+      "reports": [
+        "regression-listener/development/observations.json",
+        "regression-listener/production/observations.json"
+      ]
+    }
+  },
+  "browserChecksTotal": 960,
+  "firefox": {
+    "proof": "firefox-verified.json",
+    "suspendedCommittedGame": "A, initialized=false",
+    "originalSuspendedReady": [],
+    "fixedSuspendedReady": [
+      "A"
+    ],
+    "originalRetiredReadyAndResize": [
+      "A"
+    ],
+    "fixedRetiredReadyAndResize": [],
+    "replacementReadyAndResize": [
+      "B"
+    ],
+    "physicalResourcesRemainUntilPassiveCleanup": true
+  },
+  "gates": {
+    "unitTests": 2756,
+    "unitSuites": 297,
+    "optionalBrowserSkipped": 121,
+    "builtBrowserTests": 37,
+    "builtBrowserSuites": 7,
+    "types": "passed",
+    "tsdocDeclarations": 25258,
+    "tsdocFiles": 1139,
+    "buildsAndIsolationAudits": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube-incomplete-English-fixture",
+      "netflix",
+      "yahoo"
+    ]
+  },
+  "sourceStability": {
+    "inputs": 766,
+    "before": "source-inputs-before.json",
+    "after": "source-inputs-after.json",
+    "identical": true,
+    "ownedFinalHashes": {
+      "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts": "828fccecbff2330a0ad526b543ee4b2c84bfa8e72b3fa46c8ad9575f49e69c58",
+      "packages/portal/package.json": "a9ffbb518977b12b69b16b79d36ca18d3a36b3e306bfd0668d0dec29c1047dae",
+      "packages/portal/scripts/verify-game-ready-commit-browser.mjs": "3431d0e1f03c9b90122d9caed160a08f4ebe38c0791629683023b2d7ab7b1de2"
+    },
+    "final": "source-inputs-final.json"
+  },
+  "intermediateProbe": {
+    "layoutResourceSetup": "Rejected: existing development cadence check saw two immediate readiness sends; remount harness timed out",
+    "evidence": "layout-setup-probe",
+    "committedInitializationOnly": "ref-probe: six checks passed"
+  },
+  "cleanup": {
+    "serveOnlyExitCodes": [
+      130,
+      143,
+      130
+    ],
+    "ownedScratchDirectoriesRemoved": 3,
+    "originalBlankFirefoxTabPreserved": true,
+    "ownedFirefoxTabsClosed": 5,
+    "hostProcessAudit": "No matching node verifier processes remained"
+  },
+  "limitations": [
+    "New fixture holds hook interval callbacks and injects a dimension change for exact commit delivery",
+    "Existing readiness verifier independently exercises controlled timer cadence and actual viewport dimensions",
+    "No full game initialization or live provider network measurement in the new hook fixture",
+    "YouTube release content completeness unverified",
+    "Broader goal remains active"
+  ]
+}

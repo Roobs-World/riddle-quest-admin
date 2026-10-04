@@ -1,0 +1,996 @@
+{
+  "mode": "development",
+  "checks": 636,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "pending-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "pending-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "continuation-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "continuation-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "continue-page-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "continue-page-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "victory-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "victory-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "pending-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "pending-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "continuation-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "continuation-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "victory-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "victory-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "first committed Tab wraps to the active first control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "block-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "retire-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "stable-locks",
+      "name": "parent renders and lock updates preserve native listener registration",
+      "actual": [
+        34,
+        33
+      ],
+      "expected": [
+        2,
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "first committed Tab wraps to the active first control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "retire-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continue-page-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continue-page-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "first committed Tab wraps to the active first control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "retire-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "stable-locks",
+      "name": "parent renders and lock updates preserve native listener registration",
+      "actual": [
+        34,
+        33
+      ],
+      "expected": [
+        2,
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "first committed Tab wraps to the active first control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "retire-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continue-page-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continue-page-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-commit",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-commit",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "pending-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "continuation-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "victory-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-open",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "first-tab",
+      "name": "first committed Tab wraps to the active first control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "block-unlock",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "retire-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "stable-locks",
+      "name": "parent renders and lock updates preserve native listener registration",
+      "actual": [
+        34,
+        33
+      ],
+      "expected": [
+        2,
+        1
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "parent layout key obeys committed dismissal readiness",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-open",
+      "name": "fresh native Escape follows the same committed modal policy",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "active modal owns its first committed key",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "first-tab",
+      "name": "first committed Tab wraps to the active first control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "retire-commit",
+      "name": "native listener is ready or retired at the parent boundary",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}

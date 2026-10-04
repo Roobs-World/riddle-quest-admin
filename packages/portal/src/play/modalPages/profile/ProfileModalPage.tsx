@@ -99,6 +99,9 @@ export function ProfileModalPage({
 
   /** Contains Escape and Tab navigation within the destructive confirmation. */
   const handleDeleteDialogKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== "Escape" && event.key !== "Tab") return;
+    // Earlier key owners and native composition retain their own dismissal/navigation.
+    if (event.defaultPrevented || event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229) return;
     if (event.key === "Escape") {
       event.preventDefault();
       event.stopPropagation();

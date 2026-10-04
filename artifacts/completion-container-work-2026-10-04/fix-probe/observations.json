@@ -1,0 +1,96 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "native typing reaches the real hosted draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "mounted keyboard remains the same DOM element",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "mounted completion collections do not allocate again",
+    "actual": {
+      "set": 0,
+      "map": 0
+    },
+    "expected": {
+      "set": 0,
+      "map": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "native edits preserve the intended draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "editing does not submit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "explicit guess reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "completion reaches authority once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "completion retries retain one issued receipt identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "success is delivered back to the actual game",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "typing",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

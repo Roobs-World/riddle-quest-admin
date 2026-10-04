@@ -14,10 +14,10 @@ type LiveRaceInboxProps = {
 /** Replacing the transport or its read callback retires every previous invitation immediately. */
 export function LiveRaceInbox(props: LiveRaceInboxProps) {
   /** One provider visit owns its rows, read failures, retries, and notification observers. */
-  const lifetime = useRef({transport: props.transport, inbox: props.transport.inbox, version: 0});
-  if (lifetime.current.transport !== props.transport || lifetime.current.inbox !== props.transport.inbox)
-    lifetime.current = {transport: props.transport, inbox: props.transport.inbox, version: lifetime.current.version + 1};
-  return <LiveRaceInboxPanel key={lifetime.current.version} {...props} />;
+  const [lifetime, setLifetime] = useState(() => ({transport: props.transport, inbox: props.transport.inbox, version: 0}));
+  if (lifetime.transport !== props.transport || lifetime.inbox !== props.transport.inbox)
+    setLifetime({transport: props.transport, inbox: props.transport.inbox, version: lifetime.version + 1});
+  return <LiveRaceInboxPanel key={lifetime.version} {...props} />;
 }
 
 /** Retrieves durable invitations without overlapping reads or losing pending refresh notifications. */

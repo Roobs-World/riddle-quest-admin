@@ -16,8 +16,13 @@ export function useLiveRaceSignals(transport: LiveRaceCapability, view: LiveRace
       /** Provides unsubscribe behavior. */
       const unsubscribe = transport.observe(ticketId, () => {if (active) refresh();},
         status => {if (active) {connected.current = status; if (!status) refresh();}});
-      return () => {active = false; connected.current = false; unsubscribe();};
-    } catch {connected.current = false;}
+      return () => {
+        active = false;
+        connected.current = false;
+        // An optional push adapter cannot interrupt the surrounding game's retirement.
+        try {unsubscribe();} catch {}
+      };
+    } catch {active = false; connected.current = false;}
     return () => {active = false; connected.current = false;};
   }, [transport, ticketId, refresh]);
   return connected;

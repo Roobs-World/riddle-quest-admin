@@ -1,6 +1,6 @@
 import {completionPresentationKey} from "./completionPresentation";
 import {getConfirmedRiddleWin} from "./ConfirmedRiddleOutcome";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import "../styles.modal-shell.css";
 import "../styles.modal-rewards.css";
 import "../styles.modal-commerce.css";
@@ -18,6 +18,14 @@ import {
   getActiveFanfareStep,
   isCoinCollectionPending,
 } from "./modalPages/fanfare/fanfareSequence";
+/** Enabled controls belong to the inner confirmation or the active modal shell. */
+const getModalFocusable = (modal: HTMLElement | null): HTMLElement[] =>
+  Array.from(
+    (modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal)?.querySelectorAll<HTMLElement>(
+      "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
+    ) ?? [],
+  );
+
 /** Event handlers and state required by the game modal shell. */
 export type GameModalViewProps = {
   /** Stores state. */
@@ -91,9 +99,14 @@ export function GameModalView({
   const [collectedCoinStep, setCollectedCoinStep] = useState<string | null>(null);
   /** Provides modal ref behavior. */
   const modalRef = useRef<HTMLElement | null>(null);
-  /** Provides on close ref behavior. */
-  const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  /** Last native focus can resume after another surface temporarily covers this modal. */
+  const lastFocusedControlRef = useRef<HTMLElement | null>(null);
+  /** Native keys follow the visible modal callback, readiness and interaction owner. */
+  const keyboardRef = useRef({onClose, modal: state.modal, guessPending: state.guessPending, continuationPending, interactionBlocked});
+  useLayoutEffect(() => {
+    keyboardRef.current = {onClose, modal: state.modal, guessPending: state.guessPending, continuationPending, interactionBlocked};
+    if (!state.modal) lastFocusedControlRef.current = null;
+  }, [onClose, state.modal, state.guessPending, continuationPending, interactionBlocked]);
 
   /** A page switch remains part of the same modal interaction. */
   const modalOpen = state.modal !== null;
@@ -110,45 +123,29 @@ export function GameModalView({
     };
   }, [modalOpen]);
 
-  useEffect(() => {
-    if (!state.modal || interactionBlocked) {
-      return;
-    }
-    /** Provides modal behavior. */
-    const modal = modalRef.current;
-    modal?.scrollTo({top: 0, left: 0});
-    modal?.parentElement?.scrollTo({top: 0, left: 0});
-    /** Provides external notice behavior. */
-    const externalNotice = document.querySelector<HTMLElement>(".play-alert");
-    if (externalNotice) {
-      externalNotice.inert = true;
-      externalNotice.setAttribute("aria-hidden", "true");
-    }
-    /** Gets focusable. */
-    const getFocusable = () =>
-      Array.from(
-        (modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal)?.querySelectorAll<HTMLElement>(
-          "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
-        ) ?? [],
-      );
-    /** Deferred focus waits for the active modal page's controls to mount. */
-    const focusFrame = window.requestAnimationFrame(() => getFocusable()[0]?.focus());
-    /** Handles key down. */
+  useLayoutEffect(() => {
+    if (!modalOpen || interactionBlocked) return;
+    /** Native keyboard ownership starts and retires with the committed visible surface. */
+    let listening = true;
+    /** Active dialog keys yield to composing editors and earlier event owners. */
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" && event.key !== "Tab") return;
+      /** Only the committed modal policy may authorize native dismissal. */
+      const policy = keyboardRef.current;
+      /** Page switches retain the listener while their current DOM owns focus. */
+      const modal = modalRef.current;
+      if (!listening || !policy.modal || policy.interactionBlocked || !modal?.isConnected || modal.closest("[inert]") || event.defaultPrevented || event.isComposing || event.keyCode === 229) return;
       if (event.key === "Escape") {
         event.preventDefault();
         /** Provides collecting coins behavior. */
         const collectingCoins = modal?.querySelector("[data-coin-collection='pending']");
-        if (state.modal !== "victory" && !(state.modal === "continue" && (state.guessPending || continuationPending)) && !collectingCoins) {
-          onCloseRef.current();
+        if (policy.modal !== "victory" && !(policy.modal === "continue" && (policy.guessPending || policy.continuationPending)) && !collectingCoins) {
+          policy.onClose();
         }
         return;
       }
-      if (event.key !== "Tab") {
-        return;
-      }
       /** Provides focusable behavior. */
-      const focusable = getFocusable();
+      const focusable = getModalFocusable(modal);
       if (focusable.length === 0) {
         event.preventDefault();
         return;
@@ -167,7 +164,46 @@ export function GameModalView({
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => {
+      listening = false;
       document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [modalOpen, interactionBlocked]);
+
+  useEffect(() => {
+    if (!state.modal) return;
+    /** Only entering a different page resets the shell's reading position. */
+    const modal = modalRef.current;
+    modal?.scrollTo({top: 0, left: 0});
+    modal?.parentElement?.scrollTo({top: 0, left: 0});
+  }, [state.modal]);
+
+  useEffect(() => {
+    if (!state.modal || interactionBlocked) {
+      return;
+    }
+    /** Provides modal behavior. */
+    const modal = modalRef.current;
+    /** Provides external notice behavior. */
+    const externalNotice = document.querySelector<HTMLElement>(".play-alert");
+    if (externalNotice) {
+      externalNotice.inert = true;
+      externalNotice.setAttribute("aria-hidden", "true");
+    }
+    /** Deferred focus waits for the active modal page's controls to mount. */
+    const focusFrame = window.requestAnimationFrame(() => {
+      if (modal !== modalRef.current || !modal?.isConnected || modal.closest("[inert]") || keyboardRef.current.interactionBlocked || !keyboardRef.current.modal) return;
+      /** Autofocus and player-selected controls retain their native focus and caret. */
+      const focusable = getModalFocusable(modal);
+      if (focusable.some((control) => control === document.activeElement)) return;
+      /** A removed, disabled or previous-page control cannot reclaim the current scope. */
+      const previous = lastFocusedControlRef.current;
+      if (previous && focusable.includes(previous)) {
+        previous.focus({preventScroll: true});
+      } else {
+        focusable[0]?.focus();
+      }
+    });
+    return () => {
       window.cancelAnimationFrame(focusFrame);
       if (externalNotice) {
         externalNotice.inert = false;
@@ -271,6 +307,9 @@ export function GameModalView({
         aria-modal="true"
         aria-labelledby="game-modal-title"
         onMouseDown={(event) => event.stopPropagation()}
+        onFocusCapture={(event) => {
+          if (event.target instanceof HTMLElement) lastFocusedControlRef.current = event.target;
+        }}
         data-analytics-screen={`modal_${state.modal}`}
       >
         {!isMandatoryOutcome && (

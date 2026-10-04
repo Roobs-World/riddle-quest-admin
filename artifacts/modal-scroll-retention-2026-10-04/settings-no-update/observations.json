@@ -1,0 +1,50 @@
+[
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "settings-guess",
+    "name": "real content exceeds its scroll viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "settings-guess",
+    "name": "native wheel reaches a reading position",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "settings-guess",
+    "name": "the same committed shell survives the update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "settings-guess",
+    "name": "the current page retains its native reading position",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "settings-guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "settings-guess",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

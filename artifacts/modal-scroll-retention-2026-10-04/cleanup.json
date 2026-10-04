@@ -1,0 +1,12 @@
+{
+  "ownedVerifierProcesses": [],
+  "removedScratch": [
+    "packages/portal/node_modules/.cache/modal-scroll-retention-XVhE1q",
+    "packages/portal/node_modules/.cache/modal-scroll-retention-KsvqE8"
+  ],
+  "closedFirefoxTabs": 2,
+  "stoppedServeOnlySessions": [
+    72001,
+    10601
+  ]
+}

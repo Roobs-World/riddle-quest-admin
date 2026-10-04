@@ -1,0 +1,4 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 1 production declarations are undocumented.
+- packages/portal/src/play/game/hooks/useGameSessionPersistence.ts:53 effect
+[ELIFECYCLE] Command failed with exit code 1.

@@ -235,10 +235,13 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     void deliver();
     /** Periodic server observations also retry retained commands after their backoff. */
     let timer: number;
+    /** A retired effect cannot reschedule after a reentrant transport removes its game. */
+    let polling = true;
     /** One timer adapts to accepted state; the delivery lock prevents overlapping observations. */
     const schedulePoll = () => {
-      if (["result", "cancelled"].includes(viewRef.current?.phase ?? "")) return;
+      if (!polling || !active.current || closed.current || ["result", "cancelled"].includes(viewRef.current?.phase ?? "")) return;
       timer = window.setTimeout(() => {
+        if (!polling || !active.current || closed.current) return;
         if (performance.now() >= nextDeliveryAt.current && performance.now() - lastDeliveryAt.current >=
           liveRacePollInterval(viewRef.current, document.visibilityState !== "hidden", pushConnected.current)) void deliver();
         schedulePoll();
@@ -253,6 +256,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     document.addEventListener("visibilitychange", resume);
     dialogRef.current?.focus();
     return () => {
+      polling = false;
       active.current = false;
       window.clearTimeout(timer);
       window.removeEventListener("online", resume);

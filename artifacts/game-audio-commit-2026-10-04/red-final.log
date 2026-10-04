@@ -1,0 +1,40 @@
+{
+  "mode": "production",
+  "checks": 12,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "spec-unmute",
+      "name": "native gesture follows visible mute and pause settings",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "spec-unmute",
+      "name": "media playback follows the visible setting",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Committed game audio ownership
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-game-audio-commit-browser.mjs:51:227 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,0 +1,50 @@
+[
+  {
+    "text": "Block opponent",
+    "color": "rgb(64, 31, 64)",
+    "background": "rgb(255, 253, 247)",
+    "disabled": true,
+    "rect": {
+      "x": 27,
+      "y": 191.4375,
+      "width": 336,
+      "height": 50,
+      "top": 191.4375,
+      "right": 363,
+      "bottom": 241.4375,
+      "left": 27
+    }
+  },
+  {
+    "text": "HarassmentCheatingInappropriate name or imageSpamOther",
+    "color": "rgb(0, 0, 0)",
+    "background": "rgb(239, 239, 239)",
+    "disabled": false,
+    "rect": {
+      "x": 27,
+      "y": 274.4375,
+      "width": 336,
+      "height": 44,
+      "top": 274.4375,
+      "right": 363,
+      "bottom": 318.4375,
+      "left": 27
+    }
+  },
+  {
+    "text": "Report opponent",
+    "color": "rgb(64, 31, 64)",
+    "background": "rgb(255, 253, 247)",
+    "disabled": false,
+    "rect": {
+      "x": 27,
+      "y": 332.4375,
+      "width": 336,
+      "height": 50,
+      "top": 332.4375,
+      "right": 363,
+      "bottom": 382.4375,
+      "left": 27
+    }
+  }
+]

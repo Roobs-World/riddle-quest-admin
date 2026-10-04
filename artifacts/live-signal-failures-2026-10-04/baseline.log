@@ -1,0 +1,156 @@
+{
+  "mode": "production",
+  "checks": 132,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "register",
+      "name": "only a successfully mounted push lifetime delivers retained callbacks",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "register",
+      "name": "failed or retired callbacks cannot claim a healthy push connection",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "register",
+      "name": "poll cadence matches the admitted connection",
+      "actual": 5000,
+      "expected": 500
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "register",
+      "name": "failed push retains real foreground polling recovery",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cleanup",
+      "name": "retirement keeps its parent intact",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cleanup",
+      "name": "no browser errors",
+      "actual": [
+        "Error: Injected push cleanup failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "register",
+      "name": "only a successfully mounted push lifetime delivers retained callbacks",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "register",
+      "name": "failed or retired callbacks cannot claim a healthy push connection",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "register",
+      "name": "poll cadence matches the admitted connection",
+      "actual": 5000,
+      "expected": 500
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "register",
+      "name": "failed push retains real foreground polling recovery",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "cleanup",
+      "name": "retirement keeps its parent intact",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "cleanup",
+      "name": "no browser errors",
+      "actual": [
+        "Error: Injected push cleanup failure"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "register",
+      "name": "only a successfully mounted push lifetime delivers retained callbacks",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "register",
+      "name": "failed or retired callbacks cannot claim a healthy push connection",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "register",
+      "name": "poll cadence matches the admitted connection",
+      "actual": 5000,
+      "expected": 500
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "register",
+      "name": "failed push retains real foreground polling recovery",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "cleanup",
+      "name": "retirement keeps its parent intact",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "cleanup",
+      "name": "no browser errors",
+      "actual": [
+        "Error: Injected push cleanup failure"
+      ],
+      "expected": []
+    }
+  ]
+}

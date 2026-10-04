@@ -1,0 +1,2486 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "callback changes do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "native Close agrees with committed Escape owner",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Bob"
+    ],
+    "expected": [
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "callback changes do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "native Close agrees with committed Escape owner",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Bob"
+    ],
+    "expected": [
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "callback changes do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "native Close agrees with committed Escape owner",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Bob"
+    ],
+    "expected": [
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "callback changes do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "native Close agrees with committed Escape owner",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Bob"
+    ],
+    "expected": [
+      "Bob"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "callback changes do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "native Close agrees with committed Escape owner",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "callback",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Bob"
+    ],
+    "expected": [
+      "Bob"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "unlock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "committed pending lock matches the visible Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "Tab wraps to the first available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "reverse Tab wraps to the last available dialog action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "inert recovery cannot dismiss beneath another overlay",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "recovery",
+    "scenario": "lock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "callback changes do not rebuild the keyboard listener",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "native Close agrees with committed Escape owner",
+    "actual": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ],
+    "expected": [
+      "Alice",
+      "Alice",
+      "Bob",
+      "Bob"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 4,
+    "expected": 4
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "callback",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Bob"
+    ],
+    "expected": [
+      "Bob"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "unlock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "prepared replacement leaves Alice visible",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "Escape uses only the visible callback and pending lock",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "abandoned replacement cannot redirect a later Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "abandoning replacement preserves the existing dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "committed replacement owns subsequent Escape",
+    "actual": [
+      "Alice",
+      "Alice"
+    ],
+    "expected": [
+      "Alice",
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "ordinary parent renders do not rebuild the keyboard listener",
+    "actual": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "dismissal restores the connected original trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "retired dialog cannot consume another Escape",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "surface": "modal",
+    "scenario": "lock",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

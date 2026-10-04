@@ -1,0 +1,136 @@
+{
+  "Original": {
+    "stage": "1",
+    "closes": [
+      {
+        "stage": 1,
+        "modal": "continue",
+        "guessPending": true,
+        "continuationPending": false
+      }
+    ],
+    "boundaries": [
+      {
+        "modal": "game-modal modal-continue",
+        "prevented": true,
+        "listeners": 1,
+        "firstFocused": false,
+        "closeVisible": false,
+        "closes": 1
+      }
+    ],
+    "closeVisible": false,
+    "errors": [],
+    "unhandled": []
+  },
+  "OriginalActivation": {
+    "closes": [],
+    "boundaries": [
+      {
+        "modal": "game-modal modal-settings",
+        "prevented": false,
+        "listeners": 0,
+        "firstFocused": false,
+        "closeVisible": true,
+        "closes": 0
+      }
+    ],
+    "modalPresent": true,
+    "liveListeners": 1,
+    "errors": [],
+    "unhandled": []
+  },
+  "OriginalSettled": {
+    "closes": [
+      {
+        "stage": 1,
+        "modal": "settings",
+        "guessPending": false,
+        "continuationPending": false
+      }
+    ],
+    "liveListeners": 1
+  },
+  "Fixed": {
+    "stage": "1",
+    "closes": [],
+    "boundaries": [
+      {
+        "modal": "game-modal modal-continue",
+        "prevented": true,
+        "listeners": 1,
+        "firstFocused": false,
+        "closeVisible": false,
+        "closes": 0
+      }
+    ],
+    "closeVisible": false,
+    "errors": [],
+    "unhandled": []
+  },
+  "FixedActivation": {
+    "closes": [
+      {
+        "stage": 1,
+        "modal": "settings",
+        "guessPending": false,
+        "continuationPending": false
+      }
+    ],
+    "boundaries": [
+      {
+        "modal": "game-modal modal-settings",
+        "prevented": true,
+        "listeners": 1,
+        "firstFocused": false,
+        "closeVisible": true,
+        "closes": 1
+      }
+    ],
+    "modalPresent": true,
+    "errors": [],
+    "unhandled": []
+  },
+  "RecoveryTab": {
+    "closes": [],
+    "boundaries": [
+      {
+        "modal": "surface-recovery",
+        "prevented": true,
+        "listeners": 1,
+        "firstFocused": true,
+        "closeVisible": true,
+        "closes": 0
+      }
+    ],
+    "recoveryPresent": true,
+    "errors": [],
+    "unhandled": []
+  },
+  "RecoveryFresh": {
+    "closes": [
+      {
+        "stage": 1,
+        "modal": "settings",
+        "guessPending": false,
+        "continuationPending": false
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "Stable": {
+    "baseline": [
+      2,
+      1
+    ],
+    "listeners": [
+      2,
+      1
+    ],
+    "liveListeners": 1,
+    "epoch": "4",
+    "errors": [],
+    "unhandled": []
+  }
+}

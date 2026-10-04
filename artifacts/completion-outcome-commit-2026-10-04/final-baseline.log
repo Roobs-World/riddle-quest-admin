@@ -1,0 +1,570 @@
+{
+  "mode": "production",
+  "checks": 282,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "acknowledged loss requests its next question once",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "replay cannot request another question",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "acknowledged loss requests its next question once",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "replay cannot request another question",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "acknowledged loss requests its next question once",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "replay cannot request another question",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "acknowledged loss requests its next question once",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "replay cannot request another question",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "acknowledged loss requests its next question once",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-loss",
+      "name": "replay cannot request another question",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "local",
+      "scenario": "spec-win",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "acknowledged loss requests its next question once",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-loss",
+      "name": "replay cannot request another question",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "receipt belongs to the committed question and allowed account",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "visible current outcome receives its acknowledgement",
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "current receipt rewards exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "channel": "native",
+      "scenario": "spec-win",
+      "name": "replay cannot reward twice",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}

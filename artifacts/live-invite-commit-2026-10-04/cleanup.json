@@ -1,0 +1,15 @@
+{
+  "matchingOwnedNodeProcesses": [],
+  "ownedServerSessions": {
+    "83195": 130,
+    "16749": 130
+  },
+  "exactScratchDirectoriesRemoved": [
+    "packages/portal/node_modules/.cache/live-invite-commit-c0g2tx",
+    "packages/portal/node_modules/.cache/live-invite-commit-DzwnBG"
+  ],
+  "ownedFirefoxTabsClosed": 4,
+  "remainingFirefoxTabs": [
+    "about:blank"
+  ]
+}

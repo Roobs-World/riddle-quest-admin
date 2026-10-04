@@ -1,0 +1,102 @@
+{
+  "mode": "production",
+  "checks": 57,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "retired race cannot retain a polling timeout",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "retired race cannot keep waking the browser",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "retired race cannot retain a polling timeout",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "retired race cannot keep waking the browser",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "retired race cannot retain a polling timeout",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "retired race cannot keep waking the browser",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "retired race cannot retain a polling timeout",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "retired race cannot keep waking the browser",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "retired race cannot retain a polling timeout",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "retired race cannot keep waking the browser",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "retired race cannot retain a polling timeout",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "retired race cannot keep waking the browser",
+      "actual": 2,
+      "expected": 0
+    }
+  ]
+}

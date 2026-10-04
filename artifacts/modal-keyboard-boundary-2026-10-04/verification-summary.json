@@ -1,0 +1,137 @@
+{
+  "scope": "Committed native keyboard policy and registration for normal/recovery dialogs",
+  "original": {
+    "checks": 636,
+    "failures": 108
+  },
+  "browser": {
+    "development": {
+      "checks": 636,
+      "failures": 0
+    },
+    "production": {
+      "checks": 636,
+      "failures": 0
+    },
+    "admission-development": {
+      "checks": 372,
+      "failures": 0
+    },
+    "admission-production": {
+      "checks": 372,
+      "failures": 0
+    },
+    "close-development": {
+      "checks": 228,
+      "failures": 0
+    },
+    "close-production": {
+      "checks": 228,
+      "failures": 0
+    },
+    "recovery-development": {
+      "checks": 412,
+      "failures": 0
+    },
+    "recovery-production": {
+      "checks": 412,
+      "failures": 0
+    }
+  },
+  "browserAssertions": 3296,
+  "boundaryJourneys": 156,
+  "focusJourneys": 18,
+  "compiledRetainedModalJourneys": 6,
+  "listenerChurn": {
+    "lockUpdates": 32,
+    "originalAdds": 32,
+    "originalRemoves": 32,
+    "fixedAdds": 0,
+    "fixedRemoves": 0,
+    "observations": [
+      {
+        "run": "original-final-harness",
+        "width": 390,
+        "height": 568,
+        "adds": 32,
+        "removes": 32
+      },
+      {
+        "run": "original-final-harness",
+        "width": 390,
+        "height": 844,
+        "adds": 32,
+        "removes": 32
+      },
+      {
+        "run": "original-final-harness",
+        "width": 1280,
+        "height": 844,
+        "adds": 32,
+        "removes": 32
+      },
+      {
+        "run": "development",
+        "width": 390,
+        "height": 568,
+        "adds": 0,
+        "removes": 0
+      },
+      {
+        "run": "development",
+        "width": 390,
+        "height": 844,
+        "adds": 0,
+        "removes": 0
+      },
+      {
+        "run": "development",
+        "width": 1280,
+        "height": 844,
+        "adds": 0,
+        "removes": 0
+      },
+      {
+        "run": "production",
+        "width": 390,
+        "height": 568,
+        "adds": 0,
+        "removes": 0
+      },
+      {
+        "run": "production",
+        "width": 390,
+        "height": 844,
+        "adds": 0,
+        "removes": 0
+      },
+      {
+        "run": "production",
+        "width": 1280,
+        "height": 844,
+        "adds": 0,
+        "removes": 0
+      }
+    ]
+  },
+  "unitTests": 2756,
+  "unitSuites": 297,
+  "builtGameTests": 37,
+  "builtGameSuites": 7,
+  "types": "passed",
+  "tsdocDeclarations": 25280,
+  "tsdocFiles": 1139,
+  "buildsAndAudits": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "stableSourceInputs": 766,
+  "nativeFirefox": "original committed-pending dismissal and late activation; fixed pending lock, first key, recovery initial Tab and fresh Escape, stable registration across four lock updates",
+  "harnessTiming": "Immediate parent layout probes unchanged; ordinary post-update navigation waits for retained focus frame",
+  "cleanup": "passed",
+  "goal": "active"
+}

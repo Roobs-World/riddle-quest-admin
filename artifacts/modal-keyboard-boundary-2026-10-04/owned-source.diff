@@ -1,0 +1,199 @@
+--- packages/portal/src/play/GameModalView.tsx (before pass)
++++ packages/portal/src/play/GameModalView.tsx
+@@ -18,6 +18,14 @@
+   getActiveFanfareStep,
+   isCoinCollectionPending,
+ } from "./modalPages/fanfare/fanfareSequence";
++/** Enabled controls belong to the inner confirmation or the active modal shell. */
++const getModalFocusable = (modal: HTMLElement | null): HTMLElement[] =>
++  Array.from(
++    (modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal)?.querySelectorAll<HTMLElement>(
++      "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
++    ) ?? [],
++  );
++
+ /** Event handlers and state required by the game modal shell. */
+ export type GameModalViewProps = {
+   /** Stores state. */
+@@ -91,11 +99,11 @@
+   const [collectedCoinStep, setCollectedCoinStep] = useState<string | null>(null);
+   /** Provides modal ref behavior. */
+   const modalRef = useRef<HTMLElement | null>(null);
+-  /** Native dismissal follows the callback that owns the visible modal. */
+-  const onCloseRef = useRef(onClose);
++  /** Native keys follow the visible modal callback, readiness and interaction owner. */
++  const keyboardRef = useRef({onClose, modal: state.modal, guessPending: state.guessPending, continuationPending, interactionBlocked});
+   useLayoutEffect(() => {
+-    onCloseRef.current = onClose;
+-  }, [onClose]);
++    keyboardRef.current = {onClose, modal: state.modal, guessPending: state.guessPending, continuationPending, interactionBlocked};
++  }, [onClose, state.modal, state.guessPending, continuationPending, interactionBlocked]);
+ 
+   /** A page switch remains part of the same modal interaction. */
+   const modalOpen = state.modal !== null;
+@@ -111,6 +119,52 @@
+       }
+     };
+   }, [modalOpen]);
++
++  useLayoutEffect(() => {
++    if (!modalOpen || interactionBlocked) return;
++    /** Native keyboard ownership starts and retires with the committed visible surface. */
++    let listening = true;
++    /** Active dialog keys yield to composing editors and earlier event owners. */
++    const handleKeyDown = (event: KeyboardEvent) => {
++      if (event.key !== "Escape" && event.key !== "Tab") return;
++      /** Only the committed modal policy may authorize native dismissal. */
++      const policy = keyboardRef.current;
++      /** Page switches retain the listener while their current DOM owns focus. */
++      const modal = modalRef.current;
++      if (!listening || !policy.modal || policy.interactionBlocked || !modal?.isConnected || modal.closest("[inert]") || event.defaultPrevented || event.isComposing || event.keyCode === 229) return;
++      if (event.key === "Escape") {
++        event.preventDefault();
++        /** Provides collecting coins behavior. */
++        const collectingCoins = modal?.querySelector("[data-coin-collection='pending']");
++        if (policy.modal !== "victory" && !(policy.modal === "continue" && (policy.guessPending || policy.continuationPending)) && !collectingCoins) {
++          policy.onClose();
++        }
++        return;
++      }
++      /** Provides focusable behavior. */
++      const focusable = getModalFocusable(modal);
++      if (focusable.length === 0) {
++        event.preventDefault();
++        return;
++      }
++      /** Provides first behavior. */
++      const first = focusable[0];
++      /** Provides last behavior. */
++      const last = focusable[focusable.length - 1];
++      if (event.shiftKey && document.activeElement === first) {
++        event.preventDefault();
++        last.focus();
++      } else if (!event.shiftKey && document.activeElement === last) {
++        event.preventDefault();
++        first.focus();
++      }
++    };
++    document.addEventListener("keydown", handleKeyDown);
++    return () => {
++      listening = false;
++      document.removeEventListener("keydown", handleKeyDown);
++    };
++  }, [modalOpen, interactionBlocked]);
+ 
+   useEffect(() => {
+     if (!state.modal || interactionBlocked) {
+@@ -126,51 +180,9 @@
+       externalNotice.inert = true;
+       externalNotice.setAttribute("aria-hidden", "true");
+     }
+-    /** Gets focusable. */
+-    const getFocusable = () =>
+-      Array.from(
+-        (modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal)?.querySelectorAll<HTMLElement>(
+-          "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
+-        ) ?? [],
+-      );
+     /** Deferred focus waits for the active modal page's controls to mount. */
+-    const focusFrame = window.requestAnimationFrame(() => getFocusable()[0]?.focus());
+-    /** Active dialog keys yield to composing editors and earlier event owners. */
+-    const handleKeyDown = (event: KeyboardEvent) => {
+-      if (!modal?.isConnected || modal.closest("[inert]") || event.defaultPrevented || event.isComposing || event.keyCode === 229) return;
+-      if (event.key === "Escape") {
+-        event.preventDefault();
+-        /** Provides collecting coins behavior. */
+-        const collectingCoins = modal?.querySelector("[data-coin-collection='pending']");
+-        if (state.modal !== "victory" && !(state.modal === "continue" && (state.guessPending || continuationPending)) && !collectingCoins) {
+-          onCloseRef.current();
+-        }
+-        return;
+-      }
+-      if (event.key !== "Tab") {
+-        return;
+-      }
+-      /** Provides focusable behavior. */
+-      const focusable = getFocusable();
+-      if (focusable.length === 0) {
+-        event.preventDefault();
+-        return;
+-      }
+-      /** Provides first behavior. */
+-      const first = focusable[0];
+-      /** Provides last behavior. */
+-      const last = focusable[focusable.length - 1];
+-      if (event.shiftKey && document.activeElement === first) {
+-        event.preventDefault();
+-        last.focus();
+-      } else if (!event.shiftKey && document.activeElement === last) {
+-        event.preventDefault();
+-        first.focus();
+-      }
+-    };
+-    document.addEventListener("keydown", handleKeyDown);
++    const focusFrame = window.requestAnimationFrame(() => getModalFocusable(modal)[0]?.focus());
+     return () => {
+-      document.removeEventListener("keydown", handleKeyDown);
+       window.cancelAnimationFrame(focusFrame);
+       if (externalNotice) {
+         externalNotice.inert = false;
+--- packages/portal/src/play/GameSurfaceRecovery.tsx (before pass)
++++ packages/portal/src/play/GameSurfaceRecovery.tsx
+@@ -67,15 +67,15 @@
+     closeRef.current = {onClose, closeBlocked};
+   }, [onClose, closeBlocked]);
+ 
+-  useEffect(() => {
+-    /** Returns focus to the original still-connected game control after dismissal. */
+-    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+-    dialogRef.current?.focus();
++  useLayoutEffect(() => {
++    /** Retired native callbacks cannot reclaim a later interactive surface. */
++    let listening = true;
+     /** Traps focus inside the active recovery and respects locked continuation. */
+     const keyDown = (event: KeyboardEvent) => {
++      if (event.key !== "Escape" && event.key !== "Tab") return;
+       /** Covered or removed panels and composing editors retain their own key ownership. */
+       const dialog = dialogRef.current;
+-      if (!dialog?.isConnected || dialog.closest("[inert]") || event.defaultPrevented || event.isComposing || event.keyCode === 229) return;
++      if (!listening || !dialog?.isConnected || dialog.closest("[inert]") || event.defaultPrevented || event.isComposing || event.keyCode === 229) return;
+       if (event.key === "Escape") {
+         event.preventDefault();
+         if (!closeRef.current.closeBlocked) closeRef.current.onClose();
+@@ -94,7 +94,14 @@
+       }
+     };
+     document.addEventListener("keydown", keyDown);
+-    return () => { document.removeEventListener("keydown", keyDown); if (previous?.isConnected) previous.focus(); };
++    return () => { listening = false; document.removeEventListener("keydown", keyDown); };
++  }, []);
++
++  useEffect(() => {
++    /** Returns focus to the original still-connected game control after dismissal. */
++    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
++    dialogRef.current?.focus();
++    return () => { if (previous?.isConnected) previous.focus(); };
+   }, []);
+ 
+   return <div className="surface-recovery-backdrop">
+--- packages/portal/package.json (before pass)
++++ packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -170,7 +170,8 @@
+     "test:live-invite-commit:browser": "node scripts/verify-live-invite-commit-browser.mjs && INVITE_COMMIT_REACT_MODE=production node scripts/verify-live-invite-commit-browser.mjs",
+     "test:live-panel-commit:browser": "node scripts/verify-live-panel-commit-browser.mjs && PANEL_COMMIT_REACT_MODE=production node scripts/verify-live-panel-commit-browser.mjs",
+     "test:modal-close-commit:browser": "node scripts/verify-modal-close-commit-browser.mjs && MODAL_CLOSE_REACT_MODE=production node scripts/verify-modal-close-commit-browser.mjs",
+-    "test:modal-keyboard-admission:browser": "node scripts/verify-modal-keyboard-admission-browser.mjs && MODAL_KEYS_REACT_MODE=production node scripts/verify-modal-keyboard-admission-browser.mjs"
++    "test:modal-keyboard-admission:browser": "node scripts/verify-modal-keyboard-admission-browser.mjs && MODAL_KEYS_REACT_MODE=production node scripts/verify-modal-keyboard-admission-browser.mjs",
++    "test:modal-keyboard-boundary:browser": "node scripts/verify-modal-keyboard-boundary-browser.mjs && MODAL_BOUNDARY_REACT_MODE=production node scripts/verify-modal-keyboard-boundary-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",

@@ -1,0 +1,3326 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-after-pending",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "retired chooser failure cannot display recovery in the replacement lobby",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-error-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "retired chooser failure cannot display recovery in the replacement lobby",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace-rejection-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "remove-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "later provider commit retires the accepted audience seat under its original provider",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "later provider commit releases the accepted audience subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "later explicit start belongs to the replacement provider",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accept-before-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "retired chooser failure cannot display recovery in the replacement lobby",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "retired chooser failure cannot display recovery in the replacement lobby",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "later provider commit retires the accepted audience seat under its original provider",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "later provider commit releases the accepted audience subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "later explicit start belongs to the replacement provider",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "commit-after-pending",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "retired chooser failure cannot display recovery in the replacement lobby",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-error-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "retired chooser failure cannot display recovery in the replacement lobby",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "committed replacement can start an independent seat",
+    "actual": [
+      2
+    ],
+    "expected": [
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace-rejection-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "owner-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "remove-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retire",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "suspended replacement retains the committed provider lobby",
+    "actual": "1",
+    "expected": "1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "suspended replacement retains the pending chooser",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ],
+    "expected": [
+      {
+        "generation": 1,
+        "audience": true,
+        "categoryId": "mixed",
+        "createChallenge": true
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "reserved seat remains playable through its chosen audience",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "reserved seat owns one active provider subscription",
+    "actual": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "later provider commit retires the accepted audience seat under its original provider",
+    "actual": [
+      1
+    ],
+    "expected": [
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "later provider commit releases the accepted audience subscription",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "later explicit start belongs to the replacement provider",
+    "actual": [
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accept-before-commit",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "pending native chooser disables repeated selection",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "pending native chooser has not joined a seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "only committed chooser ownership may create its reserved seat",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "one player selection invokes the native chooser once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "settled chooser allows a new player choice",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "cancelled chooser stays quiet and failures display recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "rejected",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

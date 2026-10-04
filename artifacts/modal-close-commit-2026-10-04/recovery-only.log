@@ -1,0 +1,113 @@
+{
+  "mode": "development",
+  "checks": 76,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "native Close agrees with committed Escape owner",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    }
+  ]
+}

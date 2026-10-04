@@ -1,0 +1,498 @@
+{
+  "mode": "production",
+  "checks": 132,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "speculative",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "removed reporter retires timers and observers during commit",
+      "actual": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "expected": {
+        "removed": true,
+        "intervals": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "retained callbacks stay inactive after passive cleanup",
+      "actual": {
+        "ready": [
+          "A"
+        ],
+        "messages": [
+          {
+            "version": "A",
+            "message": {
+              "type": "game:resize",
+              "requestId": "resize-02442f2b-6fe7-4454-ba19-9116a612322f",
+              "payload": {
+                "width": 391,
+                "height": 568
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ready": [],
+        "messages": []
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "removed reporter retires timers and observers during commit",
+      "actual": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "expected": {
+        "removed": true,
+        "intervals": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "retained callbacks stay inactive after passive cleanup",
+      "actual": {
+        "ready": [
+          "A"
+        ],
+        "messages": [
+          {
+            "version": "A",
+            "message": {
+              "type": "game:resize",
+              "requestId": "resize-1820f502-b101-4653-a86d-47488b883aa0",
+              "payload": {
+                "width": 391,
+                "height": 568
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ready": [],
+        "messages": []
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "speculative",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "removed reporter retires timers and observers during commit",
+      "actual": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "expected": {
+        "removed": true,
+        "intervals": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "retained callbacks stay inactive after passive cleanup",
+      "actual": {
+        "ready": [
+          "A"
+        ],
+        "messages": [
+          {
+            "version": "A",
+            "message": {
+              "type": "game:resize",
+              "requestId": "resize-4e6fa672-b21d-463f-8631-bfd68ce3a5ea",
+              "payload": {
+                "width": 391,
+                "height": 844
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ready": [],
+        "messages": []
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "removed reporter retires timers and observers during commit",
+      "actual": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "expected": {
+        "removed": true,
+        "intervals": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "retained callbacks stay inactive after passive cleanup",
+      "actual": {
+        "ready": [
+          "A"
+        ],
+        "messages": [
+          {
+            "version": "A",
+            "message": {
+              "type": "game:resize",
+              "requestId": "resize-c28cef3c-8bd6-442b-ac67-58af961924e9",
+              "payload": {
+                "width": 391,
+                "height": 844
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ready": [],
+        "messages": []
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "speculative",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "removed reporter retires timers and observers during commit",
+      "actual": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "expected": {
+        "removed": true,
+        "intervals": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "retained callbacks stay inactive after passive cleanup",
+      "actual": {
+        "ready": [
+          "A"
+        ],
+        "messages": [
+          {
+            "version": "A",
+            "message": {
+              "type": "game:resize",
+              "requestId": "resize-85f69f76-245d-4b4f-a2a7-5605bfbb9d9a",
+              "payload": {
+                "width": 1281,
+                "height": 844
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ready": [],
+        "messages": []
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "removed reporter retires timers and observers during commit",
+      "actual": {
+        "removed": true,
+        "intervals": 1,
+        "observers": 1
+      },
+      "expected": {
+        "removed": true,
+        "intervals": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "retained callbacks stay inactive after passive cleanup",
+      "actual": {
+        "ready": [
+          "A"
+        ],
+        "messages": [
+          {
+            "version": "A",
+            "message": {
+              "type": "game:resize",
+              "requestId": "resize-69fb29bf-5423-4e78-acb9-6292819954c6",
+              "payload": {
+                "width": 1281,
+                "height": 844
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ready": [],
+        "messages": []
+      }
+    }
+  ]
+}

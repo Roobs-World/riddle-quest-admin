@@ -1,4 +1,4 @@
-import {useMemo} from "react";
+import {useLayoutEffect, useMemo, useRef} from "react";
 import type {Dispatch, MutableRefObject} from "react";
 import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {createGameMessageRouter} from "./bridgeRouter";
@@ -70,6 +70,11 @@ export function useGameMessageRouter({
     /** Correlated question result. */ type: "host:riddleLoaded";
   }>) => boolean;
 }) {
+  /** Rendered outcome is captured separately from the mutable operation state ref. */
+  const outcome = stateRef.current.lastOutcome;
+  /** Completion presentation follows the visible question while replacement rendering is suspended. */
+  const committedOutcomeRef = useRef(outcome);
+  useLayoutEffect(() => {committedOutcomeRef.current = outcome;}, [outcome]);
   return useMemo(
     () =>
       createGameMessageRouter({
@@ -232,7 +237,7 @@ export function useGameMessageRouter({
             /** Whether this reward still belongs to the visible riddle. */
             const currentCompletion = onCompletionResult?.(true, message.requestId) ?? true;
             /** Provides completed outcome behavior. */
-            const completedOutcome = currentCompletion ? stateRef.current.lastOutcome : null;
+            const completedOutcome = currentCompletion ? committedOutcomeRef.current : null;
             if (currentCompletion) dispatch({
               type: "completionReward",
               reward: {

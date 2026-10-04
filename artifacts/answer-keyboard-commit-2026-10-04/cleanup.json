@@ -1,0 +1,17 @@
+{
+  "matchingHostNodeVerifiers": [],
+  "firefoxFixtureShutdownExitCodes": [
+    143,
+    130,
+    130
+  ],
+  "exactScratchDirectoriesRemoved": [
+    "packages/portal/node_modules/.cache/answer-keyboard-commit-OoE9C0",
+    "packages/portal/node_modules/.cache/answer-keyboard-commit-ECdo9g",
+    "packages/portal/node_modules/.cache/answer-keyboard-commit-Ow5EqE"
+  ],
+  "ownedTabsClosed": 4,
+  "remainingFirefoxTabs": [
+    "about:blank"
+  ]
+}

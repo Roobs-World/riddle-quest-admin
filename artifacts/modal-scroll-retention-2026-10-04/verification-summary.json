@@ -1,0 +1,39 @@
+{
+  "assertions": {
+    "final-development": 309,
+    "final-production": 309,
+    "editor-focus-development": 192,
+    "editor-focus-production": 192,
+    "keyboard-boundary-development": 636,
+    "keyboard-boundary-production": 636,
+    "keyboard-admission-development": 372,
+    "keyboard-admission-production": 372,
+    "close-commit-development": 228,
+    "close-commit-production": 228,
+    "interactive-recovery-development": 412,
+    "interactive-recovery-production": 412
+  },
+  "failures": 0,
+  "totalAssertions": 4298,
+  "modal-chain-focus": 18,
+  "retained-modal": 6,
+  "originalAssertions": 309,
+  "originalFailures": 15,
+  "portalTests": 2756,
+  "builtBrowserTests": 38,
+  "sourceInputs": 766,
+  "sourceStable": true,
+  "explicitScrollCallsFor32Updates": {
+    "original": 64,
+    "fixed": 0
+  },
+  "buildTargets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube-fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "goalRemainsActive": true
+}

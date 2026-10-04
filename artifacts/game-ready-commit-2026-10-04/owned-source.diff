@@ -1,0 +1,151 @@
+--- packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts
++++ packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts
+@@ -39,16 +39,36 @@
+   /** Stores post to host. */
+   postToHost: (message: GameToHostMessage) => void;
+ }) {
+-  /** Provides initialized ref behavior. */
++  /** Readiness callbacks follow committed initialization, including suspended renders. */
+   const initializedRef = useRef(initialized);
+-  initializedRef.current = initialized;
++  useLayoutEffect(() => {initializedRef.current = initialized;}, [initialized]);
++
++  /** A committed readiness subscription owns its pending timer callbacks. */
++  const readyOwnerRef = useRef<object | null>(null);
++  useLayoutEffect(() => {
++    /** A fresh token prevents StrictMode replay from reviving a retired sender. */
++    const owner = {};
++    readyOwnerRef.current = owner;
++    return () => {if (readyOwnerRef.current === owner) readyOwnerRef.current = null;};
++  }, [initialized, sendReady]);
++
++  /** Resize observation follows its own committed sender independently of readiness. */
++  const resizeOwnerRef = useRef<object | null>(null);
++  useLayoutEffect(() => {
++    /** Each committed viewport sender receives a distinct callback scope. */
++    const owner = {};
++    resizeOwnerRef.current = owner;
++    return () => {if (resizeOwnerRef.current === owner) resizeOwnerRef.current = null;};
++  }, [postToHost]);
+ 
+   useEffect(() => {
+     if (initialized) return;
++    /** The passive timer setup captures the exact committed readiness sender. */
++    const owner = readyOwnerRef.current;
+     /** Retired callbacks cannot emit through a replacement readiness sender. */
+     let active = true;
+     /** A committed initialization also suppresses callbacks queued before effect cleanup. */
+-    const reportReady = () => {if (active && !initializedRef.current) sendReady();};
++    const reportReady = () => {if (active && owner !== null && readyOwnerRef.current === owner && !initializedRef.current) sendReady();};
+     /** Lost initialization restarts the handshake immediately rather than waiting for an old interval. */
+     const readyTimer = window.setTimeout(reportReady, 0);
+     /** Retry cadence exists only while the host has not acknowledged initialization. */
+@@ -57,13 +77,15 @@
+   }, [initialized, sendReady]);
+ 
+   useEffect(() => {
++    /** Deferred layout and observer callbacks belong to this committed sender. */
++    const owner = resizeOwnerRef.current;
+     /** Resize callbacks remain independent of handshake status and callback replacement. */
+     let active = true;
+     /** Only changed viewport dimensions need another bridge message and request identity. */
+     let lastWidth = -1, lastHeight = -1;
+     /** Reports each actual viewport size once to its owning host. */
+     const reportSize = () => {
+-      if (!active) return;
++      if (!active || owner === null || resizeOwnerRef.current !== owner) return;
+       /** The same rounded geometry is shared by native resize and body observation. */
+       const width = Math.ceil(document.documentElement.clientWidth), height = Math.ceil(document.documentElement.clientHeight);
+       if (width === lastWidth && height === lastHeight) return;
+--- packages/portal/package.json
++++ packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-choice-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-choice-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -108,6 +108,7 @@
+     "test:host-bridge:browser": "node scripts/verify-host-bridge-ownership-browser.mjs && HOST_BRIDGE_REACT_MODE=production node scripts/verify-host-bridge-ownership-browser.mjs",
+     "test:game-bridge-retirement:browser": "node scripts/verify-game-bridge-retirement-browser.mjs && GAME_RETIRE_REACT_MODE=production node scripts/verify-game-bridge-retirement-browser.mjs",
+     "test:game-bridge-errors:browser": "node scripts/verify-game-bridge-errors-browser.mjs && GAME_BRIDGE_ERRORS_REACT_MODE=production node scripts/verify-game-bridge-errors-browser.mjs",
++    "test:game-ready-commit:browser": "node scripts/verify-game-ready-commit-browser.mjs && READY_COMMIT_REACT_MODE=production node scripts/verify-game-ready-commit-browser.mjs",
+     "test:game-ready:browser": "node scripts/verify-game-ready-reporter-browser.mjs && GAME_READY_REACT_MODE=production node scripts/verify-game-ready-reporter-browser.mjs",
+     "test:solar-resources:browser": "SOLAR_RESOURCE_CHECKS=1 node scripts/verify-solar-animation-browser.mjs && SOLAR_RESOURCE_CHECKS=1 SOLAR_ANIMATION_REACT_MODE=production node scripts/verify-solar-animation-browser.mjs",
+     "test:live-decoration:browser": "SOLAR_MOTION_CHECKS=1 SOLAR_ANIMATION_REACT_MODE=development node scripts/verify-solar-animation-browser.mjs && SOLAR_MOTION_CHECKS=1 SOLAR_ANIMATION_REACT_MODE=production node scripts/verify-solar-animation-browser.mjs",
+--- /dev/null
++++ packages/portal/scripts/verify-game-ready-commit-browser.mjs
+@@ -0,0 +1,70 @@
++import assert from 'node:assert/strict';
++import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium} from '@playwright/test';
++
++const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const mode=process.env.READY_COMMIT_REACT_MODE??'development';
++assert.ok(['development','production'].includes(mode));
++const baseline=process.env.READY_COMMIT_BASELINE_DIR;
++const output=path.resolve(process.env.READY_COMMIT_REPORT_DIR??path.join(root,'../../artifacts/game-ready-commit-2026-10-04',mode));
++await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
++const scratch=await mkdtemp(path.join(root,'node_modules/.cache/ready-commit-'));
++const component=path.join(root,'src/play/game/hooks/useGameBridgeLifecycle.ts');
++await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
++await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';
++import {useGameReadyReporter} from ${JSON.stringify(component)};
++import ${JSON.stringify(path.join(root,'src/styles.css'))};
++const scenario=new URL(location.href).searchParams.get('scenario')??'speculative';
++window.probe={ready:[],messages:[],intervals:new Map(),retained:[],observers:[],suspended:0,errors:[],unhandled:[],width:window.innerWidth};
++window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));
++window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
++// Hold interval callbacks for exact commit-boundary delivery; the immediate timer remains native.
++const interval=window.setInterval.bind(window),clear=window.clearInterval.bind(window),NativeObserver=window.ResizeObserver;
++window.setInterval=(callback,delay,...args)=>{if(delay!==750)return interval(callback,delay,...args);const id=interval(()=>{},delay);window.probe.intervals.set(id,callback);window.probe.retained.push(callback);return id;};
++window.clearInterval=id=>{window.probe.intervals.delete(id);clear(id);};
++window.ResizeObserver=class {constructor(callback){this.callback=callback;this.disconnected=false;this.native=new NativeObserver(callback);window.probe.observers.push(this);}observe(element){this.native.observe(element);}disconnect(){this.disconnected=true;this.native.disconnect();}};
++// A controlled dimension change makes old callbacks observable despite size deduplication.
++Object.defineProperty(document.documentElement,'clientWidth',{configurable:true,get:()=>window.probe.width});
++window.capture=()=>{window.savedReady=[...window.probe.intervals.values()];window.savedResize=window.probe.observers.filter(x=>!x.disconnected).map(x=>x.callback);window.probe.ready=[];window.probe.messages=[];};
++window.deliverSaved=()=>{window.probe.width++;for(const callback of window.savedReady)callback();for(const callback of window.savedResize)callback([]);};
++function Game({version,initialized}){const ready=React.useCallback(()=>window.probe.ready.push(version),[version]),post=React.useCallback(message=>window.probe.messages.push({version,message}),[version]);useGameReadyReporter({initialized,sendReady:ready,postToHost:post});return <output data-game data-version={version} data-initialized={String(initialized)}>Game {version}: {initialized?'ready':'waiting'}</output>;}
++let unblock;const pending=new Promise(resolve=>unblock=resolve);function Suspend({version}){if(version==='B'&&!window.allowB){window.probe.suspended++;throw pending;}return null;}
++function App(){const [version,setVersion]=React.useState('A'),[mounted,setMounted]=React.useState(true),[initialized,setInitialized]=React.useState(false),[epoch,setEpoch]=React.useState(0);
++window.speculate=()=>React.startTransition(()=>setVersion('B'));window.commit=()=>{window.allowB=true;unblock();setVersion('B');};window.initialize=()=>setInitialized(true);window.refresh=()=>setEpoch(x=>x+1);window.remount=()=>setMounted(true);
++React.useLayoutEffect(()=>{if(!mounted||version==='B'||initialized){window.probe.phase={removed:!document.querySelector('[data-game]'),intervals:window.probe.intervals.size,observers:window.probe.observers.filter(x=>!x.disconnected).length};window.deliverSaved();}},[mounted,version,initialized]);
++return <div data-epoch={epoch}><React.Suspense fallback={<p>Waiting</p>}>{mounted?<Game version={version} initialized={initialized||(scenario==='speculative'&&version==='B')}/>:<p data-retired>Retired game</p>}<Suspend version={version}/></React.Suspense><button data-retire onClick={()=>setMounted(false)}>Retire game</button><button data-replace onClick={()=>window.commit()}>Replace sender</button></div>;}
++createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
++`);
++let server,browser;const observations=[];
++try{
++ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'ready-commit-baseline',enforce:'pre',async load(id){if(baseline&&id===component)return readFile(path.join(baseline,'bridge.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
++ server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url='http://127.0.0.1:'+server.address().port;
++ if(process.env.READY_COMMIT_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
++ else{
++ browser=await chromium.launch({headless:true});
++ for(const [width,height] of process.env.READY_COMMIT_QUICK==='1'?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const scenario of process.env.READY_COMMIT_SCENARIOS?.split(',')??['speculative','retire','replace','initialized','live','stable','remount']){
++  const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
++  await page.goto(url+'/?scenario='+scenario);await page.waitForFunction(()=>window.probe?.ready.length>0&&window.probe?.observers.some(x=>!x.disconnected));await page.evaluate(()=>window.capture());
++  metric('one committed retry interval and resize observer',await page.evaluate(()=>({intervals:window.probe.intervals.size,observers:window.probe.observers.filter(x=>!x.disconnected).length})),{intervals:1,observers:1});
++  if(scenario==='speculative'){await page.evaluate(()=>window.speculate());await page.waitForFunction(()=>window.probe.suspended>0);metric('suspended initialization keeps the waiting game visible',await page.locator('[data-game]').getAttribute('data-initialized'),'false');await page.evaluate(()=>window.deliverSaved());}
++  else if(scenario==='retire'||scenario==='remount'){await page.locator('[data-retire]').click();await page.locator('[data-retired]').waitFor();}
++  else if(scenario==='replace'){await page.locator('[data-replace]').click();await page.waitForFunction(()=>document.querySelector('[data-game]')?.dataset.version==='B');}
++  else if(scenario==='initialized'){await page.evaluate(()=>window.initialize());await page.waitForFunction(()=>document.querySelector('[data-game]')?.dataset.initialized==='true');}
++  else{if(scenario==='stable'){const before=await page.evaluate(()=>({callbacks:window.probe.retained.length,observers:window.probe.observers.length}));for(let i=0;i<32;i++){await page.evaluate(()=>window.refresh());await page.waitForFunction(i=>document.querySelector('[data-epoch]')?.dataset.epoch===String(i+1),i);}metric('ordinary parent updates keep the same timer and observer',await page.evaluate(()=>({callbacks:window.probe.retained.length,observers:window.probe.observers.length})),before);}await page.evaluate(()=>window.deliverSaved());}
++  await page.waitForTimeout(60);
++  metric('only committed waiting sender reports readiness',await page.evaluate(()=>window.probe.ready),scenario==='replace'?['B']:['retire','remount','initialized'].includes(scenario)?[]:['A']);
++  metric('only current resize sender reports changed dimensions',await page.evaluate(()=>window.probe.messages.map(x=>x.version)),['retire','remount'].includes(scenario)?[]:[scenario==='replace'?'B':'A']);
++  if(scenario==='retire'||scenario==='remount'){metric('queued callbacks are delivered after game DOM removal',await page.evaluate(()=>window.probe.phase.removed),true);metric('passive cleanup releases removed timer and observer',await page.evaluate(()=>({intervals:window.probe.intervals.size,observers:window.probe.observers.filter(x=>!x.disconnected).length})),{intervals:0,observers:0});const before=await page.evaluate(()=>({ready:window.probe.ready,messages:window.probe.messages}));await page.evaluate(()=>window.deliverSaved());metric('retained callbacks stay inactive after passive cleanup',await page.evaluate(()=>({ready:window.probe.ready,messages:window.probe.messages})),before);}
++  if(scenario==='remount'){await page.evaluate(()=>{window.probe.ready=[];window.probe.messages=[];window.remount();});await page.waitForFunction(()=>window.probe.ready.length===1&&window.probe.observers.some(x=>!x.disconnected));await page.evaluate(()=>window.deliverSaved());metric('remount owns one new readiness report',await page.evaluate(()=>window.probe.ready),['A']);metric('remount keeps old callbacks retired',await page.evaluate(()=>window.probe.messages.map(x=>x.version)),['A']);}
++  if(scenario==='initialized')metric('committed initialization stops readiness timers',await page.evaluate(()=>window.probe.intervals.size),0);
++  metric('no browser error',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled promise',await page.evaluate(()=>window.probe.unhandled),[]);await context.close();
++ }
++ }
++}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});if(process.env.READY_COMMIT_SERVE_ONLY!=='1')await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2));}
++const failures=observations.filter(x=>JSON.stringify(x.actual)!==JSON.stringify(x.expected));console.log(JSON.stringify({mode,checks:observations.length,failures},null,2));if(process.env.READY_COMMIT_MEASURE_ONLY!=='1')assert.equal(failures.length,0,'Readiness callbacks follow committed game ownership');

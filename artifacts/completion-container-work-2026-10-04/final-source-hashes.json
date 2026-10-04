@@ -1,0 +1,6 @@
+{
+  "packages/portal/src/play/game/hooks/useCompletionDelivery.ts": "cfb14bbaf1410cec74dd4f46b13a72e3cdb0a38afd6e23ec08170a60429bce2c",
+  "packages/portal/src/play/__tests__/useCompletionDelivery.test.ts": "c6ba28e70a5004b7a629d30e9b28dc986fe72173770cd1a5c0f788a6184ea2dc",
+  "packages/portal/package.json": "eb0e4c17afc8ac600e5ed7760c19fb089dc032a5529e53c85885f3de2e9373d7",
+  "packages/portal/scripts/verify-completion-container-work-browser.mjs": "5be6e0fac3f13ed130c26d7b2b1df8e5f58634457b34a456f3932bb0a6b8e9a1"
+}

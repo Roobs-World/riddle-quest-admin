@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 import {tr} from "../../i18n";
 import {type LiveRaceCapability} from "@qwordly/core/race";
@@ -20,10 +20,12 @@ export function LiveRaceInviteShare({challengeId, transport}: {
   const sharing = useReferralSharing();
   /** The target multiplayer adapter can invite friends without referral rewards. */
   const shareChallenge = transport?.shareChallenge ?? sharing?.shareLiveRace;
-  /** Replacing ownership hides old feedback without releasing a still-open provider dialog. */
-  const owner = useRef<NativeInviteOwner>({challengeId, transport, shareChallenge});
-  if (owner.current.challengeId !== challengeId || owner.current.transport !== transport || owner.current.shareChallenge !== shareChallenge)
-    owner.current = {challengeId, transport, shareChallenge};
+  /** Each rendered lobby/provider visit has its own stable feedback identity. */
+  const selectedOwner = useMemo<NativeInviteOwner>(() => ({challengeId, transport, shareChallenge}),
+    [challengeId, transport, shareChallenge]);
+  /** Native actions and pending feedback follow only the lobby that actually committed. */
+  const owner = useRef(selectedOwner);
+  useLayoutEffect(() => {owner.current = selectedOwner;}, [selectedOwner]);
   /** Immediate exclusion survives lobby/provider replacement until native settlement. */
   const lock = useRef(false);
   /** The original effect lifetime suppresses all feedback after retirement. */
@@ -59,7 +61,7 @@ export function LiveRaceInviteShare({challengeId, transport}: {
   };
   return shareChallenge ? <div className="live-race-invite-share">
     <button className="race-primary" disabled={busy} aria-busy={busy} onClick={() => void send()}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>
-    {failedOwner === owner.current && <p role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>}
+    {failedOwner === selectedOwner && <p role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>}
     {transport?.sendChallenge && <LiveRaceDirectInvite challengeId={challengeId} transport={transport} />}
   </div> : null;
 }

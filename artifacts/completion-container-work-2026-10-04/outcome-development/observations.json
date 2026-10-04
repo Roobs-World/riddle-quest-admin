@@ -1,0 +1,2636 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "win",
+    "expected": "win"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "parent updates preserve completion identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "win",
+    "expected": "win"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "parent updates preserve completion identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "win",
+    "expected": "win"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "parent updates preserve completion identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "win",
+    "expected": "win"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "parent updates preserve completion identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-loss",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "win",
+    "expected": "win"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "spec-win",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "commit-next",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "account-speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "parent updates preserve completion identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "local",
+    "scenario": "stable-live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-loss",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "win",
+    "expected": "win"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "spec-win",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "commit-next",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the completed question visible",
+    "actual": "classic_1",
+    "expected": "classic_1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "suspended next question keeps the committed outcome",
+    "actual": "loss",
+    "expected": "loss"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "current receipt rewards exactly once",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "replay cannot reward twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "replay cannot request another question",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "account-speculative",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "parent updates preserve completion identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "receipt belongs to the committed question and allowed account",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "visible current outcome receives its acknowledgement",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "current receipt rewards exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "acknowledged loss requests its next question once",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "replay cannot reward twice",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "replay cannot request another question",
+    "actual": [
+      "A"
+    ],
+    "expected": [
+      "A"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "channel": "native",
+    "scenario": "stable-live",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

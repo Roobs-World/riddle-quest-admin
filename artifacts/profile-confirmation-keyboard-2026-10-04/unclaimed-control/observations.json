@@ -1,0 +1,50 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

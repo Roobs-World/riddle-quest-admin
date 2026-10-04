@@ -12,6 +12,8 @@ const mockSlots: {
 let mockSlotIndex = 0;
 /** Effects scheduled by changed dependencies. */
 let mockEffects: (() => unknown)[] = [];
+/** Layout work commits snapshots before this legacy harness runs passive persistence. */
+let mockLayoutEffects: (() => unknown)[] = [];
 jest.mock("react", () => ({
   useRef: <T>(current: T) => {
     /** Zero-based answer slot must stay within the issued grapheme shape. */
@@ -34,6 +36,15 @@ jest.mock("react", () => ({
     const previous = mockSlots[index];
     if (!previous || dependencies.some((value, slot) => !Object.is(value, previous.dependencies?.[slot])))
       mockEffects.push(effect);
+    mockSlots[index] = {dependencies};
+  },
+  useLayoutEffect: (effect: () => unknown, dependencies: readonly unknown[]) => {
+    /** Current committed-effect slot retains dependency identity across renders. */
+    const index = mockSlotIndex++;
+    /** Earlier layout dependencies determine whether the commit needs a new snapshot. */
+    const previous = mockSlots[index];
+    if (!previous || dependencies.some((value, slot) => !Object.is(value, previous.dependencies?.[slot])))
+      mockLayoutEffects.push(effect);
     mockSlots[index] = {dependencies};
   },
 }));
@@ -69,7 +80,9 @@ it("checkpoints the fifth confirmed row before reload when confirmation changes 
     stateRef.current = next;
     mockSlotIndex = 0;
     mockEffects = [];
+    mockLayoutEffects = [];
     useGameSessionPersistence({state: next, stateRef, dispatch, onSaveGame: save});
+    for (const effect of mockLayoutEffects) effect();
     for (const effect of mockEffects) effect();
   };
   render(state);

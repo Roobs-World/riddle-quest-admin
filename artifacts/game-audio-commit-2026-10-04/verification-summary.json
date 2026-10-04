@@ -1,0 +1,79 @@
+{
+  "pass": "game-audio-commit",
+  "date": "2026-10-04",
+  "result": "Game music follows committed settings, stops at retirement and avoids redundant playback API calls.",
+  "browser": {
+    "final-development": {
+      "checks": 273,
+      "failures": 0
+    },
+    "final-production": {
+      "checks": 273,
+      "failures": 0
+    },
+    "keyboard-development": {
+      "checks": 188,
+      "failures": 0
+    },
+    "keyboard-production": {
+      "checks": 188,
+      "failures": 0
+    }
+  },
+  "portalUnits": {
+    "passed": 2756,
+    "suitesPassed": 297,
+    "optionalBrowserTestsSkipped": 121
+  },
+  "builtBrowserJourneys": {
+    "passed": 38,
+    "suitesPassed": 8,
+    "includesActualFirstPlayMusicStartup": true
+  },
+  "types": "passed",
+  "tsdoc": {
+    "documentedDeclarations": 25273,
+    "files": 1139
+  },
+  "builds": {
+    "jest": "passed",
+    "facebook": "passed",
+    "reddit": "passed",
+    "youtube": "incomplete English fixture passed",
+    "netflix": "passed",
+    "yahoo": "passed"
+  },
+  "sourceInputs": {
+    "count": 766,
+    "beforeEqualsAfter": true
+  },
+  "cleanup": "cleanup.json",
+  "firefox": "firefox-verified.json",
+  "ownedDiff": "owned-source.diff",
+  "limitations": [
+    "The real-media hook fixture sets volume zero; media time, paused state, calls and native gestures are observed independently.",
+    "Playback denial and document hidden state are injected controls.",
+    "Firefox automatically pauses detached media after the parent layout callback; the fix establishes explicit earlier cleanup.",
+    "Counts measure playback API work, not elapsed latency or heap bytes.",
+    "YouTube release-content completeness remains unverified."
+  ],
+  "broaderGoal": "active",
+  "browserChecksPassed": 922,
+  "capturedOriginalComparison": {
+    "checks": 273,
+    "failures": 45
+  },
+  "committedSettingsOnlyProbe": {
+    "checks": 68,
+    "failures": 5
+  },
+  "finalMinimalOriginalReplay": {
+    "checks": 12,
+    "failures": 2
+  },
+  "finalMinimalReplayApproval": "First approval review timed out before process creation; the permitted single retry ran and reproduced the expected original failures.",
+  "productionExtraPlaybackCallsAcross32KeysAnd8FeedbackClicks": {
+    "original": 48,
+    "fixed": 0
+  }
+}

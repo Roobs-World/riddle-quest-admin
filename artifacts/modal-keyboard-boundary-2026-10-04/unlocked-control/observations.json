@@ -1,0 +1,42 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-commit",
+    "name": "parent layout key obeys committed dismissal readiness",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-commit",
+    "name": "active modal owns its first committed key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-commit",
+    "name": "native listener is ready or retired at the parent boundary",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-commit",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-commit",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

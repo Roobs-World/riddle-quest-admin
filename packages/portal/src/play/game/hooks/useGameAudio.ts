@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useEffect, useLayoutEffect, useRef} from "react";
 import type {GameSessionState} from "../../gameSession";
 import {setPlayerMuted} from "../../playerPreferences";
 
@@ -9,11 +9,11 @@ export type GameFeedbackKind = "key" | "delete" | "submit" | "wrong" | "win" | "
 export function useGameAudio(state: GameSessionState) {
   /** Provides music ref behavior. */
   const musicRef = useRef<HTMLAudioElement | null>(null);
-  /** Provides state ref behavior. */
+  /** Gestures follow the visible committed mute and pause settings. */
   const stateRef = useRef(state);
   /** Provides audio unlocked ref behavior. */
   const audioUnlockedRef = useRef(false);
-  stateRef.current = state;
+  useLayoutEffect(() => {stateRef.current = state;}, [state]);
 
   /** Provides unlock music behavior. */
   const unlockMusic = useCallback(() => {
@@ -21,7 +21,7 @@ export function useGameAudio(state: GameSessionState) {
     audioUnlockedRef.current = true;
     /** Provides music behavior. */
     const music = musicRef.current;
-    if (music && !stateRef.current.paused) {
+    if (music && !stateRef.current.paused && !document.hidden && music.paused) {
       void music.play().catch(() => undefined);
     }
   }, []);
@@ -45,14 +45,19 @@ export function useGameAudio(state: GameSessionState) {
 
   useEffect(() => {
     setPlayerMuted(state.muted);
+  }, [state.muted]);
+
+  useLayoutEffect(() => {
     /** Provides music behavior. */
     const music = musicRef.current;
     if (!music) return;
     if (state.muted || state.paused || document.hidden) {
       music.pause();
-    } else if (audioUnlockedRef.current) {
+    } else if (audioUnlockedRef.current && music.paused) {
       void music.play().catch(() => undefined);
     }
+    // Retain the element so ref detachment cannot leave retired music playing.
+    return () => {music.pause();};
   }, [state.muted, state.paused]);
 
   return {musicRef, playFeedback};

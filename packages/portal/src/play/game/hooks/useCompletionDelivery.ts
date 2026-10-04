@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import type {Dispatch} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
@@ -20,10 +20,10 @@ export function useCompletionDelivery({
   /** Sends a validated command to the host. */ postToHost: (message: GameToHostMessage) => void;
   /** Account UID and creation generation owning every retained receipt. */ ownerKey?: string;
 }): (ok: boolean, requestId?: string) => boolean {
-  /** One completion belongs to an issued question, independent of projected attempts. */
-  const completedKeysRef = useRef(new Set<string>());
-  /** Provides delivery ref behavior. */
-  const deliveriesRef = useRef(new Map<string, {
+  /** One lazily created completion set survives updates to the mounted game. */
+  const [completedKeysRef] = useState(() => ({current: new Set<string>()}));
+  /** Pending delivery storage is created once rather than discarded on each answer edit. */
+  const [deliveriesRef] = useState(() => ({current: new Map<string, {
     /** Stores outcome id. */
     completionKey: string; /** Stores request id. */
     /** Stores request id. */
@@ -34,10 +34,10 @@ export function useCompletionDelivery({
     outcome: NonNullable<GameSessionState["lastOutcome"]>; /** Stores timer. */
     /** Stores timer. */
     timer?: number;
-  }>());
-  /** Provides current outcome ref behavior. */
+  }>()}));
+  /** Receipts acknowledge the committed outcome rather than a suspended replacement. */
   const currentOutcomeRef = useRef(outcome);
-  currentOutcomeRef.current = outcome;
+  useLayoutEffect(() => {currentOutcomeRef.current = outcome;}, [outcome]);
   /** Render immediately revokes receipt acknowledgement for a replaced account. */
   const currentOwnerRef = useRef(ownerKey);
   currentOwnerRef.current = ownerKey;

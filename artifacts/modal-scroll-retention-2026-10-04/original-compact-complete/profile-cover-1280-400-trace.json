@@ -1,0 +1,17 @@
+{
+  "before": 401,
+  "after": 581,
+  "sameFocus": true,
+  "dimensions": {
+    "height": 319,
+    "content": 900
+  },
+  "scrollCalls": [
+    {
+      "className": "game-modal modal-profile"
+    },
+    {
+      "className": "game-modal-backdrop"
+    }
+  ]
+}

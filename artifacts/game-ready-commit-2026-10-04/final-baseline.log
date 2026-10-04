@@ -1,0 +1,234 @@
+{
+  "mode": "production",
+  "checks": 138,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "speculative",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "speculative",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "speculative",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [],
+      "expected": [
+        "A"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A",
+        "B"
+      ],
+      "expected": [
+        "B"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only committed waiting sender reports readiness",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "only current resize sender reports changed dimensions",
+      "actual": [
+        "A"
+      ],
+      "expected": []
+    }
+  ]
+}

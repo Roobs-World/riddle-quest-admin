@@ -1,4 +1,4 @@
-import {Component, useEffect, useId, useRef, type ErrorInfo, type ReactNode} from "react";
+import {Component, useEffect, useId, useLayoutEffect, useRef, type ErrorInfo, type ReactNode} from "react";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {tr} from "./i18n";
 import {ContinueModalPage, type ContinueModalPageProps} from "./modalPages/commerce/ContinueActions";
@@ -61,17 +61,21 @@ export function GameSurfaceRecovery({onClose, closeBlocked = false, onNext, next
   const titleId = useId();
   /** Focus belongs to this recovery dialog while the underlying puzzle is inert. */
   const dialogRef = useRef<HTMLElement>(null);
-  /** Keyboard dismissal uses the latest pending state and frame callback. */
+  /** Keyboard dismissal follows the committed pending state and frame callback. */
   const closeRef = useRef({onClose, closeBlocked});
-  closeRef.current = {onClose, closeBlocked};
+  useLayoutEffect(() => {
+    closeRef.current = {onClose, closeBlocked};
+  }, [onClose, closeBlocked]);
 
-  useEffect(() => {
-    /** Returns focus to the original still-connected game control after dismissal. */
-    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    dialogRef.current?.focus();
+  useLayoutEffect(() => {
+    /** Retired native callbacks cannot reclaim a later interactive surface. */
+    let listening = true;
     /** Traps focus inside the active recovery and respects locked continuation. */
     const keyDown = (event: KeyboardEvent) => {
-      if (dialogRef.current?.closest("[inert]")) return;
+      if (event.key !== "Escape" && event.key !== "Tab") return;
+      /** Covered or removed panels and composing editors retain their own key ownership. */
+      const dialog = dialogRef.current;
+      if (!listening || !dialog?.isConnected || dialog.closest("[inert]") || event.defaultPrevented || event.isComposing || event.keyCode === 229) return;
       if (event.key === "Escape") {
         event.preventDefault();
         if (!closeRef.current.closeBlocked) closeRef.current.onClose();
@@ -90,7 +94,14 @@ export function GameSurfaceRecovery({onClose, closeBlocked = false, onNext, next
       }
     };
     document.addEventListener("keydown", keyDown);
-    return () => { document.removeEventListener("keydown", keyDown); if (previous?.isConnected) previous.focus(); };
+    return () => { listening = false; document.removeEventListener("keydown", keyDown); };
+  }, []);
+
+  useEffect(() => {
+    /** Returns focus to the original still-connected game control after dismissal. */
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialogRef.current?.focus();
+    return () => { if (previous?.isConnected) previous.focus(); };
   }, []);
 
   return <div className="surface-recovery-backdrop">

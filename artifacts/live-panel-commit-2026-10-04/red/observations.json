@@ -1,0 +1,65 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "prepared replacement leaves the original visible owner",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "panel identity follows only committed ownership changes",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "abandoned and ordinary updates do not issue another server read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "selected recipient remains intact",
+    "actual": "",
+    "expected": "Rival"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "pending or confirmed selection remains excluded",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "kind": "direct-input",
+    "change": "abandon",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

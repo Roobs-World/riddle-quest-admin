@@ -1,0 +1,240 @@
+{
+  "mode": "production",
+  "checks": 330,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "spec-transport",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "spec-challenge",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Alice",
+          "challengeId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "spec-fallback",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending-failure",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending-rejection",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "abandoned-failure",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "spec-transport",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "spec-challenge",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Alice",
+          "challengeId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "spec-fallback",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-failure",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-rejection",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "abandoned-failure",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "spec-transport",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "spec-challenge",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Alice",
+          "challengeId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "spec-fallback",
+      "name": "native button selects the visible provider and invitation",
+      "actual": [
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-failure",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-rejection",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "abandoned-failure",
+      "name": "failure feedback follows the still-visible invitation owner",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}

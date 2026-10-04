@@ -1,0 +1,178 @@
+{
+  "goalStatus": "active",
+  "defects": [
+    "An unfinished provider/challenge/fallback-sharing render could redirect the visible native invitation button.",
+    "Speculative or abandoned owner publication could suppress the visible lobby native-dialog failure notice."
+  ],
+  "fix": "Stable rendered visit identity; publish the action/outcome owner at layout commit; compare visible feedback against the rendered visit identity.",
+  "capturedOriginal": {
+    "minimalProduction": {
+      "checks": 6,
+      "failures": 1,
+      "exitCode": 1
+    },
+    "fullProduction": {
+      "checks": 330,
+      "failures": 18,
+      "measureOnlyExitCode": 0
+    }
+  },
+  "committedRefProbe": {
+    "checks": 110,
+    "remainingStaleVisibleFeedbackFailures": 1,
+    "exitCode": 1
+  },
+  "fixedOwnershipBrowser": {
+    "developmentChecks": 330,
+    "productionChecks": 330,
+    "failures": 0,
+    "scenarios": 12,
+    "journeys": 72
+  },
+  "regressionBrowserAssertions": {
+    "committedNativeChooser": 732,
+    "liveProviderRetirement": 1206,
+    "nativeInviteSavedAssertions": 66,
+    "totalIncludingNew": 2664,
+    "additionalNativeInviteChecks": "Direct native callback arguments and button geometry assertions also passed."
+  },
+  "firefox": {
+    "beforePrepared": {
+      "suspended": true,
+      "visit": "0",
+      "provider": "Alice",
+      "shares": [],
+      "errors": []
+    },
+    "beforeDispatch": {
+      "visit": "0",
+      "provider": "Alice",
+      "shares": [
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "pending": true,
+      "joins": [],
+      "errors": [],
+      "unhandled": []
+    },
+    "beforeFailure": {
+      "visit": "0",
+      "provider": "Alice",
+      "pending": false,
+      "alerts": 0,
+      "shares": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "errors": [],
+      "unhandled": []
+    },
+    "afterPrepared": {
+      "suspended": true,
+      "visit": "0",
+      "provider": "Alice"
+    },
+    "afterDispatch": {
+      "visit": "0",
+      "provider": "Alice",
+      "shares": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "pending": true,
+      "joins": [],
+      "errors": [],
+      "unhandled": []
+    },
+    "afterFailure": {
+      "visit": "0",
+      "provider": "Alice",
+      "pending": false,
+      "alerts": 1,
+      "shares": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "errors": [],
+      "unhandled": []
+    },
+    "replacement": {
+      "shares": [
+        {
+          "owner": "Alice",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "owner": "Bob",
+          "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "provider": "Bob",
+      "errors": [],
+      "unhandled": []
+    },
+    "committedFeedback": {
+      "visit": "1",
+      "provider": "Bob",
+      "alerts": 0,
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "gates": {
+    "portalUnitTests": 2756,
+    "portalUnitSuites": 297,
+    "optionalBrowserTestsSkipped": 121,
+    "types": "passed",
+    "tsdocDeclarations": 25275,
+    "tsdocFiles": 1139,
+    "builtBrowserTests": 37,
+    "builtBrowserSuites": 7,
+    "sixTargetBuildsAndAudits": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube-fixture",
+      "netflix",
+      "yahoo"
+    ]
+  },
+  "sourceInventory": {
+    "count": 766,
+    "unchangedAcrossVerification": true
+  },
+  "ownedFileSha256": {
+    "packages/portal/src/play/race/components/LiveRaceInviteShare.tsx": "d4845e0cfde0899aafb511ac9000fab81d204ad5c16c7ec72282e1460c27a6e5",
+    "packages/portal/package.json": "3621900ed1e003ef0bbdfe14ed7bdfacbea22fb021b5339067ec9d21ec2a64f0",
+    "packages/portal/scripts/verify-live-invite-commit-browser.mjs": "fde6349b4ea2af9a4420838616c04b925cbbdf74ec603f5b3b13cef4891661f2"
+  },
+  "cleanup": {
+    "matchingOwnedNodeProcesses": [],
+    "ownedServerSessions": {
+      "83195": 130,
+      "16749": 130
+    },
+    "exactScratchDirectoriesRemoved": [
+      "packages/portal/node_modules/.cache/live-invite-commit-c0g2tx",
+      "packages/portal/node_modules/.cache/live-invite-commit-DzwnBG"
+    ],
+    "ownedFirefoxTabsClosed": 4,
+    "remainingFirefoxTabs": [
+      "about:blank"
+    ]
+  },
+  "limitations": [
+    "The actual sharing component calls controlled fixture target adapters rather than live provider SDK dialogs.",
+    "Concurrency and dialog ownership checks do not measure production network latency.",
+    "YouTube uses incomplete fixture content."
+  ]
+}

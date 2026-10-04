@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {LiveRaceChallengeSchema, type LiveRaceCapability, type LiveRaceChallenge, type RaceLocale} from "@qwordly/core/race";
 import {tr} from "../../i18n";
 
@@ -26,13 +26,13 @@ function parseInvitation(value: unknown, challengeId: string): LiveRaceChallenge
 /** Ownership replacement removes old acceptance controls before any passive effect runs. */
 export function LiveRaceInvitationCard(props: InvitationCardProps) {
   /** Cached receipt changes update in place; a new provider, selector, or read path retires old state. */
-  const lifetime = useRef({challengeId: props.challengeId, transport: props.transport,
-    read: props.transport.challenge, cached: props.initialChallenge !== undefined, version: 0});
-  if (lifetime.current.challengeId !== props.challengeId || lifetime.current.transport !== props.transport ||
-    lifetime.current.read !== props.transport.challenge || lifetime.current.cached !== (props.initialChallenge !== undefined))
-    lifetime.current = {challengeId: props.challengeId, transport: props.transport,
-      read: props.transport.challenge, cached: props.initialChallenge !== undefined, version: lifetime.current.version + 1};
-  return <LiveRaceInvitationPanel key={lifetime.current.version} {...props} />;
+  const [lifetime, setLifetime] = useState(() => ({challengeId: props.challengeId, transport: props.transport,
+    read: props.transport.challenge, cached: props.initialChallenge !== undefined, version: 0}));
+  if (lifetime.challengeId !== props.challengeId || lifetime.transport !== props.transport ||
+    lifetime.read !== props.transport.challenge || lifetime.cached !== (props.initialChallenge !== undefined))
+    setLifetime({challengeId: props.challengeId, transport: props.transport,
+      read: props.transport.challenge, cached: props.initialChallenge !== undefined, version: lifetime.version + 1});
+  return <LiveRaceInvitationPanel key={lifetime.version} {...props} />;
 }
 
 /** Cached previews render immediately; SDK launches and explicit recovery own bounded reads. */

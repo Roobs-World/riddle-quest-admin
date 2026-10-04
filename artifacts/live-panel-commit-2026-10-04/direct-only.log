@@ -1,0 +1,181 @@
+{
+  "mode": "production",
+  "checks": 72,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-category",
+      "change": "abandon",
+      "name": "panel identity follows only committed ownership changes",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-category",
+      "change": "abandon",
+      "name": "selected report reason remains intact",
+      "actual": "harassment",
+      "expected": "spam"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-pending",
+      "change": "abandon",
+      "name": "panel identity follows only committed ownership changes",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-pending",
+      "change": "abandon",
+      "name": "selected report reason remains intact",
+      "actual": "harassment",
+      "expected": "spam"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-pending",
+      "change": "abandon",
+      "name": "confirmed block remains excluded",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-pending",
+      "change": "abandon",
+      "name": "owned authority confirmation survives an abandoned or ordinary update",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-confirmed",
+      "change": "abandon",
+      "name": "panel identity follows only committed ownership changes",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-confirmed",
+      "change": "abandon",
+      "name": "selected report reason remains intact",
+      "actual": "harassment",
+      "expected": "spam"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-confirmed",
+      "change": "abandon",
+      "name": "confirmed block remains excluded",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "safety-confirmed",
+      "change": "abandon",
+      "name": "owned authority confirmation survives an abandoned or ordinary update",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "inbox",
+      "change": "abandon",
+      "name": "panel identity follows only committed ownership changes",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "inbox",
+      "change": "abandon",
+      "name": "abandoned and ordinary updates do not issue another server read",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "inbox",
+      "change": "abandon",
+      "name": "loaded invitations stay available without another receipt",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "inbox",
+      "change": "abandon",
+      "name": "explicit acceptance stays with its visible provider",
+      "actual": [],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "preview-network",
+      "change": "abandon",
+      "name": "panel identity follows only committed ownership changes",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "preview-network",
+      "change": "abandon",
+      "name": "abandoned and ordinary updates do not issue another server read",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "preview-network",
+      "change": "abandon",
+      "name": "loaded invitations stay available without another receipt",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "preview-network",
+      "change": "abandon",
+      "name": "explicit acceptance stays with its visible provider",
+      "actual": [],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "kind": "preview-cached",
+      "change": "abandon",
+      "name": "panel identity follows only committed ownership changes",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}

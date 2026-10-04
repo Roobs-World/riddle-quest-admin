@@ -39,16 +39,36 @@ export function useGameReadyReporter({
   /** Stores post to host. */
   postToHost: (message: GameToHostMessage) => void;
 }) {
-  /** Provides initialized ref behavior. */
+  /** Readiness callbacks follow committed initialization, including suspended renders. */
   const initializedRef = useRef(initialized);
-  initializedRef.current = initialized;
+  useLayoutEffect(() => {initializedRef.current = initialized;}, [initialized]);
+
+  /** A committed readiness subscription owns its pending timer callbacks. */
+  const readyOwnerRef = useRef<object | null>(null);
+  useLayoutEffect(() => {
+    /** A fresh token prevents StrictMode replay from reviving a retired sender. */
+    const owner = {};
+    readyOwnerRef.current = owner;
+    return () => {if (readyOwnerRef.current === owner) readyOwnerRef.current = null;};
+  }, [initialized, sendReady]);
+
+  /** Resize observation follows its own committed sender independently of readiness. */
+  const resizeOwnerRef = useRef<object | null>(null);
+  useLayoutEffect(() => {
+    /** Each committed viewport sender receives a distinct callback scope. */
+    const owner = {};
+    resizeOwnerRef.current = owner;
+    return () => {if (resizeOwnerRef.current === owner) resizeOwnerRef.current = null;};
+  }, [postToHost]);
 
   useEffect(() => {
     if (initialized) return;
+    /** The passive timer setup captures the exact committed readiness sender. */
+    const owner = readyOwnerRef.current;
     /** Retired callbacks cannot emit through a replacement readiness sender. */
     let active = true;
     /** A committed initialization also suppresses callbacks queued before effect cleanup. */
-    const reportReady = () => {if (active && !initializedRef.current) sendReady();};
+    const reportReady = () => {if (active && owner !== null && readyOwnerRef.current === owner && !initializedRef.current) sendReady();};
     /** Lost initialization restarts the handshake immediately rather than waiting for an old interval. */
     const readyTimer = window.setTimeout(reportReady, 0);
     /** Retry cadence exists only while the host has not acknowledged initialization. */
@@ -57,13 +77,15 @@ export function useGameReadyReporter({
   }, [initialized, sendReady]);
 
   useEffect(() => {
+    /** Deferred layout and observer callbacks belong to this committed sender. */
+    const owner = resizeOwnerRef.current;
     /** Resize callbacks remain independent of handshake status and callback replacement. */
     let active = true;
     /** Only changed viewport dimensions need another bridge message and request identity. */
     let lastWidth = -1, lastHeight = -1;
     /** Reports each actual viewport size once to its owning host. */
     const reportSize = () => {
-      if (!active) return;
+      if (!active || owner === null || resizeOwnerRef.current !== owner) return;
       /** The same rounded geometry is shared by native resize and body observation. */
       const width = Math.ceil(document.documentElement.clientWidth), height = Math.ceil(document.documentElement.clientHeight);
       if (width === lastWidth && height === lastHeight) return;
@@ -82,6 +104,8 @@ export function useGameReadyReporter({
     /** Stops waiting for layout. */
     const stopWaitingForLayout = runWhenLayoutReady(() => {
       reportSize();
+      // Host delivery can synchronously remove or replace this reporter before setup resumes.
+      if (!active || owner === null || resizeOwnerRef.current !== owner) return;
       window.addEventListener("resize", reportSize);
       observer = new ResizeObserver(reportSize);
       observer.observe(document.body);

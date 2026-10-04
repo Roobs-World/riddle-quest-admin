@@ -1,0 +1,174 @@
+{
+  "mode": "production",
+  "checks": 132,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "typing",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 2,
+        "map": 2
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "typing",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "parent",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 2,
+        "map": 2
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "typing",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "parent",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 32,
+        "map": 32
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "mounted completion collections do not allocate again",
+      "actual": {
+        "set": 2,
+        "map": 2
+      },
+      "expected": {
+        "set": 0,
+        "map": 0
+      }
+    }
+  ]
+}

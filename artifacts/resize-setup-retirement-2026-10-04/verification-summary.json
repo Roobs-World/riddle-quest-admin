@@ -1,0 +1,115 @@
+{
+  "scope": "Resize observation setup after synchronous host removal/replacement",
+  "fix": "Recheck active state and exact committed resize owner after initial host delivery and before installing listener/observer",
+  "baseline": {
+    "checks": 120,
+    "failures": 21,
+    "minimalChecks": 8,
+    "minimalFailures": 2
+  },
+  "browser": {
+    "resizeSetup": {
+      "checks": 240,
+      "failures": 0,
+      "reports": [
+        "development/observations.json",
+        "production/observations.json"
+      ]
+    },
+    "readinessCadence": {
+      "checks": 120,
+      "failures": 0,
+      "reports": [
+        "regression-ready/development/browser-after.json",
+        "regression-ready/production/browser-after.json"
+      ]
+    },
+    "committedReadiness": {
+      "checks": 276,
+      "failures": 0,
+      "reports": [
+        "regression-commit/development/observations.json",
+        "regression-commit/production/observations.json"
+      ]
+    },
+    "completionListener": {
+      "checks": 564,
+      "failures": 0,
+      "reports": [
+        "regression-listener/development/observations.json",
+        "regression-listener/production/observations.json"
+      ]
+    }
+  },
+  "browserChecksTotal": 1200,
+  "firefox": {
+    "proof": "firefox-verified.json",
+    "nativeInteractions": "Start and Stop buttons",
+    "originalRemovedGameResources": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "fixedRemovedGameResources": {
+      "listeners": 0,
+      "observers": 0
+    },
+    "fixedRemountResources": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "fixedReplacementResources": {
+      "listeners": 1,
+      "observers": 1
+    },
+    "finalStopResources": {
+      "listeners": 0,
+      "observers": 0
+    }
+  },
+  "gates": {
+    "unitTests": 2756,
+    "unitSuites": 297,
+    "optionalBrowserSkipped": 121,
+    "builtBrowserTests": 37,
+    "builtBrowserSuites": 7,
+    "types": "passed",
+    "tsdocDeclarations": 25258,
+    "tsdocFiles": 1139,
+    "buildsAndIsolationAudits": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube-incomplete-English-fixture",
+      "netflix",
+      "yahoo"
+    ]
+  },
+  "sourceStability": {
+    "inputs": 766,
+    "before": "source-inputs-before.json",
+    "after": "source-inputs-after.json",
+    "identical": true,
+    "ownedFinalHashes": {
+      "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts": "00a0f36dfad77e8a7c578e4c62a522f3c84046f630197381e7704872a5947deb",
+      "packages/portal/package.json": "a629963260a4ef6e94a8436bf9fc8eb2e70eb2e6d14c1fcb8991c3773cc4e729",
+      "packages/portal/scripts/verify-resize-setup-retirement-browser.mjs": "0595b208eac336b019512608eaf013df554ffaabaca36af164e306fb90799970"
+    }
+  },
+  "cleanup": {
+    "serveOnlyExitCodes": [
+      130,
+      130
+    ],
+    "ownedScratchDirectoriesRemoved": 2,
+    "ownedFirefoxTabsClosed": 3,
+    "originalBlankTabPreserved": true,
+    "hostProcessAudit": "No matching node verifier processes remained"
+  },
+  "limitations": [
+    "Real readiness hook, native animation frame and ResizeObserver with counted wrappers; host removal/replacement injected through React flushSync",
+    "New fixture is not full GameFrameApp or a live provider backend",
+    "Resource counts establish orphan cleanup, not measured memory bytes, CPU duration or network latency",
+    "YouTube release-content completeness unverified",
+    "Broader goal remains active"
+  ]
+}

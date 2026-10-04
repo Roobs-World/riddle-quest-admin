@@ -1,0 +1,34 @@
+{
+  "before": {
+    "retired": true,
+    "pending": 1,
+    "extraTicks": 2,
+    "leaveIdentities": 1,
+    "errors": [],
+    "unhandled": []
+  },
+  "after": {
+    "retired": true,
+    "pending": 0,
+    "extraTicks": 0,
+    "leaveIdentities": 1,
+    "errors": [],
+    "unhandled": []
+  },
+  "replacement": {
+    "owner": "Bob",
+    "alice": 0,
+    "bob": 1,
+    "extraAliceTicks": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "submission": {
+    "progress": "Riddles completed: 1 / 10",
+    "guessRequests": 1,
+    "alice": 0,
+    "bob": 1,
+    "errors": [],
+    "unhandled": []
+  }
+}

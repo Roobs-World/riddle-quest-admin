@@ -1,0 +1,15 @@
+{
+  "matchingOwnedNodeProcesses": [],
+  "ownedServerSessions": {
+    "7545": 130,
+    "35866": 130
+  },
+  "exactScratchDirectoriesRemoved": [
+    "packages/portal/node_modules/.cache/live-panel-commit-iUPkCG",
+    "packages/portal/node_modules/.cache/live-panel-commit-4eoRky"
+  ],
+  "ownedFirefoxTabsClosed": 4,
+  "remainingFirefoxTabs": [
+    "about:blank"
+  ]
+}

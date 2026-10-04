@@ -1,0 +1,744 @@
+{
+  "mode": "development",
+  "checks": 228,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "native Close agrees with committed Escape owner",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "native Close agrees with committed Escape owner",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "native Close agrees with committed Escape owner",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob"
+      ],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "native Close agrees with committed Escape owner",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob",
+        "Bob"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "callback",
+      "name": "native Close agrees with committed Escape owner",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob",
+        "Bob"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob"
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "unlock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Bob"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "recovery",
+      "scenario": "lock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "callback",
+      "name": "native Close agrees with committed Escape owner",
+      "actual": [
+        "Bob",
+        "Alice",
+        "Bob",
+        "Bob"
+      ],
+      "expected": [
+        "Alice",
+        "Alice",
+        "Bob",
+        "Bob"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "Escape uses only the visible callback and pending lock",
+      "actual": [
+        "Bob"
+      ],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "abandoned replacement cannot redirect a later Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "surface": "modal",
+      "scenario": "lock",
+      "name": "committed replacement owns subsequent Escape",
+      "actual": [
+        "Bob",
+        "Alice"
+      ],
+      "expected": [
+        "Alice",
+        "Alice"
+      ]
+    }
+  ]
+}

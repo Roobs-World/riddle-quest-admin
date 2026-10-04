@@ -1,0 +1,11 @@
+$ node scripts/verify-live-callback-lifetime-browser.mjs && LIVE_CALLBACK_REACT_MODE=production node scripts/verify-live-callback-lifetime-browser.mjs
+{
+  "mode": "development",
+  "checks": 558,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 558,
+  "failures": []
+}

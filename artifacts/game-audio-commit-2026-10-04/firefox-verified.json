@@ -1,0 +1,80 @@
+{
+  "method": "Native Firefox Prepare/Unlock/Retire clicks and native Backspace in the actual reducer/audio hook fixture, using the actual bundled WebM track with volume zero. Parent commit state is captured by a real React layout effect.",
+  "before": {
+    "visible": {
+      "visible": "A",
+      "muted": "true",
+      "paused": true,
+      "suspended": 1,
+      "volume": 0
+    },
+    "native": {
+      "visible": "A",
+      "muted": "true",
+      "paused": false,
+      "currentTimePositive": true,
+      "plays": 1,
+      "rejected": [],
+      "errors": [],
+      "unhandled": []
+    },
+    "retirementStarted": {
+      "playing": true,
+      "timePositive": true,
+      "volume": 0
+    },
+    "retirement": {
+      "removed": true,
+      "boundaries": [
+        {
+          "visible": null,
+          "paused": false
+        }
+      ],
+      "paused": true,
+      "timePositive": true,
+      "rejected": [],
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "after": {
+    "visible": {
+      "visible": "A",
+      "muted": "true",
+      "paused": true,
+      "suspended": 1,
+      "volume": 0
+    },
+    "native": {
+      "visible": "A",
+      "muted": "true",
+      "paused": true,
+      "currentTimePositive": false,
+      "plays": 0,
+      "rejected": [],
+      "errors": [],
+      "unhandled": []
+    },
+    "retirementStarted": {
+      "playing": true,
+      "timePositive": true,
+      "volume": 0
+    },
+    "retirement": {
+      "removed": true,
+      "boundaries": [
+        {
+          "visible": null,
+          "paused": true
+        }
+      ],
+      "paused": true,
+      "timePositive": true,
+      "rejected": [],
+      "errors": [],
+      "unhandled": []
+    }
+  },
+  "browserNote": "Firefox automatically pauses detached media after the parent layout callback; captured original parent-layout playback is still active. Chromium original detached playback also stays active afterward."
+}

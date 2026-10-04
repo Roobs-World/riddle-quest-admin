@@ -1,0 +1,300 @@
+{
+  "mode": "production",
+  "checks": 120,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 2,
+        "observers": 2
+      },
+      "expected": {
+        "listeners": 1,
+        "observers": 1
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "remount owns one fresh listener and observer",
+      "actual": {
+        "listeners": 2,
+        "observers": 2
+      },
+      "expected": {
+        "listeners": 1,
+        "observers": 1
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "remount",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retire",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 2,
+        "observers": 2
+      },
+      "expected": {
+        "listeners": 1,
+        "observers": 1
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "replace",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "remount owns one fresh listener and observer",
+      "actual": {
+        "listeners": 2,
+        "observers": 2
+      },
+      "expected": {
+        "listeners": 1,
+        "observers": 1
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "remount",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retire",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 2,
+        "observers": 2
+      },
+      "expected": {
+        "listeners": 1,
+        "observers": 1
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "replace",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "setup leaves resources only for the current reporter",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "remount owns one fresh listener and observer",
+      "actual": {
+        "listeners": 2,
+        "observers": 2
+      },
+      "expected": {
+        "listeners": 1,
+        "observers": 1
+      }
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "remount",
+      "name": "final removal releases every resize resource",
+      "actual": {
+        "listeners": 1,
+        "observers": 1
+      },
+      "expected": {
+        "listeners": 0,
+        "observers": 0
+      }
+    }
+  ]
+}

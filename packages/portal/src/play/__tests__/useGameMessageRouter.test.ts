@@ -6,6 +6,9 @@ const mockUseMemo = (factory: () => unknown) => factory();
 
 jest.mock("react", () => ({
   useMemo: mockUseMemo,
+  // This harness models committed renders; suspended rendering is verified in the browser.
+  useRef: (value: unknown) => ({current: value}),
+  useLayoutEffect: (effect: () => void) => effect(),
   useSyncExternalStore: jest.fn(),
 }));
 

@@ -41,10 +41,10 @@ type LiveRaceSafetyProps = {
 /** Capability-owned controls cannot retain a retired seat or provider's pending mutation. */
 export function LiveRaceSafety(props: LiveRaceSafetyProps) {
   /** Callback and profile changes retain the same seat; ownership changes replace its controls. */
-  const lifetime = useRef({transport: props.transport, ticketId: props.ticketId, version: 0});
-  if (lifetime.current.transport !== props.transport || lifetime.current.ticketId !== props.ticketId)
-    lifetime.current = {transport: props.transport, ticketId: props.ticketId, version: lifetime.current.version + 1};
-  return <LiveRaceSafetyPanel key={lifetime.current.version} {...props} />;
+  const [lifetime, setLifetime] = useState(() => ({transport: props.transport, ticketId: props.ticketId, version: 0}));
+  if (lifetime.transport !== props.transport || lifetime.ticketId !== props.ticketId)
+    setLifetime({transport: props.transport, ticketId: props.ticketId, version: lifetime.version + 1});
+  return <LiveRaceSafetyPanel key={lifetime.version} {...props} />;
 }
 
 /** Owns immutable safety intents, bounded delivery, and validated acknowledgments. */

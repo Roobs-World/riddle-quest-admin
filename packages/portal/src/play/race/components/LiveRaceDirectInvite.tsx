@@ -21,10 +21,10 @@ const canCorrectRecipient = (error: unknown): boolean => {
 /** Addresses an existing player through server-owned targeting, inbox persistence, and push delivery. */
 export function LiveRaceDirectInvite(props: DirectInviteProps) {
   /** Profile renders retain the selected recipient; a new lobby or provider retires it. */
-  const lifetime = useRef({challengeId: props.challengeId, transport: props.transport, version: 0});
-  if (lifetime.current.challengeId !== props.challengeId || lifetime.current.transport !== props.transport)
-    lifetime.current = {challengeId: props.challengeId, transport: props.transport, version: lifetime.current.version + 1};
-  return <LiveRaceDirectInvitePanel key={lifetime.current.version} {...props} />;
+  const [lifetime, setLifetime] = useState(() => ({challengeId: props.challengeId, transport: props.transport, version: 0}));
+  if (lifetime.challengeId !== props.challengeId || lifetime.transport !== props.transport)
+    setLifetime({challengeId: props.challengeId, transport: props.transport, version: lifetime.version + 1});
+  return <LiveRaceDirectInvitePanel key={lifetime.version} {...props} />;
 }
 
 /** Owns one recipient selection and its bounded, idempotent authority delivery. */

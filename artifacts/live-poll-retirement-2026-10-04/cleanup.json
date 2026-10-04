@@ -1,0 +1,15 @@
+{
+  "matchingOwnedNodeProcesses": [],
+  "ownedServerSessions": {
+    "3413": 130,
+    "10611": 130
+  },
+  "exactScratchDirectoriesRemoved": [
+    "packages/portal/node_modules/.cache/live-poll-retirement-oKMQ3z",
+    "packages/portal/node_modules/.cache/live-poll-retirement-alqG1z"
+  ],
+  "ownedFirefoxTabsClosed": 3,
+  "remainingFirefoxTabs": [
+    "about:blank"
+  ]
+}

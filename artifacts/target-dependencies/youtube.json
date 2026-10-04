@@ -53,7 +53,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-w73F5ilv.js",
+      "file": "assets/index-DU2D8YaA.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -62,17 +62,17 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "5662a926b58d2f28ccb1b504c5a807b67d9207f45c1f325320e0fcf252f0ca94"
+      "sha256": "f3799aca98e8d77e114c206f74c68e08e2e46526fd37ecc10f5ddd1b217293c2"
     },
     {
-      "file": "assets/playable-pack-en-BNfMztT7.js",
+      "file": "assets/playable-pack-en-CNyMKg14.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "fbf79a4da1c82f24db611c003315dc8a3588704ef8e72afe81810536c0e7bea2"
+      "sha256": "54992c59601860e93c46055ff7e1e1f850d72094fb5caca64fab34132f448d40"
     },
     {
       "file": "assets/core-game-i9VZudrA.js",
@@ -113,12 +113,12 @@
       "sha256": "5d55828d145e2f616074da57a79fe3be40e1fc6db0cf6f0e3306f0d3813d35f1"
     },
     {
-      "file": "assets/index-w73F5ilv.js",
-      "sha256": "5662a926b58d2f28ccb1b504c5a807b67d9207f45c1f325320e0fcf252f0ca94"
+      "file": "assets/index-DU2D8YaA.js",
+      "sha256": "f3799aca98e8d77e114c206f74c68e08e2e46526fd37ecc10f5ddd1b217293c2"
     },
     {
-      "file": "assets/playable-pack-en-BNfMztT7.js",
-      "sha256": "fbf79a4da1c82f24db611c003315dc8a3588704ef8e72afe81810536c0e7bea2"
+      "file": "assets/playable-pack-en-CNyMKg14.js",
+      "sha256": "54992c59601860e93c46055ff7e1e1f850d72094fb5caca64fab34132f448d40"
     },
     {
       "file": "assets/rolldown-runtime-Czjbc987.js",
@@ -130,7 +130,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "cd51c3d2d2df6f046341c5d2098117a57de8df1922f8470c5232677a34f0e78b"
+      "sha256": "14adbd3fd38bd6f2a95cd5215f168b42bbca9868213767f0e37c3533086336c0"
     },
     {
       "file": "third-party-licenses.txt",

@@ -1,0 +1,80 @@
+{
+  "OriginalBefore": {
+    "before": 176,
+    "client": 293,
+    "content": 469,
+    "focus": "modal-x"
+  },
+  "OriginalAfter": {
+    "before": 176,
+    "after": 0,
+    "sameModal": true,
+    "sameFocus": true,
+    "errors": [],
+    "unhandled": []
+  },
+  "OriginalCoverBefore": {
+    "before": 543,
+    "max": 763,
+    "focus": "Delete Account"
+  },
+  "OriginalCoverAfter": {
+    "before": 543,
+    "after": 763,
+    "samePage": true,
+    "sameFocus": true,
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalBefore": {
+    "before": 176,
+    "client": 293,
+    "content": 469,
+    "focus": "modal-x",
+    "viewport": {
+      "width": 500,
+      "height": 326
+    }
+  },
+  "FinalAfter": {
+    "before": 176,
+    "after": 176,
+    "sameModal": true,
+    "sameFocus": true,
+    "scrollCalls": [],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalCoverBefore": {
+    "before": 543,
+    "max": 763,
+    "focus": "Delete Account"
+  },
+  "FinalCoverAfter": {
+    "before": 543,
+    "after": 543,
+    "samePage": true,
+    "sameFocus": true,
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalSwitch": {
+    "instructions": true,
+    "profileRetired": true,
+    "top": 0,
+    "shellTop": 0,
+    "closeFocused": true,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalClose": {
+    "closes": 2,
+    "dialogs": 0,
+    "triggerFocused": true,
+    "deletes": 0,
+    "errors": [],
+    "unhandled": []
+  }
+}

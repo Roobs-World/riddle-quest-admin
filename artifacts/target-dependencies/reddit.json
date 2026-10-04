@@ -919,7 +919,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/game-DyKhwOmJ.js",
+      "file": "assets/game-DrsgOnAn.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -930,7 +930,7 @@
         "assets/preload-helper-C57RQWSg.js",
         "assets/validation-B3I-uX0t.js",
         "assets/core-bridge-constants-Bsju_PPr.js",
-        "assets/useAnswerKeyboard-DGfDtIME.js",
+        "assets/useAnswerKeyboard-DdTyhYzh.js",
         "assets/core-game-CyLsVauI.js",
         "assets/browserStorage-ClWTh26r.js",
         "assets/layoutReady-B86Ech8U.js",
@@ -958,13 +958,13 @@
         "assets/redditPlatform-DhIbnMlf.js",
         "assets/redditPlatform-JMhQe933.js",
         "assets/bridge-CwVUa1Nz.js",
-        "assets/GameModalView-BU_5jZ-N.js",
-        "assets/RaceTo10Game-BEoLLyaC.js",
+        "assets/GameModalView-DDQzDKvH.js",
+        "assets/RaceTo10Game-SZ1lGJrv.js",
         "assets/SolarSystem-CXBB4weF.js",
         "assets/race-B_FLZSN4.js",
-        "assets/RedditRaceEntry-i8LkaIHh.js"
+        "assets/RedditRaceEntry-CCB55a90.js"
       ],
-      "sha256": "d9e14abc2546ae3374f12429f499fdc8f27ea34da8a77a2d3ca1c30d8496298b"
+      "sha256": "7801412a9454a8a81c0f9e1500a1b5df452c8e9c48a8f3e4e3469d2b910065db"
     },
     {
       "file": "assets/splash-DNO5krMd.js",
@@ -997,7 +997,7 @@
       "sha256": "437880c9fbc9b3c12639caa79c88b6736aa25cd3c4abc8fc78d6fd9691cca1ed"
     },
     {
-      "file": "assets/GameModalView-BU_5jZ-N.js",
+      "file": "assets/GameModalView-DDQzDKvH.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
@@ -1009,7 +1009,7 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "d9f75e046c46e8b0213536b010bb5d918329a9e0291cfb912bf5c021350dd5a0"
+      "sha256": "77e2e8c0c441ffc53548dfc0c0d6c0411f548263ae6f066832d924f3ca490be2"
     },
     {
       "file": "assets/LiveRacePushConsent-CUZjB3-m.js",
@@ -1024,24 +1024,13 @@
       "sha256": "3a4c50bfcfff65f0944bea81b12999123aeedcb5dd55245303272968e16dbaaa"
     },
     {
-      "file": "assets/RaceTo10Game-BEoLLyaC.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/vendor-react-BaMjfHjM.js",
-        "assets/RaceTo10Game-C_Wc6V8q.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "14c187e64c7e691de1786595145f3c21461f7c9d27e98771f818f73a324529a7"
-    },
-    {
-      "file": "assets/RaceTo10Game-C_Wc6V8q.js",
+      "file": "assets/RaceTo10Game-BA07opls.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
         "assets/ReferralSharingCapability-Cmmgpwum.js",
-        "assets/useAnswerKeyboard-DGfDtIME.js",
+        "assets/useAnswerKeyboard-DdTyhYzh.js",
         "assets/core-game-CyLsVauI.js",
         "assets/browserErrorReporter-D2A67UQO.js",
         "assets/raceSchemas-Y6nRRYVj.js",
@@ -1051,10 +1040,21 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "e518578c6b5a8c09e2f701f9ba349eafafc423b2ada5498e0aa661db88e75279"
+      "sha256": "e34437578f53b809acee5dc68c267959f294c25fc04154bf672f9bfa7f351922"
     },
     {
-      "file": "assets/RedditRaceEntry-i8LkaIHh.js",
+      "file": "assets/RaceTo10Game-SZ1lGJrv.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/vendor-react-BaMjfHjM.js",
+        "assets/RaceTo10Game-BA07opls.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "a63492787bdcbdad5e433a542adfa1e67ed2c4664a8d3e3665c0da5a99fcdd6a"
+    },
+    {
+      "file": "assets/RedditRaceEntry-CCB55a90.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
@@ -1064,11 +1064,11 @@
         "assets/raceSchemas-Y6nRRYVj.js",
         "assets/race-DucMWVnh.js",
         "assets/LiveRacePushConsent-CUZjB3-m.js",
-        "assets/RaceTo10Game-C_Wc6V8q.js",
+        "assets/RaceTo10Game-BA07opls.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "0baf5312e73c21f4291b4591bf36af6d45a57565c0a562fb9c5cbe8c93ee8f2e"
+      "sha256": "25e8282cd0fbd4cd2fe915b2317b1076a3028b87c585d924479e1591dd0592d4"
     },
     {
       "file": "assets/ReferralSharingCapability-Cmmgpwum.js",
@@ -4916,7 +4916,7 @@
       "sha256": "31e560e308deebc4fa47cdbfd8636c49268aa4c8a5d8739e2d5b72cedff72583"
     },
     {
-      "file": "assets/useAnswerKeyboard-DGfDtIME.js",
+      "file": "assets/useAnswerKeyboard-DdTyhYzh.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
@@ -4926,7 +4926,7 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "01f84d92dcc8d010084335dd0e38f058495843cf4345b3463ea20acd4ad3e7e8"
+      "sha256": "77bfe4cf8b022a5a509b02ac858b7acaa16a521341de064f3696a01f7c202047"
     },
     {
       "file": "assets/validation-B3I-uX0t.js",
@@ -5289,12 +5289,12 @@
   ],
   "files": [
     {
-      "file": "assets/GameModalView-BU_5jZ-N.js",
-      "sha256": "d9f75e046c46e8b0213536b010bb5d918329a9e0291cfb912bf5c021350dd5a0"
-    },
-    {
       "file": "assets/GameModalView-CVwlBp5V.css",
       "sha256": "79045fa1c98046d2cd58e88984f89ed699e93d4f03e4aa36702b1652aa38db7a"
+    },
+    {
+      "file": "assets/GameModalView-DDQzDKvH.js",
+      "sha256": "77e2e8c0c441ffc53548dfc0c0d6c0411f548263ae6f066832d924f3ca490be2"
     },
     {
       "file": "assets/LiveRacePushConsent-BStyCzQK.css",
@@ -5321,20 +5321,20 @@
       "sha256": "cb35688673341b84ed9c51cff84abf796c2c6c91dc1e5747efb4ee9d6fde7140"
     },
     {
-      "file": "assets/RaceTo10Game-BEoLLyaC.js",
-      "sha256": "14c187e64c7e691de1786595145f3c21461f7c9d27e98771f818f73a324529a7"
+      "file": "assets/RaceTo10Game-BA07opls.js",
+      "sha256": "e34437578f53b809acee5dc68c267959f294c25fc04154bf672f9bfa7f351922"
     },
     {
-      "file": "assets/RaceTo10Game-C_Wc6V8q.js",
-      "sha256": "e518578c6b5a8c09e2f701f9ba349eafafc423b2ada5498e0aa661db88e75279"
+      "file": "assets/RaceTo10Game-SZ1lGJrv.js",
+      "sha256": "a63492787bdcbdad5e433a542adfa1e67ed2c4664a8d3e3665c0da5a99fcdd6a"
     },
     {
       "file": "assets/RaceTo10Game-o_06kpvy.css",
       "sha256": "a2cdbaee25784987c9c6f21ab5c770f089b1f1fd411bae1df52c042e338b6701"
     },
     {
-      "file": "assets/RedditRaceEntry-i8LkaIHh.js",
-      "sha256": "0baf5312e73c21f4291b4591bf36af6d45a57565c0a562fb9c5cbe8c93ee8f2e"
+      "file": "assets/RedditRaceEntry-CCB55a90.js",
+      "sha256": "25e8282cd0fbd4cd2fe915b2317b1076a3028b87c585d924479e1591dd0592d4"
     },
     {
       "file": "assets/ReferralSharingCapability-Cmmgpwum.js",
@@ -5913,8 +5913,8 @@
       "sha256": "a7d548330ad129230e1e0d92a81cd14f83a1804141fdb142b6b2d7a59e7fffef"
     },
     {
-      "file": "assets/game-DyKhwOmJ.js",
-      "sha256": "d9e14abc2546ae3374f12429f499fdc8f27ea34da8a77a2d3ca1c30d8496298b"
+      "file": "assets/game-DrsgOnAn.js",
+      "sha256": "7801412a9454a8a81c0f9e1500a1b5df452c8e9c48a8f3e4e3469d2b910065db"
     },
     {
       "file": "assets/game-Dzl9eVQ5.js",
@@ -6837,8 +6837,8 @@
       "sha256": "31e560e308deebc4fa47cdbfd8636c49268aa4c8a5d8739e2d5b72cedff72583"
     },
     {
-      "file": "assets/useAnswerKeyboard-DGfDtIME.js",
-      "sha256": "01f84d92dcc8d010084335dd0e38f058495843cf4345b3463ea20acd4ad3e7e8"
+      "file": "assets/useAnswerKeyboard-DdTyhYzh.js",
+      "sha256": "77bfe4cf8b022a5a509b02ac858b7acaa16a521341de064f3696a01f7c202047"
     },
     {
       "file": "assets/validation-B3I-uX0t.js",
@@ -6962,7 +6962,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "6642679ba5152bfe736af48d2a6d018f907c4a5fd225a0b888401f7351c47892"
+      "sha256": "411e92b4631e86806bcbeff7e60599b8139226b997423dbf9c8a7ba896d61ddc"
     },
     {
       "file": "reddit-inline.html",

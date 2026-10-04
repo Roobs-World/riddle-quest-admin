@@ -1,0 +1,47 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "first-open",
+    "name": "parent layout key obeys committed dismissal readiness",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "first-open",
+    "name": "active modal owns its first committed key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "first-open",
+    "name": "native listener is ready or retired at the parent boundary",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "recovery",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]
