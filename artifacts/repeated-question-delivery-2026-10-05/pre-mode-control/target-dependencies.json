@@ -1,0 +1,38 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/cc507a5d008b8bcb115468872084f7381477d6efad433e4151d372536222acc7/reddit.json",
+    "preserved": "artifacts/repeated-question-delivery-2026-10-05/pre-mode-control/target-dependencies/cc507a5d008b8bcb115468872084f7381477d6efad433e4151d372536222acc7/reddit.json",
+    "outputDirectory": "/tmp/riddle-question-repeat-builds-2ss5q5u3/reddit",
+    "sha256": "4ccc4ecb60ba8de9405a9d02ea8fe3a6dd5eaa7797bf6c5a22cded67be6bf17d"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/399b735d3c6dd1302407ba0c3a07d71a641851c6ef99523f2c099eb1d29ab1f6/jest.json",
+    "preserved": "artifacts/repeated-question-delivery-2026-10-05/pre-mode-control/target-dependencies/399b735d3c6dd1302407ba0c3a07d71a641851c6ef99523f2c099eb1d29ab1f6/jest.json",
+    "outputDirectory": "/tmp/riddle-question-repeat-builds-2ss5q5u3/jest",
+    "sha256": "84264645157c6f9930a7f31fb0c49e73a6aa9101d01fd316f324b054f7584b7e"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/461ff20279bb0f97e1dccf1b170bdfaa7fbc7752d4f7301f8680dbd5548dd704/yahoo.json",
+    "preserved": "artifacts/repeated-question-delivery-2026-10-05/pre-mode-control/target-dependencies/461ff20279bb0f97e1dccf1b170bdfaa7fbc7752d4f7301f8680dbd5548dd704/yahoo.json",
+    "outputDirectory": "/tmp/riddle-question-repeat-builds-2ss5q5u3/yahoo",
+    "sha256": "acc2695bebfd74cd1712bf097d7bcedaa17d2bb71992e95a2fc778822f38b800"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/3498edeb313aeded361ea5b0e7c9eaa3ca3c8059b4c31c91ba9d36c04347533a/youtube.json",
+    "preserved": "artifacts/repeated-question-delivery-2026-10-05/pre-mode-control/target-dependencies/3498edeb313aeded361ea5b0e7c9eaa3ca3c8059b4c31c91ba9d36c04347533a/youtube.json",
+    "outputDirectory": "/tmp/riddle-question-repeat-builds-2ss5q5u3/youtube",
+    "sha256": "7a8b873575b5532efb202a3c6d5cd088ff8c9565340a065c89d121241c65e99a"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/fe6f38d405533b6878c955fbc245813c2e3a63c1ba25c6cd68f4ba0741ab2d0f/netflix.json",
+    "preserved": "artifacts/repeated-question-delivery-2026-10-05/pre-mode-control/target-dependencies/fe6f38d405533b6878c955fbc245813c2e3a63c1ba25c6cd68f4ba0741ab2d0f/netflix.json",
+    "outputDirectory": "/tmp/riddle-question-repeat-builds-2ss5q5u3/netflix",
+    "sha256": "56549839923aaee13ae968ef684ed48766639ccc483631abe3e71776d9149e60"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/9a34f07d0889898461700101451793b01670cd818c628d439609c8cd6e181771/facebook.json",
+    "preserved": "artifacts/repeated-question-delivery-2026-10-05/pre-mode-control/target-dependencies/9a34f07d0889898461700101451793b01670cd818c628d439609c8cd6e181771/facebook.json",
+    "outputDirectory": "/tmp/riddle-question-repeat-builds-2ss5q5u3/facebook",
+    "sha256": "bb39b7b425e7337d4de594fb811d24721a68741919d3278b04b41d71d9460f51"
+  }
+]

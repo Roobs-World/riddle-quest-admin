@@ -1,0 +1,48 @@
+../../firebase-functions                 | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 1d ago)
+../..                                    | Progress: resolved 1, reused 0, downloaded 0, added 0
+../..                                    |   +1 +
+../..                                    | Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 628ms using pnpm v11.21.0
+{
+  "mode": "development",
+  "checks": 9,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "late-success",
+      "name": "obsolete load cannot deliver another board",
+      "actual": 3,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "late-success",
+      "name": "newer native draft survives obsolete load",
+      "actual": "",
+      "expected": "C"
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Question load ordering preserves the newer board and draft
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-question-load-ordering-browser.mjs:72:186 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -58,6 +58,10 @@
       "handle": 15614,
       "exit": 130,
       "reason": "intentional shutdown"
+    },
+    "finalGates": {
+      "handle": 86816,
+      "exit": 0
     }
   }
 }

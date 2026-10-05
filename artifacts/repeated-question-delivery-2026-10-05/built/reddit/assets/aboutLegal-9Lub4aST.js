@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`Penghapusan Akun`,DATA_EXPORT:`Ekspor Data`,SUPPORT:`Dukungan`,THIRD_PARTY_LICENSES:`Lisensi Pihak Ketiga`,TITLE:`Tentang / Hukum`},n={AboutLegal:t}})))()}r();export{n as default};

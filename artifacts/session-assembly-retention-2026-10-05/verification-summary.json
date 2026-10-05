@@ -1,0 +1,109 @@
+{
+  "goal": "active",
+  "comparisons": {
+    "original-minimal": {
+      "checks": 27,
+      "failures": 9
+    },
+    "original-control": {
+      "checks": 30,
+      "failures": 9
+    },
+    "original-expanded": {
+      "checks": 90,
+      "failures": 27
+    },
+    "current-only-probe": {
+      "checks": 30,
+      "failures": 1
+    },
+    "weak-gate-probe": {
+      "checks": 30,
+      "failures": 0
+    },
+    "original-final-matrix": {
+      "checks": 132,
+      "failures": 45
+    },
+    "final-browser-probe": {
+      "checks": 132,
+      "failures": 0
+    },
+    "development": {
+      "checks": 132,
+      "failures": 0
+    },
+    "production": {
+      "checks": 132,
+      "failures": 0
+    },
+    "related-classic-development": {
+      "checks": 525,
+      "failures": 0
+    },
+    "related-classic-production": {
+      "checks": 525,
+      "failures": 0
+    }
+  },
+  "retentionAssertions": 264,
+  "relatedGameplayAssertions": 1050,
+  "browserAssertionsTotal": 1314,
+  "refreshCounts": [
+    32,
+    256,
+    1024
+  ],
+  "baselineRootedCallbacksAt1024": 1024,
+  "finalRootedCallbacksAt1024": 1,
+  "retainedCallerControl": {
+    "whileHeld": 2,
+    "afterRelease": 1
+  },
+  "portalUnitTests": 2822,
+  "portalUnitSuites": 300,
+  "focusedUnitTests": 55,
+  "types": "passed",
+  "tsdocDeclarations": 25439,
+  "tsdocFiles": 1144,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "builtBrowser": {
+    "suites": 3,
+    "tests": 8,
+    "latencyBudgetChanged": false
+  },
+  "stableSourceInputs": 1512,
+  "preservedBuildFiles": 1300,
+  "firefoxRecords": 2,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "fixtureCachesRemoved": true,
+    "ownedFirefoxTabsClosed": true,
+    "remainingFirefoxPages": [
+      "about:blank"
+    ],
+    "jobs": {
+      "originalMinimal": 1,
+      "originalControl": 1,
+      "originalExpanded": 1,
+      "currentOnlyNodeHarness": 1,
+      "currentOnlyShellWithCapture": 0,
+      "weakGateProbe": 0,
+      "typeProbe": 0,
+      "focusedUnit": 0,
+      "tsdocProbe": 1,
+      "tsdocFixed": 0,
+      "originalFinalMatrix": 1,
+      "finalBrowserProbe": 0,
+      "finalGates": 0,
+      "finalBuilds": 0,
+      "finalBrowserMatrices": 0,
+      "relatedDevelopment": 0,
+      "relatedProduction": 0,
+      "firefoxFixtureServer": 130,
+      "builtBrowser": 0
+    }
+  }
+}

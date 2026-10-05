@@ -1,0 +1,58 @@
+FAIL src/play/__tests__/useGameMessageRouter.test.ts
+  ● keeps the typed board through an unchanged parsed question delivery undefined
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "P",
+    +   "",
+        "",
+        "",
+        "",
+        "",
+      ]
+
+      135 |   /** Ordinary replay carries a fresh object, as an actual bridge transfer does. */
+      136 |   await router({type: "host:riddleLoaded", requestId, payload: {riddle: structuredClone(riddle)}});
+    > 137 |   expect(stateRef.current.currentLetters).toEqual(["P", "", "", "", ""]);
+          |                                           ^
+      138 |   expect(stateRef.current.activeSlotIndex).toBe(1);
+      139 |   expect(stateRef.current.canRestoreCheckpoint).toBe(false);
+      140 | });
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:137:43
+
+  ● keeps the typed board through an unchanged parsed question delivery load-repeat
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "P",
+    +   "",
+        "",
+        "",
+        "",
+        "",
+      ]
+
+      135 |   /** Ordinary replay carries a fresh object, as an actual bridge transfer does. */
+      136 |   await router({type: "host:riddleLoaded", requestId, payload: {riddle: structuredClone(riddle)}});
+    > 137 |   expect(stateRef.current.currentLetters).toEqual(["P", "", "", "", ""]);
+          |                                           ^
+      138 |   expect(stateRef.current.activeSlotIndex).toBe(1);
+      139 |   expect(stateRef.current.canRestoreCheckpoint).toBe(false);
+      140 | });
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:137:43
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 6 passed, 8 total
+Snapshots:   0 total
+Time:        0.328 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/useGameMessageRouter.test.ts.

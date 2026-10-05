@@ -1,0 +1,44 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "name": "healthy reconciliation retains one bounded timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "name": "native answer advances immediately through the owned transport",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

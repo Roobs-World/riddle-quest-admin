@@ -1,0 +1,13 @@
+$ node scripts/verify-live-poll-scheduling-browser.mjs && LIVE_SCHEDULE_REACT_MODE=production node scripts/verify-live-poll-scheduling-browser.mjs
+{
+  "mode": "development",
+  "checks": 237,
+  "samples": 33,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 237,
+  "samples": 33,
+  "failures": []
+}

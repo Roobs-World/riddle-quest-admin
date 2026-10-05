@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
-import type {BridgeRiddle} from "@qwordly/core/bridge";
+import type {BridgeRiddle, HostToGameMessage} from "@qwordly/core/bridge";
 import type {HostServices} from "../types";
 
 /** Effects are committed after each simulated render, preserving hook ref ownership. */
@@ -15,6 +15,8 @@ let refIndex = 0;
 let cleanup: (() => void) | undefined;
 jest.mock("react", () => ({
   useCallback: <T>(callback: T) => callback,
+  useMemo: <T>(factory: () => T) => factory(),
+  useLayoutEffect: (effect: () => void) => effect(),
   useEffect: (effect: () => void | (() => void)) => effects.push(effect),
   useRef: (initial: unknown) => {
     /** Every render advances in hook order, including previously initialized refs. */
@@ -43,7 +45,7 @@ const deferred = <T>() => {
 /** Creates one lifecycle around stable injected delivery callbacks. */
 const setup = (loadRiddle: HostServices["loadRiddle"]) => {
   /** Records accepted riddle messages after authority work settles. */
-  const postToGame = jest.fn();
+  const postToGame = jest.fn<(message: HostToGameMessage) => void>();
   /** Records correlated operation acknowledgements. */
   const postOperation = jest.fn();
   /** Resynchronizes the frame only before actual recovery work. */
@@ -224,4 +226,174 @@ it("resets Classic recovery to the replacement account's confirmed position", as
   cleanup = effects[0]() || undefined;
   await jest.advanceTimersByTimeAsync(250);
   expect(load).toHaveBeenLastCalledWith({gameMode: "classic", locale: "en", classicIndex: 2});
+});
+
+it("keeps the newer question's draft when an older correlated load resolves last", async () => {
+  /** Real bridge validation and the actual game reducer reproduce the board replacement seam. */
+  const {createGameMessageRouter} = await import("../bridgeRouter");
+  /** Typed letters belong to the question actually delivered through the bridge. */
+  const {createInitialGameSession, gameSessionReducer} = await import("../gameSession");
+  /** Earlier network read completes only after a newer read becomes playable. */
+  const held = deferred<BridgeRiddle>();
+  /** Newer question has its own authority-issued session identity. */
+  const newer = {...riddle, attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false, index: 3, sessionToken: "00000000-0000-4000-8000-000000000003"};
+  /** Independent correlated calls reach the adapter concurrently. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(held.promise).mockResolvedValue(newer);
+  /** Mounted lifecycle owns both content requests. */
+  const owner = setup(load);
+  /** Exact board state delivered through the production bridge router. */
+  let board = createInitialGameSession();
+  /** Every parsed delivery can be awaited before simulating native game actions. */
+  const deliveries: Promise<unknown>[] = [];
+  /** Production validation applies the same load action as the game message hook. */
+  const router = createGameMessageRouter({init: jest.fn(), authState: jest.fn(), operationResult: jest.fn(),
+    pause: jest.fn(), resume: jest.fn(), riddleLoaded: message => {
+      board = gameSessionReducer(board, {type: "loadRiddle", riddle: message.payload.riddle});
+    }});
+  owner.options.postToGame.mockImplementation(message => {
+    if (message.type === "host:riddleLoaded") deliveries.push(router({...message, payload: {riddle: message.payload.riddle}}));
+  });
+  /** The first correlated request remains in flight when the second is admitted. */
+  const olderLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 2}, "older-load");
+  expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 3}, "newer-load")).toBe(true);
+  await Promise.all(deliveries);
+  board = gameSessionReducer(board, {type: "typeLetter", letter: "C"});
+  expect(board.currentLetters[0]).toBe("C");
+  held.resolve({...riddle, attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false});
+  /** Superseded delivery returns a retired outcome without rebuilding the board. */
+  const olderAccepted = await olderLoad;
+  await Promise.all(deliveries);
+  expect(board.riddle?.sessionToken).toBe(newer.sessionToken);
+  expect(board.currentLetters[0]).toBe("C");
+  expect(olderAccepted).toBe(false);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.postOperation).toHaveBeenCalledTimes(1);
+  expect(load).toHaveBeenCalledTimes(2);
+});
+
+it("releases obsolete startup activity before its provider settles and ignores its late failure", async () => {
+  /** Old transport remains admitted but must relinquish its loading overlay immediately. */
+  let reject!: (reason: Error) => void;
+  /** Independent transport result deliberately outlives the delivery wait. */
+  const older = new Promise<BridgeRiddle>((_resolve, fail) => {reject = fail;});
+  /** Current transport remains held until the test explicitly makes it playable. */
+  const newer = deferred<BridgeRiddle>();
+  /** Latest request must keep its own activity after the old request retires. */
+  const owner = setup(jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(older).mockReturnValueOnce(newer.promise));
+  /** Supersession should finish this delivery before the transport rejects. */
+  const oldLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "older-load");
+  /** New load independently owns the remaining startup activity. */
+  const newLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "newer-load");
+  expect(await oldLoad).toBe(false);
+  expect(owner.activity).toBe(1);
+  newer.resolve(riddle);
+  expect(await newLoad).toBe(true);
+  expect(owner.activity).toBe(0);
+  reject(new Error("Obsolete transport failed"));
+  await jest.advanceTimersByTimeAsync(1000);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.postOperation).toHaveBeenCalledTimes(1);
+  expect(owner.options.setNotice).toHaveBeenLastCalledWith(null);
+  expect(owner.onRecoveryAttempt).not.toHaveBeenCalled();
+});
+
+it("keeps the newest failure retryable instead of reviving an older success", async () => {
+  /** Obsolete authority read can still resolve after the latest request fails. */
+  const old = deferred<BridgeRiddle>();
+  /** Only failure of the newest delivery should schedule recovery. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(old.promise)
+    .mockRejectedValueOnce(new Error("Latest question unavailable")).mockResolvedValue(riddle);
+  /** Mounted lifecycle schedules recovery for the current failure. */
+  const owner = setup(load);
+  /** Earlier request retires as soon as the newer request is admitted. */
+  const oldLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 2}, "older-load");
+  expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 3}, "newer-load")).toBe(false);
+  old.resolve(riddle); expect(await oldLoad).toBe(false);
+  expect(owner.postToGame).not.toHaveBeenCalled();
+  expect(owner.postOperation).toHaveBeenCalledTimes(1);
+  expect(owner.postOperation.mock.calls[0]).toEqual(["newer-load", "loadRiddle", false, undefined, expect.stringContaining("Latest question unavailable")]);
+  await jest.advanceTimersByTimeAsync(250);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(load.mock.calls[2][0].classicIndex).toBe(3);
+  expect(owner.onRecoveryAttempt).toHaveBeenCalledTimes(1);
+});
+
+it.each(["before-daily-result", "during-classic-fallback"])("retires an obsolete Daily transition %s", async phase => {
+  /** Daily and its fallback both have controllable result boundaries. */
+  let completeDaily!: (reason: Error) => void;
+  /** Daily completion is expected routing, but only for the latest request. */
+  const daily = new Promise<BridgeRiddle>((_resolve, reject) => {completeDaily = reject;});
+  /** Classic fallback may already have reached the provider when superseded. */
+  const fallback = deferred<BridgeRiddle>();
+  /** Daily completion error carries the same authoritative routing code as production. */
+  const completed = Object.assign(new Error("Daily completed"), {code: "daily-completed"});
+  /** Latest explicit Classic request succeeds independently of the old Daily routing work. */
+  const load = jest.fn<HostServices["loadRiddle"]>(input => input.gameMode === "challenge" ? daily
+    : input.classicIndex === 9 ? Promise.resolve({...riddle, index: 9}) : fallback.promise);
+  /** Mounted host owns the complete Daily-to-Classic asynchronous chain. */
+  const owner = setup(load);
+  /** Original Daily request remains pending at the selected transition boundary. */
+  const oldLoad = owner.lifecycle.loadRiddle({gameMode: "challenge", locale: "en"}, "daily-old");
+  if (phase === "during-classic-fallback") {
+    completeDaily(completed); await jest.advanceTimersByTimeAsync(0);
+    expect(load).toHaveBeenCalledTimes(2);
+  }
+  expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 9}, "classic-current")).toBe(true);
+  completeDaily(completed); fallback.resolve(riddle);
+  expect(await oldLoad).toBe(false);
+  await jest.advanceTimersByTimeAsync(1000);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.postToGame.mock.calls[0][0]).toMatchObject({requestId: "classic-current", payload: {riddle: {index: 9}}});
+  expect(load).toHaveBeenCalledTimes(phase === "during-classic-fallback" ? 3 : 2);
+  expect(owner.postOperation).toHaveBeenCalledTimes(1);
+  expect(owner.activity).toBe(0);
+});
+
+it("shares one automatic read without letting its cleanup retire a newer correlated read", async () => {
+  /** Automatic startup requests coalesce around one provider operation. */
+  const automatic = deferred<BridgeRiddle>();
+  /** Correlated successor retains ownership when the shared old promise settles. */
+  const correlated = deferred<BridgeRiddle>();
+  /** Only two physical reads should be admitted for three caller requests. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(automatic.promise).mockReturnValueOnce(correlated.promise);
+  /** Mounted host preserves automatic deduplication while serializing delivery ownership. */
+  const owner = setup(load);
+  /** First automatic read is shared by the second automatic caller. */
+  const first = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"});
+  /** Additional ready/recovery signals cannot supersede their own shared load. */
+  const shared = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"});
+  expect(load).toHaveBeenCalledTimes(1);
+  /** Correlated request genuinely supersedes the earlier automatic load. */
+  const current = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "current");
+  expect(await first).toBe(false); expect(await shared).toBe(false);
+  expect(owner.activity).toBe(1);
+  automatic.resolve(riddle);
+  correlated.resolve({...riddle, index: 3});
+  expect(await current).toBe(true);
+  expect(load).toHaveBeenCalledTimes(2);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.postToGame.mock.calls[0][0]).toMatchObject({requestId: "current", payload: {riddle: {index: 3}}});
+});
+
+it("counts one shared startup failure once after repeated reconnect signals", async () => {
+  /** One provider request stays pending while multiple browser recovery events arrive. */
+  let reject!: (reason: Error) => void;
+  /** Actual content delivery shares this operation among automatic callers. */
+  const held = new Promise<BridgeRiddle>((_resolve, fail) => {reject = fail;});
+  /** The first retry becomes playable without another provider failure. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(held).mockResolvedValue(riddle);
+  /** Mounted recovery owns the pending request, browser listeners and outage backoff. */
+  const owner = setup(load);
+  await jest.advanceTimersByTimeAsync(250);
+  for (let index = 0; index < 20; index += 1) {
+    window.dispatchEvent(new Event("online"));
+    await jest.advanceTimersByTimeAsync(10);
+  }
+  expect(load).toHaveBeenCalledTimes(1);
+  reject(new Error("Shared startup content failed"));
+  await jest.advanceTimersByTimeAsync(1000);
+  expect(load).toHaveBeenCalledTimes(2);
+  expect(owner.onRecoveryAttempt).toHaveBeenCalledTimes(2);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.activity).toBe(0);
 });

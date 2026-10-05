@@ -1,0 +1,716 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "name": "native answer advances through the owned transport",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "healthy",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "name": "disconnected or failed subscriptions retain fast provider fallback",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disconnected",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "hidden state uses the existing one-second provider cadence",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "visible recovery immediately observes the current match",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "owned held commands do not leave idle observation timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "held command produces no idle scheduler wakeups",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "native answer advances through the owned transport",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "retained command retries on backoff without waiting for the push watchdog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "retry preserves its original authority receipt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "native answer advances through the owned transport",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "healthy watchdog wakes once to perform its due read",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "reentrant retirement releases the original scheduler",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "retired polling callbacks remain stopped",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "retired leave deliveries retain one idempotency key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retire",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "reentrant retirement releases the original scheduler",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "retired polling callbacks remain stopped",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "retired leave deliveries retain one idempotency key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "replacement seat owns one independent scheduler",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "subscription-throw",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 2,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "subscription-throw",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "subscription-throw",
+    "name": "disconnected or failed subscriptions retain fast provider fallback",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "subscription-throw",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "subscription-throw",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "subscription-throw",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "terminal receipt immediately stops polling",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "terminal",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  }
+]

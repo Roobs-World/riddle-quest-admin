@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t;function n(){return(n=e((()=>{t=1})))()}export{n,t};

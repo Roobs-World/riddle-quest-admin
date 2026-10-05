@@ -1,0 +1,6 @@
+{
+  "mode": "production",
+  "checks": 267,
+  "samples": 36,
+  "failures": []
+}

@@ -1,0 +1,31 @@
+{
+  "mode": "development",
+  "checks": 30,
+  "failures": [
+    {
+      "count": 32,
+      "scenario": "gated",
+      "name": "retired gate lifetimes are collectible",
+      "actual": 32,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Obsolete assemblies must not stay rooted by the current provider
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-session-assembly-retention-browser.mjs:78:180 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/c936d8d2111e15983da2de79bc3ec3308226810e84c19d1448fdd2e4cd20784f/facebook.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/pre-hidden-cadence-control/target-metadata/c936d8d2111e15983da2de79bc3ec3308226810e84c19d1448fdd2e4cd20784f/facebook.json",
+    "sha256": "767a4afff29326ff304e9176985fda6418cf17da8521bb5da10331df7813bcb1"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/1c6f079ccc59019e08f0b2dd5440c81557bdf50b02aa590e33f0053834d43dcd/yahoo.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/pre-hidden-cadence-control/target-metadata/1c6f079ccc59019e08f0b2dd5440c81557bdf50b02aa590e33f0053834d43dcd/yahoo.json",
+    "sha256": "1acfbd9f721bf72d12678486b9a23ccd17edbcc973ec73df9e9094a553a43c1e"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/b9d7d24a53b0e2777bfb714c3918c2dbd90a09a5d63ae6b0543e695a3cc71a24/youtube.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/pre-hidden-cadence-control/target-metadata/b9d7d24a53b0e2777bfb714c3918c2dbd90a09a5d63ae6b0543e695a3cc71a24/youtube.json",
+    "sha256": "7ad8b8fa4b19c9570134643e5e54cc3b4c5c8e25fcb1f115ece2f9e97c6d8b1d"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/5cb1aa08fbe5e44281e5b732cae290d32897271dd5c4cdc15c9e37f9c782f90b/jest.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/pre-hidden-cadence-control/target-metadata/5cb1aa08fbe5e44281e5b732cae290d32897271dd5c4cdc15c9e37f9c782f90b/jest.json",
+    "sha256": "ec9f26073d1ce7263c44852869af7eeacd2d5565b261786b212054474143e288"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/209df9cbd7baa1c5141635d219676c82170dc882f68323f2475c2cffe5581105/netflix.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/pre-hidden-cadence-control/target-metadata/209df9cbd7baa1c5141635d219676c82170dc882f68323f2475c2cffe5581105/netflix.json",
+    "sha256": "d809150317c0beec97c94aabec409380fa103cae574cbeaa450d2292283d9f78"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/d882150d7f950a72abbe3f0e29420f49662bd4b6c7f80be29eb3f947516e64ad/reddit.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/pre-hidden-cadence-control/target-metadata/d882150d7f950a72abbe3f0e29420f49662bd4b6c7f80be29eb3f947516e64ad/reddit.json",
+    "sha256": "705d017c2e4bb739c6cb88048533375e7c516eb4c55e8042729c1c157ff2d30f"
+  }
+]

@@ -83,6 +83,8 @@ const requireRaceAuthority = (authority: HostAuthorityModules): NonNullable<Host
 /** Describes load and post riddle. */
 type LoadAndPostRiddle = (
   input: {
+    /** Optional read-only preparation never delivers a question before explicit Next. */
+    prepareNext?: true;
     /** Stores game mode. */
     gameMode: WebGameMode;
     /** Stores locale. */

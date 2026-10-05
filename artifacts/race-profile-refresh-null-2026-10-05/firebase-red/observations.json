@@ -1,0 +1,154 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "newer canonical profile becomes visible",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "superseded race refresh retains the newer profile",
+    "actual": "300",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "retained account still owns its provider follow-up",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "all provider traffic remains same-origin API",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "newer canonical profile becomes visible",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "superseded race refresh retains the newer profile",
+    "actual": "300",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "retained account still owns its provider follow-up",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "all provider traffic remains same-origin API",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 777,
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "mode": "production",
+  "checks": 7,
+  "failures": [
+    {
+      "mode": "production",
+      "initial": "visible",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "initial": "visible",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Hidden race scheduling stays bounded without losing visible recovery
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-hidden-scheduling-browser.mjs:49:186 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -232,6 +232,12 @@ export const GameLoadRiddleMessageSchema = envelope(
     authoritative: z.boolean().optional(),
     sessionToken: z.string().min(20).max(128).optional(),
     riddleId: RiddleIdSchema.optional(),
+    /** Requests silent preparation of the successor to the bound Classic session. */
+    prepareNext: z.literal(true).optional(),
+  }).superRefine((payload, context) => {
+    if (payload.prepareNext && (payload.gameMode !== "classic" || !payload.classicIndex ||
+      payload.authoritative || !payload.sessionToken || !payload.riddleId))
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Classic preparation requires its originating session and successor index."});
   }),
 );
 

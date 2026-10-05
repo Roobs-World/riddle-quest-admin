@@ -1,0 +1,141 @@
+{
+  "comparisons": {
+    "original-browser": {
+      "checks": 17,
+      "failures": 6
+    },
+    "original-browser-expanded": {
+      "checks": 104,
+      "failures": 24
+    },
+    "complete-browser-probe": {
+      "checks": 83,
+      "failures": 0
+    },
+    "final-browser-probe": {
+      "checks": 104,
+      "failures": 0
+    },
+    "development": {
+      "checks": 312,
+      "failures": 0
+    },
+    "production": {
+      "checks": 312,
+      "failures": 0
+    },
+    "related-development": {
+      "checks": 132,
+      "failures": 0
+    },
+    "related-production": {
+      "checks": 132,
+      "failures": 0
+    }
+  },
+  "focusedBrowserAssertions": 624,
+  "relatedBrowserAssertions": 264,
+  "browserAssertionsTotal": 888,
+  "focusedJourneys": 36,
+  "viewports": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "builtBrowser": {
+    "suites": 3,
+    "tests": 8,
+    "failures": 0,
+    "latencyThresholdChanged": false
+  },
+  "unitTests": 2769,
+  "unitSuites": 298,
+  "focusedUnitTests": 14,
+  "types": "passed",
+  "tsdocDeclarations": 25281,
+  "tsdocFiles": 1141,
+  "sixBuilds": "passed",
+  "youtubeBuild": "fixture",
+  "stableSourceInputs": 1507,
+  "runtimeSourceDelta": [],
+  "earlierTestOnlyDocumentationDrift": true,
+  "firefoxRecords": 5,
+  "preservedBuildFiles": 1300,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "fixtureCachesRemoved": true,
+    "nativeFirefoxTabsClosed": [
+      2,
+      1
+    ],
+    "jobs": {
+      "gatesBeforeDocFix": {
+        "handle": 27417,
+        "exit": 1,
+        "reason": "test documentation"
+      },
+      "sixBuildsOriginal": {
+        "handle": 93615,
+        "exit": 0
+      },
+      "focusedBrowser": {
+        "handle": 10675,
+        "exit": 0
+      },
+      "relatedDevelopment": {
+        "handle": 67158,
+        "exit": 0
+      },
+      "gatesInlineDoc": {
+        "handle": 71757,
+        "exit": 1,
+        "reason": "test documentation"
+      },
+      "sixBuildsRepeat": {
+        "handle": 85478,
+        "exit": 0
+      },
+      "relatedProduction": {
+        "handle": 60672,
+        "exit": 0
+      },
+      "documentationStandalone": {
+        "handle": 1616,
+        "exit": 0
+      },
+      "gatesSandbox": {
+        "handle": 31704,
+        "exit": 1,
+        "reason": "sandbox denies loopback listener"
+      },
+      "builtBrowser": {
+        "handle": 46588,
+        "exit": 0
+      },
+      "baselineServer": {
+        "handle": 75572,
+        "exit": 130,
+        "reason": "intentional shutdown"
+      },
+      "fixedServer": {
+        "handle": 15614,
+        "exit": 130,
+        "reason": "intentional shutdown"
+      },
+      "finalGates": {
+        "handle": 86816,
+        "exit": 0
+      }
+    }
+  },
+  "goal": "active"
+}

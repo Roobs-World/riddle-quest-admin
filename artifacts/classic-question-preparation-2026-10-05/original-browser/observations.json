@@ -1,0 +1,159 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "no successor read before a Classic win",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "one read-only preparation during victory",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "strict schema preserves the bound prepare flag",
+    "actual": [],
+    "expected": [
+      {
+        "gameMode": "classic",
+        "index": 2,
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "preparation origin is stripped before the provider read",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "prepared successor is not published early",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "optional preparation changes no authority progression or balance",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "held native submission is delivered once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "no speculative paid action or completion grant",
+    "actual": [
+      0,
+      0
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "optional failures do not show a host alert",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "unconfirmed victory cannot grant a reward chest",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "unconfirmed victory cannot grant a reward chest",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "unconfirmed victory cannot grant a reward chest",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "Next reads through authority only when preparation is unavailable",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "ready Next acquires no additional native shared lock",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "explicit Next publishes its successor once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "ready",
+    "name": "no provider traffic",
+    "actual": [],
+    "expected": []
+  }
+]

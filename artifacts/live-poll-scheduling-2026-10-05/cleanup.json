@@ -1,0 +1,34 @@
+{
+  "temporaryBuildRemoved": true,
+  "ownedTargetMetadataPreservedAndRemoved": 12,
+  "ownedFixtureCachesRemoved": true,
+  "ownedFirefoxTabsClosed": true,
+  "remainingFirefoxPages": [
+    "about:blank"
+  ],
+  "builtBrowserInitialHandle": "missing after interruption, no matching OS process, empty output; replaced only after stop was confirmed",
+  "jobs": {
+    "fixtureSyntax": 1,
+    "red47264": 1,
+    "firstFixedAndTypes6763": 0,
+    "fixtureParameter71642": 1,
+    "expandedPrototype10722": 1,
+    "typeProbe48839": 0,
+    "earlyTimer23935": 1,
+    "ceilFixedProbe4708": 1,
+    "preControlMatrices43625": 0,
+    "preControlOriginal67637": 1,
+    "preControlGates49004": 0,
+    "preControlBuilds22307": 0,
+    "relatedRetirement53146": 0,
+    "correctedProbe83642": 0,
+    "finalMatrices70752": 0,
+    "finalOriginal27055": 1,
+    "finalGates88710": 0,
+    "finalBuilds34562": 0,
+    "finalFirefoxServer8782": 0,
+    "builtInterrupted75315": "handle missing; no matching OS process",
+    "builtBrowser11686": 0
+  },
+  "inactivePrototypeEvidence": "artifacts/race-hidden-scheduling-2026-10-05/prototype-cleanup.json"
+}

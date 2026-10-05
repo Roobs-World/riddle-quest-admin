@@ -1,0 +1,1135 @@
+[
+  {
+    "trace": "trace-0.json",
+    "windowMs": 103.526,
+    "events": [
+      {
+        "name": "FunctionCall",
+        "startMs": 10.0,
+        "durationMs": 14.373,
+        "data": {
+          "data": {
+            "columnNumber": 135974,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "",
+            "isolate": "12293844655624477296",
+            "lineNumber": 8,
+            "sampleTraceId": 4765268199745792,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "UpdateLayoutTree",
+        "startMs": 13.944,
+        "durationMs": 7.275,
+        "data": {
+          "beginData": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA"
+          },
+          "elementCount": 85
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 24.42,
+        "durationMs": 1.553,
+        "data": {
+          "data": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "id": 80
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 24.423,
+        "durationMs": 1.549,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "",
+            "isolate": "12293844655624477296",
+            "lineNumber": 1,
+            "sampleTraceId": 4765268199745785,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 25.973,
+        "durationMs": 2.061,
+        "data": {
+          "data": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "id": 81
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 28.215,
+        "durationMs": 2.677,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "layerId": 0,
+            "nodeId": 1,
+            "nodeName": "#document"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 28.237,
+        "durationMs": 2.654,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "layerId": 0,
+            "nodeId": 30,
+            "nodeName": "DIV class='game-content'"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 41.262,
+        "durationMs": 8.409,
+        "data": {
+          "data": {
+            "columnNumber": 9217,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "S",
+            "isolate": "12293844655624477296",
+            "lineNumber": 1,
+            "sampleTraceId": 4765268199745772,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "UpdateLayoutTree",
+        "startMs": 49.696,
+        "durationMs": 7.433,
+        "data": {
+          "beginData": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA"
+          },
+          "elementCount": 90
+        }
+      },
+      {
+        "name": "Layout",
+        "startMs": 57.132,
+        "durationMs": 3.921,
+        "data": {
+          "beginData": {
+            "dirtyObjects": 21,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "partialLayout": false,
+            "totalObjects": 169
+          },
+          "endData": {
+            "layoutRoots": [
+              {
+                "depth": 1,
+                "nodeId": 1,
+                "nodeName": "#document",
+                "quads": [
+                  [
+                    0,
+                    0,
+                    390,
+                    0,
+                    390,
+                    844,
+                    0,
+                    844
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 61.239,
+        "durationMs": 2.179,
+        "data": {
+          "data": {
+            "columnNumber": 42428,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "vh",
+            "isolate": "12293844655624477296",
+            "lineNumber": 9,
+            "sampleTraceId": 4765268199745767,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 63.443,
+        "durationMs": 2.27,
+        "data": {
+          "data": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "id": 82
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 63.445,
+        "durationMs": 2.267,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "",
+            "isolate": "12293844655624477296",
+            "lineNumber": 1,
+            "sampleTraceId": 4765268199745754,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 65.728,
+        "durationMs": 2.202,
+        "data": {
+          "data": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "id": 84
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 65.729,
+        "durationMs": 2.201,
+        "data": {
+          "data": {
+            "columnNumber": 47337,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "",
+            "isolate": "12293844655624477296",
+            "lineNumber": 2,
+            "sampleTraceId": 4765268199745758,
+            "scriptId": "16",
+            "url": "http://127.0.0.1:41911/assets/jest-CYvcQS31.js"
+          }
+        }
+      },
+      {
+        "name": "UpdateLayoutTree",
+        "startMs": 65.749,
+        "durationMs": 2.143,
+        "data": {
+          "beginData": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA"
+          },
+          "elementCount": 1
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 69.207,
+        "durationMs": 1.213,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "layerId": 0,
+            "nodeId": 1,
+            "nodeName": "#document"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 69.232,
+        "durationMs": 1.143,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "layerId": 0,
+            "nodeId": 30,
+            "nodeName": "DIV class='game-content'"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 87.818,
+        "durationMs": 2.899,
+        "data": {
+          "data": {
+            "columnNumber": 74811,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "o",
+            "isolate": "12293844655624477296",
+            "lineNumber": 2,
+            "sampleTraceId": 4765268199745735,
+            "scriptId": "16",
+            "url": "http://127.0.0.1:41911/assets/jest-CYvcQS31.js"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 90.786,
+        "durationMs": 8.696,
+        "data": {
+          "data": {
+            "columnNumber": 9217,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "S",
+            "isolate": "12293844655624477296",
+            "lineNumber": 1,
+            "sampleTraceId": 4765268199745722,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 100.95,
+        "durationMs": 2.562,
+        "data": {
+          "data": {
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "id": 85
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 100.953,
+        "durationMs": 2.558,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "7832B16C09F5D1E67ACDD206133D26FA",
+            "functionName": "",
+            "isolate": "12293844655624477296",
+            "lineNumber": 1,
+            "sampleTraceId": 4765268199745724,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      }
+    ],
+    "durationsAreInclusive": true
+  },
+  {
+    "trace": "trace-1.json",
+    "windowMs": 132.845,
+    "events": [
+      {
+        "name": "MajorGC",
+        "startMs": 5.546,
+        "durationMs": 26.069,
+        "data": {
+          "type": "finalize incremental marking via stack guard",
+          "usedHeapSizeAfter": 11622656,
+          "usedHeapSizeBefore": 15234232
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 37.223,
+        "durationMs": 15.634,
+        "data": {
+          "data": {
+            "columnNumber": 135974,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "",
+            "isolate": "10223217323505013043",
+            "lineNumber": 8,
+            "sampleTraceId": 727881346216265,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "UpdateLayoutTree",
+        "startMs": 41.486,
+        "durationMs": 5.508,
+        "data": {
+          "beginData": {
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC"
+          },
+          "elementCount": 85
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 52.92,
+        "durationMs": 3.598,
+        "data": {
+          "data": {
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "id": 74
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 52.923,
+        "durationMs": 3.593,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "",
+            "isolate": "10223217323505013043",
+            "lineNumber": 1,
+            "sampleTraceId": 727881346216272,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      },
+      {
+        "name": "Layout",
+        "startMs": 56.555,
+        "durationMs": 1.386,
+        "data": {
+          "beginData": {
+            "dirtyObjects": 9,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "partialLayout": false,
+            "totalObjects": 157
+          },
+          "endData": {
+            "layoutRoots": [
+              {
+                "depth": 1,
+                "nodeId": 2,
+                "nodeName": "#document",
+                "quads": [
+                  [
+                    0,
+                    0,
+                    390,
+                    0,
+                    390,
+                    844,
+                    0,
+                    844
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 58.043,
+        "durationMs": 2.214,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "layerId": 0,
+            "nodeId": 2,
+            "nodeName": "#document"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 58.065,
+        "durationMs": 2.189,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "layerId": 0,
+            "nodeId": 37,
+            "nodeName": "DIV class='game-content'"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 77.685,
+        "durationMs": 12.01,
+        "data": {
+          "data": {
+            "columnNumber": 9217,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "S",
+            "isolate": "10223217323505013043",
+            "lineNumber": 1,
+            "sampleTraceId": 727881346216297,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "UpdateLayoutTree",
+        "startMs": 89.724,
+        "durationMs": 5.839,
+        "data": {
+          "beginData": {
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC"
+          },
+          "elementCount": 90
+        }
+      },
+      {
+        "name": "Layout",
+        "startMs": 95.567,
+        "durationMs": 5.203,
+        "data": {
+          "beginData": {
+            "dirtyObjects": 21,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "partialLayout": false,
+            "totalObjects": 169
+          },
+          "endData": {
+            "layoutRoots": [
+              {
+                "depth": 1,
+                "nodeId": 2,
+                "nodeName": "#document",
+                "quads": [
+                  [
+                    0,
+                    0,
+                    390,
+                    0,
+                    390,
+                    844,
+                    0,
+                    844
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 102.108,
+        "durationMs": 0.967,
+        "data": {
+          "data": {
+            "columnNumber": 42428,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "vh",
+            "isolate": "10223217323505013043",
+            "lineNumber": 9,
+            "sampleTraceId": 727881346216307,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 103.707,
+        "durationMs": 2.585,
+        "data": {
+          "data": {
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "id": 76
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 103.71,
+        "durationMs": 2.581,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "",
+            "isolate": "10223217323505013043",
+            "lineNumber": 1,
+            "sampleTraceId": 727881346216319,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 106.312,
+        "durationMs": 1.653,
+        "data": {
+          "data": {
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "id": 78
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 106.313,
+        "durationMs": 1.651,
+        "data": {
+          "data": {
+            "columnNumber": 47337,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "",
+            "isolate": "10223217323505013043",
+            "lineNumber": 2,
+            "sampleTraceId": 727881346216315,
+            "scriptId": "16",
+            "url": "http://127.0.0.1:41911/assets/jest-CYvcQS31.js"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 108.007,
+        "durationMs": 2.151,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "layerId": 0,
+            "nodeId": 2,
+            "nodeName": "#document"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 108.028,
+        "durationMs": 2.091,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "layerId": 0,
+            "nodeId": 37,
+            "nodeName": "DIV class='game-content'"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 117.767,
+        "durationMs": 1.514,
+        "data": {
+          "data": {
+            "columnNumber": 74811,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "o",
+            "isolate": "10223217323505013043",
+            "lineNumber": 2,
+            "sampleTraceId": 727881346216080,
+            "scriptId": "16",
+            "url": "http://127.0.0.1:41911/assets/jest-CYvcQS31.js"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 120.728,
+        "durationMs": 7.054,
+        "data": {
+          "data": {
+            "columnNumber": 9217,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "S",
+            "isolate": "10223217323505013043",
+            "lineNumber": 1,
+            "sampleTraceId": 727881346216093,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 127.819,
+        "durationMs": 5.002,
+        "data": {
+          "data": {
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "id": 79
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 127.821,
+        "durationMs": 4.998,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "functionName": "",
+            "isolate": "10223217323505013043",
+            "lineNumber": 1,
+            "sampleTraceId": 727881346216091,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 132.821,
+        "durationMs": 0.655,
+        "data": {
+          "data": {
+            "frame": "CAF0FB221D33A8A2CDDD0F4B018D99EC",
+            "id": 80
+          }
+        }
+      }
+    ],
+    "durationsAreInclusive": true
+  },
+  {
+    "trace": "trace-2.json",
+    "windowMs": 90.09,
+    "events": [
+      {
+        "name": "FunctionCall",
+        "startMs": 10.262,
+        "durationMs": 13.311,
+        "data": {
+          "data": {
+            "columnNumber": 135974,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "",
+            "isolate": "3015345419957026675",
+            "lineNumber": 8,
+            "sampleTraceId": 5658841200712076,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "UpdateLayoutTree",
+        "startMs": 15.448,
+        "durationMs": 5.792,
+        "data": {
+          "beginData": {
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4"
+          },
+          "elementCount": 85
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 23.577,
+        "durationMs": 1.299,
+        "data": {
+          "data": {
+            "columnNumber": 135974,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "",
+            "isolate": "3015345419957026675",
+            "lineNumber": 8,
+            "sampleTraceId": 5658841200712071,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 24.904,
+        "durationMs": 2.809,
+        "data": {
+          "data": {
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "id": 72
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 24.906,
+        "durationMs": 2.806,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "",
+            "isolate": "3015345419957026675",
+            "lineNumber": 1,
+            "sampleTraceId": 5658841200712069,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 29.957,
+        "durationMs": 2.411,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "layerId": 0,
+            "nodeId": 2,
+            "nodeName": "#document"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 29.978,
+        "durationMs": 2.388,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "layerId": 0,
+            "nodeId": 36,
+            "nodeName": "DIV class='game-content'"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 40.545,
+        "durationMs": 9.979,
+        "data": {
+          "data": {
+            "columnNumber": 9217,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "S",
+            "isolate": "3015345419957026675",
+            "lineNumber": 1,
+            "sampleTraceId": 5658841200712108,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "UpdateLayoutTree",
+        "startMs": 50.543,
+        "durationMs": 6.501,
+        "data": {
+          "beginData": {
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4"
+          },
+          "elementCount": 90
+        }
+      },
+      {
+        "name": "Layout",
+        "startMs": 57.047,
+        "durationMs": 2.708,
+        "data": {
+          "beginData": {
+            "dirtyObjects": 21,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "partialLayout": false,
+            "totalObjects": 169
+          },
+          "endData": {
+            "layoutRoots": [
+              {
+                "depth": 1,
+                "nodeId": 2,
+                "nodeName": "#document",
+                "quads": [
+                  [
+                    0,
+                    0,
+                    390,
+                    0,
+                    390,
+                    844,
+                    0,
+                    844
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 62.25,
+        "durationMs": 2.503,
+        "data": {
+          "data": {
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "id": 74
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 62.252,
+        "durationMs": 2.5,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "",
+            "isolate": "3015345419957026675",
+            "lineNumber": 1,
+            "sampleTraceId": 5658841200712122,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 64.768,
+        "durationMs": 2.638,
+        "data": {
+          "data": {
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "id": 76
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 64.768,
+        "durationMs": 2.637,
+        "data": {
+          "data": {
+            "columnNumber": 47337,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "",
+            "isolate": "3015345419957026675",
+            "lineNumber": 2,
+            "sampleTraceId": 5658841200712126,
+            "scriptId": "16",
+            "url": "http://127.0.0.1:41911/assets/jest-CYvcQS31.js"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 67.45,
+        "durationMs": 2.061,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "layerId": 0,
+            "nodeId": 2,
+            "nodeName": "#document"
+          }
+        }
+      },
+      {
+        "name": "Paint",
+        "startMs": 67.547,
+        "durationMs": 1.963,
+        "data": {
+          "data": {
+            "clip": [
+              0,
+              0,
+              390,
+              0,
+              390,
+              844,
+              0,
+              844
+            ],
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "layerId": 0,
+            "nodeId": 37,
+            "nodeName": "DIV class='tooltip-backdrop'"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 76.93,
+        "durationMs": 2.708,
+        "data": {
+          "data": {
+            "columnNumber": 74811,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "o",
+            "isolate": "3015345419957026675",
+            "lineNumber": 2,
+            "sampleTraceId": 5658841200711744,
+            "scriptId": "16",
+            "url": "http://127.0.0.1:41911/assets/jest-CYvcQS31.js"
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 79.7,
+        "durationMs": 7.994,
+        "data": {
+          "data": {
+            "columnNumber": 9217,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "S",
+            "isolate": "3015345419957026675",
+            "lineNumber": 1,
+            "sampleTraceId": 5658841200711748,
+            "scriptId": "8",
+            "url": "http://127.0.0.1:41911/assets/vendor-react-CuZr8RiT.js"
+          }
+        }
+      },
+      {
+        "name": "FireAnimationFrame",
+        "startMs": 87.73,
+        "durationMs": 2.347,
+        "data": {
+          "data": {
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "id": 77
+          }
+        }
+      },
+      {
+        "name": "FunctionCall",
+        "startMs": 87.732,
+        "durationMs": 2.344,
+        "data": {
+          "data": {
+            "columnNumber": 1540,
+            "frame": "3E84C7CD1873F2F96DADA3AF0F1753E4",
+            "functionName": "",
+            "isolate": "3015345419957026675",
+            "lineNumber": 1,
+            "sampleTraceId": 5658841200711774,
+            "scriptId": "55",
+            "url": "http://127.0.0.1:41911/assets/SolarSystem-CLeT_uzf.js"
+          }
+        }
+      }
+    ],
+    "durationsAreInclusive": true
+  }
+]

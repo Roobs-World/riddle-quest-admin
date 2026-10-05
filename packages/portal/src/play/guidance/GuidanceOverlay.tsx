@@ -14,6 +14,7 @@ import {
 } from "./guidanceConfig";
 import {OnboardingOverlay} from "./OnboardingOverlay";
 import {TooltipOverlay} from "./TooltipOverlay";
+import {completionPresentationKey} from "../completionPresentation";
 import {GuidanceSeenMarkers} from "./GuidanceSeenMarkers";
 import {
   completePlayerOnboarding,
@@ -73,6 +74,10 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   /** Provides guidance active behavior. */
   const guidanceActive = !suspended && (onboardingStep !== null || Boolean(activeTooltip));
 
+  /** Explicit dismissal captures committed winning context before fast successor delivery clears it. */
+  const committedStateRef = useRef(state);
+  useLayoutEffect(() => {committedStateRef.current = state;}, [state]);
+
   useEffect(() => {
     if (modal === "victory" && (state.lastRewards?.newlyUnlockedAchievementIds.length ?? 0) > 0) {
       seenMarkers.markSeen("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId));
@@ -89,15 +94,31 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
           outcomeKey?: unknown;
         }>
       ).detail?.outcomeKey;
-      if (typeof key !== "string") return;
+      /** Only the currently displayed account's winning outcome may release its guidance. */
+      const current = committedStateRef.current;
+      if (typeof key !== "string" || current.lastOutcome?.kind !== "win" ||
+        completionPresentationKey(current.lastOutcome) !== key) return;
       // A reward may arrive after the player leaves the fanfare. Do not let its
       // achievement guidance interrupt the next riddle.
       seenMarkers.markSeen("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId));
       setCompletionPopupsPending(key);
+      // A ready successor can arrive in the same render as dismissal. Preserve the
+      // winning milestone explicitly instead of relying on an intermediate board.
+      if (onboardingStep !== null || sequence.length > 0 ||
+        !hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) ||
+        !seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId))) return;
+      /** Dismissal makes the winning context eligible without changing its saved progress. */
+      const candidate = getContextualTooltipCandidates(current, null, economyAvailable).find(({id, when}) =>
+        when && !seenMarkers.hasSeen("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)));
+      if (candidate) {
+        setSequence([candidate.id]);
+        setSequenceName(`contextual:${candidate.id}`);
+        setSequenceIndex(0);
+      }
     };
     window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
     return () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
-  }, [seenMarkers, userId]);
+  }, [economyAvailable, onboardingStep, seenMarkers, sequence.length, userId]);
 
   useEffect(() => {
     if (sequenceName !== "profileTour" || modal === "profile") return;

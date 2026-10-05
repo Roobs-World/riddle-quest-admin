@@ -1,0 +1,1255 @@
+{
+  "mode": "production",
+  "checks": 498,
+  "samples": 30,
+  "failures": [
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 568,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 390,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "idle",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "countdown",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "racing",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "waiting",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "visible",
+      "scenario": "deadline",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "idle",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "countdown",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "racing",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "waiting",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "initial visibility selects exactly one interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "hidden journey has one bounded housekeeping interval",
+      "actual": [
+        50
+      ],
+      "expected": [
+        1000
+      ]
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "hidden journey avoids animation-frequency wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "mode": "production",
+      "width": 1280,
+      "height": 844,
+      "initial": "hidden",
+      "scenario": "deadline",
+      "name": "repeated visible events keep exactly one replacement interval",
+      "actual": 1,
+      "expected": 2
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Hidden race scheduling stays bounded without losing visible recovery
+
+105 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-hidden-scheduling-browser.mjs:86:288 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 105,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

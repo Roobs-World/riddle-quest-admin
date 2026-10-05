@@ -1,0 +1,1246 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "newer canonical profile becomes visible",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "missing",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "newer canonical profile becomes visible",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "missing",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "explicit-newer",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "current race refresh still applies one valid profile",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "current",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "superseded result cannot clear the current profile while the newest read is pending",
+    "actual": "300",
+    "expected": "300"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "pending-newer",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "newer canonical profile becomes visible",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true,
+      true
+    ],
+    "expected": [
+      true,
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "current race refresh still applies one valid profile",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "race-reordered",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "failed-newer",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "missing",
+    "expected": "300"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "failed-newer",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "failed-newer",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "failed-newer",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "failed-newer",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "failed-newer",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "failed-newer",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "retired",
+    "name": "retired host keeps its surface removed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "retired",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "retired",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      false
+    ],
+    "expected": [
+      false
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "retired",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "retired",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 275,
+    "scenario": "retired",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "newer canonical profile becomes visible",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "missing",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "superseded",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "newer canonical profile becomes visible",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "missing",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "explicit-newer",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "current race refresh still applies one valid profile",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "current",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "superseded result cannot clear the current profile while the newest read is pending",
+    "actual": "300",
+    "expected": "300"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "pending-newer",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "newer canonical profile becomes visible",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true,
+      true
+    ],
+    "expected": [
+      true,
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "current race refresh still applies one valid profile",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "race-reordered",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "failed-newer",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "missing",
+    "expected": "300"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "failed-newer",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "failed-newer",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "failed-newer",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "failed-newer",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "failed-newer",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "failed-newer",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "retired",
+    "name": "retired host keeps its surface removed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "retired",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "retired",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      false
+    ],
+    "expected": [
+      false
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "retired",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "retired",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "reddit",
+    "balance": 777,
+    "scenario": "retired",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "newer canonical profile becomes visible",
+    "actual": "275",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "optional race refresh retains the latest available canonical profile",
+    "actual": "300",
+    "expected": "275"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "race follow-up never replaces a valid profile with null",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "current accounts retain follow-up ownership and retired accounts reject it",
+    "actual": [
+      true
+    ],
+    "expected": [
+      true
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "provider transport stays on its injected local seam",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "firebase",
+    "balance": 275,
+    "scenario": "superseded",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  }
+]

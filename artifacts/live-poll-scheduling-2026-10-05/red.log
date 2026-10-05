@@ -1,0 +1,31 @@
+{
+  "mode": "development",
+  "checks": 6,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live race polling scheduling
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-poll-scheduling-browser.mjs:52:228 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

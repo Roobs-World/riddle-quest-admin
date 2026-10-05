@@ -93,7 +93,8 @@ export function useGameMessageRouter({
           if (acceptRiddleResult && !acceptRiddleResult(message)) return;
           dispatch({type: "loadRiddle", riddle: message.payload.riddle,
             profile: message.requestId?.startsWith("skip-") ? undefined : message.payload.profile,
-            preserveNotice: message.requestId?.startsWith("reconcile-")});
+            preserveNotice: message.requestId?.startsWith("reconcile-"),
+            preserveUnchanged: !message.requestId?.startsWith("reconcile-")});
         },
         operationResult: async (message, isCurrent) => {
           if (onGuessResult?.(message)) return;

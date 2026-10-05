@@ -90,6 +90,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const deliveryFailures = useRef(0);
   /** Monotonic deadline prevents repeated requests during an outage. */
   const nextDeliveryAt = useRef(0);
+  /** Accepted state, connectivity and delivery completion can rearm one owned polling deadline. */
+  const pollSchedule = useRef<(() => void) | null>(null);
+  /** Signal adapters change cadence without restarting the mounted seat lifetime. */
+  const reschedulePoll = useCallback(() => {pollSchedule.current?.();}, []);
   /** Prevents updates after the mounted journey is retired. */
   const active = useRef(true);
   /** Retirement releases local waits for commands and superseded polls while their adapter receipts remain observed. */
@@ -137,12 +141,13 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     updateDraft(current => reconcileLiveRaceDraft(current, previous, next));
     viewRef.current = next;
     setView(next);
+    reschedulePoll();
     if (next.phase === "result" && !notified.current) {
       notified.current = true;
       completedCallback.current?.(next);
       window.dispatchEvent(new CustomEvent("riddle-quest:live-race-completed", {detail: {ownerId}}));
     }
-  }, [ownerId, updateDraft]);
+  }, [ownerId, updateDraft, reschedulePoll]);
   /** Sends one owned join, progress poll or idempotent player command. */
   const deliver = useCallback(async () => {
     /** Stable command selected before starting an asynchronous delivery. */
@@ -159,6 +164,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     refreshQueued.current = false;
     inFlight.current = delivery;
     latestDelivery.current = delivery;
+    reschedulePoll();
     if (command || !viewRef.current) setBusy(true);
     /** Accepts an owned receipt; late superseded deliveries cannot rewind gameplay. */
     const accept = (result: LiveRaceView) => {
@@ -220,43 +226,58 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       if (inFlight.current === delivery) {
         inFlight.current = null;
         if (active.current) {
+          reschedulePoll();
           setBusy(false);
           if ((reconcile || pending.current && pending.current !== command || refreshQueued.current && performance.now() >= nextDeliveryAt.current) && !closed.current) queueMicrotask(() => void deliver());
         }
       }
     }
-  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, updateDraft]);
+  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, updateDraft, reschedulePoll]);
   /** Signals never bypass delivery ownership or outage backoff. */
-  const refresh = useCallback(() => {refreshQueued.current = true; if (performance.now() >= nextDeliveryAt.current) void deliver();}, [deliver]);
+  const refresh = useCallback(() => {
+    refreshQueued.current = true;
+    if (performance.now() >= nextDeliveryAt.current) void deliver();
+    else reschedulePoll();
+  }, [deliver, reschedulePoll]);
   /** The platform owns the private authenticated listener. */
-  const pushConnected = useLiveRaceSignals(transport, view, refresh);
+  const pushConnected = useLiveRaceSignals(transport, view, refresh, reschedulePoll);
   useEffect(() => {
     active.current = true;
     void deliver();
     /** Periodic server observations also retry retained commands after their backoff. */
-    let timer: number;
+    let timer: number | undefined;
     /** A retired effect cannot reschedule after a reentrant transport removes its game. */
     let polling = true;
     /** One timer adapts to accepted state; the delivery lock prevents overlapping observations. */
     const schedulePoll = () => {
-      if (!polling || !active.current || closed.current || ["result", "cancelled"].includes(viewRef.current?.phase ?? "")) return;
+      if (timer !== undefined) window.clearTimeout(timer);
+      timer = undefined;
+      if (!polling || !active.current || closed.current || invitationUnavailableRef.current || inFlight.current || ["result", "cancelled"].includes(viewRef.current?.phase ?? "")) return;
+      /** Retained commands and queued recovery reads retry as soon as their outage backoff expires. */
+      const interval = pending.current || refreshQueued.current ? LIVE_RACE_POLL_TICK_MS :
+        liveRacePollInterval(viewRef.current, document.visibilityState !== "hidden", pushConnected.current);
+      /** Receipt time and outage backoff determine the next useful observation. */
+      const dueAt = Math.max(nextDeliveryAt.current, lastDeliveryAt.current + interval);
       timer = window.setTimeout(() => {
+        timer = undefined;
         if (!polling || !active.current || closed.current) return;
-        if (performance.now() >= nextDeliveryAt.current && performance.now() - lastDeliveryAt.current >=
-          liveRacePollInterval(viewRef.current, document.visibilityState !== "hidden", pushConnected.current)) void deliver();
+        if (performance.now() >= dueAt) void deliver();
         schedulePoll();
-      }, LIVE_RACE_POLL_TICK_MS);
+      }, Math.max(1, Math.ceil(dueAt - performance.now())));
     };
+    pollSchedule.current = schedulePoll;
     schedulePoll();
     /** Reconnect and foreground transitions promptly reconcile the original owned command. */
     const resume = () => {
-      if (document.visibilityState !== "hidden") {nextDeliveryAt.current = 0; void deliver();}
+      if (document.visibilityState !== "hidden") {nextDeliveryAt.current = 0; refresh();}
+      schedulePoll();
     };
     window.addEventListener("online", resume);
     document.addEventListener("visibilitychange", resume);
     dialogRef.current?.focus();
     return () => {
       polling = false;
+      if (pollSchedule.current === schedulePoll) pollSchedule.current = null;
       active.current = false;
       window.clearTimeout(timer);
       window.removeEventListener("online", resume);
@@ -272,7 +293,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
           void transport.update({ticketId: current.ticketId, action: "leave", requestId: leaveId.current}).catch(() => {});
       });
     };
-  }, [deliver]);
+  }, [deliver, refresh]);
   useEffect(() => {
     if (view?.phase !== "countdown" || view.startsAtMs === null) return;
     /** The lobby clock stops updating the gameplay owner as soon as racing begins. */
@@ -296,7 +317,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       if (sampledNow >= startsAtMs) {
         stop();
         // The authority releases the first prompt at zero; request it without a full poll delay.
-        if (!inFlight.current && performance.now() >= nextDeliveryAt.current) void deliver();
+        if (performance.now() >= nextDeliveryAt.current) refresh();
         return false;
       }
       return true;
@@ -318,7 +339,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       stop();
       document.removeEventListener("visibilitychange", refreshCountdown);
     };
-  }, [view?.phase, view?.startsAtMs, deliver]);
+  }, [view?.phase, view?.startsAtMs, refresh]);
   /** Leaves the owned seat and returns to the multiplayer intro. */
   const close = () => {
     if (closed.current || closeRequested.current) return;

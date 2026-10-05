@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/2f51b2bdc25bbff3776dfae7603b5e929f7ef84d64243cb46230d887729caed1/netflix.json",
+    "preserved": "artifacts/race-profile-refresh-null-2026-10-05/target-metadata/2f51b2bdc25bbff3776dfae7603b5e929f7ef84d64243cb46230d887729caed1/netflix.json",
+    "sha256": "6322c2945e6a8555f456db7e2b1e7233c3a3108086dabe18fcba03067fa4b260"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/16d21d20481ce895fa208dbae1c9d64f13f2f4b2c9b90465bdb0a249261788c6/reddit.json",
+    "preserved": "artifacts/race-profile-refresh-null-2026-10-05/target-metadata/16d21d20481ce895fa208dbae1c9d64f13f2f4b2c9b90465bdb0a249261788c6/reddit.json",
+    "sha256": "1d64eb85a764e87fbf7bfc51b80f7619766c9ebe690159915d73593161bf3a08"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/7aa63677f8899145c327686ee3f7fe833f68a03b063786bc5b988a3f88be4a73/jest.json",
+    "preserved": "artifacts/race-profile-refresh-null-2026-10-05/target-metadata/7aa63677f8899145c327686ee3f7fe833f68a03b063786bc5b988a3f88be4a73/jest.json",
+    "sha256": "6449a7232f51d3f9aa67cbf402d86b0fc88dfcd8ab1b9dbbae25f98dcd3d7ad2"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/7e545d881bb70c8b3e9fa2d284ac80d87181dd5cc4bcd4e05b65fbeebb93e331/yahoo.json",
+    "preserved": "artifacts/race-profile-refresh-null-2026-10-05/target-metadata/7e545d881bb70c8b3e9fa2d284ac80d87181dd5cc4bcd4e05b65fbeebb93e331/yahoo.json",
+    "sha256": "bb8c7ad2c01e5aeca3737947ea12090bc6ff76538a7ec8739a2bb5036e08b468"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/94bf11d56f248c0aa8f9eb981eefbc19e1c18b5e332ee40e956b9e5c87bffa76/youtube.json",
+    "preserved": "artifacts/race-profile-refresh-null-2026-10-05/target-metadata/94bf11d56f248c0aa8f9eb981eefbc19e1c18b5e332ee40e956b9e5c87bffa76/youtube.json",
+    "sha256": "96b9bb33d1da543514504ab11c617f10815871f1747d0d0a14665c665ea83e79"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/14eaa0719ffd284304bc1d167122ba25656947de343c637f7630f41b3c785e50/facebook.json",
+    "preserved": "artifacts/race-profile-refresh-null-2026-10-05/target-metadata/14eaa0719ffd284304bc1d167122ba25656947de343c637f7630f41b3c785e50/facebook.json",
+    "sha256": "efac87561608795929e2d82c485e1ec8803a3a558e70b35968c3571a112676ad"
+  }
+]

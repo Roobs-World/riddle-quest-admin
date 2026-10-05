@@ -1,0 +1,58 @@
+import {describe, expect, it} from "@jest/globals";
+import {createFakeHostServices} from "../fakeServices";
+import {createHostedPlaySession} from "../HostedPlaySession";
+
+describe("hosted-play session assembly", () => {
+  it("concentrates target defaults behind one session interface", () => {
+    /** Provides session behavior. */
+    const session = createHostedPlaySession({hostServices: createFakeHostServices()});
+
+    expect(session.initialGameMode).toBe("classic");
+    expect(session.externalInteractionBlocked).toBe(false);
+    expect(session.raceLocalePolicy).toBe("english-only");
+    expect(session.authority.gameplay).toBeDefined();
+    expect(session.authority.leaderboard).toBeDefined();
+    expect(session.authority.commerce).toBeUndefined();
+  });
+
+  it("exposes target-owned backend race authority independently of provider capabilities", () => {
+    /** Provides session behavior. */
+    const session = createHostedPlaySession({hostServices: createFakeHostServices(), raceAvailable: true});
+
+    expect(session.authority.race).toBeDefined();
+    expect(session.platformCapabilities).toBeUndefined();
+  });
+});
+
+it("rechecks the current target gate before prepared questions can be consumed", () => {
+  /** Cross-tab retirement changes admission without rebuilding the host session. */
+  let open = true;
+  /** Stable gate preserves normal authority coordination and synchronous revocation. */
+  const gate = {isOpen: () => open, run: async <T>(operation: () => Promise<T>) => operation(),
+    runExclusive: async (operation: () => Promise<void>) => operation()};
+  /** Target session exposes only its own gate's current admission. */
+  const session = createHostedPlaySession({hostServices: createFakeHostServices(), accountDeletionServiceGate: gate});
+  expect(session.canUsePreparedQuestions?.()).toBe(true); open = false;
+  expect(session.canUsePreparedQuestions?.()).toBe(false);
+});
+it("disables prepared consumption when a target gate has no synchronous admission contract", () => {
+  /** Unknown admission cannot be bypassed using a previously issued local question. */
+  const gate = {run: async <T>(operation: () => Promise<T>) => operation(),
+    runExclusive: async (operation: () => Promise<void>) => operation()};
+  /** Ordinary calls remain coordinated, while the optional optimization stays disabled. */
+  const session = createHostedPlaySession({hostServices: createFakeHostServices(), accountDeletionServiceGate: gate});
+  expect(session.canUsePreparedQuestions?.()).toBe(false);
+});
+it("preserves gameplay and admission identity while applying the latest commerce callback", async () => {
+  /** Catalog saves and checkout callbacks can change without replacing the content provider. */
+  const hostServices = createFakeHostServices();
+  /** First target checkout belongs to the first commerce presentation. */
+  const first = createHostedPlaySession({hostServices, platformPurchase: async productId => ({success: false, productId})});
+  /** A refreshed callback must be used for purchases while prepared gameplay remains owned. */
+  const second = createHostedPlaySession({hostServices, platformPurchase: async productId => ({success: true, productId})});
+  expect(second.authority.gameplay).toBe(first.authority.gameplay);
+  expect(second.authority.identity).toBe(first.authority.identity);
+  expect(second.canUsePreparedQuestions).toBe(first.canUsePreparedQuestions);
+  expect(await first.authority.commerce!.requestPurchase("coins")).toMatchObject({success: false});
+  expect(await second.authority.commerce!.requestPurchase("coins")).toMatchObject({success: true});
+});

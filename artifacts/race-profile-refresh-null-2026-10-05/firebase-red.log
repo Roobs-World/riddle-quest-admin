@@ -1,0 +1,42 @@
+{
+  "mode": "development",
+  "checks": 16,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "firebase",
+      "balance": 275,
+      "name": "superseded race refresh retains the newer profile",
+      "actual": "300",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "firebase",
+      "balance": 777,
+      "name": "superseded race refresh retains the newer profile",
+      "actual": "300",
+      "expected": "777"
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Superseded race profile refresh retains current canonical profile
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-profile-refresh-null-browser.mjs:68:186 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

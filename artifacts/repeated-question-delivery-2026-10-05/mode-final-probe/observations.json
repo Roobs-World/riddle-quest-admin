@@ -1,0 +1,82 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "unchanged Classic delivery corrects the temporary Daily mode",
+    "actual": "Classic",
+    "expected": "Classic"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  }
+]

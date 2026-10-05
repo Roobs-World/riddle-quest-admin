@@ -1,0 +1,48 @@
+[
+  {
+    "scenario": "late-success",
+    "before": "C",
+    "after": "C",
+    "delivered": [
+      {
+        "token": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+        "id": "load-order-3",
+        "token": "00000000-0000-4000-8000-000000000003"
+      }
+    ],
+    "alerts": 0,
+    "reads": [
+      {
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      },
+      {
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 2
+      },
+      {
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 3
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "obsolete-reconcile-failure",
+    "before": "CL",
+    "after": "CL",
+    "deliveredBefore": 3,
+    "deliveredAfter": 3,
+    "readsBefore": 5,
+    "readsAfter": 5,
+    "alerts": 0,
+    "errors": [],
+    "unhandled": []
+  }
+]

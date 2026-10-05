@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.977678ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.337288ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.185811ms)
+✔ rejects imports between different target owners (1.432063ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.602171ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.16104ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (0.998372ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.726357ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.156491ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.665241ms)
+✔ aggregates violations in deterministic file and source order (0.825013ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.979985
+Web Target boundary audit passed (316 files, 1372 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-en-BXWcb_S7.js   87.86 kB │ gzip: 47.70 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-pt-C-Mz8yFU.js   90.15 kB │ gzip: 48.92 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-nl-DDVLqYj1.js   90.54 kB │ gzip: 49.19 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-id-O66itIbM.js   91.21 kB │ gzip: 49.51 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-it-CjRvN7t2.js   91.35 kB │ gzip: 49.58 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-es-8PRu8DaK.js   91.65 kB │ gzip: 49.75 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-de-CHLjZL9o.js   92.15 kB │ gzip: 49.99 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-tr-CMrLQhpm.js   92.54 kB │ gzip: 50.26 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-pl-Q2RMo6Sh.js   92.70 kB │ gzip: 50.32 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-fr-BM3kDEIe.js   93.56 kB │ gzip: 50.79 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-ja-0Y05QzLf.js   94.66 kB │ gzip: 51.38 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-vi-CsKHBh0M.js   96.78 kB │ gzip: 52.54 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-ko-ClqEzjKK.js   97.36 kB │ gzip: 52.85 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-ar-BjpzUhTq.js  102.12 kB │ gzip: 55.45 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/index-CorA6Gh1.js             105.36 kB │ gzip: 35.24 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-ru-D2mgoMqi.js  114.09 kB │ gzip: 61.91 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/playable-pack-hi-CeTHwwYj.js  134.49 kB │ gzip: 72.95 kB
+../../../../../../tmp/riddle-race-hidden-builds-x4ttwjan/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.02s
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

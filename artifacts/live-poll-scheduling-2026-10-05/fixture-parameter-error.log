@@ -1,0 +1,13 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.evaluate: ReferenceError: before is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:31)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-poll-scheduling-browser.mjs:44:124 {
+  log: []
+}
+
+Node.js v24.17.0

@@ -77,6 +77,31 @@ const withProfileCoins = (profile: BridgeProfile | null, coins?: number): Bridge
 const preservePendingCoins = (state: GameSessionState, profile: BridgeProfile | null): BridgeProfile | null =>
   state.pendingCoinSpend ? withProfileCoins(profile, state.profile?.coins) : profile;
 
+/** Compares issued content and authority state without depending on transferred object or key order. */
+const sameIssuedRiddle = (first: BridgeRiddle | null, second: BridgeRiddle): boolean => {
+  if (!first) return false;
+  if (first === second) return true;
+  if (first.sessionToken !== second.sessionToken || first.riddleId !== second.riddleId ||
+    first.gameMode !== second.gameMode || first.index !== second.index || first.text !== second.text ||
+    first.answerLength !== second.answerLength || first.attemptsUsed !== second.attemptsUsed ||
+    first.hasUsedContinue !== second.hasUsedContinue || first.awaitingContinue !== second.awaitingContinue ||
+    first.evaluation?.answer !== second.evaluation?.answer || first.evaluation?.locale !== second.evaluation?.locale) return false;
+  /** Missing and empty hint/history lists carry the same authority state. */
+  const hints = first.revealedHints ?? [];
+  /** Transferred hint locks must still have identical positions and letters. */
+  const nextHints = second.revealedHints ?? [];
+  if (hints.length !== nextHints.length || hints.some(hint =>
+    !nextHints.some(next => hint.index === next.index && hint.letter === next.letter))) return false;
+  /** Complete accepted feedback must match before a current draft can survive a refresh. */
+  const history = first.acceptedGuesses ?? [];
+  /** Fresh accepted attempts still require the normal authoritative rebuild. */
+  const nextHistory = second.acceptedGuesses ?? [];
+  return history.length === nextHistory.length && history.every((row, index) =>
+    row.attempt === nextHistory[index].attempt && row.feedback.length === nextHistory[index].feedback.length &&
+    row.feedback.every((cell, position) => cell.letter === nextHistory[index].feedback[position].letter &&
+      cell.status === nextHistory[index].feedback[position].status));
+};
+
 /** Account-owned guesses, rewards and session tokens cannot migrate through an identity notification. */
 const resetAccountProgress = (state: GameSessionState): GameSessionState => ({
   ...createInitialGameSession(),
@@ -187,6 +212,14 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       // Background or late host loads must not replace a completed question before
       // the player has dismissed its victory and achievement sequence.
       if (state.modal === "victory" && state.lastOutcome?.kind === "win") return state;
+      if (action.preserveUnchanged && sameIssuedRiddle(state.riddle, action.riddle)) {
+        /** Profile refreshes still apply without briefly clearing the board and restoring a checkpoint. */
+        const profile = action.profile === undefined ? state.profile : preservePendingCoins(state, action.profile);
+        /** Successful ordinary reloads retain the existing notice policy. */
+        const notice = action.preserveNotice ? state.notice : null;
+        return profile === state.profile && notice === state.notice && state.gameMode === action.riddle.gameMode
+          ? state : {...state, gameMode: action.riddle.gameMode, profile, notice};
+      }
       /** Host-accepted terminal progress survives absent, stale or unrelated provider checkpoints. */
       const confirmedOutcome = getConfirmedRiddleOutcome(action.riddle);
       /** Provides snapshot behavior. */

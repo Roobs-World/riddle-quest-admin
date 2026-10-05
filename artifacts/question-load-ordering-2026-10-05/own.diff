@@ -1,0 +1,356 @@
+--- a/packages/portal/src/play/useHostRiddleLifecycle.ts
++++ b/packages/portal/src/play/useHostRiddleLifecycle.ts
+@@ -105,6 +105,8 @@
+   const loadedRef = useRef(false);
+   /** Shared uncorrelated automatic load, when present. */
+   const loadInFlightRef = useRef<Promise<boolean> | null>(null);
++  /** Only the latest visible load may publish content or start failure recovery. */
++  const deliveryRef = useRef<AbortController | null>(null);
+   /** Generation that rejects stale async load results. */
+   const contextVersionRef = useRef(0);
+   /** Retires bounded content waits immediately when identity, locale, or host lifetime changes. */
+@@ -214,14 +216,24 @@
+         }
+       }
+       if (input.classicIndex !== undefined) classicIndexRef.current = input.classicIndex;
+-      // Recovery calls may share one request. Correlated game requests must run
+-      // independently so every requestId receives its own response.
++      // Automatic recovery shares the active request. Correlated reads remain
++      // independent, but a newer visible request retires the older delivery wait.
+       if (!requestId && loadInFlightRef.current) return loadInFlightRef.current;
+       /** Context generation captured before asynchronous work. */
+       const contextVersion = contextVersionRef.current;
+       /** The admitting context owns both the first load and any completed-Daily fallback. */
+       const contextSignal = contextAbortRef.current!.signal;
+       if (contextSignal.aborted) return false;
++      /** Supersession releases loading activity without cancelling admitted provider work. */
++      const delivery = new AbortController();
++      deliveryRef.current?.abort();
++      deliveryRef.current = delivery;
++      /** Account retirement and request supersession both retire this bounded wait. */
++      const retireDelivery = () => delivery.abort();
++      contextSignal.addEventListener("abort", retireDelivery, {once: true});
++      /** Obsolete successes and failures cannot mutate the latest board's host state. */
++      const ownsDelivery = () => contextVersion === contextVersionRef.current &&
++        deliveryRef.current === delivery && !delivery.signal.aborted;
+       /** Complete pending load outcome. */
+       const pending = (async () => {
+         try {
+@@ -243,9 +255,9 @@
+             !input.authoritative && !input.sessionToken && !input.riddleId ? prepared.riddle : null;
+           /** Prepared local content needs no further provider operation or lock acquisition. */
+           const riddle = ready ?? (loadedRef.current && !input.authoritative
+-            ? await riddleLoadDeadline(services.loadRiddle(input), contextSignal)
+-            : await withActivity(() => riddleLoadDeadline(services.loadRiddle(input), contextSignal)));
+-          if (contextVersion !== contextVersionRef.current) return false;
++            ? await riddleLoadDeadline(services.loadRiddle(input), delivery.signal)
++            : await withActivity(() => riddleLoadDeadline(services.loadRiddle(input), delivery.signal)));
++          if (!ownsDelivery()) return false;
+           loadedRef.current = true;
+           deliveredRiddleRef.current = riddle;
+           deliveredScopeRef.current = preparationScope;
+@@ -267,7 +279,7 @@
+           return true;
+         } catch (error) {
+           // A speculative Skip load is optional; the accepted Skip response will load its successor.
+-          if (contextVersion !== contextVersionRef.current || requestId?.startsWith("skip-preview-")) return false;
++          if (!ownsDelivery() || requestId?.startsWith("skip-preview-")) return false;
+           loadedRef.current = false;
+           /** Server-confirmed completion is an expected routing outcome. */
+           const dailyCompleted = input.gameMode === "challenge" && typeof error === "object" &&
+@@ -284,8 +296,8 @@
+               /** Canonical next question supplied by the current authority-owned content state. */
+               const riddle = await withActivity(() => riddleLoadDeadline(services.loadRiddle({
+                 gameMode: "classic", locale: input.locale, classicIndex: classicIndexRef.current,
+-              }), contextSignal));
+-              if (contextVersion !== contextVersionRef.current) return false;
++              }), delivery.signal));
++              if (!ownsDelivery()) return false;
+               loadedRef.current = true;
+               deliveredRiddleRef.current = riddle;
+               deliveredScopeRef.current = preparationScope;
+@@ -301,7 +313,7 @@
+               onPlayable?.();
+               return true;
+             } catch (fallbackError) {
+-              if (contextVersion !== contextVersionRef.current) return false;
++              if (!ownsDelivery()) return false;
+               captureBrowserException(fallbackError, {component: "play_host", operation: "loadRiddle"});
+               /** Safe failure text returned through the original correlated load request. */
+               const fallbackMessage = getHostErrorMessage(fallbackError);
+@@ -320,6 +332,8 @@
+       })();
+       loadInFlightRef.current = pending;
+       return pending.finally(() => {
++        contextSignal.removeEventListener("abort", retireDelivery);
++        if (deliveryRef.current === delivery) deliveryRef.current = null;
+         if (loadInFlightRef.current === pending) loadInFlightRef.current = null;
+       });
+     },
+--- a/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
++++ b/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
+@@ -1,5 +1,5 @@
+ import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
+-import type {BridgeRiddle} from "@qwordly/core/bridge";
++import type {BridgeRiddle, HostToGameMessage} from "@qwordly/core/bridge";
+ import type {HostServices} from "../types";
+ 
+ /** Effects are committed after each simulated render, preserving hook ref ownership. */
+@@ -45,7 +45,7 @@
+ /** Creates one lifecycle around stable injected delivery callbacks. */
+ const setup = (loadRiddle: HostServices["loadRiddle"]) => {
+   /** Records accepted riddle messages after authority work settles. */
+-  const postToGame = jest.fn();
++  const postToGame = jest.fn<(message: HostToGameMessage) => void>();
+   /** Records correlated operation acknowledgements. */
+   const postOperation = jest.fn();
+   /** Resynchronizes the frame only before actual recovery work. */
+@@ -227,3 +227,150 @@
+   await jest.advanceTimersByTimeAsync(250);
+   expect(load).toHaveBeenLastCalledWith({gameMode: "classic", locale: "en", classicIndex: 2});
+ });
++
++it("keeps the newer question's draft when an older correlated load resolves last", async () => {
++  /** Real bridge validation and the actual game reducer reproduce the board replacement seam. */
++  const {createGameMessageRouter} = await import("../bridgeRouter");
++  /** Typed letters belong to the question actually delivered through the bridge. */
++  const {createInitialGameSession, gameSessionReducer} = await import("../gameSession");
++  /** Earlier network read completes only after a newer read becomes playable. */
++  const held = deferred<BridgeRiddle>();
++  /** Newer question has its own authority-issued session identity. */
++  const newer = {...riddle, attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false, index: 3, sessionToken: "00000000-0000-4000-8000-000000000003"};
++  /** Independent correlated calls reach the adapter concurrently. */
++  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(held.promise).mockResolvedValue(newer);
++  /** Mounted lifecycle owns both content requests. */
++  const owner = setup(load);
++  /** Exact board state delivered through the production bridge router. */
++  let board = createInitialGameSession();
++  /** Every parsed delivery can be awaited before simulating native game actions. */
++  const deliveries: Promise<unknown>[] = [];
++  /** Production validation applies the same load action as the game message hook. */
++  const router = createGameMessageRouter({init: jest.fn(), authState: jest.fn(), operationResult: jest.fn(),
++    pause: jest.fn(), resume: jest.fn(), riddleLoaded: message => {
++      board = gameSessionReducer(board, {type: "loadRiddle", riddle: message.payload.riddle});
++    }});
++  owner.options.postToGame.mockImplementation(message => {
++    if (message.type === "host:riddleLoaded") deliveries.push(router({...message, payload: {riddle: message.payload.riddle}}));
++  });
++  /** The first correlated request remains in flight when the second is admitted. */
++  const olderLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 2}, "older-load");
++  expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 3}, "newer-load")).toBe(true);
++  await Promise.all(deliveries);
++  board = gameSessionReducer(board, {type: "typeLetter", letter: "C"});
++  expect(board.currentLetters[0]).toBe("C");
++  held.resolve({...riddle, attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false});
++  /** Superseded delivery returns a retired outcome without rebuilding the board. */
++  const olderAccepted = await olderLoad;
++  await Promise.all(deliveries);
++  expect(board.riddle?.sessionToken).toBe(newer.sessionToken);
++  expect(board.currentLetters[0]).toBe("C");
++  expect(olderAccepted).toBe(false);
++  expect(owner.postToGame).toHaveBeenCalledTimes(1);
++  expect(owner.postOperation).toHaveBeenCalledTimes(1);
++  expect(load).toHaveBeenCalledTimes(2);
++});
++
++it("releases obsolete startup activity before its provider settles and ignores its late failure", async () => {
++  /** Old transport remains admitted but must relinquish its loading overlay immediately. */
++  let reject!: (reason: Error) => void;
++  /** Independent transport result deliberately outlives the delivery wait. */
++  const older = new Promise<BridgeRiddle>((_resolve, fail) => {reject = fail;});
++  /** Current transport remains held until the test explicitly makes it playable. */
++  const newer = deferred<BridgeRiddle>();
++  /** Latest request must keep its own activity after the old request retires. */
++  const owner = setup(jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(older).mockReturnValueOnce(newer.promise));
++  /** Supersession should finish this delivery before the transport rejects. */
++  const oldLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "older-load");
++  /** New load independently owns the remaining startup activity. */
++  const newLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "newer-load");
++  expect(await oldLoad).toBe(false);
++  expect(owner.activity).toBe(1);
++  newer.resolve(riddle);
++  expect(await newLoad).toBe(true);
++  expect(owner.activity).toBe(0);
++  reject(new Error("Obsolete transport failed"));
++  await jest.advanceTimersByTimeAsync(1000);
++  expect(owner.postToGame).toHaveBeenCalledTimes(1);
++  expect(owner.postOperation).toHaveBeenCalledTimes(1);
++  expect(owner.options.setNotice).toHaveBeenLastCalledWith(null);
++  expect(owner.onRecoveryAttempt).not.toHaveBeenCalled();
++});
++
++it("keeps the newest failure retryable instead of reviving an older success", async () => {
++  /** Obsolete authority read can still resolve after the latest request fails. */
++  const old = deferred<BridgeRiddle>();
++  /** Only failure of the newest delivery should schedule recovery. */
++  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(old.promise)
++    .mockRejectedValueOnce(new Error("Latest question unavailable")).mockResolvedValue(riddle);
++  /** Mounted lifecycle schedules recovery for the current failure. */
++  const owner = setup(load);
++  /** Earlier request retires as soon as the newer request is admitted. */
++  const oldLoad = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 2}, "older-load");
++  expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 3}, "newer-load")).toBe(false);
++  old.resolve(riddle); expect(await oldLoad).toBe(false);
++  expect(owner.postToGame).not.toHaveBeenCalled();
++  expect(owner.postOperation).toHaveBeenCalledTimes(1);
++  expect(owner.postOperation.mock.calls[0]).toEqual(["newer-load", "loadRiddle", false, undefined, expect.stringContaining("Latest question unavailable")]);
++  await jest.advanceTimersByTimeAsync(250);
++  expect(owner.postToGame).toHaveBeenCalledTimes(1);
++  expect(load.mock.calls[2][0].classicIndex).toBe(3);
++  expect(owner.onRecoveryAttempt).toHaveBeenCalledTimes(1);
++});
++
++it.each(["before-daily-result", "during-classic-fallback"])("retires an obsolete Daily transition %s", async phase => {
++  /** Daily and its fallback both have controllable result boundaries. */
++  let completeDaily!: (reason: Error) => void;
++  /** Daily completion is expected routing, but only for the latest request. */
++  const daily = new Promise<BridgeRiddle>((_resolve, reject) => {completeDaily = reject;});
++  /** Classic fallback may already have reached the provider when superseded. */
++  const fallback = deferred<BridgeRiddle>();
++  /** Daily completion error carries the same authoritative routing code as production. */
++  const completed = Object.assign(new Error("Daily completed"), {code: "daily-completed"});
++  /** Latest explicit Classic request succeeds independently of the old Daily routing work. */
++  const load = jest.fn<HostServices["loadRiddle"]>(input => input.gameMode === "challenge" ? daily
++    : input.classicIndex === 9 ? Promise.resolve({...riddle, index: 9}) : fallback.promise);
++  /** Mounted host owns the complete Daily-to-Classic asynchronous chain. */
++  const owner = setup(load);
++  /** Original Daily request remains pending at the selected transition boundary. */
++  const oldLoad = owner.lifecycle.loadRiddle({gameMode: "challenge", locale: "en"}, "daily-old");
++  if (phase === "during-classic-fallback") {
++    completeDaily(completed); await jest.advanceTimersByTimeAsync(0);
++    expect(load).toHaveBeenCalledTimes(2);
++  }
++  expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 9}, "classic-current")).toBe(true);
++  completeDaily(completed); fallback.resolve(riddle);
++  expect(await oldLoad).toBe(false);
++  await jest.advanceTimersByTimeAsync(1000);
++  expect(owner.postToGame).toHaveBeenCalledTimes(1);
++  expect(owner.postToGame.mock.calls[0][0]).toMatchObject({requestId: "classic-current", payload: {riddle: {index: 9}}});
++  expect(load).toHaveBeenCalledTimes(phase === "during-classic-fallback" ? 3 : 2);
++  expect(owner.postOperation).toHaveBeenCalledTimes(1);
++  expect(owner.activity).toBe(0);
++});
++
++it("shares one automatic read without letting its cleanup retire a newer correlated read", async () => {
++  /** Automatic startup requests coalesce around one provider operation. */
++  const automatic = deferred<BridgeRiddle>();
++  /** Correlated successor retains ownership when the shared old promise settles. */
++  const correlated = deferred<BridgeRiddle>();
++  /** Only two physical reads should be admitted for three caller requests. */
++  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(automatic.promise).mockReturnValueOnce(correlated.promise);
++  /** Mounted host preserves automatic deduplication while serializing delivery ownership. */
++  const owner = setup(load);
++  /** First automatic read is shared by the second automatic caller. */
++  const first = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"});
++  /** Additional ready/recovery signals cannot supersede their own shared load. */
++  const shared = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"});
++  expect(load).toHaveBeenCalledTimes(1);
++  /** Correlated request genuinely supersedes the earlier automatic load. */
++  const current = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "current");
++  expect(await first).toBe(false); expect(await shared).toBe(false);
++  expect(owner.activity).toBe(1);
++  automatic.resolve(riddle);
++  correlated.resolve({...riddle, index: 3});
++  expect(await current).toBe(true);
++  expect(load).toHaveBeenCalledTimes(2);
++  expect(owner.postToGame).toHaveBeenCalledTimes(1);
++  expect(owner.postToGame.mock.calls[0][0]).toMatchObject({requestId: "current", payload: {riddle: {index: 3}}});
++});
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -189,7 +189,8 @@
+     "test:live-signal-watchdog:browser": "node scripts/verify-live-signal-watchdog-browser.mjs && LIVE_WATCHDOG_REACT_MODE=production node scripts/verify-live-signal-watchdog-browser.mjs",
+     "test:centered-tooltip-work:browser": "node scripts/verify-centered-tooltip-work-browser.mjs && CENTERED_TOOLTIP_REACT_MODE=production node scripts/verify-centered-tooltip-work-browser.mjs",
+     "test:classic-question-preparation:browser": "pnpm --dir ../core build && node scripts/verify-classic-question-preparation-browser.mjs && CLASSIC_PREPARATION_REACT_MODE=production node scripts/verify-classic-question-preparation-browser.mjs",
+-    "test:session-assembly-retention:browser": "node scripts/verify-session-assembly-retention-browser.mjs && SESSION_RETENTION_REACT_MODE=production node scripts/verify-session-assembly-retention-browser.mjs"
++    "test:session-assembly-retention:browser": "node scripts/verify-session-assembly-retention-browser.mjs && SESSION_RETENTION_REACT_MODE=production node scripts/verify-session-assembly-retention-browser.mjs",
++    "test:question-load-ordering:browser": "node scripts/verify-question-load-ordering-browser.mjs && QUESTION_ORDER_REACT_MODE=production node scripts/verify-question-load-ordering-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- /dev/null
++++ b/packages/portal/scripts/verify-question-load-ordering-browser.mjs
+@@ -0,0 +1,74 @@
++import assert from 'node:assert/strict';
++import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium} from '@playwright/test';
++
++const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const mode=process.env.QUESTION_ORDER_REACT_MODE??'development';
++assert.ok(['development','production'].includes(mode));
++const output=path.resolve(process.env.QUESTION_ORDER_REPORT_DIR??path.join(root,'../../artifacts/question-load-ordering-2026-10-05',mode));
++const baseline=process.env.QUESTION_ORDER_BASELINE_DIR;
++await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
++const scratch=await mkdtemp(path.join(root,'node_modules/.cache/question-order-'));
++let server,browser;const observations=[];
++try {
++ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
++ await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++ await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';
++import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/play/PlayHostApp.tsx'))};
++import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/play/HostedPlaySession.ts'))};
++import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/play/fakeServices.ts'))};
++import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
++import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
++import ${JSON.stringify(path.join(root,'src/styles.css'))};
++window.__RIDDLE_QUEST_BROWSER_TEST__=true;
++applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
++sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
++for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
++for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
++window.probe={outbound:[],inbound:[],reads:[],errors:[],unhandled:[]};
++window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
++window.addEventListener('riddle-quest:game-to-host',e=>window.probe.outbound.push(e.detail));window.addEventListener('riddle-quest:host-to-game',e=>window.probe.inbound.push(e.detail));
++const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),profile=await source.loadProfile('jest-guest');
++const held=new Map();window.release=(index,fail=false)=>{const entry=held.get(index);held.delete(index);if(fail)entry.reject(new Error('Obsolete fixture question failed'));else entry.resolve(index===2?next:{...next,index:3,riddleId:'classic-order-3',sessionToken:'00000000-0000-4000-8000-000000000003'});};
++window.request=(index,requestId='load-order-'+index)=>window.dispatchEvent(new CustomEvent('riddle-quest:game-to-host',{detail:{type:'game:loadRiddle',requestId,payload:{gameMode:'classic',locale:'en',classicIndex:index}}}));
++const services={...source,loadRiddle:input=>{window.probe.reads.push(input);if(input.classicIndex===2||input.classicIndex===3)return new Promise((resolve,reject)=>held.set(input.classicIndex,{resolve,reject}));return Promise.resolve(first);}};
++const session=createHostedPlaySession({hostServices:services,economyAvailable:false,raceAvailable:false,initialPlayerData:{schemaVersion:1,updatedAt:1,profile,activeGame:null}});
++const gameRoot=createRoot(document.querySelector('#root'));window.retire=()=>gameRoot.unmount();gameRoot.render(<React.StrictMode><PlayHostApp session={session}/></React.StrictMode>);
++window.pending=()=>[...held.keys()];
++`);
++ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'question-order-baseline',enforce:'pre',async load(id){if(baseline&&id.endsWith('/useHostRiddleLifecycle.ts'))return readFile(path.join(baseline,'lifecycle.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
++ server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('Content-Type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg','.webm':'audio/webm','.json':'application/json'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
++ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
++ if(process.env.QUESTION_ORDER_SERVE_ONLY==='1'){console.log(JSON.stringify({url:origin,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
++ else {
++ browser=await chromium.launch({headless:true});
++ for(const [width,height] of process.env.QUESTION_ORDER_QUICK==='1'?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const scenario of process.env.QUESTION_ORDER_SCENARIOS?.split(',')??['late-success','late-failure','retirement','success-before-newer','obsolete-reconcile','obsolete-preview']) {
++ const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),external=[];
++ await context.route('**/*',route=>{const url=new URL(route.request().url());if(url.origin===origin)return route.continue();external.push(url.origin);return route.abort();});
++ const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
++ await page.goto(origin);await page.getByRole('heading',{name:'What has keys but cannot open doors?',exact:true}).waitFor();
++ if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
++ await page.evaluate(scenario=>window.request(2,scenario==='obsolete-reconcile'?'reconcile-order-2':scenario==='obsolete-preview'?'skip-preview-order-2':'load-order-2'),scenario);await page.waitForFunction(()=>window.pending().includes(2));
++ await page.evaluate(()=>window.request(3));await page.waitForFunction(()=>window.pending().includes(3));
++ metric('independent correlated provider reads',await page.evaluate(()=>window.probe.reads.filter(x=>[2,3].includes(x.classicIndex)).map(x=>x.classicIndex)),[2,3]);
++ if(scenario==='success-before-newer'){await page.locator('.guess-row button:not([disabled])').first().click();await page.keyboard.type('p');await page.evaluate(()=>window.release(2));await page.waitForTimeout(50);metric('older success stays silent while newer request is pending',await page.locator('.guess-row').first().textContent(),'P');metric('older success cannot publish while newer request is pending',await page.evaluate(()=>window.probe.inbound.filter(x=>x.type==='host:riddleLoaded'&&x.requestId==='load-order-2').length),0);}
++ await page.evaluate(()=>window.release(3));await page.getByRole('heading',{name:'What has a face and hands but no arms?',exact:true}).waitFor();
++ await page.locator('.guess-row button:not([disabled])').first().click();await page.keyboard.type('c');
++ metric('latest authority-issued identity reaches the bridge',await page.evaluate(()=>window.probe.inbound.filter(x=>x.type==='host:riddleLoaded').at(-1)?.payload.riddle.sessionToken),'00000000-0000-4000-8000-000000000003');
++ const draft=await page.locator('.guess-row').first().textContent();metric('native input starts a draft',draft.includes('C'),true);
++ const delivered=await page.evaluate(()=>window.probe.inbound.filter(x=>x.type==='host:riddleLoaded').length);
++ if(scenario==='retirement')await page.evaluate(()=>window.retire());
++ if(scenario!=='success-before-newer')await page.evaluate(fail=>window.release(2,fail),scenario==='late-failure');await page.waitForTimeout(350);
++ metric('obsolete load cannot deliver another board',await page.evaluate(()=>window.probe.inbound.filter(x=>x.type==='host:riddleLoaded').length),delivered);
++ if(scenario==='retirement')metric('retired surface stays removed',await page.locator('.guess-board').count(),0);
++ else {metric('newer native draft survives obsolete load',await page.locator('.guess-row').first().textContent(),draft);metric('obsolete failure does not show recovery notice',await page.locator('.play-alert').count(),0);metric('obsolete failure cannot start recovery reads',await page.evaluate(()=>window.probe.reads.filter(x=>[2,3].includes(x.classicIndex)).length),2);}
++ metric('no browser errors',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejections',await page.evaluate(()=>window.probe.unhandled),[]);metric('no external provider traffic',external,[]);await context.close();
++ }
++ }
++} finally {await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});if(process.env.QUESTION_ORDER_SERVE_ONLY!=='1')await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2)+'\n');}
++const failures=observations.filter(row=>JSON.stringify(row.actual)!==JSON.stringify(row.expected));console.log(JSON.stringify({mode,checks:observations.length,failures},null,2));assert.equal(failures.length,0,'Question load ordering preserves the newer board and draft');

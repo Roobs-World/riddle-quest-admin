@@ -1,0 +1,6 @@
+{
+  "mode": "development",
+  "checks": 9,
+  "traces": 1,
+  "failures": []
+}

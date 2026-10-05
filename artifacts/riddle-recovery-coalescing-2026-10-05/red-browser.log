@@ -1,0 +1,45 @@
+{
+  "mode": "development",
+  "checks": 7,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "name": "held startup has only one recovery observer",
+      "actual": 21,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "name": "one shared failure retries on its first backoff",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "name": "recovery restores a playable question promptly",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Startup recovery coalesces signals and counts one shared failure once
+
+3 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-riddle-recovery-coalescing-browser.mjs:65:232 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

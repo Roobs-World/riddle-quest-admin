@@ -154,6 +154,9 @@ export function useHostRaceCoordination({
         /** Fresh profile after the server applies all rewards. */
         const profile = await identity.loadProfile(user.uid);
         if (!owned()) return accountOwned();
+        // Providers may return null when a newer read or account retirement supersedes this refresh.
+        // The current subscription retains its valid projection; the race follow-up stays account-owned.
+        if (profile === null) return accountOwned();
         replaceProfile(profile, user.uid);
         if (!owned()) return accountOwned();
         postToGame({

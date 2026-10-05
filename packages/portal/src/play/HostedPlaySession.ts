@@ -12,6 +12,8 @@ export type HostedPlaySession = Readonly<{
   services: HostServices;
   /** Stores authority. */
   authority: HostAuthorityModules;
+  /** Prepared local reads remain revoked while target account operations are closed. */
+  canUsePreparedQuestions?: () => boolean;
   /** Stores host configuration warning. */
   hostConfigurationWarning: string | null;
   /** Stores initial game mode. */
@@ -68,6 +70,8 @@ export type HostedPlaySessionInput = Omit<HostedPlaySession, "services" | "autho
 
 /** Describes session authority assembly. */
 type SessionAuthorityAssembly = Readonly<{
+  /** Stable target admission guard for previously issued local questions. */
+  canUsePreparedQuestions: () => boolean;
   /** Stores products. */
   products: ProductSummary[] | undefined;
   /** Stores purchase. */
@@ -86,24 +90,47 @@ type SessionAuthorityAssembly = Readonly<{
   authority: HostAuthorityModules;
 }>;
 
-/** Provides assembly cache behavior. */
-const assemblyCache = new WeakMap<HostServices, SessionAuthorityAssembly[]>();
+/** Retains only the current commerce/capability assembly for an active target provider. */
+const assemblyCache = new WeakMap<HostServices, SessionAuthorityAssembly>();
+
+/** Stable gameplay and admission owned by one provider and optional deletion gate. */
+type GameplayAuthorityAssembly = Readonly<{
+  /** Provider operations remain attached to this deletion lifetime. */
+  gate: AccountDeletionServiceGate | undefined;
+  /** Stable provider operations used by all non-commerce authority modules. */
+  services: HostServices;
+  /** Synchronous revocation is shared across ordinary commerce presentation updates. */
+  canUsePreparedQuestions: () => boolean;
+}>;
+
+/** Weak deletion lifetimes do not accumulate while a provider remains active. */
+const gameplayAssemblyCache = new WeakMap<HostServices, WeakMap<HostServices | AccountDeletionServiceGate, GameplayAuthorityAssembly>>();
+
+/** Keeps content preparation attached to its actual provider rather than transient commerce callbacks. */
+const assembleGameplay = (input: HostedPlaySessionInput) => {
+  /** The same target gate owns reads across profile saves and catalog refreshes. */
+  const gate = input.accountDeletionServiceGate;
+  /** Weak gate keys release retired lifetimes while an active caller still keeps its own gate alive. */
+  const entries = gameplayAssemblyCache.get(input.hostServices) ?? new WeakMap<HostServices | AccountDeletionServiceGate, GameplayAuthorityAssembly>();
+  /** An ungated target uses its provider as the stable weak key. */
+  const key = gate ?? input.hostServices;
+  /** A changed provider or gate still starts an independent content scope. */
+  const cached = entries.get(key);
+  if (cached) return cached;
+  /** Captures only the target and gate, never player progress or purchase closure state. */
+  const assembly: GameplayAuthorityAssembly = {gate, services: gate ? coordinateHostServices(input.hostServices, gate) : input.hostServices,
+    canUsePreparedQuestions: () => !gate || gate.isOpen?.() === true};
+  entries.set(key, assembly); gameplayAssemblyCache.set(input.hostServices, entries);
+  return assembly;
+};
 
 /** Provides assemble authority behavior. */
 const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssembly => {
-  /** Provides cached behavior. */
-  const cached = assemblyCache
-    .get(input.hostServices)
-    ?.find(
-      (entry) =>
-        entry.products === input.platformProducts &&
-        entry.purchase === input.platformPurchase &&
-        entry.gate === input.accountDeletionServiceGate &&
-        entry.capabilities === input.platformCapabilities &&
-        entry.economyAvailable === input.economyAvailable &&
-        entry.raceAvailable === input.raceAvailable,
-    );
-  if (cached) return cached;
+  /** Reuse the current assembly without keeping earlier checkout closures or catalogs alive. */
+  const cached = assemblyCache.get(input.hostServices);
+  if (cached && cached.products === input.platformProducts && cached.purchase === input.platformPurchase &&
+    cached.gate === input.accountDeletionServiceGate && cached.capabilities === input.platformCapabilities &&
+    cached.economyAvailable === input.economyAvailable && cached.raceAvailable === input.raceAvailable) return cached;
   /** Provides configured behavior. */
   const configured: HostServices = {
     ...input.hostServices,
@@ -114,8 +141,14 @@ const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssem
   const services = input.accountDeletionServiceGate
     ? coordinateHostServices(configured, input.accountDeletionServiceGate)
     : configured;
+  /** Stable gameplay does not retire a prepared question when only commerce presentation changes. */
+  const gameplay = assembleGameplay(input);
+  /** Current capability permissions remain target-owned while operations use their stable provider. */
+  const authority = createHostAuthorityModules(gameplay.services, input.platformCapabilities,
+    input.platformPurchase !== undefined, input.economyAvailable ?? true, input.raceAvailable);
   /** Provides assembly behavior. */
   const assembly = {
+    canUsePreparedQuestions: gameplay.canUsePreparedQuestions,
     products: input.platformProducts,
     purchase: input.platformPurchase,
     gate: input.accountDeletionServiceGate,
@@ -123,18 +156,12 @@ const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssem
     economyAvailable: input.economyAvailable,
     raceAvailable: input.raceAvailable,
     services,
-    authority: createHostAuthorityModules(
-      services,
-      input.platformCapabilities,
-      input.platformPurchase !== undefined,
-      input.economyAvailable ?? true,
-      input.raceAvailable,
-    ),
+    authority: {...authority, ...(authority.commerce ? {commerce: {
+      ...authority.commerce, products: services.products, requestPurchase: services.requestPurchase,
+    }} : {})},
   };
-  /** Provides entries behavior. */
-  const entries = assemblyCache.get(input.hostServices) ?? [];
-  entries.push(assembly);
-  assemblyCache.set(input.hostServices, entries);
+  // Existing callers retain their own assemblies; the cache needs only the latest one.
+  assemblyCache.set(input.hostServices, assembly);
   return assembly;
 };
 
@@ -143,11 +170,12 @@ export function createHostedPlaySession(
   input: Pick<HostedPlaySessionInput, "hostServices"> & Partial<Omit<HostedPlaySessionInput, "hostServices">>,
 ): HostedPlaySession {
   /** Provides {services, authority} behavior. */
-  const {services, authority} = assembleAuthority(input as HostedPlaySessionInput);
+  const {services, authority, canUsePreparedQuestions} = assembleAuthority(input as HostedPlaySessionInput);
   return {
     ...input,
     services,
     authority,
+    canUsePreparedQuestions,
     hostConfigurationWarning: input.hostConfigurationWarning ?? null,
     initialGameMode: input.initialGameMode ?? "classic",
     externalInteractionBlocked: input.externalInteractionBlocked ?? false,

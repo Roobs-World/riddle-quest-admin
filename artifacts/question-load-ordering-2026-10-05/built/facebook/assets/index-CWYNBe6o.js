@@ -1,0 +1,1 @@
+import{t as e}from"./facebook-CGx_Qdch.js";e();

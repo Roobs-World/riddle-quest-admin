@@ -1,0 +1,3236 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-poll",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-poll",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-poll",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-poll",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 300,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-36f6c4de-1ba8-409c-b18d-479c89cbcf29"
+        },
+        {
+          "owner": "Alice",
+          "at": 348.09999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-b4637efd-5a60-4653-adb6-e2039bc771f9"
+        }
+      ],
+      "releases": [
+        338.8999999910593
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-poll",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-poll",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-poll",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-poll",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-poll",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-poll",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-poll",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 356.09999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-b9af8345-8d4a-4484-81b7-2034c6642056"
+        },
+        {
+          "owner": "Alice",
+          "at": 406.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-c097520b-f046-4ce4-b427-ca8a2c978c86"
+        }
+      ],
+      "releases": [
+        398.79999999701977
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-poll",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-poll",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-poll",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "native guess advances once before read-only reconciliation",
+    "actual": "Riddles completed: 1 / 10",
+    "expected": "Riddles completed: 1 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "recovery does not replay a successful player command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 329.09999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "guess",
+          "requestId": "live-guess-ea59bfb9-ec94-4862-98d2-d2cb9eda7cbd",
+          "riddleId": "q0",
+          "guess": "piano"
+        },
+        {
+          "owner": "Alice",
+          "at": 370.59999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-264d47bd-6d0a-4e2e-8429-b47897f942e5"
+        }
+      ],
+      "releases": [
+        366.3999999910593
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online-command",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "native guess advances once before read-only reconciliation",
+    "actual": "Riddles completed: 1 / 10",
+    "expected": "Riddles completed: 1 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "recovery does not replay a successful player command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 452.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "guess",
+          "requestId": "live-guess-12f6df4d-b1ba-4a10-b9a5-d9de0cf5afdf",
+          "riddleId": "q0",
+          "guess": "piano"
+        },
+        {
+          "owner": "Alice",
+          "at": 509.59999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-3b223651-6828-4001-b88e-ecee1f807b43"
+        }
+      ],
+      "releases": [
+        502.5
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible-command",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "storm",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "storm",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "storm",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "storm",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 266.70000000298023,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-77a81257-225b-4320-8987-885cd40f6268"
+        },
+        {
+          "owner": "Alice",
+          "at": 320.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-86978151-58bd-42ad-ad52-880d1f4b816d"
+        }
+      ],
+      "releases": [
+        315
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "storm",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "storm",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "storm",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "name": "server start releases the first playable prompt promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 214.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-bced3b9a-7504-47c6-8866-2984d73ba449"
+        },
+        {
+          "owner": "Alice",
+          "at": 1051.8999999910593,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-aa15b349-d888-4ab4-90c0-2be2582a6cd9"
+        }
+      ],
+      "releases": [
+        1042.8999999910593
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "countdown",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "push",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "push",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "push",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "push",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 291.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-1689fefc-50f5-469e-a3d1-ba15c273e880"
+        },
+        {
+          "owner": "Alice",
+          "at": 331.40000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-5a99eaf2-a1ce-4945-9a15-850126e2568b"
+        }
+      ],
+      "releases": [
+        324.09999999403954
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "push",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "push",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "push",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 260.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-3771264e-0311-4b3a-97af-590eae670aaf"
+        }
+      ],
+      "releases": [
+        309.3999999910593
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "retired seat does not admit queued catch-up",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "retired seat retains one leave authority key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "retired UI remains removed or replaced",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 248,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-4c7067d5-cc89-49aa-ad7b-e5ec465954f2"
+        },
+        {
+          "owner": "Alice",
+          "at": 285.20000000298023,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-92c649ba-ca47-4ac2-b4c1-e59703cbdeee"
+        },
+        {
+          "owner": "Alice",
+          "at": 285.29999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-92c649ba-ca47-4ac2-b4c1-e59703cbdeee"
+        }
+      ],
+      "releases": [
+        285.1000000089407
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "retired seat does not admit queued catch-up",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "retired seat retains one leave authority key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "retired UI remains removed or replaced",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 244.90000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-007786cd-d8d1-4c63-b3ce-c1f37de258ab"
+        },
+        {
+          "owner": "Alice",
+          "at": 282.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-b316e13c-4b9d-43fb-9609-8d8a1b5f813a"
+        },
+        {
+          "owner": "Alice",
+          "at": 282.79999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-b316e13c-4b9d-43fb-9609-8d8a1b5f813a"
+        },
+        {
+          "owner": "Bob",
+          "at": 286.90000000596046,
+          "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "action": "poll",
+          "requestId": "live-poll-3837f58e-cc27-411b-9d3e-1b3e53eb2707"
+        }
+      ],
+      "releases": [
+        280.6000000089407
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "replace",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-online",
+    "name": "idle recovery admits one immediate read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-online",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-online",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-online",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-visible",
+    "name": "idle recovery admits one immediate read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-visible",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-visible",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "idle-visible",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "queued recovery retries after outage backoff and before the healthy watchdog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 294,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-f50bed7e-302a-4f89-bc5d-9bfd6d93e148"
+        },
+        {
+          "owner": "Alice",
+          "at": 2326.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-961272c6-b47c-4c0b-a853-2216e41a5ed2"
+        }
+      ],
+      "releases": [
+        325.59999999403954
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "name": "queued recovery retries after outage backoff and before the healthy watchdog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 241.40000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-9f7268f0-b109-4882-a530-0d068b3417c1"
+        },
+        {
+          "owner": "Alice",
+          "at": 2245.2999999970198,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-07ac5118-eda7-490d-b54e-9637d20a3ca6"
+        }
+      ],
+      "releases": [
+        244.29999999701977
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-delayed",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-poll",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 349.90000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-a55175f6-b9ca-4611-94a4-5749bb085195"
+        },
+        {
+          "owner": "Alice",
+          "at": 392.59999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-35caa98e-b42a-4ea9-baeb-e2e7e7900272"
+        }
+      ],
+      "releases": [
+        386.5
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-poll",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 248.20000000298023,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-e6140f10-4a8a-40b5-a9e3-e91640912c7a"
+        },
+        {
+          "owner": "Alice",
+          "at": 291.20000000298023,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-cf9c7b58-601c-4835-bf6c-e45f6789c789"
+        }
+      ],
+      "releases": [
+        282.3999999910593
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "native guess advances once before read-only reconciliation",
+    "actual": "Riddles completed: 1 / 10",
+    "expected": "Riddles completed: 1 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "recovery does not replay a successful player command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 286.69999998807907,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "guess",
+          "requestId": "live-guess-29cccf95-ff24-487e-90d9-2932a1faad48",
+          "riddleId": "q0",
+          "guess": "piano"
+        },
+        {
+          "owner": "Alice",
+          "at": 320.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-c335c02d-5dd7-489f-846a-54639bd6d257"
+        }
+      ],
+      "releases": [
+        316.19999998807907
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "native guess advances once before read-only reconciliation",
+    "actual": "Riddles completed: 1 / 10",
+    "expected": "Riddles completed: 1 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "recovery does not replay a successful player command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 338.6000000089407,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "guess",
+          "requestId": "live-guess-e6137fe3-b15d-43e9-ac6d-b0094d2a3a7f",
+          "riddleId": "q0",
+          "guess": "piano"
+        },
+        {
+          "owner": "Alice",
+          "at": 406.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-5b87fcd7-afac-42c9-9629-8a446232c61e"
+        }
+      ],
+      "releases": [
+        397.90000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "storm",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "storm",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "storm",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "storm",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 270.09999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-388d735e-1f24-426e-841b-e5f3bbe28324"
+        },
+        {
+          "owner": "Alice",
+          "at": 330.79999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-e8ef5822-8b28-46d6-889f-edc9c30ee914"
+        }
+      ],
+      "releases": [
+        319.5
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "storm",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "storm",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "storm",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "server start releases the first playable prompt promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 240.70000000298023,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-02ceaaa8-31b6-4a4c-9322-94c9ec04533e"
+        },
+        {
+          "owner": "Alice",
+          "at": 1056.7999999970198,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-60fc3555-689e-438a-a2f7-b80519469265"
+        }
+      ],
+      "releases": [
+        1054.4000000059605
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "push",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "push",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "push",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "push",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 253.59999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-c7451083-93a2-47e6-9a67-6ce90cf6e248"
+        },
+        {
+          "owner": "Alice",
+          "at": 299.3999999910593,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-46153c4b-15e6-478c-8455-61cec75861f1"
+        }
+      ],
+      "releases": [
+        285
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "push",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "push",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "push",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hidden",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 407.90000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-61ed8699-afb9-4b5d-9356-b8e49d0f2b75"
+        }
+      ],
+      "releases": [
+        439.40000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "name": "retired seat does not admit queued catch-up",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "name": "retired seat retains one leave authority key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "name": "retired UI remains removed or replaced",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 219.30000001192093,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-a6b6a60a-7091-4f5b-965c-3ccabc6fd6d0"
+        },
+        {
+          "owner": "Alice",
+          "at": 254,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-73442b98-45b2-475d-ade0-f03fefe30c5c"
+        },
+        {
+          "owner": "Alice",
+          "at": 254.1000000089407,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-73442b98-45b2-475d-ade0-f03fefe30c5c"
+        }
+      ],
+      "releases": [
+        253.80000001192093
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired seat does not admit queued catch-up",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired seat retains one leave authority key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired UI remains removed or replaced",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 217.40000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-c62a6703-daf2-4da0-80d5-95b144c1896d"
+        },
+        {
+          "owner": "Alice",
+          "at": 258.80000001192093,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-8f5def78-2217-49d3-afd0-66a2b5def27e"
+        },
+        {
+          "owner": "Alice",
+          "at": 258.90000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-8f5def78-2217-49d3-afd0-66a2b5def27e"
+        },
+        {
+          "owner": "Bob",
+          "at": 265.40000000596046,
+          "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "action": "poll",
+          "requestId": "live-poll-b412b4a3-e24c-4105-8e3d-74bf54b3b6fa"
+        }
+      ],
+      "releases": [
+        256.40000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "idle recovery admits one immediate read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "idle recovery admits one immediate read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "queued recovery retries after outage backoff and before the healthy watchdog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 220.30000001192093,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-69aa707d-7da6-4f25-87cb-352605e1e93d"
+        },
+        {
+          "owner": "Alice",
+          "at": 2253.7000000029802,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-28c70647-20eb-4b72-8dda-c382b0902518"
+        }
+      ],
+      "releases": [
+        253.1000000089407
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "queued recovery retries after outage backoff and before the healthy watchdog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 297.29999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-59472445-2210-4699-9105-6ad3be98094b"
+        },
+        {
+          "owner": "Alice",
+          "at": 2300.9000000059605,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-2935904f-aea1-48b7-94b1-32feeec14b73"
+        }
+      ],
+      "releases": [
+        300.40000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-poll",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 295.79999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-39fb3b6e-7550-4e5c-9fee-c8ab3ebd3cd1"
+        },
+        {
+          "owner": "Alice",
+          "at": 362.79999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-eaf2420c-02da-426f-8a81-53e884c5e22f"
+        }
+      ],
+      "releases": [
+        350.09999999403954
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-poll",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-poll",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 306.70000000298023,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-9aec0b20-7a8a-4370-a832-9f581685963b"
+        },
+        {
+          "owner": "Alice",
+          "at": 346.1000000089407,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-2b52b01d-b6bf-445b-9d78-ef9795e37c0b"
+        }
+      ],
+      "releases": [
+        338.40000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-poll",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "native guess advances once before read-only reconciliation",
+    "actual": "Riddles completed: 1 / 10",
+    "expected": "Riddles completed: 1 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "recovery does not replay a successful player command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 348.1000000089407,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "guess",
+          "requestId": "live-guess-c9d31500-ee19-479f-8eef-399dd3656e43",
+          "riddleId": "q0",
+          "guess": "piano"
+        },
+        {
+          "owner": "Alice",
+          "at": 393.1000000089407,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-8ab1b2f3-fc1f-4210-8bc6-a112cf6a45a6"
+        }
+      ],
+      "releases": [
+        389.90000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "online-command",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "native guess advances once before read-only reconciliation",
+    "actual": "Riddles completed: 1 / 10",
+    "expected": "Riddles completed: 1 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "recovery does not replay a successful player command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 293.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "guess",
+          "requestId": "live-guess-f8f44da1-c3c4-405a-9664-058b3c3f849c",
+          "riddleId": "q0",
+          "guess": "piano"
+        },
+        {
+          "owner": "Alice",
+          "at": 341.3999999910593,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-dc2794ba-caa3-46ae-982c-877509fe4a08"
+        }
+      ],
+      "releases": [
+        335.8999999910593
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "visible-command",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "storm",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "storm",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "storm",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "storm",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 285.29999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-b271227a-52d0-4266-b2d1-2391bbdc4ee3"
+        },
+        {
+          "owner": "Alice",
+          "at": 331.90000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-53a40571-213c-41d3-bf38-185da30ebb51"
+        }
+      ],
+      "releases": [
+        327.40000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "storm",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "storm",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "storm",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "server start releases the first playable prompt promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 252,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-cfc0dcb7-8f8f-4b99-895c-796cd9fd761e"
+        },
+        {
+          "owner": "Alice",
+          "at": 1079.9000000059605,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-4638cfcf-ac6f-43b6-9e42-0e917029b53b"
+        }
+      ],
+      "releases": [
+        1075.5
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "countdown",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "push",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "push",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "push",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "push",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 298.79999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-da9b8eef-0839-49f3-b173-b86ab44358d4"
+        },
+        {
+          "owner": "Alice",
+          "at": 347.5,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-dc1c70b9-4a35-4eea-8a66-bf9bb3baf562"
+        }
+      ],
+      "releases": [
+        342.19999998807907
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "push",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "push",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "push",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 0 / 10",
+    "expected": "Riddles completed: 0 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hidden",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 325.09999999403954,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-a977cc0d-b4ee-4081-9c89-0238fe70f19e"
+        }
+      ],
+      "releases": [
+        357.70000000298023
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hidden",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "name": "retired seat does not admit queued catch-up",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "name": "retired seat retains one leave authority key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "name": "retired UI remains removed or replaced",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 279.40000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-bd7d5697-6c60-42ea-a206-5023177ae82c"
+        },
+        {
+          "owner": "Alice",
+          "at": 317.90000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-e496e1bb-4e79-4957-8841-8c5460c252a5"
+        },
+        {
+          "owner": "Alice",
+          "at": 318,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-e496e1bb-4e79-4957-8841-8c5460c252a5"
+        }
+      ],
+      "releases": [
+        317.29999999701977
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired seat does not admit queued catch-up",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired seat retains one leave authority key",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "retired UI remains removed or replaced",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 260.40000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-c80cf4f4-159f-4974-add0-1a3ad49de8e4"
+        },
+        {
+          "owner": "Alice",
+          "at": 302.70000000298023,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-bb8d187a-0074-4733-bf34-52e8a031e82a"
+        },
+        {
+          "owner": "Alice",
+          "at": 302.90000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "leave",
+          "requestId": "live-leave-bb8d187a-0074-4733-bf34-52e8a031e82a"
+        },
+        {
+          "owner": "Bob",
+          "at": 308.79999999701977,
+          "ticketId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "action": "poll",
+          "requestId": "live-poll-32c10ec5-f20f-4dd3-b7ff-f23d7712295c"
+        }
+      ],
+      "releases": [
+        302.40000000596046
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "replace",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "idle recovery admits one immediate read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-online",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "idle recovery admits one immediate read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "idle-visible",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "queued recovery retries after outage backoff and before the healthy watchdog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 317.79999999701977,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-a9e46f26-097f-4e92-9b46-0097602b2cf8"
+        },
+        {
+          "owner": "Alice",
+          "at": 2351.2999999970198,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-ba520568-f0a6-4e19-b9e9-0776ca836bb4"
+        }
+      ],
+      "releases": [
+        349.09999999403954
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "one owned delivery is held before recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "queued recovery admits exactly one prompt catch-up read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "catch-up shows current rival progress",
+    "actual": "Riddles completed: 3 / 10",
+    "expected": "Riddles completed: 3 / 10"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "queued recovery retries after outage backoff and before the healthy watchdog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "diagnostic": true,
+    "name": "owned delivery and recovery trace",
+    "actual": {
+      "requests": [
+        {
+          "owner": "Alice",
+          "at": 356.40000000596046,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-3b909021-08f1-455b-84d5-ea1ce567f78d"
+        },
+        {
+          "owner": "Alice",
+          "at": 2361.4000000059605,
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "poll",
+          "requestId": "live-poll-25939caf-f894-49b6-8f8b-daaa48042454"
+        }
+      ],
+      "releases": [
+        360.5
+      ]
+    },
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "backoff-delayed",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  }
+]

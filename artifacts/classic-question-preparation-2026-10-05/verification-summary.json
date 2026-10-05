@@ -1,0 +1,162 @@
+{
+  "goal": "active",
+  "browserComparisons": {
+    "development": {
+      "checks": 525,
+      "failures": 0
+    },
+    "production": {
+      "checks": 525,
+      "failures": 0
+    },
+    "original-browser": {
+      "checks": 18,
+      "failures": 4
+    },
+    "original-guidance": {
+      "checks": 20,
+      "failures": 1
+    },
+    "guidance-fixed": {
+      "checks": 20,
+      "failures": 0
+    },
+    "stable-original": {
+      "checks": 19,
+      "failures": 2
+    },
+    "stable-fixed": {
+      "checks": 19,
+      "failures": 0
+    },
+    "related-guidance-final": {
+      "checks": 114,
+      "failures": 0
+    }
+  },
+  "finalBrowserAssertions": 1050,
+  "relatedGuidanceAssertions": 114,
+  "portalUnits": {
+    "suites": 300,
+    "passed": 2820,
+    "skipped": 93
+  },
+  "coreUnits": {
+    "suites": 35,
+    "passed": 325
+  },
+  "types": "passed",
+  "tsdocDeclarations": 25425,
+  "tsdocFiles": 1144,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "builtBrowser": {
+    "suites": 3,
+    "passed": 8,
+    "latencyBudgetChanged": false
+  },
+  "stableSourceInputs": 1511,
+  "preservedFinalBuildFiles": 1300,
+  "timing": {
+    "original": {
+      "samplesMs": [
+        99.20000000298023,
+        124.09999999403954,
+        111.40000000596046,
+        116,
+        170.79999999701977,
+        167.80000001192093
+      ],
+      "medianMs": 120.04999999701977,
+      "maximumMs": 170.79999999701977,
+      "over100ms": 5
+    },
+    "fixed": {
+      "samplesMs": [
+        34.1000000089407,
+        35.400000005960464,
+        71.29999999701977,
+        34.599999994039536,
+        59.70000000298023,
+        55.599999994039536
+      ],
+      "medianMs": 45.5,
+      "maximumMs": 71.29999999701977,
+      "over100ms": 0
+    }
+  },
+  "builtNativeLockCounters": {
+    "original": {
+      "samples": 2,
+      "sharedLocksOnNext": [
+        1,
+        1
+      ]
+    },
+    "fixed": {
+      "samples": 2,
+      "sharedLocksOnNext": [
+        0,
+        0
+      ]
+    }
+  },
+  "verifiedFirefoxRecords": 3,
+  "cleanup": {
+    "privateBuildRootsRemoved": [
+      "/tmp/riddle-classic-preparation-builds-x0vn354n",
+      "/tmp/riddle-classic-preparation-final-wp6yf1wr",
+      "/tmp/riddle-classic-verified-t4wdhgzw"
+    ],
+    "targetMetadataPreservedAndRemoved": 18,
+    "interruptedGuidanceFixtureRemoved": true,
+    "firefoxOwnedTabsClosed": true,
+    "firefoxRemainingPages": [
+      "about:blank"
+    ],
+    "jobs": {
+      "cacheProbe": 0,
+      "expandedUnit": 0,
+      "focusedUnit": 0,
+      "typeProbe": 0,
+      "coreFocused": 0,
+      "coreBuild": 0,
+      "browserCoreCurrent": 0,
+      "developmentMatrix": 0,
+      "productionMatrix": 0,
+      "firstGates": 0,
+      "firstBuilds": 0,
+      "firstFinalBrowser": 0,
+      "fixedGuidance": 0,
+      "preStableGates": 0,
+      "preStableBuilds": 0,
+      "preStableBrowser": 0,
+      "preStableBuiltBrowser": 0,
+      "relatedGuidance": 0,
+      "prototypeTiming": 0,
+      "prototypeNativeCounter": 0,
+      "coreAll": 0,
+      "stableUnit": 0,
+      "stableFixed": 0,
+      "verifiedGates": 0,
+      "verifiedBuilds": 0,
+      "verifiedBrowser": 0,
+      "verifiedBuiltBrowser": 0,
+      "verifiedTiming": 0,
+      "verifiedNativeCounter": 0,
+      "originalMinimal": 1,
+      "originalRepeat": 1,
+      "browserProbe": 1,
+      "browserExpandedStaleCore": 1,
+      "originalBrowser": 1,
+      "firstBuiltBrowser": 1,
+      "guidanceProbe": 1,
+      "originalGuidance": 1,
+      "stableOriginal": 1,
+      "firstFirefoxServer": 130,
+      "preStableFirefoxServer": 130,
+      "redirectedGuidance": 130,
+      "verifiedFirefoxServer": 130
+    }
+  }
+}

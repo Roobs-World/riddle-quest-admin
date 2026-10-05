@@ -1,0 +1,95 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "diagnostic": true,
+    "name": "native polling callbacks while push is healthy",
+    "actual": 0,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "healthy push avoids unnecessary half-second polling wakeups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "healthy push has no premature provider polls",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "current seat retains one bounded observation timer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "healthy watchdog has at most one fractional-timer tail",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "watchdog tail never adds a half-second provider delay",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "diagnostic": true,
+    "name": "watchdog native timer trace",
+    "actual": [
+      {
+        "owner": "Alice",
+        "at": 5089.899999991059,
+        "delay": 4960.9000000059605
+      },
+      {
+        "owner": "Alice",
+        "at": 5590,
+        "delay": 500
+      }
+    ],
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "watchdog",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  }
+]

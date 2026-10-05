@@ -1,0 +1,42 @@
+{
+  "temporaryFinalBuildRemoved": true,
+  "temporaryPrototypeBuildRemoved": true,
+  "ownedTargetMetadataPreservedAndRemoved": 12,
+  "ownedFirefoxFixtureCachesRemoved": 2,
+  "ownedFirefoxTabsClosed": true,
+  "remainingFirefoxPages": [
+    "about:blank"
+  ],
+  "jobs": {
+    "initialFinalDraftOnlyProbe": 0,
+    "originalDomProbe": 1,
+    "originalMinimalProbe": 1,
+    "originalRouterUnit": 1,
+    "firstFixedBrowserAndUnits": 0,
+    "wrongSelectorProbe": 1,
+    "incompleteGuessUnitAndFeedbackCaseProbe": 1,
+    "correctedExpandedProbe": 0,
+    "pendingEnterFocusProbe": 1,
+    "pendingFeedbackCaseProbe": 1,
+    "typeProbe": 0,
+    "finalTypeProbe": 0,
+    "documentationProbe": 0,
+    "prototypeDevelopment": 0,
+    "prototypeProduction": 0,
+    "prototypeOriginalMatrix": 1,
+    "prototypeFirefoxServer": 130,
+    "prototypeGates": 0,
+    "prototypeBuilds": 0,
+    "prototypeRelatedChecks": 0,
+    "modeControlRed": 1,
+    "modeControlFixed": 0,
+    "modeBrowserProbe": 0,
+    "finalBrowserMatrices": 0,
+    "finalOriginalMatrix": 1,
+    "finalFirefoxServer": 130,
+    "finalGates": 0,
+    "finalBuilds": 0,
+    "finalRelatedChecks": 0,
+    "builtBrowser": 0
+  }
+}

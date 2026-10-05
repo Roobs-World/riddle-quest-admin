@@ -1,0 +1,21 @@
+[
+  {
+    "run": 0,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 6,
+    "domCommitMs": null,
+    "rafObservedMs": 35.400000005960464,
+    "nextFrameMs": 69.5,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -3.2999999999999545
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  }
+]

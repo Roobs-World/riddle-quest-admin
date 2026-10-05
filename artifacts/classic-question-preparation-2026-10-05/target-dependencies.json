@@ -1,0 +1,110 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/0a33553dcc684b134b7fb3a76e7825261b77ddfe200eceb5fb2ce9b9d7426ee8/youtube.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/0a33553dcc684b134b7fb3a76e7825261b77ddfe200eceb5fb2ce9b9d7426ee8/youtube.json",
+    "outputDirectory": "/tmp/riddle-classic-verified-t4wdhgzw/youtube",
+    "sha256": "dabb83f7a34e07eeba69bec244c96d81cb1b7224fed3211c8326e41ebf86bcab"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/e16154f4bb755154db74002fd296cc6f2897b2528285311c2191c1eb52f169b6/reddit.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/e16154f4bb755154db74002fd296cc6f2897b2528285311c2191c1eb52f169b6/reddit.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-builds-x0vn354n/reddit",
+    "sha256": "cf062120c3d394f007dc4d409b5541201018c18d0a9b697d3104d143a6b152b4"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/dd19bfb3c3bb0f5448b14c67c3f83981d50d4146166c18e5d1fa2e6d49eacd45/youtube.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/dd19bfb3c3bb0f5448b14c67c3f83981d50d4146166c18e5d1fa2e6d49eacd45/youtube.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-builds-x0vn354n/youtube",
+    "sha256": "0fe2eab04200d9b3eec41ee032e3c88d3d88a6238753dc309b318040c7aefa12"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/930c79eed358f3e47c80b1373870d7c0b4c8f415a2bdc9004be35d1112691645/youtube.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/930c79eed358f3e47c80b1373870d7c0b4c8f415a2bdc9004be35d1112691645/youtube.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-final-wp6yf1wr/youtube",
+    "sha256": "f4edeb4ff60b3c575dc0ef6fb9a526460313181d9a08b60038ccbaf887e50457"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/94df7ff83e296194ee2693b689b3429baa8f12c48c9b6d85f57c7423176eec75/jest.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/94df7ff83e296194ee2693b689b3429baa8f12c48c9b6d85f57c7423176eec75/jest.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-builds-x0vn354n/jest",
+    "sha256": "b0d6c81343ed69d92a7ea334509d1157cac71312c7c9914d3be8c5e036edffbe"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/b99f35a2e89aa62b5b78c924a24c7e9777c38dcd20b2b1219765afdbe30c7c6b/reddit.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/b99f35a2e89aa62b5b78c924a24c7e9777c38dcd20b2b1219765afdbe30c7c6b/reddit.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-final-wp6yf1wr/reddit",
+    "sha256": "e5b0c0d0c045c3fbfc37d77b43d9b9ce8363ecfb5b4d39f59c89ba49151e5596"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/805a8aceb901c6ca558d5d10087634d0fadc08657fc2c727f2b2beeb9d44ef9a/yahoo.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/805a8aceb901c6ca558d5d10087634d0fadc08657fc2c727f2b2beeb9d44ef9a/yahoo.json",
+    "outputDirectory": "/tmp/riddle-classic-verified-t4wdhgzw/yahoo",
+    "sha256": "b8eb6e776bfe4b0def1ff100d929a22d625039ec0336e4f9cb7fe84975c8089b"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/000d0cbc6fdeaf2d656354ff67539c94812e84cab3daca78e20aabef53dc168e/facebook.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/000d0cbc6fdeaf2d656354ff67539c94812e84cab3daca78e20aabef53dc168e/facebook.json",
+    "outputDirectory": "/tmp/riddle-classic-verified-t4wdhgzw/facebook",
+    "sha256": "994bbea9e71e7eea3c481869c604754e86def9d0e588d2939999aceca7c7a5fd"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/91eb9e97bf7f0387ae2287e7fea4de1e256817ba3a1e49744766f75a15a00291/netflix.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/91eb9e97bf7f0387ae2287e7fea4de1e256817ba3a1e49744766f75a15a00291/netflix.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-final-wp6yf1wr/netflix",
+    "sha256": "5aa41083b27d3253c46c95eb8a87bacf3ddd3534bf2a780b115a748dfc87221f"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/38aa2985dfe2a6527a24c9ebdf820bff61836194ebba3b5b95ad2eca52c07e75/yahoo.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/38aa2985dfe2a6527a24c9ebdf820bff61836194ebba3b5b95ad2eca52c07e75/yahoo.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-builds-x0vn354n/yahoo",
+    "sha256": "0e2547e415385a7f74f799f771b48473c0f5721aef9384fa897200842cecc857"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/59f0f472b4fa1d95baac10459eb4a5ca7d4978a821f007d750306c4d796ff540/facebook.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/59f0f472b4fa1d95baac10459eb4a5ca7d4978a821f007d750306c4d796ff540/facebook.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-builds-x0vn354n/facebook",
+    "sha256": "aa68c1faa78481ddcc70ec448e74e6241fccb09b4002807fe60653f1981b8afe"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/3e5192ce2a7999394168c583f35de5d079a3848181b4d541bed01fb73e487350/reddit.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/3e5192ce2a7999394168c583f35de5d079a3848181b4d541bed01fb73e487350/reddit.json",
+    "outputDirectory": "/tmp/riddle-classic-verified-t4wdhgzw/reddit",
+    "sha256": "9a52e8e4e6075b32f0aaff08e5fad2540968ca9031feaf3c5933f98b8c437f69"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/80324641fb60392b0b9b8c99d225d4e84c031e8657821363adeb97b30f94c361/facebook.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/80324641fb60392b0b9b8c99d225d4e84c031e8657821363adeb97b30f94c361/facebook.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-final-wp6yf1wr/facebook",
+    "sha256": "625db6767b81ffe5d7ac21ae8acbea84bf666cefa610acde8b9abfe579609475"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/13511765efde4840dd8e046f063e9f1938af0f72a313419ef40060190da86e6e/yahoo.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/13511765efde4840dd8e046f063e9f1938af0f72a313419ef40060190da86e6e/yahoo.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-final-wp6yf1wr/yahoo",
+    "sha256": "69c69ba356806495bba81aa85daf02229f01107e86618c46a3f9691f5c3dad49"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/9de1b9f03b7178ba58b98ec9e275bd6e455695fa5d4fcdbd9a60ca2f459d4d94/netflix.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/9de1b9f03b7178ba58b98ec9e275bd6e455695fa5d4fcdbd9a60ca2f459d4d94/netflix.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-builds-x0vn354n/netflix",
+    "sha256": "245311f2d2006efd7856c61be0250d55a50b8fac1498943e1bfcc94823afc775"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/f844fa8c662c74675cc96ac7efe19a8251ce5e03c69074fdd532674bf45994f2/jest.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/f844fa8c662c74675cc96ac7efe19a8251ce5e03c69074fdd532674bf45994f2/jest.json",
+    "outputDirectory": "/tmp/riddle-classic-verified-t4wdhgzw/jest",
+    "sha256": "6d95831258f81762729edb0125c10b6cd70424cdd80de3a44e34073b0f3effbd"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/50576d2cb57e6efb6f6e260458dc42b6a8f77a5fa25ece9640c0f6e44675a1f6/netflix.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/50576d2cb57e6efb6f6e260458dc42b6a8f77a5fa25ece9640c0f6e44675a1f6/netflix.json",
+    "outputDirectory": "/tmp/riddle-classic-verified-t4wdhgzw/netflix",
+    "sha256": "f10a5ac319a31b93559d188dba241991bab73e2b4c2016431df8e529c98444fc"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/ba669485a78fa59804810ffeb1597d812c78101d0392b18ac1e51e3debe475ab/jest.json",
+    "preserved": "artifacts/classic-question-preparation-2026-10-05/target-dependencies/ba669485a78fa59804810ffeb1597d812c78101d0392b18ac1e51e3debe475ab/jest.json",
+    "outputDirectory": "/tmp/riddle-classic-preparation-final-wp6yf1wr/jest",
+    "sha256": "b1091effc9dee8bc0147e46cb2dbf6b5df60caca0bbd5580c49f1abd3c130c05"
+  }
+]

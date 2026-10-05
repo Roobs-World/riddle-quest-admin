@@ -2,6 +2,8 @@ import type {HostServices} from "./types";
 
 /** Cross-tab operation boundary supplied by the Jest shell. */
 export type AccountDeletionServiceGate = {
+  /** Synchronous admission check for consuming a previously issued local question. */
+  isOpen?: () => boolean;
   /** Runs normal service work while no deletion request has superseded this tab. */
   run<Result>(operation: () => Promise<Result>): Promise<Result>;
   /** Drains all normal work across live tabs before authoritative deletion. */

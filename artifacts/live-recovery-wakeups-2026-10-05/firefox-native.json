@@ -1,0 +1,107 @@
+[
+  {
+    "scenario": "online-poll",
+    "requests": [
+      {
+        "owner": "Alice",
+        "at": 18839,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-b22fc3bc-ca34-400d-a222-ca0a5248fe63"
+      },
+      {
+        "owner": "Alice",
+        "at": 18840,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-e6c2d521-fe03-4d6a-a329-a2590985beac"
+      }
+    ],
+    "releases": [
+      18839
+    ],
+    "rival": "Riddles completed: 3 / 10",
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "visible-command",
+    "requests": [
+      {
+        "owner": "Alice",
+        "at": 27938,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "guess",
+        "requestId": "live-guess-e89d7ad1-e5ee-4ef9-9825-0ea9dab7d4dc",
+        "riddleId": "q0",
+        "guess": "piano"
+      },
+      {
+        "owner": "Alice",
+        "at": 33195,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-e3c7d93c-4a56-4c4c-b687-fd4d279e1a4d"
+      }
+    ],
+    "releases": [
+      33195
+    ],
+    "player": "Riddles completed: 1 / 10",
+    "rival": "Riddles completed: 3 / 10",
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "countdown",
+    "waitingForPrompt": true,
+    "requests": [
+      {
+        "owner": "Alice",
+        "at": 232,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-ee5728f3-01c8-42af-9b80-8e54ae46dc33"
+      },
+      {
+        "owner": "Alice",
+        "at": 814,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-13c488e7-49a3-4de2-bbd4-ad0c2bd92bfe"
+      }
+    ],
+    "releases": [
+      814
+    ],
+    "promptAvailable": true,
+    "rival": "Riddles completed: 3 / 10",
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "backoff",
+    "requests": [
+      {
+        "owner": "Alice",
+        "at": 17205,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-8d421a3b-334d-4c11-82fa-61e42919fdab"
+      },
+      {
+        "owner": "Alice",
+        "at": 19206,
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "poll",
+        "requestId": "live-poll-fb0a51cd-d408-4502-8ed9-acc3b0c4a825"
+      }
+    ],
+    "releases": [
+      17206
+    ],
+    "rival": "Riddles completed: 3 / 10",
+    "errors": [],
+    "unhandled": []
+  }
+]

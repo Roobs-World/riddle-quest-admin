@@ -1,4 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
+import type {BridgeProfile, BridgeRiddle} from "@qwordly/core/bridge";
 import type {GameSessionState} from "../gameSessionTypes";
 
 /** Provides mock use memo behavior. */
@@ -12,6 +13,7 @@ jest.mock("react", () => ({
   useSyncExternalStore: jest.fn(),
 }));
 
+import {createInitialGameSession, gameSessionReducer} from "../gameSession";
 import {useGameMessageRouter} from "../useGameMessageRouter";
 import {setLocaleAndWait, type Locale} from "../i18n";
 
@@ -115,4 +117,143 @@ describe("useGameMessageRouter", () => {
 
     expect(dispatch).not.toHaveBeenCalled();
   });
+});
+
+
+it.each([undefined, "load-repeat"])("keeps the typed board through an unchanged parsed question delivery %s", async requestId => {
+  /** The real router applies each load directly to its actual reducer-facing state. */
+  const stateRef = {current: createInitialGameSession()};
+  /** This seam observes the immediate load commit before checkpoint recovery can hide a reset. */
+  const router = useGameMessageRouter({stateRef,
+    dispatch: action => {stateRef.current = gameSessionReducer(stateRef.current, action);},
+    postToHost: jest.fn(), requestRiddle: jest.fn()});
+  /** Complete provider result crosses production validation on both deliveries. */
+  const riddle = {riddleId: "classic-repeat", sessionToken: "00000000-0000-4000-8000-000000000001",
+    text: "What has keys but cannot open doors?", answerLength: 5, gameMode: "classic", index: 1,
+    attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false};
+  await router({type: "host:riddleLoaded", payload: {riddle}});
+  stateRef.current = gameSessionReducer(stateRef.current, {type: "typeLetter", letter: "P"});
+  /** Ordinary replay carries a fresh object, as an actual bridge transfer does. */
+  await router({type: "host:riddleLoaded", requestId, payload: {riddle: structuredClone(riddle)}});
+  expect(stateRef.current.currentLetters).toEqual(["P", "", "", "", ""]);
+  expect(stateRef.current.activeSlotIndex).toBe(1);
+  expect(stateRef.current.canRestoreCheckpoint).toBe(false);
+});
+
+
+/** Valid issued local question used by authority-refresh controls. */
+const repeatedRiddle: BridgeRiddle = {riddleId: "classic-repeat", sessionToken: "00000000-0000-4000-8000-000000000001",
+  text: "What has keys but cannot open doors?", answerLength: 5, gameMode: "classic", index: 1,
+  attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false, evaluation: {answer: "piano", locale: "en"}};
+/** Valid profile allows real bridge validation to cover pending paid balance preservation. */
+const repeatedProfile: BridgeProfile = {username: "Player", coins: 300, xp: 0, level: 1, gamesPlayed: 0,
+  wins: 0, winStreak: 0, achievements: [], classicIndex: 1};
+/** Routes actual bridge messages into the production reducer, before passive checkpoint restoration. */
+const createRiddleDeliveryHarness = async (initial = repeatedRiddle) => {
+  /** Current board belongs to this real router instance. */
+  const stateRef = {current: createInitialGameSession()};
+  /** Parsed messages exercise the production ordinary/reconcile action policy. */
+  const router = useGameMessageRouter({stateRef,
+    dispatch: action => {stateRef.current = gameSessionReducer(stateRef.current, action);},
+    postToHost: jest.fn(), requestRiddle: jest.fn()});
+  /** Same-session authority results use the real validation path, with optional updated profiles. */
+  const deliver = (riddle: BridgeRiddle, requestId?: string, profile?: BridgeProfile) =>
+    router({type: "host:riddleLoaded", requestId, payload: {riddle, profile}});
+  await deliver(initial, undefined, repeatedProfile);
+  stateRef.current = gameSessionReducer(stateRef.current, {type: "typeLetter", letter: "P"});
+  return {stateRef, deliver};
+};
+
+it("retains in-flight guesses and paid balance previews while refreshing an unchanged question's profile", async () => {
+  /** Current draft and paid projection must survive an unrelated question refresh. */
+  const owner = await createRiddleDeliveryHarness();
+  for (let index = 0; index < 4; index++) owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "typeLetter", letter: "Q"});
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "guessRequested"});
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "typeLetter", letter: "C"});
+  expect(owner.stateRef.current.currentLetters[0]).toBe("C");
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "previewCoinSpend", requestId: "paid-owned", amount: 100});
+  /** Actual pending snapshots may settle only through their operation-result handlers. */
+  const before = owner.stateRef.current;
+  await owner.deliver(structuredClone(repeatedRiddle), "load-refresh", {...repeatedProfile, coins: 900, xp: 99});
+  expect(owner.stateRef.current.currentLetters).toBe(before.currentLetters);
+  expect(owner.stateRef.current.activeSlotIndex).toBe(before.activeSlotIndex);
+  expect(owner.stateRef.current.guessPending).toBe(true);
+  expect(owner.stateRef.current.pendingGuessState).toBe(before.pendingGuessState);
+  expect(owner.stateRef.current.pendingCoinSpend).toBe(before.pendingCoinSpend);
+  expect(owner.stateRef.current.profile?.coins).toBe(200);
+  expect(owner.stateRef.current.profile?.xp).toBe(99);
+});
+
+it("still rebuilds an identical question when authoritative reconciliation explicitly requests it", async () => {
+  /** Local draft precedes a definitive reconciliation reply. */
+  const owner = await createRiddleDeliveryHarness();
+  for (let index = 0; index < 4; index++) owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "typeLetter", letter: "Q"});
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "guessRequested"});
+  await owner.deliver(structuredClone(repeatedRiddle), "reconcile-rejected-play");
+  expect(owner.stateRef.current.currentLetters).toEqual(["", "", "", "", ""]);
+  expect(owner.stateRef.current.guessPending).toBe(false);
+  expect(owner.stateRef.current.pendingGuessState).toBeNull();
+  expect(owner.stateRef.current.canRestoreCheckpoint).toBe(true);
+});
+
+it.each<Partial<BridgeRiddle>>([
+  {sessionToken: "00000000-0000-4000-8000-000000000002"}, {riddleId: "classic-changed"},
+  {text: "What has a face and hands but no arms?"}, {gameMode: "challenge"}, {index: 2}, {answerLength: 6},
+  {attemptsUsed: 1}, {attemptsUsed: 5, hasUsedContinue: true}, {attemptsUsed: 5, awaitingContinue: true},
+  {evaluation: {answer: "clock", locale: "en"}}, {evaluation: {answer: "piano", locale: "fr"}},
+  {revealedHints: [{index: 1, letter: "i"}]},
+  {attemptsUsed: 1, acceptedGuesses: [{attempt: 1, feedback: Array.from({length: 5}, () => ({letter: "q", status: "red" as const}))}]},
+])("applies changed issued content or authority state instead of treating it as a replay: %j", async changed => {
+  /** Player-owned letters cannot suppress new authoritative question state. */
+  const owner = await createRiddleDeliveryHarness();
+  /** Immutable previous issued content must be replaced for each materially changed snapshot. */
+  const before = owner.stateRef.current.riddle;
+  await owner.deliver({...repeatedRiddle, ...changed}, "load-new-authority");
+  expect(owner.stateRef.current.riddle).not.toBe(before);
+  expect(owner.stateRef.current.riddle).toMatchObject(changed);
+  expect(owner.stateRef.current.canRestoreCheckpoint).toBe(true);
+});
+
+it.each(["letter", "status"] as const)("applies corrected accepted feedback %s within the same issued session", async field => {
+  /** Existing authority history precedes its corrected feedback cell. */
+  const issued = {...repeatedRiddle, attemptsUsed: 1,
+    acceptedGuesses: [{attempt: 1, feedback: Array.from({length: 5}, () => ({letter: "q", status: "red" as const}))}]};
+  /** Comparison must inspect feedback content rather than only its length. */
+  const owner = await createRiddleDeliveryHarness(issued);
+  /** Same-length history now carries a different authority-issued feedback cell. */
+  const corrected: BridgeRiddle = {...issued, acceptedGuesses: [{attempt: 1, feedback:
+    issued.acceptedGuesses[0].feedback.map((cell, index) => index === 0 ? field === "letter" ? {...cell, letter: "p"} : {...cell, status: "green" as const} : cell)}]};
+  await owner.deliver(corrected, "load-corrected-feedback");
+  expect(owner.stateRef.current.riddle?.acceptedGuesses).toEqual(corrected.acceptedGuesses);
+  expect(owner.stateRef.current.canRestoreCheckpoint).toBe(true);
+});
+
+
+it("treats empty optional lists and reordered hint locks as the same issued state", async () => {
+  /** Optional empty lists must not create a new board during a normalized provider refresh. */
+  const empty = await createRiddleDeliveryHarness();
+  /** Original immutable board stays owned even when empty lists become explicit. */
+  const beforeEmpty = empty.stateRef.current;
+  await empty.deliver({...repeatedRiddle, acceptedGuesses: [], revealedHints: []});
+  expect(empty.stateRef.current).toBe(beforeEmpty);
+  /** Hint list order does not change which cells are locked. */
+  const hints = [{index: 1, letter: "i"}, {index: 3, letter: "n"}];
+  /** Typed cells and selection belong to the current board, not serialized hint ordering. */
+  const hinted = await createRiddleDeliveryHarness({...repeatedRiddle, revealedHints: hints});
+  /** Current board must survive a transfer whose object keys and hint order are reversed. */
+  const beforeHints = hinted.stateRef.current;
+  await hinted.deliver({...Object.fromEntries(Object.entries(repeatedRiddle).reverse()),
+    ...repeatedRiddle, revealedHints: [...hints].reverse()});
+  expect(hinted.stateRef.current).toBe(beforeHints);
+});
+
+it("uses the delivered mode when an unchanged Classic question follows a Daily initialization", async () => {
+  /** Existing Classic draft remains owned while the host tries Daily routing. */
+  const owner = await createRiddleDeliveryHarness();
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "hostInit", locale: "en",
+    gameMode: "challenge", user: null, profile: repeatedProfile, products: []});
+  expect(owner.stateRef.current.gameMode).toBe("challenge");
+  await owner.deliver(structuredClone(repeatedRiddle), "load-daily-fallback");
+  expect(owner.stateRef.current.gameMode).toBe("classic");
+  expect(owner.stateRef.current.currentLetters[0]).toBe("P");
 });

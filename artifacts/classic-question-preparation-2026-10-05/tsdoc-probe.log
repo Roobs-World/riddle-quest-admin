@@ -1,0 +1,16 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 13 production declarations are undocumented.
+- packages/portal/src/play/__tests__/classicQuestionPreparation.test.ts:4 current
+- packages/portal/src/play/__tests__/classicQuestionPreparation.test.ts:6 deps
+- packages/portal/src/play/__tests__/classicQuestionPreparation.test.ts:6 value
+- packages/portal/src/play/__tests__/classicQuestionPreparation.test.ts:8 deps
+- packages/portal/src/play/__tests__/classicQuestionPreparation.test.ts:8 cleanup
+- packages/portal/src/play/__tests__/classicQuestionPreparationOwner.test.ts:8 current
+- packages/portal/src/play/__tests__/classicQuestionPreparationOwner.test.ts:10 deps
+- packages/portal/src/play/__tests__/classicQuestionPreparationOwner.test.ts:10 value
+- packages/portal/src/play/__tests__/classicQuestionPreparationOwner.test.ts:12 deps
+- packages/portal/src/play/__tests__/classicQuestionPreparationOwner.test.ts:12 cleanup
+- packages/portal/src/play/__tests__/classicQuestionPreparationOwner.test.ts:16 i
+- packages/portal/src/play/game/hooks/useClassicQuestionPreparation.ts:27 owner
+- packages/portal/src/play/game/hooks/useClassicQuestionPreparation.ts:27 token
+[ELIFECYCLE] Command failed with exit code 1.

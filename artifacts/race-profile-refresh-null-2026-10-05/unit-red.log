@@ -1,0 +1,26 @@
+FAIL src/play/__tests__/raceProfileNullRefresh.test.ts
+  ● Test suite failed to run
+
+    Must use import to load ES Module: /home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/useHostRaceCoordination.ts
+
+    The file contains ESM syntax (import/export) that could not be executed as CommonJS. Either:
+      - Configure a transform (e.g. babel-jest) that compiles this file to CommonJS (see https://jestjs.io/docs/code-transformation)
+      - If the file is in "node_modules", allow it to be transformed by adjusting "transformIgnorePatterns" (see https://jestjs.io/docs/configuration#transformignorepatterns-arraystring)
+      - Use Node v24.9+ where Jest supports require(esm) natively (see https://jestjs.io/docs/ecmascript-modules#require-of-esm)
+
+       7 |   useState: <T>(initial: T) => [initial, jest.fn()], useEffect: () => undefined}));
+       8 | jest.mock("../../analytics/events", () => ({trackEvent: jest.fn()}));
+    >  9 | import {useHostRaceCoordination} from "../useHostRaceCoordination";
+         | ^
+      10 | import {createRedditHostServices} from "../../reddit/RedditHostServices";
+      11 |
+      12 | /** Complete gateway profile exercises production schema validation. */
+
+      at createRequireEsmError (../../node_modules/.pnpm/jest-runtime@30.5.2_supports-color@8.1.1/node_modules/jest-runtime/build/index.js:452:17)
+      at Object.<anonymous> (src/play/__tests__/raceProfileNullRefresh.test.ts:9:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.189 s
+Ran all test suites matching src/play/__tests__/raceProfileNullRefresh.test.ts.

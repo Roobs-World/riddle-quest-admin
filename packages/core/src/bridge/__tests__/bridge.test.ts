@@ -245,3 +245,17 @@ describe("bridge protocol", () => {
     expect(isHostToGameMessage(gameMessage)).toBe(false);
   });
 });
+
+it("preserves a valid silent Classic preparation through the real game message parser", () => {
+  /** Both predecessor identities and a successor index are required by the bridge contract. */
+  const message = {type: "game:loadRiddle", requestId: "classic-prepare-1", payload: {gameMode: "classic", locale: "en",
+    classicIndex: 2, sessionToken: "00000000-0000-4000-8000-000000000001", riddleId: "classic-1", prepareNext: true}};
+  expect(parseGameToHostMessage(message)).toEqual(message);
+});
+it.each([{gameMode: "challenge"}, {classicIndex: undefined}, {sessionToken: undefined}, {riddleId: undefined},
+  {authoritative: true}, {prepareNext: false}])("rejects malformed successor preparation %j", changed => {
+  /** Preparation cannot be mistaken for a Daily, authoritative or anonymous resume request. */
+  const payload = {gameMode: "classic", locale: "en", classicIndex: 2,
+    sessionToken: "00000000-0000-4000-8000-000000000001", riddleId: "classic-1", prepareNext: true, ...changed};
+  expect(GameToHostMessageSchema.safeParse({type: "game:loadRiddle", payload}).success).toBe(false);
+});

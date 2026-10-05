@@ -1,0 +1,6 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 3 production declarations are undocumented.
+- packages/portal/src/play/__tests__/HostedPlaySession.test.ts:81 isOpen
+- packages/portal/src/play/__tests__/HostedPlaySession.test.ts:82 run
+- packages/portal/src/play/__tests__/HostedPlaySession.test.ts:83 runExclusive
+[ELIFECYCLE] Command failed with exit code 1.

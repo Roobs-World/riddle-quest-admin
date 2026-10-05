@@ -1,0 +1,10 @@
+{
+  "runs": 2,
+  "cpuRate": 12,
+  "domObserver": false,
+  "longObserver": false,
+  "captureTrace": false,
+  "guidanceSeen": false,
+  "pairGuidance": false,
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/classic-question-preparation-2026-10-05/built/jest"
+}

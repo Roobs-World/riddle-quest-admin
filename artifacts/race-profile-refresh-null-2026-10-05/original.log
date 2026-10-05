@@ -1,0 +1,564 @@
+{
+  "mode": "development",
+  "checks": 660,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "pending-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "failed-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "300"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "failed-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "777"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "777"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "pending-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "failed-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "300"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "failed-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "firebase",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "firebase",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "firebase",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "777"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "provider": "firebase",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "777"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "pending-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "failed-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "300"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "failed-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "777"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "777"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "pending-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "failed-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "300"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "failed-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "275"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "777"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "777"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "275"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "275"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "pending-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "failed-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "300"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 275,
+      "scenario": "failed-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "777"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "777"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "pending-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "failed-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "missing",
+      "expected": "300"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "reddit",
+      "balance": 777,
+      "scenario": "failed-newer",
+      "name": "race follow-up never replaces a valid profile with null",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 275,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "275"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 275,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "275"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 777,
+      "scenario": "superseded",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "777"
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "provider": "firebase",
+      "balance": 777,
+      "scenario": "explicit-newer",
+      "name": "optional race refresh retains the latest available canonical profile",
+      "actual": "300",
+      "expected": "777"
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Superseded race profile refresh retains current canonical profile
+
+54 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-profile-refresh-null-browser.mjs:86:186 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 54,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

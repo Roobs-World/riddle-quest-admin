@@ -33,6 +33,7 @@ export function PlayHostApp({
   session: {
     services,
     authority,
+    canUsePreparedQuestions,
     hostConfigurationWarning,
     initialGameMode,
     platformCapabilities,
@@ -226,6 +227,7 @@ export function PlayHostApp({
     initialGameMode,
     locale,
     services: authority.gameplay,
+    canUsePreparedQuestions,
     withActivity: withServerActivity,
     postToGame,
     postOperation,
@@ -431,6 +433,7 @@ export function PlayHostApp({
           raceOwnerId={authSnapshot.user?.uid}
           onLiveRaceBalance={applyCoinBalance}
           localBridge
+          prepareClassicQuestions
           economyAvailable={Boolean(authority.economy)}
           startupError={startupUnavailable && !startupComplete && notice ? getHostNoticeMessage(notice) : undefined}
           interactionBlocked={serverInteractionActive}

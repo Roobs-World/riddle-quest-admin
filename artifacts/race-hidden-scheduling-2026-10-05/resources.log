@@ -1,0 +1,8 @@
+Browser resource ownership passed: production strict=false 1280px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.
+Browser resource ownership passed: production strict=false 390px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.
+Browser resource ownership passed: production strict=true 1280px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.
+Browser resource ownership passed: production strict=true 390px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.
+Browser resource ownership passed: development strict=false 1280px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.
+Browser resource ownership passed: development strict=false 390px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.
+Browser resource ownership passed: development strict=true 1280px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.
+Browser resource ownership passed: development strict=true 390px; 3 entry/unmount/remount cycles, exact replay and no retired scheduling.

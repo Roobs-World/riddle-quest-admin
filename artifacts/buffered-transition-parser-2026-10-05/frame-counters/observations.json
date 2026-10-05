@@ -1,0 +1,544 @@
+[
+  {
+    "run": 0,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 9.5,
+    "domCommitMs": null,
+    "rafObservedMs": 120.09999999403954,
+    "nextFrameMs": 145.39999999850988,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      1.7999999955295607,
+      34.999999995529606,
+      68.4999999955296
+    ],
+    "work": {
+      "parsers": [
+        {
+          "type": "game:loadRiddle",
+          "ms": 5.200000002980232
+        },
+        {
+          "type": "host:riddleLoaded",
+          "ms": 0
+        },
+        {
+          "type": "host:operationResult",
+          "ms": 0
+        }
+      ],
+      "storage": [
+        {
+          "key": "riddleQuest:tooltipSeen:achievementEarned:jest-guest",
+          "bytes": 4,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2115,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2129,
+          "ms": 0
+        }
+      ],
+      "dispatch": [
+        {
+          "type": "riddle-quest:victory-dismissed",
+          "ms": 0.10000000149011612
+        },
+        {
+          "type": "riddle-quest:game-to-host",
+          "message": "game:loadRiddle",
+          "ms": 6.700000002980232
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:riddleLoaded",
+          "ms": 0
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:operationResult",
+          "operation": "loadRiddle",
+          "ms": 0
+        }
+      ],
+      "frames": [
+        {
+          "ms": 2.600000001490116,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 2.5,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 3.399999998509884,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        }
+      ],
+      "geometry": []
+    },
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 1,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 6.700000002980232,
+    "domCommitMs": null,
+    "rafObservedMs": 110.10000000149012,
+    "nextFrameMs": 153.20000000298023,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -0.20000000298023224,
+      32.99999999701981,
+      49.79999999701977
+    ],
+    "work": {
+      "parsers": [
+        {
+          "type": "game:loadRiddle",
+          "ms": 4.200000002980232
+        },
+        {
+          "type": "host:riddleLoaded",
+          "ms": 0.19999999552965164
+        },
+        {
+          "type": "host:operationResult",
+          "ms": 0
+        }
+      ],
+      "storage": [
+        {
+          "key": "riddleQuest:tooltipSeen:achievementEarned:jest-guest",
+          "bytes": 4,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2115,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2129,
+          "ms": 0
+        }
+      ],
+      "dispatch": [
+        {
+          "type": "riddle-quest:victory-dismissed",
+          "ms": 1.0999999940395355
+        },
+        {
+          "type": "riddle-quest:game-to-host",
+          "message": "game:loadRiddle",
+          "ms": 4.300000004470348
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:riddleLoaded",
+          "ms": 0.19999999552965164
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:operationResult",
+          "operation": "loadRiddle",
+          "ms": 0
+        }
+      ],
+      "frames": [
+        {
+          "ms": 4.5,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 4.600000001490116,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        }
+      ],
+      "geometry": []
+    },
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 2,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 7.799999997019768,
+    "domCommitMs": null,
+    "rafObservedMs": 80.40000000596046,
+    "nextFrameMs": 109,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -7.499999995529606,
+      25.80000000447035,
+      59.1000000044703
+    ],
+    "work": {
+      "parsers": [
+        {
+          "type": "game:loadRiddle",
+          "ms": 4.299999997019768
+        },
+        {
+          "type": "host:riddleLoaded",
+          "ms": 1.1000000014901161
+        },
+        {
+          "type": "host:operationResult",
+          "ms": 0
+        }
+      ],
+      "storage": [
+        {
+          "key": "riddleQuest:tooltipSeen:achievementEarned:jest-guest",
+          "bytes": 4,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2115,
+          "ms": 2.8000000044703484
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2129,
+          "ms": 0
+        }
+      ],
+      "dispatch": [
+        {
+          "type": "riddle-quest:victory-dismissed",
+          "ms": 0
+        },
+        {
+          "type": "riddle-quest:game-to-host",
+          "message": "game:loadRiddle",
+          "ms": 5.699999995529652
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:riddleLoaded",
+          "ms": 1.2000000029802322
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:operationResult",
+          "operation": "loadRiddle",
+          "ms": 0
+        }
+      ],
+      "frames": [
+        {
+          "ms": 2.600000001490116,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 3.4000000059604645,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 2.7999999970197678,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        }
+      ],
+      "geometry": []
+    },
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 3,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 36.099999994039536,
+    "domCommitMs": null,
+    "rafObservedMs": 114.5,
+    "nextFrameMs": 139.5,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -7.2999999999999545,
+      59.40000000000009,
+      92.79999999999995
+    ],
+    "work": {
+      "parsers": [
+        {
+          "type": "game:loadRiddle",
+          "ms": 29.69999999552965
+        },
+        {
+          "type": "host:riddleLoaded",
+          "ms": 1.2999999970197678
+        },
+        {
+          "type": "host:operationResult",
+          "ms": 0
+        }
+      ],
+      "storage": [
+        {
+          "key": "riddleQuest:tooltipSeen:achievementEarned:jest-guest",
+          "bytes": 4,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2115,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2129,
+          "ms": 0
+        }
+      ],
+      "dispatch": [
+        {
+          "type": "riddle-quest:victory-dismissed",
+          "ms": 0.10000000149011612
+        },
+        {
+          "type": "riddle-quest:game-to-host",
+          "message": "game:loadRiddle",
+          "ms": 32.19999999552965
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:riddleLoaded",
+          "ms": 1.3999999985098839
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:operationResult",
+          "operation": "loadRiddle",
+          "ms": 0
+        }
+      ],
+      "frames": [
+        {
+          "ms": 2.100000001490116,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 2.4000000059604645,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        }
+      ],
+      "geometry": []
+    },
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 4,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 8.799999997019768,
+    "domCommitMs": null,
+    "rafObservedMs": 115.39999999850988,
+    "nextFrameMs": 140.5,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -8.299999999999955,
+      25.09999999999991,
+      91.70000000000005
+    ],
+    "work": {
+      "parsers": [
+        {
+          "type": "game:loadRiddle",
+          "ms": 2.600000001490116
+        },
+        {
+          "type": "host:riddleLoaded",
+          "ms": 0.10000000149011612
+        },
+        {
+          "type": "host:operationResult",
+          "ms": 0
+        }
+      ],
+      "storage": [
+        {
+          "key": "riddleQuest:tooltipSeen:achievementEarned:jest-guest",
+          "bytes": 4,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2115,
+          "ms": 0.10000000149011612
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2129,
+          "ms": 0
+        }
+      ],
+      "dispatch": [
+        {
+          "type": "riddle-quest:victory-dismissed",
+          "ms": 0
+        },
+        {
+          "type": "riddle-quest:game-to-host",
+          "message": "game:loadRiddle",
+          "ms": 7.5
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:riddleLoaded",
+          "ms": 0.10000000149011612
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:operationResult",
+          "operation": "loadRiddle",
+          "ms": 0
+        }
+      ],
+      "frames": [
+        {
+          "ms": 2.3000000044703484,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 2.2999999970197678,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 2,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        }
+      ],
+      "geometry": []
+    },
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 5,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 9.600000001490116,
+    "domCommitMs": null,
+    "rafObservedMs": 119.20000000298023,
+    "nextFrameMs": 143.80000000447035,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -9.399999995529697,
+      23.900000004470257,
+      90.6000000044703
+    ],
+    "work": {
+      "parsers": [
+        {
+          "type": "game:loadRiddle",
+          "ms": 5.600000001490116
+        },
+        {
+          "type": "host:riddleLoaded",
+          "ms": 0.10000000149011612
+        },
+        {
+          "type": "host:operationResult",
+          "ms": 0
+        }
+      ],
+      "storage": [
+        {
+          "key": "riddleQuest:tooltipSeen:achievementEarned:jest-guest",
+          "bytes": 4,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2115,
+          "ms": 0
+        },
+        {
+          "key": "riddleQuest:pendingPlay:v1:jest-guest:1:en",
+          "bytes": 2129,
+          "ms": 0
+        }
+      ],
+      "dispatch": [
+        {
+          "type": "riddle-quest:victory-dismissed",
+          "ms": 0.10000000149011612
+        },
+        {
+          "type": "riddle-quest:game-to-host",
+          "message": "game:loadRiddle",
+          "ms": 6.899999998509884
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:riddleLoaded",
+          "ms": 0.10000000149011612
+        },
+        {
+          "type": "riddle-quest:host-to-game",
+          "message": "host:operationResult",
+          "operation": "loadRiddle",
+          "ms": 0
+        }
+      ],
+      "frames": [
+        {
+          "ms": 2,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 2.7000000029802322,
+          "source": "()=>(t()[0]??e).focus({preventScroll:!0})"
+        },
+        {
+          "ms": 2.2999999970197678,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        },
+        {
+          "ms": 2.7000000029802322,
+          "source": "()=>{if(r||u!==o)return;if(i=null,document.hidden||!e()){s();return}let d=performance.now(),f=I(d,a??d);a=d;try{t(f)}catch(e){c();try{n(e)}catch{}return}u===o&&l()}"
+        }
+      ],
+      "geometry": []
+    },
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  }
+]

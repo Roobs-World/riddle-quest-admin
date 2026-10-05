@@ -1,0 +1,11 @@
+$ node scripts/verify-session-assembly-retention-browser.mjs && SESSION_RETENTION_REACT_MODE=production node scripts/verify-session-assembly-retention-browser.mjs
+{
+  "mode": "development",
+  "checks": 132,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 132,
+  "failures": []
+}

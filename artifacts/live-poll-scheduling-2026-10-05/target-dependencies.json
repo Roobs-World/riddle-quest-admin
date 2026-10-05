@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/5c1cc93bfecfd46d6da6dfe399db760b473398a16d1964f6c273d784ef847c82/facebook.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/target-metadata/5c1cc93bfecfd46d6da6dfe399db760b473398a16d1964f6c273d784ef847c82/facebook.json",
+    "sha256": "cce435155f1cb06398620909f05ffc775774680f8378b9899e137f9322dde73a"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/6d941d14af820dc98fecbe9cb1cb4eaf528a32917f09ff5b3258d9345ecf0dda/yahoo.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/target-metadata/6d941d14af820dc98fecbe9cb1cb4eaf528a32917f09ff5b3258d9345ecf0dda/yahoo.json",
+    "sha256": "ea1154ee14b8943310b98970be27ef9602c3554d8aa9800a2fdbfa25c3e3297a"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/3ff843d6e809e11b41e12ce16c097578db071d4fc2391f4aa767db75028257e1/netflix.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/target-metadata/3ff843d6e809e11b41e12ce16c097578db071d4fc2391f4aa767db75028257e1/netflix.json",
+    "sha256": "da115efbc632fc0b98516e531afd654510ffc8ece45fc774f21a93e0c4492fa0"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/fbbbf0de29627fe909bd0875b75ff2bc0affe157452dc64c702846923cb86b91/youtube.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/target-metadata/fbbbf0de29627fe909bd0875b75ff2bc0affe157452dc64c702846923cb86b91/youtube.json",
+    "sha256": "81a4f3cf9ba16dadcf9a2b2fd27c5505aa860216b075ff87587633c3f90f95de"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/68c1792d075cec118fc05967064fc898c78a1b62845b77c4f96d96d71939806c/reddit.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/target-metadata/68c1792d075cec118fc05967064fc898c78a1b62845b77c4f96d96d71939806c/reddit.json",
+    "sha256": "71e0cf78e4e0bb46fac723d3d8f92d83a51222b6cedce69f5bb668109338a09e"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/3c5d2f613d2309735f861c1cf5669130f1c6d71c08d403c57361d6cc4dfbd69e/jest.json",
+    "preserved": "artifacts/live-poll-scheduling-2026-10-05/target-metadata/3c5d2f613d2309735f861c1cf5669130f1c6d71c08d403c57361d6cc4dfbd69e/jest.json",
+    "sha256": "b2d87eacf0aaea131aeed9314ddffec10065cdba2d7fc0ed3124fd7800806c47"
+  }
+]

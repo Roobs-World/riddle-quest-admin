@@ -1,0 +1,80 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "independent correlated provider reads",
+    "actual": [
+      2,
+      3
+    ],
+    "expected": [
+      2,
+      3
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "native input starts a draft",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "obsolete load cannot deliver another board",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "newer native draft survives obsolete load",
+    "actual": "C",
+    "expected": "C"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "obsolete failure does not show recovery notice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "obsolete failure cannot start recovery reads",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-success",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  }
+]

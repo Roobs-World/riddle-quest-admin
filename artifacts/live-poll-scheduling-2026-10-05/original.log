@@ -1,0 +1,145 @@
+{
+  "mode": "development",
+  "checks": 79,
+  "samples": 11,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "healthy",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "disconnected",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "disconnected",
+      "name": "disconnected or failed subscriptions retain fast provider fallback",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held",
+      "name": "owned held commands do not leave idle observation timers",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "held",
+      "name": "held command produces no idle scheduler wakeups",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "backoff",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "backoff",
+      "name": "retained command retries on backoff without waiting for the push watchdog",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "watchdog",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "watchdog",
+      "name": "healthy watchdog has at most one fractional-timer tail",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retire",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "replace",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "healthy push avoids unnecessary half-second polling wakeups",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "terminal",
+      "name": "terminal receipt immediately stops polling",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live race polling scheduling
+
+15 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-poll-scheduling-browser.mjs:84:320 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 15,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

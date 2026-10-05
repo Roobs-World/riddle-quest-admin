@@ -1,0 +1,40 @@
+{
+  "mode": "development",
+  "checks": 19,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "stable",
+      "name": "Next reads through authority only when preparation is unavailable",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "stable",
+      "name": "ready Next acquires no additional native shared lock",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Classic preparation and native lock ownership
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-classic-question-preparation-browser.mjs:92:240 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

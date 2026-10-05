@@ -1,0 +1,128 @@
+[
+  {
+    "run": 0,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 7.399999998509884,
+    "domCommitMs": null,
+    "rafObservedMs": 133.89999999850988,
+    "nextFrameMs": 159.19999999552965,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      0.8999999955296971,
+      17.499999995529606,
+      100.8999999955297
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 1,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 6.899999998509884,
+    "domCommitMs": null,
+    "rafObservedMs": 82.29999999701977,
+    "nextFrameMs": 114.39999999850988,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -0.2000000044704393,
+      33.19999999552965,
+      49.8999999955297
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 2,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 8.899999998509884,
+    "domCommitMs": null,
+    "rafObservedMs": 88,
+    "nextFrameMs": 114.5,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -8.100000001490116,
+      25.299999998509975,
+      58.59999999850993
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 3,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 33.70000000298023,
+    "domCommitMs": null,
+    "rafObservedMs": 108.29999999701977,
+    "nextFrameMs": 132.5,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -5.399999998509884,
+      61.30000000149016,
+      78.0000000014902
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 4,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 8.599999994039536,
+    "domCommitMs": null,
+    "rafObservedMs": 118,
+    "nextFrameMs": 139.39999999850988,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      0.5,
+      33.799999999999955,
+      100.5
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 5,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "guidanceSeen": false,
+    "clickReturnMs": 7.600000001490116,
+    "domCommitMs": null,
+    "rafObservedMs": 123.40000000596046,
+    "nextFrameMs": 149.60000000149012,
+    "guidanceBefore": null,
+    "guidanceAfter": "leaderboardFifthCorrectAnswer",
+    "frameTimes": [
+      -2.5,
+      30.799999999999955,
+      97.5
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  }
+]

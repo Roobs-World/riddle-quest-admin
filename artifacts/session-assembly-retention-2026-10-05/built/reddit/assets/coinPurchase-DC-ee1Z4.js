@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Excelente`,COINS_SUFFIX:` moedas`,TAP_CHEST_TO_COLLECT:`Toque no baú para recolher suas moedas`,TITLE:`Moedas adicionadas!`},n={CoinPurchase:t}})))()}r();export{n as default};

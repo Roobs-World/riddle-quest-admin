@@ -1,6 +1,7 @@
 import {expect, it, jest} from "@jest/globals";
 import type {HostServices} from "../types";
 jest.mock("react", () => ({useCallback: <T>(callback: T) => callback, useEffect: () => undefined,
+  useMemo: <T>(factory: () => T) => factory(), useLayoutEffect: (effect: () => void) => effect(),
   useRef: <T>(current: T) => ({current}), useState: <T>(initial: T) => [initial, jest.fn()]}));
 jest.mock("../../analytics/events", () => ({trackEvent: jest.fn()}));
 jest.mock("../../observability/browserErrorReporter", () => ({captureBrowserException: jest.fn()}));

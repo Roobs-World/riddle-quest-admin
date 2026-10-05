@@ -200,3 +200,58 @@ it("does not refresh a replacement account after a previous player's delayed mut
   changeAccount("Bob");await flush();held.resolve({data: receipt});await completion;await flush();
   expect(mockLoadProfile.mock.calls.map(([uid]) => uid)).toEqual(["Bob"]);
 });
+
+it("retires an explicit profile read when a newer mutation refresh has published", async () => {
+  /** Earlier caller's snapshot is older than a concurrently accepted spend. */
+  const older = deferred<Record<string, unknown>>();
+  mockLoadProfile.mockReturnValueOnce(older.promise).mockResolvedValue({coins: 275});
+  /** Explicit callers and mutation follow-up share the same real provider instance. */
+  const services = createFirebaseHostServices();
+  /** Canonical newer publication is already accepted by the host subscription. */
+  const listener = jest.fn<(snapshot: AuthSnapshot) => void>();
+  services.auth.subscribe(listener);
+  /** Race coordination reads through this explicit identity method. */
+  const raceProfile = services.loadProfile("Alice");
+  await services.spendCoins({reason: "continue", requestId: "newer-spend", amount: 25,
+    riddleId: "riddle-1", gameMode: "classic", sessionToken: "owned-session"});
+  await flush();
+  expect(listener.mock.calls.at(-1)?.[0].profile?.coins).toBe(275);
+  older.resolve({coins: 300});
+  expect(await raceProfile).toBeNull();
+  expect(listener.mock.calls.at(-1)?.[0].profile?.coins).toBe(275);
+});
+
+it("publishes a current explicit profile read through the canonical subscription", async () => {
+  mockLoadProfile.mockResolvedValue({coins: 450});
+  /** Explicit readers share the same published snapshot as mutation follow-ups. */
+  const services = createFirebaseHostServices();
+  /** Subscription receives the exact accepted latest read. */
+  const listener = jest.fn<(snapshot: AuthSnapshot) => void>();
+  services.auth.subscribe(listener);
+  expect(await services.loadProfile("Alice")).toMatchObject({coins: 450});
+  expect(listener.mock.calls.at(-1)?.[0].profile?.coins).toBe(450);
+});
+
+it.each(["replacement", "same-uid-return", "dispose"])("retires an explicit profile read after %s", async transition => {
+  /** Raw transport is still pending when its admitting identity visit retires. */
+  const held = deferred<Record<string, unknown>>();
+  mockLoadProfile.mockReturnValueOnce(held.promise).mockResolvedValue({coins: 800});
+  /** Account visits are owned by the real Firebase adapter, including same-UID re-entry. */
+  const services = createFirebaseHostServices();
+  /** Native observer cleanup must retire explicit profile requests too. */
+  const stop = services.auth.subscribe(jest.fn());
+  /** Explicit optional read captured before account replacement or subscription disposal. */
+  const pending = services.loadProfile("Alice");
+  if (transition === "replacement") changeAccount("Bob");
+  else if (transition === "same-uid-return") {changeAccount(null);changeAccount("Alice");}
+  else stop();
+  await flush();held.resolve({coins: 10});
+  expect(await pending).toBeNull();
+});
+
+it("does not start a profile transport for a different account identifier", async () => {
+  /** The currently selected SDK identity is Alice, not the requested Bob. */
+  const services = createFirebaseHostServices();
+  expect(await services.loadProfile("Bob")).toBeNull();
+  expect(mockLoadProfile).not.toHaveBeenCalled();
+});

@@ -306,9 +306,10 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     /** Loads profile. */
     async loadProfile(userId) {
-      /** Provides r. */
-      const user = latestSnapshot.user?.uid === userId ? latestSnapshot.user : null;
-      return reloadProfile(user);
+      // Explicit race/identity reads share publication ordering with mutation and auth refreshes.
+      // A superseded read returns no snapshot instead of letting its caller rewind newer host state.
+      if (latestSnapshot.user?.uid !== userId) return null;
+      return refreshProfile();
     },
     /** Completes game. */
     async completeGame(input) {

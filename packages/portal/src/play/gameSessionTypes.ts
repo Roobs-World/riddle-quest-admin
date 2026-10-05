@@ -156,6 +156,8 @@ export type GameSessionAction =
       profile?: BridgeProfile | null;
       /** The preserve notice used by the current operation. */
       preserveNotice?: boolean;
+      /** Ordinary unchanged deliveries retain the current board; reconciliation explicitly rebuilds it. */
+      preserveUnchanged?: boolean;
     }
   | {
       /** Stores type. */

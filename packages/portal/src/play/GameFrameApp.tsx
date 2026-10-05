@@ -47,6 +47,7 @@ import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mo
 import type {ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {useGameSurfaceCoordination} from "./useGameSurfaceCoordination";
+import {useClassicQuestionPreparation} from "./game/hooks/useClassicQuestionPreparation";
 import {useAttemptRecovery} from "./game/hooks/useAttemptRecovery";
 import type {RaceTo10GameProps} from "./race/RaceTo10Game.types";
 import type {AttemptRecoveryCapability} from "../platform/types";
@@ -61,6 +62,7 @@ export function GameFrameApp({
   raceSurface,
   localBridge = false,
   economyAvailable = true,
+  prepareClassicQuestions = false,
   raceOwnerId,
   onLiveRaceBalance,
   interactionBlocked = false,
@@ -91,6 +93,8 @@ export function GameFrameApp({
   localBridge?: boolean;
   /** Presentation exposes paid actions only when the host has an economy authority. */
   economyAvailable?: boolean;
+  /** Hosted authorities may silently prepare the successor during Classic victory. */
+  prepareClassicQuestions?: boolean;
   /** Authenticated game account used to isolate race resume state. */
   raceOwnerId?: string;
   /** Applies a transport-confirmed terminal balance to the owning host profile. */
@@ -218,6 +222,8 @@ export function GameFrameApp({
     },
     [localBridge],
   );
+
+  useClassicQuestionPreparation({enabled: prepareClassicQuestions, state, postToHost});
 
   /** Sends ready. */
   const sendReady = useCallback(() => {

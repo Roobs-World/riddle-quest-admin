@@ -1,0 +1,48 @@
+{
+  "mode": "development",
+  "checks": 14,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "unavailable",
+      "name": "unavailable invitation releases its owned poll timer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "unavailable",
+      "name": "unavailable invitation causes no idle polling callbacks",
+      "actual": 69,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "unavailable",
+      "name": "terminal recovery events do not rearm a poll timer",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live confirmation retirement assertions
+
+3 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-confirmation-retirement-browser.mjs:62:227 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

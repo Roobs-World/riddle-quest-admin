@@ -1,0 +1,2609 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate-ready",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "fresh-ready",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "riddle-only",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "same-question refresh applies current profile balance",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-refresh",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reconcile",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": ""
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "P"
+        ],
+        "removed": [],
+        "current": "P"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "native draft survives repeated ready question",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "new authoritative hint becomes locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updated-hint",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": "I"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "I"
+        ],
+        "removed": [],
+        "current": "I"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "P"
+        ],
+        "removed": [],
+        "current": "PI"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "native draft survives repeated ready question",
+    "actual": "qqqqq",
+    "expected": "qqqqq"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted-progress",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "characterData",
+        "old": "P",
+        "added": [],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "native draft survives repeated ready question",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "new session publishes its new question",
+    "actual": "What has a face and hands but no arms?",
+    "expected": "What has a face and hands but no arms?"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "new-session",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": ""
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "held native submission stays singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "provisional feedback remains while its receipt is held",
+    "actual": "pqqqq",
+    "expected": "pqqqq"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-receipt",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "unchanged Classic delivery corrects the temporary Daily mode",
+    "actual": "Classic",
+    "expected": "Classic"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mode-fallback",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "same-question refresh applies current profile balance",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": ""
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "P"
+        ],
+        "removed": [],
+        "current": "P"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "native draft survives repeated ready question",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "new authoritative hint becomes locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": "I"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "I"
+        ],
+        "removed": [],
+        "current": "I"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "P"
+        ],
+        "removed": [],
+        "current": "PI"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "native draft survives repeated ready question",
+    "actual": "qqqqq",
+    "expected": "qqqqq"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "characterData",
+        "old": "P",
+        "added": [],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "native draft survives repeated ready question",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "new session publishes its new question",
+    "actual": "What has a face and hands but no arms?",
+    "expected": "What has a face and hands but no arms?"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": ""
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "held native submission stays singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "provisional feedback remains while its receipt is held",
+    "actual": "pqqqq",
+    "expected": "pqqqq"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "unchanged Classic delivery corrects the temporary Daily mode",
+    "actual": "Classic",
+    "expected": "Classic"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "duplicate-ready",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "fresh-ready",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "riddle-only",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "same-question refresh applies current profile balance",
+    "actual": "777",
+    "expected": "777"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-refresh",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reconcile",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": ""
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "P"
+        ],
+        "removed": [],
+        "current": "P"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "native draft survives repeated ready question",
+    "actual": "PI",
+    "expected": "PI"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "new authoritative hint becomes locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "updated-hint",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": "I"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "I"
+        ],
+        "removed": [],
+        "current": "I"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "P"
+        ],
+        "removed": [],
+        "current": "PI"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "native draft survives repeated ready question",
+    "actual": "qqqqq",
+    "expected": "qqqqq"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "accepted-progress",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "characterData",
+        "old": "P",
+        "added": [],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      },
+      {
+        "type": "childList",
+        "old": null,
+        "added": [
+          "q"
+        ],
+        "removed": [],
+        "current": "qqqqq"
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "native draft survives repeated ready question",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "new session publishes its new question",
+    "actual": "What has a face and hands but no arms?",
+    "expected": "What has a face and hands but no arms?"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "new-session",
+    "name": "DOM mutation trace",
+    "actual": [
+      {
+        "type": "childList",
+        "old": null,
+        "added": [],
+        "removed": [
+          "P"
+        ],
+        "current": ""
+      }
+    ],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "repeated handshake still receives initialization",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "held native submission stays singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "provisional feedback remains while its receipt is held",
+    "actual": "pqqqq",
+    "expected": "pqqqq"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-receipt",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "native input starts a draft",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "unchanged refresh avoids clearing; authority changes still rebuild",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "native draft survives repeated ready question",
+    "actual": "P",
+    "expected": "P"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "repeated handshake still receives initialization",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "same issued session remains displayed",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "unchanged Classic delivery corrects the temporary Daily mode",
+    "actual": "Classic",
+    "expected": "Classic"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "mode-fallback",
+    "name": "DOM mutation trace",
+    "actual": [],
+    "diagnostic": true
+  }
+]

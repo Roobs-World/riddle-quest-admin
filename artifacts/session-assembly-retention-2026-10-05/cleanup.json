@@ -1,0 +1,30 @@
+{
+  "temporaryBuildRemoved": true,
+  "ownedTargetMetadataPreservedAndRemoved": 6,
+  "fixtureCachesRemoved": true,
+  "ownedFirefoxTabsClosed": true,
+  "remainingFirefoxPages": [
+    "about:blank"
+  ],
+  "jobs": {
+    "originalMinimal": 1,
+    "originalControl": 1,
+    "originalExpanded": 1,
+    "currentOnlyNodeHarness": 1,
+    "currentOnlyShellWithCapture": 0,
+    "weakGateProbe": 0,
+    "typeProbe": 0,
+    "focusedUnit": 0,
+    "tsdocProbe": 1,
+    "tsdocFixed": 0,
+    "originalFinalMatrix": 1,
+    "finalBrowserProbe": 0,
+    "finalGates": 0,
+    "finalBuilds": 0,
+    "finalBrowserMatrices": 0,
+    "relatedDevelopment": 0,
+    "relatedProduction": 0,
+    "firefoxFixtureServer": 130,
+    "builtBrowser": 0
+  }
+}

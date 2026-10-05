@@ -1,0 +1,42 @@
+FAIL src/play/__tests__/classicQuestionPreparation.test.ts
+  ● prepares the next issued question without publishing it or changing visible host state
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+    1: {"payload": {"profile": {"classicIndex": 1, "coins": 300}, "riddle": {"answerLength": 5, "attemptsUsed": 0, "awaitingContinue": false, "gameMode": "classic", "hasUsedContinue": false, "index": 2, "riddleId": "q2", "sessionToken": "00000000-0000-4000-8000-000000000002", "text": "What has keys?"}}, "requestId": "prepare-next", "type": "host:riddleLoaded"}
+
+      37 |   await owner.lifecycle.loadRiddle(prepare, "prepare-next");
+      38 |   expect(owner.load).toHaveBeenCalledTimes(2);
+    > 39 |   expect(owner.post).not.toHaveBeenCalled(); expect(owner.notice).not.toHaveBeenCalled();
+         |                          ^
+      40 |   expect(owner.operation).not.toHaveBeenCalled(); expect(owner.activity).not.toHaveBeenCalled();
+      41 | });
+      42 |
+
+      at Object.<anonymous> (src/play/__tests__/classicQuestionPreparation.test.ts:39:26)
+
+  ● delivers a prepared successor on explicit Next without another guarded content read
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 2
+    Received number of calls: 3
+
+      48 |   owner.post.mockClear(); owner.operation.mockClear(); owner.profile.coins = 450;
+      49 |   expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 2}, "explicit-next")).toBe(true);
+    > 50 |   expect(owner.load).toHaveBeenCalledTimes(2);
+         |                      ^
+      51 |   expect(owner.post).toHaveBeenCalledTimes(1);
+      52 |   expect(owner.post.mock.calls[0][0]).toMatchObject({type: "host:riddleLoaded", requestId: "explicit-next",
+      53 |     payload: {riddle: question(2), profile: {coins: 450}}});
+
+      at Object.<anonymous> (src/play/__tests__/classicQuestionPreparation.test.ts:50:22)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.184 s
+Ran all test suites matching src/play/__tests__/classicQuestionPreparation.test.ts.

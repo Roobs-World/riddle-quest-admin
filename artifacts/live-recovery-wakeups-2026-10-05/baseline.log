@@ -1,0 +1,153 @@
+{
+  "mode": "development",
+  "checks": 82,
+  "samples": 11,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "online-poll",
+      "name": "queued recovery admits exactly one prompt catch-up read",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "online-poll",
+      "name": "catch-up shows current rival progress",
+      "actual": "Riddles completed: 0 / 10",
+      "expected": "Riddles completed: 3 / 10"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "visible-poll",
+      "name": "queued recovery admits exactly one prompt catch-up read",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "visible-poll",
+      "name": "catch-up shows current rival progress",
+      "actual": "Riddles completed: 0 / 10",
+      "expected": "Riddles completed: 3 / 10"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "online-command",
+      "name": "queued recovery admits exactly one prompt catch-up read",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "online-command",
+      "name": "catch-up shows current rival progress",
+      "actual": "Riddles completed: 0 / 10",
+      "expected": "Riddles completed: 3 / 10"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "visible-command",
+      "name": "queued recovery admits exactly one prompt catch-up read",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "visible-command",
+      "name": "catch-up shows current rival progress",
+      "actual": "Riddles completed: 0 / 10",
+      "expected": "Riddles completed: 3 / 10"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "storm",
+      "name": "queued recovery admits exactly one prompt catch-up read",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "storm",
+      "name": "catch-up shows current rival progress",
+      "actual": "Riddles completed: 0 / 10",
+      "expected": "Riddles completed: 3 / 10"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "countdown",
+      "name": "queued recovery admits exactly one prompt catch-up read",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "countdown",
+      "name": "catch-up shows current rival progress",
+      "actual": "Riddles completed: 0 / 10",
+      "expected": "Riddles completed: 3 / 10"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "countdown",
+      "name": "server start releases the first playable prompt promptly",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "backoff",
+      "name": "queued recovery admits exactly one prompt catch-up read",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "backoff",
+      "name": "catch-up shows current rival progress",
+      "actual": "Riddles completed: 0 / 10",
+      "expected": "Riddles completed: 3 / 10"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "backoff",
+      "name": "queued recovery retries after outage backoff and before the healthy watchdog",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live wakeups survive owned in-flight deliveries
+
+16 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs:76:316 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 16,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0
