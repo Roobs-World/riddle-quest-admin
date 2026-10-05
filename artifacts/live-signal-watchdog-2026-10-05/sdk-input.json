@@ -1,0 +1,10 @@
+[
+  {
+    "path": "/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/firebase@12.19.0/node_modules/firebase/functions/dist/index.cjs.js",
+    "sha256": "fdf20bb16e61902acec68ff92c71ef4fbe4eacbf7a1d8065d0e590f384d49308"
+  },
+  {
+    "path": "/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/@firebase+functions@0.14.0_@firebase+app@0.16.2/node_modules/@firebase/functions/dist/index.cjs.js",
+    "sha256": "70c01851102d034f0f763edf7aba042f37ede9b4c11136c101de1dea66993afe"
+  }
+]

@@ -1,0 +1,42 @@
+$ pnpm check:target-boundaries && pnpm check:locales && NODE_ENV=production tsc -b && YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 YOUTUBE_BUILD=1 NODE_ENV=production vite build --mode youtube && pnpm audit:youtube-artifact:fixture
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.789033ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.946398ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.967131ms)
+✔ rejects imports between different target owners (1.579153ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.644732ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.541571ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.041243ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.702401ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.060319ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.830945ms)
+✔ aggregates violations in deterministic file and source order (1.790954ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 137.839713
+Web Target boundary audit passed (315 files, 1366 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for youtube...
+transforming...
+✓ 49 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/youtube-content-manifest.json          0.34 kB │ gzip:  0.25 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/index.html                             0.89 kB │ gzip:  0.44 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/third-party-licenses.txt               1.73 kB │ gzip:  0.89 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/assets/playable-pack-en-CkYE08kx.js    3.12 kB │ gzip:  1.74 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/assets/index-B_PaAXzP.js              99.55 kB │ gzip: 34.12 kB
+../../../../../../tmp/riddle-signal-watchdog-builds-vczfuj4t/youtube/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 940ms
+$ node scripts/audit-youtube-artifact.mjs --allow-incomplete-fixture
+YouTube artifact audit passed: 9 files, 0.32 MiB total and conservative initial transfer, 1 locale(s)

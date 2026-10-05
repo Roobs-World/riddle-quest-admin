@@ -1,0 +1,34 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "eof",
+    "name": "one mounted player owns one join",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "eof",
+    "name": "only a failed connection renews the SDK wait",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "eof",
+    "name": "retired or failed connection signals abort",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "eof",
+    "name": "a live recovered connection restores push health",
+    "actual": true,
+    "expected": true
+  }
+]

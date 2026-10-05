@@ -1,0 +1,6 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 3 production declarations are undocumented.
+- packages/portal/src/play/__tests__/firebaseLiveRaceRecovery.test.ts:18 start
+- packages/portal/src/play/__tests__/firebaseLiveRaceRecovery.test.ts:24 revision
+- packages/portal/src/play/__tests__/firebaseLiveRaceRecovery.test.ts:167 revision
+[ELIFECYCLE] Command failed with exit code 1.

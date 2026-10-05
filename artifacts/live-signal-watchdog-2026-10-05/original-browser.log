@@ -1,0 +1,72 @@
+{
+  "mode": "development",
+  "checks": 17,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "only a failed connection renews the SDK wait",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "retired or failed connection signals abort",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "a live recovered connection restores push health",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "poll cadence returns to the healthy watchdog",
+      "actual": 500,
+      "expected": 5000
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "one new revision wakes a recovered match exactly once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "late obsolete channels cannot change admitted health",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live signal watchdog recovery
+
+6 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-signal-watchdog-browser.mjs:76:235 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 6,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

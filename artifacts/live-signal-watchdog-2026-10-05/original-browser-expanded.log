@@ -1,0 +1,216 @@
+{
+  "mode": "development",
+  "checks": 104,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "only a failed connection renews the SDK wait",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "retired or failed connection signals abort",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "a live recovered connection restores push health",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "poll cadence returns to the healthy watchdog",
+      "actual": 500,
+      "expected": 5000
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "one new revision wakes a recovered match exactly once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "eof",
+      "name": "late obsolete channels cannot change admitted health",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "headers",
+      "name": "only a failed connection renews the SDK wait",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "headers",
+      "name": "retired or failed connection signals abort",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "headers",
+      "name": "a live recovered connection restores push health",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "headers",
+      "name": "poll cadence returns to the healthy watchdog",
+      "actual": 500,
+      "expected": 5000
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "headers",
+      "name": "one new revision wakes a recovered match exactly once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "headers",
+      "name": "late obsolete headers or chunks cannot publish a revision",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "chunks",
+      "name": "only a failed connection renews the SDK wait",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "chunks",
+      "name": "retired or failed connection signals abort",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "chunks",
+      "name": "a live recovered connection restores push health",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "chunks",
+      "name": "poll cadence returns to the healthy watchdog",
+      "actual": 500,
+      "expected": 5000
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "chunks",
+      "name": "one new revision wakes a recovered match exactly once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "chunks",
+      "name": "late obsolete headers or chunks cannot publish a revision",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending",
+      "name": "only a failed connection renews the SDK wait",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending",
+      "name": "retired or failed connection signals abort",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending",
+      "name": "a live recovered connection restores push health",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending",
+      "name": "poll cadence returns to the healthy watchdog",
+      "actual": 500,
+      "expected": 5000
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending",
+      "name": "one new revision wakes a recovered match exactly once",
+      "actual": 1,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "pending",
+      "name": "late obsolete headers or chunks cannot publish a revision",
+      "actual": 2,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live signal watchdog recovery
+
+24 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-signal-watchdog-browser.mjs:78:235 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 24,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0
