@@ -67,10 +67,12 @@ export const RaceRiddlePromptSchema = z
     evaluation: z.object({answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS), locale: RaceLocaleSchema}).strict().optional(),
   })
   .strict()
-  .superRefine((prompt, context) => {
+  .check((context) => {
+    /** Current prompt whose history must fit its answer and consumed attempts. */
+    const prompt = context.value;
     if (prompt.confirmedGuesses && (prompt.confirmedGuesses.length > prompt.guessesUsed ||
       prompt.confirmedGuesses.some(row => row.guess.length !== prompt.answerLength || row.feedback.length !== prompt.answerLength)))
-      context.addIssue({code: "custom", message: "Confirmed rows must match the current question and consumed attempts."});
+      context.issues.push({code: "custom", input: prompt, message: "Confirmed rows must match the current question and consumed attempts."});
   });
 /** Current riddle presented during an active run. */
 export type RaceRiddlePrompt = z.infer<typeof RaceRiddlePromptSchema>;
@@ -111,9 +113,11 @@ export const RaceOpponentSchema = z
     events: z.array(RaceGhostEventSchema).max(RACE_DECK_SIZE * (RACE_MAX_HINTS_PER_RIDDLE + 1)),
   })
   .strict()
-  .superRefine((opponent, context) => {
+  .check((context) => {
+    /** Recorded opponent timeline bounded by its authoritative finish. */
+    const opponent = context.value;
     if (opponent.events.some(event => event.adjustedElapsedMs > opponent.adjustedFinishMs))
-      context.addIssue({code: "custom", message: "Opponent history cannot extend beyond its recorded finish."});
+      context.issues.push({code: "custom", input: opponent, message: "Opponent history cannot extend beyond its recorded finish."});
   });
 /** Answer-free opponent identity and ghost playback data. */
 export type RaceOpponent = z.infer<typeof RaceOpponentSchema>;

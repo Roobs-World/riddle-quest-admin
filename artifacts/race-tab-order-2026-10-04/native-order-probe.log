@@ -1,0 +1,40 @@
+{
+  "mode": "development",
+  "checks": 24,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "destination": "tournaments",
+      "name": "forward Tab from the selected final eligible control wraps to Close",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "destination": "tournaments",
+      "name": "reverse Tab wraps to the selected tab rather than a skipped tab",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Multiplayer native Tab order
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-tab-order-browser.mjs:42:229 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

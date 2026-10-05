@@ -154,7 +154,7 @@ test('published inventory reflects final chunk bytes after private map cleanup',
   const path = await import('node:path');
   const {fileURLToPath} = await import('node:url');
   const repository = fileURLToPath(new URL('../../..', import.meta.url));
-  const output = path.join(repository, 'packages/portal/dist-facebook');
+  const output = path.join(repository, 'builds/facebook');
   const original = process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
   t.after(() => {
     if (original === undefined) delete process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;

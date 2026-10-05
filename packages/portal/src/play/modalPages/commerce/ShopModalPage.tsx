@@ -79,7 +79,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
             ) : (
               <img className="shop-product-coins" src={coinUrl} alt="" />
             )}
-            <strong className="shop-product-name">{product.name}</strong>
+            <h3 className="shop-product-name">{product.name}</h3>
             {product.productType === "subscription" ? (
               <span className="shop-product-amount">
                 {product.subscriptionStatus === "active"

@@ -1,0 +1,11 @@
+$ node scripts/verify-live-countdown-clock-browser.mjs && LIVE_COUNTDOWN_REACT_MODE=production node scripts/verify-live-countdown-clock-browser.mjs
+{
+  "mode": "development",
+  "checks": 354,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 354,
+  "failures": []
+}

@@ -5,32 +5,30 @@
     {
       "viewport": 1280,
       "pollWindowMs": 3250,
-      "pollCount": 7,
+      "pollCount": 6,
       "pollIntervalsMs": [
+        500.30000000074506,
+        500.3999999985099,
+        500.4000000022352,
         500.5,
-        500.59999999962747,
-        500.40000000037253,
-        500.40000000037253,
-        500.5,
-        500.5
+        500.30000000074506
       ],
-      "opponentDisplayDelayMs": 370,
-      "commandWhilePollHeldMs": 109
+      "opponentDisplayDelayMs": 31,
+      "commandWhilePollHeldMs": 95
     },
     {
       "viewport": 390,
       "pollWindowMs": 3250,
-      "pollCount": 7,
+      "pollCount": 6,
       "pollIntervalsMs": [
-        500.5,
-        500.5,
-        500.40000000037253,
-        500.40000000037253,
-        500.5,
-        500.5
+        500.29999999701977,
+        500.30000000074506,
+        500.30000000074506,
+        500.30000000074506,
+        500.30000000074506
       ],
-      "opponentDisplayDelayMs": 260,
-      "commandWhilePollHeldMs": 105
+      "opponentDisplayDelayMs": 137,
+      "commandWhilePollHeldMs": 100
     }
   ]
 }

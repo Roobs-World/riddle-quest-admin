@@ -1,0 +1,25 @@
+✔ each target rejects every other provider module, including resolved aliases and dynamic imports (1.019932ms)
+✔ transitive SDK packages and tooling fail closed on every artifact (0.282516ms)
+✔ real bundler rejects aliased and lazy provider imports plus SDK packages before minification (7924.042585ms)
+✔ concurrent custom outputs retain separate complete inventories and preserve canonical release evidence (955.537538ms)
+✔ later generation/write failures and generate-only builds cannot leave successful evidence (4302.714387ms)
+✔ published inventory reflects final chunk bytes after private map cleanup (567.840683ms)
+✔ release evidence root is shared by builds and verification without changing canonical source inventories (0.37474ms)
+✔ frozen license inventory preserves exact notices and fails closed without requerying the package store (1169.252608ms)
+Prepared itch HTML5 handoff build-itch.zip (ec8e6fb38a085a651ef61cfa73c69fbd77316bbec3d43d6694e8ed0670d32b57).
+Prepared newgrounds HTML5 handoff build-newgrounds.zip (ec8e6fb38a085a651ef61cfa73c69fbd77316bbec3d43d6694e8ed0670d32b57).
+✔ one preparation creates many verified handoffs and supports a newly registered destination (10.307759ms)
+Prepared itch HTML5 handoff build-itch.zip (ec8e6fb38a085a651ef61cfa73c69fbd77316bbec3d43d6694e8ed0670d32b57).
+Prepared itch HTML5 handoff build-itch.zip (ec8e6fb38a085a651ef61cfa73c69fbd77316bbec3d43d6694e8ed0670d32b57).
+✔ single destination prepares fresh and changed source cannot be reused (10.842632ms)
+✔ failed preparation removes stale evidence and never writes a destination receipt (1.619508ms)
+✔ production verification uses the canonical release E2E gate without downgrading content to a fixture (0.207834ms)
+✔ backend production coverage retains the unit thresholds and includes the emulator paths (1.011517ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14996.490146

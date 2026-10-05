@@ -1,0 +1,95 @@
+{
+  "fixtureResetReason": "Original anchored attempt inherited the centered fixture gameTour seen marker on the same local origin. Reset only the fixture marker and reloaded before verified comparisons.",
+  "attempts": [
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"original centered after native locale selection\",\n  \"locale\": \"de\",\n  \"copy\": {\n    \"title\": \"Climb the leaderboard\",\n    \"body\": \"Five correct answers! Open your profile to see how you rank.\",\n    \"button\": \"Verstanden\"\n  },\n  \"expected\": {\n    \"title\": \"Steig in der Bestenliste auf\",\n    \"body\": \"Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.\",\n    \"button\": \"Verstanden\",\n    \"id\": \"leaderboardFifthCorrectAnswer\"\n  },\n  \"targetUpdates\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": true,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error: Script execution failed: TypeError: can't access property \"getBoundingClientRect\", document.querySelector(...) is null\n\n```json\n\"[error]\"\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"repaired centered German\",\n  \"locale\": \"de\",\n  \"copy\": {\n    \"title\": \"Steig in der Bestenliste auf\",\n    \"body\": \"Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.\",\n    \"button\": \"Verstanden\"\n  },\n  \"expected\": {\n    \"title\": \"Steig in der Bestenliste auf\",\n    \"body\": \"Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.\",\n    \"button\": \"Verstanden\",\n    \"id\": \"leaderboardFifthCorrectAnswer\"\n  },\n  \"targetUpdates\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"repaired centered viewport signals\",\n  \"before\": 0,\n  \"after\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"repaired centered native dismissal\",\n  \"cards\": 0,\n  \"marker\": \"seen\",\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"original anchored Arabic after fixture reset\",\n  \"locale\": \"ar\",\n  \"title\": \"Submit your answer\",\n  \"expectedTitle\": \"أرسل إجابتك\",\n  \"targetLeft\": 230,\n  \"highlightLeft\": 34,\n  \"highlightMatches\": false,\n  \"targetUpdates\": 1,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"repaired anchored Arabic\",\n  \"locale\": \"ar\",\n  \"title\": \"أرسل إجابتك\",\n  \"expectedTitle\": \"أرسل إجابتك\",\n  \"targetLeft\": 230,\n  \"highlightLeft\": 224,\n  \"highlightMatches\": true,\n  \"targetUpdates\": 2,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"repaired suspended locale change\",\n  \"locale\": \"en\",\n  \"cards\": 0,\n  \"before\": 2,\n  \"after\": 2,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"repaired resumed English\",\n  \"locale\": \"en\",\n  \"title\": \"Submit your answer\",\n  \"expectedTitle\": \"Submit your answer\",\n  \"highlightMatches\": true,\n  \"targetUpdates\": 3,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    },
+    {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "Script ran on page and returned:\n```json\n{\n  \"phase\": \"repaired anchored native dismissal\",\n  \"cards\": 0,\n  \"marker\": \"seen\",\n  \"before\": 3,\n  \"after\": 3,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
+        }
+      ]
+    }
+  ]
+}

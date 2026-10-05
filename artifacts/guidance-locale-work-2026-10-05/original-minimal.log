@@ -1,0 +1,18 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.tooltip-card') to be detached[22m
+[2m    64 × locator resolved to visible <section role="dialog" tabindex="-1" aria-modal="true" class="tooltip-card" data-analytics-screen="tooltip" aria-labelledby="guidance-tooltip-leaderboardFifthCorrectAnswer-title" aria-describedby="guidance-tooltip-leaderboardFifthCorrectAnswer-body">…</section>[22m
+
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-guidance-locale-work-browser.mjs:72:90 {
+  log: [
+    "  - waiting for locator('.tooltip-card') to be detached",
+    '    64 × locator resolved to visible <section role="dialog" tabindex="-1" aria-modal="true" class="tooltip-card" data-analytics-screen="tooltip" aria-labelledby="guidance-tooltip-leaderboardFifthCorrectAnswer-title" aria-describedby="guidance-tooltip-leaderboardFifthCorrectAnswer-body">…</section>'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

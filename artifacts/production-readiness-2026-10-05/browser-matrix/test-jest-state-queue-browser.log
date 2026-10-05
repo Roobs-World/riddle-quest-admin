@@ -1,0 +1,13 @@
+$ node scripts/verify-jest-state-queue-browser.mjs && JEST_QUEUE_REACT_MODE=production node scripts/verify-jest-state-queue-browser.mjs
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 224,
+  "failures": []
+}
+{
+  "mode": "production",
+  "baseline": false,
+  "checks": 224,
+  "failures": []
+}

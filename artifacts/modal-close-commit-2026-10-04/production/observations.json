@@ -671,12 +671,12 @@
     "scenario": "unlock",
     "name": "ordinary parent renders do not rebuild the keyboard listener",
     "actual": [
-      2,
-      1
+      1,
+      0
     ],
     "expected": [
-      2,
-      1
+      1,
+      0
     ]
   },
   {
@@ -783,12 +783,12 @@
     "scenario": "lock",
     "name": "ordinary parent renders do not rebuild the keyboard listener",
     "actual": [
-      2,
-      1
+      1,
+      0
     ],
     "expected": [
-      2,
-      1
+      1,
+      0
     ]
   },
   {
@@ -1499,12 +1499,12 @@
     "scenario": "unlock",
     "name": "ordinary parent renders do not rebuild the keyboard listener",
     "actual": [
-      2,
-      1
+      1,
+      0
     ],
     "expected": [
-      2,
-      1
+      1,
+      0
     ]
   },
   {
@@ -1611,12 +1611,12 @@
     "scenario": "lock",
     "name": "ordinary parent renders do not rebuild the keyboard listener",
     "actual": [
-      2,
-      1
+      1,
+      0
     ],
     "expected": [
-      2,
-      1
+      1,
+      0
     ]
   },
   {
@@ -2327,12 +2327,12 @@
     "scenario": "unlock",
     "name": "ordinary parent renders do not rebuild the keyboard listener",
     "actual": [
-      2,
-      1
+      1,
+      0
     ],
     "expected": [
-      2,
-      1
+      1,
+      0
     ]
   },
   {
@@ -2439,12 +2439,12 @@
     "scenario": "lock",
     "name": "ordinary parent renders do not rebuild the keyboard listener",
     "actual": [
-      2,
-      1
+      1,
+      0
     ],
     "expected": [
-      2,
-      1
+      1,
+      0
     ]
   },
   {

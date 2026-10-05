@@ -1,0 +1,1 @@
+import{t as e}from"./facebook-DXv2ey4f.js";e();

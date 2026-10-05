@@ -18,7 +18,7 @@ describeBrowser("instructions modal scrolling", () => {
 
   beforeAll(async () => {
     /** Directory containing the built Jest artifact. */
-    const dist = path.resolve(__dirname, "../../../dist-jest");
+    const dist = path.resolve(__dirname, "../../../../../builds/jest");
     /** Content types used to serve artifact resources. */
     const types: Record<string, string> = {
       ".css": "text/css",

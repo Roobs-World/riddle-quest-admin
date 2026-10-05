@@ -1,0 +1,11 @@
+$ node scripts/verify-offline-keyboard-boundary-browser.mjs && OFFLINE_BOUNDARY_REACT_MODE=production node scripts/verify-offline-keyboard-boundary-browser.mjs
+{
+  "mode": "development",
+  "checks": 1719,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 1719,
+  "failures": []
+}

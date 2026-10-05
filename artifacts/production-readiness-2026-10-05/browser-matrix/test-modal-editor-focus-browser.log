@@ -1,0 +1,11 @@
+$ node scripts/verify-modal-editor-focus-browser.mjs && MODAL_EDITOR_REACT_MODE=production node scripts/verify-modal-editor-focus-browser.mjs
+{
+  "mode": "development",
+  "checks": 192,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 192,
+  "failures": []
+}

@@ -1,0 +1,11 @@
+$ node scripts/verify-modal-keyboard-admission-browser.mjs && MODAL_KEYS_REACT_MODE=production node scripts/verify-modal-keyboard-admission-browser.mjs
+{
+  "mode": "development",
+  "checks": 372,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 372,
+  "failures": []
+}

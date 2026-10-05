@@ -44,6 +44,11 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+.profile-card-title {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
 .achievement-meta {
   display: flex;
   justify-content: space-between;

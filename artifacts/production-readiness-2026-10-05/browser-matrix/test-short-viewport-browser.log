@@ -1,0 +1,171 @@
+$ node scripts/verify-short-viewport-controls-browser.mjs && SHORT_VIEWPORT_REACT_MODE=production node scripts/verify-short-viewport-controls-browser.mjs
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 900,
+  "failures": [
+    {
+      "locale": "en",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "width": 844,
+      "height": 390,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "width": 844,
+      "height": 390,
+      "surface": "solo",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "width": 500,
+      "height": 494,
+      "surface": "race",
+      "name": "key height remains at least 32 pixels",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+[ELIFECYCLE] Command failed with exit code 1.

@@ -59,6 +59,7 @@ export function GameHeader({
         <div
           className="coin-pill"
           data-coin-meter
+          role="group"
           aria-label={`${coinBalance.toLocaleString()} ${tr("CoinShop.COINS_SUFFIX")}`}
         >
           <strong>{coinBalance.toLocaleString()}</strong>

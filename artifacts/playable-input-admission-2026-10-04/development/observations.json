@@ -19,7 +19,7 @@
     "width": 390,
     "height": 568,
     "scenario": "continue",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "xxxx",
     "expected": "xxxx"
   },
@@ -75,7 +75,7 @@
     "width": 390,
     "height": 568,
     "scenario": "paused",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "ro",
     "expected": "ro"
   },
@@ -131,7 +131,7 @@
     "width": 390,
     "height": 568,
     "scenario": "blocked",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "",
     "expected": ""
   },
@@ -187,7 +187,15 @@
     "width": 390,
     "height": 568,
     "scenario": "writing",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "writing",
+    "name": "owned composition remains editable during save",
     "actual": "rome",
     "expected": "rome"
   },
@@ -251,7 +259,7 @@
     "width": 390,
     "height": 844,
     "scenario": "continue",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "xxxx",
     "expected": "xxxx"
   },
@@ -307,7 +315,7 @@
     "width": 390,
     "height": 844,
     "scenario": "paused",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "ro",
     "expected": "ro"
   },
@@ -363,7 +371,7 @@
     "width": 390,
     "height": 844,
     "scenario": "blocked",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "",
     "expected": ""
   },
@@ -419,7 +427,15 @@
     "width": 390,
     "height": 844,
     "scenario": "writing",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "writing",
+    "name": "owned composition remains editable during save",
     "actual": "rome",
     "expected": "rome"
   },
@@ -483,7 +499,7 @@
     "width": 1280,
     "height": 844,
     "scenario": "continue",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "xxxx",
     "expected": "xxxx"
   },
@@ -539,7 +555,7 @@
     "width": 1280,
     "height": 844,
     "scenario": "paused",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "ro",
     "expected": "ro"
   },
@@ -595,7 +611,7 @@
     "width": 1280,
     "height": 844,
     "scenario": "blocked",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
     "actual": "",
     "expected": ""
   },
@@ -651,7 +667,15 @@
     "width": 1280,
     "height": 844,
     "scenario": "writing",
-    "name": "draft admission follows the current state",
+    "name": "unowned composition tail cannot publish a draft",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "writing",
+    "name": "owned composition remains editable during save",
     "actual": "rome",
     "expected": "rome"
   },

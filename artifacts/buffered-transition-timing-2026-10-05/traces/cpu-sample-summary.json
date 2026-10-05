@@ -1,0 +1,1567 @@
+[
+  {
+    "run": 0,
+    "sampleBuckets": {
+      "mark": 1,
+      "MutationObserver": 1,
+      "Game": 40,
+      "": 1,
+      "querySelector": 1,
+      "(program)": 57,
+      "React": 25,
+      "Three/Solar": 7,
+      "(idle)": 1
+    },
+    "topLeafSamples": [
+      {
+        "samples": 57,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 11,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 87932,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 173,
+          "functionName": "compile",
+          "lineNumber": 1,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 156,
+          "functionName": "e._zod.parse",
+          "lineNumber": 52,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49079,
+          "functionName": "os",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "createTextNode",
+          "scriptId": 0
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 12,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 87932,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 50931,
+          "functionName": "dr",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 129672,
+          "functionName": "onClose",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 139945,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 1,
+    "sampleBuckets": {
+      "mark": 1,
+      "Game": 48,
+      "React": 25,
+      "(garbage collector)": 31,
+      "click": 2,
+      "querySelector": 1,
+      "(program)": 61,
+      "Three/Solar": 12
+    },
+    "topLeafSamples": [
+      {
+        "samples": 61,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 31,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(garbage collector)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 4,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 156,
+          "functionName": "e._zod.parse",
+          "lineNumber": 52,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 50931,
+          "functionName": "dr",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "click",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49072,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 8,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 140424,
+          "functionName": "Do",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 50931,
+          "functionName": "dr",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 2738,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49072,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 2,
+    "sampleBuckets": {
+      "mark": 2,
+      "Game": 41,
+      "React": 23,
+      "click": 1,
+      "(program)": 83,
+      "Three/Solar": 13
+    },
+    "topLeafSamples": [
+      {
+        "samples": 83,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 8,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 173,
+          "functionName": "compile",
+          "lineNumber": 1,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "randomUUID",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 7603,
+          "functionName": "renderBufferDirect",
+          "lineNumber": 35,
+          "scriptId": 62,
+          "url": "http://127.0.0.1:43847/assets/vendor-three-DVT6gsgu.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 87932,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 8,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 16280,
+          "functionName": "U",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 85979,
+          "functionName": "Yi",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39236,
+          "functionName": "yn",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 33328,
+          "functionName": "Qt",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 3,
+    "sampleBuckets": {
+      "mark": 1,
+      "(program)": 94,
+      "React": 14,
+      "Game": 37,
+      "Three/Solar": 11
+    },
+    "topLeafSamples": [
+      {
+        "samples": 94,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49079,
+          "functionName": "os",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39518,
+          "functionName": "p",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 41625,
+          "functionName": "",
+          "lineNumber": 2,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 87932,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 20415,
+          "functionName": "Le",
+          "lineNumber": 0,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39518,
+          "functionName": "p",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 140424,
+          "functionName": "Do",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 121024,
+          "functionName": "co",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 41625,
+          "functionName": "",
+          "lineNumber": 2,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 61988,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 4,
+    "sampleBuckets": {
+      "mark": 1,
+      "Game": 44,
+      "click": 1,
+      "React": 27,
+      "(garbage collector)": 32,
+      "": 1,
+      "(program)": 67,
+      "Three/Solar": 12
+    },
+    "topLeafSamples": [
+      {
+        "samples": 67,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 32,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(garbage collector)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "request",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 1644,
+          "functionName": "oe",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 8483,
+          "functionName": "onAdvance",
+          "lineNumber": 1,
+          "scriptId": 35,
+          "url": "http://127.0.0.1:43847/assets/GameModalView-Bxq-npua.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 173,
+          "functionName": "compile",
+          "lineNumber": 1,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 194605,
+          "functionName": "runShared",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 1644,
+          "functionName": "oe",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 50931,
+          "functionName": "dr",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 140424,
+          "functionName": "Do",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 5,
+    "sampleBuckets": {
+      "mark": 2,
+      "click": 2,
+      "React": 36,
+      "Game": 37,
+      "(program)": 66,
+      "Three/Solar": 8,
+      "(idle)": 2
+    },
+    "topLeafSamples": [
+      {
+        "samples": 66,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 10,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49079,
+          "functionName": "os",
+          "lineNumber": 7,
+          "scriptId": 9,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "click",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39681,
+          "functionName": "a",
+          "lineNumber": 7,
+          "scriptId": 9,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 95030,
+          "functionName": "Dl",
+          "lineNumber": 7,
+          "scriptId": 9,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 8,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 121024,
+          "functionName": "co",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39518,
+          "functionName": "p",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 61988,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 33328,
+          "functionName": "Qt",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 6,
+    "sampleBuckets": {
+      "mark": 1,
+      "": 3,
+      "click": 1,
+      "Game": 39,
+      "React": 20,
+      "(garbage collector)": 26,
+      "(program)": 63,
+      "Three/Solar": 13
+    },
+    "topLeafSamples": [
+      {
+        "samples": 63,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 26,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(garbage collector)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 0,
+          "functionName": "",
+          "lineNumber": 0,
+          "scriptId": 137
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 156,
+          "functionName": "e._zod.parse",
+          "lineNumber": 52,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "setItem",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "request",
+          "scriptId": 0
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 5,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 41940,
+          "functionName": "Dn",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 194605,
+          "functionName": "runShared",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 50931,
+          "functionName": "dr",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 29474,
+          "functionName": "loadRiddle",
+          "lineNumber": 2,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 7,
+    "sampleBuckets": {
+      "mark": 1,
+      "(program)": 66,
+      "React": 15,
+      "Three/Solar": 15,
+      "Game": 25
+    },
+    "topLeafSamples": [
+      {
+        "samples": 66,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 12771,
+          "functionName": "updateMatrix",
+          "lineNumber": 0,
+          "scriptId": 57,
+          "url": "http://127.0.0.1:43847/assets/vendor-three-2rjE_d5x.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 19479,
+          "functionName": "Zt",
+          "lineNumber": 35,
+          "scriptId": 62,
+          "url": "http://127.0.0.1:43847/assets/vendor-three-DVT6gsgu.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49079,
+          "functionName": "os",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 51541,
+          "functionName": "bs",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 705,
+          "functionName": "vt",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 8,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 140424,
+          "functionName": "Do",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 109104,
+          "functionName": "Ca",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39236,
+          "functionName": "yn",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49468,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 113681,
+          "functionName": "za",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 8,
+    "sampleBuckets": {
+      "mark": 2,
+      "click": 1,
+      "React": 31,
+      "Game": 46,
+      "(garbage collector)": 34,
+      "(program)": 69,
+      "Three/Solar": 10,
+      "": 1
+    },
+    "topLeafSamples": [
+      {
+        "samples": 69,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 34,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(garbage collector)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 12,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 9,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 4,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49079,
+          "functionName": "os",
+          "lineNumber": 7,
+          "scriptId": 9,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 173,
+          "functionName": "compile",
+          "lineNumber": 1,
+          "scriptId": 29,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 87932,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 13,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 9,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 87932,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39236,
+          "functionName": "yn",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 47270,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 61988,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  },
+  {
+    "run": 9,
+    "sampleBuckets": {
+      "mark": 1,
+      "click": 1,
+      "Game": 45,
+      "React": 27,
+      "(program)": 73,
+      "Three/Solar": 11,
+      "": 1
+    },
+    "topLeafSamples": [
+      {
+        "samples": 73,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 8,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "getBoundingClientRect",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 7,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 8483,
+          "functionName": "onAdvance",
+          "lineNumber": 1,
+          "scriptId": 35,
+          "url": "http://127.0.0.1:43847/assets/GameModalView-Bxq-npua.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 173,
+          "functionName": "compile",
+          "lineNumber": 1,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:43847/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "createTextNode",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 19479,
+          "functionName": "Zt",
+          "lineNumber": 35,
+          "scriptId": 62,
+          "url": "http://127.0.0.1:43847/assets/vendor-three-DVT6gsgu.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 51541,
+          "functionName": "bs",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:43847/assets/vendor-react-CuZr8RiT.js"
+        }
+      }
+    ],
+    "nearestGameSamples": [
+      {
+        "samples": 8,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39558,
+          "functionName": "t",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 6,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 60094,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39236,
+          "functionName": "yn",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 140424,
+          "functionName": "Do",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 56668,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 90690,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:43847/assets/jest-BRQdclzO.js"
+        }
+      }
+    ]
+  }
+]

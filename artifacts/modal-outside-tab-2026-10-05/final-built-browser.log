@@ -1,0 +1,36 @@
+FAIL src/play/__tests__/hostedBrowser.jest-playwright.test.ts (46.76 s)
+  ● Console
+
+    console.info
+      Immediate wrong-answer feedback: 3.7ms with server response held
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:615:15)
+
+    console.info
+      Immediate correct-answer feedback: 5.3ms with server response held
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:986:15)
+
+  ● standalone Jest browser game › covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+
+    expect(received).toBeLessThan(expected)
+
+    Expected: < 100
+    Received:   112.39999999850988
+
+      1364 |           return performance.now() - started;
+      1365 |         });
+    > 1366 |       expect(bufferedTransitionMs).toBeLessThan(100);
+           |                                    ^
+      1367 |       await bufferedPage.getByText(/face and hands/i).waitFor({timeout: 2_000});
+      1368 |       await bufferedPage.getByRole("button", {name: /got it/i}).click();
+      1369 |       for (const letter of "CLOCK")
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:1366:36)
+
+
+Test Suites: 1 failed, 7 passed, 8 total
+Tests:       1 failed, 37 passed, 38 total
+Snapshots:   0 total
+Time:        141.841 s, estimated 188 s
+Ran all test suites matching src/reddit/__tests__/redditBrowser.jest-playwright.test.ts|src/play/__tests__/profileTour.jest-playwright.test.ts|src/play/__tests__/hostedBrowser.jest-playwright.test.ts|src/play/__tests__/queuedCoinActions.jest-playwright.test.ts|src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts|src/youtube/__tests__/youtubeBrowser.jest-playwright.test.ts|src/youtube/__tests__/standaloneCurrency.jest-playwright.test.ts|src/youtube/__tests__/achievementMilestones.jest-playwright.test.ts.

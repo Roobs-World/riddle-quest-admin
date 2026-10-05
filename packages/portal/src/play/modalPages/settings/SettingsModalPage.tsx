@@ -57,20 +57,20 @@ export function SettingsModalPage({
       </label>
       <button className="settings-row" onClick={() => onOpenModal("instructions")}>
         <span>{tr("Settings.HELP_BUTTON")}</span>
-        <strong>›</strong>
+        <strong aria-hidden="true">›</strong>
       </button>
       <button className="settings-row" onClick={() => onOpenModal("credits")}>
         <span>{tr("Settings.CREDITS_BUTTON")}</span>
-        <strong>›</strong>
+        <strong aria-hidden="true">›</strong>
       </button>
       <button className="settings-row" onClick={() => onOpenModal("about")}>
         <span>{tr("Settings.ABOUT_BUTTON")}</span>
-        <strong>›</strong>
+        <strong aria-hidden="true">›</strong>
       </button>
       {commerceAvailable && (
         <button className="settings-row" onClick={() => onOpenModal("shop")}>
           <span>{tr("Navigation.BUY_COINS_BUTTON")}</span>
-          <strong>›</strong>
+          <strong aria-hidden="true">›</strong>
         </button>
       )}
       {subscriptionControls}

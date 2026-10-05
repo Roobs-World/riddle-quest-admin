@@ -1,0 +1,39 @@
+{"run":0,"cpuRate":8,"clickReturnMs":3.600000001490116,"domCommitMs":69.40000000596046,"rafObservedMs":70.60000000149012,"nextFrameMs":92.40000000596046,"frameTimes":[2.600000001490116,19.200000001490025,35.90000000149007,52.600000001490116],"longTasks":[],"held":1,"delivered":1}
+{"run":1,"cpuRate":8,"clickReturnMs":0.5,"domCommitMs":76.39999999850988,"rafObservedMs":78.19999999552965,"nextFrameMs":95.39999999850988,"frameTimes":[4.699999994039445,21.39999999403949,38.099999994039536,54.79999999403958,71.39999999403949],"longTasks":[],"held":1,"delivered":1}
+{"run":2,"cpuRate":8,"clickReturnMs":3.899999998509884,"domCommitMs":85.60000000149012,"rafObservedMs":90.40000000596046,"nextFrameMs":108.30000000447035,"frameTimes":[-19.499999995529606,30.400000004470257,80.40000000447026],"longTasks":[],"held":1,"delivered":1}
+{"run":3,"cpuRate":8,"clickReturnMs":5.700000002980232,"domCommitMs":75.20000000298023,"rafObservedMs":77,"nextFrameMs":96.80000000447035,"frameTimes":[5.899999998509884,22.59999999850993,39.19999999850984,55.899999998509884],"longTasks":[],"held":1,"delivered":1}
+{"run":4,"cpuRate":8,"clickReturnMs":4.299999997019768,"domCommitMs":76.69999999552965,"rafObservedMs":79,"nextFrameMs":98.19999999552965,"frameTimes":[-0.9000000044702574,15.699999995529652,49.09999999552974],"longTasks":[],"held":1,"delivered":1}
+{"run":5,"cpuRate":8,"clickReturnMs":5.199999995529652,"domCommitMs":64.5,"rafObservedMs":64.69999999552965,"nextFrameMs":77.09999999403954,"frameTimes":[0.19999999403944457,16.89999999403949,33.599999994039536,50.29999999403958],"longTasks":[],"held":1,"delivered":1}
+{"run":6,"cpuRate":8,"clickReturnMs":5.600000001490116,"domCommitMs":104.30000000447035,"rafObservedMs":106.60000000149012,"nextFrameMs":126.20000000298023,"frameTimes":[6.200000005960419,22.900000005960464,39.50000000596037,56.20000000596042,72.90000000596046],"longTasks":[],"held":1,"delivered":1}
+{"run":7,"cpuRate":8,"clickReturnMs":3.8000000044703484,"domCommitMs":81,"rafObservedMs":84.80000000447035,"nextFrameMs":106,"frameTimes":[-1.5,15.200000000000045,31.799999999999955,48.5,65.09999999999991,81.79999999999995],"longTasks":[],"held":1,"delivered":1}
+{"run":8,"cpuRate":8,"clickReturnMs":4.100000001490116,"domCommitMs":77.39999999850988,"rafObservedMs":79.69999999552965,"nextFrameMs":98.89999999850988,"frameTimes":[4.900000000000091,21.5,38.299999999999955],"longTasks":[],"held":1,"delivered":1}
+{"run":9,"cpuRate":8,"clickReturnMs":7.200000002980232,"domCommitMs":94.5,"rafObservedMs":96.10000000149012,"nextFrameMs":117.20000000298023,"frameTimes":[-4.199999997019859,29.100000002980323,62.50000000298019],"longTasks":[],"held":1,"delivered":1}
+{"run":10,"cpuRate":8,"clickReturnMs":4.399999998509884,"domCommitMs":76.39999999850988,"rafObservedMs":78.30000000447035,"nextFrameMs":95.80000000447035,"frameTimes":[5.800000001490162,22.30000000149016,39.00000000149021,55.700000001490025,72.40000000149007],"longTasks":[],"held":1,"delivered":1}
+{"run":11,"cpuRate":8,"clickReturnMs":5.199999995529652,"domCommitMs":79.69999999552965,"rafObservedMs":82.79999999701977,"nextFrameMs":100.19999999552965,"frameTimes":[0.49999999850979293,17.19999999850984,67.19999999850984],"longTasks":[],"held":1,"delivered":1}
+{"run":12,"cpuRate":8,"clickReturnMs":4.100000001490116,"domCommitMs":84.70000000298023,"rafObservedMs":101.60000000149012,"nextFrameMs":120.80000000447035,"frameTimes":[0.8000000044703484,17.500000004470394,34.20000000447044,50.90000000447026,67.5000000044704],"longTasks":[],"held":1,"delivered":1}
+{"run":13,"cpuRate":8,"clickReturnMs":5.5,"domCommitMs":102.60000000149012,"rafObservedMs":105.89999999850988,"nextFrameMs":124.60000000149012,"frameTimes":[-0.30000000447034836,16.399999995529697,32.999999995529606,49.69999999552965,66.3999999955297],"longTasks":[],"held":1,"delivered":1}
+{"run":14,"cpuRate":8,"clickReturnMs":8,"domCommitMs":80.79999999701977,"rafObservedMs":82.5,"nextFrameMs":104,"frameTimes":[0.8999999955296971,17.69999999552965,50.8999999955297],"longTasks":[],"held":1,"delivered":1}
+{"run":15,"cpuRate":8,"clickReturnMs":5.100000001490116,"domCommitMs":77.80000000447035,"rafObservedMs":79.90000000596046,"nextFrameMs":91.70000000298023,"frameTimes":[2.2000000044704393,18.900000004470257,35.500000004470394,52.20000000447044,68.80000000447035],"longTasks":[],"held":1,"delivered":1}
+{"run":16,"cpuRate":8,"clickReturnMs":4.799999997019768,"domCommitMs":63.29999999701977,"rafObservedMs":65.69999999552965,"nextFrameMs":85.5,"frameTimes":[-2.4000000029802777,14.399999997019677,47.69999999701986],"longTasks":[],"held":1,"delivered":1}
+{"run":17,"cpuRate":8,"clickReturnMs":5,"domCommitMs":72.39999999850988,"rafObservedMs":74.60000000149012,"nextFrameMs":93.70000000298023,"frameTimes":[3.4000000044702574,20.000000004470394,36.70000000447044,53.30000000447035,70.0000000044704],"longTasks":[],"held":1,"delivered":1}
+{"run":18,"cpuRate":8,"clickReturnMs":5.199999995529652,"domCommitMs":61,"rafObservedMs":62.599999994039536,"nextFrameMs":81.69999999552965,"frameTimes":[-21.000000002980187,12.199999997019859,45.59999999701972],"longTasks":[],"held":1,"delivered":1}
+{"run":19,"cpuRate":8,"clickReturnMs":7.899999998509884,"domCommitMs":84.39999999850988,"rafObservedMs":85.89999999850988,"nextFrameMs":103.70000000298023,"frameTimes":[6.900000000000091,23.59999999999991,73.59999999999991],"longTasks":[],"held":1,"delivered":1}
+{"runs":20,"over100ms":3,"maxDomCommitMs":104.30000000447035,"maxRafObservedMs":106.60000000149012}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Buffered transition exceeds the unchanged 100ms limit
+
+3 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/buffered-transition-timing-2026-10-05/probe.mjs:88:58 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

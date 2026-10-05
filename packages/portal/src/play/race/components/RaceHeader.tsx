@@ -13,7 +13,7 @@ function RaceCoinBalance({
   /** Locale-formatted coin amount shown to the player and assistive technology. */
   const formattedCoins = coins.toLocaleString();
   return (
-    <div className="race-coin-balance" aria-label={`${tr("Profile.TOTAL_COINS_LABEL")} ${formattedCoins}`}>
+    <div className="race-coin-balance" role="group" aria-label={`${tr("Profile.TOTAL_COINS_LABEL")} ${formattedCoins}`}>
       <strong>{formattedCoins}</strong>
       <img src={coinUrl} alt="" />
     </div>

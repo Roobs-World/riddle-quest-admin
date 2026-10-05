@@ -1,0 +1,162 @@
+{
+  "supportingInjectedChecks": true,
+  "hostedE2E": false,
+  "cases": [
+    {
+      "width": 320,
+      "failure": {
+        "loaded": true,
+        "progress": [
+          5,
+          15,
+          42,
+          58,
+          72,
+          100
+        ],
+        "calls": [
+          [
+            "progress",
+            5
+          ],
+          [
+            "progress",
+            15
+          ],
+          [
+            "progress",
+            42
+          ],
+          [
+            "progress",
+            58
+          ],
+          [
+            "progress",
+            72
+          ],
+          [
+            "progress",
+            100
+          ],
+          [
+            "loaded"
+          ]
+        ],
+        "reads": 1,
+        "mounted": false,
+        "overlay": false
+      },
+      "recovered": {
+        "profile": {
+          "username": "Player",
+          "coins": 670,
+          "level": 4,
+          "xp": 360,
+          "winStreak": 0,
+          "gamesPlayed": 5,
+          "wins": 4,
+          "achievements": [],
+          "classicIndex": 5,
+          "dailyChallengeIndex": 0,
+          "dailyChallengeCurrentQuestion": 0,
+          "dailyPuzzlesCompleted": 0,
+          "bestStreak": 0,
+          "totalWordsGuessed": 0,
+          "winRate": 0,
+          "averageGuesses": 0,
+          "totalScore": 0,
+          "highestLevelClassic": 0,
+          "challengeWins": 0,
+          "totalWins": 4,
+          "totalGuessesInWins": 0,
+          "totalHintsUsed": 0,
+          "multiplayerGamesPlayed": 0,
+          "multiplayerWins": 0,
+          "multiplayerChallengesCreated": 0,
+          "hasPurchasedApp": false
+        },
+        "loaded": true,
+        "overlay": false
+      }
+    },
+    {
+      "width": 1280,
+      "failure": {
+        "loaded": true,
+        "progress": [
+          5,
+          15,
+          42,
+          58,
+          72,
+          100
+        ],
+        "calls": [
+          [
+            "progress",
+            5
+          ],
+          [
+            "progress",
+            15
+          ],
+          [
+            "progress",
+            42
+          ],
+          [
+            "progress",
+            58
+          ],
+          [
+            "progress",
+            72
+          ],
+          [
+            "progress",
+            100
+          ],
+          [
+            "loaded"
+          ]
+        ],
+        "reads": 1,
+        "mounted": false,
+        "overlay": false
+      },
+      "recovered": {
+        "profile": {
+          "username": "Player",
+          "coins": 670,
+          "level": 4,
+          "xp": 360,
+          "winStreak": 0,
+          "gamesPlayed": 5,
+          "wins": 4,
+          "achievements": [],
+          "classicIndex": 5,
+          "dailyChallengeIndex": 0,
+          "dailyChallengeCurrentQuestion": 0,
+          "dailyPuzzlesCompleted": 0,
+          "bestStreak": 0,
+          "totalWordsGuessed": 0,
+          "winRate": 0,
+          "averageGuesses": 0,
+          "totalScore": 0,
+          "highestLevelClassic": 0,
+          "challengeWins": 0,
+          "totalWins": 4,
+          "totalGuessesInWins": 0,
+          "totalHintsUsed": 0,
+          "multiplayerGamesPlayed": 0,
+          "multiplayerWins": 0,
+          "multiplayerChallengesCreated": 0,
+          "hasPurchasedApp": false
+        },
+        "loaded": true,
+        "overlay": false
+      }
+    }
+  ]
+}

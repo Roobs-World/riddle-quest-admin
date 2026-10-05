@@ -454,7 +454,7 @@ export async function writeYouTubeVerificationReport({
   capturedAt = new Date().toISOString(),
 } = {}) {
   const repository = path.resolve(repositoryDirectory);
-  const resolvedDist = path.resolve(distDirectory ?? path.join(repository, "packages/portal/dist-youtube"));
+  const resolvedDist = path.resolve(distDirectory ?? path.join(repository, "builds/youtube"));
   const resolvedContentAudit = path.resolve(contentAuditPath ?? path.join(
     repository,
     "firebase-functions/artifacts/youtube-content/youtube-content-v1.audit.json",
@@ -492,7 +492,7 @@ export async function writeYouTubeVerificationReport({
 
 export async function packageYouTubeArtifact(options = {}) {
   const repository = path.resolve(options.repositoryDirectory ?? defaultRepositoryDirectory);
-  const resolvedDist = path.resolve(options.distDirectory ?? path.join(repository, "packages/portal/dist-youtube"));
+  const resolvedDist = path.resolve(options.distDirectory ?? path.join(repository, "builds/youtube"));
   const resolvedArchive = path.resolve(options.archivePath ?? path.join(repository, "build-youtube.zip"));
   const resolvedManifest = path.resolve(options.manifestPath ?? path.join(repository, "build-youtube.manifest.json"));
   const resolvedContentAudit = path.resolve(options.contentAuditPath ?? path.join(

@@ -1,0 +1,11 @@
+$ node scripts/verify-bounded-grapheme-input-browser.mjs && BOUNDED_GRAPHEME_REACT_MODE=production node scripts/verify-bounded-grapheme-input-browser.mjs
+{
+  "mode": "development",
+  "checks": 162,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 162,
+  "failures": []
+}

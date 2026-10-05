@@ -1,0 +1,734 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "initial translated guidance copy",
+    "actual": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "expected": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "entry target work is scoped to anchored guidance",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "locale subscription committed before checking content",
+    "actual": "ar",
+    "expected": "ar"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "live title follows the committed locale",
+    "actual": "تسلق المتصدرين",
+    "expected": "تسلق المتصدرين"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "live body follows the committed locale",
+    "actual": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك.",
+    "expected": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك."
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "live action follows the committed locale",
+    "actual": "حصلت عليه",
+    "expected": "حصلت عليه"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "locale changes preserve the active step",
+    "actual": "leaderboardFifthCorrectAnswer",
+    "expected": "leaderboardFifthCorrectAnswer"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "spotlight follows the localized control layout",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "parent updates preserve the translated step",
+    "actual": {
+      "title": "تسلق المتصدرين",
+      "body": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك.",
+      "button": "حصلت عليه",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "expected": {
+      "title": "تسلق المتصدرين",
+      "body": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك.",
+      "button": "حصلت عليه",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "viewport signals do work only for an anchored target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "suspended guidance performs no target work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "resumed guidance follows locale changes while suspended",
+    "actual": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "expected": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "translated card and action fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "dismissed guidance performs no target work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "completion persists the existing seen marker",
+    "actual": "seen",
+    "expected": "seen"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "ar",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "initial translated guidance copy",
+    "actual": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "expected": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "entry target work is scoped to anchored guidance",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "locale subscription committed before checking content",
+    "actual": "de",
+    "expected": "de"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "live title follows the committed locale",
+    "actual": "Steig in der Bestenliste auf",
+    "expected": "Steig in der Bestenliste auf"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "live body follows the committed locale",
+    "actual": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
+    "expected": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen."
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "live action follows the committed locale",
+    "actual": "Verstanden",
+    "expected": "Verstanden"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "locale changes preserve the active step",
+    "actual": "leaderboardFifthCorrectAnswer",
+    "expected": "leaderboardFifthCorrectAnswer"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "spotlight follows the localized control layout",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "parent updates preserve the translated step",
+    "actual": {
+      "title": "Steig in der Bestenliste auf",
+      "body": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
+      "button": "Verstanden",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "expected": {
+      "title": "Steig in der Bestenliste auf",
+      "body": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
+      "button": "Verstanden",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "viewport signals do work only for an anchored target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "suspended guidance performs no target work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "resumed guidance follows locale changes while suspended",
+    "actual": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "expected": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "translated card and action fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "dismissed guidance performs no target work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "completion persists the existing seen marker",
+    "actual": "seen",
+    "expected": "seen"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "initial translated guidance copy",
+    "actual": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    },
+    "expected": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "entry target work is scoped to anchored guidance",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "locale subscription committed before checking content",
+    "actual": "ar",
+    "expected": "ar"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "live title follows the committed locale",
+    "actual": "أرسل إجابتك",
+    "expected": "أرسل إجابتك"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "live body follows the committed locale",
+    "actual": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك.",
+    "expected": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك."
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "live action follows the committed locale",
+    "actual": "حصلت عليه",
+    "expected": "حصلت عليه"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "locale changes preserve the active step",
+    "actual": "submitAnswer",
+    "expected": "submitAnswer"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "spotlight follows the localized control layout",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "parent updates preserve the translated step",
+    "actual": {
+      "title": "أرسل إجابتك",
+      "body": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك.",
+      "button": "حصلت عليه",
+      "id": "submitAnswer"
+    },
+    "expected": {
+      "title": "أرسل إجابتك",
+      "body": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك.",
+      "button": "حصلت عليه",
+      "id": "submitAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "viewport signals do work only for an anchored target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "suspended guidance performs no target work",
+    "actual": 18,
+    "expected": 18
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "resumed guidance follows locale changes while suspended",
+    "actual": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    },
+    "expected": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "translated card and action fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "dismissed guidance performs no target work",
+    "actual": 19,
+    "expected": 19
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "completion persists the existing seen marker",
+    "actual": "seen",
+    "expected": "seen"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "ar",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "initial translated guidance copy",
+    "actual": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    },
+    "expected": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "entry target work is scoped to anchored guidance",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "locale subscription committed before checking content",
+    "actual": "de",
+    "expected": "de"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "live title follows the committed locale",
+    "actual": "Antwort einreichen",
+    "expected": "Antwort einreichen"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "live body follows the committed locale",
+    "actual": "Wenn alle Felder gefuellt sind, tippe auf Einreichen, um deinen Tipp zu pruefen.",
+    "expected": "Wenn alle Felder gefuellt sind, tippe auf Einreichen, um deinen Tipp zu pruefen."
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "live action follows the committed locale",
+    "actual": "Verstanden",
+    "expected": "Verstanden"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "locale changes preserve the active step",
+    "actual": "submitAnswer",
+    "expected": "submitAnswer"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "spotlight follows the localized control layout",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "parent updates preserve the translated step",
+    "actual": {
+      "title": "Antwort einreichen",
+      "body": "Wenn alle Felder gefuellt sind, tippe auf Einreichen, um deinen Tipp zu pruefen.",
+      "button": "Verstanden",
+      "id": "submitAnswer"
+    },
+    "expected": {
+      "title": "Antwort einreichen",
+      "body": "Wenn alle Felder gefuellt sind, tippe auf Einreichen, um deinen Tipp zu pruefen.",
+      "button": "Verstanden",
+      "id": "submitAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "viewport signals do work only for an anchored target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "suspended guidance performs no target work",
+    "actual": 18,
+    "expected": 18
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "resumed guidance follows locale changes while suspended",
+    "actual": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    },
+    "expected": {
+      "title": "Submit your answer",
+      "body": "When every slot is filled, tap Submit to check your guess.",
+      "button": "Got it",
+      "id": "submitAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "translated card and action fit the viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "dismissed guidance performs no target work",
+    "actual": 19,
+    "expected": 19
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "completion persists the existing seen marker",
+    "actual": "seen",
+    "expected": "seen"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "anchored",
+    "locale": "de",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  }
+]

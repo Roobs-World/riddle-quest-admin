@@ -1,0 +1,9 @@
+{
+  "runs": 40,
+  "cpuRate": 12,
+  "domObserver": false,
+  "longObserver": false,
+  "captureTrace": false,
+  "guidanceSeen": false,
+  "pairGuidance": true
+}

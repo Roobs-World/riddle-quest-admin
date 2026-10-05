@@ -20,7 +20,7 @@ describeBrowser("queued coin actions", () => {
     /** Directory containing the built Jest artifact. */
     const dist = process.env.PORTAL_JEST_BUILD_DIR
       ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
-      : path.resolve(__dirname, "../../../dist-jest");
+      : path.resolve(__dirname, "../../../../../builds/jest");
     /** Content types used to serve artifact resources. */
     const types: Record<string, string> = {
       ".html": "text/html",

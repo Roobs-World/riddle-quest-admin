@@ -9,7 +9,7 @@ import path from "node:path";
 const execute = promisify(execFile);
 const portal = fileURLToPath(new URL("..", import.meta.url));
 const repository = fileURLToPath(new URL("../../..", import.meta.url));
-const output = path.join(portal, "dist-gamesnacks");
+const output = path.join(portal, "../../builds/gamesnacks");
 
 async function filesBelow(root, directory = root) {
   const entries = await readdir(directory, {withFileTypes: true});

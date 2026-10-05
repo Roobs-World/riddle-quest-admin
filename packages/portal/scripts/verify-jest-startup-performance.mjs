@@ -18,7 +18,7 @@ import {startJestSession, markJestPlayable} from ${JSON.stringify(path.join(root
 import {commitJestStartupSession} from ${JSON.stringify(path.join(root,'src/jest/commitJestStartupSession.ts'))};
 import {MockJestPlatform} from ${JSON.stringify(path.join(root,'src/jest/MockJestPlatform.ts'))};
 import {createNotificationOperationGate} from ${JSON.stringify(path.join(root,'src/jest/notifications/operationGate.ts'))};
-window.events=[];const record=name=>window.events.push({name,time:performance.now()});
+window.events=[];const record=name=>{window.events.push({name,time:performance.now()});};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const scenario=new URLSearchParams(location.search).get('scenario');
 const registered=scenario!=='guest',urgent=scenario==='urgent';

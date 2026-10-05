@@ -1,0 +1,87 @@
+{
+  "originalMinimalRuns": {
+    "original-minimal": {
+      "checks": 21,
+      "failures": 5
+    },
+    "original-repeat": {
+      "checks": 21,
+      "failures": 5
+    },
+    "final-minimal-original": {
+      "checks": 21,
+      "failures": 5
+    }
+  },
+  "finalModes": {
+    "development": {
+      "checks": 1008,
+      "failures": 0
+    },
+    "production": {
+      "checks": 1008,
+      "failures": 0
+    }
+  },
+  "relatedGuidanceRecoveryModes": {
+    "development": {
+      "checks": 114,
+      "failures": 0
+    },
+    "production": {
+      "checks": 114,
+      "failures": 0
+    }
+  },
+  "browserAssertions": 2244,
+  "locales": 16,
+  "viewports": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "focusedJourneys": 96,
+  "builtBrowser": {
+    "suites": 3,
+    "tests": 8,
+    "failures": 0,
+    "latencyThresholdChanged": false
+  },
+  "unitTests": 2758,
+  "unitSuites": 297,
+  "types": "passed",
+  "tsdocDeclarations": 25215,
+  "tsdocFiles": 1140,
+  "sixBuilds": "passed",
+  "youtubeBuild": "fixture",
+  "stableSourceInputs": 1501,
+  "sourceDelta": [],
+  "firefoxRecords": 5,
+  "cleanup": {
+    "firefoxTabsClosed": [
+      1,
+      2
+    ],
+    "firefoxServersTerminalExitCodes": [
+      0,
+      0
+    ],
+    "firefoxCachesAbsent": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/centered-tooltip-jQnfPf",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/centered-tooltip-JisHMw"
+    ],
+    "externalBuildDirectoryRemoved": "/tmp/riddle-centered-tooltip-builds-dli0tth9",
+    "preservedBuildFiles": 1300,
+    "preservedManifestUnchanged": true
+  },
+  "goal": "active"
+}

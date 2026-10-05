@@ -1,0 +1,353 @@
+$ pnpm check:e2e-coverage && pnpm --dir firebase-functions test:race:rules && pnpm --filter @qwordly/portal test:e2e:local
+$ node scripts/audit-e2e-coverage.mjs
+E2E coverage audit passed: 15 Playwright suites and 63 emulator suites are reachable through pnpm test:e2e.
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm build && firebase emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database "pnpm jest --config jest.rules.config.js --runInBand"
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/prepare-deploy.js && pnpm check:module-cycles
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs
+✔ accepts an acyclic runtime graph and ignores erased type-only edges (12.587848ms)
+✔ rejects a barrel-induced runtime cycle with deterministic module evidence (6.101459ms)
+✔ excludes test modules from the production graph (1.672188ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 156.719803
+Production module cycle audit passed (194 modules, 1101 runtime references).
+$ rimraf lib && tsc -p tsconfig.json && rimraf lib/__tests__ lib/__mocks__
+i  emulators: Starting emulators: firestore, database, storage
+i  emulators: Detected demo project ID "demo-riddle-quest-e2e", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9151.
+i  database: Database Emulator logging to database-debug.log
+⚠  Unexpected rules runtime error: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/home/craig-beswetherick/.cache/firebase/emulators/cloud-storage-rules-runtime-v1.1.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+i  Running script: pnpm jest --config jest.rules.config.js --runInBand
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/__tests__/race/raceService.it.test.ts (67.551 s)
+  ● Console
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":9,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"offer","provider":"legacy","locale":"en","failureCode":"not-found","durationMs":4,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:188:7)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"prepared","durationMs":17,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"prepared","durationMs":13,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"prepared","durationMs":13,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":12,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":12,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":6,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":13,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"challenge","provider":"legacy","locale":"ja","failureCode":"failed-precondition","durationMs":4,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:472:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":15,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"challenge","provider":"legacy","locale":"en","failureCode":"failed-precondition","durationMs":4,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:621:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"challenge","provider":"legacy","locale":"en","failureCode":"internal","durationMs":12,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:646:7)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"challenge","provider":"legacy","locale":"en","failureCode":"permission-denied","durationMs":11,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:662:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":15,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":15,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"challenge","provider":"legacy","locale":"en","failureCode":"already-exists","durationMs":12,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:724:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"legacy","locale":"en","failureCode":"permission-denied","durationMs":7,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:848:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":15,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"challenge","provider":"legacy","locale":"en","failureCode":"failed-precondition","durationMs":4,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:901:5)
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"challenge","provider":"legacy","locale":"en","failureCode":"failed-precondition","durationMs":4,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:912:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":20,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"legacy","locale":"en","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.warn
+      {"runId":"CJrHtYgxyKq56eFUj07j","userHash":"d9e98583def2","actionCount":31,"severity":"WARNING","message":"Race action rate limit exceeded"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at applyActionRateLimit (src/race/raceSetupService.ts:226:12)
+      at src/race/raceRunMutation.ts:103:53
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at submitRaceGuessForUser (src/race/raceService.ts:428:20)
+      at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:1113:5)
+
+  ● Race to 10 transactional service › finalizes, publishes once, and gives a challenger the identical canonical deck
+
+    thrown: "Exceeded timeout of 60000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at _getError (../node_modules/.pnpm/jest-circus@30.5.2_supports-color@8.1.1/node_modules/jest-circus/build/jestAdapterInit.js:1985:12)
+          at Array.map (<anonymous>)
+
+    Cause:
+        thrown: "Exceeded timeout of 60000 ms for a test.
+        Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+          390 |   });
+          391 |
+        > 392 |   it("finalizes, publishes once, and gives a challenger the identical canonical deck", async () => {
+              |   ^
+          393 |     /** Provides start behavior. */
+          394 |     const start = await startRaceRunForUser(
+          395 |       "creator-1",
+
+          at src/__tests__/race/raceService.it.test.ts:392:3
+          at Object.<anonymous> (src/__tests__/race/raceService.it.test.ts:175:1)
+
+  ● Race to 10 transactional service › finalizes, publishes once, and gives a challenger the identical canonical deck
+
+    Live cleanup requires an account deletion guard.
+
+      142 |   await db.runTransaction(async tx => {
+      143 |     if (!(await tx.get(getJestAccountDeletionRef(db, userId))).exists)
+    > 144 |       throw new HttpsError("failed-precondition", "Live cleanup requires an account deletion guard.");
+          |             ^
+      145 |   });
+      146 |   while (true) {
+      147 |     /** Bounded page keeps each deletion batch within Firestore limits. */
+
+      at src/profile/accountDeletion/liveRaceAccountDeletion.ts:144:13
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at removeLiveRaceIdentitySnapshots (src/profile/accountDeletion/liveRaceAccountDeletion.ts:142:3)
+      at removeCrossUserRaceIdentitySnapshots (src/profile/accountDeletion/raceAccountDeletion.ts:228:3)
+
+ 
+i  emulators: Received SIGINT (Ctrl-C) for the first time. Starting a clean shutdown.
+i  emulators: Please wait for a clean shutdown or send the SIGINT (Ctrl-C) signal again to stop right now.
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+⚠  Script exited with signal: SIGINT
+i  firestore: Stopping Firestore Emulator
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  storage: Stopping Storage Emulator
+i  storage: Stopping Storage Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+[ELIFECYCLE] Command failed.
+[ELIFECYCLE] Command failed.

@@ -15,8 +15,8 @@ const browser = await chromium.launch({headless: true});
 const results = [];
 const targets = [...listHtml5DistributionDefinitions(),
   {target: "gamesnacks", artifact: "build-gamesnacks.zip", gamesnacks: true},
-  {target: "netflix", directory: "packages/portal/dist-netflix"},
-  {target: "yahoo", directory: "packages/portal/dist-yahoo"}];
+  {target: "netflix", directory: "builds/netflix"},
+  {target: "yahoo", directory: "builds/yahoo"}];
 try {
   for (const target of targets) {
     const temporary = await mkdtemp(path.join(tmpdir(), "riddle-artifact-e2e-"));

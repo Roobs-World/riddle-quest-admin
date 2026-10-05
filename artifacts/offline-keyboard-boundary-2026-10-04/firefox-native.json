@@ -1,0 +1,82 @@
+{
+  "OriginalReconnect": {
+    "boundaries": [
+      {
+        "visible": false,
+        "prevented": true,
+        "keys": 1,
+        "focus": 1,
+        "focused": false
+      }
+    ],
+    "visible": false,
+    "keys": 0,
+    "focus": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "OriginalDisconnect": {
+    "boundaries": [
+      {
+        "visible": true,
+        "prevented": false,
+        "keys": 0,
+        "focus": 0,
+        "focused": false
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalDisconnect": {
+    "boundaries": [
+      {
+        "visible": true,
+        "prevented": true,
+        "capturePrevented": true,
+        "keys": 1,
+        "focus": 1,
+        "focused": true
+      }
+    ],
+    "visible": true,
+    "focused": true,
+    "keys": 1,
+    "focus": 1,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalReconnectRace": {
+    "boundaries": [
+      {
+        "visible": false,
+        "prevented": false,
+        "capturePrevented": false,
+        "keys": 0,
+        "focus": 0,
+        "focused": false
+      }
+    ],
+    "visible": false,
+    "race": true,
+    "keys": 0,
+    "focus": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalFreshEscape": {
+    "offline": false,
+    "race": false,
+    "puzzleInteractive": true,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalFreshLetter": {
+    "draft": "P",
+    "guesses": 0,
+    "completions": 0,
+    "spends": 0,
+    "errors": [],
+    "unhandled": []
+  }
+}

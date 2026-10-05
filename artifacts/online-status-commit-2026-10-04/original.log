@@ -1,0 +1,330 @@
+{
+  "mode": "development",
+  "checks": 180,
+  "failures": [
+    {
+      "surface": "frame",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 568,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "frame",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 568,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "frame",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 568,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "frame",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 568,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "bridge",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 568,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "bridge",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 568,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "bridge",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 568,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "bridge",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 568,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "save",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 568,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "save",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 568,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "save",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 568,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "save",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 568,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "frame",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "frame",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "frame",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "frame",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "bridge",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "bridge",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "bridge",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "bridge",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "save",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "save",
+      "scenario": "disconnect",
+      "width": 390,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "save",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "save",
+      "scenario": "reconnect",
+      "width": 390,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "frame",
+      "scenario": "disconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "frame",
+      "scenario": "disconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "frame",
+      "scenario": "reconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "frame",
+      "scenario": "reconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "bridge",
+      "scenario": "disconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "bridge",
+      "scenario": "disconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "bridge",
+      "scenario": "reconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "bridge",
+      "scenario": "reconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "save",
+      "scenario": "disconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "save",
+      "scenario": "disconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "save",
+      "scenario": "reconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "mounted consumer follows current browser connectivity",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "surface": "save",
+      "scenario": "reconnect",
+      "width": 1280,
+      "height": 844,
+      "name": "parent updates preserve current connectivity",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}

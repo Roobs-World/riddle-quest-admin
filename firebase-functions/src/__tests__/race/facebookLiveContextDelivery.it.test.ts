@@ -102,6 +102,7 @@ const event = async () => (await db.collection("racePerformanceOutbox").get()).d
 /** Entries are scoped to the owner's original board, never a later browser context. */
 const contextEntry = (seat: number) => db.doc(`facebookContextCompetitions/${facebookContextKey(`durable-${seat}`)}/entries/${PLAYERS[seat]}`);
 
+// A first clean win grants 50 win coins and three 25-coin badges; delivery adds only referral coins.
 it.each([0, 1])("recovers original context for winning seat %i after the browser disappears", async seat => {
   /** Real matchmaking and ten authoritative guesses create the existing durable winner receipt. */
   const tickets = await pair();
@@ -112,7 +113,7 @@ it.each([0, 1])("recovers original context for winning seat %i after the browser
   expect((await contextEntry(seat).get()).data()).toMatchObject({runId: tickets[seat].ticketId, adjustedTimeMs: 9000});
   expect((await contextEntry(1 - seat).get()).exists).toBe(false);
   expect((await entry(PLAYERS[seat]).get()).exists).toBe(true);
-  expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(225);
   expect(JSON.stringify(receipt.data())).not.toContain(`durable-${seat}`);
 });
 
@@ -127,7 +128,7 @@ it("records context standings with tournaments and referrals independently disab
   expect((await contextEntry(0).get()).exists).toBe(true);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
   expect((await db.collection("facebookReferralSettlements").get()).empty).toBe(true);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(225);
   expect((await receipt.ref.get()).data()?.delivered).toBe(true);
 });
 
@@ -153,7 +154,8 @@ it("does not synthesize a context solve from a nine-answer forfeit win", async (
   await deliverRacePerformance(receipt.id, db, START + 17000);
   expect((await contextEntry(0).get()).exists).toBe(false);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  // A nine-answer forfeit grants debut and first-win badges, without the clean-run badge.
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(300);
 });
 
 it.each(["missing", "left", "rejoined", "replaced", "expired"])("suppresses original context after it becomes %s without suppressing the official score", async mode => {
@@ -175,7 +177,7 @@ it.each(["missing", "left", "rejoined", "replaced", "expired"])("suppresses orig
   await deliverRacePerformance(receipt.id, db, START + 21000);
   expect((await contextEntry(0).get()).exists).toBe(false);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(true);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(225);
   expect((await receipt.ref.get()).data()?.delivered).toBe(true);
 });
 
@@ -211,7 +213,7 @@ it.each(["contextKey", "createdAtMs", "joinedAtMs"])("quarantines a modified %s 
   expect((await receipt.ref.get()).data()?.deliveryState).toBe("quarantined");
   expect((await contextEntry(0).get()).exists).toBe(false);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(225);
 });
 it("retries a lost acknowledgement after the context and official writes without a second referral grant", async () => {
   /** Real production matchmaking supplies both owned ticket identities. */
@@ -239,12 +241,12 @@ it("retries a lost acknowledgement after the context and official writes without
   await expect(deliverRacePerformance(receipt.id, db, START + 16000)).rejects.toThrow("lost-live-score-ack");
   spy.mockRestore();
   expect((await entry(PLAYERS[0]).get()).data()?.adjustedTimeMs).toBe(9000);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
   /** Owned asynchronous operation remains observable until it settles. */
   const pending = (await receipt.ref.get()).data()!;
   expect(pending.delivered).toBe(false);
   await deliverRacePerformance(receipt.id, db, pending.nextAttemptAtMs);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
   expect((await contextEntry(0).get()).data()?.adjustedTimeMs).toBe(9000);
   expect((await db.collectionGroup("entries").where("userId", "==", PLAYERS[0]).get()).size).toBe(2);
@@ -266,7 +268,7 @@ it("quarantines a corrupt frozen score source and recovers only after repair and
   expect((await receipt.ref.get()).data()?.deliveryState).toBe("quarantined");
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
   expect((await contextEntry(0).get()).exists).toBe(false);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(150);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(225);
   await expect(replayRaceDelivery(db, "racePerformanceOutbox", receipt.id, START + 17000, {dryRun: true})).rejects.toMatchObject({code: "data-loss"});
   await ref.set(original);
   await replayRaceDelivery(db, "racePerformanceOutbox", receipt.id, START + 17000, {dryRun: true});
@@ -275,7 +277,7 @@ it("quarantines a corrupt frozen score source and recovers only after repair and
   await replayRaceDelivery(db, "racePerformanceOutbox", receipt.id, START + 17000);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(true);
   expect((await contextEntry(0).get()).exists).toBe(true);
-  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(250);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(325);
 });
 
 it("holds an account lease until the context write drains and deletion removes the row", async () => {
@@ -346,7 +348,8 @@ it.each(["private", "rematch"].flatMap(mode => [0, 1].map(seat => ({mode, seat})
     await deliverRacePerformance(receipt.id, db, START + 25000);
     expect((await contextEntry(seat).get()).data()).toMatchObject({runId: ticketId, adjustedTimeMs: 9000});
     expect((await contextEntry(1 - seat).get()).exists).toBe(false);
-    expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(before + 50);
+    // The prior winner adds clean-run; the prior loser adds first-win and clean-run.
+    expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(before + (seat === 0 ? 75 : 100));
   },
 );
 

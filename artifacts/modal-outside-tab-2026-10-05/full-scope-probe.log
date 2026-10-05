@@ -1,0 +1,54 @@
+{
+  "mode": "development",
+  "checks": 322,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "settings",
+      "direction": "forward",
+      "scenario": "claimed-native",
+      "name": "an earlier native key claim retains its current focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "instructions",
+      "direction": "forward",
+      "scenario": "claimed-native",
+      "name": "an earlier native key claim retains its current focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "surface": "instructions",
+      "direction": "reverse",
+      "scenario": "claimed-native",
+      "name": "an earlier native key claim retains its current focus",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Modal contains outside native Tab
+
+3 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-modal-outside-tab-browser.mjs:97:228 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

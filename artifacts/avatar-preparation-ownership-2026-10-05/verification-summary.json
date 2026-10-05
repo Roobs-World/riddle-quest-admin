@@ -1,0 +1,94 @@
+{
+  "comparisons": {
+    "original-minimal": {
+      "checks": 28,
+      "failures": 3
+    },
+    "original-repeat": {
+      "checks": 28,
+      "failures": 2
+    },
+    "original-expanded": {
+      "checks": 140,
+      "failures": 13
+    },
+    "scope-probe": {
+      "checks": 140,
+      "failures": 3
+    },
+    "selection-probe": {
+      "checks": 140,
+      "failures": 1
+    },
+    "complete-probe": {
+      "checks": 140,
+      "failures": 0
+    },
+    "development": {
+      "checks": 420,
+      "failures": 0
+    },
+    "production": {
+      "checks": 420,
+      "failures": 0
+    }
+  },
+  "focusedBrowserAssertions": 840,
+  "focusedJourneys": 60,
+  "viewports": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "builtBrowser": {
+    "suites": 3,
+    "tests": 8,
+    "failures": 0,
+    "latencyThresholdChanged": false
+  },
+  "relatedCompiledLeaderboard": {
+    "passed": true,
+    "viewports": [
+      320,
+      1280
+    ]
+  },
+  "unitTests": 2758,
+  "unitSuites": 297,
+  "types": "passed",
+  "tsdocDeclarations": 25224,
+  "tsdocFiles": 1140,
+  "sixBuilds": "passed",
+  "youtubeBuild": "fixture",
+  "stableSourceInputs": 1503,
+  "sourceDelta": [],
+  "firefoxRecords": 8,
+  "initialAssertionAdjustment": "Invalid-file control now compares the before/after request count instead of counting an earlier stale send as a validation failure.",
+  "cleanup": {
+    "firefoxTabsClosed": [
+      1,
+      2
+    ],
+    "firefoxServersTerminalExitCodes": [
+      0,
+      0
+    ],
+    "firefoxCachesAbsent": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/avatar-owner-AWfqmV",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/avatar-owner-9R2Gh3"
+    ],
+    "externalBuildDirectoryRemoved": "/tmp/riddle-avatar-owner-builds-0nuqz306",
+    "preservedBuildFiles": 1300,
+    "preservedManifestUnchanged": true
+  },
+  "goal": "active"
+}

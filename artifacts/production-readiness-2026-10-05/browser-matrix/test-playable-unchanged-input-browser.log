@@ -1,0 +1,11 @@
+$ node scripts/verify-playable-unchanged-input-browser.mjs && PLAYABLE_UNCHANGED_REACT_MODE=production node scripts/verify-playable-unchanged-input-browser.mjs
+{
+  "mode": "development",
+  "checks": 165,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 165,
+  "failures": []
+}

@@ -134,8 +134,8 @@
   {
     "width": 1280,
     "name": "measurement: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -404,8 +404,8 @@
   {
     "width": 1280,
     "name": "host-pause: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -674,8 +674,8 @@
   {
     "width": 1280,
     "name": "document-hidden: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -944,8 +944,8 @@
   {
     "width": 1280,
     "name": "multiplayer: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -1676,8 +1676,8 @@
   {
     "width": 390,
     "name": "measurement: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -1946,8 +1946,8 @@
   {
     "width": 390,
     "name": "host-pause: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -2216,8 +2216,8 @@
   {
     "width": 390,
     "name": "document-hidden: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -2486,8 +2486,8 @@
   {
     "width": 390,
     "name": "multiplayer: positive layout live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,

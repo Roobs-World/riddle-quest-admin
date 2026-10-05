@@ -47,7 +47,7 @@ const receiptDirectory = resolveAbsolutePathOverride({
   value: process.env.JEST_RECEIPT_DIRECTORY,
 });
 const buildDirectory = resolveAbsolutePathOverride({
-  fallback: join(packageDirectory, "dist-jest"),
+  fallback: join(packageDirectory, "../../builds/jest"),
   name: "JEST_BUILD_DIRECTORY",
   value: process.env.JEST_BUILD_DIRECTORY,
 });

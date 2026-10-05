@@ -15,7 +15,7 @@ const results = [];
 const browser = await chromium.launch({headless: true});
 try {
   for (const target of targets) {
-    const directory = path.join(process.env.LOAD_ARTIFACT_ROOT ?? root, `dist-${target}`);
+    const directory = path.join(process.env.LOAD_ARTIFACT_ROOT ?? root, `../../builds/${target}`);
     const html = await readFile(path.join(directory, 'index.html'), 'utf8');
     const initialJs = [...new Set([...html.matchAll(/(?:src|href)="\.\/([^" ]+\.js)"/g)].map(match => match[1]))];
     const initialJsBytes = (await Promise.all(initialJs.map(async file => (await stat(path.join(directory, file))).size))).reduce((sum, size) => sum + size, 0);

@@ -1,0 +1,40 @@
+{
+  "mode": "development",
+  "checks": 6,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "early-tab",
+      "name": "native Tab selects an outer dialog control after dismissal",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "early-tab",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Profile dismissal retains native focus
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-profile-dismiss-focus-browser.mjs:69:230 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

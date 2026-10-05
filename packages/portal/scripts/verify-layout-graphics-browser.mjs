@@ -36,7 +36,8 @@ export async function verifyLayoutGraphics({page,width,url,baseline,metric,outpu
    if(scenario==='document-hidden')await page.evaluate(()=>window.visibility(false));
    if(scenario==='multiplayer'){await page.getByRole('button',{name:'Return to puzzle',exact:true}).click();await page.getByTestId('provider-race').waitFor({state:'detached'});await page.waitForTimeout(100);}
    if(scenario!=='retire-pending') {
-    await page.locator('.solar-system canvas').waitFor();await check('positive layout constructs once',await value('rendererConstructions'),1);await check('positive layout live resources',await live(),76);
+    // Renderer + sun/corona/shooting stars (15), seven planets (35), six moons (18), two rings (6).
+    await page.locator('.solar-system canvas').waitFor();await check('positive layout constructs once',await value('rendererConstructions'),1);await check('positive layout live resources',await live(),74);
     await check('first measurement sizes buffer immediately',await value('resizes'),1);await check('one animation chain',await frames(),1);
     await page.evaluate(()=>window.step());await check('first draw',await value('draws'),1);
     await page.evaluate(()=>window.resizeScene(0,0));await check('collapse stops frames',await frames(),0);await page.evaluate(()=>window.step(3000));await check('collapse draws nothing',await value('draws'),1);

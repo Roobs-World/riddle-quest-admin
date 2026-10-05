@@ -1,0 +1,11 @@
+$ node scripts/verify-host-bridge-commit-browser.mjs && HOST_COMMIT_REACT_MODE=production node scripts/verify-host-bridge-commit-browser.mjs
+{
+  "mode": "development",
+  "checks": 240,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 240,
+  "failures": []
+}

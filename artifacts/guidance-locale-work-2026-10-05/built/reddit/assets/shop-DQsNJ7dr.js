@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`đồng xu`,LOADING_TEXT:`Đang tải cửa hàng...`,NO_PACKS_AVAILABLE:`Hiện tại không có gói tiền xu nào có sẵn.`,PURCHASE_BUTTON:`MUA HÀNG`,TITLE:`CỬA HÀNG ĐỒNG XU`,YOUR_BALANCE:`Số dư của bạn`},n={CoinShop:t}})))()}r();export{n as default};

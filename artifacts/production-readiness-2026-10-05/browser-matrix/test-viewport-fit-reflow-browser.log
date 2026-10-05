@@ -1,0 +1,729 @@
+$ node scripts/verify-viewport-fit-reflow-browser.mjs && FIT_REFLOW_REACT_MODE=production node scripts/verify-viewport-fit-reflow-browser.mjs
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 3840,
+  "failures": [
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "en",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "de",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ar",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "both",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ja",
+      "surface": "race",
+      "motion": "normal",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "es",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pt",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "fr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ko",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "hi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "ru",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "tr",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "id",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "it",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "nl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "pl",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "app",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "locale": "vi",
+      "surface": "race",
+      "motion": "system",
+      "stage": "short-again",
+      "name": "keys stay at least 32 pixels after resize",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+[ELIFECYCLE] Command failed with exit code 1.

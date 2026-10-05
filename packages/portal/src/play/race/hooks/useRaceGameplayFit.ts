@@ -41,10 +41,26 @@ export function useRaceGameplayFit({active, screenRef, viewportRef, gameplayRef}
         /** Vertical space available below the gameplay viewport origin. */
         const availableHeight = Math.max(1, screenRect.bottom - paddingBottom - viewportRect.top);
         gameplay.style.minHeight = `${availableHeight}px`;
-        /** Unscaled gameplay height. */
-        const naturalHeight = gameplay.offsetHeight;
-        /** Scale required to keep the complete gameplay surface visible. */
-        const scale = naturalHeight > availableHeight ? availableHeight / naturalHeight : 1;
+        /** Measures the layout with touch targets compensated for the candidate scale. */
+        const scaledHeight = (candidate: number) => {
+          gameplay.style.setProperty("--race-gameplay-scale", String(candidate));
+          return gameplay.offsetHeight * candidate;
+        };
+        /** Largest scale that fits while preserving the physical keyboard target size. */
+        let scale = 1;
+        if (scaledHeight(1) > availableHeight) {
+          /** Lower fitting scale bound. */
+          let lower = 0;
+          /** Upper overflowing scale bound. */
+          let upper = 1;
+          for (let iteration = 0; iteration < 12; iteration += 1) {
+            /** Candidate scale for this compensated keyboard layout. */
+            const candidate = (lower + upper) / 2;
+            if (scaledHeight(candidate) <= availableHeight) lower = candidate;
+            else upper = candidate;
+          }
+          scale = Math.max(lower, 1 / 4096);
+        }
         gameplay.style.transform = `scale(${scale})`;
         gameplay.style.setProperty("--race-gameplay-scale", String(scale));
         viewport.style.height = `${availableHeight}px`;

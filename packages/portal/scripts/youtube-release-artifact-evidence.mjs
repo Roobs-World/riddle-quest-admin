@@ -69,7 +69,7 @@ export async function runVerificationCommand(suite, invocation, {cwd = repositor
 
 export async function runYouTubeReleaseVerification({
   repository = repositoryDirectory,
-  distDirectory = path.join(repository, "packages/portal/dist-youtube"),
+  distDirectory = path.join(repository, "builds/youtube"),
   contentAuditPath = path.join(
     repository,
     "firebase-functions/artifacts/youtube-content/youtube-content-v1.audit.json",

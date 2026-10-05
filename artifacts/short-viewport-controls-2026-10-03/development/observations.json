@@ -6,7 +6,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "en",
@@ -51,7 +55,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "en",
@@ -96,7 +104,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "en",
@@ -118,1221 +130,6 @@
   },
   {
     "locale": "en",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "en",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
     "width": 500,
     "height": 494,
     "surface": "race",
@@ -1341,6 +138,1329 @@
     "expected": "PIAN"
   },
   {
+    "locale": "en",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 43.4765625,
+    "viewportScales": [
+      "0.9058"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 39.1171875,
+    "viewportScales": [
+      "0.8149"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 33.99609375,
+    "viewportScales": [
+      "0.7083"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 44.765625,
+    "viewportScales": [
+      "0.9326"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40.265625,
+    "viewportScales": [
+      "0.8389"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 34.359375,
+    "viewportScales": [
+      "0.7158"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 47.28515625,
+    "viewportScales": [
+      "0.9851"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 42.796875,
+    "viewportScales": [
+      "0.8916"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 37.06640625,
+    "viewportScales": [
+      "0.7722"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 44.554656982421875,
+    "viewportScales": [
+      "0.9282"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40.04296875,
+    "viewportScales": [
+      "0.8342"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 44.015625,
+    "viewportScales": [
+      "0.9170"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40.53515625,
+    "viewportScales": [
+      "0.8445"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 38.87109375,
+    "viewportScales": [
+      "0.8098"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 45.33984375,
+    "viewportScales": [
+      "0.9446"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 45.64453125,
+    "viewportScales": [
+      "0.9509"
+    ]
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "en",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
     "locale": "de",
     "width": 500,
     "height": 494,
@@ -1356,7 +1476,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 43.4765625,
+    "viewportScales": [
+      "0.9058"
+    ]
   },
   {
     "locale": "de",
@@ -1401,7 +1525,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 39.1171875,
+    "viewportScales": [
+      "0.8149"
+    ]
   },
   {
     "locale": "de",
@@ -1446,7 +1574,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.99609375,
+    "viewportScales": [
+      "0.7083"
+    ]
   },
   {
     "locale": "de",
@@ -1491,7 +1623,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 44.765625,
+    "viewportScales": [
+      "0.9326"
+    ]
   },
   {
     "locale": "de",
@@ -1536,7 +1672,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 39.5625,
+    "viewportScales": [
+      "0.8242"
+    ]
   },
   {
     "locale": "de",
@@ -1581,7 +1721,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 34.359375,
+    "viewportScales": [
+      "0.7158"
+    ]
   },
   {
     "locale": "de",
@@ -1603,1221 +1747,6 @@
   },
   {
     "locale": "de",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 360,
-    "height": 600,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 390,
-    "height": 640,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 412,
-    "height": 720,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 600,
-    "height": 500,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 844,
-    "height": 390,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "de",
-    "width": 1280,
-    "height": 844,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 494,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "native race input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 500,
-    "height": 568,
-    "surface": "race",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "solo",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "native answer input stays playable",
-    "actual": "PIAN",
-    "expected": "PIAN"
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "unsaved",
-    "name": "no browser error",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "key height remains at least 32 pixels",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "keyboard and actions stay inside viewport",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
-    "width": 280,
-    "height": 568,
-    "surface": "race",
-    "name": "settled fit does not alternate",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "locale": "ar",
     "width": 280,
     "height": 568,
     "surface": "race",
@@ -2826,6 +1755,1329 @@
     "expected": "PIAN"
   },
   {
+    "locale": "de",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 47.28515625,
+    "viewportScales": [
+      "0.9851"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 42.796875,
+    "viewportScales": [
+      "0.8916"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 37.06640625,
+    "viewportScales": [
+      "0.7722"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 360,
+    "height": 600,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 43.86328125,
+    "viewportScales": [
+      "0.9138"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40.04296875,
+    "viewportScales": [
+      "0.8342"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 390,
+    "height": 640,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 44.015625,
+    "viewportScales": [
+      "0.9170"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 39.984375,
+    "viewportScales": [
+      "0.8330"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 38.87109375,
+    "viewportScales": [
+      "0.8098"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 412,
+    "height": 720,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 600,
+    "height": 500,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 844,
+    "height": 390,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 45.33984375,
+    "viewportScales": [
+      "0.9446"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 45.64453125,
+    "viewportScales": [
+      "0.9509"
+    ]
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "de",
+    "width": 1280,
+    "height": 844,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 32.997772216796875,
+    "viewportScales": [
+      "0.5261"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 494,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 43.4765625,
+    "viewportScales": [
+      "0.9058"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 39.1171875,
+    "viewportScales": [
+      "0.8149"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 33.41015625,
+    "viewportScales": [
+      "0.6960"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 500,
+    "height": 568,
+    "surface": "race",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 44.765625,
+    "viewportScales": [
+      "0.9326"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "solo",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 40.265625,
+    "viewportScales": [
+      "0.8389"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "native answer input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "unsaved",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "key height remains at least 32 pixels",
+    "actual": true,
+    "expected": true,
+    "minimumKeyHeight": 33.76171875,
+    "viewportScales": [
+      "0.7034"
+    ]
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "keyboard and actions stay inside viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "settled fit does not alternate",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "locale": "ar",
+    "width": 280,
+    "height": 568,
+    "surface": "race",
+    "name": "native race input stays playable",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
     "locale": "ar",
     "width": 280,
     "height": 568,
@@ -2841,7 +3093,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 47.28515625,
+    "viewportScales": [
+      "0.9851"
+    ]
   },
   {
     "locale": "ar",
@@ -2886,7 +3142,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 42.796875,
+    "viewportScales": [
+      "0.8916"
+    ]
   },
   {
     "locale": "ar",
@@ -2931,7 +3191,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 36.48046875,
+    "viewportScales": [
+      "0.7600"
+    ]
   },
   {
     "locale": "ar",
@@ -2976,7 +3240,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ar",
@@ -3021,7 +3289,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 44.554656982421875,
+    "viewportScales": [
+      "0.9282"
+    ]
   },
   {
     "locale": "ar",
@@ -3066,7 +3338,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 39.45703125,
+    "viewportScales": [
+      "0.8220"
+    ]
   },
   {
     "locale": "ar",
@@ -3111,7 +3387,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 44.015625,
+    "viewportScales": [
+      "0.9170"
+    ]
   },
   {
     "locale": "ar",
@@ -3156,7 +3436,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40.53515625,
+    "viewportScales": [
+      "0.8445"
+    ]
   },
   {
     "locale": "ar",
@@ -3201,7 +3485,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 38.37890625,
+    "viewportScales": [
+      "0.7996"
+    ]
   },
   {
     "locale": "ar",
@@ -3246,7 +3534,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ar",
@@ -3291,7 +3583,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ar",
@@ -3336,7 +3632,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ar",
@@ -3381,7 +3681,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ar",
@@ -3426,7 +3730,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ar",
@@ -3471,7 +3779,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 36.9140625,
+    "viewportScales": [
+      "0.9229"
+    ]
   },
   {
     "locale": "ar",
@@ -3516,7 +3828,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ar",
@@ -3561,7 +3877,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 45.33984375,
+    "viewportScales": [
+      "0.9446"
+    ]
   },
   {
     "locale": "ar",
@@ -3606,7 +3926,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 44.54296875,
+    "viewportScales": [
+      "0.9280"
+    ]
   },
   {
     "locale": "ar",
@@ -3651,7 +3975,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "ja",
@@ -3696,7 +4024,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "ja",
@@ -3741,7 +4073,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "ja",
@@ -3786,7 +4122,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 43.4765625,
+    "viewportScales": [
+      "0.9058"
+    ]
   },
   {
     "locale": "ja",
@@ -3831,7 +4171,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 39.1171875,
+    "viewportScales": [
+      "0.8149"
+    ]
   },
   {
     "locale": "ja",
@@ -3876,7 +4220,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.99609375,
+    "viewportScales": [
+      "0.7083"
+    ]
   },
   {
     "locale": "ja",
@@ -3921,7 +4269,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 44.765625,
+    "viewportScales": [
+      "0.9326"
+    ]
   },
   {
     "locale": "ja",
@@ -3966,7 +4318,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 39.5625,
+    "viewportScales": [
+      "0.8242"
+    ]
   },
   {
     "locale": "ja",
@@ -4011,7 +4367,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 34.359375,
+    "viewportScales": [
+      "0.7158"
+    ]
   },
   {
     "locale": "ja",
@@ -4056,7 +4416,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 47.28515625,
+    "viewportScales": [
+      "0.9851"
+    ]
   },
   {
     "locale": "ja",
@@ -4101,7 +4465,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 42.796875,
+    "viewportScales": [
+      "0.8916"
+    ]
   },
   {
     "locale": "ja",
@@ -4146,7 +4514,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.06640625,
+    "viewportScales": [
+      "0.7722"
+    ]
   },
   {
     "locale": "ja",
@@ -4191,7 +4563,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4236,7 +4612,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 43.86328125,
+    "viewportScales": [
+      "0.9138"
+    ]
   },
   {
     "locale": "ja",
@@ -4281,7 +4661,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40.04296875,
+    "viewportScales": [
+      "0.8342"
+    ]
   },
   {
     "locale": "ja",
@@ -4326,7 +4710,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 44.015625,
+    "viewportScales": [
+      "0.9170"
+    ]
   },
   {
     "locale": "ja",
@@ -4371,7 +4759,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 39.984375,
+    "viewportScales": [
+      "0.8330"
+    ]
   },
   {
     "locale": "ja",
@@ -4416,7 +4808,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 38.87109375,
+    "viewportScales": [
+      "0.8098"
+    ]
   },
   {
     "locale": "ja",
@@ -4461,7 +4857,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4506,7 +4906,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4551,7 +4955,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4596,7 +5004,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4641,7 +5053,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4686,7 +5102,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4731,7 +5151,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 48,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ja",
@@ -4776,7 +5200,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 45.33984375,
+    "viewportScales": [
+      "0.9446"
+    ]
   },
   {
     "locale": "ja",
@@ -4821,7 +5249,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 45.64453125,
+    "viewportScales": [
+      "0.9509"
+    ]
   },
   {
     "locale": "ja",
@@ -4866,7 +5298,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "es",
@@ -4911,7 +5347,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "es",
@@ -4956,7 +5396,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "es",
@@ -5001,7 +5445,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "es",
@@ -5046,7 +5494,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "es",
@@ -5091,7 +5543,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "es",
@@ -5136,7 +5592,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "pt",
@@ -5181,7 +5641,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "pt",
@@ -5226,7 +5690,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "pt",
@@ -5271,7 +5739,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "pt",
@@ -5316,7 +5788,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "pt",
@@ -5361,7 +5837,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "pt",
@@ -5406,7 +5886,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "fr",
@@ -5451,7 +5935,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "fr",
@@ -5496,7 +5984,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "fr",
@@ -5541,7 +6033,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "fr",
@@ -5586,7 +6082,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "fr",
@@ -5631,7 +6131,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "fr",
@@ -5676,7 +6180,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "ko",
@@ -5721,7 +6229,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "ko",
@@ -5766,7 +6278,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "ko",
@@ -5811,7 +6327,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ko",
@@ -5856,7 +6376,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ko",
@@ -5901,7 +6425,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ko",
@@ -5946,7 +6474,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "hi",
@@ -5991,7 +6523,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "hi",
@@ -6036,7 +6572,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.99810791015625,
+    "viewportScales": [
+      "0.5471"
+    ]
   },
   {
     "locale": "hi",
@@ -6081,7 +6621,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.99864196777344,
+    "viewportScales": [
+      "0.6130"
+    ]
   },
   {
     "locale": "hi",
@@ -6126,7 +6670,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "hi",
@@ -6171,7 +6719,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "hi",
@@ -6216,7 +6768,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "ru",
@@ -6261,7 +6817,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "ru",
@@ -6306,7 +6866,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.997772216796875,
+    "viewportScales": [
+      "0.5444"
+    ]
   },
   {
     "locale": "ru",
@@ -6351,7 +6915,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ru",
@@ -6396,7 +6964,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ru",
@@ -6441,7 +7013,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "ru",
@@ -6486,7 +7062,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "tr",
@@ -6531,7 +7111,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "tr",
@@ -6576,7 +7160,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "tr",
@@ -6621,7 +7209,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "tr",
@@ -6666,7 +7258,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "tr",
@@ -6711,7 +7307,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "tr",
@@ -6756,7 +7356,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "id",
@@ -6801,7 +7405,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "id",
@@ -6846,7 +7454,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "id",
@@ -6891,7 +7503,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "id",
@@ -6936,7 +7552,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "id",
@@ -6981,7 +7601,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "id",
@@ -7026,7 +7650,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "it",
@@ -7071,7 +7699,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "it",
@@ -7116,7 +7748,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "it",
@@ -7161,7 +7797,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "it",
@@ -7206,7 +7846,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "it",
@@ -7251,7 +7895,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "it",
@@ -7296,7 +7944,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "nl",
@@ -7341,7 +7993,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "nl",
@@ -7386,7 +8042,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "nl",
@@ -7431,7 +8091,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "nl",
@@ -7476,7 +8140,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "nl",
@@ -7521,7 +8189,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "nl",
@@ -7566,7 +8238,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "pl",
@@ -7611,7 +8287,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "pl",
@@ -7656,7 +8336,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "pl",
@@ -7701,7 +8385,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.99864196777344,
+    "viewportScales": [
+      "0.6130"
+    ]
   },
   {
     "locale": "pl",
@@ -7746,7 +8434,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "pl",
@@ -7791,7 +8483,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "pl",
@@ -7836,7 +8532,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 37.9921875,
+    "viewportScales": [
+      "0.7915"
+    ]
   },
   {
     "locale": "vi",
@@ -7881,7 +8581,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 33.609375,
+    "viewportScales": [
+      "0.7002"
+    ]
   },
   {
     "locale": "vi",
@@ -7926,7 +8630,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 32.995941162109375,
+    "viewportScales": [
+      "0.5427"
+    ]
   },
   {
     "locale": "vi",
@@ -7971,7 +8679,11 @@
     "surface": "solo",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "vi",
@@ -8016,7 +8728,11 @@
     "surface": "unsaved",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 40,
+    "viewportScales": [
+      "1.0000"
+    ]
   },
   {
     "locale": "vi",
@@ -8061,7 +8777,11 @@
     "surface": "race",
     "name": "key height remains at least 32 pixels",
     "actual": true,
-    "expected": true
+    "expected": true,
+    "minimumKeyHeight": 39.609375,
+    "viewportScales": [
+      "0.9902"
+    ]
   },
   {
     "locale": "vi",

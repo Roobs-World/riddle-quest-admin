@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+Test Suites: 7 passed, 7 total
+Tests:       27 passed, 27 total
+Snapshots:   0 total
+Time:        192.619 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts|src/play/__tests__/profileTour.jest-playwright.test.ts|src/play/__tests__/queuedCoinActions.jest-playwright.test.ts|src/play/__tests__/musicStart.jest-playwright.test.ts|src/play/__tests__/coinCollection.jest-playwright.test.ts|src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts|src/play/__tests__/viewportFit.jest-playwright.test.ts.

@@ -1,0 +1,13 @@
+$ node scripts/verify-game-checkpoint-work-browser.mjs && CHECKPOINT_REACT_MODE=production node scripts/verify-game-checkpoint-work-browser.mjs
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 32,
+  "failures": []
+}
+{
+  "mode": "production",
+  "baseline": false,
+  "checks": 32,
+  "failures": []
+}

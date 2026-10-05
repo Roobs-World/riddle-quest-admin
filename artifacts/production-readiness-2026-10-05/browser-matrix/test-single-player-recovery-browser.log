@@ -1,0 +1,3 @@
+$ node scripts/verify-single-player-recovery-browser.mjs
+PASS 1280px: effect replay, completion/startup reconnect, fresh profile, account retirement, and unmount ownership
+PASS 390px: effect replay, completion/startup reconnect, fresh profile, account retirement, and unmount ownership

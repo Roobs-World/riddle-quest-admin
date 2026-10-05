@@ -96,7 +96,7 @@ Request from the Netflix Games partner contact:
 - Game Service ID and access credentials, identity-token verification contract, cloud-save contract, lifecycle requirements, certification suite, supported devices, localization list, packaging limits, and upload/promotion procedure.
 - Written policy for commerce, achievements, leaderboards, social features, telemetry, and advertising. Do not enable ads without explicit approval.
 
-The current `dist-netflix` output is an engineering candidate. Replace its standalone adapter only after these contracts are available.
+The current `builds/netflix` output is an engineering candidate. Replace its standalone adapter only after these contracts are available.
 
 ## Yahoo Games
 
@@ -106,4 +106,4 @@ Ask the Yahoo Games publishing/partner contact for:
 - Partner account invitation, app/game ID, SDK package and documentation, OAuth/identity contract, cloud-save contract, lifecycle API, packaging limits, certification tests, and upload/promotion procedure.
 - Written commerce, social, telemetry, and advertising policy plus any ad SDK and placement identifiers.
 
-Do not install Yahoo Search SDK or Flurry as a substitute for a Yahoo Games SDK. The current `dist-yahoo` output remains an engineering candidate until Yahoo supplies a game-specific contract.
+Do not install Yahoo Search SDK or Flurry as a substitute for a Yahoo Games SDK. The current `builds/yahoo` output remains an engineering candidate until Yahoo supplies a game-specific contract.

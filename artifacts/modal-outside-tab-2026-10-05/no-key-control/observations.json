@@ -1,0 +1,38 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "name": "deferred autofocus leaves focus inside its dialog",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "name": "entry never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

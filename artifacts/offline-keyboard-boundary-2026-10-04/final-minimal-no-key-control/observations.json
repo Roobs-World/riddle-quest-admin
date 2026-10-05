@@ -1,0 +1,42 @@
+[
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "omitted boundary key remains uncancelled",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

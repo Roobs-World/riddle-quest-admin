@@ -5,7 +5,7 @@ import {fileURLToPath} from "node:url";
 import {chromium} from "@playwright/test";
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const distRoot = path.join(packageRoot, "dist-jest");
+const distRoot = path.join(packageRoot, "../../builds/jest");
 const mime = {".html": "text/html", ".js": "text/javascript", ".css": "text/css",
   ".json": "application/json", ".svg": "image/svg+xml", ".webp": "image/webp",
   ".webm": "audio/webm", ".woff2": "font/woff2", ".png": "image/png"};

@@ -15,7 +15,7 @@ describeBrowser("solo coin collection and successor routing", () => {
     /** Provides dist dir behavior. */
     const distDir = process.env.PORTAL_JEST_BUILD_DIR
       ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
-      : path.resolve(__dirname, "../../../dist-jest");
+      : path.resolve(__dirname, "../../../../../builds/jest");
     if (!existsSync(path.join(distDir, "index.html"))) {
       execFileSync("pnpm", ["build:jest"], {cwd: path.resolve(__dirname, "../../.."), stdio: "inherit"});
     }

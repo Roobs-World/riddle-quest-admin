@@ -1,0 +1,100 @@
+{
+  "OriginalBridge": {
+    "online": true,
+    "disabled": true,
+    "changes": [
+      {
+        "value": false,
+        "emit": false
+      },
+      {
+        "value": true,
+        "emit": true
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "OriginalFrame": {
+    "online": false,
+    "offlineAlert": false,
+    "gameInert": false,
+    "changes": [
+      {
+        "value": true,
+        "emit": false
+      },
+      {
+        "value": false,
+        "emit": true
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalBridge": {
+    "online": true,
+    "disabled": false,
+    "changes": [
+      {
+        "value": false,
+        "emit": false
+      },
+      {
+        "value": true,
+        "emit": true
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalRetry": {
+    "reloads": 1,
+    "disabled": true,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalFrame": {
+    "online": false,
+    "offlineAlert": true,
+    "gameInert": true,
+    "overlayInert": true,
+    "focused": true,
+    "changes": [
+      {
+        "value": true,
+        "emit": false
+      },
+      {
+        "value": false,
+        "emit": true
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalSave": {
+    "online": true,
+    "disabled": false,
+    "wakes": 0,
+    "changes": [
+      {
+        "value": false,
+        "emit": false
+      },
+      {
+        "value": true,
+        "emit": true
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalWake": {
+    "wakes": 1,
+    "reloads": 0,
+    "online": true,
+    "errors": [],
+    "unhandled": []
+  }
+}

@@ -20,14 +20,14 @@
       "inputLength": 20004,
       "segments": 28,
       "samplesMs": [
+        0.19999999925494194,
         0.10000000149011612,
+        0.09999999776482582,
+        0.09999999776482582,
+        0.20000000298023224,
+        0.19999999925494194,
         0.10000000149011612,
-        0.09999999403953552,
-        0.10000000149011612,
-        0.10000000149011612,
-        0,
-        0.10000000149011612,
-        0.10000000149011612
+        0.09999999776482582
       ],
       "medianMs": 0.10000000149011612
     }
@@ -116,13 +116,13 @@
       "inputLength": 20004,
       "segments": 28,
       "samplesMs": [
+        0.19999999925494194,
+        0.10000000149011612,
         0.10000000149011612,
         0,
-        0.10000000149011612,
-        0.10000000149011612,
-        0.09999999403953552,
+        0.09999999776482582,
+        0.09999999776482582,
         0,
-        0.10000000149011612,
         0.10000000149011612
       ],
       "medianMs": 0.10000000149011612
@@ -212,13 +212,13 @@
       "inputLength": 20003,
       "segments": 29,
       "samplesMs": [
-        0,
         0.10000000149011612,
-        0.20000000298023224,
-        0,
-        0,
-        0.09999999403953552,
         0.10000000149011612,
+        0.10000000149011612,
+        0.09999999776482582,
+        0.19999999925494194,
+        0.19999999925494194,
+        0,
         0.10000000149011612
       ],
       "medianMs": 0.10000000149011612
@@ -308,13 +308,213 @@
       "inputLength": 20004,
       "segments": 8,
       "samplesMs": [
+        0.19999999925494194,
+        0.09999999776482582,
+        0,
+        0.19999999925494194,
         0.10000000149011612,
+        0.09999999776482582,
         0.10000000149011612,
-        0.10000000149011612,
+        0.09999999776482582
+      ],
+      "medianMs": 0.10000000149011612
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "paste",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "paste",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "paste",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "paste",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "paste",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "long committed text preserves the bounded answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "ignored suffix does not require full grapheme enumeration",
+    "actual": true,
+    "expected": true,
+    "measurement": {
+      "inputLength": 20004,
+      "segments": 8,
+      "samplesMs": [
+        0.09999999776482582,
+        0.09999999776482582,
         0.10000000149011612,
         0,
+        0.10000000149011612,
+        0.10000000149011612,
+        0.19999999925494194,
+        0.09999999776482582
+      ],
+      "medianMs": 0.10000000149011612
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "composition",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint",
+    "name": "long committed text preserves the bounded answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "live",
+    "scenario": "hint",
+    "name": "ignored suffix does not require full grapheme enumeration",
+    "actual": true,
+    "expected": true,
+    "measurement": {
+      "inputLength": 20003,
+      "segments": 6,
+      "samplesMs": [
+        0.09999999776482582,
+        0.10000000149011612,
+        0.10000000149011612,
+        0.10000000149011612,
+        0.09999999776482582,
+        0.10000000149011612,
         0,
-        0.19999999552965164,
         0
       ],
       "medianMs": 0.10000000149011612
@@ -324,206 +524,6 @@
     "width": 390,
     "height": 568,
     "target": "live",
-    "scenario": "paste",
-    "name": "input cannot submit a guess",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "paste",
-    "name": "input cannot add a material save",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "paste",
-    "name": "consumed native value is empty",
-    "actual": "",
-    "expected": ""
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "paste",
-    "name": "fresh explicit answer advances once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "paste",
-    "name": "fresh explicit answer is sent once",
-    "actual": [
-      "test"
-    ],
-    "expected": [
-      "test"
-    ]
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "paste",
-    "name": "no page errors",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "paste",
-    "name": "no unhandled rejection",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "long committed text preserves the bounded answer",
-    "actual": "test",
-    "expected": "test"
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "ignored suffix does not require full grapheme enumeration",
-    "actual": true,
-    "expected": true,
-    "measurement": {
-      "inputLength": 20004,
-      "segments": 8,
-      "samplesMs": [
-        0.10000000149011612,
-        0.10000000149011612,
-        0.19999999552965164,
-        0.10000000149011612,
-        0.20000000298023224,
-        0.09999999403953552,
-        0.10000000149011612,
-        0.10000000149011612
-      ],
-      "medianMs": 0.10000000149011612
-    }
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "input cannot submit a guess",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "input cannot add a material save",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "consumed native value is empty",
-    "actual": "",
-    "expected": ""
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "fresh explicit answer advances once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "fresh explicit answer is sent once",
-    "actual": [
-      "test"
-    ],
-    "expected": [
-      "test"
-    ]
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "no page errors",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "composition",
-    "name": "no unhandled rejection",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "hint",
-    "name": "long committed text preserves the bounded answer",
-    "actual": "test",
-    "expected": "test"
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
-    "scenario": "hint",
-    "name": "ignored suffix does not require full grapheme enumeration",
-    "actual": true,
-    "expected": true,
-    "measurement": {
-      "inputLength": 20003,
-      "segments": 6,
-      "samplesMs": [
-        0.20000000298023224,
-        0.19999999552965164,
-        0.10000000149011612,
-        0.20000000298023224,
-        0.10000000149011612,
-        0.09999999403953552,
-        0.10000000149011612,
-        0.10000000149011612
-      ],
-      "medianMs": 0.10000000149011612
-    }
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "target": "live",
     "scenario": "hint",
     "name": "input cannot submit a guess",
     "actual": 0,
@@ -608,16 +608,16 @@
       "inputLength": 20004,
       "segments": 28,
       "samplesMs": [
-        0.09999999403953552,
+        0.09999999776482582,
         0.10000000149011612,
+        0.19999999925494194,
         0.10000000149011612,
-        0.10000000149011612,
+        0.09999999776482582,
+        0.09999999776482582,
         0,
-        0.09999999403953552,
-        0.20000000298023224,
-        0.10000000149011612
+        0
       ],
-      "medianMs": 0.10000000149011612
+      "medianMs": 0.09999999776482582
     }
   },
   {
@@ -704,404 +704,12 @@
       "inputLength": 20004,
       "segments": 28,
       "samplesMs": [
-        0.10000000149011612,
-        0.19999999552965164,
-        0.10000000149011612,
-        0.10000000149011612,
-        0.09999999403953552,
-        0.10000000149011612,
-        0.20000000298023224,
-        0.19999999552965164
-      ],
-      "medianMs": 0.10000000149011612
-    }
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "composition",
-    "name": "input cannot submit a guess",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "composition",
-    "name": "input cannot add a material save",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "composition",
-    "name": "consumed native value is empty",
-    "actual": "",
-    "expected": ""
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "composition",
-    "name": "fresh explicit answer wins once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "composition",
-    "name": "fresh explicit answer is scored once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "composition",
-    "name": "no page errors",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "composition",
-    "name": "no unhandled rejection",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "long committed text preserves the bounded answer",
-    "actual": "rome",
-    "expected": "rome"
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "ignored suffix does not require full grapheme enumeration",
-    "actual": true,
-    "expected": true,
-    "measurement": {
-      "inputLength": 20003,
-      "segments": 29,
-      "samplesMs": [
-        0.10000000149011612,
-        0.10000000149011612,
-        0.10000000149011612,
-        0.10000000149011612,
-        0.10000000149011612,
-        0.19999999552965164,
-        0.10000000149011612,
-        0.09999999403953552
-      ],
-      "medianMs": 0.10000000149011612
-    }
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "input cannot submit a guess",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "input cannot add a material save",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "consumed native value is empty",
-    "actual": "",
-    "expected": ""
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "fresh explicit answer wins once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "fresh explicit answer is scored once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "no page errors",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "playable",
-    "scenario": "hint",
-    "name": "no unhandled rejection",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "long committed text preserves the bounded answer",
-    "actual": "test",
-    "expected": "test"
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "ignored suffix does not require full grapheme enumeration",
-    "actual": true,
-    "expected": true,
-    "measurement": {
-      "inputLength": 20004,
-      "segments": 8,
-      "samplesMs": [
-        0.10000000149011612,
-        0.10000000149011612,
-        0.09999999403953552,
-        0.10000000149011612,
-        0.20000000298023224,
+        0.19999999925494194,
         0,
-        0.09999999403953552,
-        0.10000000149011612
-      ],
-      "medianMs": 0.10000000149011612
-    }
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "input cannot submit a guess",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "input cannot add a material save",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "consumed native value is empty",
-    "actual": "",
-    "expected": ""
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "fresh explicit answer advances once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "fresh explicit answer is sent once",
-    "actual": [
-      "test"
-    ],
-    "expected": [
-      "test"
-    ]
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "no page errors",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "paste",
-    "name": "no unhandled rejection",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "long committed text preserves the bounded answer",
-    "actual": "test",
-    "expected": "test"
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "ignored suffix does not require full grapheme enumeration",
-    "actual": true,
-    "expected": true,
-    "measurement": {
-      "inputLength": 20004,
-      "segments": 8,
-      "samplesMs": [
-        0.10000000149011612,
-        0.19999999552965164,
-        0.10000000149011612,
-        0.10000000149011612,
-        0.09999999403953552,
-        0.10000000149011612,
-        0.10000000149011612,
-        0.10000000149011612
-      ],
-      "medianMs": 0.10000000149011612
-    }
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "input cannot submit a guess",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "input cannot add a material save",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "consumed native value is empty",
-    "actual": "",
-    "expected": ""
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "fresh explicit answer advances once",
-    "actual": 1,
-    "expected": 1
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "fresh explicit answer is sent once",
-    "actual": [
-      "test"
-    ],
-    "expected": [
-      "test"
-    ]
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "no page errors",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "composition",
-    "name": "no unhandled rejection",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "hint",
-    "name": "long committed text preserves the bounded answer",
-    "actual": "test",
-    "expected": "test"
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "target": "live",
-    "scenario": "hint",
-    "name": "ignored suffix does not require full grapheme enumeration",
-    "actual": true,
-    "expected": true,
-    "measurement": {
-      "inputLength": 20003,
-      "segments": 6,
-      "samplesMs": [
+        0.19999999925494194,
         0.10000000149011612,
         0.10000000149011612,
         0.10000000149011612,
-        0.10000000149011612,
-        0.10000000149011612,
-        0,
         0.10000000149011612,
         0
       ],
@@ -1111,6 +719,398 @@
   {
     "width": 390,
     "height": 844,
+    "target": "playable",
+    "scenario": "composition",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition",
+    "name": "input cannot add a material save",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "composition",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "long committed text preserves the bounded answer",
+    "actual": "rome",
+    "expected": "rome"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "ignored suffix does not require full grapheme enumeration",
+    "actual": true,
+    "expected": true,
+    "measurement": {
+      "inputLength": 20003,
+      "segments": 29,
+      "samplesMs": [
+        0.09999999776482582,
+        0.09999999776482582,
+        0,
+        0.09999999776482582,
+        0.10000000149011612,
+        0.09999999776482582,
+        0.09999999776482582,
+        0.10000000149011612
+      ],
+      "medianMs": 0.09999999776482582
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "input cannot add a material save",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "fresh explicit answer wins once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "fresh explicit answer is scored once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "playable",
+    "scenario": "hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "long committed text preserves the bounded answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "ignored suffix does not require full grapheme enumeration",
+    "actual": true,
+    "expected": true,
+    "measurement": {
+      "inputLength": 20004,
+      "segments": 8,
+      "samplesMs": [
+        0.19999999925494194,
+        0.10000000149011612,
+        0.10000000149011612,
+        0.09999999776482582,
+        0,
+        0,
+        0,
+        0.09999999776482582
+      ],
+      "medianMs": 0.09999999776482582
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "paste",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "long committed text preserves the bounded answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "ignored suffix does not require full grapheme enumeration",
+    "actual": true,
+    "expected": true,
+    "measurement": {
+      "inputLength": 20004,
+      "segments": 8,
+      "samplesMs": [
+        0.09999999776482582,
+        0.20000000298023224,
+        0,
+        0,
+        0,
+        0.10000000149011612,
+        0,
+        0.09999999776482582
+      ],
+      "medianMs": 0.09999999776482582
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "input cannot submit a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "input cannot add a material save",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "consumed native value is empty",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "fresh explicit answer advances once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "fresh explicit answer is sent once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "composition",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "hint",
+    "name": "long committed text preserves the bounded answer",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "live",
+    "scenario": "hint",
+    "name": "ignored suffix does not require full grapheme enumeration",
+    "actual": true,
+    "expected": true,
+    "measurement": {
+      "inputLength": 20003,
+      "segments": 6,
+      "samplesMs": [
+        0,
+        0.09999999776482582,
+        0.10000000149011612,
+        0,
+        0,
+        0.19999999925494194,
+        0.10000000149011612,
+        0.10000000149011612
+      ],
+      "medianMs": 0.10000000149011612
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
     "target": "live",
     "scenario": "hint",
     "name": "input cannot submit a guess",
@@ -1196,16 +1196,16 @@
       "inputLength": 20004,
       "segments": 28,
       "samplesMs": [
-        0.10000000149011612,
-        0.19999999552965164,
-        0.10000000149011612,
-        0.10000000149011612,
+        0.09999999776482582,
+        0,
+        0.09999999776482582,
         0,
         0.20000000298023224,
-        0.10000000149011612,
+        0.09999999776482582,
+        0.09999999776482582,
         0.10000000149011612
       ],
-      "medianMs": 0.10000000149011612
+      "medianMs": 0.09999999776482582
     }
   },
   {
@@ -1292,16 +1292,16 @@
       "inputLength": 20004,
       "segments": 28,
       "samplesMs": [
+        0.19999999925494194,
+        0,
+        0.19999999925494194,
+        0,
         0.10000000149011612,
         0,
-        0.20000000298023224,
-        0.09999999403953552,
         0,
-        0.10000000149011612,
-        0.19999999552965164,
-        0.10000000149011612
+        0
       ],
-      "medianMs": 0.10000000149011612
+      "medianMs": 0
     }
   },
   {
@@ -1392,10 +1392,10 @@
         0.10000000149011612,
         0.10000000149011612,
         0.10000000149011612,
-        0.09999999403953552,
-        0.20000000298023224,
         0.10000000149011612,
-        0.10000000149011612
+        0.10000000149011612,
+        0.09999999776482582,
+        0.19999999925494194
       ],
       "medianMs": 0.10000000149011612
     }
@@ -1484,13 +1484,13 @@
       "inputLength": 20004,
       "segments": 8,
       "samplesMs": [
-        0.20000000298023224,
-        0.09999999403953552,
+        0.19999999925494194,
         0,
+        0.09999999776482582,
         0,
-        0.09999999403953552,
-        0.20000000298023224,
+        0.19999999925494194,
         0.10000000149011612,
+        0.09999999776482582,
         0.10000000149011612
       ],
       "medianMs": 0.10000000149011612
@@ -1585,12 +1585,12 @@
       "segments": 8,
       "samplesMs": [
         0.10000000149011612,
-        0.19999999552965164,
-        0.20000000298023224,
+        0.10000000149011612,
+        0.10000000149011612,
+        0.09999999776482582,
+        0.19999999925494194,
         0.10000000149011612,
         0,
-        0.10000000149011612,
-        0.10000000149011612,
         0.10000000149011612
       ],
       "medianMs": 0.10000000149011612
@@ -1684,14 +1684,14 @@
       "inputLength": 20003,
       "segments": 6,
       "samplesMs": [
-        0.19999999552965164,
-        0.10000000149011612,
         0,
-        0.19999999552965164,
+        0.09999999776482582,
         0.10000000149011612,
+        0.19999999925494194,
         0,
-        0.09999999403953552,
-        0.10000000149011612
+        0.19999999925494194,
+        0.10000000149011612,
+        0.09999999776482582
       ],
       "medianMs": 0.10000000149011612
     }

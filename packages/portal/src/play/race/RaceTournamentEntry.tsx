@@ -111,7 +111,17 @@ function RaceTournamentNavigation({destination, destinations, focusSelection, on
   useEffect(() => {
     if (!focusSelection) return;
     /** Deferred restoration waits for React to mount the selected destination. */
-    const frame = window.requestAnimationFrame(() => tabs.current[selected]?.focus());
+    const frame = window.requestAnimationFrame(() => {
+      /** Mounted selected tab provides this destination's current dialog scope. */
+      const tab = tabs.current[selected];
+      /** Destination replacement mounts a separate modal focus boundary. */
+      const dialog = tab?.closest<HTMLElement>("[role='dialog']");
+      /** A later native action keeps focus on its current eligible dialog control. */
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && dialog?.contains(focused) && focused.tabIndex >= 0 &&
+        !focused.matches(":disabled, [aria-disabled='true']")) return;
+      tab?.focus();
+    });
     return () => window.cancelAnimationFrame(frame);
   }, [selected, focusSelection]);
   /** Arrow and endpoint keys select the next supported destination. */

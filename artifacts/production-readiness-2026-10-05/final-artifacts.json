@@ -1,0 +1,139 @@
+{
+  "verifiedAt": "2026-10-05T00:56:03.622Z",
+  "commit": "d6f85ff4e964eb8b2e23afcfe208e940fe6f70da",
+  "dirty": true,
+  "runtimeSourceSha256": "48f2f036e403903a4f7e4839ade4030f23815b6ff68472d1a3f4c150033ea1d8",
+  "targets": [
+    {
+      "target": "jest",
+      "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/production-readiness-2026-10-05/release-builds/jest",
+      "builtDirectory": "/tmp/riddle-production-readiness-2026-10-05/release-builds/jest",
+      "files": 411,
+      "bytes": 4639400,
+      "treeSha256": "512681610fc7f68eea330fe6284e9461c25439d18483e89d850ddd3834f905bf",
+      "inventorySha256": "a2853758efdfc875cc2322c6bbbfe01dc623d540728430913e42e0d5442502cb",
+      "runtimePackages": [
+        "@firebase/app",
+        "@firebase/app-check",
+        "@firebase/auth",
+        "@firebase/component",
+        "@firebase/database",
+        "@firebase/firestore",
+        "@firebase/functions",
+        "@firebase/installations",
+        "@firebase/logger",
+        "@firebase/messaging",
+        "@firebase/util",
+        "@firebase/webchannel-wrapper",
+        "@sentry/browser",
+        "@sentry/browser-utils",
+        "@sentry/conventions",
+        "@sentry/core",
+        "firebase",
+        "idb",
+        "react",
+        "react-dom",
+        "scheduler",
+        "three",
+        "zod"
+      ]
+    },
+    {
+      "target": "facebook",
+      "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/production-readiness-2026-10-05/release-builds/facebook",
+      "builtDirectory": "/tmp/riddle-production-readiness-2026-10-05/release-builds/facebook",
+      "files": 411,
+      "bytes": 4595289,
+      "treeSha256": "8a63e8a4d11ef5922752c7a1be4d77eb98008f85c86191c5d0c54a3428365d8d",
+      "inventorySha256": "7a6cc916ccc10f79e54764d134c9d2d27a2a300dbfc1ff5a8023039671f7b64f",
+      "runtimePackages": [
+        "@firebase/app",
+        "@firebase/app-check",
+        "@firebase/auth",
+        "@firebase/component",
+        "@firebase/database",
+        "@firebase/firestore",
+        "@firebase/functions",
+        "@firebase/logger",
+        "@firebase/util",
+        "@firebase/webchannel-wrapper",
+        "@sentry/browser",
+        "@sentry/browser-utils",
+        "@sentry/conventions",
+        "@sentry/core",
+        "firebase",
+        "idb",
+        "react",
+        "react-dom",
+        "scheduler",
+        "three",
+        "zod"
+      ]
+    },
+    {
+      "target": "reddit",
+      "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/production-readiness-2026-10-05/release-builds/reddit",
+      "builtDirectory": "/tmp/riddle-production-readiness-2026-10-05/release-builds/reddit",
+      "files": 421,
+      "bytes": 4051098,
+      "treeSha256": "376d8903f44ab0b72a1fcbe57f11fbb088f5d4c6694dc2a9c6522fc80f57b3f5",
+      "inventorySha256": "d95043fb8ce67a455d5d2346f7ca8a2c67e34a2f4d1601eb70a2fcc093bd2c25",
+      "runtimePackages": [
+        "@devvit/client",
+        "@devvit/payments",
+        "@devvit/protos",
+        "@devvit/shared",
+        "@devvit/shared-types",
+        "@devvit/web-view-scripts",
+        "jwt-decode",
+        "react",
+        "react-dom",
+        "scheduler",
+        "three",
+        "zod"
+      ]
+    },
+    {
+      "target": "youtube",
+      "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/production-readiness-2026-10-05/release-builds/youtube",
+      "builtDirectory": "/tmp/riddle-production-readiness-2026-10-05/release-builds/youtube",
+      "files": 24,
+      "bytes": 1890674,
+      "treeSha256": "ae032e3296d76b1a2681818d403027e9254822ef8148147a555214aa1497e785",
+      "inventorySha256": "30dc474621897b3e2d059650be0f6577ad4bd0a9b31e1c9eafab8024e08be2c3",
+      "runtimePackages": [
+        "react",
+        "react-dom",
+        "scheduler"
+      ]
+    },
+    {
+      "target": "netflix",
+      "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/production-readiness-2026-10-05/release-builds/netflix",
+      "builtDirectory": "/tmp/riddle-production-readiness-2026-10-05/release-builds/netflix",
+      "files": 24,
+      "bytes": 1890015,
+      "treeSha256": "ee3b32464105a5edcae2dfb3dd5ab845afb5c9a144b0aff7f625a13ea8ca185c",
+      "inventorySha256": "680ccc0fb57d9240cc476c70d8a58c3c1909f3dea2eee85c037fa956c6445301",
+      "runtimePackages": [
+        "react",
+        "react-dom",
+        "scheduler"
+      ]
+    },
+    {
+      "target": "yahoo",
+      "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/production-readiness-2026-10-05/release-builds/yahoo",
+      "builtDirectory": "/tmp/riddle-production-readiness-2026-10-05/release-builds/yahoo",
+      "files": 24,
+      "bytes": 1890009,
+      "treeSha256": "597dd3db096efc19ec5853862322031c421077c9875bca3df9fb53940f001465",
+      "inventorySha256": "ddd12c480e6e8d23b0d23a36f6d4955c85dbdb907437a6dbdaba00fcb4c2eede",
+      "runtimePackages": [
+        "react",
+        "react-dom",
+        "scheduler"
+      ]
+    }
+  ]
+}

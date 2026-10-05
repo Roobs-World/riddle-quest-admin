@@ -1,0 +1,11 @@
+$ node scripts/verify-rapid-answer-edits-browser.mjs && RAPID_ANSWER_REACT_MODE=production node scripts/verify-rapid-answer-edits-browser.mjs
+{
+  "mode": "development",
+  "checks": 384,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 384,
+  "failures": []
+}

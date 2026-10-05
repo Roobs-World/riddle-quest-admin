@@ -1,0 +1,36 @@
+{
+  "mode": "development",
+  "checks": 6,
+  "failures": [
+    {
+      "surface": "game",
+      "scenario": "reconnect",
+      "key": "Tab",
+      "width": 390,
+      "height": 568,
+      "name": "capture phase admits only the current alert",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "surface": "game",
+      "scenario": "reconnect",
+      "key": "Tab",
+      "width": 390,
+      "height": 568,
+      "name": "capture keyboard subscription follows the committed alert",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "surface": "game",
+      "scenario": "reconnect",
+      "key": "Tab",
+      "width": 390,
+      "height": 568,
+      "name": "capture focus subscription follows the committed alert",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}

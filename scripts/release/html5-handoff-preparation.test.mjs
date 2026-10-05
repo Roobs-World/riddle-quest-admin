@@ -16,7 +16,7 @@ async function fixture(t) {
   const run = async (command, args, options) => {
     if (command === 'pnpm') {
       builds++;
-      const dist = path.join(root, 'packages/portal/dist-netflix');
+      const dist = path.join(root, 'builds/netflix');
       await mkdir(dist, {recursive: true});
       await writeFile(path.join(dist, 'index.html'), '<!doctype html><title>Local game</title>');
       return {stdout: ''};

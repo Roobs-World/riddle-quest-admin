@@ -1,0 +1,213 @@
+{
+  "comparisons": {
+    "original-minimal": {
+      "checks": 21,
+      "failures": 9
+    },
+    "original-repeat": {
+      "checks": 21,
+      "failures": 8
+    },
+    "original-expanded": {
+      "checks": 109,
+      "failures": 46
+    },
+    "original-final": {
+      "checks": 118,
+      "failures": 47
+    },
+    "visibility-guard-probe": {
+      "checks": 109,
+      "failures": 38
+    },
+    "visibility-scheduling-probe": {
+      "checks": 109,
+      "failures": 5
+    },
+    "generation-probe": {
+      "checks": 109,
+      "failures": 0
+    },
+    "complete-probe": {
+      "checks": 118,
+      "failures": 0
+    },
+    "development": {
+      "checks": 354,
+      "failures": 0
+    },
+    "production": {
+      "checks": 354,
+      "failures": 0
+    },
+    "related-development": {
+      "checks": 198,
+      "failures": 0
+    },
+    "related-production": {
+      "checks": 198,
+      "failures": 0
+    }
+  },
+  "focusedBrowserAssertions": 708,
+  "relatedBrowserAssertions": 396,
+  "browserAssertionsTotal": 1104,
+  "focusedJourneys": 30,
+  "viewports": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "builtBrowser": {
+    "suites": 3,
+    "tests": 8,
+    "failures": 0,
+    "latencyThresholdChanged": false
+  },
+  "unitTests": 2761,
+  "unitSuites": 297,
+  "types": "passed",
+  "tsdocDeclarations": 25242,
+  "tsdocFiles": 1140,
+  "sixBuilds": "passed",
+  "youtubeBuild": "fixture",
+  "stableSourceInputs": 1505,
+  "sourceDelta": [],
+  "firefoxRecords": 6,
+  "preservedBuildFiles": 1300,
+  "cleanup": {
+    "temporaryBuildRoot": "/tmp/riddle-countdown-builds-_208s0s5",
+    "temporaryBuildRootRemoved": true,
+    "preservedBuildFiles": 1300,
+    "firefoxPagesRemaining": [
+      "about:blank"
+    ],
+    "ownedFixtureCachesRemoved": [
+      "live-countdown-HKD2xi",
+      "live-countdown-Rcpn9N"
+    ],
+    "relatedCacheRemoved": "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/countdown-check-xf_yj9_a",
+    "servers": [
+      {
+        "session": 14709,
+        "port": 46163,
+        "exit": 130,
+        "reason": "intentional SIGINT; fixture finally cleanup observed"
+      },
+      {
+        "session": 73494,
+        "port": 34939,
+        "exit": 130,
+        "reason": "intentional SIGINT; fixture finally cleanup observed"
+      }
+    ],
+    "verificationJobs": [
+      {
+        "session": 94663,
+        "exit": 1,
+        "excluded": "timer marker and fractional fixture timestamps"
+      },
+      {
+        "session": 65830,
+        "exit": 1,
+        "excluded": "fractional timestamps and input-value control"
+      },
+      {
+        "session": 46944,
+        "exit": 1,
+        "excluded": "fractional timestamps and input-value control"
+      },
+      {
+        "session": 12067,
+        "exit": 1,
+        "excluded": "fractional timestamps"
+      },
+      {
+        "session": 4814,
+        "exit": 1,
+        "excluded": "fractional timestamps"
+      },
+      {
+        "session": 98494,
+        "exit": 1,
+        "excluded": "fractional timestamps"
+      },
+      {
+        "session": 25757,
+        "exit": 1,
+        "expected": "original counter regression"
+      },
+      {
+        "session": 31753,
+        "exit": 1,
+        "expected": "original counter regression"
+      },
+      {
+        "session": 56639,
+        "exit": 1,
+        "expected": "original counter regression"
+      },
+      {
+        "session": 60141,
+        "exit": 1,
+        "expected": "guard-only regression"
+      },
+      {
+        "session": 83345,
+        "exit": 1,
+        "expected": "visibility-only old-generation regression"
+      },
+      {
+        "session": 17044,
+        "exit": 0
+      },
+      {
+        "session": 25052,
+        "exit": 0
+      },
+      {
+        "session": 13585,
+        "exit": 0
+      },
+      {
+        "session": 91799,
+        "exit": 0
+      },
+      {
+        "session": 68249,
+        "exit": 0
+      },
+      {
+        "session": 87315,
+        "exit": 0
+      },
+      {
+        "session": 88231,
+        "exit": 0
+      },
+      {
+        "session": 36532,
+        "exit": 0
+      },
+      {
+        "session": 13817,
+        "exit": 0
+      },
+      {
+        "session": 39405,
+        "exit": 1,
+        "expected": "final fixture red against captured original"
+      }
+    ]
+  },
+  "goal": "active"
+}

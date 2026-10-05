@@ -1,0 +1,51 @@
+Verifying corrected or changed-source harnesses: [
+  'test:solar-layout:browser',
+  'test:solar-resources:browser',
+  'test:playable-input-admission:browser',
+  'test:guidance-storage-recovery:browser',
+  'test:provider-save-recovery:browser',
+  'test:solar-sizing:browser',
+  'test:context-recovery:browser',
+  'test:reddit-guest-durability:browser',
+  'test:modal-close-commit:browser',
+  'test:interactive-recovery:browser',
+  'test:modal-outside-tab:browser',
+  'test:modal-keyboard-boundary:browser',
+  'test:online-status-commit:browser',
+  'test:offline-keyboard-boundary:browser',
+  'test:race-keyboard-boundary:browser',
+  'test:race-tab-order:browser'
+]
+START test:online-status-commit:browser
+START test:offline-keyboard-boundary:browser
+START test:race-tab-order:browser
+PASS test:race-tab-order:browser (28.577s; stable=true)
+START test:race-keyboard-boundary:browser
+PASS test:online-status-commit:browser (112.328s; stable=true)
+START test:solar-resources:browser
+PASS test:solar-resources:browser (40.74s; stable=true)
+START test:solar-layout:browser
+PASS test:solar-layout:browser (22.152s; stable=true)
+START test:playable-input-admission:browser
+PASS test:playable-input-admission:browser (11.277s; stable=true)
+START test:provider-save-recovery:browser
+PASS test:offline-keyboard-boundary:browser (217.305s; stable=false)
+START test:reddit-guest-durability:browser
+PASS test:race-keyboard-boundary:browser (211.167s; stable=false)
+START test:guidance-storage-recovery:browser
+PASS test:guidance-storage-recovery:browser (95.906s; stable=false)
+START test:solar-sizing:browser
+PASS test:solar-sizing:browser (7.406s; stable=true)
+START test:context-recovery:browser
+PASS test:context-recovery:browser (30.307s; stable=true)
+START test:modal-outside-tab:browser
+PASS test:provider-save-recovery:browser (215.955s; stable=false)
+START test:modal-keyboard-boundary:browser
+PASS test:modal-outside-tab:browser (195.187s; stable=true)
+START test:modal-close-commit:browser
+PASS test:modal-keyboard-boundary:browser (208.761s; stable=true)
+START test:interactive-recovery:browser
+PASS test:modal-close-commit:browser (56.787s; stable=true)
+PASS test:interactive-recovery:browser (52.488s; stable=true)
+PASS test:reddit-guest-durability:browser (586.012s; stable=false)
+16/16 browser scripts passed.

@@ -2,7 +2,7 @@ import {cp, readFile, rm, writeFile} from "node:fs/promises";
 import path from "node:path";
 
 const packageRoot = path.resolve(import.meta.dirname, "..");
-const portalArtifact = path.resolve(packageRoot, "../portal/dist-reddit");
+const portalArtifact = path.resolve(packageRoot, "../../builds/reddit");
 const clientOutput = path.join(packageRoot, "dist/client");
 const redditLicenseNotice = path.join(packageRoot, "third-party-licenses.reddit.txt");
 

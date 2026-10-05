@@ -1,0 +1,142 @@
+{
+  "baseline": {
+    "summary": {
+      "runs": 10,
+      "over100ms": 0,
+      "maxDomCommitMs": 15.5,
+      "maxRafObservedMs": 26.200000002980232
+    },
+    "medianRafMs": 24.350000001490116,
+    "cpuRateRecordedInRows": null,
+    "timingFailures": 0,
+    "rows": 10
+  },
+  "cpu-4": {
+    "summary": {
+      "runs": 20,
+      "over100ms": 0,
+      "maxDomCommitMs": 54.5,
+      "maxRafObservedMs": 55.70000000298023
+    },
+    "medianRafMs": 35.80000000447035,
+    "cpuRateRecordedInRows": 4,
+    "timingFailures": 0,
+    "rows": 20
+  },
+  "cpu-8": {
+    "summary": {
+      "runs": 20,
+      "over100ms": 10,
+      "maxDomCommitMs": 164.90000000596046,
+      "maxRafObservedMs": 168.60000000149012
+    },
+    "medianRafMs": 107.90000000223517,
+    "cpuRateRecordedInRows": 8,
+    "timingFailures": 10,
+    "rows": 20
+  },
+  "cpu-8-repeat": {
+    "summary": {
+      "runs": 20,
+      "over100ms": 3,
+      "maxDomCommitMs": 104.30000000447035,
+      "maxRafObservedMs": 106.60000000149012
+    },
+    "medianRafMs": 79.80000000074506,
+    "cpuRateRecordedInRows": 8,
+    "timingFailures": 3,
+    "rows": 20
+  },
+  "no-dom-observer": {
+    "summary": {
+      "runs": 20,
+      "over100ms": 2,
+      "maxDomCommitMs": 107.39999999850988,
+      "maxRafObservedMs": 107.39999999850988
+    },
+    "medianRafMs": 80.80000000074506,
+    "cpuRateRecordedInRows": 8,
+    "timingFailures": 2,
+    "rows": 20
+  },
+  "no-observers": {
+    "summary": {
+      "runs": 20,
+      "over100ms": 1,
+      "maxDomCommitMs": null,
+      "maxRafObservedMs": 126.09999999403954
+    },
+    "medianRafMs": 76.14999999850988,
+    "cpuRateRecordedInRows": 8,
+    "timingFailures": 1,
+    "rows": 20
+  },
+  "minimal-cpu-12": {
+    "summary": {
+      "runs": 20,
+      "over100ms": 8,
+      "maxDomCommitMs": null,
+      "maxRafObservedMs": 123.09999999403954
+    },
+    "medianRafMs": 91.64999999850988,
+    "cpuRateRecordedInRows": 12,
+    "timingFailures": 8,
+    "rows": 20
+  },
+  "traces": {
+    "summary": {
+      "runs": 10,
+      "over100ms": 9,
+      "maxDomCommitMs": null,
+      "maxRafObservedMs": 149.10000000149012
+    },
+    "medianRafMs": 120.79999999701977,
+    "cpuRateRecordedInRows": 12,
+    "timingFailures": 9,
+    "rows": 10
+  },
+  "guidance-seen": {
+    "summary": {
+      "runs": 20,
+      "over100ms": 0,
+      "maxDomCommitMs": null,
+      "maxRafObservedMs": 95.29999999701977
+    },
+    "medianRafMs": 65.10000000149012,
+    "cpuRateRecordedInRows": 12,
+    "timingFailures": 0,
+    "rows": 20
+  },
+  "guidance-pairs": {
+    "summary": {
+      "runs": 40,
+      "over100ms": 29,
+      "maxDomCommitMs": null,
+      "maxRafObservedMs": 313.30000000447035
+    },
+    "medianRafMs": 123.94999999925494,
+    "cpuRateRecordedInRows": 12,
+    "timingFailures": 29,
+    "rows": 40,
+    "groups": {
+      "False": {
+        "runs": 20,
+        "over100ms": 18,
+        "medianRafMs": 137.54999999701977,
+        "maxRafMs": 235.10000000149012,
+        "guidanceAfter": [
+          "leaderboardFifthCorrectAnswer"
+        ]
+      },
+      "True": {
+        "runs": 20,
+        "over100ms": 11,
+        "medianRafMs": 114.55000000074506,
+        "maxRafMs": 313.30000000447035,
+        "guidanceAfter": [
+          "None"
+        ]
+      }
+    }
+  }
+}

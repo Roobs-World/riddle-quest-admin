@@ -6,6 +6,7 @@ import {verifyContextChallenges} from "./contextChallenges.jest-playwright.suppo
 import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support";
 import {installLiveMultiplayerJourney} from "../../play/__tests__/liveMultiplayer.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
+import {expectWebStandards} from "../../play/__tests__/webStandards.jest-playwright.support";
 import {chromium} from "@playwright/test";
 import type {PlayerData} from "../../platform/types";
 
@@ -102,7 +103,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
     const browser = await chromium.launch({headless: true});
     try {
       /** Provides page behavior. */
-      const page = await browser.newPage({viewport: {width: 390, height: 844}});
+      const page = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
       await page.route("https://connect.facebook.net/en_US/fbinstant.8.0.js", (route) =>
         route.fulfill({status: 200, contentType: "text/javascript", body: "/* injected by browser contract test */"}),
       );
@@ -180,6 +181,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       });
       await page.goto(origin);
       await page.getByRole("alert").getByRole("heading").waitFor({timeout: 15_000});
+      await expectWebStandards(page, "facebook startup recovery");
       expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
       expect(await page.evaluate(() => window.__facebookEvents)).toEqual([
         "initialize",
@@ -196,7 +198,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await page.locator('script[src*="cdn.jest.com"]').count()).toBe(0);
 
       /** Provides success page behavior. */
-      const successPage = await browser.newPage({viewport: {width: 390, height: 844}});
+      const successPage = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
       successPage.setDefaultTimeout(5_000);
       /** Provides success requests behavior. */
       const successRequests: string[] = [];
@@ -648,6 +650,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await tooltip.locator("button").click();
       }
       await successPage.locator(".tooltip-backdrop").waitFor({state: "detached"});
+      await expectWebStandards(successPage, "facebook game");
       await verifyMultiplayer("fr");
       await successPage.locator(".multiplayer-navigation-action").click();
       await verifyTournamentPresentation(successPage);

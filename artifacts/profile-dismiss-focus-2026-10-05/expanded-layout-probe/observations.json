@@ -1,0 +1,578 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "dismissal commits focus return before a deferred restoration frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "outer keyboard listener is present before subsequent input",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "native Tab from dismissed Delete wraps to the outer Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "dismissal restoration preserves later native Tab focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "outer Profile lifetime matches the requested native action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "outer Close runs exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "confirmation lifetime follows only the current native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "dismissal commits focus return before a deferred restoration frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "outer keyboard listener is present before subsequent input",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "native Tab from dismissed Delete wraps to the outer Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "dismissal restoration preserves later native Tab focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "outer Profile lifetime matches the requested native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "outer Close runs exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "confirmation lifetime follows only the current native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-enter",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "dismissal commits focus return before a deferred restoration frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "outer keyboard listener is present before subsequent input",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "native Tab from dismissed Delete wraps to the outer Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "dismissal restoration preserves later native Tab focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "outer Profile lifetime matches the requested native action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "outer Close runs exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "confirmation lifetime follows only the current native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "late-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "dismissal commits focus return before a deferred restoration frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "outer keyboard listener is present before subsequent input",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "dismissal without later input keeps the Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "outer Profile lifetime matches the requested native action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "outer Close runs exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "confirmation lifetime follows only the current native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "no-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "dismissal commits focus return before a deferred restoration frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "outer keyboard listener is present before subsequent input",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "a reopened confirmation autofocuses its safe Cancel action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "a retired dismissal never steals focus from a reopened confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "outer Profile lifetime matches the requested native action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "outer Close runs exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "confirmation lifetime follows only the current native action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "reopen",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "dismissal commits focus return before a deferred restoration frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "outer keyboard listener is present before subsequent input",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "a retired dismissal leaves focus on the game Profile trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "outer Profile lifetime matches the requested native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "outer Close runs exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "confirmation lifetime follows only the current native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "outer-close",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

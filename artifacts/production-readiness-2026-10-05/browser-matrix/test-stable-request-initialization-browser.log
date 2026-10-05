@@ -1,0 +1,11 @@
+$ node scripts/verify-stable-request-initialization-browser.mjs && STABLE_REQUEST_REACT_MODE=production node scripts/verify-stable-request-initialization-browser.mjs
+{
+  "mode": "development",
+  "checks": 582,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 582,
+  "failures": []
+}

@@ -3,7 +3,7 @@ import path from "node:path";
 import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
 
 const inventory = await inspectWebTargetArtifact({
-  rootDirectory: process.argv[2] || process.env.JEST_BUILD_OUT_DIR?.trim() || "dist-jest",
+  rootDirectory: process.argv[2] || process.env.JEST_BUILD_OUT_DIR?.trim() || "../../builds/jest",
   target: "jest",
 });
 const {files, root, sizedFiles, totalBytes: artifactBytes} = inventory;

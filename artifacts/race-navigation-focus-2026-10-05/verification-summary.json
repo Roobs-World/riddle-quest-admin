@@ -1,0 +1,85 @@
+{
+  "browser": {
+    "development": {
+      "assertions": 522,
+      "failures": 0
+    },
+    "production": {
+      "assertions": 522,
+      "failures": 0
+    },
+    "race-tab-development": {
+      "assertions": 108,
+      "failures": 0
+    },
+    "race-tab-production": {
+      "assertions": 108,
+      "failures": 0
+    },
+    "race-boundary-development": {
+      "assertions": 648,
+      "failures": 0
+    },
+    "race-boundary-production": {
+      "assertions": 648,
+      "failures": 0
+    },
+    "race-action-focus-development": {
+      "assertions": 342,
+      "failures": 0
+    },
+    "race-action-focus-production": {
+      "assertions": 342,
+      "failures": 0
+    }
+  },
+  "browserAssertions": 3240,
+  "original": {
+    "assertions": 522,
+    "failures": 27
+  },
+  "unit": {
+    "tests": 2756,
+    "suites": 297
+  },
+  "builtBrowser": {
+    "tests": 38,
+    "suites": 8
+  },
+  "types": "passed",
+  "tsdoc": {
+    "declarations": 25184,
+    "files": 1139
+  },
+  "artifacts": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube-fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "sourceInputs": 766,
+  "sourceUnchanged": true,
+  "frozenOwnedSnapshots": [
+    "entry.after.tsx",
+    "package.after.txt",
+    "verifier.final.mjs"
+  ],
+  "firefoxNative": "passed",
+  "goal": "active",
+  "cleanup": {
+    "ownedVerifierProcesses": 0,
+    "fixtureDirectoriesRemoved": [
+      "packages/portal/node_modules/.cache/race-navigation-focus-WIqACD",
+      "packages/portal/node_modules/.cache/race-navigation-focus-YYrPrL",
+      "packages/portal/node_modules/.cache/race-navigation-focus-P0C8rg",
+      "packages/portal/node_modules/.cache/race-navigation-focus-nsljkz",
+      "packages/portal/node_modules/.cache/race-tab-order-7sYiT9",
+      "packages/portal/node_modules/.cache/race-tab-order-D9pwJH"
+    ],
+    "allTerminalSessionsCollected": true,
+    "ownedTabsClosed": true,
+    "blankTabPreserved": true
+  }
+}

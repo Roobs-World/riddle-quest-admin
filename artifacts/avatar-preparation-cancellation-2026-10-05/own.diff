@@ -1,0 +1,254 @@
+--- a/packages/portal/src/play/avatarImage.ts
++++ b/packages/portal/src/play/avatarImage.ts
+@@ -31,12 +31,19 @@
+     reader.readAsDataURL(blob);
+   });
+ 
+-/** Provides prepare avatar image behavior. */
+-export async function prepareAvatarImage(file: File): Promise<string> {
++/** Stops subsequent image stages after their account visit or selection is retired. */
++const checkAvatarPreparation = (signal?: AbortSignal) => {
++  if (signal?.aborted) throw Object.assign(new Error("avatar-preparation-retired"), {name: "AbortError"});
++};
++
++/** Crops and encodes an avatar, skipping remaining stages when its owner retires. */
++export async function prepareAvatarImage(file: File, signal?: AbortSignal): Promise<string> {
+   validateAvatarFile(file);
++  checkAvatarPreparation(signal);
+   /** Provides bitmap behavior. */
+   const bitmap = await createImageBitmap(file);
+   try {
++    checkAvatarPreparation(signal);
+     /** Provides crop size behavior. */
+     const cropSize = Math.min(bitmap.width, bitmap.height);
+     /** Provides source x behavior. */
+@@ -53,6 +60,7 @@
+     context.drawImage(bitmap, sourceX, sourceY, cropSize, cropSize, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
+     /** Provides blob behavior. */
+     const blob = await canvasToBlob(canvas);
++    checkAvatarPreparation(signal);
+     if (blob.size > MAX_OUTPUT_BYTES) throw new Error("avatar-output-too-large");
+     return blobToDataUrl(blob);
+   } finally {
+--- a/packages/portal/src/play/game/hooks/useGameOperations.ts
++++ b/packages/portal/src/play/game/hooks/useGameOperations.ts
+@@ -16,12 +16,16 @@
+   const avatarOwnerRef = useRef<{
+     /** Immutable account and sender captured by this callback. */ scope: typeof avatarScope;
+     /** Newer selections revoke an earlier unfinished preparation. */ request: number;
++    /** Cooperative cancellation skips remaining decoder and encoder follow-up work. */ preparation: AbortController | null;
+   } | null>(null);
+   useLayoutEffect(() => {
+     /** Every committed scope receives a fresh lifetime token. */
+-    const owner = {scope: avatarScope, request: 0};
++    const owner: NonNullable<typeof avatarOwnerRef.current> = {scope: avatarScope, request: 0, preparation: null};
+     avatarOwnerRef.current = owner;
+-    return () => {if (avatarOwnerRef.current === owner) avatarOwnerRef.current = null;};
++    return () => {
++      owner.preparation?.abort();
++      if (avatarOwnerRef.current === owner) avatarOwnerRef.current = null;
++    };
+   }, [avatarScope]);
+   /** Provides recovery behavior. */
+   const recovery = useProvisionalPlayRecovery(options);
+@@ -75,13 +79,19 @@
+         stateRef.current.user?.uid === avatarScope.uid &&
+         stateRef.current.user?.accountGeneration === avatarScope.generation;
+       if (!isCurrent()) return;
++      owner.preparation?.abort();
++      /** One cancellation signal belongs to this selection's remaining image stages. */
++      const preparation = new AbortController();
++      owner.preparation = preparation;
+       /** Encoding and validation failures remain visible only to their current selection. */
+       let imageDataUrl: string;
+       try {
+-        imageDataUrl = await prepareAvatarImage(file);
++        imageDataUrl = await prepareAvatarImage(file, preparation.signal);
+       } catch (error) {
+         if (!isCurrent()) return;
+         throw error;
++      } finally {
++        if (owner.preparation === preparation) owner.preparation = null;
+       }
+       if (!isCurrent()) return;
+       postToHost({
+--- a/packages/portal/src/play/__tests__/avatarImage.test.ts
++++ b/packages/portal/src/play/__tests__/avatarImage.test.ts
+@@ -84,7 +84,7 @@
+     /** Provides environment behavior. */
+     const environment = installImageEnvironment();
+ 
+-    await expect(prepareAvatarImage({type: "image/png", size: 100} as File)).resolves.toBe(
++    await expect(prepareAvatarImage({type: "image/png", size: 100} as File, new AbortController().signal)).resolves.toBe(
+       "data:image/webp;base64,YXZhdGFy",
+     );
+ 
+@@ -103,6 +103,54 @@
+     expect(environment.close).toHaveBeenCalledTimes(1);
+   });
+ 
++  it("does not decode an already retired valid selection", async () => {
++    /** Retains the existing decoder and canvas controls. */
++    const environment = installImageEnvironment();
++    /** Represents a selection retired before preparation starts. */
++    const controller = new AbortController();
++    controller.abort();
++    await expect(prepareAvatarImage({type: "image/png", size: 100} as File, controller.signal))
++      .rejects.toMatchObject({name: "AbortError"});
++    expect(createImageBitmap).not.toHaveBeenCalled();
++    expect(document.createElement).not.toHaveBeenCalled();
++    expect(environment.close).not.toHaveBeenCalled();
++  });
++
++  it("closes a decoded bitmap without allocating a canvas after retirement", async () => {
++    /** The decoder resolves on the next microtask. */
++    const environment = installImageEnvironment();
++    /** Retires this selection while decoding remains pending. */
++    const controller = new AbortController();
++    /** Runs actual preparation across the pending decoder boundary. */
++    const preparation = prepareAvatarImage({type: "image/png", size: 100} as File, controller.signal);
++    controller.abort();
++    await expect(preparation).rejects.toMatchObject({name: "AbortError"});
++    expect(createImageBitmap).toHaveBeenCalledTimes(1);
++    expect(document.createElement).not.toHaveBeenCalled();
++    expect(environment.close).toHaveBeenCalledTimes(1);
++  });
++
++  it("skips reading a completed encoding after retirement and closes its bitmap", async () => {
++    /** Holds the encoder callback while retaining real stage ordering. */
++    const environment = installImageEnvironment();
++    /** Observes whether preparation starts a file read. */
++    const read = jest.spyOn(FileReader.prototype, "readAsDataURL");
++    /** Releases the pending encoding after its selection retires. */
++    let release: ((blob: Blob | null) => void) | undefined;
++    environment.canvas.toBlob.mockImplementation((callback) => {release = callback;});
++    /** Cancels work between encoding and file reading. */
++    const controller = new AbortController();
++    /** Runs preparation until the encoder receives its callback. */
++    const preparation = prepareAvatarImage({type: "image/png", size: 100} as File, controller.signal);
++    await Promise.resolve();
++    expect(environment.canvas.toBlob).toHaveBeenCalledTimes(1);
++    controller.abort();
++    release?.(new Blob(["avatar"], {type: "image/webp"}));
++    await expect(preparation).rejects.toMatchObject({name: "AbortError"});
++    expect(read).not.toHaveBeenCalled();
++    expect(environment.close).toHaveBeenCalledTimes(1);
++  });
++
+   it.each([
+     ["missing canvas", {context: null}, "avatar-canvas-unavailable"],
+     ["failed encoding", {encodedBlob: null}, "avatar-encoding-failed"],
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -184,6 +184,7 @@
+     "test:modal-outside-tab:browser": "node scripts/verify-modal-outside-tab-browser.mjs && MODAL_OUTSIDE_REACT_MODE=production node scripts/verify-modal-outside-tab-browser.mjs",
+     "test:guidance-locale-work:browser": "node scripts/verify-guidance-locale-work-browser.mjs && GUIDANCE_LOCALE_REACT_MODE=production node scripts/verify-guidance-locale-work-browser.mjs",
+     "test:avatar-preparation-ownership:browser": "node scripts/verify-avatar-preparation-ownership-browser.mjs && AVATAR_OWNER_REACT_MODE=production node scripts/verify-avatar-preparation-ownership-browser.mjs",
++    "test:avatar-preparation-cancellation:browser": "node scripts/verify-avatar-preparation-cancellation-browser.mjs && AVATAR_CANCEL_REACT_MODE=production node scripts/verify-avatar-preparation-cancellation-browser.mjs",
+     "test:centered-tooltip-work:browser": "node scripts/verify-centered-tooltip-work-browser.mjs && CENTERED_TOOLTIP_REACT_MODE=production node scripts/verify-centered-tooltip-work-browser.mjs"
+   },
+   "dependencies": {
+--- /dev/null
++++ b/packages/portal/scripts/verify-avatar-preparation-cancellation-browser.mjs
+@@ -0,0 +1,92 @@
++import assert from 'node:assert/strict';
++import {mkdir,mkdtemp,readFile,writeFile,rm,copyFile} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium} from '@playwright/test';
++const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const mode=process.env.AVATAR_CANCEL_REACT_MODE??'development',baseline=process.env.AVATAR_CANCEL_BASELINE_DIR;
++assert.ok(['development','production'].includes(mode));
++const output=path.resolve(process.env.AVATAR_CANCEL_REPORT_DIR??path.join(root,'../../artifacts/avatar-preparation-cancellation-2026-10-05',mode));
++await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
++const scratch=await mkdtemp(path.join(root,'node_modules/.cache/avatar-cancel-'));
++let browser,server;const observations=[];
++try{
++ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
++ await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++ await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';
++import {useGameOperations} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useGameOperations.ts'))};
++import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
++import {parseGameToHostMessage} from '@qwordly/core/bridge';
++import ${JSON.stringify(path.join(root,'src/styles.css'))};
++window.probe={sent:[],started:0,completed:0,closed:0,rejected:[],releases:[],errors:[],unhandled:[],owner:null,canvases:0,draws:0,encodes:0,reads:0,encodeReleases:[]};
++window.addEventListener('error',e=>probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>probe.unhandled.push(String(e.reason)));
++const bytes=await fetch('/source.webp').then(r=>r.blob());const file=new File([bytes],'fixture.webp',{type:'image/webp'});
++const heldEncoder=new URLSearchParams(location.search).has('encoder');
++const nativeCreate=document.createElement.bind(document);document.createElement=(name,...args)=>{if(name==='canvas')probe.canvases++;return nativeCreate(name,...args);};
++const nativeDraw=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(...args){probe.draws++;return nativeDraw.apply(this,args);};
++const nativeEncode=HTMLCanvasElement.prototype.toBlob;HTMLCanvasElement.prototype.toBlob=function(callback,...args){probe.encodes++;return nativeEncode.call(this,blob=>heldEncoder?probe.encodeReleases.push(()=>callback(blob)):callback(blob),...args);};
++const nativeRead=FileReader.prototype.readAsDataURL;FileReader.prototype.readAsDataURL=function(...args){probe.reads++;return nativeRead.apply(this,args);};
++const nativeBitmap=window.createImageBitmap.bind(window);window.createImageBitmap=async(...args)=>{const bitmap=await nativeBitmap(...args),close=bitmap.close.bind(bitmap);bitmap.close=()=>{probe.closed++;close();};probe.started++;return new Promise((resolve,reject)=>probe.releases.push(fail=>{if(fail){bitmap.close();reject(new Error('fixture-image-decode-failed'));}else resolve(bitmap);}));};
++const noop=()=>{};const user=(uid,generation=1)=>({uid,accountGeneration:generation,isAnonymous:false,platformRegistered:true});
++function Controls({state,dispatch,revision}){const stateRef=React.useRef(state);stateRef.current=state;
++ const postToHost=React.useCallback(message=>{parseGameToHostMessage(message);probe.sent.push({uid:stateRef.current.user?.uid,generation:stateRef.current.user?.accountGeneration,sender:revision,requestId:message.requestId,webp:message.payload.imageDataUrl.startsWith('data:image/webp;base64,')});},[revision]);
++ const operations=useGameOperations({state,stateRef,dispatch,postToHost,playFeedback:noop});
++ const upload=invalid=>void operations.updateAvatar(invalid?new File(['bad'],'bad.svg',{type:'image/svg+xml'}):file).then(()=>probe.completed++,error=>{probe.completed++;probe.rejected.push(String(error.message));});
++ return <section data-controls><button data-upload onClick={()=>upload(false)}>Prepare avatar</button><button data-invalid onClick={()=>upload(true)}>Invalid image</button><p>Owned by {state.user.uid}, generation {state.user.accountGeneration}, sender {revision}</p></section>;
++}
++function App(){const [state,dispatch]=React.useReducer(gameSessionReducer,undefined,()=>gameSessionReducer(createInitialGameSession(),{type:'hostInit',locale:'en',gameMode:'classic',user:user('player-a'),products:[],profile:null})),[mounted,setMounted]=React.useState(true),[revision,setRevision]=React.useState(0),[tick,setTick]=React.useState(0);probe.owner=state.user;
++ return <main style={{padding:20}}><nav><button data-user onClick={()=>dispatch({type:'authState',user:user(state.user.uid==='player-a'?'player-b':'player-a'),profile:null})}>Switch player</button><button data-generation onClick={()=>dispatch({type:'authState',user:user(state.user.uid,state.user.accountGeneration+1),profile:null})}>New generation</button><button data-sender onClick={()=>setRevision(x=>x+1)}>Replace sender</button><button data-mount onClick={()=>setMounted(x=>!x)}>Mount or retire</button><button data-refresh onClick={()=>setTick(x=>x+1)}>Deliver update</button><span data-tick>{tick}</span></nav>{mounted?<Controls state={state} dispatch={dispatch} revision={revision}/>:<p data-retired>Retired</p>}</main>;
++}
++createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
++ `);
++ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'@qwordly/core/bridge':path.join(root,'../core/src/bridge/index.ts')}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-avatar-operations',enforce:'pre',async load(id){if(baseline&&id.endsWith('/useGameOperations.ts'))return readFile(path.join(baseline,'operations.before.txt'),'utf8');if(baseline&&id.endsWith('/avatarImage.ts'))return readFile(path.join(baseline,'image.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
++ await copyFile(path.join(root,'../../assets/images-web/riddlequest-r.webp'),path.join(scratch,'dist/source.webp'));
++ server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.json':'application/json'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
++ await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});const url='http://127.0.0.1:'+server.address().port;
++ if(process.env.AVATAR_CANCEL_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
++ else{
++ browser=await chromium.launch({headless:true});
++ for(const [width,height] of process.env.AVATAR_CANCEL_QUICK==='1'?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const scenario of process.env.AVATAR_CANCEL_CASES?.split(',')??['active','updates','player','generation','sender','retired','returned-player','superseded','late-failure','current-failure','encoded-player','encoded-superseded','encoded-retired']){
++  const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();
++  const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
++  const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
++  const sent=()=>page.evaluate(()=>probe.sent.length);
++  const upload=async count=>{await page.locator('[data-upload]').click();await page.waitForFunction(n=>probe.started===n,count);};
++  const encoded=scenario.startsWith('encoded-');
++  const release=async(index,completed,fail=false)=>{if(!(encoded&&index===0))await page.evaluate(({index,fail})=>probe.releases[index](fail),{index,fail});if(encoded){await page.waitForFunction(n=>probe.encodeReleases.length===n,index+1);await page.evaluate(i=>probe.encodeReleases[i](),index);}await page.waitForFunction(n=>probe.completed===n,completed);await settle();};
++  await page.goto(url+(encoded?'?encoder=1':''));await page.locator('[data-upload]').waitFor();await settle();await upload(1);
++  metric('preparation waits for the actual held decoder',await sent(),0);
++  if(encoded){await page.evaluate(()=>probe.releases[0](false));await page.waitForFunction(()=>probe.encodeReleases.length===1);}
++  if(scenario==='updates')for(let update=0;update<32;update++)await page.locator('[data-refresh]').click();
++  if(scenario==='player'||scenario==='encoded-player')await page.locator('[data-user]').click();
++  if(scenario==='generation')await page.locator('[data-generation]').click();
++  if(scenario==='sender')await page.locator('[data-sender]').click();
++  if(scenario==='retired'||scenario==='encoded-retired')await page.locator('[data-mount]').click();
++  if(scenario==='returned-player'){await page.locator('[data-user]').click();await settle();await page.locator('[data-user]').click();}
++  if(scenario==='superseded'||scenario==='encoded-superseded')await upload(2);
++  if(scenario==='late-failure')await page.locator('[data-generation]').click();
++  await settle();await release(0,1,scenario==='late-failure'||scenario==='current-failure');
++  const retained=scenario==='active'||scenario==='updates';
++  metric('only the owned latest preparation reaches the host',await sent(),retained?1:0);
++  for(const key of ['canvases','draws','encodes','reads'])metric('retired preparation skips '+key,await page.evaluate(k=>probe[k],key),(retained||(encoded&&key!=='reads'))?1:0);
++  metric('decoded bitmap is closed after preparation or injected failure',await page.evaluate(()=>probe.closed),1);
++  metric('only a current preparation reports an encoding error',await page.evaluate(()=>probe.rejected),scenario==='current-failure'?['fixture-image-decode-failed']:[]);
++  if(!retained){
++   if(scenario==='retired'||scenario==='encoded-retired')await page.locator('[data-mount]').click();
++   if(scenario!=='superseded'&&scenario!=='encoded-superseded')await upload(2);
++   await release(1,2);metric('the replacement preparation reaches its current host once',await sent(),1);
++  }else metric('a live preparation reaches its host exactly once',await sent(),1);
++  for(const key of ['canvases','draws','encodes','reads'])metric('current replacement retains '+key,await page.evaluate(k=>probe[k],key),encoded&&key!=='reads'?2:1);
++  metric('every completed bitmap is released',await page.evaluate(()=>probe.closed),retained?1:2);
++  const last=await page.evaluate(()=>probe.sent.at(-1)),owner=await page.evaluate(()=>probe.owner);
++  metric('the accepted upload belongs to the current player',last.uid,owner.uid);metric('the accepted upload belongs to the current generation',last.generation,owner.accountGeneration);metric('the accepted upload uses the current sender',last.sender,scenario==='sender'?1:0);metric('the real browser encoder produces a validated WebP payload',last.webp,true);
++  const beforeInvalid=await sent();await page.locator('[data-invalid]').click();await page.waitForFunction(n=>probe.completed===n,retained?2:3);metric('invalid image retains its existing validation error',await page.evaluate(()=>probe.rejected.at(-1)),'invalid-avatar-file');metric('invalid image sends no additional host request',await sent(),beforeInvalid);
++  metric('browser errors',await page.evaluate(()=>probe.errors),[]);metric('unhandled rejections',await page.evaluate(()=>probe.unhandled),[]);
++  await page.screenshot({path:path.join(output,[scenario,width,height].join('-')+'.png')});await context.close();
++ }
++ const failures=observations.filter(row=>JSON.stringify(row.actual)!==JSON.stringify(row.expected));console.log(JSON.stringify({mode,checks:observations.length,failures},null,2));if(process.env.AVATAR_CANCEL_MEASURE_ONLY!=='1')assert.equal(failures.length,0,'Avatar preparation cancellation');
++ }
++}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});if(process.env.AVATAR_CANCEL_SERVE_ONLY!=='1')await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2)+'\n');}

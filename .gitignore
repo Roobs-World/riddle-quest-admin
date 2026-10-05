@@ -147,3 +147,6 @@ gha-creds-*.json
 
 # Local recovery snapshots from production content regeneration
 artifacts/content-reset-backup-*.json
+
+# Isolated web target artifacts
+/builds/

@@ -9,7 +9,7 @@ import {chromium} from "@playwright/test";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const evidence = path.resolve(root, "../../artifacts/closed-game-challenge-push");
 await mkdir(evidence, {recursive: true});
-const assets = path.join(root, "dist-jest/assets");
+const assets = path.join(root, "../../builds/jest/assets");
 const workerAsset = (await readdir(assets)).find(name => /^liveChallengePushWorker-[\w-]+\.js$/.test(name));
 assert.ok(workerAsset, "Build the Jest target before running this notification test");
 const server = createServer(async (request, response) => {

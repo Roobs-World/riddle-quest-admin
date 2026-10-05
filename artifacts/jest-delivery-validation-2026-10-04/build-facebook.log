@@ -1,17 +1,17 @@
 firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
 $ pnpm check:target-boundaries && pnpm check:facebook-commerce-activation && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && FACEBOOK_BUILD=1 NODE_ENV=production vite build --mode facebook && pnpm audit:facebook-artifact
 $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
-✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.790869ms)
-✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.992574ms)
-✔ rejects shared-to-target imports across every supported TypeScript module syntax (5.923279ms)
-✔ rejects imports between different target owners (1.813996ms)
-✔ rejects the legacy platform entry while allowing the shop adapter (0.620055ms)
-✔ rejects Devvit imports outside Reddit-owned source (1.110553ms)
-✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.111525ms)
-✔ fails closed when a missing relative path lexically enters target-owned source (0.851784ms)
-✔ handles extensions and index modules with TypeScript-compatible resolution (1.478059ms)
-✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.952324ms)
-✔ aggregates violations in deterministic file and source order (1.061611ms)
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.250624ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.997133ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.950603ms)
+✔ rejects imports between different target owners (1.529296ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.698233ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.864126ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (0.975598ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.709754ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.968594ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.656754ms)
+✔ aggregates violations in deterministic file and source order (0.763876ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -19,7 +19,7 @@ $ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && no
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 140.634703
+ℹ duration_ms 129.721541
 Web Target boundary audit passed (315 files, 1366 module references).
 $ node ../../scripts/audit-facebook-commerce-activation.mjs
 Facebook commerce-activation audit passed: unverified commerce remains unreachable.
@@ -67,7 +67,7 @@ dist-facebook/assets/RankedAvatar-BYYEKjVK.css                  1.90 kB │ gzip
 dist-facebook/assets/GameModalView-CVwlBp5V.css                24.45 kB │ gzip:   5.97 kB
 dist-facebook/assets/RaceTo10Game-o_06kpvy.css                 25.93 kB │ gzip:   6.34 kB
 dist-facebook/assets/facebook-Btfv20YN.css                     31.78 kB │ gzip:   7.64 kB
-dist-facebook/assets/index-BP-nsYoA.js                          0.04 kB │ gzip:   0.06 kB
+dist-facebook/assets/index-DxFdNIrG.js                          0.04 kB │ gzip:   0.06 kB
 dist-facebook/assets/core-bridge-constants--aS0k-qf.js          0.10 kB │ gzip:   0.12 kB
 dist-facebook/assets/streakFanfare-D5FNWyR-.js                  0.24 kB │ gzip:   0.24 kB
 dist-facebook/assets/streakFanfare-nH51PXfP.js                  0.24 kB │ gzip:   0.22 kB
@@ -169,7 +169,7 @@ dist-facebook/assets/settings-D34B027x.js                       0.65 kB │ gzip
 dist-facebook/assets/loss-BbszsdYQ.js                           0.65 kB │ gzip:   0.47 kB
 dist-facebook/assets/navigation-DrtwLq4d.js                     0.65 kB │ gzip:   0.49 kB
 dist-facebook/assets/leaderboard-Dip51uU5.js                    0.66 kB │ gzip:   0.49 kB
-dist-facebook/assets/FacebookFirebaseAppCheck-CHwbNDxJ.js       0.66 kB │ gzip:   0.41 kB
+dist-facebook/assets/FacebookFirebaseAppCheck-CO8AMAPE.js       0.66 kB │ gzip:   0.41 kB
 dist-facebook/assets/leaderboard-DHMrlBIz.js                    0.66 kB │ gzip:   0.52 kB
 dist-facebook/assets/leaderboard-CePY92Zg.js                    0.66 kB │ gzip:   0.51 kB
 dist-facebook/assets/settings-z81bey13.js                       0.66 kB │ gzip:   0.46 kB
@@ -224,7 +224,7 @@ dist-facebook/assets/common-Dz3UpTCl.js                         0.82 kB │ gzip
 dist-facebook/assets/loss-CWXPUZRX.js                           0.82 kB │ gzip:   0.52 kB
 dist-facebook/assets/credits-CPMr9j5i.js                        0.83 kB │ gzip:   0.59 kB
 dist-facebook/assets/navigation-MfKaCO-M.js                     0.83 kB │ gzip:   0.58 kB
-dist-facebook/assets/firebaseLiveRaceSignals-TffouxXO.js        0.88 kB │ gzip:   0.51 kB
+dist-facebook/assets/firebaseLiveRaceSignals-59c11lYA.js        0.88 kB │ gzip:   0.51 kB
 dist-facebook/assets/leaderboard-DDTHVAn4.js                    0.90 kB │ gzip:   0.56 kB
 dist-facebook/assets/settings-CS_i32e5.js                       0.91 kB │ gzip:   0.54 kB
 dist-facebook/assets/onboarding-DQLra8FR.js                     0.92 kB │ gzip:   0.59 kB
@@ -232,7 +232,7 @@ dist-facebook/assets/navigation-BQVuBhL8.js                     0.93 kB │ gzip
 dist-facebook/assets/stats-DhRrKJqk.js                          0.93 kB │ gzip:   0.59 kB
 dist-facebook/assets/stats-DGElKeRF.js                          0.94 kB │ gzip:   0.63 kB
 dist-facebook/assets/leaderboard-D4odGT_9.js                    0.95 kB │ gzip:   0.60 kB
-dist-facebook/assets/FirebasePresenceTransport-cLe_wfS9.js      0.95 kB │ gzip:   0.50 kB
+dist-facebook/assets/FirebasePresenceTransport-B8ta6gVj.js      0.95 kB │ gzip:   0.50 kB
 dist-facebook/assets/common-BdXkwqia.js                         0.95 kB │ gzip:   0.58 kB
 dist-facebook/assets/onboarding-DBG6CBbL.js                     0.95 kB │ gzip:   0.60 kB
 dist-facebook/assets/credits-BleaRYoH.js                        0.98 kB │ gzip:   0.63 kB
@@ -281,7 +281,7 @@ dist-facebook/assets/shop-C7LFLzdx.js                           1.26 kB │ gzip
 dist-facebook/assets/victory-hVbmD5ZC.js                        1.26 kB │ gzip:   0.79 kB
 dist-facebook/assets/onboarding-BtmL5mvj.js                     1.33 kB │ gzip:   0.77 kB
 dist-facebook/assets/preload-helper-ClC2XIXo.js                 1.33 kB │ gzip:   0.75 kB
-dist-facebook/assets/firebaseClient-b3vRwfYS.js                 1.40 kB │ gzip:   0.54 kB
+dist-facebook/assets/firebaseClient-BVD5UdHd.js                 1.40 kB │ gzip:   0.54 kB
 dist-facebook/assets/victory-BZ8a1RcW.js                        1.47 kB │ gzip:   0.89 kB
 dist-facebook/assets/accessibility-CN_qPQIa.js                  1.49 kB │ gzip:   0.89 kB
 dist-facebook/assets/accessibility-CI4Rdj-4.js                  1.50 kB │ gzip:   0.88 kB
@@ -373,7 +373,7 @@ dist-facebook/assets/achievements-C6G_vsmC.js                   4.84 kB │ gzip
 dist-facebook/assets/achievements-CkIqW37X.js                   4.87 kB │ gzip:   1.49 kB
 dist-facebook/assets/achievements-Ytt0GaZp.js                   4.90 kB │ gzip:   1.52 kB
 dist-facebook/assets/achievements-BWrQAU5a.js                   5.00 kB │ gzip:   1.50 kB
-dist-facebook/assets/firebase-Cp5ftnns.js                       5.01 kB │ gzip:   2.21 kB
+dist-facebook/assets/firebase-DWF84naV.js                       5.01 kB │ gzip:   2.21 kB
 dist-facebook/assets/achievements-DCjJr2DA.js                   5.05 kB │ gzip:   1.53 kB
 dist-facebook/assets/achievements-Cel50toA.js                   5.06 kB │ gzip:   1.56 kB
 dist-facebook/assets/achievements-BVL8_glA.js                   5.11 kB │ gzip:   1.62 kB
@@ -392,7 +392,7 @@ dist-facebook/assets/race-OLfinZlo.js                           5.85 kB │ gzip
 dist-facebook/assets/race-CZsm33Gq.js                           5.92 kB │ gzip:   2.58 kB
 dist-facebook/assets/profile-D41XTaep.js                        5.94 kB │ gzip:   2.59 kB
 dist-facebook/assets/profile-Cx0pRpKm.js                        5.96 kB │ gzip:   2.68 kB
-dist-facebook/assets/validation-BKLS7LLZ.js                     6.01 kB │ gzip:   2.07 kB
+dist-facebook/assets/validation-ClSXTk2H.js                     6.01 kB │ gzip:   2.07 kB
 dist-facebook/assets/race-ooYNIX-x.js                           6.05 kB │ gzip:   2.67 kB
 dist-facebook/assets/profile-B5OfPl3A.js                        6.06 kB │ gzip:   2.78 kB
 dist-facebook/assets/profile-Daqs-cvK.js                        6.07 kB │ gzip:   2.62 kB
@@ -420,30 +420,30 @@ dist-facebook/assets/vendor-three-BiLsvv9t.js                   9.76 kB │ gzip
 dist-facebook/assets/race-q9oTi_du.js                           9.82 kB │ gzip:   2.93 kB
 dist-facebook/assets/vendor-three-D-mxgd2y.js                   9.91 kB │ gzip:   3.46 kB
 dist-facebook/assets/profile-RYx2GXIC.js                       10.28 kB │ gzip:   3.07 kB
-dist-facebook/assets/firebaseServices-PUSCPVJS.js              10.47 kB │ gzip:   3.85 kB
+dist-facebook/assets/firebaseServices-CMFjg6vi.js              10.47 kB │ gzip:   3.85 kB
 dist-facebook/assets/achievements-B2kr0ck1.js                  11.47 kB │ gzip:   2.86 kB
 dist-facebook/assets/vendor-three-xMnH1CgV.js                  13.78 kB │ gzip:   4.54 kB
-dist-facebook/assets/FacebookRaceEntry-JODoNNUL.js             15.90 kB │ gzip:   5.67 kB
+dist-facebook/assets/FacebookRaceEntry-C8r3IR4j.js             15.90 kB │ gzip:   5.67 kB
 dist-facebook/assets/RankedAvatar-B-DdDTDi.js                  17.08 kB │ gzip:   6.79 kB
-dist-facebook/assets/SolarSystem-CXc73Soj.js                   17.95 kB │ gzip:   6.16 kB
-dist-facebook/assets/fakeServices-CfRUUISR.js                  20.69 kB │ gzip:   7.08 kB
+dist-facebook/assets/SolarSystem-9AtzQ9Lv.js                   17.95 kB │ gzip:   6.16 kB
+dist-facebook/assets/fakeServices-BtLkJzMW.js                  20.69 kB │ gzip:   7.08 kB
 dist-facebook/assets/vendor-three-DhQwfZ_W.js                  20.91 kB │ gzip:   4.77 kB
 dist-facebook/assets/i18n-vwsoCHAA.js                          32.05 kB │ gzip:  13.08 kB
 dist-facebook/assets/vendor-three-DVT6gsgu.js                  37.04 kB │ gzip:  11.77 kB
-dist-facebook/assets/RaceTo10Game-BHITfewS.js                  49.47 kB │ gzip:  16.09 kB
-dist-facebook/assets/GameModalView-bnUg8rob.js                 53.90 kB │ gzip:  18.32 kB
+dist-facebook/assets/RaceTo10Game-Dx_ApYij.js                  49.47 kB │ gzip:  16.09 kB
+dist-facebook/assets/GameModalView-ByIZrZ7X.js                 53.99 kB │ gzip:  18.32 kB
 dist-facebook/assets/vendor-three-14j5cCLD.js                  57.11 kB │ gzip:  14.93 kB
 dist-facebook/assets/localeModules-Cz7dgpv5.js                 57.34 kB │ gzip:   7.61 kB
 dist-facebook/assets/vendor-three-2rjE_d5x.js                  65.48 kB │ gzip:  18.35 kB
 dist-facebook/assets/vendor-three-J1_gq1pb.js                  74.16 kB │ gzip:  21.24 kB
 dist-facebook/assets/vendor-three-CxCSEef7.js                  78.41 kB │ gzip:  23.16 kB
-dist-facebook/assets/sentry-DxEeiD9p.js                        90.02 kB │ gzip:  30.84 kB
+dist-facebook/assets/sentry-KhmH0HLs.js                        90.02 kB │ gzip:  30.84 kB
 dist-facebook/assets/raceSchemas-VGLErhH6.js                  107.84 kB │ gzip:  31.02 kB
 dist-facebook/assets/vendor-three-DuOo2BUN.js                 192.56 kB │ gzip:  42.42 kB
 dist-facebook/assets/vendor-react-CuZr8RiT.js                 219.00 kB │ gzip:  68.35 kB
-dist-facebook/assets/facebook-CNl870BK.js                     226.29 kB │ gzip:  66.38 kB
+dist-facebook/assets/facebook-B5cbhF2D.js                     226.41 kB │ gzip:  66.42 kB
 dist-facebook/assets/vendor-firebase-C5F_jjbA.js              367.00 kB │ gzip: 109.80 kB
 
-✓ built in 2.31s
+✓ built in 2.37s
 $ node scripts/audit-facebook-artifact.mjs
 Facebook artifact audit passed: 411 files, 4.38 MB, 0.62 MB initial resources, isolated SDK/config, and no Jest/native/secrets leakage

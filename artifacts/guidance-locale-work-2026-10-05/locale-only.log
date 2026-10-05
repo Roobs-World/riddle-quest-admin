@@ -1,0 +1,42 @@
+{
+  "mode": "development",
+  "checks": 32,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "centered",
+      "locale": "de",
+      "name": "entry target work is scoped to anchored guidance",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "centered",
+      "locale": "de",
+      "name": "viewport signals do work only for an anchored target",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Guidance live locale and target work
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-guidance-locale-work-browser.mjs:80:59 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -87,10 +87,10 @@ jobs:
             build-*.manifest.json
             build-html5.sha256
             build-html5.zip.source.json
-            packages/portal/dist-facebook
-            packages/portal/dist-reddit
-            packages/portal/dist-yahoo
-            packages/portal/dist-gamesnacks
+            builds/facebook
+            builds/reddit
+            builds/yahoo
+            builds/gamesnacks
             docs/reports/platform-release-readiness/dist/index.html
 
   itch:

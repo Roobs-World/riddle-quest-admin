@@ -39,16 +39,15 @@ export function useRaceDialogFocus({
       else requestClose();
       return;
     }
-    if (event.key !== "Tab" || !dialogRef.current) return;
     /** Dialog that currently owns keyboard focus. */
     const activeDialog = quitConfirmationOpen ? quitDialogRef.current : dialogRef.current;
     if (!activeDialog) return;
-    /** Interactive elements participating in the focus loop. */
+    /** Only controls in the native Tab sequence participate in the focus loop. */
     const focusable = Array.from(
       activeDialog.querySelectorAll<HTMLElement>(
         'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
       ),
-    );
+    ).filter((control) => control.tabIndex >= 0);
     if (focusable.length === 0) {
       event.preventDefault();
       activeDialog.focus({preventScroll: true});

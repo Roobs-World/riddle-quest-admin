@@ -2,7 +2,7 @@ import {LiveRacePushConsent} from "../../race/components/LiveRacePushConsent";
 import {ProfileSubscriptionContext} from "./ProfileSubscriptionContext";
 import chestUrl from "../../../../../../assets/images-web/chest-closed.png";
 import {useProviderProfile} from "../../ProviderProfileContext";
-import {useContext, useRef, useState} from "react";
+import {useContext, useLayoutEffect, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
 import type {GameModal, GameSessionState} from "../../gameSession";
 import {useTranslator} from "../../i18n";
@@ -59,6 +59,13 @@ export function ProfileModalPage({
   const deleteDialogRef = useRef<HTMLElement | null>(null);
   /** Trigger restored after the destructive confirmation is dismissed. */
   const deleteTriggerRef = useRef<HTMLButtonElement | null>(null);
+  /** A dismissal authorizes focus restoration only after its DOM update commits. */
+  const restoreDeleteFocus = useRef(false);
+  useLayoutEffect(() => {
+    if (deleteConfirmationOpen || !restoreDeleteFocus.current) return;
+    restoreDeleteFocus.current = false;
+    deleteTriggerRef.current?.focus({preventScroll: true});
+  }, [deleteConfirmationOpen]);
   /** Derived level and experience values for the current profile. */
   const progress = getProfileProgress(profile);
   /** Rank associated with the current level. */
@@ -91,10 +98,10 @@ export function ProfileModalPage({
     }
   };
 
-  /** Dismisses the confirmation and restores focus to its trigger. */
+  /** Dismisses confirmation; its closing commit restores the trigger before later input. */
   const dismissDeleteConfirmation = () => {
+    restoreDeleteFocus.current = true;
     setDeleteConfirmationOpen(false);
-    window.requestAnimationFrame(() => deleteTriggerRef.current?.focus());
   };
 
   /** Contains Escape and Tab navigation within the destructive confirmation. */
@@ -186,7 +193,7 @@ export function ProfileModalPage({
             </button>}
           </div>
         </div>
-        <section className="rank-card" data-tooltip="profileProgression">
+        <div className="rank-card" data-tooltip="profileProgression">
           <RankedAvatar size={56} level={progress.level} fallback={<RankIcon name={rank.icon} />} showSymbolBadge={false} />
           <div>
             <small>{tr("Ranks.CURRENT_RANK")}</small>
@@ -194,7 +201,7 @@ export function ProfileModalPage({
             <span className="rank-material" data-rank-material={rank.material}>{tr(rank.materialKey)}</span>
             <p>{tr(rank.descriptionKey)}</p>
           </div>
-        </section>
+        </div>
         <div className="xp-progress">
           <span>
             {tr("Profile.XP_LEVEL_PREFIX")}

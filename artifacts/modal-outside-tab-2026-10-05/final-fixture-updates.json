@@ -1,0 +1,7 @@
+[
+  "packages/portal/scripts/validate-w3c.mjs",
+  "packages/portal/scripts/validate-w3c.test.mjs",
+  "packages/portal/src/youtube/__tests__/achievementMilestones.jest-playwright.test.ts",
+  "packages/portal/src/youtube/__tests__/youtubeBrowser.jest-playwright.support.ts",
+  "packages/portal/src/youtube/__tests__/youtubeBrowser.jest-playwright.test.ts"
+]

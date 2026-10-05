@@ -1,0 +1,27 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ PORTAL_SOAK_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/mobileSoak.jest-playwright.test.ts
+FAIL src/play/__tests__/mobileSoak.jest-playwright.test.ts (16.592 s)
+  ● low-end mobile stability › remains responsive and memory-bounded during extended play
+
+    locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for getByText(/what has keys/i) to be visible[22m
+
+       99 |         // Platform preferences own onboarding, so local browser flags cannot complete it.
+      100 |         await completeMockOnboarding(page);
+    > 101 |         await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
+          |                                                ^
+      102 |         /** Provides letter a behavior. */
+      103 |         const letterA = page.locator(".keyboard").getByRole("button", {name: /^A$/});
+      104 |         try {
+
+      at Object.<anonymous> (src/play/__tests__/mobileSoak.jest-playwright.test.ts:101:48)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        16.716 s
+Ran all test suites matching src/play/__tests__/mobileSoak.jest-playwright.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/portal@1.0.0 test:mobile-soak: `PORTAL_SOAK_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/mobileSoak.jest-playwright.test.ts`
+Exit status 1

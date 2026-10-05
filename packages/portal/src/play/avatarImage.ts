@@ -31,12 +31,19 @@ const blobToDataUrl = (blob: Blob) =>
     reader.readAsDataURL(blob);
   });
 
-/** Provides prepare avatar image behavior. */
-export async function prepareAvatarImage(file: File): Promise<string> {
+/** Stops subsequent image stages after their account visit or selection is retired. */
+const checkAvatarPreparation = (signal?: AbortSignal) => {
+  if (signal?.aborted) throw Object.assign(new Error("avatar-preparation-retired"), {name: "AbortError"});
+};
+
+/** Crops and encodes an avatar, skipping remaining stages when its owner retires. */
+export async function prepareAvatarImage(file: File, signal?: AbortSignal): Promise<string> {
   validateAvatarFile(file);
+  checkAvatarPreparation(signal);
   /** Provides bitmap behavior. */
   const bitmap = await createImageBitmap(file);
   try {
+    checkAvatarPreparation(signal);
     /** Provides crop size behavior. */
     const cropSize = Math.min(bitmap.width, bitmap.height);
     /** Provides source x behavior. */
@@ -53,6 +60,7 @@ export async function prepareAvatarImage(file: File): Promise<string> {
     context.drawImage(bitmap, sourceX, sourceY, cropSize, cropSize, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
     /** Provides blob behavior. */
     const blob = await canvasToBlob(canvas);
+    checkAvatarPreparation(signal);
     if (blob.size > MAX_OUTPUT_BYTES) throw new Error("avatar-output-too-large");
     return blobToDataUrl(blob);
   } finally {

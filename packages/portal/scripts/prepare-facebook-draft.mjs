@@ -12,7 +12,7 @@ import {assertFacebookHandoffsSettled, withFacebookReleaseLock} from "./facebook
 
 const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL("../../../", import.meta.url));
-const buildDirectory = path.join(packageDirectory, "dist-facebook");
+const buildDirectory = path.join(packageDirectory, "../../builds/facebook");
 const archivePath = path.join(packageDirectory, "build-facebook.zip");
 const receiptDirectory = path.join(packageDirectory, ".facebook-upload-receipts");
 const receiptPath = path.join(receiptDirectory, "gated-artifact.json");

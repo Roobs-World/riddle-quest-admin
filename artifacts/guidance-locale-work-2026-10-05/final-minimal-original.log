@@ -1,0 +1,125 @@
+{
+  "mode": "development",
+  "checks": 34,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "centered",
+      "locale": "ar",
+      "name": "entry target work is scoped to anchored guidance",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "centered",
+      "locale": "ar",
+      "name": "live title follows the committed locale",
+      "actual": "Climb the leaderboard",
+      "expected": "تسلق المتصدرين"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "centered",
+      "locale": "ar",
+      "name": "live body follows the committed locale",
+      "actual": "Five correct answers! Open your profile to see how you rank.",
+      "expected": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك."
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "centered",
+      "locale": "ar",
+      "name": "parent updates preserve the translated step",
+      "actual": {
+        "title": "Climb the leaderboard",
+        "body": "Five correct answers! Open your profile to see how you rank.",
+        "button": "حصلت عليه",
+        "id": "leaderboardFifthCorrectAnswer"
+      },
+      "expected": {
+        "title": "تسلق المتصدرين",
+        "body": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك.",
+        "button": "حصلت عليه",
+        "id": "leaderboardFifthCorrectAnswer"
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "centered",
+      "locale": "ar",
+      "name": "viewport signals do work only for an anchored target",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "anchored",
+      "locale": "ar",
+      "name": "live title follows the committed locale",
+      "actual": "Submit your answer",
+      "expected": "أرسل إجابتك"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "anchored",
+      "locale": "ar",
+      "name": "live body follows the committed locale",
+      "actual": "When every slot is filled, tap Submit to check your guess.",
+      "expected": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك."
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "anchored",
+      "locale": "ar",
+      "name": "spotlight follows the localized control layout",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "anchored",
+      "locale": "ar",
+      "name": "parent updates preserve the translated step",
+      "actual": {
+        "title": "Submit your answer",
+        "body": "When every slot is filled, tap Submit to check your guess.",
+        "button": "حصلت عليه",
+        "id": "submitAnswer"
+      },
+      "expected": {
+        "title": "أرسل إجابتك",
+        "body": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك.",
+        "button": "حصلت عليه",
+        "id": "submitAnswer"
+      }
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Guidance live locale and target work
+
+9 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-guidance-locale-work-browser.mjs:81:59 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 9,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

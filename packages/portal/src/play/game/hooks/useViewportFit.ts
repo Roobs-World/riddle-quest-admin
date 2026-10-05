@@ -31,6 +31,7 @@ export function useViewportFit() {
         /** Measures the height produced by one candidate width and scale. */
         const scaledHeight = (scale: number) => {
           content.style.width = `${100 / scale}%`;
+          content.style.setProperty("--solo-viewport-scale", String(scale));
           return content.scrollHeight * scale;
         };
         /** Largest scale whose final layout fits the available height. */
@@ -55,6 +56,7 @@ export function useViewportFit() {
 
         if (content.style.width !== nextWidth) content.style.width = nextWidth;
         if (content.style.transform !== nextTransform) content.style.transform = nextTransform;
+        content.style.setProperty("--solo-viewport-scale", String(nextScale));
         // Let the grid distribute spare space inside the fitted viewport.
         content.style.minHeight = `${availableHeight / nextScale}px`;
         shell.style.overflowY = "hidden";
@@ -78,6 +80,7 @@ export function useViewportFit() {
       window.removeEventListener("resize", fitContent);
       observer?.disconnect();
       shell.style.overflowY = "";
+      content.style.removeProperty("--solo-viewport-scale");
     };
   }, []);
 

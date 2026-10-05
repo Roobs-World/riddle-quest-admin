@@ -9,12 +9,22 @@ const mockEffects: Array<() => void> = [];
 const mockSetProducts = jest.fn();
 /** Observes provider loading/error state independently of catalog publication. */
 const mockSetCatalogState = jest.fn();
+/** Retains hook refs across the explicit session rerenders in this harness. */
+const mockRefs: Array<{
+  /** Retained value owned by this hook slot. */
+  current: unknown;
+}> = [];
+/** Starts each render at the first retained hook ref. */
+let mockRefIndex = 0;
+/** Models the catalog state published by earlier refreshes. */
+let mockProducts: ProductSummary[] = [];
 
 jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
-  useRef: (current: unknown) => ({current}),
+  useRef: (current: unknown) => mockRefs[mockRefIndex++] ?? (mockRefs[mockRefIndex - 1] = {current}),
   useEffect: (effect: () => void) => mockEffects.push(effect),
-  useState: (initial: unknown) => [initial, Array.isArray(initial) ? mockSetProducts : mockSetCatalogState],
+  useState: (initial: unknown) => [Array.isArray(initial) ? mockProducts : initial,
+    Array.isArray(initial) ? mockSetProducts : mockSetCatalogState],
 }));
 
 import {useJestProductCatalog} from "../useJestProductCatalog";
@@ -50,6 +60,7 @@ const flushCatalogLoad = async () => {
 
 /** Creates harness. */
 const createHarness = (currentSession: JestSession | null, subscriptionsEnabled?: boolean) => {
+  mockRefIndex = 0;
   /** Gets products. */
   const getProducts = jest.fn<JestPurchaseCoordinator["getProducts"]>();
   /** Gets subscriptions. */
@@ -72,6 +83,12 @@ const createHarness = (currentSession: JestSession | null, subscriptionsEnabled?
 beforeEach(() => {
   jest.clearAllMocks();
   mockEffects.length = 0;
+  mockRefs.length = 0;
+  mockProducts = [];
+  mockSetProducts.mockImplementation((products: unknown) => { mockProducts = products as ProductSummary[]; });
+  mockSetCatalogState.mockImplementation((update: unknown) => {
+    if (typeof update === "function") update({loading: false, error: false});
+  });
 });
 
 describe("useJestProductCatalog", () => {
@@ -214,5 +231,21 @@ it("preserves consumables when the SDK throws while keeping subscription offers 
   await state[2]();
   await state[2]();
   expect(mockSetProducts).toHaveBeenLastCalledWith([coin]);
+  expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: true});
+});
+
+it("clears the prior wallet catalog before refreshing a different platform player", async () => {
+  /** First wallet owns its confirmed offer until the session is replaced. */
+  const first = createHarness(session(false));
+  first.getProducts.mockResolvedValue({status: "success", value: [product("old-wallet", "consumable")]});
+  await first.state[2]();
+  /** A second wallet must not inherit offers when its first catalog request fails. */
+  const secondSession = {...session(false), player: {playerId: "player-2", registered: false}};
+  /** Rerenders the same hook instance with the new platform identity. */
+  const second = createHarness(secondSession);
+  second.getProducts.mockResolvedValue({status: "retryable-failure", message: "offline"});
+  mockSetProducts.mockClear();
+  await second.state[2]();
+  expect(mockSetProducts.mock.calls).toEqual([[[]], [[]]]);
   expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: true});
 });

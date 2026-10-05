@@ -1,0 +1,13 @@
+$ SOLAR_RESTORATION_CHECKS=1 node scripts/verify-solar-animation-browser.mjs && SOLAR_RESTORATION_CHECKS=1 SOLAR_ANIMATION_REACT_MODE=production node scripts/verify-solar-animation-browser.mjs
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 280,
+  "failures": []
+}
+{
+  "mode": "production",
+  "baseline": false,
+  "checks": 280,
+  "failures": []
+}

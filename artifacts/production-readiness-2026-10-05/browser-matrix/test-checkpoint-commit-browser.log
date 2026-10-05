@@ -1,0 +1,11 @@
+$ node scripts/verify-checkpoint-commit-browser.mjs && CHECKPOINT_COMMIT_REACT_MODE=production node scripts/verify-checkpoint-commit-browser.mjs
+{
+  "mode": "development",
+  "checks": 180,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 180,
+  "failures": []
+}

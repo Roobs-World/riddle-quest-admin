@@ -32,8 +32,8 @@
   {
     "width": 1280,
     "name": "hidden: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -170,8 +170,8 @@
   {
     "width": 1280,
     "name": "zero-layout: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -308,8 +308,8 @@
   {
     "width": 1280,
     "name": "multiplayer: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -446,8 +446,8 @@
   {
     "width": 1280,
     "name": "retire-pending: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -578,8 +578,8 @@
   {
     "width": 1280,
     "name": "newer-loss: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -728,8 +728,8 @@
   {
     "width": 1280,
     "name": "resume-failure: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -872,8 +872,8 @@
   {
     "width": 390,
     "name": "hidden: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -1010,8 +1010,8 @@
   {
     "width": 390,
     "name": "zero-layout: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -1148,8 +1148,8 @@
   {
     "width": 390,
     "name": "multiplayer: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -1286,8 +1286,8 @@
   {
     "width": 390,
     "name": "retire-pending: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -1418,8 +1418,8 @@
   {
     "width": 390,
     "name": "newer-loss: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -1568,8 +1568,8 @@
   {
     "width": 390,
     "name": "resume-failure: blocked live resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,

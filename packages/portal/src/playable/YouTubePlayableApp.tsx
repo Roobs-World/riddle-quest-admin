@@ -205,7 +205,7 @@ function ReadyYouTubeApp({
           {result.newlyUnlockedAchievementIds.length > 0 && (
             <div>
               <h2>{text("newAchievements")}</h2>
-              <div className="yt-achievement-icons" aria-label={text("newAchievements")}>
+              <div className="yt-achievement-icons" role="group" aria-label={text("newAchievements")}>
                 {result.newlyUnlockedAchievementIds.map((id) => (
                   <AchievementIcon key={id} id={id} text={text} />
                 ))}
@@ -421,7 +421,7 @@ function ReadyYouTubeApp({
           </dl>
           <h2>{text("achievements")}</h2>
           {progression.unlockedAchievementIds.length > 0 ? (
-            <div className="yt-achievement-icons" aria-label={text("achievements")}>
+            <div className="yt-achievement-icons" role="group" aria-label={text("achievements")}>
               {progression.unlockedAchievementIds.map((id) => (
                 <AchievementIcon key={id} id={id} text={text} />
               ))}

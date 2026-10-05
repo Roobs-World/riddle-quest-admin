@@ -1,0 +1,11 @@
+$ node scripts/verify-live-clock-visibility-browser.mjs && LIVE_CLOCK_REACT_MODE=production node scripts/verify-live-clock-visibility-browser.mjs
+{
+  "mode": "development",
+  "checks": 198,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 198,
+  "failures": []
+}

@@ -1,0 +1,34 @@
+{
+  "mode": "development",
+  "checks": 19,
+  "failures": [
+    {
+      "surface": "game",
+      "scenario": "reconnect-leased",
+      "key": "Tab",
+      "width": 390,
+      "height": 568,
+      "name": "only a current offline alert owns the boundary key",
+      "actual": true,
+      "expected": false
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Offline keyboard commitment
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-offline-keyboard-boundary-browser.mjs:57:231 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,0 +1,7 @@
+{
+  "runs": 10,
+  "cpuRate": 12,
+  "domObserver": false,
+  "longObserver": false,
+  "captureTrace": true
+}

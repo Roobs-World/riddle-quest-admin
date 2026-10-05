@@ -12,7 +12,7 @@ pnpm --filter @qwordly/portal build:facebook
 pnpm --filter @qwordly/portal audit:facebook-artifact
 ```
 
-The build writes `packages/portal/dist-facebook`. It must load only `fbinstant.8.0.js`, contain root `fbapp-config.json`, remain below 5 MiB of critical initial resources and 200 MiB total, contain no source maps or private credentials, and pass the reciprocal Jest-leakage audit. The Jest build remains independently available through `build:jest`; never combine both SDKs in one artifact.
+The build writes `builds/facebook`. It must load only `fbinstant.8.0.js`, contain root `fbapp-config.json`, remain below 5 MiB of critical initial resources and 200 MiB total, contain no source maps or private credentials, and pass the reciprocal Jest-leakage audit. The Jest build remains independently available through `build:jest`; never combine both SDKs in one artifact.
 
 When using a private output directory, each of the six target builds and its audit
 honours that target's `TARGET_BUILD_OUT_DIR` variable (for example,

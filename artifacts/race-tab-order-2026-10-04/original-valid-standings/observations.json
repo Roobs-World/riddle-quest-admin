@@ -1,0 +1,242 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "validated standings do not show an error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "native tab selection focuses the selected destination",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "forward Tab from the selected final eligible control wraps to Close",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "reverse Tab wraps to the selected tab rather than a skipped tab",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "inactive roving tabs stay outside the native tab sequence",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "navigation does not issue gameplay or economy commands",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "navigation never records a score",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "navigation does not close the multiplayer surface",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "activity",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "validated standings do not show an error",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "native tab selection focuses the selected destination",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "forward Tab from the selected final eligible control wraps to Close",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "reverse Tab wraps to the selected tab rather than a skipped tab",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "inactive roving tabs stay outside the native tab sequence",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "navigation does not issue gameplay or economy commands",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "navigation never records a score",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "navigation does not close the multiplayer surface",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "play",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "validated standings do not show an error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "native tab selection focuses the selected destination",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "forward Tab from the selected final eligible control wraps to Close",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "reverse Tab wraps to the selected tab rather than a skipped tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "inactive roving tabs stay outside the native tab sequence",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "navigation does not issue gameplay or economy commands",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "navigation never records a score",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "navigation does not close the multiplayer surface",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "destination": "tournaments",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

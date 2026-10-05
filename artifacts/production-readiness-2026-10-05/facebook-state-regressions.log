@@ -1,0 +1,16 @@
+✔ one global lock prevents concurrent commands and releases on ordinary failure (71.838208ms)
+✔ different hashes and preflight cannot replace an unresolved handoff (108.646651ms)
+✔ orphan exact bytes recover only as ambiguous, never as permission to retransmit (123.30473ms)
+✔ outcomes select immutable hashes after HEAD and the latest gate change (157.842873ms)
+✔ malformed, missing and cross-artifact barriers fail closed (44.989873ms)
+✔ accepted evidence permits a later handoff while any older unresolved receipt blocks it (8.347624ms)
+✔ an interrupted process lock is retained for explicit operator investigation (24.273115ms)
+✔ a retained operator absence reconciliation settles the legacy attempt without permitting retransmission (32.698547ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 580.808944

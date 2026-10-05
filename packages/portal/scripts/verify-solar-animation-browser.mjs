@@ -194,7 +194,8 @@ try{
   if(initializationChecks){await verifySolarInitialization({page,width,url,baseline,metric,output,sceneAsset,mode});await context.close();continue;}
   if(motionChecks){for(const scheduler of ['idle','timer'])await verifyLiveDecoration({page,width,url,baseline,metric:(name,actual,expected)=>metric(scheduler+': '+name,actual,expected),output,scheduler});await context.close();continue;}
   if(resourceChecks){
-   const scenarios=[['renderer_constructor',1],['pixel_ratio',1],['anisotropy',1],['MeshBasicMaterial',1],['ShaderMaterial',2],['PointsMaterial',1],['SpriteMaterial',4],['RingGeometry',1],['texture_loader',5],['texture_error_sync',1],['texture_error',1],['healthy',1]];
+   // The current scene uses sprites; fail the second sphere after partial sun setup instead of retired point-cloud allocation.
+   const scenarios=[['renderer_constructor',1],['pixel_ratio',1],['anisotropy',1],['MeshBasicMaterial',1],['ShaderMaterial',2],['SphereGeometry',2],['SpriteMaterial',4],['RingGeometry',1],['texture_loader',5],['texture_error_sync',1],['texture_error',1],['healthy',1]];
    for(const [kind,occurrence] of scenarios){
     await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
     if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();

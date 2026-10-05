@@ -53,7 +53,13 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><YouTubePla
    const before=await letters(),writes=await page.evaluate(()=>window.probe.saves.length);
    await page.evaluate(()=>{const input=document.querySelector('.yt-answer-native');input.value='rome';input.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:'rome'}));input.value='rome';input.dispatchEvent(new InputEvent('input',{bubbles:true,data:'rome',inputType:'insertText'}));});
    metric('late input produces no browser exception',await page.evaluate(()=>window.probe.errors),[]);
-   metric('draft admission follows the current state',await letters(),scenario==='writing'?'rome':before);
+   metric('unowned composition tail cannot publish a draft',await letters(),before);
+   if(scenario==='writing'){
+    // A save permits new drafting, but an unmatched compositionend is still retired input.
+    await page.evaluate(()=>{const input=document.querySelector('.yt-answer-native');input.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true,data:''}));input.value='rome';input.dispatchEvent(new InputEvent('input',{bubbles:true,data:'rome',isComposing:true,inputType:'insertCompositionText'}));input.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:'rome'}));input.value='rome';input.dispatchEvent(new InputEvent('input',{bubbles:true,data:'rome',inputType:'insertText'}));});
+    await page.waitForFunction(()=>Array.from(document.querySelectorAll('.yt-guess-row.current .yt-tile'),tile=>tile.textContent).join('')==='rome');
+    metric('owned composition remains editable during save',await letters(),'rome');
+   }
    metric('ephemeral input creates no material save',await page.evaluate(()=>window.probe.saves.length),writes);
    if(scenario==='continue'){await page.locator('.yt-continue-panel button').first().click();await page.waitForFunction(()=>!document.querySelector('.yt-answer-native').disabled);}
    if(scenario==='paused')await page.evaluate(()=>window.resumePlayable());

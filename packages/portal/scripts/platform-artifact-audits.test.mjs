@@ -80,37 +80,37 @@ test("the Web Target config resolves one isolated build profile for every releas
   const {createWebTargetViteConfig} = await import("../webTargetViteConfig.ts");
   const expectations = {
     jest: {
-      outDir: "dist-jest",
+      outDir: "../../builds/jest",
       htmlEntry: "/targets/jest/index.html",
       shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
       artifactPlugin: "riddle-quest-jest-challenge-push-worker",
     },
     facebook: {
-      outDir: "dist-facebook",
+      outDir: "../../builds/facebook",
       htmlEntry: "/targets/facebook/index.html",
       shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
       artifactPlugin: "riddle-quest-facebook-artifact",
     },
     reddit: {
-      outDir: "dist-reddit",
+      outDir: "../../builds/reddit",
       htmlEntry: undefined,
       shopEntry: "/src/reddit/RedditShopModalPage.tsx",
       artifactPlugin: "riddle-quest-reddit-artifact",
     },
     youtube: {
-      outDir: "dist-youtube",
+      outDir: "../../builds/youtube",
       htmlEntry: "/targets/youtube/index.html",
       shopEntry: "virtual:youtube-forbidden-shop-entry",
       artifactPlugin: "riddle-quest-youtube-artifact",
     },
     netflix: {
-      outDir: "dist-netflix",
+      outDir: "../../builds/netflix",
       htmlEntry: "/targets/netflix/index.html",
       shopEntry: "virtual:youtube-forbidden-shop-entry",
       artifactPlugin: "riddle-quest-youtube-artifact",
     },
     yahoo: {
-      outDir: "dist-yahoo",
+      outDir: "../../builds/yahoo",
       htmlEntry: "/targets/yahoo/index.html",
       shopEntry: "virtual:youtube-forbidden-shop-entry",
       artifactPlugin: "riddle-quest-youtube-artifact",
@@ -299,7 +299,7 @@ test("the build contract rejects roots, repository paths, and another target's c
   for (const unsafeDirectory of [
     path.join(packageDirectory, "src"),
     path.join(repositoryDirectory, "docs", "generated-web-target"),
-    path.join(packageDirectory, "dist-jest", "nested"),
+    path.join(packageDirectory, "../../builds/jest", "nested"),
   ]) {
     const config = createWebTargetViteConfig({
       command: "build",
@@ -315,10 +315,10 @@ test("the build contract rejects roots, repository paths, and another target's c
   const crossTarget = createWebTargetViteConfig({
     command: "build",
     mode: "jest",
-    environment: {JEST_BUILD_OUT_DIR: "dist-facebook"},
+    environment: {JEST_BUILD_OUT_DIR: "../../builds/facebook"},
   });
   assert.throws(
-    () => runBuildContract(crossTarget, {outDir: "dist-facebook"}),
+    () => runBuildContract(crossTarget, {outDir: "../../builds/facebook"}),
     /collides with the facebook canonical artifact/u,
   );
 });
@@ -509,7 +509,9 @@ for (const platform of ["netflix", "yahoo"]) {
     await withFixture(platform, async (directory) => {
       const workspace = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-audit-precedence-`));
       try {
-        const defaultDirectory = path.join(workspace, `dist-${platform}`);
+        const portalDirectory = path.join(workspace, "packages/portal");
+        await mkdir(portalDirectory, {recursive: true});
+        const defaultDirectory = path.join(workspace, `builds/${platform}`);
         const contaminatedDirectory = path.join(workspace, "contaminated");
         await cp(directory, defaultDirectory, {recursive: true});
         await cp(directory, contaminatedDirectory, {recursive: true});
@@ -517,7 +519,7 @@ for (const platform of ["netflix", "yahoo"]) {
         const environmentName = `${platform.toUpperCase()}_BUILD_OUT_DIR`;
         const otherEnvironmentName = platform === "netflix" ? "YAHOO_BUILD_OUT_DIR" : "NETFLIX_BUILD_OUT_DIR";
         const invoke = (args, overrides) => spawnSync(process.execPath, [standaloneAudit, platform, ...args], {
-          cwd: workspace,
+          cwd: portalDirectory,
           encoding: "utf8",
           env: {...process.env, [environmentName]: "", [otherEnvironmentName]: contaminatedDirectory, ...overrides},
         });

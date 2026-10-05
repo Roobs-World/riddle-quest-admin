@@ -14,6 +14,7 @@ describe("public package barrels", () => {
     expect(game.isValidGuess).toBeDefined();
     expect(game.computeGuestCompletionRewards).toBeDefined();
     expect(game.splitGraphemes).toBeDefined();
+    expect([...game.iterateGraphemes("a\u0301👩‍🚀")]).toEqual(["á", "👩‍🚀"]);
     expect(game.lowerCaseGraphemes).toBeDefined();
     expect(game.graphemeLength).toBeDefined();
     expect(game.countCoinRewardAchievements).toBe(core.countCoinRewardAchievements);

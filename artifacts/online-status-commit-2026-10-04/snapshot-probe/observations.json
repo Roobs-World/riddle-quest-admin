@@ -1,0 +1,1154 @@
+[
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      6,
+      3
+    ],
+    "expected": [
+      6,
+      3
+    ]
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      6,
+      3
+    ],
+    "expected": [
+      6,
+      3
+    ]
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      6,
+      3
+    ],
+    "expected": [
+      6,
+      3
+    ]
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "frame",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      6,
+      3
+    ],
+    "expected": [
+      6,
+      3
+    ]
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "frame",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "disconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve browser signal subscriptions",
+    "actual": [
+      4,
+      2
+    ],
+    "expected": [
+      4,
+      2
+    ]
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "parent updates preserve current connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "ordinary connection events reconcile the mounted consumer",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases online listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "retired consumer releases offline listeners",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "save",
+    "scenario": "reconnect-early",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

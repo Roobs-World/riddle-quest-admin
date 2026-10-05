@@ -1,0 +1,11 @@
+$ node scripts/verify-online-status-commit-browser.mjs && ONLINE_COMMIT_REACT_MODE=production node scripts/verify-online-status-commit-browser.mjs
+{
+  "mode": "development",
+  "checks": 402,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 402,
+  "failures": []
+}

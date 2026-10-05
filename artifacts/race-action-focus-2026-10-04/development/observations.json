@@ -11,6 +11,14 @@
     "width": 390,
     "height": 568,
     "scenario": "hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
     "name": "native Enter sends the completed answer exactly once",
     "actual": [
       "test"
@@ -42,6 +50,22 @@
     "name": "one explicit answer advances the authoritative score",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -71,6 +95,14 @@
     "width": 390,
     "height": 568,
     "scenario": "tab-hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
     "name": "native Enter sends the completed answer exactly once",
     "actual": [
       "test"
@@ -102,6 +134,22 @@
     "name": "one explicit answer advances the authoritative score",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -131,6 +179,14 @@
     "width": 390,
     "height": 568,
     "scenario": "wrong-submit",
+    "name": "editing sends no new guess",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
     "name": "native Enter sends the completed answer exactly once",
     "actual": [
       "test"
@@ -162,6 +218,22 @@
     "name": "one explicit answer advances the authoritative score",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-submit",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -191,6 +263,14 @@
     "width": 390,
     "height": 568,
     "scenario": "shortcut",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
     "name": "native Enter sends the completed answer exactly once",
     "actual": [
       "test"
@@ -222,6 +302,22 @@
     "name": "one explicit answer advances the authoritative score",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -251,6 +347,14 @@
     "width": 390,
     "height": 568,
     "scenario": "shortcut-delete",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
     "name": "native Enter sends the completed answer exactly once",
     "actual": [
       "test"
@@ -282,6 +386,22 @@
     "name": "one explicit answer advances the authoritative score",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "shortcut-delete",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -306,6 +426,14 @@
     "name": "typing after an action completes the current draft",
     "actual": "test",
     "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -347,6 +475,22 @@
     "width": 390,
     "height": 568,
     "scenario": "skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "skip",
     "name": "no page errors",
     "actual": [],
     "expected": []
@@ -362,9 +506,2365 @@
   {
     "width": 390,
     "height": 568,
-    "scenario": "held-hint-tab",
-    "name": "held hint immediately returns to native typing",
-    "actual": false,
+    "scenario": "tab-skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
     "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "held Skip returns to usable native entry",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "native typing reaches the draft while Hint is pending",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "hint receipt preserves subsequent Tab navigation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-hint-tab",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "skip receipt preserves subsequent Tab navigation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "held-skip-tab",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "editing sends no new guess",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "held Skip returns to usable native entry",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "native typing reaches the draft while Hint is pending",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "hint receipt preserves subsequent Tab navigation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "skip receipt preserves subsequent Tab navigation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "editing sends no new guess",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "wrong-submit",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "shortcut-delete",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "held Skip returns to usable native entry",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "native typing reaches the draft while Hint is pending",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "hint receipt preserves subsequent Tab navigation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "Hint activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "Skip activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-hint-tab",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "skip receipt preserves subsequent Tab navigation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "typing after an action completes the current draft",
+    "actual": "test",
+    "expected": "test"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "editing sends no new guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "native Enter sends the completed answer exactly once",
+    "actual": [
+      "test"
+    ],
+    "expected": [
+      "test"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "action returns focus to the native answer editor",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "native text is consumed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "one explicit answer advances the authoritative score",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "Hint activation is not repeated",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "Skip activation is not repeated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "no page errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "held-skip-tab",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
   }
 ]

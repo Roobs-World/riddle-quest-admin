@@ -4,7 +4,7 @@ import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
 
 const target = process.argv[2];
 if (!new Set(["netflix", "yahoo"]).has(target)) throw new Error("Expected netflix or yahoo target");
-const rootDirectory = process.argv[3] || process.env[`${target.toUpperCase()}_BUILD_OUT_DIR`]?.trim() || `dist-${target}`;
+const rootDirectory = process.argv[3] || process.env[`${target.toUpperCase()}_BUILD_OUT_DIR`]?.trim() || `../../builds/${target}`;
 const inventory = await inspectWebTargetArtifact({rootDirectory, target});
 const {files, root, textFiles, totalBytes} = inventory;
 if (totalBytes >= 30 * 1024 * 1024) throw new Error(`${target} candidate artifact must be below 30 MiB`);

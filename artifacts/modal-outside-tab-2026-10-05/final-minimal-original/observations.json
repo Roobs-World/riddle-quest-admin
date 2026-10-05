@@ -1,0 +1,112 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

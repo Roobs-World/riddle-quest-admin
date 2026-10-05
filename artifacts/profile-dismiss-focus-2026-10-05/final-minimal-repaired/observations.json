@@ -1,0 +1,101 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "dismissal commits focus return before a deferred restoration frame",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "outer keyboard listener is present before subsequent input",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "native Tab from dismissed Delete wraps to the outer Close control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "dismissal restoration preserves later native Tab focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "outer Profile lifetime matches the requested native action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "outer Close runs exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "confirmation lifetime follows only the current native action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "method": "escape",
+    "scenario": "early-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

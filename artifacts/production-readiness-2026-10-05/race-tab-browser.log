@@ -1,0 +1,12 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/verify-race-tab-order-browser.mjs && RACE_TAB_REACT_MODE=production node scripts/verify-race-tab-order-browser.mjs
+{
+  "mode": "development",
+  "checks": 108,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 108,
+  "failures": []
+}

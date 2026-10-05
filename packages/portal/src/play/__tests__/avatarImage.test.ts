@@ -84,7 +84,7 @@ describe("avatar image validation", () => {
     /** Provides environment behavior. */
     const environment = installImageEnvironment();
 
-    await expect(prepareAvatarImage({type: "image/png", size: 100} as File)).resolves.toBe(
+    await expect(prepareAvatarImage({type: "image/png", size: 100} as File, new AbortController().signal)).resolves.toBe(
       "data:image/webp;base64,YXZhdGFy",
     );
 
@@ -100,6 +100,54 @@ describe("avatar image validation", () => {
       256,
       256,
     );
+    expect(environment.close).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not decode an already retired valid selection", async () => {
+    /** Retains the existing decoder and canvas controls. */
+    const environment = installImageEnvironment();
+    /** Represents a selection retired before preparation starts. */
+    const controller = new AbortController();
+    controller.abort();
+    await expect(prepareAvatarImage({type: "image/png", size: 100} as File, controller.signal))
+      .rejects.toMatchObject({name: "AbortError"});
+    expect(createImageBitmap).not.toHaveBeenCalled();
+    expect(document.createElement).not.toHaveBeenCalled();
+    expect(environment.close).not.toHaveBeenCalled();
+  });
+
+  it("closes a decoded bitmap without allocating a canvas after retirement", async () => {
+    /** The decoder resolves on the next microtask. */
+    const environment = installImageEnvironment();
+    /** Retires this selection while decoding remains pending. */
+    const controller = new AbortController();
+    /** Runs actual preparation across the pending decoder boundary. */
+    const preparation = prepareAvatarImage({type: "image/png", size: 100} as File, controller.signal);
+    controller.abort();
+    await expect(preparation).rejects.toMatchObject({name: "AbortError"});
+    expect(createImageBitmap).toHaveBeenCalledTimes(1);
+    expect(document.createElement).not.toHaveBeenCalled();
+    expect(environment.close).toHaveBeenCalledTimes(1);
+  });
+
+  it("skips reading a completed encoding after retirement and closes its bitmap", async () => {
+    /** Holds the encoder callback while retaining real stage ordering. */
+    const environment = installImageEnvironment();
+    /** Observes whether preparation starts a file read. */
+    const read = jest.spyOn(FileReader.prototype, "readAsDataURL");
+    /** Releases the pending encoding after its selection retires. */
+    let release: ((blob: Blob | null) => void) | undefined;
+    environment.canvas.toBlob.mockImplementation((callback) => {release = callback;});
+    /** Cancels work between encoding and file reading. */
+    const controller = new AbortController();
+    /** Runs preparation until the encoder receives its callback. */
+    const preparation = prepareAvatarImage({type: "image/png", size: 100} as File, controller.signal);
+    await Promise.resolve();
+    expect(environment.canvas.toBlob).toHaveBeenCalledTimes(1);
+    controller.abort();
+    release?.(new Blob(["avatar"], {type: "image/webp"}));
+    await expect(preparation).rejects.toMatchObject({name: "AbortError"});
+    expect(read).not.toHaveBeenCalled();
     expect(environment.close).toHaveBeenCalledTimes(1);
   });
 

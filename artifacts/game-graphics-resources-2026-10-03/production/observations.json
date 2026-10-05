@@ -511,103 +511,103 @@
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: temporary capability contexts are released",
+    "name": "SphereGeometry: temporary capability contexts are released",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: optional failure retains the game frame",
+    "name": "SphereGeometry: optional failure retains the game frame",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: same authoritative session survives",
+    "name": "SphereGeometry: same authoritative session survives",
     "actual": "00000000-0000-4000-8000-000000000001",
     "expected": "00000000-0000-4000-8000-000000000001"
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: PIAN draft survives",
+    "name": "SphereGeometry: PIAN draft survives",
     "actual": "PIAN",
     "expected": "PIAN"
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no returned resource remains live",
+    "name": "SphereGeometry: no returned resource remains live",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: renderer cleanup happens exactly once",
+    "name": "SphereGeometry: renderer cleanup happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: context release happens exactly once",
+    "name": "SphereGeometry: context release happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no canvas remains attached",
+    "name": "SphereGeometry: no canvas remains attached",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no animation frames remain",
+    "name": "SphereGeometry: no animation frames remain",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: shared graphics are not disposed twice",
+    "name": "SphereGeometry: shared graphics are not disposed twice",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: setup diagnostic remains bounded",
+    "name": "SphereGeometry: setup diagnostic remains bounded",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: retained callbacks do not repeat diagnostic",
+    "name": "SphereGeometry: retained callbacks do not repeat diagnostic",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: retained callbacks do not dispose twice",
+    "name": "SphereGeometry: retained callbacks do not dispose twice",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: player can finish the answer",
+    "name": "SphereGeometry: player can finish the answer",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: player receives one completion",
+    "name": "SphereGeometry: player receives one completion",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no browser callback escapes",
+    "name": "SphereGeometry: no browser callback escapes",
     "actual": [],
     "expected": []
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no unhandled promise remains",
+    "name": "SphereGeometry: no unhandled promise remains",
     "actual": [],
     "expected": []
   },
@@ -1765,103 +1765,103 @@
   },
   {
     "width": 390,
-    "name": "PointsMaterial: temporary capability contexts are released",
+    "name": "SphereGeometry: temporary capability contexts are released",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: optional failure retains the game frame",
+    "name": "SphereGeometry: optional failure retains the game frame",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: same authoritative session survives",
+    "name": "SphereGeometry: same authoritative session survives",
     "actual": "00000000-0000-4000-8000-000000000001",
     "expected": "00000000-0000-4000-8000-000000000001"
   },
   {
     "width": 390,
-    "name": "PointsMaterial: PIAN draft survives",
+    "name": "SphereGeometry: PIAN draft survives",
     "actual": "PIAN",
     "expected": "PIAN"
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no returned resource remains live",
+    "name": "SphereGeometry: no returned resource remains live",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 390,
-    "name": "PointsMaterial: renderer cleanup happens exactly once",
+    "name": "SphereGeometry: renderer cleanup happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: context release happens exactly once",
+    "name": "SphereGeometry: context release happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no canvas remains attached",
+    "name": "SphereGeometry: no canvas remains attached",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no animation frames remain",
+    "name": "SphereGeometry: no animation frames remain",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 390,
-    "name": "PointsMaterial: shared graphics are not disposed twice",
+    "name": "SphereGeometry: shared graphics are not disposed twice",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 390,
-    "name": "PointsMaterial: setup diagnostic remains bounded",
+    "name": "SphereGeometry: setup diagnostic remains bounded",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: retained callbacks do not repeat diagnostic",
+    "name": "SphereGeometry: retained callbacks do not repeat diagnostic",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: retained callbacks do not dispose twice",
+    "name": "SphereGeometry: retained callbacks do not dispose twice",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 390,
-    "name": "PointsMaterial: player can finish the answer",
+    "name": "SphereGeometry: player can finish the answer",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: player receives one completion",
+    "name": "SphereGeometry: player receives one completion",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no browser callback escapes",
+    "name": "SphereGeometry: no browser callback escapes",
     "actual": [],
     "expected": []
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no unhandled promise remains",
+    "name": "SphereGeometry: no unhandled promise remains",
     "actual": [],
     "expected": []
   },

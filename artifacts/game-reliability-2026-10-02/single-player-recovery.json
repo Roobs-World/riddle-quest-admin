@@ -3,23 +3,29 @@
   "samples": [
     {
       "width": 1280,
-      "completionReconnectMs": 1.300000000745058,
-      "startupReconnectMs": 1.099999999627471,
+      "completionReconnectMs": 1.199999999254942,
+      "startupReconnectMs": 1.0999999977648258,
       "effectReplayRecovered": true,
       "synchronousAcknowledgementStoppedRetries": true,
       "currentProfilePreserved": true,
       "retiredLoadRejected": true,
-      "nativeDeletionAndImePreserved": true
+      "nativeDeletionAndImePreserved": true,
+      "restoredProfileAccountIsolated": true,
+      "accountVictoryAndReceiptsRetired": true,
+      "hangingContentRecovered": true
     },
     {
       "width": 390,
-      "completionReconnectMs": 1,
-      "startupReconnectMs": 1.300000000745058,
+      "completionReconnectMs": 1.199999999254942,
+      "startupReconnectMs": 0.9000000022351742,
       "effectReplayRecovered": true,
       "synchronousAcknowledgementStoppedRetries": true,
       "currentProfilePreserved": true,
       "retiredLoadRejected": true,
-      "nativeDeletionAndImePreserved": true
+      "nativeDeletionAndImePreserved": true,
+      "restoredProfileAccountIsolated": true,
+      "accountVictoryAndReceiptsRetired": true,
+      "hangingContentRecovered": true
     }
   ]
 }

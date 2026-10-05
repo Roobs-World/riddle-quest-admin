@@ -24,6 +24,10 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: .nvmrc
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: "21"
       - run: corepack enable
       - run: corepack prepare pnpm@11.21.0 --activate
       - run: pnpm install --frozen-lockfile
@@ -40,7 +44,6 @@ jobs:
       - run: pnpm --filter @qwordly/portal test:release-scripts
       - run: pnpm test:architecture
       - run: pnpm build
-      - run: pnpm check:w3c
       - run: git diff --exit-code -- firebase-functions/packages/core/package.json
 
   functions-node22:
@@ -66,7 +69,8 @@ jobs:
     name: Browser and Firebase rules
     needs: workspace-node24
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # The complete serial input/lifecycle matrix plus the ten-minute soak exceeds 30 minutes.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -83,6 +87,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+      - run: pnpm check:w3c
       - run: pnpm --filter @qwordly/reddit-app build:package:from-client
       - run: pnpm --filter @qwordly/portal preflight:jest-upload
       - run: pnpm --filter @qwordly/portal preflight:facebook-upload

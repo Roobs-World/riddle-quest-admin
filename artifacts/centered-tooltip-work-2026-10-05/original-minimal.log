@@ -1,0 +1,64 @@
+{
+  "mode": "development",
+  "checks": 21,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "locale": "en",
+      "name": "centered entry performs no panel geometry reads",
+      "actual": 4,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "locale": "en",
+      "name": "centered entry has no panel observer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "locale": "en",
+      "name": "returning to centered placement performs no new measurements",
+      "actual": 9,
+      "expected": 7
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "locale": "en",
+      "name": "returning to centered placement retires its observer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "locale": "en",
+      "name": "centered resize performs no geometry work",
+      "actual": 10,
+      "expected": 9
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Centered tooltip layout work and geometry
+
+5 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-centered-tooltip-work-browser.mjs:73:60 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 5,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

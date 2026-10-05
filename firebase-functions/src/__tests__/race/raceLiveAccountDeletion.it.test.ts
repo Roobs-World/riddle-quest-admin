@@ -318,7 +318,8 @@ it("serializes rival completion with deletion and cannot create another economic
   const match = (await db.doc(`liveRaceMatches/${tickets[0].ticketId}`).get()).data()!;
   expect([null, 1]).toContain(match.winner);
   await Promise.all(Array.from({length: 4}, (_, i) => updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "poll", requestId: `delete-repeat-${i}`}, {db, nowMs: START + 16000})));
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(match.winner === 1 ? 225 : 100);
+  // A started draw still grants the one-time debut badge; a clean winner earns three badges.
+  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(match.winner === 1 ? 225 : 125);
   expect((await db.doc(`users/${players[1]}`).get()).data()?.stats.multiplayerWins).toBe(match.winner === 1 ? 1 : 0);
   expect(JSON.stringify(match).includes(players[0])).toBe(false);
 });

@@ -19,7 +19,7 @@
     "width": 390,
     "height": 844,
     "fault": "quota",
-    "name": "completed contextual guidance does not reopen",
+    "name": "unavailable paid-hint guidance stays absent",
     "actual": 0,
     "expected": 0
   },
@@ -219,7 +219,7 @@
     "width": 390,
     "height": 844,
     "fault": "getters",
-    "name": "completed contextual guidance does not reopen",
+    "name": "unavailable paid-hint guidance stays absent",
     "actual": 0,
     "expected": 0
   },
@@ -419,7 +419,7 @@
     "width": 390,
     "height": 568,
     "fault": "quota",
-    "name": "completed contextual guidance does not reopen",
+    "name": "unavailable paid-hint guidance stays absent",
     "actual": 0,
     "expected": 0
   },
@@ -619,7 +619,7 @@
     "width": 390,
     "height": 568,
     "fault": "getters",
-    "name": "completed contextual guidance does not reopen",
+    "name": "unavailable paid-hint guidance stays absent",
     "actual": 0,
     "expected": 0
   },
@@ -819,7 +819,7 @@
     "width": 1280,
     "height": 844,
     "fault": "quota",
-    "name": "completed contextual guidance does not reopen",
+    "name": "unavailable paid-hint guidance stays absent",
     "actual": 0,
     "expected": 0
   },
@@ -1019,7 +1019,7 @@
     "width": 1280,
     "height": 844,
     "fault": "getters",
-    "name": "completed contextual guidance does not reopen",
+    "name": "unavailable paid-hint guidance stays absent",
     "actual": 0,
     "expected": 0
   },

@@ -277,18 +277,47 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     if (view?.phase !== "countdown" || view.startsAtMs === null) return;
     /** The lobby clock stops updating the gameplay owner as soon as racing begins. */
     const startsAtMs = view.startsAtMs;
-    /** Countdown transitions remain independent of delayed progress polls. */
-    const timer = window.setInterval(() => {
+    /** Retired effects and cancelled timer generations cannot sample or request state. */
+    let disposed = false, generation = 0;
+    /** Hidden countdowns retain their authoritative anchor without animating. */
+    let timer: number | null = null;
+    /** Invalidates queued callbacks before releasing their browser interval. */
+    const stop = () => {
+      generation++;
+      if (timer !== null) window.clearInterval(timer);
+      timer = null;
+    };
+    /** Foreground sampling transitions at the server boundary without waiting for another poll. */
+    const sampleCountdown = (ownedGeneration: number): boolean => {
+      if (disposed || !active.current || generation !== ownedGeneration || document.hidden) return false;
       /** Monotonic countdown sampling stays independent of the device wall clock. */
       const sampledNow = serverNow();
       setNow(sampledNow);
       if (sampledNow >= startsAtMs) {
-        window.clearInterval(timer);
+        stop();
         // The authority releases the first prompt at zero; request it without a full poll delay.
         if (!inFlight.current && performance.now() >= nextDeliveryAt.current) void deliver();
+        return false;
       }
-    }, 100);
-    return () => window.clearInterval(timer);
+      return true;
+    };
+    /** Returning to the foreground immediately catches up and owns one current interval. */
+    const refreshCountdown = () => {
+      if (disposed || !active.current) return;
+      stop();
+      if (document.hidden) return;
+      /** This generation owns both the immediate sample and subsequent native callbacks. */
+      const ownedGeneration = generation;
+      if (!sampleCountdown(ownedGeneration)) return;
+      timer = window.setInterval(() => sampleCountdown(ownedGeneration), 100);
+    };
+    document.addEventListener("visibilitychange", refreshCountdown);
+    refreshCountdown();
+    return () => {
+      disposed = true;
+      stop();
+      document.removeEventListener("visibilitychange", refreshCountdown);
+    };
   }, [view?.phase, view?.startsAtMs, deliver]);
   /** Leaves the owned seat and returns to the multiplayer intro. */
   const close = () => {

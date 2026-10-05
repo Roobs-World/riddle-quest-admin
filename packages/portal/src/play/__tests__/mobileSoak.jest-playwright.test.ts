@@ -31,7 +31,7 @@ describeSoak("low-end mobile stability", () => {
       /** Provides dist dir behavior. */
       const distDir = process.env.PORTAL_JEST_BUILD_DIR
         ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
-        : path.join(packageRoot, "dist-jest");
+        : path.join(packageRoot, "../../builds/jest");
       /** Provides server behavior. */
       const server = createServer(async (request, response) => {
         /** Requests url. */
@@ -98,7 +98,13 @@ describeSoak("low-end mobile stability", () => {
         await page.goto("http://127.0.0.1:4180/?harness=jest");
         // Platform preferences own onboarding, so local browser flags cannot complete it.
         await completeMockOnboarding(page);
-        await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
+        try {
+          // Startup selects the available Daily; soak input/layout rather than one Classic sentence.
+          await page.locator(".riddle-card h1").waitFor({timeout: 15_000});
+          expect(await page.locator(".riddle-card h1").innerText()).not.toBe("");
+        } catch (error) {
+          throw new Error(`Mobile soak startup failed: ${JSON.stringify({text: await page.locator("body").innerText(), runtimeErrors})}`, {cause: error});
+        }
         /** Provides letter a behavior. */
         const letterA = page.locator(".keyboard").getByRole("button", {name: /^A$/});
         try {

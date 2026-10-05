@@ -1,0 +1,264 @@
+{
+  "supportingCompiledSource": true,
+  "hostedE2E": false,
+  "cases": [
+    {
+      "name": "initial-open",
+      "width": 320,
+      "expected": 1,
+      "actual": 1,
+      "types": [
+        "xp"
+      ]
+    },
+    {
+      "name": "changed-metric",
+      "width": 320,
+      "expected": 2,
+      "actual": 2,
+      "types": [
+        "xp",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "same-metric-refresh",
+      "width": 320,
+      "expected": 3,
+      "actual": 3,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "retry",
+      "width": 320,
+      "expected": 4,
+      "actual": 4,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "callback-change",
+      "width": 320,
+      "expected": 4,
+      "actual": 4,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "streak",
+      "width": 320,
+      "expected": 5,
+      "actual": 5,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak"
+      ]
+    },
+    {
+      "name": "multiplayer",
+      "width": 320,
+      "expected": 6,
+      "actual": 6,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins"
+      ]
+    },
+    {
+      "name": "close-and-reopen-pending",
+      "width": 320,
+      "expected": 7,
+      "actual": 7,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins",
+        "multiplayerWins"
+      ]
+    },
+    {
+      "name": "child-page-reentry",
+      "width": 320,
+      "expected": 8,
+      "actual": 8,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins",
+        "multiplayerWins",
+        "multiplayerWins"
+      ]
+    },
+    {
+      "name": "xp",
+      "width": 320,
+      "expected": 9,
+      "actual": 9,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins",
+        "multiplayerWins",
+        "multiplayerWins",
+        "xp"
+      ]
+    },
+    {
+      "name": "initial-open",
+      "width": 1280,
+      "expected": 1,
+      "actual": 1,
+      "types": [
+        "xp"
+      ]
+    },
+    {
+      "name": "changed-metric",
+      "width": 1280,
+      "expected": 2,
+      "actual": 2,
+      "types": [
+        "xp",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "same-metric-refresh",
+      "width": 1280,
+      "expected": 3,
+      "actual": 3,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "retry",
+      "width": 1280,
+      "expected": 4,
+      "actual": 4,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "callback-change",
+      "width": 1280,
+      "expected": 4,
+      "actual": 4,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins"
+      ]
+    },
+    {
+      "name": "streak",
+      "width": 1280,
+      "expected": 5,
+      "actual": 5,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak"
+      ]
+    },
+    {
+      "name": "multiplayer",
+      "width": 1280,
+      "expected": 6,
+      "actual": 6,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins"
+      ]
+    },
+    {
+      "name": "close-and-reopen-pending",
+      "width": 1280,
+      "expected": 7,
+      "actual": 7,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins",
+        "multiplayerWins"
+      ]
+    },
+    {
+      "name": "child-page-reentry",
+      "width": 1280,
+      "expected": 8,
+      "actual": 8,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins",
+        "multiplayerWins",
+        "multiplayerWins"
+      ]
+    },
+    {
+      "name": "xp",
+      "width": 1280,
+      "expected": 9,
+      "actual": 9,
+      "types": [
+        "xp",
+        "totalWins",
+        "totalWins",
+        "totalWins",
+        "bestStreak",
+        "multiplayerWins",
+        "multiplayerWins",
+        "multiplayerWins",
+        "xp"
+      ]
+    }
+  ]
+}

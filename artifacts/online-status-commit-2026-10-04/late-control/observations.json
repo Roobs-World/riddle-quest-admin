@@ -1,0 +1,38 @@
+[
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "mounted consumer follows current browser connectivity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "fixture connectivity is authoritative",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "bridge",
+    "scenario": "reconnect",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

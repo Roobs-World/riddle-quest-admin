@@ -2,6 +2,7 @@ import {afterAll, beforeAll, describe, expect, it} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
+import {expectWebStandards} from "../../play/__tests__/webStandards.jest-playwright.support";
 import {createEmptyYouTubeSave} from "../../playable/save";
 import {
   installYouTubeSdkHarness,
@@ -41,14 +42,12 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
   let artifactContentVersion: string;
 
   beforeAll(async () => {
-    /** Provides package root behavior. */
-    const packageRoot = path.resolve(__dirname, "../../..");
+    artifact = await startYouTubeArtifactServer();
     /** Provides manifest behavior. */
     const manifest = JSON.parse(
-      await readFile(path.join(packageRoot, "dist-youtube/youtube-content-manifest.json"), "utf8"),
+      await readFile(path.join(artifact.directory, "youtube-content-manifest.json"), "utf8"),
     ) as YouTubeArtifactManifest;
     artifactContentVersion = manifest.contentVersion;
-    artifact = await startYouTubeArtifactServer();
     browser = await chromium.launch({headless: true});
   }, 120_000);
 
@@ -280,8 +279,10 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     });
     await page.goto(artifact.origin);
     await page.getByRole("heading", {name: "Choose a puzzle"}).waitFor();
+    await expectWebStandards(page, "youtube home");
     await page.getByRole("button", {name: /Classic/}).click();
     await page.getByRole("heading", {name: /Which ancient city/}).waitFor();
+    await expectWebStandards(page, "youtube game");
     /** Provides input behavior. */
     const input = page.getByRole("textbox", {name: "Type your answer"});
     await input.press("r");

@@ -62,13 +62,13 @@
         {
           "message": {
             "type": "game:submitGuess",
-            "requestId": "guess-b1ec096f-5b87-4211-8b7c-226e907fca99",
+            "requestId": "guess-c8188c73-cad2-4087-bc91-91256f1ad140",
             "payload": {
               "riddleId": "classic-fake-1",
               "gameMode": "classic",
               "sessionToken": "00000000-0000-4000-8000-000000000001",
               "guess": "PIANO",
-              "requestId": "guess-b1ec096f-5b87-4211-8b7c-226e907fca99"
+              "requestId": "guess-c8188c73-cad2-4087-bc91-91256f1ad140"
             }
           },
           "attempts": 6,
@@ -98,85 +98,85 @@
     "outbound": [
       {
         "type": "game:resize",
-        "requestId": "resize-b785c1e4-7977-4847-929c-78fc04b7edb3",
+        "requestId": "resize-d1eec9ad-dfac-46bc-bb73-3cc0d62ca03f",
         "payload": {
           "width": 390,
           "height": 844
         },
-        "sentAt": 1791056663729
+        "sentAt": 1791159327859
       },
       {
         "type": "game:ready",
-        "requestId": "ready-a02cc6f8-d05b-4b2e-9087-89da350c7453",
+        "requestId": "ready-4a64d7fb-241c-4414-9f17-b7b616032505",
         "payload": {
           "protocolVersion": 1,
           "surface": "html5"
         },
-        "sentAt": 1791056663732
+        "sentAt": 1791159327861
       },
       {
         "type": "game:submitGuess",
-        "requestId": "guess-57a23a11-0b63-41ab-99b8-0a2fdc37ccac",
+        "requestId": "guess-1773f933-dc50-4fac-98e8-5f031efce60a",
         "payload": {
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
           "guess": "QQQQQ",
-          "requestId": "guess-57a23a11-0b63-41ab-99b8-0a2fdc37ccac"
+          "requestId": "guess-1773f933-dc50-4fac-98e8-5f031efce60a"
         },
-        "sentAt": 1791056663825
+        "sentAt": 1791159327969
       },
       {
         "type": "game:submitGuess",
-        "requestId": "guess-931c14fc-8572-420b-b922-f1ddd7d39e79",
+        "requestId": "guess-80054c1b-57f3-43f7-ac47-93290ea0fcf8",
         "payload": {
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
           "guess": "RRRRR",
-          "requestId": "guess-931c14fc-8572-420b-b922-f1ddd7d39e79"
+          "requestId": "guess-80054c1b-57f3-43f7-ac47-93290ea0fcf8"
         },
-        "sentAt": 1791056663908
+        "sentAt": 1791159328051
       },
       {
         "type": "game:submitGuess",
-        "requestId": "guess-85e8270f-53ff-4c6b-99d3-29d6ffc8a4da",
+        "requestId": "guess-b727ebed-21a3-4512-ba61-935c40303551",
         "payload": {
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
           "guess": "SSSSS",
-          "requestId": "guess-85e8270f-53ff-4c6b-99d3-29d6ffc8a4da"
+          "requestId": "guess-b727ebed-21a3-4512-ba61-935c40303551"
         },
-        "sentAt": 1791056663992
+        "sentAt": 1791159328135
       },
       {
         "type": "game:submitGuess",
-        "requestId": "guess-87041b77-9865-49ea-8d9c-55224aeb6724",
+        "requestId": "guess-88686674-1039-418e-99f6-d9d97449f41d",
         "payload": {
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
           "guess": "TTTTT",
-          "requestId": "guess-87041b77-9865-49ea-8d9c-55224aeb6724"
+          "requestId": "guess-88686674-1039-418e-99f6-d9d97449f41d"
         },
-        "sentAt": 1791056664075
+        "sentAt": 1791159328218
       },
       {
         "type": "game:submitGuess",
-        "requestId": "guess-2d11d978-4985-488c-82e7-d96fca028572",
+        "requestId": "guess-9fbc2037-fa24-4891-82c8-dc8a3f6e9978",
         "payload": {
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
           "guess": "UUUUU",
-          "requestId": "guess-2d11d978-4985-488c-82e7-d96fca028572"
+          "requestId": "guess-9fbc2037-fa24-4891-82c8-dc8a3f6e9978"
         },
-        "sentAt": 1791056664158
+        "sentAt": 1791159328301
       },
       {
         "type": "game:spendCoins",
-        "requestId": "continue-5d181731-d2a8-4bed-8304-1aae274e1b88",
+        "requestId": "continue-1494df7e-6082-4c35-9982-655ef59cbf42",
         "payload": {
           "reason": "continue",
           "gameMode": "classic",
@@ -184,19 +184,19 @@
           "sessionToken": "00000000-0000-4000-8000-000000000001",
           "amount": 50
         },
-        "sentAt": 1791056664225
+        "sentAt": 1791159328371
       },
       {
         "type": "game:submitGuess",
-        "requestId": "guess-b1ec096f-5b87-4211-8b7c-226e907fca99",
+        "requestId": "guess-c8188c73-cad2-4087-bc91-91256f1ad140",
         "payload": {
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
           "guess": "PIANO",
-          "requestId": "guess-b1ec096f-5b87-4211-8b7c-226e907fca99"
+          "requestId": "guess-c8188c73-cad2-4087-bc91-91256f1ad140"
         },
-        "sentAt": 1791056664292
+        "sentAt": 1791159328439
       },
       {
         "type": "game:recordAchievements",
@@ -205,13 +205,13 @@
             "wins_5"
           ]
         },
-        "sentAt": 1791056664297
+        "sentAt": 1791159328445
       }
     ],
     "inbound": [
       {
         "type": "host:authState",
-        "requestId": "auth-a8fbf4ad-a54a-4afb-8a08-e8dd31d1e2da",
+        "requestId": "auth-1921eb04-8032-46fd-bb28-ccc65e29e877",
         "payload": {
           "user": null,
           "profile": {
@@ -229,11 +229,11 @@
             "classicIndex": 1
           }
         },
-        "sentAt": 1791056663710
+        "sentAt": 1791159327836
       },
       {
         "type": "host:authState",
-        "requestId": "auth-d7149ef3-1114-46c7-b013-15d5dd787897",
+        "requestId": "auth-6d91284a-cc6c-4f77-8439-fdcb0130f27d",
         "payload": {
           "user": null,
           "profile": {
@@ -251,11 +251,11 @@
             "classicIndex": 1
           }
         },
-        "sentAt": 1791056663711
+        "sentAt": 1791159327837
       },
       {
         "type": "host:authState",
-        "requestId": "auth-dbb95ce8-8a88-4d05-a6c1-2010af69a9c5",
+        "requestId": "auth-79567fc1-0302-45ce-b3b7-3f18acc8da61",
         "payload": {
           "user": {
             "uid": "jest-guest",
@@ -277,14 +277,14 @@
             "classicIndex": 1
           }
         },
-        "sentAt": 1791056663725
+        "sentAt": 1791159327853
       },
       {
         "type": "host:init",
-        "requestId": "init-e28f00d6-5a08-4135-89ef-89df10d07c8d",
+        "requestId": "init-1ed52b73-c695-4ead-8a45-fad9e914bf75",
         "payload": {
           "protocolVersion": 1,
-          "sessionId": "session-d0e6787c-946d-4789-9755-112fea7d5071",
+          "sessionId": "session-4f12c0c7-03fa-4834-bf7a-a139a61ec4ab",
           "locale": "en",
           "user": {
             "uid": "jest-guest",
@@ -308,7 +308,7 @@
           "gameMode": "classic",
           "products": []
         },
-        "sentAt": 1791056663738
+        "sentAt": 1791159327868
       },
       {
         "type": "host:riddleLoaded",
@@ -344,7 +344,7 @@
             "classicIndex": 1
           }
         },
-        "sentAt": 1791056663739
+        "sentAt": 1791159327869
       },
       {
         "type": "host:operationResult",
@@ -355,11 +355,11 @@
             "riddleId": "classic-fake-1"
           }
         },
-        "sentAt": 1791056663740
+        "sentAt": 1791159327869
       },
       {
         "type": "host:operationResult",
-        "requestId": "guess-57a23a11-0b63-41ab-99b8-0a2fdc37ccac",
+        "requestId": "guess-1773f933-dc50-4fac-98e8-5f031efce60a",
         "payload": {
           "operation": "guess",
           "ok": true,
@@ -391,11 +391,11 @@
             "gameOver": false
           }
         },
-        "sentAt": 1791056663829
+        "sentAt": 1791159327973
       },
       {
         "type": "host:operationResult",
-        "requestId": "guess-931c14fc-8572-420b-b922-f1ddd7d39e79",
+        "requestId": "guess-80054c1b-57f3-43f7-ac47-93290ea0fcf8",
         "payload": {
           "operation": "guess",
           "ok": true,
@@ -427,11 +427,11 @@
             "gameOver": false
           }
         },
-        "sentAt": 1791056663912
+        "sentAt": 1791159328054
       },
       {
         "type": "host:operationResult",
-        "requestId": "guess-85e8270f-53ff-4c6b-99d3-29d6ffc8a4da",
+        "requestId": "guess-b727ebed-21a3-4512-ba61-935c40303551",
         "payload": {
           "operation": "guess",
           "ok": true,
@@ -463,11 +463,11 @@
             "gameOver": false
           }
         },
-        "sentAt": 1791056663994
+        "sentAt": 1791159328139
       },
       {
         "type": "host:operationResult",
-        "requestId": "guess-87041b77-9865-49ea-8d9c-55224aeb6724",
+        "requestId": "guess-88686674-1039-418e-99f6-d9d97449f41d",
         "payload": {
           "operation": "guess",
           "ok": true,
@@ -499,11 +499,11 @@
             "gameOver": false
           }
         },
-        "sentAt": 1791056664078
+        "sentAt": 1791159328221
       },
       {
         "type": "host:operationResult",
-        "requestId": "guess-2d11d978-4985-488c-82e7-d96fca028572",
+        "requestId": "guess-9fbc2037-fa24-4891-82c8-dc8a3f6e9978",
         "payload": {
           "operation": "guess",
           "ok": true,
@@ -536,11 +536,11 @@
             "canContinue": true
           }
         },
-        "sentAt": 1791056664165
+        "sentAt": 1791159328308
       },
       {
         "type": "host:authState",
-        "requestId": "auth-959998bb-2c2e-47a9-a0da-ebfb09dca8d2",
+        "requestId": "auth-de5a3fed-a3bf-4ba5-98e1-c53fa78ea713",
         "payload": {
           "user": {
             "uid": "jest-guest",
@@ -562,11 +562,11 @@
             "classicIndex": 1
           }
         },
-        "sentAt": 1791056664227
+        "sentAt": 1791159328374
       },
       {
         "type": "host:operationResult",
-        "requestId": "continue-5d181731-d2a8-4bed-8304-1aae274e1b88",
+        "requestId": "continue-1494df7e-6082-4c35-9982-655ef59cbf42",
         "payload": {
           "operation": "spendCoins",
           "ok": true,
@@ -574,7 +574,7 @@
             "newCoins": 250
           }
         },
-        "sentAt": 1791056664228
+        "sentAt": 1791159328375
       }
     ],
     "errors": []

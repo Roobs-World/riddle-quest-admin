@@ -1,0 +1,17 @@
+{
+  "firefoxTabsClosed": [
+    1,
+    2
+  ],
+  "firefoxServersTerminalExitCodes": [
+    0,
+    0
+  ],
+  "firefoxCachesAbsent": [
+    "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/avatar-owner-AWfqmV",
+    "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/avatar-owner-9R2Gh3"
+  ],
+  "externalBuildDirectoryRemoved": "/tmp/riddle-avatar-owner-builds-0nuqz306",
+  "preservedBuildFiles": 1300,
+  "preservedManifestUnchanged": true
+}

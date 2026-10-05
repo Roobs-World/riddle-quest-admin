@@ -1,0 +1,11 @@
+$ node scripts/verify-native-editor-callbacks-browser.mjs && NATIVE_CALLBACK_REACT_MODE=production node scripts/verify-native-editor-callbacks-browser.mjs
+{
+  "mode": "development",
+  "checks": 450,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 450,
+  "failures": []
+}

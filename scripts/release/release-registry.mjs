@@ -7,7 +7,7 @@ const providerRuntimePackages = {jest: firebaseRuntimePackages, facebook: fireba
 /** Canonical build facts consumed by Vite, dependency enforcement and release evidence. */
 export const webBuildFacts = Object.freeze(Object.fromEntries(
   ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"].map(target => [target,
-    Object.freeze({outputDirectory: `dist-${target}`, runtimePackages: Object.freeze([...sharedRuntimePackages, ...(providerRuntimePackages[target] ?? [])])})]),
+    Object.freeze({outputDirectory: `../../builds/${target}`, runtimePackages: Object.freeze([...sharedRuntimePackages, ...(providerRuntimePackages[target] ?? [])])})]),
 ));
 // Canonical release facts consumed by commands, CI, packaging and dashboard evidence.
 

@@ -76,7 +76,7 @@ export function RaceHubTabs({
         ))}
       </div>
       {onChooseContext || onMatchPlayer ? (
-        <div className="race-hub-social-actions" aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}>
+        <div className="race-hub-social-actions" role="group" aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}>
           {onMatchPlayer ? (
             <button
               type="button"

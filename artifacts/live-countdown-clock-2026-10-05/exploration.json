@@ -1,0 +1,19 @@
+{
+  "unusedRecordedHook": {
+    "source": "packages/portal/src/play/race/hooks/useRaceSession.ts",
+    "consumerSearch": "rg -n useRaceSession packages/portal/src returned only its definition",
+    "attemptedFixture": "discarded-unused-hook-harness.mjs",
+    "error": "probe.state was null because RaceTo10Game does not instantiate RaceSession",
+    "productionHookChanged": false
+  },
+  "excludedProbeCauses": [
+    "timer marker did not match original inline callback",
+    "native input value clears after composing; visible answer tiles are the correct control",
+    "fractional mock authority timestamps intermittently rejected by integer schemas"
+  ],
+  "firefoxObscuredTile": {
+    "uid": "e1728",
+    "cause": "fixture toolbar overlapped the native tile",
+    "recovery": "fill_by_uid on inspected Virtual keyboard input e1754; visible tiles confirmed t,e,empty,empty"
+  }
+}

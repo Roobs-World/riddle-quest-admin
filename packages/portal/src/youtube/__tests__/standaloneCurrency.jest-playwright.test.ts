@@ -1,6 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
 import {startYouTubeArtifactServer} from "./youtubeBrowser.jest-playwright.support";
+import {expectWebStandards} from "../../play/__tests__/webStandards.jest-playwright.support";
 
 /** Runs against the isolated candidate artifacts when browser verification is enabled. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
@@ -13,7 +14,7 @@ describeBrowser("Candidate purchase currency boundaries", () => {
     const browser = await chromium.launch({headless: true});
     try {
       /** Fresh browser page for this target. */
-      const page = await browser.newPage({locale: "en-GB", viewport: {width: 390, height: 844}});
+      const page = await (await browser.newContext({locale: "en-GB", viewport: {width: 390, height: 844}})).newPage();
       /** Unexpected outbound requests from the self-contained artifact. */
       const externalRequests: string[] = [];
       /** Uncaught errors observed during page startup. */
@@ -24,10 +25,12 @@ describeBrowser("Candidate purchase currency boundaries", () => {
       page.on("pageerror", (error) => errors.push(error.message));
       await page.goto(artifact.origin);
       await page.getByRole("heading", {name: "Choose a puzzle"}).waitFor();
+      await expectWebStandards(page, `${target} home`);
       expect(await page.getByRole("button", {name: /shop|buy|purchase|subscribe/i}).count()).toBe(0);
       expect(await page.locator("body").innerText()).not.toMatch(/USD|GBP|Gold|\$|£|€/);
       await page.getByRole("button", {name: /Classic/}).click();
       await page.getByRole("heading", {name: /Which ancient city/}).waitFor();
+      await expectWebStandards(page, `${target} game`);
       for (const letter of "XXXX") {
         await page.locator(".yt-keyboard button", {hasText: new RegExp(`^${letter}$`)}).click();
       }
@@ -48,6 +51,7 @@ describeBrowser("Candidate purchase currency boundaries", () => {
       }
       await page.getByRole("button", {name: "Submit", exact: true}).click();
       await page.getByRole("heading", {name: "Solved!"}).waitFor();
+      await expectWebStandards(page, `${target} solved`);
       console.info(`${target}: local feedback ${latency.toFixed(1)}ms; wrong and correct answers verified`);
       expect(externalRequests).toEqual([]);
       expect(errors).toEqual([]);

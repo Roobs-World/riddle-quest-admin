@@ -1,0 +1,816 @@
+{
+  "mode": "development",
+  "checks": 474,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "outer Profile lifetime matches the requested native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "outer Close runs exactly once only when requested",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "confirmation lifetime follows only the current native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "late-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "no-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "a retired dismissal never steals focus from a reopened confirmation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "32 game updates retain the same native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "escape",
+      "scenario": "outer-close",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "outer Profile lifetime matches the requested native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "outer Close runs exactly once only when requested",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "confirmation lifetime follows only the current native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "late-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "no-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "a retired dismissal never steals focus from a reopened confirmation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "32 game updates retain the same native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "method": "cancel",
+      "scenario": "outer-close",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "outer Profile lifetime matches the requested native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "outer Close runs exactly once only when requested",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "confirmation lifetime follows only the current native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "late-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "no-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "a retired dismissal never steals focus from a reopened confirmation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "32 game updates retain the same native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "escape",
+      "scenario": "outer-close",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "outer Profile lifetime matches the requested native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "outer Close runs exactly once only when requested",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "confirmation lifetime follows only the current native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "late-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "no-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "a retired dismissal never steals focus from a reopened confirmation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "32 game updates retain the same native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "outer-close",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-tab",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "outer Profile lifetime matches the requested native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "outer Close runs exactly once only when requested",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "early-enter",
+      "name": "confirmation lifetime follows only the current native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "late-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "no-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "a retired dismissal never steals focus from a reopened confirmation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "reopen",
+      "name": "32 game updates retain the same native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "escape",
+      "scenario": "outer-close",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-tab",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "native Tab from dismissed Delete wraps to the outer Close control",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "dismissal restoration preserves later native Tab focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "outer Profile lifetime matches the requested native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "outer Close runs exactly once only when requested",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "early-enter",
+      "name": "confirmation lifetime follows only the current native action",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "late-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "no-tab",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "a retired dismissal never steals focus from a reopened confirmation",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "reopen",
+      "name": "32 game updates retain the same native focus",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "method": "cancel",
+      "scenario": "outer-close",
+      "name": "dismissal commits focus return before a deferred restoration frame",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}

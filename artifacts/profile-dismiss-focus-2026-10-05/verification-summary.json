@@ -1,0 +1,95 @@
+{
+  "browser": {
+    "development": {
+      "assertions": 474,
+      "failures": 0
+    },
+    "production": {
+      "assertions": 474,
+      "failures": 0
+    },
+    "profile-keys-development": {
+      "assertions": 378,
+      "failures": 0
+    },
+    "profile-keys-production": {
+      "assertions": 378,
+      "failures": 0
+    },
+    "modal-editor-development": {
+      "assertions": 192,
+      "failures": 0
+    },
+    "modal-editor-production": {
+      "assertions": 192,
+      "failures": 0
+    },
+    "modal-boundary-development": {
+      "assertions": 636,
+      "failures": 0
+    },
+    "modal-boundary-production": {
+      "assertions": 636,
+      "failures": 0
+    },
+    "modal-admission-development": {
+      "assertions": 372,
+      "failures": 0
+    },
+    "modal-admission-production": {
+      "assertions": 372,
+      "failures": 0
+    }
+  },
+  "browserAssertions": 4104,
+  "original": {
+    "assertions": 474,
+    "failures": 90
+  },
+  "unit": {
+    "tests": 2756,
+    "suites": 297,
+    "skippedTests": 93,
+    "skippedSuites": 15
+  },
+  "builtBrowser": {
+    "tests": 38,
+    "suites": 8
+  },
+  "types": "passed",
+  "tsdoc": {
+    "declarations": 25185,
+    "files": 1139
+  },
+  "artifacts": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube-fixture",
+    "netflix",
+    "yahoo"
+  ],
+  "sourceInputs": 766,
+  "sourceUnchanged": true,
+  "frozenSnapshots": [
+    "profile.after.txt",
+    "package.after.txt",
+    "verifier.final.mjs",
+    "verify-profile-confirmation-keyboard-browser.mjs",
+    "verify-modal-editor-focus-browser.mjs",
+    "verify-modal-keyboard-boundary-browser.mjs",
+    "verify-modal-keyboard-admission-browser.mjs"
+  ],
+  "firefoxNative": "passed",
+  "goal": "active",
+  "cleanup": {
+    "ownedVerifierProcesses": 0,
+    "fixtureDirectoriesRemoved": [
+      "packages/portal/node_modules/.cache/profile-dismiss-focus-2a7ogA",
+      "packages/portal/node_modules/.cache/profile-dismiss-focus-BtMBjW"
+    ],
+    "allTerminalSessionsCollected": true,
+    "ownedTabsClosed": true,
+    "blankTabPreserved": true
+  }
+}

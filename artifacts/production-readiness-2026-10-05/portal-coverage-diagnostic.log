@@ -1,0 +1,16 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Jest: Coverage for statements (93.61%) does not meet "src/jest/useJestProductCatalog.ts" threshold (100%)
+Jest: Coverage for branches (92%) does not meet "src/jest/useJestProductCatalog.ts" threshold (100%)
+Jest: Coverage for lines (95%) does not meet "src/jest/useJestProductCatalog.ts" threshold (100%)
+Jest: Coverage for functions (90%) does not meet "src/jest/useJestProductCatalog.ts" threshold (100%)
+Jest: Coverage for statements (98.48%) does not meet "src/play/race/hooks/useRaceDialogFocus.ts" threshold (100%)
+Jest: Coverage for branches (96.42%) does not meet "src/play/race/hooks/useRaceDialogFocus.ts" threshold (100%)
+
+Test Suites: 15 skipped, 297 passed, 297 of 312 total
+Tests:       93 skipped, 2756 passed, 2849 total
+Snapshots:   0 total
+Time:        14.619 s, estimated 201 s
+Ran all test suites.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand --coverage '--coverageReporters=json'

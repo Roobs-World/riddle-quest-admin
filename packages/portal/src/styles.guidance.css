@@ -253,7 +253,7 @@
   color: #7b467d;
   font-weight: 900;
 }
-.tooltip-card h3,
+.tooltip-card h2,
 .tooltip-card p {
   margin: 0;
 }
@@ -266,7 +266,7 @@
   padding: 20px;
   background: rgba(4, 8, 19, 0.86);
 }
-.offline-backdrop section {
+.offline-backdrop .offline-card {
   position: relative;
   z-index: 1;
   width: min(430px, 100%);
@@ -746,6 +746,13 @@
     color: #fff;
     border-color: var(--feedback-absent);
   }
+}
+/* Preserve physical touch targets when a short viewport scales the gameplay surface. */
+.game-content > .keyboard .key {
+  min-height: calc(33px / var(--solo-viewport-scale, 1));
+}
+.race-gameplay > .keyboard .key {
+  min-height: calc(33px / var(--race-gameplay-scale, 1));
 }
 /* The in-game sound control lives in the header, leaving the riddle full-width. */
 .game-content .riddle-card {

@@ -1,0 +1,44 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/play/race/__tests__/raceLayoutHooks.test.ts
+  ● useRaceGameplayFit › observes a present scoreboard and refits when its wrapped height moves the viewport
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "0.4474"
+    Received: "0.4473"
+
+      486 |     runLatestFrame();
+      487 |     expect(harness.viewport.style.height).toBe("340px");
+    > 488 |     expect(harness.viewport.dataset.viewportScale).toBe("0.4474");
+          |                                                    ^
+      489 |   });
+      490 |
+      491 |   it("does nothing while inactive or while required elements are unavailable", () => {
+
+      at Object.<anonymous> (src/play/race/__tests__/raceLayoutHooks.test.ts:488:52)
+
+  ● useRaceGameplayFit › uses a one-pixel floor when computed space is invalid
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "scale(0.01)"
+    Received: "scale(0.009765625)"
+
+      524 |     runLatestFrame();
+      525 |
+    > 526 |     expect(harness.gameplay.style.transform).toBe("scale(0.01)");
+          |                                              ^
+      527 |     expect(harness.viewport.style.height).toBe("1px");
+      528 |   });
+      529 | });
+
+      at Object.<anonymous> (src/play/race/__tests__/raceLayoutHooks.test.ts:526:46)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 17 passed, 19 total
+Snapshots:   0 total
+Time:        0.193 s, estimated 1 s
+Ran all test suites matching src/play/race/__tests__/raceLayoutHooks.test.ts.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/play/race/__tests__/raceLayoutHooks.test.ts

@@ -31,15 +31,21 @@
   },
   {
     "width": 1280,
-    "name": "restoration: successful restoration invokes driver once",
-    "actual": 1,
-    "expected": 1
+    "name": "restoration: paused restoration defers driver rebuilding",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,
-    "name": "restoration: restoration preserves independent host pause",
+    "name": "restoration: paused restoration schedules no frame",
     "actual": 0,
     "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "restoration: successful restoration invokes driver once",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -169,6 +175,18 @@
   },
   {
     "width": 1280,
+    "name": "restore-failure: paused restoration defers driver rebuilding",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "restore-failure: paused restoration schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
     "name": "restore-failure: driver failure retires every returned resource",
     "actual": 0,
     "expected": 0
@@ -206,14 +224,14 @@
   {
     "width": 1280,
     "name": "restore-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "restore-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -337,6 +355,18 @@
   },
   {
     "width": 1280,
+    "name": "restore-dispose-failure: paused restoration defers driver rebuilding",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "restore-dispose-failure: paused restoration schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
     "name": "restore-dispose-failure: driver failure retires every returned resource",
     "actual": 0,
     "expected": 0
@@ -374,14 +404,14 @@
   {
     "width": 1280,
     "name": "restore-dispose-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "restore-dispose-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -518,14 +548,14 @@
   {
     "width": 1280,
     "name": "loss-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "loss-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -662,14 +692,14 @@
   {
     "width": 1280,
     "name": "creation-callback-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "creation-callback-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -1015,15 +1045,21 @@
   },
   {
     "width": 390,
-    "name": "restoration: successful restoration invokes driver once",
-    "actual": 1,
-    "expected": 1
+    "name": "restoration: paused restoration defers driver rebuilding",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
-    "name": "restoration: restoration preserves independent host pause",
+    "name": "restoration: paused restoration schedules no frame",
     "actual": 0,
     "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "restoration: successful restoration invokes driver once",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1153,6 +1189,18 @@
   },
   {
     "width": 390,
+    "name": "restore-failure: paused restoration defers driver rebuilding",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "restore-failure: paused restoration schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
     "name": "restore-failure: driver failure retires every returned resource",
     "actual": 0,
     "expected": 0
@@ -1190,14 +1238,14 @@
   {
     "width": 390,
     "name": "restore-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "restore-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1321,6 +1369,18 @@
   },
   {
     "width": 390,
+    "name": "restore-dispose-failure: paused restoration defers driver rebuilding",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "restore-dispose-failure: paused restoration schedules no frame",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
     "name": "restore-dispose-failure: driver failure retires every returned resource",
     "actual": 0,
     "expected": 0
@@ -1358,14 +1418,14 @@
   {
     "width": 390,
     "name": "restore-dispose-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "restore-dispose-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1502,14 +1562,14 @@
   {
     "width": 390,
     "name": "loss-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "loss-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1646,14 +1706,14 @@
   {
     "width": 390,
     "name": "creation-callback-failure: each returned renderer is disposed once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "creation-callback-failure: each returned renderer releases context once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,

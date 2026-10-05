@@ -1,0 +1,11 @@
+$ node scripts/verify-resize-setup-retirement-browser.mjs && RESIZE_SETUP_REACT_MODE=production node scripts/verify-resize-setup-retirement-browser.mjs
+{
+  "mode": "development",
+  "checks": 120,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 120,
+  "failures": []
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "an earlier native key claim retains its current focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

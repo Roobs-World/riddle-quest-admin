@@ -134,14 +134,14 @@
   {
     "width": 1280,
     "name": "pixel_ratio: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "pixel_ratio: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -164,14 +164,14 @@
   {
     "width": 1280,
     "name": "pixel_ratio: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "pixel_ratio: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -236,14 +236,14 @@
   {
     "width": 1280,
     "name": "anisotropy: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "anisotropy: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -266,14 +266,14 @@
   {
     "width": 1280,
     "name": "anisotropy: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "anisotropy: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -338,14 +338,14 @@
   {
     "width": 1280,
     "name": "MeshBasicMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "MeshBasicMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -368,14 +368,14 @@
   {
     "width": 1280,
     "name": "MeshBasicMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "MeshBasicMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -440,14 +440,14 @@
   {
     "width": 1280,
     "name": "ShaderMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "ShaderMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -470,14 +470,14 @@
   {
     "width": 1280,
     "name": "ShaderMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "ShaderMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -511,103 +511,103 @@
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: temporary capability contexts are released",
+    "name": "SphereGeometry: temporary capability contexts are released",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: optional failure retains the game frame",
+    "name": "SphereGeometry: optional failure retains the game frame",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: same authoritative session survives",
+    "name": "SphereGeometry: same authoritative session survives",
     "actual": "00000000-0000-4000-8000-000000000001",
     "expected": "00000000-0000-4000-8000-000000000001"
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: PIAN draft survives",
+    "name": "SphereGeometry: PIAN draft survives",
     "actual": "PIAN",
     "expected": "PIAN"
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no returned resource remains live",
+    "name": "SphereGeometry: no returned resource remains live",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: no canvas remains attached",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: no animation frames remain",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: shared graphics are not disposed twice",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: retained callbacks do not dispose twice",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "name": "PointsMaterial: player can finish the answer",
+    "name": "SphereGeometry: renderer cleanup happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: player receives one completion",
+    "name": "SphereGeometry: context release happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no browser callback escapes",
+    "name": "SphereGeometry: no canvas remains attached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: no animation frames remain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: shared graphics are not disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: setup diagnostic remains bounded",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: retained callbacks do not repeat diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: retained callbacks do not dispose twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: player can finish the answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: player receives one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "name": "SphereGeometry: no browser callback escapes",
     "actual": [],
     "expected": []
   },
   {
     "width": 1280,
-    "name": "PointsMaterial: no unhandled promise remains",
+    "name": "SphereGeometry: no unhandled promise remains",
     "actual": [],
     "expected": []
   },
@@ -644,14 +644,14 @@
   {
     "width": 1280,
     "name": "SpriteMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "SpriteMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -674,14 +674,14 @@
   {
     "width": 1280,
     "name": "SpriteMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "SpriteMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -746,14 +746,14 @@
   {
     "width": 1280,
     "name": "RingGeometry: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "RingGeometry: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -776,14 +776,14 @@
   {
     "width": 1280,
     "name": "RingGeometry: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "RingGeometry: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -848,14 +848,14 @@
   {
     "width": 1280,
     "name": "texture_loader: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "texture_loader: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -878,14 +878,14 @@
   {
     "width": 1280,
     "name": "texture_loader: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "texture_loader: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -950,14 +950,14 @@
   {
     "width": 1280,
     "name": "texture_error_sync: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "texture_error_sync: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -980,14 +980,14 @@
   {
     "width": 1280,
     "name": "texture_error_sync: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "texture_error_sync: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -1058,14 +1058,14 @@
   {
     "width": 1280,
     "name": "texture_error: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "texture_error: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -1184,14 +1184,14 @@
   {
     "width": 1280,
     "name": "healthy: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
     "name": "healthy: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -1388,14 +1388,14 @@
   {
     "width": 390,
     "name": "pixel_ratio: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "pixel_ratio: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1418,14 +1418,14 @@
   {
     "width": 390,
     "name": "pixel_ratio: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "pixel_ratio: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1490,14 +1490,14 @@
   {
     "width": 390,
     "name": "anisotropy: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "anisotropy: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1520,14 +1520,14 @@
   {
     "width": 390,
     "name": "anisotropy: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "anisotropy: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1592,14 +1592,14 @@
   {
     "width": 390,
     "name": "MeshBasicMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "MeshBasicMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1622,14 +1622,14 @@
   {
     "width": 390,
     "name": "MeshBasicMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "MeshBasicMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1694,14 +1694,14 @@
   {
     "width": 390,
     "name": "ShaderMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "ShaderMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1724,14 +1724,14 @@
   {
     "width": 390,
     "name": "ShaderMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "ShaderMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1765,103 +1765,103 @@
   },
   {
     "width": 390,
-    "name": "PointsMaterial: temporary capability contexts are released",
+    "name": "SphereGeometry: temporary capability contexts are released",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: optional failure retains the game frame",
+    "name": "SphereGeometry: optional failure retains the game frame",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: same authoritative session survives",
+    "name": "SphereGeometry: same authoritative session survives",
     "actual": "00000000-0000-4000-8000-000000000001",
     "expected": "00000000-0000-4000-8000-000000000001"
   },
   {
     "width": 390,
-    "name": "PointsMaterial: PIAN draft survives",
+    "name": "SphereGeometry: PIAN draft survives",
     "actual": "PIAN",
     "expected": "PIAN"
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no returned resource remains live",
+    "name": "SphereGeometry: no returned resource remains live",
     "actual": 0,
     "expected": 0
   },
   {
     "width": 390,
-    "name": "PointsMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: no canvas remains attached",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: no animation frames remain",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: shared graphics are not disposed twice",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: retained callbacks do not dispose twice",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "name": "PointsMaterial: player can finish the answer",
+    "name": "SphereGeometry: renderer cleanup happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: player receives one completion",
+    "name": "SphereGeometry: context release happens exactly once",
     "actual": 1,
     "expected": 1
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no browser callback escapes",
+    "name": "SphereGeometry: no canvas remains attached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: no animation frames remain",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: shared graphics are not disposed twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: setup diagnostic remains bounded",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: retained callbacks do not repeat diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: retained callbacks do not dispose twice",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: player can finish the answer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: player receives one completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "name": "SphereGeometry: no browser callback escapes",
     "actual": [],
     "expected": []
   },
   {
     "width": 390,
-    "name": "PointsMaterial: no unhandled promise remains",
+    "name": "SphereGeometry: no unhandled promise remains",
     "actual": [],
     "expected": []
   },
@@ -1898,14 +1898,14 @@
   {
     "width": 390,
     "name": "SpriteMaterial: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "SpriteMaterial: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1928,14 +1928,14 @@
   {
     "width": 390,
     "name": "SpriteMaterial: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "SpriteMaterial: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2000,14 +2000,14 @@
   {
     "width": 390,
     "name": "RingGeometry: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "RingGeometry: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2030,14 +2030,14 @@
   {
     "width": 390,
     "name": "RingGeometry: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "RingGeometry: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2102,14 +2102,14 @@
   {
     "width": 390,
     "name": "texture_loader: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "texture_loader: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2132,14 +2132,14 @@
   {
     "width": 390,
     "name": "texture_loader: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "texture_loader: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2204,14 +2204,14 @@
   {
     "width": 390,
     "name": "texture_error_sync: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "texture_error_sync: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2234,14 +2234,14 @@
   {
     "width": 390,
     "name": "texture_error_sync: setup diagnostic remains bounded",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "texture_error_sync: retained callbacks do not repeat diagnostic",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2312,14 +2312,14 @@
   {
     "width": 390,
     "name": "texture_error: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "texture_error: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2438,14 +2438,14 @@
   {
     "width": 390,
     "name": "healthy: renderer cleanup happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
     "name": "healthy: context release happens exactly once",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,

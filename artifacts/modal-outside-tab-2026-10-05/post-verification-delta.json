@@ -1,0 +1,18 @@
+{
+  "clientInputs": [
+    "packages/portal/package.json",
+    "packages/portal/src/youtube/__tests__/youtubeBrowser.jest-playwright.support.ts",
+    "packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+    "packages/portal/src/reddit/__tests__/redditBrowser.jest-playwright.test.ts",
+    "packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts",
+    "packages/portal/src/youtube/__tests__/youtubeBrowser.jest-playwright.test.ts",
+    "packages/portal/src/play/__tests__/mobileSoak.jest-playwright.test.ts"
+  ],
+  "manifestChange": {
+    "validate:w3c": {
+      "before": "node scripts/validate-w3c.mjs dist-jest/index.html",
+      "after": "node scripts/validate-w3c.mjs"
+    }
+  },
+  "productionInputsUnchanged": true
+}

@@ -1,0 +1,76 @@
+{
+  "Original": {
+    "active": {
+      "tag": "BUTTON",
+      "text": "Outside after",
+      "after": true
+    },
+    "inside": false,
+    "selected": [
+      {
+        "text": "Play",
+        "selected": "false",
+        "tabIndex": -1
+      },
+      {
+        "text": "Activity",
+        "selected": "true",
+        "tabIndex": 0
+      },
+      {
+        "text": "Tournaments",
+        "selected": "false",
+        "tabIndex": -1
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalForward": {
+    "activeClose": true,
+    "inside": true,
+    "selected": [
+      {
+        "text": "Play",
+        "selected": "false",
+        "tabIndex": -1
+      },
+      {
+        "text": "Activity",
+        "selected": "true",
+        "tabIndex": 0
+      },
+      {
+        "text": "Tournaments",
+        "selected": "false",
+        "tabIndex": -1
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalReverse": {
+    "activeSelected": true,
+    "text": "Activity",
+    "tabIndex": 0,
+    "inside": true,
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalPlayForward": {
+    "activeClose": true,
+    "selected": "Play",
+    "errors": [],
+    "unhandled": []
+  },
+  "FinalPlayReverse": {
+    "activeSelected": true,
+    "text": "Play",
+    "tabIndex": 0,
+    "closes": 0,
+    "commands": [],
+    "records": [],
+    "errors": [],
+    "unhandled": []
+  }
+}

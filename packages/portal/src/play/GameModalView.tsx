@@ -18,10 +18,14 @@ import {
   getActiveFanfareStep,
   isCoinCollectionPending,
 } from "./modalPages/fanfare/fanfareSequence";
-/** Enabled controls belong to the inner confirmation or the active modal shell. */
-const getModalFocusable = (modal: HTMLElement | null): HTMLElement[] =>
+/** A nested confirmation owns focus ahead of its containing modal. */
+const getModalFocusScope = (modal: HTMLElement | null): HTMLElement | null =>
+  modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal;
+
+/** Enabled controls belong to the committed confirmation or modal scope. */
+const getModalFocusable = (scope: HTMLElement | null): HTMLElement[] =>
   Array.from(
-    (modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal)?.querySelectorAll<HTMLElement>(
+    scope?.querySelectorAll<HTMLElement>(
       "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
     ) ?? [],
   );
@@ -144,8 +148,10 @@ export function GameModalView({
         }
         return;
       }
-      /** Provides focusable behavior. */
-      const focusable = getModalFocusable(modal);
+      /** The nested confirmation or outer modal owns the current Tab sequence. */
+      const activeDialog = getModalFocusScope(modal);
+      /** Enabled native controls in that committed scope define the loop. */
+      const focusable = getModalFocusable(activeDialog);
       if (focusable.length === 0) {
         event.preventDefault();
         return;
@@ -154,7 +160,11 @@ export function GameModalView({
       const first = focusable[0];
       /** Provides last behavior. */
       const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      /** Focus outside the active scope enters at the requested Tab endpoint. */
+      if (!activeDialog?.contains(document.activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
@@ -193,7 +203,7 @@ export function GameModalView({
     const focusFrame = window.requestAnimationFrame(() => {
       if (modal !== modalRef.current || !modal?.isConnected || modal.closest("[inert]") || keyboardRef.current.interactionBlocked || !keyboardRef.current.modal) return;
       /** Autofocus and player-selected controls retain their native focus and caret. */
-      const focusable = getModalFocusable(modal);
+      const focusable = getModalFocusable(getModalFocusScope(modal));
       if (focusable.some((control) => control === document.activeElement)) return;
       /** A removed, disabled or previous-page control cannot reclaim the current scope. */
       const previous = lastFocusedControlRef.current;

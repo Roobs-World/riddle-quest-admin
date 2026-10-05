@@ -1,0 +1,5 @@
+$ node scripts/verify-live-race-inbox-browser.mjs && LIVE_INBOX_REACT_MODE=production node scripts/verify-live-race-inbox-browser.mjs
+PASS 1280px invitation inbox ownership and refresh
+PASS 390px invitation inbox ownership and refresh
+PASS 1280px invitation inbox ownership and refresh
+PASS 390px invitation inbox ownership and refresh

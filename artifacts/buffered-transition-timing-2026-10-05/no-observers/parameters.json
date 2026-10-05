@@ -1,0 +1,6 @@
+{
+  "runs": 20,
+  "cpuRate": 8,
+  "domObserver": false,
+  "longObserver": false
+}

@@ -1,0 +1,140 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "initial translated guidance copy",
+    "actual": {
+      "title": "Achievement unlocked",
+      "body": "Open your profile to view your achievements and track your progress.",
+      "button": "Got it",
+      "id": "achievementEarned"
+    },
+    "expected": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "entry target work is scoped to anchored guidance",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "locale subscription committed before checking content",
+    "actual": "de",
+    "expected": "de"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "live title follows the committed locale",
+    "actual": "Achievement unlocked",
+    "expected": "Steig in der Bestenliste auf"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "live body follows the committed locale",
+    "actual": "Open your profile to view your achievements and track your progress.",
+    "expected": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen."
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "live action follows the committed locale",
+    "actual": "Verstanden",
+    "expected": "Verstanden"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "locale changes preserve the active step",
+    "actual": "achievementEarned",
+    "expected": "leaderboardFifthCorrectAnswer"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "parent updates preserve the translated step",
+    "actual": {
+      "title": "Achievement unlocked",
+      "body": "Open your profile to view your achievements and track your progress.",
+      "button": "Verstanden",
+      "id": "achievementEarned"
+    },
+    "expected": {
+      "title": "Steig in der Bestenliste auf",
+      "body": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
+      "button": "Verstanden",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "viewport signals do work only for an anchored target",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "suspended guidance performs no target work",
+    "actual": 17,
+    "expected": 17
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "resumed guidance follows locale changes while suspended",
+    "actual": {
+      "title": "Achievement unlocked",
+      "body": "Open your profile to view your achievements and track your progress.",
+      "button": "Got it",
+      "id": "achievementEarned"
+    },
+    "expected": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Got it",
+      "id": "leaderboardFifthCorrectAnswer"
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "centered",
+    "locale": "de",
+    "name": "translated card and action fit the viewport",
+    "actual": true,
+    "expected": true
+  }
+]

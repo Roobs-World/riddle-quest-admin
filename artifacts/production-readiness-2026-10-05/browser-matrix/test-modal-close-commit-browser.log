@@ -1,0 +1,11 @@
+$ node scripts/verify-modal-close-commit-browser.mjs && MODAL_CLOSE_REACT_MODE=production node scripts/verify-modal-close-commit-browser.mjs
+{
+  "mode": "development",
+  "checks": 228,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 228,
+  "failures": []
+}

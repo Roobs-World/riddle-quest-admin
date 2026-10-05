@@ -40,6 +40,8 @@ class TestElement {
   public isConnected = true;
   /** Stores disabled. */
   public disabled = false;
+  /** Ordinary fixture controls participate in sequential keyboard navigation. */
+  public tabIndex = 0;
   /** Provides matches behavior. */
   public matches(): boolean {return this.disabled;}
   /** Models a mounted dialog without a covering inert ancestor. */
@@ -213,6 +215,21 @@ describe("useRaceDialogFocus", () => {
     expect(harness.dismissQuitConfirmation).not.toHaveBeenCalled();
     expect(testDocument.removeEventListener).toHaveBeenCalledWith("keydown", keydownHandler);
     expect(harness.previous.focus).toHaveBeenCalledTimes(1);
+  });
+
+  it("retires a captured keyboard callback when its dialog subscription closes", () => {
+    /** Captured native callbacks must not close a subsequent surface after cleanup. */
+    const harness = install();
+    /** Disposes the owning native subscription before delivering a queued event. */
+    const cleanup = mountRaceEffects();
+    /** Represents an event dispatcher that captured the listener before removal. */
+    const captured = keydownHandler;
+    cleanup();
+    /** The old event retains ownership after its originating dialog closes. */
+    const escape = keyboardEvent("Escape");
+    captured?.(escape);
+    expect(harness.requestClose).not.toHaveBeenCalled();
+    expect(escape.preventDefault).not.toHaveBeenCalled();
   });
 
   it("dismisses an open confirmation and focuses it on the next frame", () => {
@@ -468,7 +485,7 @@ describe("useRaceGameplayFit", () => {
     resizeCallback?.();
     runLatestFrame();
     expect(harness.viewport.style.height).toBe("340px");
-    expect(harness.viewport.dataset.viewportScale).toBe("0.4474");
+    expect(Number(harness.viewport.dataset.viewportScale)).toBeCloseTo(340 / 760, 3);
   });
 
   it("does nothing while inactive or while required elements are unavailable", () => {
@@ -506,7 +523,7 @@ describe("useRaceGameplayFit", () => {
     effects[0]();
     runLatestFrame();
 
-    expect(harness.gameplay.style.transform).toBe("scale(0.01)");
+    expect(Number(harness.viewport.dataset.viewportScale)).toBeCloseTo(0.01, 3);
     expect(harness.viewport.style.height).toBe("1px");
   });
 });

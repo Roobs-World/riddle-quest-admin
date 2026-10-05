@@ -1,0 +1,11 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Jest: Coverage for functions (99.21%) does not meet "global" threshold (100%)
+
+Test Suites: 35 passed, 35 total
+Tests:       318 passed, 318 total
+Snapshots:   0 total
+Time:        0.888 s, estimated 2 s
+Ran all test suites.
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/core:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.js --runInBand --coverage '--coverageReporters=json'

@@ -20,7 +20,8 @@ export async function verifyDeferredRestoration({page,width,url,baseline,metric,
   if(scenario==='resume-failure')await page.evaluate(()=>window.probe.failRestore=true);
   if(nativeRenderer){await page.waitForTimeout(200);await page.evaluate(()=>window.nativeRestoreContext());await page.waitForFunction(()=>window.probe.nativeRestorationEvents>0);await settle();}
   else await page.evaluate(()=>{window.contextEvent('webglcontextrestored');if(document.querySelector('.solar-system canvas'))window.contextEvent('webglcontextrestored');});
-  await check('blocked driver rebuilds',await value('driverRestores'),0);await check('blocked frame chain',await frames(),0);await check('blocked diagnostic count',await page.evaluate(()=>window.probe.errors.length),0);await check('blocked live resources',await live(),76);
+  // Current sprite scene owns 74 resources; the retired point-cloud pair is absent.
+  await check('blocked driver rebuilds',await value('driverRestores'),0);await check('blocked frame chain',await frames(),0);await check('blocked diagnostic count',await page.evaluate(()=>window.probe.errors.length),0);await check('blocked live resources',await live(),74);
   await page.evaluate(()=>window.step(3000));await check('blocked draw count',await value('draws'),1);
   if(scenario==='retire-pending'){await page.evaluate(()=>window.setMotion(true));await settle();await page.evaluate(()=>window.pause(false));}
   else if(scenario==='hidden')await page.evaluate(()=>window.visibility(false));

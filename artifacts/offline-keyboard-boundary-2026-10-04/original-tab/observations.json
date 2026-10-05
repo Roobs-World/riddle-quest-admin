@@ -1,0 +1,382 @@
+[
+  {
+    "surface": "game",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "game",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "only a current offline alert owns the boundary key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "surface": "game",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture keyboard subscription follows the committed alert",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "surface": "game",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture focus subscription follows the committed alert",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "surface": "game",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "first committed Tab focuses the offline alert",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "surface": "game",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "game",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "only a current offline alert owns the boundary key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture keyboard subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture focus subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "only a current offline alert owns the boundary key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture keyboard subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture focus subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "modal",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "surface": "modal",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "only a current offline alert owns the boundary key",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "surface": "modal",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture keyboard subscription follows the committed alert",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "surface": "modal",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture focus subscription follows the committed alert",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "surface": "modal",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "first committed Tab focuses the offline alert",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "surface": "modal",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "modal",
+    "scenario": "disconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "only a current offline alert owns the boundary key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture keyboard subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture focus subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "only a current offline alert owns the boundary key",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture keyboard subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture focus subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "modal",
+    "scenario": "reconnect-leased",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

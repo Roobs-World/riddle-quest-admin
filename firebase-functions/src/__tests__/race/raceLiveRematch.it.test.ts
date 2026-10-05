@@ -94,8 +94,9 @@ it.each(["facebook", "reddit"] as const)("reserves %s rematch only for the prior
   expect((await db.collection("liveRaceMatches").get()).size).toBe(2);
   expect((await db.doc(`users/${ids[0]}/liveChallengeRate/current`).get()).data()?.count).toBe(1);
   expect((await db.collection("liveRacePushOutbox").get()).size).toBe(provider === "facebook" ? 1 : 0);
-  expect((await db.doc(`users/${ids[0]}`).get()).data()?.coins).toBe(150);
-  expect((await db.doc(`users/${ids[1]}`).get()).data()?.coins).toBe(100);
+  // The settled source granted debut to both seats and first-win to its winner.
+  expect((await db.doc(`users/${ids[0]}`).get()).data()?.coins).toBe(200);
+  expect((await db.doc(`users/${ids[1]}`).get()).data()?.coins).toBe(125);
 });
 
 it.each(["facebook", "reddit"] as const)("lets the losing %s seat rematch and revalidates safety before acceptance", async provider => {

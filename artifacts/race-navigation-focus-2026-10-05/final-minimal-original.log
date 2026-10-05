@@ -1,0 +1,33 @@
+{
+  "mode": "development",
+  "checks": 8,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "destination": "activity",
+      "scenario": "early-tab",
+      "name": "deferred selection retains the latest native focus intent",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Multiplayer deferred navigation focus
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-navigation-focus-browser.mjs:85:229 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

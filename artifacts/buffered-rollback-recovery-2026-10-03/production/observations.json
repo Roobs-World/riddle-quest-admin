@@ -5,6 +5,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "host-confirmed predecessor is never replayed",
     "actual": 0,
     "expected": 0
@@ -15,6 +16,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "later deliveries wait for predecessor completion",
     "actual": 0,
     "expected": 0
@@ -25,6 +27,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "retained journal starts at the next issued question",
     "actual": "00000000-0000-4000-8000-000000000002",
     "expected": "00000000-0000-4000-8000-000000000002"
@@ -35,6 +38,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "later request identity is preserved",
     "actual": [
       "retained-next-guess"
@@ -49,6 +53,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "unsubmitted later draft is durable",
     "actual": [
       "C",
@@ -71,6 +76,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "draft cursor remains durable",
     "actual": 2,
     "expected": 2
@@ -81,6 +87,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "completed predecessor remains visible",
     "actual": "PIANO",
     "expected": "PIANO"
@@ -91,6 +98,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "Next waits for completion acknowledgement",
     "actual": true,
     "expected": true
@@ -101,6 +109,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "only the retained later request is delivered",
     "actual": [
       "retained-next-guess"
@@ -115,6 +124,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "rejected successor cannot roll back acknowledged balance",
     "actual": 325,
     "expected": 325
@@ -125,7 +135,8 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
-    "name": "unsubmitted same-question draft survives while reconciliation is held",
+    "variant": "same",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
     "actual": "CL",
     "expected": "CL"
   },
@@ -135,6 +146,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "rejected successor guess is removed",
     "actual": "",
     "expected": ""
@@ -145,7 +157,8 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
-    "name": "unsubmitted draft survives the authoritative reconcile reply",
+    "variant": "same",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
     "actual": "CL",
     "expected": "CL"
   },
@@ -155,6 +168,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "reconciled draft retains its selected slot",
     "actual": "true",
     "expected": "true"
@@ -165,6 +179,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "rollback never replays completed predecessor",
     "actual": 0,
     "expected": 0
@@ -175,6 +190,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "rejected answer is not automatically resubmitted",
     "actual": 1,
     "expected": 1
@@ -185,6 +201,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "authority completion advances once",
     "actual": [
       1,
@@ -203,6 +220,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "recovery introduces no paid action",
     "actual": [],
     "expected": []
@@ -213,6 +231,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "restored draft accepts native typing at its selected slot",
     "actual": "CLO",
     "expected": "CLO"
@@ -223,6 +242,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
     "name": "no browser errors",
     "actual": [],
     "expected": []
@@ -233,6 +253,569 @@
     "queued": true,
     "rejected": true,
     "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "replacement session retires the obsolete draft journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "new submission journal belongs to the replacement session",
+    "actual": "00000000-0000-4000-8000-000000000099",
+    "expected": "00000000-0000-4000-8000-000000000099"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "replacement session accepts exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new accepted host history survives retained-draft restoration",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new host hint remains visible and locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLOC",
+    "expected": "CLOC"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
     "name": "no unhandled rejection",
     "actual": [],
     "expected": []
@@ -243,6 +826,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "host-confirmed predecessor is never replayed",
     "actual": 0,
     "expected": 0
@@ -253,6 +837,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "later deliveries wait for predecessor completion",
     "actual": 0,
     "expected": 0
@@ -263,6 +848,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "retained journal starts at the next issued question",
     "actual": "00000000-0000-4000-8000-000000000002",
     "expected": "00000000-0000-4000-8000-000000000002"
@@ -273,6 +859,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "later request identity is preserved",
     "actual": [
       "retained-next-guess"
@@ -287,6 +874,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "unsubmitted later draft is durable",
     "actual": [
       "C",
@@ -309,6 +897,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "draft cursor remains durable",
     "actual": 2,
     "expected": 2
@@ -319,6 +908,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "completed predecessor remains visible",
     "actual": "PIANO",
     "expected": "PIANO"
@@ -329,6 +919,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "Next waits for completion acknowledgement",
     "actual": true,
     "expected": true
@@ -339,6 +930,7 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "only the retained later request is delivered",
     "actual": [
       "retained-next-guess"
@@ -353,6 +945,29 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
     "name": "rejected successor cannot roll back acknowledged balance",
     "actual": 325,
     "expected": 325
@@ -363,7 +978,8 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
-    "name": "unsubmitted same-question draft survives while reconciliation is held",
+    "variant": "same",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
     "actual": "CL",
     "expected": "CL"
   },
@@ -373,8 +989,4138 @@
     "queued": true,
     "rejected": true,
     "beforeNext": true,
+    "variant": "same",
     "name": "rejected successor guess is removed",
     "actual": "",
     "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "replacement session retires the obsolete draft journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "new submission journal belongs to the replacement session",
+    "actual": "00000000-0000-4000-8000-000000000099",
+    "expected": "00000000-0000-4000-8000-000000000099"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "replacement session accepts exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "new accepted host history survives retained-draft restoration",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "new host hint remains visible and locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLOC",
+    "expected": "CLOC"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "replacement session retires the obsolete draft journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "new submission journal belongs to the replacement session",
+    "actual": "00000000-0000-4000-8000-000000000099",
+    "expected": "00000000-0000-4000-8000-000000000099"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "replacement session accepts exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new accepted host history survives retained-draft restoration",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new host hint remains visible and locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLOC",
+    "expected": "CLOC"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "replacement session retires the obsolete draft journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "new submission journal belongs to the replacement session",
+    "actual": "00000000-0000-4000-8000-000000000099",
+    "expected": "00000000-0000-4000-8000-000000000099"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "replacement session accepts exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "new accepted host history survives retained-draft restoration",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "new host hint remains visible and locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLOC",
+    "expected": "CLOC"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "replacement session retires the obsolete draft journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "new submission journal belongs to the replacement session",
+    "actual": "00000000-0000-4000-8000-000000000099",
+    "expected": "00000000-0000-4000-8000-000000000099"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "replacement session accepts exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new accepted host history survives retained-draft restoration",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "new host hint remains visible and locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLOC",
+    "expected": "CLOC"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": false,
+    "variant": "accepted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "same",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "replacement session retires the obsolete draft journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "new submission journal belongs to the replacement session",
+    "actual": "00000000-0000-4000-8000-000000000099",
+    "expected": "00000000-0000-4000-8000-000000000099"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "replacement session accepts exactly one new wrong row",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "O",
+    "expected": "O"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "host-confirmed predecessor is never replayed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "later deliveries wait for predecessor completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "retained journal starts at the next issued question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "later request identity is preserved",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "unsubmitted later draft is durable",
+    "actual": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "C",
+      "L",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "draft cursor remains durable",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "completed predecessor remains visible",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "Next waits for completion acknowledgement",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "only the retained later request is delivered",
+    "actual": [
+      "retained-next-guess"
+    ],
+    "expected": [
+      "retained-next-guess"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejection and reconciliation do not replace the completed victory early",
+    "actual": "PIANO",
+    "expected": "PIANO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "completed victory remains visible until native dismissal",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected successor cannot roll back acknowledged balance",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "unsubmitted draft survives rejection until its question is superseded",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected successor guess is removed",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "draft is retained only when the authoritative reconcile keeps its session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "reconciled draft retains its selected slot",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "new accepted host history survives retained-draft restoration",
+    "actual": "QQQQQ",
+    "expected": "QQQQQ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "new host hint remains visible and locked",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rollback never replays completed predecessor",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "rejected answer is not automatically resubmitted",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "authority completion advances once",
+    "actual": [
+      1,
+      1,
+      2
+    ],
+    "expected": [
+      1,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "recovery introduces no paid action",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "restored draft accepts native typing at its selected slot",
+    "actual": "CLOC",
+    "expected": "CLOC"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "queued": true,
+    "rejected": true,
+    "beforeNext": true,
+    "variant": "accepted",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
   }
 ]

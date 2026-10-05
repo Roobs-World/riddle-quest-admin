@@ -53,7 +53,7 @@ pnpm release:youtube
 
 The expected outputs are:
 
-- `packages/portal/dist-youtube/` — audited expanded artifact.
+- `builds/youtube/` — audited expanded artifact.
 - `build-youtube.test-report.json` — machine-readable exact commands/results plus the repository and external certification checklist.
 - `build-youtube.zip` — repository-root upload ZIP with `index.html` at archive root.
 - `build-youtube.manifest.json` — repository-root source/content/model/test identity, file inventory, and ZIP SHA-256 evidence.

@@ -355,6 +355,14 @@
     "width": 320,
     "height": 400,
     "scenario": "profile-switch",
+    "name": "replacement Instructions starts at its own reading origin",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "profile-switch",
     "name": "the existing focused control remains selected",
     "actual": true,
     "expected": true
@@ -643,6 +651,94 @@
     "width": 320,
     "height": 400,
     "scenario": "credits-guess",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "real content exceeds its scroll viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "native wheel reaches a reading position",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the same committed shell survives the update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "a replacement page begins at the top",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "replacement Instructions starts at its own reading origin",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the existing focused control remains selected",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "Escape restores the surviving game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the modal closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "no account deletion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 320,
+    "height": 400,
+    "scenario": "credits-switch",
     "name": "no unhandled promises",
     "actual": [],
     "expected": []
@@ -1083,6 +1179,14 @@
     "width": 390,
     "height": 400,
     "scenario": "profile-switch",
+    "name": "replacement Instructions starts at its own reading origin",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "profile-switch",
     "name": "the existing focused control remains selected",
     "actual": true,
     "expected": true
@@ -1371,6 +1475,94 @@
     "width": 390,
     "height": 400,
     "scenario": "credits-guess",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "real content exceeds its scroll viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "native wheel reaches a reading position",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the same committed shell survives the update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "a replacement page begins at the top",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "replacement Instructions starts at its own reading origin",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the existing focused control remains selected",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "Escape restores the surviving game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the modal closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "no account deletion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 400,
+    "scenario": "credits-switch",
     "name": "no unhandled promises",
     "actual": [],
     "expected": []
@@ -1811,6 +2003,14 @@
     "width": 1280,
     "height": 400,
     "scenario": "profile-switch",
+    "name": "replacement Instructions starts at its own reading origin",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "profile-switch",
     "name": "the existing focused control remains selected",
     "actual": true,
     "expected": true
@@ -2099,6 +2299,94 @@
     "width": 1280,
     "height": 400,
     "scenario": "credits-guess",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "real content exceeds its scroll viewport",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "native wheel reaches a reading position",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the same committed shell survives the update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "a replacement page begins at the top",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "replacement Instructions starts at its own reading origin",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the existing focused control remains selected",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "Escape restores the surviving game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "the modal closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "no account deletion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 400,
+    "scenario": "credits-switch",
     "name": "no unhandled promises",
     "actual": [],
     "expected": []

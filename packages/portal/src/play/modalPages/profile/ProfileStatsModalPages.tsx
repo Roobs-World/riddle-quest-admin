@@ -23,7 +23,7 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
 
   return (
     <div className="achievements-page">
-      <section className="profile-detail-hero achievement-summary">
+      <div className="profile-detail-hero achievement-summary">
         <span className="profile-detail-emblem" aria-hidden="true">🏆</span>
         <div>
           <span className="profile-detail-eyebrow">{tr("Achievements.UNLOCKED_LABEL")}</span>
@@ -33,7 +33,7 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
           aria-valuemin={0} aria-valuemax={ACHIEVEMENT_DEFINITIONS.length} aria-valuenow={unlockedCount}>
           <i style={{width: `${unlockedCount / ACHIEVEMENT_DEFINITIONS.length * 100}%`}} />
         </div>
-      </section>
+      </div>
       <div className="achievement-grid">
       {ACHIEVEMENT_DEFINITIONS.map((achievement) => {
         /** Whether the trusted profile records this achievement as unlocked. */
@@ -48,7 +48,7 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
           <article className={unlocked ? "unlocked" : ""} key={achievement.id}>
             <span className="achievement-icon" aria-hidden="true">{achievement.icon}</span>
             <div className="achievement-details">
-              <strong>{name}</strong>
+              <h3 className="profile-card-title">{name}</h3>
               <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>
               <div className="achievement-progress" role="progressbar" aria-label={name}
                 aria-valuemin={0} aria-valuemax={achievement.threshold} aria-valuenow={progress}>
@@ -116,7 +116,7 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
 
   return (
     <div className="ranks-page">
-      <section className="profile-detail-hero rank-summary">
+      <div className="profile-detail-hero rank-summary">
         <RankedAvatar size={64} level={currentRank.minimumLevel} fallback={<RankIcon name={currentRank.icon} />} showSymbolBadge={false} />
         <div>
           <span className="profile-detail-eyebrow">{tr("Ranks.CURRENT_RANK")}</span>
@@ -131,7 +131,7 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
           </div>
           <p>{nextRank ? <>{tr("Ranks.NEXT_RANK_PREFIX")} {tr(nextRank.nameKey)} {tr("Ranks.AT_LEVEL_PREFIX")} {nextRank.minimumLevel}</> : tr("Ranks.HIGHEST_RANK")}</p>
         </div>
-      </section>
+      </div>
       <p className="rank-introduction">{tr("Ranks.SUBTITLE")}</p>
       <div className="rank-list">
         {RANK_MATERIAL_ORDER.map(material => {
@@ -144,7 +144,7 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
               aria-current={rank.id === currentRank.id ? "step" : undefined}>
               <RankedAvatar size={56} level={rank.minimumLevel} fallback={<RankIcon name={rank.icon} />} showSymbolBadge={false} />
               <div>
-                <strong>{tr(rank.nameKey)}</strong>
+                <h4 className="profile-card-title">{tr(rank.nameKey)}</h4>
                 <p>{tr(rank.descriptionKey)}</p>
                 {rank.id === currentRank.id ? <span className="rank-current-label">{tr("Ranks.CURRENT_RANK")}</span> : null}
               </div>

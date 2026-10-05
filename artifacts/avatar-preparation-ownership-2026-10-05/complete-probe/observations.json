@@ -1,0 +1,1126 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "a live preparation reaches its host exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "every completed bitmap is released",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "a live preparation reaches its host exactly once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "every completed bitmap is released",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "updates",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-b",
+    "expected": "player-b"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "the accepted upload uses the current sender",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "sender",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "returned-player",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "superseded",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-failure",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "preparation waits for the actual held decoder",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "only the owned latest preparation reaches the host",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "decoded bitmap is closed after preparation or injected failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "only a current preparation reports an encoding error",
+    "actual": [
+      "fixture-image-decode-failed"
+    ],
+    "expected": [
+      "fixture-image-decode-failed"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "the replacement preparation reaches its current host once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "every completed bitmap is released",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "the accepted upload belongs to the current player",
+    "actual": "player-a",
+    "expected": "player-a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "the accepted upload belongs to the current generation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "the accepted upload uses the current sender",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "the real browser encoder produces a validated WebP payload",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "invalid image retains its existing validation error",
+    "actual": "invalid-avatar-file",
+    "expected": "invalid-avatar-file"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "invalid image sends no additional host request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "current-failure",
+    "name": "unhandled rejections",
+    "actual": [],
+    "expected": []
+  }
+]

@@ -1,0 +1,183 @@
+[
+  {
+    "run": 0,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 7.899999998509884,
+    "domCommitMs": null,
+    "rafObservedMs": 89.29999999701977,
+    "nextFrameMs": 124.69999999552965,
+    "frameTimes": [
+      -11.900000001490298,
+      38.0999999985097,
+      71.39999999850988
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 1,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 42,
+    "domCommitMs": null,
+    "rafObservedMs": 140.10000000149012,
+    "nextFrameMs": 181.39999999850988,
+    "frameTimes": [
+      -14.299999998509975,
+      69.0000000014902,
+      119.0000000014902
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 2,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 10.300000004470348,
+    "domCommitMs": null,
+    "rafObservedMs": 116.89999999850988,
+    "nextFrameMs": 150.30000000447035,
+    "frameTimes": [
+      -24.300000001489934,
+      42.49999999850979,
+      75.79999999850997
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 3,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 1,
+    "domCommitMs": null,
+    "rafObservedMs": 119.89999999850988,
+    "nextFrameMs": 153.20000000298023,
+    "frameTimes": [
+      -17.299999997019768,
+      16.000000002980414,
+      66.00000000298041,
+      99.30000000298014
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 4,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 45.100000001490116,
+    "domCommitMs": null,
+    "rafObservedMs": 149.10000000149012,
+    "nextFrameMs": 186.29999999701977,
+    "frameTimes": [
+      -8.900000000000091,
+      74.40000000000009,
+      124.5
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 5,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 12.199999995529652,
+    "domCommitMs": null,
+    "rafObservedMs": 121.69999999552965,
+    "nextFrameMs": 156.89999999850988,
+    "frameTimes": [
+      -44.000000002980414,
+      39.39999999701968,
+      89.39999999701968
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 6,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 38.70000000298023,
+    "domCommitMs": null,
+    "rafObservedMs": 138.20000000298023,
+    "nextFrameMs": 166.80000000447035,
+    "frameTimes": [
+      -16.900000001490298,
+      66.4999999985098,
+      116.4999999985098
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 7,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 0.7999999970197678,
+    "domCommitMs": null,
+    "rafObservedMs": 104.10000000149012,
+    "nextFrameMs": 134,
+    "frameTimes": [
+      -12.300000000000182,
+      21.09999999999991,
+      71.09999999999991
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 8,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 43.599999994039536,
+    "domCommitMs": null,
+    "rafObservedMs": 147.79999999701977,
+    "nextFrameMs": 183.59999999403954,
+    "frameTimes": [
+      -8.900000004470257,
+      74.39999999552947,
+      124.39999999552947
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  },
+  {
+    "run": 9,
+    "cpuRate": 12,
+    "domObserver": false,
+    "longObserver": false,
+    "clickReturnMs": 10.699999995529652,
+    "domCommitMs": null,
+    "rafObservedMs": 119.5,
+    "nextFrameMs": 149.5,
+    "frameTimes": [
+      -23.000000005960374,
+      43.699999994039445,
+      93.59999999403954
+    ],
+    "longTasks": [],
+    "held": 1,
+    "delivered": 1
+  }
+]

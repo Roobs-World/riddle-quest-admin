@@ -138,3 +138,26 @@ test("an interrupted process lock is retained for explicit operator investigatio
   assert.match(await readFile(lockPath, "utf8"), /"pid":1/u);
   assert.deepEqual(await readFile(f.archivePath), f.bytes);
 });
+
+test("a retained operator absence reconciliation settles the legacy attempt without permitting retransmission", async context => {
+  const f = await fixture(context);
+  await createFacebookHandoffArchive(f.receipts, f.hash, f.bytes);
+  const {barrierPath} = await createFacebookUploadBarrier(f.receipts, f.hash);
+  const original = JSON.parse(await readFile(barrierPath, "utf8"));
+  const reconciled = {...original, status: "reconciled-absent", evidence: {
+    reason: "The complete dashboard version list contains no matching historical bundle.",
+    dashboardEvidenceSha256: "a".repeat(64), observedVersions: ["1", "2", "3"],
+    reconciledAt: new Date(Date.now() + 1000).toISOString(),
+  }};
+  await writePrivateFacebookJson(barrierPath, reconciled);
+  await assertFacebookHandoffsSettled(f.receipts);
+  await assert.rejects(f.command("begin"), /EEXIST/u);
+  for (const invalid of [
+    {reason: ""}, {dashboardEvidenceSha256: "unverified"}, {observedVersions: []},
+    {observedVersions: ["1", "1"]}, {observedVersions: [1]}, {reconciledAt: "invalid"},
+    {reconciledAt: "2020-01-01T00:00:00.000Z"},
+  ]) {
+    await writePrivateFacebookJson(barrierPath, {...reconciled, evidence: {...reconciled.evidence, ...invalid}});
+    await assert.rejects(assertFacebookHandoffsSettled(f.receipts), /Invalid Facebook absence reconciliation/u);
+  }
+});

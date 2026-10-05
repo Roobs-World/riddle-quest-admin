@@ -23,7 +23,7 @@
     "SKIP_MODAL_TITLE": "تخطي المستوى؟",
     "SKIP_NOT_ENOUGH_COINS_MESSAGE": "ليس لديك ما يكفي من العملات المعدنية لتخطي المستوى.",
     "SPEND_COINS_ERROR_MESSAGE": "تعذر إنفاق العملات المعدنية. يرجى المحاولة مرة أخرى.",
-    "SUBMIT_BUTTON": "يُقدِّم",
+    "SUBMIT_BUTTON": "يُقدِّم",
     "SUBMIT_GUESS_ERROR_MESSAGE": "تعذر إرسال التخمين. يرجى المحاولة مرة أخرى.",
     "SUBMIT_GUESS_ERROR_TITLE": "خطأ",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "فشل في مسح البيانات المحلية.",

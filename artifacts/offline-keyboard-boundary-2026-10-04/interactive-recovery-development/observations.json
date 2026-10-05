@@ -1,0 +1,2886 @@
+[
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "terminal fallback can load the next riddle",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "winning fallback exposes Next",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "Next waits for authoritative completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "terminal failure cannot dismiss its only Next action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "Escape cannot bypass terminal acknowledgement",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "confirmed winning Next clears the recovery dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "winning fallback never duplicates rewards",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "winning fallback advances once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct fifth guess keeps Continue readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct fifth guess keeps Skip readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct fifth guess has the expected durable record",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "disabled Continue cannot send an early spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled fifth guess keeps Continue readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled fifth guess keeps Skip readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled fifth guess has the expected durable record",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "durably queued Continue cannot overtake the held fifth guess",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "healthy retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct fifth guess keeps Continue readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct fifth guess keeps Skip readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct fifth guess has the expected durable record",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "disabled Continue cannot send an early spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "direct paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "healthy retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled fifth guess keeps Continue readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled fifth guess keeps Skip readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled fifth guess has the expected durable record",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "durably queued Continue cannot overtake the held fifth guess",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "journaled paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "declined continuation leaves the game controls accessible",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "declined continuation does not offer an invalid Next",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "lost Classic can still confirm Skip after modal failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovered Classic Skip sends one authority request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovered Classic Skip never rewards the lost puzzle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovered Classic Skip makes the successor playable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovered Hint uses one authoritative request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "recovered Hint closes its confirmation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 1280,
+    "name": "paid Hint leaves the answer playable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "terminal fallback can load the next riddle",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "winning fallback exposes Next",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "Next waits for authoritative completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "terminal failure cannot dismiss its only Next action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "Escape cannot bypass terminal acknowledgement",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "confirmed winning Next clears the recovery dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "winning fallback never duplicates rewards",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "winning fallback advances once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct fifth guess keeps Continue readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct fifth guess keeps Skip readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct fifth guess has the expected durable record",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "disabled Continue cannot send an early spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled fifth guess keeps Continue readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled fifth guess keeps Skip readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled fifth guess has the expected durable record",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "durably queued Continue cannot overtake the held fifth guess",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "healthy retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct fifth guess keeps Continue readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct fifth guess keeps Skip readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct fifth guess has the expected durable record",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "disabled Continue cannot send an early spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "direct paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "healthy retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled fifth guess keeps Continue readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled fifth guess keeps Skip readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled fifth guess has the expected durable record",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "durably queued Continue cannot overtake the held fifth guess",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "journaled paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "declined continuation leaves the game controls accessible",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "declined continuation does not offer an invalid Next",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "lost Classic can still confirm Skip after modal failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovered Classic Skip sends one authority request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovered Classic Skip never rewards the lost puzzle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovered Classic Skip makes the successor playable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovered Hint uses one authoritative request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "recovered Hint closes its confirmation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-download",
+    "width": 390,
+    "name": "paid Hint leaves the answer playable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "terminal fallback can load the next riddle",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "winning fallback exposes Next",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "Next waits for authoritative completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "terminal failure cannot dismiss its only Next action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "Escape cannot bypass terminal acknowledgement",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "confirmed winning Next clears the recovery dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "winning fallback never duplicates rewards",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "winning fallback advances once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "direct fifth guess keeps Continue readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "direct fifth guess keeps Skip readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "direct fifth guess has the expected durable record",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "disabled Continue cannot send an early spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "direct paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "journaled fifth guess keeps Continue readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "journaled fifth guess keeps Skip readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "journaled fifth guess has the expected durable record",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "durably queued Continue cannot overtake the held fifth guess",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "journaled paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "declined continuation leaves the game controls accessible",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "declined continuation does not offer an invalid Next",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "lost Classic can still confirm Skip after modal failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovered Classic Skip sends one authority request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovered Classic Skip never rewards the lost puzzle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovered Classic Skip makes the successor playable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovered Hint uses one authoritative request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "recovered Hint closes its confirmation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 1280,
+    "name": "paid Hint leaves the answer playable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "terminal fallback can load the next riddle",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "winning fallback exposes Next",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "Next waits for authoritative completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "terminal failure cannot dismiss its only Next action",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "Escape cannot bypass terminal acknowledgement",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "confirmed winning Next clears the recovery dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "winning fallback never duplicates rewards",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "winning fallback advances once",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "direct fifth guess keeps Continue readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "direct fifth guess keeps Skip readiness consistent",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "direct fifth guess has the expected durable record",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "disabled Continue cannot send an early spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "direct paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovery retains the existing priced Continue control",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "a failed continue surface does not auto-complete a loss",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "a failed continue surface does not auto-spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "journaled fifth guess keeps Continue readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "journaled fifth guess keeps Skip readiness consistent",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "journaled fifth guess has the expected durable record",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "durably queued Continue cannot overtake the held fifth guess",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "rapid Continue activation sends one authoritative spend",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "journaled paid continuation clears the prompt",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "continued puzzle accepts the sixth answer",
+    "actual": 6,
+    "expected": 6
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "continued puzzle delivers one authoritative result",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "declined continuation leaves the game controls accessible",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "declined continuation does not offer an invalid Next",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "lost Classic can still confirm Skip after modal failure",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovered Classic Skip sends one authority request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovered Classic Skip never rewards the lost puzzle",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovered Classic Skip makes the successor playable",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovered Hint uses one authoritative request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "recovered Hint closes its confirmation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "modal-render",
+    "width": 390,
+    "name": "paid Hint leaves the answer playable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 1280,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-download",
+    "width": 390,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 1280,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "race-render",
+    "width": 390,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "provider-render",
+    "width": 1280,
+    "name": "provider surface never loads unused shared multiplayer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "optional failure preserves the frame",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "optional failure leaves the same authoritative token",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "optional failure preserves the PIAN draft",
+    "actual": "PIAN",
+    "expected": "PIAN"
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "one local surface failure is reported",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "local failure never reaches the fatal page boundary",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "failure exposes one accessible recovery dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "failure does not issue a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "failure does not spend coins",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "failure does not infer a completion",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "underlying game is inert during recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "focus starts inside the recovery panel",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "forward Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "reverse Tab stays inside recovery",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "recovery buttons meet the 48px touch target",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "offline Escape cannot dismiss the underlying recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "connectivity recovery returns to the same surface dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "Escape restores the puzzle interaction",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "reopening does not repeat the surface diagnostic",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "player submits one answer after recovering",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "player receives one authoritative completion",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "failed scene does not create an unhandled promise",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "variant": "provider-render",
+    "width": 390,
+    "name": "provider surface never loads unused shared multiplayer",
+    "actual": 0,
+    "expected": 0
+  }
+]

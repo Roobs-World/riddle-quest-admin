@@ -1,0 +1,15 @@
+{
+  "atKey": {
+    "tag": "BUTTON",
+    "className": "",
+    "inert": false,
+    "targetTag": "BUTTON",
+    "targetClass": ""
+  },
+  "after": {
+    "tag": "BUTTON",
+    "className": "play-primary",
+    "inert": false
+  },
+  "prevented": true
+}

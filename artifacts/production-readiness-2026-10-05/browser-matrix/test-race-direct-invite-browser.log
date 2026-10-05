@@ -1,0 +1,3 @@
+$ node scripts/verify-live-race-direct-invite-browser.mjs
+PASS 1280px direct invitation delivery and ownership
+PASS 390px direct invitation delivery and ownership

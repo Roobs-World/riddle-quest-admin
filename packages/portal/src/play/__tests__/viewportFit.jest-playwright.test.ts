@@ -10,7 +10,7 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 describeBrowser("phone viewport fitting", () => {
   it("settles without alternating clue wrapping or clipping navigation", async () => {
     /** Serves the built Jest artifact for supplementary layout regression coverage. */
-    const root = path.resolve(__dirname, "../../../dist-jest");
+    const root = path.resolve(__dirname, "../../../../../builds/jest");
     /** Serves the selected layout artifact without external SDK traffic. */
     const server = createServer(async (request, response) => {
       /** Resolves the requested bundled asset. */

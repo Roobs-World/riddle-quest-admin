@@ -1,0 +1,11 @@
+$ node scripts/verify-profile-dismiss-focus-browser.mjs && PROFILE_RESTORE_REACT_MODE=production node scripts/verify-profile-dismiss-focus-browser.mjs
+{
+  "mode": "development",
+  "checks": 474,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 474,
+  "failures": []
+}

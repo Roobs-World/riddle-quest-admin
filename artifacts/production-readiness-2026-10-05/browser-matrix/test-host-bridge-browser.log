@@ -1,0 +1,5 @@
+$ node scripts/verify-host-bridge-ownership-browser.mjs && HOST_BRIDGE_REACT_MODE=production node scripts/verify-host-bridge-ownership-browser.mjs
+PASS development 1280px host bridge account ownership
+PASS development 390px host bridge account ownership
+PASS production 1280px host bridge account ownership
+PASS production 390px host bridge account ownership

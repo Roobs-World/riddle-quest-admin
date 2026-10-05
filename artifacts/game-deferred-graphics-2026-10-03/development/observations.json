@@ -842,8 +842,8 @@
   {
     "width": 1280,
     "name": "retired-before-resume: first eligible state initializes only its current owner",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -866,8 +866,8 @@
   {
     "width": 1280,
     "name": "retired-before-resume: later visibility and pause changes never reconstruct",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -908,8 +908,8 @@
   {
     "width": 1280,
     "name": "retired-before-resume: retired callbacks never reconstruct the scene",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -2000,8 +2000,8 @@
   {
     "width": 390,
     "name": "retired-before-resume: first eligible state initializes only its current owner",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2024,8 +2024,8 @@
   {
     "width": 390,
     "name": "retired-before-resume: later visibility and pause changes never reconstruct",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2066,8 +2066,8 @@
   {
     "width": 390,
     "name": "retired-before-resume: retired callbacks never reconstruct the scene",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,

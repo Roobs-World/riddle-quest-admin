@@ -46,6 +46,12 @@ const createRun = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
 });
 
 describe("Race to 10 authoritative engine", () => {
+  it("negotiates an empty confirmed history for older persisted runs", () => {
+    /** Historical active runs can predate the optional guess history field. */
+    const run = createRun();
+    expect(toRaceRunView(run, STARTED_AT, false, true).currentRiddle?.confirmedGuesses).toEqual([]);
+    expect(toRaceRunView(run, STARTED_AT).currentRiddle).not.toHaveProperty("confirmedGuesses");
+  });
   it("keeps preparation unscored and expires it without a competitive result", () => {
     /** Unscored preparation whose expiry is independent of solving time. */
     const prepared = createRun({status: "prepared", startedAtMs: 0, preparationExpiresAtMs: STARTED_AT + 30000});

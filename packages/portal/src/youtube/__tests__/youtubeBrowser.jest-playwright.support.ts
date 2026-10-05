@@ -1,6 +1,7 @@
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
-import {readFile} from "node:fs/promises";
+import {mkdtemp, readFile, rm} from "node:fs/promises";
+import {tmpdir} from "node:os";
 import path from "node:path";
 import type {Frame, Page} from "@playwright/test";
 
@@ -78,6 +79,8 @@ const contentTypes: Readonly<Record<string, string>> = {
 
 /** Describes you tube artifact server. */
 export type YouTubeArtifactServer = Readonly<{
+  /** Exact artifact served, including an isolated fixture when requested. */
+  directory: string;
   /** Stores origin. */
   origin: string;
   /** Provides close behavior. */
@@ -96,14 +99,24 @@ export async function startYouTubeArtifactServer(
 ): Promise<YouTubeArtifactServer> {
   /** Provides package root behavior. */
   const packageRoot = path.resolve(__dirname, "../../..");
-  if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-    execFileSync("pnpm", ["--filter", "@qwordly/portal", target === "youtube" ? "build:youtube:fixture" : `build:${target}`], {
-      cwd: path.resolve(packageRoot, "../.."),
-      stdio: "inherit",
-    });
-  }
+  /** Explicit caller output takes precedence over both release and fixture defaults. */
+  const requestedDirectory = process.env[`${target.toUpperCase()}_BUILD_OUT_DIR`]?.trim();
+  /** Automatic fixture builds must never replace the canonical release artifact. */
+  const fixtureDirectory = target === "youtube" && process.env.PORTAL_USE_EXISTING_BUILD !== "1" && !requestedDirectory
+    ? await mkdtemp(path.join(tmpdir(), "riddle-youtube-browser-")) : null;
   /** Provides dist directory behavior. */
-  const distDirectory = path.join(packageRoot, `dist-${target}`);
+  const distDirectory = path.resolve(requestedDirectory || fixtureDirectory || path.join(packageRoot, `../../builds/${target}`));
+  if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
+    try {
+      execFileSync("pnpm", ["--filter", "@qwordly/portal", target === "youtube" ? "build:youtube:fixture" : `build:${target}`], {
+        cwd: path.resolve(packageRoot, "../.."), stdio: "inherit",
+        env: {...process.env, [`${target.toUpperCase()}_BUILD_OUT_DIR`]: distDirectory},
+      });
+    } catch (error) {
+      if (fixtureDirectory) await rm(fixtureDirectory, {recursive: true, force: true});
+      throw error;
+    }
+  }
   /** Provides zero size host behavior. */
   const zeroSizeHost = `<!doctype html><html><body style="margin:0">
     <iframe id="playable" title="YouTube Playable" src="/" style="border:0;width:0;height:0"></iframe>
@@ -148,11 +161,16 @@ export async function startYouTubeArtifactServer(
   const address = server.address();
   if (!address || typeof address === "string") {
     await closeServer(server);
+    if (fixtureDirectory) await rm(fixtureDirectory, {recursive: true, force: true});
     throw new Error("youtube-browser-server-address-unavailable");
   }
   return {
+    directory: distDirectory,
     origin: `http://127.0.0.1:${address.port}`,
-    close: () => closeServer(server),
+    close: async () => {
+      await closeServer(server);
+      if (fixtureDirectory) await rm(fixtureDirectory, {recursive: true, force: true});
+    },
   };
 }
 

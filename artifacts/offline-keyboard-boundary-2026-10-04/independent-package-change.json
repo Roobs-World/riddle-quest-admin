@@ -1,0 +1,6 @@
+{
+  "script": "test:youtube:playwright",
+  "before": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/youtube/__tests__/youtubeBrowser.jest-playwright.test.ts",
+  "after": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/youtube/__tests__/youtubeBrowser.jest-playwright.test.ts src/youtube/__tests__/achievementMilestones.jest-playwright.test.ts",
+  "preserved": true
+}

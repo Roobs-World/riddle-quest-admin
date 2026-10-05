@@ -1,0 +1,3222 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "an earlier native key claim retains its current focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "forward",
+    "scenario": "nested-confirmation",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "an earlier native key claim retains its current focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "profile",
+    "direction": "reverse",
+    "scenario": "nested-confirmation",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "an earlier native key claim retains its current focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "an earlier native key claim retains its current focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "settings",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "refocus-outside",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "an earlier native key claim retains its current focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "claimed-native",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "covered",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "forward",
+    "scenario": "retired",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "first-open",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "outside native Tab enters the current focus scope at its correct endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "autofocus retains the latest admitted native endpoint",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "refocus-outside",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "an earlier native key claim retains its current focus",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "focus stays inside the visible modal after frame release",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "claimed-native",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "covered",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "keyboard ownership follows the committed visible state",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "underlying game inertness follows dialog lifetime",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "covered or retired surfaces do not reclaim native Tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "only an admitted or earlier-claimed native Tab is prevented",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "native Close activation happens exactly once only when requested",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "remaining dialog lifetime matches the requested action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "surface": "instructions",
+    "direction": "reverse",
+    "scenario": "retired",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

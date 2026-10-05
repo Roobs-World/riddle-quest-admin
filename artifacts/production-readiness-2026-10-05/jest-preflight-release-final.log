@@ -1,0 +1,9 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ JEST_UPLOAD_DRY_RUN=true node scripts/upload-jest-build.mjs
+Jest artifact audit passed: 411 files, 4.42 MB, 0.54 MB initial resources, relative entry paths, no native modules, external auth/ads, Google Analytics, install copy, secrets, source maps, or missing entry assets
+W3C HTML validation passed with zero findings (pinned Nu 26.9.30 (bf06d70)):
+/home/craig-beswetherick/Documents/riddle-quest/builds/jest/index.html
+Gated build.zip (2.72 MB, 413 entries, sha256 544bf058c7abf6b7f9fc0ed1875387cd8c280a823ebd0bcd9394396d8b0f54e7)
+Source: d6f85ff4e964eb8b2e23afcfe208e940fe6f70da (dirty; upload blocked)
+Gate receipt: /home/craig-beswetherick/Documents/riddle-quest/packages/portal/.jest-upload-receipts/gated-artifact.json
+Jest upload preflight passed; dry run stopped before network transmission.

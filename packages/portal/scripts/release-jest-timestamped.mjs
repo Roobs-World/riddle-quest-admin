@@ -568,7 +568,7 @@ mkdirSync(gatePreflightDirectory, {mode: 0o700});
 Object.assign(gateEnvironment, {
   RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: join(gatePreflightDirectory, "target-dependencies"),
   JEST_ARCHIVE_PATH: join(gatePreflightDirectory, "build.zip"),
-  JEST_BUILD_DIRECTORY: join(packageDirectory, "dist-jest"),
+  JEST_BUILD_DIRECTORY: join(packageDirectory, "../../builds/jest"),
   JEST_GATE_RECEIPT_PATH: join(gatePreflightDirectory, "gated-artifact.json"),
   JEST_RECEIPT_DIRECTORY: gatePreflightDirectory,
 });

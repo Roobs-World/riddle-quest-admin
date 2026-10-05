@@ -42,7 +42,8 @@ export type GuidanceOverlayProps = {
 };
 /** Coordinates onboarding, feature tours, and contextual guidance tooltips. */
 export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false, suspended = false, economyAvailable = true}: GuidanceOverlayProps) {
-  useLocale();
+  /** Committed catalog identity refreshes the active translated tooltip. */
+  const locale = useLocale();
   /** Provides r id. */
   const userId = state.user?.uid;
   /** Completion releases this view even when browser storage rejects its marker; accounts have separate owners. */
@@ -298,16 +299,16 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   ]);
 
   useLayoutEffect(() => {
-    if (!activeTooltip || suspended) {
+    /** Centered tooltips have no target geometry to maintain. */
+    const selector = activeTooltip ? TOOLTIP_SELECTORS[activeTooltip] : undefined;
+    if (!activeTooltip || suspended || !selector) {
       setTargetRect(null);
       return;
     }
     /** Updates rect. */
     const updateRect = () => {
-      /** Provides selector behavior. */
-      const selector = TOOLTIP_SELECTORS[activeTooltip];
       /** Provides element behavior. */
-      const element = selector ? document.querySelector(selector) : null;
+      const element = document.querySelector(selector);
       if (!element) {
         setTargetRect(null);
         return;
@@ -335,7 +336,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       window.removeEventListener("resize", updateRect);
       window.removeEventListener("scroll", updateRect, true);
     };
-  }, [activeTooltip, suspended]);
+  }, [activeTooltip, locale, suspended]);
   /** Provides tooltip content behavior. */
   const tooltipContent = useMemo(() => {
     if (!activeTooltip) {
@@ -344,7 +345,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     /** Provides [title, body] behavior. */
     const [title, body] = TOOLTIP_KEYS[activeTooltip];
     return {title: tr(title), body: tr(body)};
-  }, [activeTooltip]);
+  }, [activeTooltip, locale]);
   /** Provides finish sequence behavior. */
   const finishSequence = () => {
     if (sequenceName?.startsWith("contextual:")) {

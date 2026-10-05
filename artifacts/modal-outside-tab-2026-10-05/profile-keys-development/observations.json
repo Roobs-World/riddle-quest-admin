@@ -1,0 +1,3116 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "escape-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "reverse-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Escape",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "earlier owner cancels the real native key",
+    "actual": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ],
+    "expected": [
+      {
+        "key": "Tab",
+        "defaultPrevented": true
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-cancelled",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-composing",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "escape-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "claimed or IME-marked key leaves confirmation open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "the outer Profile page stays open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "ignored key preserves the selected confirmation control",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "IME-marked event stays uncancelled for its owner",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "fresh forward Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "fresh reverse Tab wraps inside confirmation",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "fresh Escape closes only the nested confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "nested dismissal restores its Delete trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "nested Escape never calls outer Close",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "outer Escape closes once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "outer dismissal restores the game trigger",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "keyboard navigation never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "reverse-legacy",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

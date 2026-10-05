@@ -69,6 +69,13 @@ export const openAuthenticationHarness = async (
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await installJestSdkRequestRoute(page, options.scenario);
   await installJestSdkHarness(page, options.scenario);
+  /** Observe entry commands before application scripts can dispatch an automatic deep-link action. */
+  await page.addInitScript(() => {
+    Object.assign(window, {__pvpEntryCommands: []});
+    window.addEventListener("riddle-quest:game-to-host", event => {
+      (Reflect.get(window, "__pvpEntryCommands") as string[]).push((event as CustomEvent).detail.type);
+    });
+  });
   if (options.existingCompletedRun) {
     /** Canonical fake authority run used to construct completed-entry recovery evidence. */
     const initial = (await createFakeRaceServices().startRace({locale: "en", categoryId: "mixed", requestId: "played-fixture"})).run;
@@ -167,4 +174,3 @@ export const openAuthenticationHarness = async (
   await navigation;
   return {context, page, pageErrors};
 };
-

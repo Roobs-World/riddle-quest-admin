@@ -1,0 +1,1557 @@
+$ pnpm prepare:functions && pnpm check:security && pnpm check:facebook-secrets && pnpm check:scalability && pnpm check:modern-packages && pnpm check:tsdoc && pnpm --dir firebase-functions test:scalability:coverage && pnpm check:file-sizes && pnpm --filter @qwordly/core build && pnpm --filter @qwordly/portal build:web && pnpm --filter @qwordly/reddit-app build:package:from-client && pnpm --dir firebase-functions build
+$ pnpm --dir firebase-functions prepare:deploy
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/prepare-deploy.js
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+$ pnpm check:braces-security && node --test scripts/image-size-security-patch.test.mjs scripts/ci-security.test.mjs && node scripts/audit-security-config.mjs && node scripts/ci-security.mjs
+$ node scripts/braces-security-patch.test.mjs
+✔ deep brace and parenthesis input fails with a controlled depth error (17.21287ms)
+✔ 100 levels remain valid, 101 are rejected, and callers cannot relax the cap (23.800451ms)
+✔ caller-supplied ASTs cannot bypass depth protection (20.569771ms)
+✔ cyclic AST parent chains terminate (14.81101ms)
+✔ ordinary glob compilation, ranges and escaping retain their behavior (22.730083ms)
+✔ the audit exception is bound to the installed backport and required gate (0.432219ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.568259
+✔ committed workflows satisfy the CI security contract (1.575815ms)
+✔ rejects mutable actions, privileged triggers, and persisted checkout credentials (0.163009ms)
+✔ rejects workflows without least privilege, timeouts, or lockfile enforcement (0.081484ms)
+✔ rejects additional workflow permissions and a timeout missing from any job (0.078729ms)
+✔ requires manual, branch-scoped, protected, non-cancelling deployments (0.087055ms)
+✔ the image-size audit exceptions stay bound to the reviewed patch (0.37465ms)
+✔ malformed HEIF, ICNS, and JXL inputs terminate without looping (41.726503ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.257007
+Security configuration audit passed: production endpoints, CSP, and HSTS enforce encrypted transport.
+CI security audit passed: 3 workflows use least privilege and immutable dependencies.
+$ node --test scripts/audit-facebook-secret-boundary.test.mjs && node scripts/audit-facebook-secret-boundary.mjs
+✔ accepts the exact server-only binding contract (0.758186ms)
+✔ rejects browser/config identifiers and CI secret-value injection (0.16896ms)
+✔ rejects missing, widened, or swapped Functions secret bindings (0.117603ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 35.73446
+Facebook secret-boundary audit passed: Meta secrets remain server-only and exactly bound.
+$ node scripts/audit-backend-scalability.mjs
+Backend scalability audit passed.
+$ node scripts/audit-modern-package-features.mjs
+Modern package feature audit passed.
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit passed: 25208 declarations are documented across 1140 files.
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/prepare-deploy.js
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+$ cross-env NODE_OPTIONS="--experimental-vm-modules" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.scalability-coverage.config.js --runInBand
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+----------------------------|---------|----------|---------|---------|-------------------
+File                        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------------------------|---------|----------|---------|---------|-------------------
+All files                   |     100 |      100 |     100 |     100 |                   
+ daily                      |     100 |      100 |     100 |     100 |                   
+  dailyChallengeProgress.ts |     100 |      100 |     100 |     100 |                   
+ riddles                    |     100 |      100 |     100 |     100 |                   
+  riddleSupply.ts           |     100 |      100 |     100 |     100 |                   
+----------------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 100% ( 38/38 )
+Branches     : 100% ( 30/30 )
+Functions    : 100% ( 3/3 )
+Lines        : 100% ( 36/36 )
+================================================================================
+
+Test Suites: 2 passed, 2 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        0.192 s, estimated 1 s
+Ran all test suites.
+$ node --test scripts/source-size-metric.test.mjs && node scripts/audit-file-sizes.mjs
+✔ measures equivalent TypeScript identically across formatting (0.431567ms)
+✔ excludes standalone single-line and multiline TSDoc (0.081915ms)
+✔ retains implementation following a multiline TSDoc closing delimiter (0.061336ms)
+✔ keeps physical line counts for non-TypeScript source (0.045186ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27.201775
+Maintainable-file size audit passed: 1217 source files within enforced limits.
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm build:jest && pnpm build:facebook && pnpm build:reddit
+$ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (13.372315ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.556263ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.231997ms)
+✔ rejects imports between different target owners (1.47314ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.62241ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.887702ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.345579ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.756754ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.001778ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (2.786349ms)
+✔ aggregates violations in deterministic file and source order (1.698127ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.657599
+Web Target boundary audit passed (315 files, 1366 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+Third-party notices are current (107162 bytes)
+$ node scripts/validate-jest-console-manifest.mjs
+Jest Developer Console manifest passed; owner-approved publisher and privacy values are present.
+vite v8.3.1 building client environment for jest...
+transforming...
+✓ 1409 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/jest/index.html                                        1.45 kB │ gzip:   0.53 kB
+../../builds/jest/assets/tex_ring_b-BUHGHX-C.webp                   4.45 kB
+../../builds/jest/assets/coin-BnaBYH65.svg                          6.30 kB │ gzip:   1.96 kB
+../../builds/jest/assets/wheel-bg-BifSuxYC.svg                      7.74 kB │ gzip:   1.13 kB
+../../builds/jest/assets/tex_ring_a-DuvJN49d.webp                   8.03 kB
+../../builds/jest/assets/starfield-BdpD2Kkw.svg                    12.46 kB │ gzip:   2.14 kB
+../../builds/jest/assets/tex_sun_corona-v2-BMfKNPFY.webp           14.24 kB
+../../builds/jest/assets/tex_moon_h-DGScgJpd.webp                  14.81 kB
+../../builds/jest/assets/tex_moon_g-B0h_U8wT.webp                  14.99 kB
+../../builds/jest/assets/tex_sun_spots_02-CCRhajmp.webp            18.87 kB
+../../builds/jest/assets/tex_planet_u-BzJmFwqP.webp                18.90 kB
+../../builds/jest/assets/tex_planet_v-DtVH6iTD.webp                19.84 kB
+../../builds/jest/assets/tex_planet_a-CKSLcGca.webp                25.73 kB
+../../builds/jest/third-party-licenses.txt                         26.07 kB │ gzip:   6.34 kB
+../../builds/jest/assets/main-logo-DeVvp0Z6.webp                   26.72 kB
+../../builds/jest/assets/tex_moon_f-i48T7jJA.webp                  29.64 kB
+../../builds/jest/assets/tex_planet_s-fmsfCdSp.webp                31.28 kB
+../../builds/jest/assets/tex_planet_k-BTSVj7tG.webp                32.65 kB
+../../builds/jest/assets/tex_planet_r-k9FTlMLw.webp                32.83 kB
+../../builds/jest/assets/tex_moon_d-C8et7CUZ.webp                  36.81 kB
+../../builds/jest/assets/chest-open-CQnbBCSD.webp                  38.74 kB
+../../builds/jest/assets/riddlequest-r-kPbkvcmu.webp               42.31 kB
+../../builds/jest/assets/tex_moon_c-CbidFNBi.webp                  45.87 kB
+../../builds/jest/assets/PoetsenOne-Regular-C2losmxN.woff2         48.38 kB
+../../builds/jest/assets/Poppins-Bold-ryPfWsYm.woff2               51.20 kB
+../../builds/jest/assets/Poppins-SemiBold-9BRRzCnb.woff2           51.80 kB
+../../builds/jest/assets/Poppins-Regular-B-jQUxpD.woff2            51.85 kB
+../../builds/jest/assets/chest-closed-GI3XjnpL.png                 56.64 kB
+../../builds/jest/assets/tex_planet_d-Bc6RyclI.webp                60.96 kB
+../../builds/jest/assets/music-DoaAtikm.webm                    1,139.48 kB
+../../builds/jest/assets/LiveRacePushConsent-BStyCzQK.css           1.90 kB │ gzip:   0.75 kB
+../../builds/jest/assets/GameModalView-CVwlBp5V.css                24.45 kB │ gzip:   5.97 kB
+../../builds/jest/assets/RaceTo10Game-o_06kpvy.css                 25.93 kB │ gzip:   6.34 kB
+../../builds/jest/assets/jest-CjhHxJOU.css                         33.11 kB │ gzip:   7.76 kB
+../../builds/jest/assets/index-CLoNyCdu.js                          0.04 kB │ gzip:   0.06 kB
+../../builds/jest/assets/core-bridge-constants--aS0k-qf.js          0.10 kB │ gzip:   0.12 kB
+../../builds/jest/assets/streakFanfare-D5FNWyR-.js                  0.24 kB │ gzip:   0.24 kB
+../../builds/jest/assets/streakFanfare-nH51PXfP.js                  0.24 kB │ gzip:   0.22 kB
+../../builds/jest/assets/streakFanfare-D8ya_JNu.js                  0.24 kB │ gzip:   0.22 kB
+../../builds/jest/assets/streakFanfare-DWbUNWIe.js                  0.24 kB │ gzip:   0.25 kB
+../../builds/jest/assets/streakFanfare-BYE0U2nU.js                  0.24 kB │ gzip:   0.22 kB
+../../builds/jest/assets/streakFanfare-DOWwEDty.js                  0.24 kB │ gzip:   0.23 kB
+../../builds/jest/assets/streakFanfare-BDik9euY.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/jest/assets/streakFanfare-CBBbHWwq.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/jest/assets/streakFanfare-jg_xLRQF.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/jest/assets/streakFanfare-BbL7_7k5.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/jest/assets/streakFanfare-DTPGIncA.js                  0.26 kB │ gzip:   0.23 kB
+../../builds/jest/assets/streakFanfare-DnqoM55A.js                  0.26 kB │ gzip:   0.25 kB
+../../builds/jest/assets/coinPurchase-C7Vy1ASc.js                   0.27 kB │ gzip:   0.25 kB
+../../builds/jest/assets/streakFanfare-Cub-Q8ZC.js                  0.27 kB │ gzip:   0.26 kB
+../../builds/jest/assets/coinPurchase-BYVVINHp.js                   0.27 kB │ gzip:   0.25 kB
+../../builds/jest/assets/coinPurchase-_IHX8OXJ.js                   0.27 kB │ gzip:   0.26 kB
+../../builds/jest/assets/coinPurchase-BZVNlz11.js                   0.28 kB │ gzip:   0.24 kB
+../../builds/jest/assets/coinPurchase-DLij0XrJ.js                   0.28 kB │ gzip:   0.25 kB
+../../builds/jest/assets/coinPurchase-CnSXfRTK.js                   0.28 kB │ gzip:   0.28 kB
+../../builds/jest/assets/coinPurchase-DaUuHEwu.js                   0.28 kB │ gzip:   0.25 kB
+../../builds/jest/assets/coinPurchase-CK7PF9KX.js                   0.28 kB │ gzip:   0.25 kB
+../../builds/jest/assets/coinPurchase-Dphs8PuT.js                   0.28 kB │ gzip:   0.26 kB
+../../builds/jest/assets/streakFanfare-Cs_VA6tJ.js                  0.28 kB │ gzip:   0.27 kB
+../../builds/jest/assets/coinPurchase-BdFq5bZC.js                   0.28 kB │ gzip:   0.28 kB
+../../builds/jest/assets/aboutLegal-DDFGPNCH.js                     0.29 kB │ gzip:   0.26 kB
+../../builds/jest/assets/coinPurchase-xYGMEqwZ.js                   0.29 kB │ gzip:   0.26 kB
+../../builds/jest/assets/aboutLegal-DRIFyWzN.js                     0.29 kB │ gzip:   0.29 kB
+../../builds/jest/assets/coinPurchase-ByeNUhlf.js                   0.29 kB │ gzip:   0.29 kB
+../../builds/jest/assets/aboutLegal-D5ciQ0bv.js                     0.30 kB │ gzip:   0.28 kB
+../../builds/jest/assets/aboutLegal-bOd9o3D2.js                     0.30 kB │ gzip:   0.26 kB
+../../builds/jest/assets/aboutLegal-BxoJ25GD.js                     0.30 kB │ gzip:   0.26 kB
+../../builds/jest/assets/aboutLegal-Dhd71lSG.js                     0.30 kB │ gzip:   0.27 kB
+../../builds/jest/assets/aboutLegal-CM4qvqpd.js                     0.30 kB │ gzip:   0.26 kB
+../../builds/jest/assets/aboutLegal-DlF3CX7M.js                     0.31 kB │ gzip:   0.27 kB
+../../builds/jest/assets/aboutLegal-pVkVSjy8.js                     0.31 kB │ gzip:   0.26 kB
+../../builds/jest/assets/aboutLegal-a1B-pdoH.js                     0.31 kB │ gzip:   0.28 kB
+../../builds/jest/assets/coinPurchase-BrtYGPPp.js                   0.31 kB │ gzip:   0.30 kB
+../../builds/jest/assets/aboutLegal-BAlSQDJA.js                     0.32 kB │ gzip:   0.30 kB
+../../builds/jest/assets/rolldown-runtime-BX80bFGj.js               0.32 kB │ gzip:   0.24 kB
+../../builds/jest/assets/streakFanfare-BzlSgn3C.js                  0.32 kB │ gzip:   0.28 kB
+../../builds/jest/assets/raceMatchmakingFailure-B5EKiTtH.js         0.33 kB │ gzip:   0.24 kB
+../../builds/jest/assets/aboutLegal-DPa59xbr.js                     0.33 kB │ gzip:   0.32 kB
+../../builds/jest/assets/aboutLegal-DWAsypAb.js                     0.33 kB │ gzip:   0.30 kB
+../../builds/jest/assets/coinPurchase-O2VpNloi.js                   0.34 kB │ gzip:   0.30 kB
+../../builds/jest/assets/aboutLegal-BWcOtV6z.js                     0.40 kB │ gzip:   0.33 kB
+../../builds/jest/assets/coinPurchase-BV6JOECJ.js                   0.40 kB │ gzip:   0.32 kB
+../../builds/jest/assets/aboutLegal-CafrKBIi.js                     0.40 kB │ gzip:   0.35 kB
+../../builds/jest/assets/levelUpFanfare-B4mmyPlr.js                 0.44 kB │ gzip:   0.34 kB
+../../builds/jest/assets/levelUpFanfare-BPKjiUsq.js                 0.44 kB │ gzip:   0.35 kB
+../../builds/jest/assets/levelUpFanfare-Cl0qa3XP.js                 0.45 kB │ gzip:   0.36 kB
+../../builds/jest/assets/levelUpFanfare-CTGjhSJn.js                 0.45 kB │ gzip:   0.33 kB
+../../builds/jest/assets/levelUpFanfare-Da_x7Jue.js                 0.45 kB │ gzip:   0.34 kB
+../../builds/jest/assets/firebaseCopy-2nkIXC2V.js                   0.46 kB │ gzip:   0.30 kB
+../../builds/jest/assets/levelUpFanfare-DyoO6WH1.js                 0.47 kB │ gzip:   0.35 kB
+../../builds/jest/assets/levelUpFanfare-CHdstpWu.js                 0.47 kB │ gzip:   0.35 kB
+../../builds/jest/assets/levelUpFanfare-BAlJ8D0X.js                 0.47 kB │ gzip:   0.36 kB
+../../builds/jest/assets/levelUpFanfare-v2MHtQSQ.js                 0.47 kB │ gzip:   0.36 kB
+../../builds/jest/assets/levelUpFanfare-K9Nos2mF.js                 0.49 kB │ gzip:   0.36 kB
+../../builds/jest/assets/levelUpFanfare-Bue1Atdb.js                 0.51 kB │ gzip:   0.44 kB
+../../builds/jest/assets/levelUpFanfare-DycDwaw7.js                 0.57 kB │ gzip:   0.45 kB
+../../builds/jest/assets/loss-CAEFvJIw.js                           0.57 kB │ gzip:   0.38 kB
+../../builds/jest/assets/loss-k7gnV9d7.js                           0.60 kB │ gzip:   0.37 kB
+../../builds/jest/assets/navigation-LHo0RTEh.js                     0.60 kB │ gzip:   0.46 kB
+../../builds/jest/assets/loss-BMJNzftc.js                           0.60 kB │ gzip:   0.38 kB
+../../builds/jest/assets/navigation-BQYz0n7p.js                     0.60 kB │ gzip:   0.46 kB
+../../builds/jest/assets/levelUpFanfare-BCJJmg6G.js                 0.60 kB │ gzip:   0.44 kB
+../../builds/jest/assets/navigation-Ba8oafGm.js                     0.60 kB │ gzip:   0.45 kB
+../../builds/jest/assets/levelUpFanfare-MEWTAVKQ.js                 0.60 kB │ gzip:   0.45 kB
+../../builds/jest/assets/settings-BJfbarUe.js                       0.61 kB │ gzip:   0.41 kB
+../../builds/jest/assets/loss-uWLV7_IN.js                           0.61 kB │ gzip:   0.39 kB
+../../builds/jest/assets/loss-Chv-L1hH.js                           0.61 kB │ gzip:   0.43 kB
+../../builds/jest/assets/leaderboard-BRdR07-x.js                    0.61 kB │ gzip:   0.45 kB
+../../builds/jest/assets/navigation-BR5T4TtI.js                     0.61 kB │ gzip:   0.47 kB
+../../builds/jest/assets/loss-0ziv21kt.js                           0.61 kB │ gzip:   0.39 kB
+../../builds/jest/assets/settings-TXvA79Ew.js                       0.61 kB │ gzip:   0.44 kB
+../../builds/jest/assets/navigation-G4mMFInB.js                     0.62 kB │ gzip:   0.47 kB
+../../builds/jest/assets/loss-B40AggAB.js                           0.62 kB │ gzip:   0.40 kB
+../../builds/jest/assets/settings-DPn3bYut.js                       0.62 kB │ gzip:   0.42 kB
+../../builds/jest/assets/navigation-uBJWS9jJ.js                     0.62 kB │ gzip:   0.47 kB
+../../builds/jest/assets/settings-Cb6Q_l6B.js                       0.63 kB │ gzip:   0.42 kB
+../../builds/jest/assets/navigation-BvduCtS3.js                     0.63 kB │ gzip:   0.46 kB
+../../builds/jest/assets/settings-Dxn-nmrz.js                       0.63 kB │ gzip:   0.44 kB
+../../builds/jest/assets/settings-C0q_S8jl.js                       0.63 kB │ gzip:   0.44 kB
+../../builds/jest/assets/leaderboard-CVOdB_vV.js                    0.63 kB │ gzip:   0.45 kB
+../../builds/jest/assets/leaderboard-DjcuQLRV.js                    0.63 kB │ gzip:   0.45 kB
+../../builds/jest/assets/loss-CD2x3gjV.js                           0.63 kB │ gzip:   0.39 kB
+../../builds/jest/assets/navigation-BAKuJQ0V.js                     0.63 kB │ gzip:   0.48 kB
+../../builds/jest/assets/navigation-y3_6efZc.js                     0.63 kB │ gzip:   0.52 kB
+../../builds/jest/assets/loss-DlbT0guL.js                           0.64 kB │ gzip:   0.43 kB
+../../builds/jest/assets/credits-voYHsFUT.js                        0.64 kB │ gzip:   0.44 kB
+../../builds/jest/assets/settings-EAZRhExY.js                       0.65 kB │ gzip:   0.49 kB
+../../builds/jest/assets/leaderboard-Tve_fJmi.js                    0.65 kB │ gzip:   0.48 kB
+../../builds/jest/assets/settings-DJXuQjmJ.js                       0.65 kB │ gzip:   0.44 kB
+../../builds/jest/assets/navigation-NcmlwEhr.js                     0.65 kB │ gzip:   0.52 kB
+../../builds/jest/assets/credits-D4cBsewH.js                        0.65 kB │ gzip:   0.45 kB
+../../builds/jest/assets/stats-ChGB28Me.js                          0.65 kB │ gzip:   0.52 kB
+../../builds/jest/assets/loss-BH98FRri.js                           0.65 kB │ gzip:   0.39 kB
+../../builds/jest/assets/settings-D34B027x.js                       0.65 kB │ gzip:   0.45 kB
+../../builds/jest/assets/loss-BbszsdYQ.js                           0.65 kB │ gzip:   0.47 kB
+../../builds/jest/assets/navigation-DrtwLq4d.js                     0.65 kB │ gzip:   0.49 kB
+../../builds/jest/assets/leaderboard-Dip51uU5.js                    0.66 kB │ gzip:   0.49 kB
+../../builds/jest/assets/leaderboard-DHMrlBIz.js                    0.66 kB │ gzip:   0.52 kB
+../../builds/jest/assets/leaderboard-CePY92Zg.js                    0.66 kB │ gzip:   0.51 kB
+../../builds/jest/assets/settings-z81bey13.js                       0.66 kB │ gzip:   0.46 kB
+../../builds/jest/assets/leaderboard-xz2rxIEE.js                    0.67 kB │ gzip:   0.48 kB
+../../builds/jest/assets/loss-BC08gz35.js                           0.67 kB │ gzip:   0.47 kB
+../../builds/jest/assets/leaderboard-Cm2XrxOq.js                    0.67 kB │ gzip:   0.47 kB
+../../builds/jest/assets/common-yo3SbgUa.js                         0.67 kB │ gzip:   0.44 kB
+../../builds/jest/assets/credits-Cl-jOBH2.js                        0.67 kB │ gzip:   0.47 kB
+../../builds/jest/assets/credits-CwKzye_a.js                        0.68 kB │ gzip:   0.46 kB
+../../builds/jest/assets/credits-DAs-qgR8.js                        0.68 kB │ gzip:   0.47 kB
+../../builds/jest/assets/credits-LEc_FZAv.js                        0.68 kB │ gzip:   0.48 kB
+../../builds/jest/assets/credits-D5Qv8qTc.js                        0.68 kB │ gzip:   0.47 kB
+../../builds/jest/assets/settings-CgqA2j0A.js                       0.68 kB │ gzip:   0.50 kB
+../../builds/jest/assets/stats-zFYbm85S.js                          0.69 kB │ gzip:   0.48 kB
+../../builds/jest/assets/credits-CamtRNro.js                        0.69 kB │ gzip:   0.50 kB
+../../builds/jest/assets/credits-DxN1dYl-.js                        0.69 kB │ gzip:   0.48 kB
+../../builds/jest/assets/common-Dxz7TG0R.js                         0.69 kB │ gzip:   0.45 kB
+../../builds/jest/assets/common-CcQuILuh.js                         0.69 kB │ gzip:   0.46 kB
+../../builds/jest/assets/common-nPezcvFs.js                         0.69 kB │ gzip:   0.45 kB
+../../builds/jest/assets/settings-DTBGSsux.js                       0.70 kB │ gzip:   0.52 kB
+../../builds/jest/assets/stats-C840pk2y.js                          0.70 kB │ gzip:   0.50 kB
+../../builds/jest/assets/stats-BUW-2iCW.js                          0.70 kB │ gzip:   0.48 kB
+../../builds/jest/assets/stats-sP4O4uOB.js                          0.70 kB │ gzip:   0.49 kB
+../../builds/jest/assets/credits-tP6PVopg.js                        0.71 kB │ gzip:   0.55 kB
+../../builds/jest/assets/stats-tSVkZ_F2.js                          0.71 kB │ gzip:   0.50 kB
+../../builds/jest/assets/leaderboard-DooQ9gVw.js                    0.71 kB │ gzip:   0.53 kB
+../../builds/jest/assets/common-Dn2o5t3O.js                         0.71 kB │ gzip:   0.47 kB
+../../builds/jest/assets/leaderboard-BRVy3Mmi.js                    0.71 kB │ gzip:   0.49 kB
+../../builds/jest/assets/common--aEQLWh2.js                         0.71 kB │ gzip:   0.48 kB
+../../builds/jest/assets/navigation-CUOYuFbf.js                     0.71 kB │ gzip:   0.57 kB
+../../builds/jest/assets/loss-Da8541eN.js                           0.71 kB │ gzip:   0.45 kB
+../../builds/jest/assets/common-y4a6s1oN.js                         0.72 kB │ gzip:   0.49 kB
+../../builds/jest/assets/stats-DlS2WGcR.js                          0.72 kB │ gzip:   0.56 kB
+../../builds/jest/assets/common-KiRJYwtM.js                         0.72 kB │ gzip:   0.52 kB
+../../builds/jest/assets/common-MpoR7pbE.js                         0.72 kB │ gzip:   0.47 kB
+../../builds/jest/assets/stats-CtSj4RI_.js                          0.72 kB │ gzip:   0.51 kB
+../../builds/jest/assets/stats-xSvk09Tu.js                          0.73 kB │ gzip:   0.51 kB
+../../builds/jest/assets/stats-DVIQvc1k.js                          0.73 kB │ gzip:   0.51 kB
+../../builds/jest/assets/settings-B_BGKgyc.js                       0.74 kB │ gzip:   0.49 kB
+../../builds/jest/assets/common-ffIM6-e_.js                         0.74 kB │ gzip:   0.50 kB
+../../builds/jest/assets/levelUpFanfare-DQ8np8Rb.js                 0.74 kB │ gzip:   0.46 kB
+../../builds/jest/assets/stats-fRNVYmj2.js                          0.74 kB │ gzip:   0.54 kB
+../../builds/jest/assets/navigation-DBkwvqdy.js                     0.76 kB │ gzip:   0.55 kB
+../../builds/jest/assets/leaderboard-BXC6Nr9l.js                    0.77 kB │ gzip:   0.55 kB
+../../builds/jest/assets/credits-DqWadySW.js                        0.77 kB │ gzip:   0.52 kB
+../../builds/jest/assets/common-C3xPfGc-.js                         0.78 kB │ gzip:   0.50 kB
+../../builds/jest/assets/settings-D0_UhizG.js                       0.79 kB │ gzip:   0.54 kB
+../../builds/jest/assets/credits-DAfyC-CK.js                        0.80 kB │ gzip:   0.58 kB
+../../builds/jest/assets/stats-B1V3WjYh.js                          0.80 kB │ gzip:   0.57 kB
+../../builds/jest/assets/common-vpljjTN8.js                         0.81 kB │ gzip:   0.54 kB
+../../builds/jest/assets/common-Dz3UpTCl.js                         0.82 kB │ gzip:   0.55 kB
+../../builds/jest/assets/loss-CWXPUZRX.js                           0.82 kB │ gzip:   0.52 kB
+../../builds/jest/assets/JestFirebaseAppCheck-AE3K7C4a.js           0.82 kB │ gzip:   0.52 kB
+../../builds/jest/assets/credits-CPMr9j5i.js                        0.83 kB │ gzip:   0.59 kB
+../../builds/jest/assets/navigation-MfKaCO-M.js                     0.83 kB │ gzip:   0.58 kB
+../../builds/jest/assets/firebaseLiveRaceSignals-T5QRUIxG.js        0.87 kB │ gzip:   0.51 kB
+../../builds/jest/assets/leaderboard-DDTHVAn4.js                    0.90 kB │ gzip:   0.56 kB
+../../builds/jest/assets/settings-CS_i32e5.js                       0.91 kB │ gzip:   0.54 kB
+../../builds/jest/assets/onboarding-DQLra8FR.js                     0.92 kB │ gzip:   0.59 kB
+../../builds/jest/assets/navigation-BQVuBhL8.js                     0.93 kB │ gzip:   0.57 kB
+../../builds/jest/assets/stats-DhRrKJqk.js                          0.93 kB │ gzip:   0.59 kB
+../../builds/jest/assets/stats-DGElKeRF.js                          0.94 kB │ gzip:   0.63 kB
+../../builds/jest/assets/leaderboard-D4odGT_9.js                    0.95 kB │ gzip:   0.60 kB
+../../builds/jest/assets/FirebasePresenceTransport-BJQOLCRs.js      0.95 kB │ gzip:   0.50 kB
+../../builds/jest/assets/common-BdXkwqia.js                         0.95 kB │ gzip:   0.58 kB
+../../builds/jest/assets/onboarding-DBG6CBbL.js                     0.95 kB │ gzip:   0.60 kB
+../../builds/jest/assets/credits-BleaRYoH.js                        0.98 kB │ gzip:   0.63 kB
+../../builds/jest/assets/stats-CuYOugsp.js                          0.98 kB │ gzip:   0.59 kB
+../../builds/jest/assets/onboarding-DRBoez9o.js                     0.99 kB │ gzip:   0.60 kB
+../../builds/jest/assets/onboarding-Dh8uBuI7.js                     0.99 kB │ gzip:   0.67 kB
+../../builds/jest/assets/shop-B7pKqerD.js                           1.00 kB │ gzip:   0.67 kB
+../../builds/jest/assets/onboarding-CvwH3JRg.js                     1.01 kB │ gzip:   0.63 kB
+../../builds/jest/assets/shop-Bxc6Vazv.js                           1.01 kB │ gzip:   0.64 kB
+../../builds/jest/assets/shop-Br7kjNqm.js                           1.01 kB │ gzip:   0.66 kB
+../../builds/jest/assets/shop-2t-QOlLl.js                           1.02 kB │ gzip:   0.63 kB
+../../builds/jest/assets/loss-yasTnJNB.js                           1.03 kB │ gzip:   0.53 kB
+../../builds/jest/assets/shop-BBAL6gd1.js                           1.03 kB │ gzip:   0.65 kB
+../../builds/jest/assets/shop-DogN41pu.js                           1.03 kB │ gzip:   0.66 kB
+../../builds/jest/assets/leaderboard-DgAQ8B8R.js                    1.04 kB │ gzip:   0.56 kB
+../../builds/jest/assets/credits-BbaTbmS6.js                        1.05 kB │ gzip:   0.59 kB
+../../builds/jest/assets/onboarding-Dz1I3NHF.js                     1.06 kB │ gzip:   0.72 kB
+../../builds/jest/assets/shop-CxNt_bIa.js                           1.06 kB │ gzip:   0.71 kB
+../../builds/jest/assets/shop-CI3rvyFj.js                           1.06 kB │ gzip:   0.70 kB
+../../builds/jest/assets/shop-CGQR-1WH.js                           1.06 kB │ gzip:   0.66 kB
+../../builds/jest/assets/onboarding-Bc53XwVf.js                     1.06 kB │ gzip:   0.63 kB
+../../builds/jest/assets/onboarding-GaDlHPGX.js                     1.07 kB │ gzip:   0.65 kB
+../../builds/jest/assets/onboarding-Db1bojX4.js                     1.07 kB │ gzip:   0.66 kB
+../../builds/jest/assets/onboarding-9zKAd3CI.js                     1.07 kB │ gzip:   0.66 kB
+../../builds/jest/assets/victory-aH2F2ifU.js                        1.08 kB │ gzip:   0.71 kB
+../../builds/jest/assets/victory-DC9vM_Tc.js                        1.08 kB │ gzip:   0.68 kB
+../../builds/jest/assets/victory-D0qqLXEz.js                        1.08 kB │ gzip:   0.68 kB
+../../builds/jest/assets/victory-CeF9v80c.js                        1.08 kB │ gzip:   0.71 kB
+../../builds/jest/assets/victory-Bgt1szQl.js                        1.09 kB │ gzip:   0.69 kB
+../../builds/jest/assets/shop-mGKFaann.js                           1.09 kB │ gzip:   0.70 kB
+../../builds/jest/assets/common-Bd-x9vS3.js                         1.09 kB │ gzip:   0.58 kB
+../../builds/jest/assets/victory-BKzUbbGR.js                        1.10 kB │ gzip:   0.72 kB
+../../builds/jest/assets/onboarding-B_FvyPF8.js                     1.11 kB │ gzip:   0.74 kB
+../../builds/jest/assets/victory-5LBKH9w4.js                        1.11 kB │ gzip:   0.76 kB
+../../builds/jest/assets/onboarding-D4A7IRHO.js                     1.12 kB │ gzip:   0.74 kB
+../../builds/jest/assets/victory-DSoKnGoZ.js                        1.12 kB │ gzip:   0.69 kB
+../../builds/jest/assets/victory-WnOT0bNz.js                        1.14 kB │ gzip:   0.71 kB
+../../builds/jest/assets/shop-VeWXLU1X.js                           1.14 kB │ gzip:   0.77 kB
+../../builds/jest/assets/shop-MKpBYOPd.js                           1.14 kB │ gzip:   0.78 kB
+../../builds/jest/assets/victory-9FrSpGI7.js                        1.15 kB │ gzip:   0.72 kB
+../../builds/jest/assets/shop-Y5kENKLF.js                           1.21 kB │ gzip:   0.83 kB
+../../builds/jest/assets/liveChallengePushWorker-Bjl8qL5j.js        1.21 kB │ gzip:   0.64 kB
+../../builds/jest/assets/victory-BpkYhsKD.js                        1.22 kB │ gzip:   0.80 kB
+../../builds/jest/assets/victory-Dp0Ltz6A.js                        1.22 kB │ gzip:   0.83 kB
+../../builds/jest/assets/onboarding-BI5ouef1.js                     1.24 kB │ gzip:   0.79 kB
+../../builds/jest/assets/shop-C7LFLzdx.js                           1.26 kB │ gzip:   0.73 kB
+../../builds/jest/assets/victory-hVbmD5ZC.js                        1.26 kB │ gzip:   0.79 kB
+../../builds/jest/assets/onboarding-BtmL5mvj.js                     1.33 kB │ gzip:   0.77 kB
+../../builds/jest/assets/preload-helper-ClC2XIXo.js                 1.33 kB │ gzip:   0.75 kB
+../../builds/jest/assets/victory-BZ8a1RcW.js                        1.47 kB │ gzip:   0.89 kB
+../../builds/jest/assets/accessibility-CN_qPQIa.js                  1.49 kB │ gzip:   0.89 kB
+../../builds/jest/assets/accessibility-CI4Rdj-4.js                  1.50 kB │ gzip:   0.88 kB
+../../builds/jest/assets/accessibility-ByCyVLjU.js                  1.53 kB │ gzip:   0.94 kB
+../../builds/jest/assets/accessibility-CTMqWnYu.js                  1.55 kB │ gzip:   0.91 kB
+../../builds/jest/assets/accessibility-cpV5YSgo.js                  1.56 kB │ gzip:   1.01 kB
+../../builds/jest/assets/accessibility-C-xuQOx7.js                  1.57 kB │ gzip:   0.91 kB
+../../builds/jest/assets/vendor-three-TwbJShIZ.js                   1.59 kB │ gzip:   0.57 kB
+../../builds/jest/assets/accessibility-B4kwDiAE.js                  1.59 kB │ gzip:   0.92 kB
+../../builds/jest/assets/accessibility-BDiNWZUD.js                  1.60 kB │ gzip:   0.98 kB
+../../builds/jest/assets/accessibility-DRGqP7K6.js                  1.65 kB │ gzip:   0.98 kB
+../../builds/jest/assets/victory-Ftg8wV6N.js                        1.67 kB │ gzip:   0.84 kB
+../../builds/jest/assets/accessibility-TZIdKuXU.js                  1.68 kB │ gzip:   0.98 kB
+../../builds/jest/assets/shop-9skbhZF9.js                           1.72 kB │ gzip:   0.81 kB
+../../builds/jest/assets/PlatformPresenceSession-CzEhWnuL.js        1.72 kB │ gzip:   0.63 kB
+../../builds/jest/assets/onboarding-P14NxbMr.js                     1.73 kB │ gzip:   0.80 kB
+../../builds/jest/assets/accessibility-BOUSxXiL.js                  1.76 kB │ gzip:   1.06 kB
+../../builds/jest/assets/accessibility-CHIGdDnq.js                  1.77 kB │ gzip:   1.05 kB
+../../builds/jest/assets/accessibility-CqzKbFrh.js                  2.00 kB │ gzip:   1.04 kB
+../../builds/jest/assets/game-CBQVCHEu.js                           2.00 kB │ gzip:   1.16 kB
+../../builds/jest/assets/game-DugrZVK-.js                           2.01 kB │ gzip:   1.15 kB
+../../builds/jest/assets/game-BoliY9mL.js                           2.02 kB │ gzip:   1.15 kB
+../../builds/jest/assets/game-UuXq4gLU.js                           2.02 kB │ gzip:   1.13 kB
+../../builds/jest/assets/game-Zz4k6Y4h.js                           2.02 kB │ gzip:   1.20 kB
+../../builds/jest/assets/game-DWXtL8EX.js                           2.04 kB │ gzip:   1.16 kB
+../../builds/jest/assets/game-C6APJE3p.js                           2.07 kB │ gzip:   1.18 kB
+../../builds/jest/assets/game-Bg5MD8Zo.js                           2.07 kB │ gzip:   1.18 kB
+../../builds/jest/assets/profileMapper-Dk_qHeaf.js                  2.10 kB │ gzip:   0.73 kB
+../../builds/jest/assets/game-CB8rHK4q.js                           2.13 kB │ gzip:   1.22 kB
+../../builds/jest/assets/accessibility-DkfdKGJd.js                  2.21 kB │ gzip:   1.15 kB
+../../builds/jest/assets/game-WiBThsXY.js                           2.21 kB │ gzip:   1.30 kB
+../../builds/jest/assets/game-DaxQ3avs.js                           2.31 kB │ gzip:   1.32 kB
+../../builds/jest/assets/ReferralSharingCapability-1nT5CfVI.js      2.35 kB │ gzip:   1.11 kB
+../../builds/jest/assets/errors-BHxLQ1l1.js                         2.36 kB │ gzip:   1.20 kB
+../../builds/jest/assets/game-1Y1gZeIn.js                           2.37 kB │ gzip:   1.36 kB
+../../builds/jest/assets/errors-BzNiYrkL.js                         2.38 kB │ gzip:   1.23 kB
+../../builds/jest/assets/errors-A__uqMgo.js                         2.40 kB │ gzip:   1.26 kB
+../../builds/jest/assets/errors-BwB4svYZ.js                         2.41 kB │ gzip:   1.26 kB
+../../builds/jest/assets/errors-D4Az-shn.js                         2.45 kB │ gzip:   1.28 kB
+../../builds/jest/assets/errors-vXKfe_fy.js                         2.48 kB │ gzip:   1.32 kB
+../../builds/jest/assets/tooltips-BGKpbHhI.js                       2.49 kB │ gzip:   1.19 kB
+../../builds/jest/assets/accessibility-CvNNiUKA.js                  2.51 kB │ gzip:   1.11 kB
+../../builds/jest/assets/tooltips-D5Ywc9Vk.js                       2.53 kB │ gzip:   1.13 kB
+../../builds/jest/assets/errors-oQC0fBdQ.js                         2.54 kB │ gzip:   1.28 kB
+../../builds/jest/assets/game-DH8bVra0.js                           2.55 kB │ gzip:   1.31 kB
+../../builds/jest/assets/liveChallengePush-k_GgMhOQ.js              2.56 kB │ gzip:   1.28 kB
+../../builds/jest/assets/tooltips-8zDXHXQO.js                       2.56 kB │ gzip:   1.17 kB
+../../builds/jest/assets/tooltips-BR608YHT.js                       2.57 kB │ gzip:   1.21 kB
+../../builds/jest/assets/tooltips-Cyrlx-wK.js                       2.58 kB │ gzip:   1.11 kB
+../../builds/jest/assets/tooltips-BhmGk7Xr.js                       2.60 kB │ gzip:   1.20 kB
+../../builds/jest/assets/alerts-Vplz2Vh_.js                         2.61 kB │ gzip:   1.14 kB
+../../builds/jest/assets/errors-f00H2M3H.js                         2.62 kB │ gzip:   1.35 kB
+../../builds/jest/assets/tooltips-BUGcpZPI.js                       2.62 kB │ gzip:   1.19 kB
+../../builds/jest/assets/alerts-q9MO4qcu.js                         2.65 kB │ gzip:   1.24 kB
+../../builds/jest/assets/alerts-CW9WPJBo.js                         2.66 kB │ gzip:   1.18 kB
+../../builds/jest/assets/alerts-LkYGHeho.js                         2.66 kB │ gzip:   1.15 kB
+../../builds/jest/assets/tooltips-SnS9dCw5.js                       2.67 kB │ gzip:   1.19 kB
+../../builds/jest/assets/game-C0mAiFP_.js                           2.68 kB │ gzip:   1.39 kB
+../../builds/jest/assets/core-game-mJv1LpVc.js                      2.68 kB │ gzip:   1.18 kB
+../../builds/jest/assets/alerts-Db69BYs5.js                         2.68 kB │ gzip:   1.20 kB
+../../builds/jest/assets/errors-BXMrGLsG.js                         2.69 kB │ gzip:   1.33 kB
+../../builds/jest/assets/alerts-Bs9viBjA.js                         2.69 kB │ gzip:   1.20 kB
+../../builds/jest/assets/tooltips-C3horsHg.js                       2.70 kB │ gzip:   1.31 kB
+../../builds/jest/assets/errors-D3vm-yFo.js                         2.70 kB │ gzip:   1.37 kB
+../../builds/jest/assets/tooltips-25N5gaMS.js                       2.72 kB │ gzip:   1.22 kB
+../../builds/jest/assets/alerts-MlOWYfKx.js                         2.77 kB │ gzip:   1.29 kB
+../../builds/jest/assets/errors-CyHn_m_Y.js                         2.79 kB │ gzip:   1.39 kB
+../../builds/jest/assets/alerts-Bsb_ob3r.js                         2.81 kB │ gzip:   1.23 kB
+../../builds/jest/assets/tooltips-BTbd_UlK.js                       2.84 kB │ gzip:   1.23 kB
+../../builds/jest/assets/tooltips-DB9tD47Z.js                       2.90 kB │ gzip:   1.43 kB
+../../builds/jest/assets/alerts-DRR1JnuX.js                         2.93 kB │ gzip:   1.26 kB
+../../builds/jest/assets/alerts-h574sSGn.js                         2.93 kB │ gzip:   1.28 kB
+../../builds/jest/assets/alerts-FrzO_tOr.js                         2.95 kB │ gzip:   1.33 kB
+../../builds/jest/assets/errors-C81yRJEE.js                         3.00 kB │ gzip:   1.45 kB
+../../builds/jest/assets/tooltips-BR6mt4Wg.js                       3.03 kB │ gzip:   1.36 kB
+../../builds/jest/assets/errors-BY0IQe4V.js                         3.23 kB │ gzip:   1.43 kB
+../../builds/jest/assets/alerts-Wd945iJd.js                         3.26 kB │ gzip:   1.38 kB
+../../builds/jest/assets/tooltips-CpMS91Nr.js                       3.27 kB │ gzip:   1.36 kB
+../../builds/jest/assets/alerts-CxR1C9Tr.js                         3.30 kB │ gzip:   1.33 kB
+../../builds/jest/assets/game-CXsaVaB7.js                           3.35 kB │ gzip:   1.41 kB
+../../builds/jest/assets/errors-Bs_CAkn2.js                         3.85 kB │ gzip:   1.59 kB
+../../builds/jest/assets/alerts-BfJrctns.js                         3.89 kB │ gzip:   1.54 kB
+../../builds/jest/assets/achievements-C-fyuymw.js                   4.43 kB │ gzip:   1.39 kB
+../../builds/jest/assets/errors-DbyX3VtS.js                         4.47 kB │ gzip:   1.54 kB
+../../builds/jest/assets/alerts-QYlR2Eci.js                         4.62 kB │ gzip:   1.42 kB
+../../builds/jest/assets/tooltips-BtUE9qRL.js                       4.66 kB │ gzip:   1.37 kB
+../../builds/jest/assets/achievements-6RmjYSGq.js                   4.82 kB │ gzip:   1.55 kB
+../../builds/jest/assets/achievements-DEzHdCii.js                   4.84 kB │ gzip:   1.46 kB
+../../builds/jest/assets/achievements-C6G_vsmC.js                   4.84 kB │ gzip:   1.48 kB
+../../builds/jest/assets/achievements-CkIqW37X.js                   4.87 kB │ gzip:   1.49 kB
+../../builds/jest/assets/achievements-Ytt0GaZp.js                   4.90 kB │ gzip:   1.52 kB
+../../builds/jest/assets/achievements-BWrQAU5a.js                   5.00 kB │ gzip:   1.50 kB
+../../builds/jest/assets/firebase-blPVxxUt.js                       5.00 kB │ gzip:   2.21 kB
+../../builds/jest/assets/achievements-DCjJr2DA.js                   5.05 kB │ gzip:   1.53 kB
+../../builds/jest/assets/achievements-Cel50toA.js                   5.06 kB │ gzip:   1.56 kB
+../../builds/jest/assets/achievements-BVL8_glA.js                   5.11 kB │ gzip:   1.62 kB
+../../builds/jest/assets/race-HDzyXpCe.js                           5.40 kB │ gzip:   2.34 kB
+../../builds/jest/assets/achievements-ym6lLXEz.js                   5.45 kB │ gzip:   1.64 kB
+../../builds/jest/assets/achievements-rMNNu3C2.js                   5.56 kB │ gzip:   1.71 kB
+../../builds/jest/assets/race-x3acAwSJ.js                           5.57 kB │ gzip:   2.52 kB
+../../builds/jest/assets/race-CP5nJT7f.js                           5.60 kB │ gzip:   2.50 kB
+../../builds/jest/assets/race-vtuRHQ7h.js                           5.64 kB │ gzip:   2.47 kB
+../../builds/jest/assets/race-DMQMTiIq.js                           5.69 kB │ gzip:   2.62 kB
+../../builds/jest/assets/race--OkX9VoJ.js                           5.69 kB │ gzip:   2.49 kB
+../../builds/jest/assets/race-BLccIZjT.js                           5.69 kB │ gzip:   2.48 kB
+../../builds/jest/assets/achievements-CdPp9Nbb.js                   5.72 kB │ gzip:   1.74 kB
+../../builds/jest/assets/profile-CWoPx0tb.js                        5.80 kB │ gzip:   2.46 kB
+../../builds/jest/assets/race-OLfinZlo.js                           5.85 kB │ gzip:   2.56 kB
+../../builds/jest/assets/race-CZsm33Gq.js                           5.92 kB │ gzip:   2.58 kB
+../../builds/jest/assets/profile-D41XTaep.js                        5.94 kB │ gzip:   2.59 kB
+../../builds/jest/assets/profile-Cx0pRpKm.js                        5.96 kB │ gzip:   2.68 kB
+../../builds/jest/assets/validation-Cd5ghGRI.js                     6.01 kB │ gzip:   2.07 kB
+../../builds/jest/assets/race-ooYNIX-x.js                           6.05 kB │ gzip:   2.67 kB
+../../builds/jest/assets/profile-B5OfPl3A.js                        6.06 kB │ gzip:   2.78 kB
+../../builds/jest/assets/profile-Daqs-cvK.js                        6.07 kB │ gzip:   2.62 kB
+../../builds/jest/assets/profile-CPQiAE5G.js                        6.12 kB │ gzip:   2.66 kB
+../../builds/jest/assets/profile-7wyIyA7o.js                        6.17 kB │ gzip:   2.69 kB
+../../builds/jest/assets/profile-BQe9K_JJ.js                        6.21 kB │ gzip:   2.69 kB
+../../builds/jest/assets/achievements-CZDQ5PMR.js                   6.28 kB │ gzip:   1.71 kB
+../../builds/jest/assets/race-BB0wSbdp.js                           6.32 kB │ gzip:   2.63 kB
+../../builds/jest/assets/profile-CRrvshbt.js                        6.35 kB │ gzip:   2.75 kB
+../../builds/jest/assets/vendor-three-C1-YGrJJ.js                   6.48 kB │ gzip:   2.48 kB
+../../builds/jest/assets/profile-CgUGG0CW.js                        6.56 kB │ gzip:   2.89 kB
+../../builds/jest/assets/race-C1QxyOot.js                           6.57 kB │ gzip:   2.82 kB
+../../builds/jest/assets/race-BL2ZN5k9.js                           6.65 kB │ gzip:   2.72 kB
+../../builds/jest/assets/profile-BaD_0pJD.js                        6.75 kB │ gzip:   2.86 kB
+../../builds/jest/assets/profile-Bu5O4eN5.js                        7.07 kB │ gzip:   2.96 kB
+../../builds/jest/assets/achievements-BfD8I-4b.js                   7.25 kB │ gzip:   1.91 kB
+../../builds/jest/assets/profile-Mwanf_dW.js                        7.57 kB │ gzip:   2.86 kB
+../../builds/jest/assets/requestSchemas-CafEj8FO.js                 7.73 kB │ gzip:   2.24 kB
+../../builds/jest/assets/achievements-BFYI4mHN.js                   7.93 kB │ gzip:   1.73 kB
+../../builds/jest/assets/race-XGoDm_LX.js                           8.03 kB │ gzip:   3.03 kB
+../../builds/jest/assets/firebaseServices-B4eL1FGH.js               8.53 kB │ gzip:   3.32 kB
+../../builds/jest/assets/profile-Cp1G-NTZ.js                        8.70 kB │ gzip:   3.23 kB
+../../builds/jest/assets/race-D-dxV0Fh.js                           9.05 kB │ gzip:   3.26 kB
+../../builds/jest/assets/bridge-CpH8mEjy.js                         9.15 kB │ gzip:   3.00 kB
+../../builds/jest/assets/vendor-three-BiLsvv9t.js                   9.76 kB │ gzip:   3.08 kB
+../../builds/jest/assets/race-q9oTi_du.js                           9.82 kB │ gzip:   2.93 kB
+../../builds/jest/assets/vendor-three-D-mxgd2y.js                   9.91 kB │ gzip:   3.46 kB
+../../builds/jest/assets/profile-RYx2GXIC.js                       10.28 kB │ gzip:   3.07 kB
+../../builds/jest/assets/achievements-B2kr0ck1.js                  11.47 kB │ gzip:   2.86 kB
+../../builds/jest/assets/vendor-three-xMnH1CgV.js                  13.78 kB │ gzip:   4.54 kB
+../../builds/jest/assets/LiveRacePushConsent-xw7UcBdX.js           17.09 kB │ gzip:   6.78 kB
+../../builds/jest/assets/SolarSystem-DytKah0B.js                   17.95 kB │ gzip:   6.15 kB
+../../builds/jest/assets/fakeServices-BJ2SoSFb.js                  20.68 kB │ gzip:   7.08 kB
+../../builds/jest/assets/vendor-three-DhQwfZ_W.js                  20.91 kB │ gzip:   4.77 kB
+../../builds/jest/assets/i18n-D0LGfMWa.js                          32.03 kB │ gzip:  13.05 kB
+../../builds/jest/assets/vendor-three-DVT6gsgu.js                  37.04 kB │ gzip:  11.77 kB
+../../builds/jest/assets/RaceTo10Game-B3mNUgoV.js                  49.36 kB │ gzip:  16.06 kB
+../../builds/jest/assets/GameModalView-DNizT1BX.js                 53.13 kB │ gzip:  18.04 kB
+../../builds/jest/assets/vendor-three-14j5cCLD.js                  57.11 kB │ gzip:  14.93 kB
+../../builds/jest/assets/localeModules-Cz7dgpv5.js                 57.34 kB │ gzip:   7.61 kB
+../../builds/jest/assets/vendor-three-2rjE_d5x.js                  65.48 kB │ gzip:  18.35 kB
+../../builds/jest/assets/vendor-three-J1_gq1pb.js                  74.16 kB │ gzip:  21.24 kB
+../../builds/jest/assets/vendor-three-CxCSEef7.js                  78.41 kB │ gzip:  23.16 kB
+../../builds/jest/assets/sentry-CCodkTi_.js                        90.02 kB │ gzip:  30.83 kB
+../../builds/jest/assets/raceSchemas-Cke_AfHE.js                  107.87 kB │ gzip:  31.00 kB
+../../builds/jest/assets/vendor-three-DuOo2BUN.js                 192.56 kB │ gzip:  42.42 kB
+../../builds/jest/assets/vendor-react-CuZr8RiT.js                 219.00 kB │ gzip:  68.35 kB
+../../builds/jest/assets/jest-CnWA0O4y.js                         256.02 kB │ gzip:  76.48 kB
+../../builds/jest/assets/vendor-firebase-NTL0Yt-F.js              397.08 kB │ gzip: 118.60 kB
+
+✓ built in 2.51s
+$ node scripts/audit-jest-artifact.mjs
+Jest artifact audit passed: 411 files, 4.42 MB, 0.54 MB initial resources, relative entry paths, no native modules, external auth/ads, Google Analytics, install copy, secrets, source maps, or missing entry assets
+$ pnpm check:target-boundaries && pnpm check:facebook-commerce-activation && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && FACEBOOK_BUILD=1 NODE_ENV=production vite build --mode facebook && pnpm audit:facebook-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.855916ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.071004ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.868182ms)
+✔ rejects imports between different target owners (2.002904ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (1.289994ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.503489ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.36682ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (2.727627ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (2.207271ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (1.032185ms)
+✔ aggregates violations in deterministic file and source order (1.2509ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.780329
+Web Target boundary audit passed (315 files, 1366 module references).
+$ node ../../scripts/audit-facebook-commerce-activation.mjs
+Facebook commerce-activation audit passed: unverified commerce remains unreachable.
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+Third-party notices are current (107162 bytes)
+vite v8.3.1 building client environment for facebook...
+transforming...
+✓ 1404 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/facebook/fbapp-config.json                                 0.25 kB │ gzip:   0.19 kB
+../../builds/facebook/index.html                                        1.62 kB │ gzip:   0.56 kB
+../../builds/facebook/assets/tex_ring_b-BUHGHX-C.webp                   4.45 kB
+../../builds/facebook/assets/coin-BnaBYH65.svg                          6.30 kB │ gzip:   1.96 kB
+../../builds/facebook/assets/wheel-bg-BifSuxYC.svg                      7.74 kB │ gzip:   1.13 kB
+../../builds/facebook/assets/tex_ring_a-DuvJN49d.webp                   8.03 kB
+../../builds/facebook/assets/starfield-BdpD2Kkw.svg                    12.46 kB │ gzip:   2.14 kB
+../../builds/facebook/assets/tex_sun_corona-v2-BMfKNPFY.webp           14.24 kB
+../../builds/facebook/assets/tex_moon_h-DGScgJpd.webp                  14.81 kB
+../../builds/facebook/assets/tex_moon_g-B0h_U8wT.webp                  14.99 kB
+../../builds/facebook/assets/tex_sun_spots_02-CCRhajmp.webp            18.87 kB
+../../builds/facebook/assets/tex_planet_u-BzJmFwqP.webp                18.90 kB
+../../builds/facebook/assets/tex_planet_v-DtVH6iTD.webp                19.84 kB
+../../builds/facebook/assets/tex_planet_a-CKSLcGca.webp                25.73 kB
+../../builds/facebook/third-party-licenses.txt                         25.82 kB │ gzip:   6.30 kB
+../../builds/facebook/assets/main-logo-DeVvp0Z6.webp                   26.72 kB
+../../builds/facebook/assets/tex_moon_f-i48T7jJA.webp                  29.64 kB
+../../builds/facebook/assets/tex_planet_s-fmsfCdSp.webp                31.28 kB
+../../builds/facebook/assets/tex_planet_k-BTSVj7tG.webp                32.65 kB
+../../builds/facebook/assets/tex_planet_r-k9FTlMLw.webp                32.83 kB
+../../builds/facebook/assets/tex_moon_d-C8et7CUZ.webp                  36.81 kB
+../../builds/facebook/assets/chest-open-CQnbBCSD.webp                  38.74 kB
+../../builds/facebook/assets/riddlequest-r-kPbkvcmu.webp               42.31 kB
+../../builds/facebook/assets/tex_moon_c-CbidFNBi.webp                  45.87 kB
+../../builds/facebook/assets/PoetsenOne-Regular-C2losmxN.woff2         48.38 kB
+../../builds/facebook/assets/Poppins-Bold-ryPfWsYm.woff2               51.20 kB
+../../builds/facebook/assets/Poppins-SemiBold-9BRRzCnb.woff2           51.80 kB
+../../builds/facebook/assets/Poppins-Regular-B-jQUxpD.woff2            51.85 kB
+../../builds/facebook/assets/chest-closed-GI3XjnpL.png                 56.64 kB
+../../builds/facebook/assets/tex_planet_d-Bc6RyclI.webp                60.96 kB
+../../builds/facebook/assets/music-DoaAtikm.webm                    1,139.48 kB
+../../builds/facebook/assets/RankedAvatar-BYYEKjVK.css                  1.90 kB │ gzip:   0.75 kB
+../../builds/facebook/assets/GameModalView-CVwlBp5V.css                24.45 kB │ gzip:   5.97 kB
+../../builds/facebook/assets/RaceTo10Game-o_06kpvy.css                 25.93 kB │ gzip:   6.34 kB
+../../builds/facebook/assets/facebook-Dnd942tX.css                     31.78 kB │ gzip:   7.64 kB
+../../builds/facebook/assets/index-Ds8N6oqe.js                          0.04 kB │ gzip:   0.06 kB
+../../builds/facebook/assets/core-bridge-constants--aS0k-qf.js          0.10 kB │ gzip:   0.12 kB
+../../builds/facebook/assets/streakFanfare-D5FNWyR-.js                  0.24 kB │ gzip:   0.24 kB
+../../builds/facebook/assets/streakFanfare-nH51PXfP.js                  0.24 kB │ gzip:   0.22 kB
+../../builds/facebook/assets/streakFanfare-D8ya_JNu.js                  0.24 kB │ gzip:   0.22 kB
+../../builds/facebook/assets/streakFanfare-DWbUNWIe.js                  0.24 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/streakFanfare-BYE0U2nU.js                  0.24 kB │ gzip:   0.22 kB
+../../builds/facebook/assets/streakFanfare-DOWwEDty.js                  0.24 kB │ gzip:   0.23 kB
+../../builds/facebook/assets/streakFanfare-BDik9euY.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/facebook/assets/streakFanfare-CBBbHWwq.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/facebook/assets/streakFanfare-jg_xLRQF.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/facebook/assets/streakFanfare-BbL7_7k5.js                  0.25 kB │ gzip:   0.22 kB
+../../builds/facebook/assets/streakFanfare-DTPGIncA.js                  0.26 kB │ gzip:   0.23 kB
+../../builds/facebook/assets/streakFanfare-DnqoM55A.js                  0.26 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/coinPurchase-C7Vy1ASc.js                   0.27 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/streakFanfare-Cub-Q8ZC.js                  0.27 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/coinPurchase-BYVVINHp.js                   0.27 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/coinPurchase-_IHX8OXJ.js                   0.27 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/coinPurchase-BZVNlz11.js                   0.28 kB │ gzip:   0.24 kB
+../../builds/facebook/assets/coinPurchase-DLij0XrJ.js                   0.28 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/coinPurchase-CnSXfRTK.js                   0.28 kB │ gzip:   0.28 kB
+../../builds/facebook/assets/coinPurchase-DaUuHEwu.js                   0.28 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/coinPurchase-CK7PF9KX.js                   0.28 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/coinPurchase-Dphs8PuT.js                   0.28 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/streakFanfare-Cs_VA6tJ.js                  0.28 kB │ gzip:   0.27 kB
+../../builds/facebook/assets/coinPurchase-BdFq5bZC.js                   0.28 kB │ gzip:   0.28 kB
+../../builds/facebook/assets/aboutLegal-DDFGPNCH.js                     0.29 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/coinPurchase-xYGMEqwZ.js                   0.29 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/aboutLegal-DRIFyWzN.js                     0.29 kB │ gzip:   0.29 kB
+../../builds/facebook/assets/coinPurchase-ByeNUhlf.js                   0.29 kB │ gzip:   0.29 kB
+../../builds/facebook/assets/aboutLegal-D5ciQ0bv.js                     0.30 kB │ gzip:   0.28 kB
+../../builds/facebook/assets/aboutLegal-bOd9o3D2.js                     0.30 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/aboutLegal-BxoJ25GD.js                     0.30 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/aboutLegal-Dhd71lSG.js                     0.30 kB │ gzip:   0.27 kB
+../../builds/facebook/assets/aboutLegal-CM4qvqpd.js                     0.30 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/aboutLegal-DlF3CX7M.js                     0.31 kB │ gzip:   0.27 kB
+../../builds/facebook/assets/aboutLegal-pVkVSjy8.js                     0.31 kB │ gzip:   0.26 kB
+../../builds/facebook/assets/aboutLegal-a1B-pdoH.js                     0.31 kB │ gzip:   0.28 kB
+../../builds/facebook/assets/coinPurchase-BrtYGPPp.js                   0.31 kB │ gzip:   0.30 kB
+../../builds/facebook/assets/aboutLegal-BAlSQDJA.js                     0.32 kB │ gzip:   0.30 kB
+../../builds/facebook/assets/rolldown-runtime-BX80bFGj.js               0.32 kB │ gzip:   0.24 kB
+../../builds/facebook/assets/streakFanfare-BzlSgn3C.js                  0.32 kB │ gzip:   0.28 kB
+../../builds/facebook/assets/raceMatchmakingFailure-CTyZqPtq.js         0.33 kB │ gzip:   0.25 kB
+../../builds/facebook/assets/aboutLegal-DPa59xbr.js                     0.33 kB │ gzip:   0.32 kB
+../../builds/facebook/assets/aboutLegal-DWAsypAb.js                     0.33 kB │ gzip:   0.30 kB
+../../builds/facebook/assets/coinPurchase-O2VpNloi.js                   0.34 kB │ gzip:   0.30 kB
+../../builds/facebook/assets/aboutLegal-BWcOtV6z.js                     0.40 kB │ gzip:   0.33 kB
+../../builds/facebook/assets/coinPurchase-BV6JOECJ.js                   0.40 kB │ gzip:   0.32 kB
+../../builds/facebook/assets/aboutLegal-CafrKBIi.js                     0.40 kB │ gzip:   0.35 kB
+../../builds/facebook/assets/levelUpFanfare-B4mmyPlr.js                 0.44 kB │ gzip:   0.34 kB
+../../builds/facebook/assets/levelUpFanfare-BPKjiUsq.js                 0.44 kB │ gzip:   0.35 kB
+../../builds/facebook/assets/levelUpFanfare-Cl0qa3XP.js                 0.45 kB │ gzip:   0.36 kB
+../../builds/facebook/assets/levelUpFanfare-CTGjhSJn.js                 0.45 kB │ gzip:   0.33 kB
+../../builds/facebook/assets/levelUpFanfare-Da_x7Jue.js                 0.45 kB │ gzip:   0.34 kB
+../../builds/facebook/assets/levelUpFanfare-DyoO6WH1.js                 0.47 kB │ gzip:   0.35 kB
+../../builds/facebook/assets/levelUpFanfare-CHdstpWu.js                 0.47 kB │ gzip:   0.35 kB
+../../builds/facebook/assets/levelUpFanfare-BAlJ8D0X.js                 0.47 kB │ gzip:   0.36 kB
+../../builds/facebook/assets/levelUpFanfare-v2MHtQSQ.js                 0.47 kB │ gzip:   0.36 kB
+../../builds/facebook/assets/levelUpFanfare-K9Nos2mF.js                 0.49 kB │ gzip:   0.36 kB
+../../builds/facebook/assets/levelUpFanfare-Bue1Atdb.js                 0.51 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/levelUpFanfare-DycDwaw7.js                 0.57 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/loss-CAEFvJIw.js                           0.57 kB │ gzip:   0.38 kB
+../../builds/facebook/assets/loss-k7gnV9d7.js                           0.60 kB │ gzip:   0.37 kB
+../../builds/facebook/assets/navigation-LHo0RTEh.js                     0.60 kB │ gzip:   0.46 kB
+../../builds/facebook/assets/loss-BMJNzftc.js                           0.60 kB │ gzip:   0.38 kB
+../../builds/facebook/assets/navigation-BQYz0n7p.js                     0.60 kB │ gzip:   0.46 kB
+../../builds/facebook/assets/levelUpFanfare-BCJJmg6G.js                 0.60 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/navigation-Ba8oafGm.js                     0.60 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/levelUpFanfare-MEWTAVKQ.js                 0.60 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/settings-BJfbarUe.js                       0.61 kB │ gzip:   0.41 kB
+../../builds/facebook/assets/loss-uWLV7_IN.js                           0.61 kB │ gzip:   0.39 kB
+../../builds/facebook/assets/loss-Chv-L1hH.js                           0.61 kB │ gzip:   0.43 kB
+../../builds/facebook/assets/leaderboard-BRdR07-x.js                    0.61 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/navigation-BR5T4TtI.js                     0.61 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/loss-0ziv21kt.js                           0.61 kB │ gzip:   0.39 kB
+../../builds/facebook/assets/settings-TXvA79Ew.js                       0.61 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/navigation-G4mMFInB.js                     0.62 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/loss-B40AggAB.js                           0.62 kB │ gzip:   0.40 kB
+../../builds/facebook/assets/settings-DPn3bYut.js                       0.62 kB │ gzip:   0.42 kB
+../../builds/facebook/assets/navigation-uBJWS9jJ.js                     0.62 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/settings-Cb6Q_l6B.js                       0.63 kB │ gzip:   0.42 kB
+../../builds/facebook/assets/navigation-BvduCtS3.js                     0.63 kB │ gzip:   0.46 kB
+../../builds/facebook/assets/settings-Dxn-nmrz.js                       0.63 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/settings-C0q_S8jl.js                       0.63 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/leaderboard-CVOdB_vV.js                    0.63 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/leaderboard-DjcuQLRV.js                    0.63 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/loss-CD2x3gjV.js                           0.63 kB │ gzip:   0.39 kB
+../../builds/facebook/assets/navigation-BAKuJQ0V.js                     0.63 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/navigation-y3_6efZc.js                     0.63 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/loss-DlbT0guL.js                           0.64 kB │ gzip:   0.43 kB
+../../builds/facebook/assets/credits-voYHsFUT.js                        0.64 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/settings-EAZRhExY.js                       0.65 kB │ gzip:   0.49 kB
+../../builds/facebook/assets/leaderboard-Tve_fJmi.js                    0.65 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/settings-DJXuQjmJ.js                       0.65 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/navigation-NcmlwEhr.js                     0.65 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/credits-D4cBsewH.js                        0.65 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/stats-ChGB28Me.js                          0.65 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/loss-BH98FRri.js                           0.65 kB │ gzip:   0.39 kB
+../../builds/facebook/assets/settings-D34B027x.js                       0.65 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/loss-BbszsdYQ.js                           0.65 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/navigation-DrtwLq4d.js                     0.65 kB │ gzip:   0.49 kB
+../../builds/facebook/assets/leaderboard-Dip51uU5.js                    0.66 kB │ gzip:   0.49 kB
+../../builds/facebook/assets/FacebookFirebaseAppCheck-DJnRn42L.js       0.66 kB │ gzip:   0.41 kB
+../../builds/facebook/assets/leaderboard-DHMrlBIz.js                    0.66 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/leaderboard-CePY92Zg.js                    0.66 kB │ gzip:   0.51 kB
+../../builds/facebook/assets/settings-z81bey13.js                       0.66 kB │ gzip:   0.46 kB
+../../builds/facebook/assets/leaderboard-xz2rxIEE.js                    0.67 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/loss-BC08gz35.js                           0.67 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/leaderboard-Cm2XrxOq.js                    0.67 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/common-yo3SbgUa.js                         0.67 kB │ gzip:   0.44 kB
+../../builds/facebook/assets/credits-Cl-jOBH2.js                        0.67 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/credits-CwKzye_a.js                        0.68 kB │ gzip:   0.46 kB
+../../builds/facebook/assets/credits-DAs-qgR8.js                        0.68 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/credits-LEc_FZAv.js                        0.68 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/credits-D5Qv8qTc.js                        0.68 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/settings-CgqA2j0A.js                       0.68 kB │ gzip:   0.50 kB
+../../builds/facebook/assets/stats-zFYbm85S.js                          0.69 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/credits-CamtRNro.js                        0.69 kB │ gzip:   0.50 kB
+../../builds/facebook/assets/credits-DxN1dYl-.js                        0.69 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/common-Dxz7TG0R.js                         0.69 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/common-CcQuILuh.js                         0.69 kB │ gzip:   0.46 kB
+../../builds/facebook/assets/common-nPezcvFs.js                         0.69 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/settings-DTBGSsux.js                       0.70 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/stats-C840pk2y.js                          0.70 kB │ gzip:   0.50 kB
+../../builds/facebook/assets/stats-BUW-2iCW.js                          0.70 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/stats-sP4O4uOB.js                          0.70 kB │ gzip:   0.49 kB
+../../builds/facebook/assets/credits-tP6PVopg.js                        0.71 kB │ gzip:   0.55 kB
+../../builds/facebook/assets/stats-tSVkZ_F2.js                          0.71 kB │ gzip:   0.50 kB
+../../builds/facebook/assets/leaderboard-DooQ9gVw.js                    0.71 kB │ gzip:   0.53 kB
+../../builds/facebook/assets/common-Dn2o5t3O.js                         0.71 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/leaderboard-BRVy3Mmi.js                    0.71 kB │ gzip:   0.49 kB
+../../builds/facebook/assets/common--aEQLWh2.js                         0.71 kB │ gzip:   0.48 kB
+../../builds/facebook/assets/navigation-CUOYuFbf.js                     0.71 kB │ gzip:   0.57 kB
+../../builds/facebook/assets/loss-Da8541eN.js                           0.71 kB │ gzip:   0.45 kB
+../../builds/facebook/assets/common-y4a6s1oN.js                         0.72 kB │ gzip:   0.49 kB
+../../builds/facebook/assets/stats-DlS2WGcR.js                          0.72 kB │ gzip:   0.56 kB
+../../builds/facebook/assets/common-KiRJYwtM.js                         0.72 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/common-MpoR7pbE.js                         0.72 kB │ gzip:   0.47 kB
+../../builds/facebook/assets/stats-CtSj4RI_.js                          0.72 kB │ gzip:   0.51 kB
+../../builds/facebook/assets/stats-xSvk09Tu.js                          0.73 kB │ gzip:   0.51 kB
+../../builds/facebook/assets/stats-DVIQvc1k.js                          0.73 kB │ gzip:   0.51 kB
+../../builds/facebook/assets/settings-B_BGKgyc.js                       0.74 kB │ gzip:   0.49 kB
+../../builds/facebook/assets/common-ffIM6-e_.js                         0.74 kB │ gzip:   0.50 kB
+../../builds/facebook/assets/levelUpFanfare-DQ8np8Rb.js                 0.74 kB │ gzip:   0.46 kB
+../../builds/facebook/assets/stats-fRNVYmj2.js                          0.74 kB │ gzip:   0.54 kB
+../../builds/facebook/assets/navigation-DBkwvqdy.js                     0.76 kB │ gzip:   0.55 kB
+../../builds/facebook/assets/leaderboard-BXC6Nr9l.js                    0.77 kB │ gzip:   0.55 kB
+../../builds/facebook/assets/credits-DqWadySW.js                        0.77 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/common-C3xPfGc-.js                         0.78 kB │ gzip:   0.50 kB
+../../builds/facebook/assets/settings-D0_UhizG.js                       0.79 kB │ gzip:   0.54 kB
+../../builds/facebook/assets/credits-DAfyC-CK.js                        0.80 kB │ gzip:   0.58 kB
+../../builds/facebook/assets/stats-B1V3WjYh.js                          0.80 kB │ gzip:   0.57 kB
+../../builds/facebook/assets/common-vpljjTN8.js                         0.81 kB │ gzip:   0.54 kB
+../../builds/facebook/assets/common-Dz3UpTCl.js                         0.82 kB │ gzip:   0.55 kB
+../../builds/facebook/assets/loss-CWXPUZRX.js                           0.82 kB │ gzip:   0.52 kB
+../../builds/facebook/assets/credits-CPMr9j5i.js                        0.83 kB │ gzip:   0.59 kB
+../../builds/facebook/assets/navigation-MfKaCO-M.js                     0.83 kB │ gzip:   0.58 kB
+../../builds/facebook/assets/firebaseLiveRaceSignals-9JOwgQqp.js        0.88 kB │ gzip:   0.51 kB
+../../builds/facebook/assets/leaderboard-DDTHVAn4.js                    0.90 kB │ gzip:   0.56 kB
+../../builds/facebook/assets/settings-CS_i32e5.js                       0.91 kB │ gzip:   0.54 kB
+../../builds/facebook/assets/onboarding-DQLra8FR.js                     0.92 kB │ gzip:   0.59 kB
+../../builds/facebook/assets/navigation-BQVuBhL8.js                     0.93 kB │ gzip:   0.57 kB
+../../builds/facebook/assets/stats-DhRrKJqk.js                          0.93 kB │ gzip:   0.59 kB
+../../builds/facebook/assets/stats-DGElKeRF.js                          0.94 kB │ gzip:   0.63 kB
+../../builds/facebook/assets/leaderboard-D4odGT_9.js                    0.95 kB │ gzip:   0.60 kB
+../../builds/facebook/assets/FirebasePresenceTransport-DmxR9JR6.js      0.95 kB │ gzip:   0.50 kB
+../../builds/facebook/assets/common-BdXkwqia.js                         0.95 kB │ gzip:   0.58 kB
+../../builds/facebook/assets/onboarding-DBG6CBbL.js                     0.95 kB │ gzip:   0.60 kB
+../../builds/facebook/assets/credits-BleaRYoH.js                        0.98 kB │ gzip:   0.63 kB
+../../builds/facebook/assets/stats-CuYOugsp.js                          0.98 kB │ gzip:   0.59 kB
+../../builds/facebook/assets/onboarding-DRBoez9o.js                     0.99 kB │ gzip:   0.60 kB
+../../builds/facebook/assets/onboarding-Dh8uBuI7.js                     0.99 kB │ gzip:   0.67 kB
+../../builds/facebook/assets/shop-B7pKqerD.js                           1.00 kB │ gzip:   0.67 kB
+../../builds/facebook/assets/onboarding-CvwH3JRg.js                     1.01 kB │ gzip:   0.63 kB
+../../builds/facebook/assets/shop-Bxc6Vazv.js                           1.01 kB │ gzip:   0.64 kB
+../../builds/facebook/assets/shop-Br7kjNqm.js                           1.01 kB │ gzip:   0.66 kB
+../../builds/facebook/assets/shop-2t-QOlLl.js                           1.02 kB │ gzip:   0.63 kB
+../../builds/facebook/assets/loss-yasTnJNB.js                           1.03 kB │ gzip:   0.53 kB
+../../builds/facebook/assets/shop-BBAL6gd1.js                           1.03 kB │ gzip:   0.65 kB
+../../builds/facebook/assets/shop-DogN41pu.js                           1.03 kB │ gzip:   0.66 kB
+../../builds/facebook/assets/leaderboard-DgAQ8B8R.js                    1.04 kB │ gzip:   0.56 kB
+../../builds/facebook/assets/credits-BbaTbmS6.js                        1.05 kB │ gzip:   0.59 kB
+../../builds/facebook/assets/onboarding-Dz1I3NHF.js                     1.06 kB │ gzip:   0.72 kB
+../../builds/facebook/assets/shop-CxNt_bIa.js                           1.06 kB │ gzip:   0.71 kB
+../../builds/facebook/assets/shop-CI3rvyFj.js                           1.06 kB │ gzip:   0.70 kB
+../../builds/facebook/assets/shop-CGQR-1WH.js                           1.06 kB │ gzip:   0.66 kB
+../../builds/facebook/assets/onboarding-Bc53XwVf.js                     1.06 kB │ gzip:   0.63 kB
+../../builds/facebook/assets/onboarding-GaDlHPGX.js                     1.07 kB │ gzip:   0.65 kB
+../../builds/facebook/assets/onboarding-Db1bojX4.js                     1.07 kB │ gzip:   0.66 kB
+../../builds/facebook/assets/onboarding-9zKAd3CI.js                     1.07 kB │ gzip:   0.66 kB
+../../builds/facebook/assets/victory-aH2F2ifU.js                        1.08 kB │ gzip:   0.71 kB
+../../builds/facebook/assets/victory-DC9vM_Tc.js                        1.08 kB │ gzip:   0.68 kB
+../../builds/facebook/assets/victory-D0qqLXEz.js                        1.08 kB │ gzip:   0.68 kB
+../../builds/facebook/assets/victory-CeF9v80c.js                        1.08 kB │ gzip:   0.71 kB
+../../builds/facebook/assets/victory-Bgt1szQl.js                        1.09 kB │ gzip:   0.69 kB
+../../builds/facebook/assets/shop-mGKFaann.js                           1.09 kB │ gzip:   0.70 kB
+../../builds/facebook/assets/common-Bd-x9vS3.js                         1.09 kB │ gzip:   0.58 kB
+../../builds/facebook/assets/victory-BKzUbbGR.js                        1.10 kB │ gzip:   0.72 kB
+../../builds/facebook/assets/onboarding-B_FvyPF8.js                     1.11 kB │ gzip:   0.74 kB
+../../builds/facebook/assets/victory-5LBKH9w4.js                        1.11 kB │ gzip:   0.76 kB
+../../builds/facebook/assets/onboarding-D4A7IRHO.js                     1.12 kB │ gzip:   0.74 kB
+../../builds/facebook/assets/victory-DSoKnGoZ.js                        1.12 kB │ gzip:   0.69 kB
+../../builds/facebook/assets/victory-WnOT0bNz.js                        1.14 kB │ gzip:   0.71 kB
+../../builds/facebook/assets/shop-VeWXLU1X.js                           1.14 kB │ gzip:   0.77 kB
+../../builds/facebook/assets/shop-MKpBYOPd.js                           1.14 kB │ gzip:   0.78 kB
+../../builds/facebook/assets/victory-9FrSpGI7.js                        1.15 kB │ gzip:   0.72 kB
+../../builds/facebook/assets/shop-Y5kENKLF.js                           1.21 kB │ gzip:   0.83 kB
+../../builds/facebook/assets/victory-BpkYhsKD.js                        1.22 kB │ gzip:   0.80 kB
+../../builds/facebook/assets/victory-Dp0Ltz6A.js                        1.22 kB │ gzip:   0.83 kB
+../../builds/facebook/assets/onboarding-BI5ouef1.js                     1.24 kB │ gzip:   0.79 kB
+../../builds/facebook/assets/shop-C7LFLzdx.js                           1.26 kB │ gzip:   0.73 kB
+../../builds/facebook/assets/victory-hVbmD5ZC.js                        1.26 kB │ gzip:   0.79 kB
+../../builds/facebook/assets/onboarding-BtmL5mvj.js                     1.33 kB │ gzip:   0.77 kB
+../../builds/facebook/assets/preload-helper-ClC2XIXo.js                 1.33 kB │ gzip:   0.75 kB
+../../builds/facebook/assets/firebaseClient-CS8nNwxX.js                 1.40 kB │ gzip:   0.54 kB
+../../builds/facebook/assets/victory-BZ8a1RcW.js                        1.47 kB │ gzip:   0.89 kB
+../../builds/facebook/assets/accessibility-CN_qPQIa.js                  1.49 kB │ gzip:   0.89 kB
+../../builds/facebook/assets/accessibility-CI4Rdj-4.js                  1.50 kB │ gzip:   0.88 kB
+../../builds/facebook/assets/accessibility-ByCyVLjU.js                  1.53 kB │ gzip:   0.94 kB
+../../builds/facebook/assets/accessibility-CTMqWnYu.js                  1.55 kB │ gzip:   0.91 kB
+../../builds/facebook/assets/accessibility-cpV5YSgo.js                  1.56 kB │ gzip:   1.01 kB
+../../builds/facebook/assets/accessibility-C-xuQOx7.js                  1.57 kB │ gzip:   0.91 kB
+../../builds/facebook/assets/vendor-three-TwbJShIZ.js                   1.59 kB │ gzip:   0.57 kB
+../../builds/facebook/assets/accessibility-B4kwDiAE.js                  1.59 kB │ gzip:   0.92 kB
+../../builds/facebook/assets/accessibility-BDiNWZUD.js                  1.60 kB │ gzip:   0.98 kB
+../../builds/facebook/assets/accessibility-DRGqP7K6.js                  1.65 kB │ gzip:   0.98 kB
+../../builds/facebook/assets/victory-Ftg8wV6N.js                        1.67 kB │ gzip:   0.84 kB
+../../builds/facebook/assets/accessibility-TZIdKuXU.js                  1.68 kB │ gzip:   0.98 kB
+../../builds/facebook/assets/shop-9skbhZF9.js                           1.72 kB │ gzip:   0.81 kB
+../../builds/facebook/assets/PlatformPresenceSession-CzEhWnuL.js        1.72 kB │ gzip:   0.63 kB
+../../builds/facebook/assets/onboarding-P14NxbMr.js                     1.73 kB │ gzip:   0.80 kB
+../../builds/facebook/assets/accessibility-BOUSxXiL.js                  1.76 kB │ gzip:   1.06 kB
+../../builds/facebook/assets/accessibility-CHIGdDnq.js                  1.77 kB │ gzip:   1.05 kB
+../../builds/facebook/assets/accessibility-CqzKbFrh.js                  2.00 kB │ gzip:   1.04 kB
+../../builds/facebook/assets/game-CBQVCHEu.js                           2.00 kB │ gzip:   1.16 kB
+../../builds/facebook/assets/game-DugrZVK-.js                           2.01 kB │ gzip:   1.15 kB
+../../builds/facebook/assets/game-BoliY9mL.js                           2.02 kB │ gzip:   1.15 kB
+../../builds/facebook/assets/game-UuXq4gLU.js                           2.02 kB │ gzip:   1.13 kB
+../../builds/facebook/assets/game-Zz4k6Y4h.js                           2.02 kB │ gzip:   1.20 kB
+../../builds/facebook/assets/game-DWXtL8EX.js                           2.04 kB │ gzip:   1.16 kB
+../../builds/facebook/assets/game-C6APJE3p.js                           2.07 kB │ gzip:   1.18 kB
+../../builds/facebook/assets/game-Bg5MD8Zo.js                           2.07 kB │ gzip:   1.18 kB
+../../builds/facebook/assets/game-CB8rHK4q.js                           2.13 kB │ gzip:   1.22 kB
+../../builds/facebook/assets/accessibility-DkfdKGJd.js                  2.21 kB │ gzip:   1.15 kB
+../../builds/facebook/assets/game-WiBThsXY.js                           2.21 kB │ gzip:   1.30 kB
+../../builds/facebook/assets/game-DaxQ3avs.js                           2.31 kB │ gzip:   1.32 kB
+../../builds/facebook/assets/ReferralSharingCapability-1nT5CfVI.js      2.35 kB │ gzip:   1.11 kB
+../../builds/facebook/assets/errors-BHxLQ1l1.js                         2.36 kB │ gzip:   1.20 kB
+../../builds/facebook/assets/game-1Y1gZeIn.js                           2.37 kB │ gzip:   1.36 kB
+../../builds/facebook/assets/errors-BzNiYrkL.js                         2.38 kB │ gzip:   1.23 kB
+../../builds/facebook/assets/errors-A__uqMgo.js                         2.40 kB │ gzip:   1.26 kB
+../../builds/facebook/assets/errors-BwB4svYZ.js                         2.41 kB │ gzip:   1.26 kB
+../../builds/facebook/assets/errors-D4Az-shn.js                         2.45 kB │ gzip:   1.28 kB
+../../builds/facebook/assets/errors-vXKfe_fy.js                         2.48 kB │ gzip:   1.32 kB
+../../builds/facebook/assets/tooltips-BGKpbHhI.js                       2.49 kB │ gzip:   1.19 kB
+../../builds/facebook/assets/accessibility-CvNNiUKA.js                  2.51 kB │ gzip:   1.11 kB
+../../builds/facebook/assets/tooltips-D5Ywc9Vk.js                       2.53 kB │ gzip:   1.13 kB
+../../builds/facebook/assets/errors-oQC0fBdQ.js                         2.54 kB │ gzip:   1.28 kB
+../../builds/facebook/assets/game-DH8bVra0.js                           2.55 kB │ gzip:   1.31 kB
+../../builds/facebook/assets/tooltips-8zDXHXQO.js                       2.56 kB │ gzip:   1.17 kB
+../../builds/facebook/assets/tooltips-BR608YHT.js                       2.57 kB │ gzip:   1.21 kB
+../../builds/facebook/assets/tooltips-Cyrlx-wK.js                       2.58 kB │ gzip:   1.11 kB
+../../builds/facebook/assets/tooltips-BhmGk7Xr.js                       2.60 kB │ gzip:   1.20 kB
+../../builds/facebook/assets/defaultBackend-BFqaAmDo.js                 2.60 kB │ gzip:   1.22 kB
+../../builds/facebook/assets/alerts-Vplz2Vh_.js                         2.61 kB │ gzip:   1.14 kB
+../../builds/facebook/assets/errors-f00H2M3H.js                         2.62 kB │ gzip:   1.35 kB
+../../builds/facebook/assets/tooltips-BUGcpZPI.js                       2.62 kB │ gzip:   1.19 kB
+../../builds/facebook/assets/alerts-q9MO4qcu.js                         2.65 kB │ gzip:   1.24 kB
+../../builds/facebook/assets/alerts-CW9WPJBo.js                         2.66 kB │ gzip:   1.18 kB
+../../builds/facebook/assets/alerts-LkYGHeho.js                         2.66 kB │ gzip:   1.15 kB
+../../builds/facebook/assets/tooltips-SnS9dCw5.js                       2.67 kB │ gzip:   1.19 kB
+../../builds/facebook/assets/game-C0mAiFP_.js                           2.68 kB │ gzip:   1.39 kB
+../../builds/facebook/assets/core-game-mJv1LpVc.js                      2.68 kB │ gzip:   1.18 kB
+../../builds/facebook/assets/alerts-Db69BYs5.js                         2.68 kB │ gzip:   1.20 kB
+../../builds/facebook/assets/errors-BXMrGLsG.js                         2.69 kB │ gzip:   1.33 kB
+../../builds/facebook/assets/alerts-Bs9viBjA.js                         2.69 kB │ gzip:   1.20 kB
+../../builds/facebook/assets/tooltips-C3horsHg.js                       2.70 kB │ gzip:   1.31 kB
+../../builds/facebook/assets/errors-D3vm-yFo.js                         2.70 kB │ gzip:   1.37 kB
+../../builds/facebook/assets/tooltips-25N5gaMS.js                       2.72 kB │ gzip:   1.22 kB
+../../builds/facebook/assets/alerts-MlOWYfKx.js                         2.77 kB │ gzip:   1.29 kB
+../../builds/facebook/assets/errors-CyHn_m_Y.js                         2.79 kB │ gzip:   1.39 kB
+../../builds/facebook/assets/alerts-Bsb_ob3r.js                         2.81 kB │ gzip:   1.23 kB
+../../builds/facebook/assets/tooltips-BTbd_UlK.js                       2.84 kB │ gzip:   1.23 kB
+../../builds/facebook/assets/tooltips-DB9tD47Z.js                       2.90 kB │ gzip:   1.43 kB
+../../builds/facebook/assets/alerts-DRR1JnuX.js                         2.93 kB │ gzip:   1.26 kB
+../../builds/facebook/assets/alerts-h574sSGn.js                         2.93 kB │ gzip:   1.28 kB
+../../builds/facebook/assets/alerts-FrzO_tOr.js                         2.95 kB │ gzip:   1.33 kB
+../../builds/facebook/assets/errors-C81yRJEE.js                         3.00 kB │ gzip:   1.45 kB
+../../builds/facebook/assets/tooltips-BR6mt4Wg.js                       3.03 kB │ gzip:   1.36 kB
+../../builds/facebook/assets/errors-BY0IQe4V.js                         3.23 kB │ gzip:   1.43 kB
+../../builds/facebook/assets/alerts-Wd945iJd.js                         3.26 kB │ gzip:   1.38 kB
+../../builds/facebook/assets/tooltips-CpMS91Nr.js                       3.27 kB │ gzip:   1.36 kB
+../../builds/facebook/assets/alerts-CxR1C9Tr.js                         3.30 kB │ gzip:   1.33 kB
+../../builds/facebook/assets/game-CXsaVaB7.js                           3.35 kB │ gzip:   1.41 kB
+../../builds/facebook/assets/errors-Bs_CAkn2.js                         3.85 kB │ gzip:   1.59 kB
+../../builds/facebook/assets/alerts-BfJrctns.js                         3.89 kB │ gzip:   1.54 kB
+../../builds/facebook/assets/achievements-C-fyuymw.js                   4.43 kB │ gzip:   1.39 kB
+../../builds/facebook/assets/errors-DbyX3VtS.js                         4.47 kB │ gzip:   1.54 kB
+../../builds/facebook/assets/alerts-QYlR2Eci.js                         4.62 kB │ gzip:   1.42 kB
+../../builds/facebook/assets/tooltips-BtUE9qRL.js                       4.66 kB │ gzip:   1.37 kB
+../../builds/facebook/assets/achievements-6RmjYSGq.js                   4.82 kB │ gzip:   1.55 kB
+../../builds/facebook/assets/achievements-DEzHdCii.js                   4.84 kB │ gzip:   1.46 kB
+../../builds/facebook/assets/achievements-C6G_vsmC.js                   4.84 kB │ gzip:   1.48 kB
+../../builds/facebook/assets/achievements-CkIqW37X.js                   4.87 kB │ gzip:   1.49 kB
+../../builds/facebook/assets/achievements-Ytt0GaZp.js                   4.90 kB │ gzip:   1.52 kB
+../../builds/facebook/assets/achievements-BWrQAU5a.js                   5.00 kB │ gzip:   1.50 kB
+../../builds/facebook/assets/firebase-C5fMb9QK.js                       5.01 kB │ gzip:   2.21 kB
+../../builds/facebook/assets/achievements-DCjJr2DA.js                   5.05 kB │ gzip:   1.53 kB
+../../builds/facebook/assets/achievements-Cel50toA.js                   5.06 kB │ gzip:   1.56 kB
+../../builds/facebook/assets/achievements-BVL8_glA.js                   5.11 kB │ gzip:   1.62 kB
+../../builds/facebook/assets/race-HDzyXpCe.js                           5.40 kB │ gzip:   2.34 kB
+../../builds/facebook/assets/achievements-ym6lLXEz.js                   5.45 kB │ gzip:   1.64 kB
+../../builds/facebook/assets/achievements-rMNNu3C2.js                   5.56 kB │ gzip:   1.71 kB
+../../builds/facebook/assets/race-x3acAwSJ.js                           5.57 kB │ gzip:   2.52 kB
+../../builds/facebook/assets/race-CP5nJT7f.js                           5.60 kB │ gzip:   2.50 kB
+../../builds/facebook/assets/race-vtuRHQ7h.js                           5.64 kB │ gzip:   2.47 kB
+../../builds/facebook/assets/race-DMQMTiIq.js                           5.69 kB │ gzip:   2.62 kB
+../../builds/facebook/assets/race--OkX9VoJ.js                           5.69 kB │ gzip:   2.49 kB
+../../builds/facebook/assets/race-BLccIZjT.js                           5.69 kB │ gzip:   2.48 kB
+../../builds/facebook/assets/achievements-CdPp9Nbb.js                   5.72 kB │ gzip:   1.74 kB
+../../builds/facebook/assets/profile-CWoPx0tb.js                        5.80 kB │ gzip:   2.46 kB
+../../builds/facebook/assets/race-OLfinZlo.js                           5.85 kB │ gzip:   2.56 kB
+../../builds/facebook/assets/race-CZsm33Gq.js                           5.92 kB │ gzip:   2.58 kB
+../../builds/facebook/assets/profile-D41XTaep.js                        5.94 kB │ gzip:   2.59 kB
+../../builds/facebook/assets/profile-Cx0pRpKm.js                        5.96 kB │ gzip:   2.68 kB
+../../builds/facebook/assets/validation-BbUqMDf0.js                     6.01 kB │ gzip:   2.07 kB
+../../builds/facebook/assets/race-ooYNIX-x.js                           6.05 kB │ gzip:   2.67 kB
+../../builds/facebook/assets/profile-B5OfPl3A.js                        6.06 kB │ gzip:   2.78 kB
+../../builds/facebook/assets/profile-Daqs-cvK.js                        6.07 kB │ gzip:   2.62 kB
+../../builds/facebook/assets/profile-CPQiAE5G.js                        6.12 kB │ gzip:   2.66 kB
+../../builds/facebook/assets/profile-7wyIyA7o.js                        6.17 kB │ gzip:   2.69 kB
+../../builds/facebook/assets/profile-BQe9K_JJ.js                        6.21 kB │ gzip:   2.69 kB
+../../builds/facebook/assets/achievements-CZDQ5PMR.js                   6.28 kB │ gzip:   1.71 kB
+../../builds/facebook/assets/race-BB0wSbdp.js                           6.32 kB │ gzip:   2.63 kB
+../../builds/facebook/assets/profile-CRrvshbt.js                        6.35 kB │ gzip:   2.75 kB
+../../builds/facebook/assets/vendor-three-C1-YGrJJ.js                   6.48 kB │ gzip:   2.48 kB
+../../builds/facebook/assets/profile-CgUGG0CW.js                        6.56 kB │ gzip:   2.89 kB
+../../builds/facebook/assets/race-C1QxyOot.js                           6.57 kB │ gzip:   2.82 kB
+../../builds/facebook/assets/race-BL2ZN5k9.js                           6.65 kB │ gzip:   2.72 kB
+../../builds/facebook/assets/profile-BaD_0pJD.js                        6.75 kB │ gzip:   2.86 kB
+../../builds/facebook/assets/profile-Bu5O4eN5.js                        7.07 kB │ gzip:   2.96 kB
+../../builds/facebook/assets/achievements-BfD8I-4b.js                   7.25 kB │ gzip:   1.91 kB
+../../builds/facebook/assets/profile-Mwanf_dW.js                        7.57 kB │ gzip:   2.86 kB
+../../builds/facebook/assets/requestSchemas-CafEj8FO.js                 7.73 kB │ gzip:   2.24 kB
+../../builds/facebook/assets/achievements-BFYI4mHN.js                   7.93 kB │ gzip:   1.73 kB
+../../builds/facebook/assets/race-XGoDm_LX.js                           8.03 kB │ gzip:   3.03 kB
+../../builds/facebook/assets/profile-Cp1G-NTZ.js                        8.70 kB │ gzip:   3.23 kB
+../../builds/facebook/assets/race-D5DzwzKw.js                           9.07 kB │ gzip:   3.27 kB
+../../builds/facebook/assets/bridge-DNie0ig7.js                         9.15 kB │ gzip:   3.00 kB
+../../builds/facebook/assets/vendor-three-BiLsvv9t.js                   9.76 kB │ gzip:   3.08 kB
+../../builds/facebook/assets/race-q9oTi_du.js                           9.82 kB │ gzip:   2.93 kB
+../../builds/facebook/assets/vendor-three-D-mxgd2y.js                   9.91 kB │ gzip:   3.46 kB
+../../builds/facebook/assets/profile-RYx2GXIC.js                       10.28 kB │ gzip:   3.07 kB
+../../builds/facebook/assets/firebaseServices-BlDfSTsF.js              10.47 kB │ gzip:   3.85 kB
+../../builds/facebook/assets/achievements-B2kr0ck1.js                  11.47 kB │ gzip:   2.86 kB
+../../builds/facebook/assets/vendor-three-xMnH1CgV.js                  13.78 kB │ gzip:   4.54 kB
+../../builds/facebook/assets/FacebookRaceEntry-B7yGCb9y.js             16.07 kB │ gzip:   5.77 kB
+../../builds/facebook/assets/RankedAvatar-B-DdDTDi.js                  17.08 kB │ gzip:   6.79 kB
+../../builds/facebook/assets/SolarSystem-uwuJvcOv.js                   17.95 kB │ gzip:   6.16 kB
+../../builds/facebook/assets/fakeServices-DeglW8mW.js                  20.69 kB │ gzip:   7.08 kB
+../../builds/facebook/assets/vendor-three-DhQwfZ_W.js                  20.91 kB │ gzip:   4.77 kB
+../../builds/facebook/assets/i18n-vwsoCHAA.js                          32.05 kB │ gzip:  13.08 kB
+../../builds/facebook/assets/vendor-three-DVT6gsgu.js                  37.04 kB │ gzip:  11.77 kB
+../../builds/facebook/assets/RaceTo10Game-Bi4zVHaW.js                  49.48 kB │ gzip:  16.10 kB
+../../builds/facebook/assets/GameModalView-sI7wuTSD.js                 54.26 kB │ gzip:  18.46 kB
+../../builds/facebook/assets/vendor-three-14j5cCLD.js                  57.11 kB │ gzip:  14.93 kB
+../../builds/facebook/assets/localeModules-Cz7dgpv5.js                 57.34 kB │ gzip:   7.61 kB
+../../builds/facebook/assets/vendor-three-2rjE_d5x.js                  65.48 kB │ gzip:  18.35 kB
+../../builds/facebook/assets/vendor-three-J1_gq1pb.js                  74.16 kB │ gzip:  21.24 kB
+../../builds/facebook/assets/vendor-three-CxCSEef7.js                  78.41 kB │ gzip:  23.16 kB
+../../builds/facebook/assets/sentry-CkyGug8s.js                        90.02 kB │ gzip:  30.84 kB
+../../builds/facebook/assets/raceSchemas-Cke_AfHE.js                  107.87 kB │ gzip:  31.00 kB
+../../builds/facebook/assets/vendor-three-DuOo2BUN.js                 192.56 kB │ gzip:  42.42 kB
+../../builds/facebook/assets/vendor-react-CuZr8RiT.js                 219.00 kB │ gzip:  68.35 kB
+../../builds/facebook/assets/facebook-ufH8vlAs.js                     226.28 kB │ gzip:  66.36 kB
+../../builds/facebook/assets/vendor-firebase-C5F_jjbA.js              367.00 kB │ gzip: 109.80 kB
+
+✓ built in 2.45s
+$ node scripts/audit-facebook-artifact.mjs
+Facebook artifact audit passed: 411 files, 4.38 MB, 0.62 MB initial resources, isolated SDK/config, and no Jest/native/secrets leakage
+$ pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && NODE_ENV=production tsc -b && REDDIT_BUILD=1 NODE_ENV=production vite build --mode reddit && pnpm audit:reddit-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.16466ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.738909ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (5.761806ms)
+✔ rejects imports between different target owners (1.843352ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.616939ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.947936ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.409851ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.926846ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.05006ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.830263ms)
+✔ aggregates violations in deterministic file and source order (1.060319ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.903624
+Web Target boundary audit passed (315 files, 1366 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+$ node scripts/generate-third-party-licenses.mjs --check
+Third-party notices are current (107162 bytes)
+vite v8.3.1 building client environment for reddit...
+transforming...
+✓ 1144 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/reddit/reddit-inline.html                                1.53 kB │ gzip:  0.77 kB
+../../builds/reddit/index.html                                        1.97 kB │ gzip:  0.63 kB
+../../builds/reddit/assets/tex_ring_b-BUHGHX-C.webp                   4.45 kB
+../../builds/reddit/assets/coin-BnaBYH65.svg                          6.30 kB │ gzip:  1.96 kB
+../../builds/reddit/assets/wheel-bg-BifSuxYC.svg                      7.74 kB │ gzip:  1.13 kB
+../../builds/reddit/third-party-licenses.txt                          7.96 kB │ gzip:  1.80 kB
+../../builds/reddit/assets/tex_ring_a-DuvJN49d.webp                   8.03 kB
+../../builds/reddit/assets/starfield-BdpD2Kkw.svg                    12.46 kB │ gzip:  2.14 kB
+../../builds/reddit/assets/tex_sun_corona-v2-BMfKNPFY.webp           14.24 kB
+../../builds/reddit/assets/tex_moon_h-DGScgJpd.webp                  14.81 kB
+../../builds/reddit/assets/tex_moon_g-B0h_U8wT.webp                  14.99 kB
+../../builds/reddit/assets/tex_sun_spots_02-CCRhajmp.webp            18.87 kB
+../../builds/reddit/assets/tex_planet_u-BzJmFwqP.webp                18.90 kB
+../../builds/reddit/assets/tex_planet_v-DtVH6iTD.webp                19.84 kB
+../../builds/reddit/assets/tex_planet_a-CKSLcGca.webp                25.73 kB
+../../builds/reddit/assets/main-logo-DeVvp0Z6.webp                   26.72 kB
+../../builds/reddit/assets/tex_moon_f-i48T7jJA.webp                  29.64 kB
+../../builds/reddit/assets/tex_planet_s-fmsfCdSp.webp                31.28 kB
+../../builds/reddit/assets/tex_planet_k-BTSVj7tG.webp                32.65 kB
+../../builds/reddit/assets/tex_planet_r-k9FTlMLw.webp                32.83 kB
+../../builds/reddit/assets/tex_moon_d-C8et7CUZ.webp                  36.81 kB
+../../builds/reddit/assets/chest-open-CQnbBCSD.webp                  38.74 kB
+../../builds/reddit/assets/riddlequest-r-kPbkvcmu.webp               42.31 kB
+../../builds/reddit/assets/tex_moon_c-CbidFNBi.webp                  45.87 kB
+../../builds/reddit/assets/PoetsenOne-Regular-C2losmxN.woff2         48.38 kB
+../../builds/reddit/assets/Poppins-Bold-ryPfWsYm.woff2               51.20 kB
+../../builds/reddit/assets/Poppins-SemiBold-9BRRzCnb.woff2           51.80 kB
+../../builds/reddit/assets/Poppins-Regular-B-jQUxpD.woff2            51.85 kB
+../../builds/reddit/assets/chest-closed-GI3XjnpL.png                 56.64 kB
+../../builds/reddit/assets/tex_planet_d-Bc6RyclI.webp                60.96 kB
+../../builds/reddit/assets/music-DoaAtikm.webm                    1,139.48 kB
+../../builds/reddit/assets/LiveRacePushConsent-BStyCzQK.css           1.90 kB │ gzip:  0.75 kB
+../../builds/reddit/assets/GameModalView-CVwlBp5V.css                24.45 kB │ gzip:  5.97 kB
+../../builds/reddit/assets/RaceTo10Game-o_06kpvy.css                 25.93 kB │ gzip:  6.34 kB
+../../builds/reddit/assets/game-Dnd942tX.css                         31.78 kB │ gzip:  7.64 kB
+../../builds/reddit/assets/redditPlatform-kePakTdw.js                 0.08 kB │ gzip:  0.09 kB
+../../builds/reddit/assets/core-bridge-constants-Bsju_PPr.js          0.10 kB │ gzip:  0.12 kB
+../../builds/reddit/assets/RaceTo10Game-BYLah4ut.js                   0.11 kB │ gzip:  0.11 kB
+../../builds/reddit/assets/rolldown-runtime-Czjbc987.js               0.17 kB │ gzip:  0.14 kB
+../../builds/reddit/assets/browserErrorReporter-D2A67UQO.js           0.19 kB │ gzip:  0.16 kB
+../../builds/reddit/assets/streakFanfare-CNktPzNV.js                  0.24 kB │ gzip:  0.24 kB
+../../builds/reddit/assets/streakFanfare-CILTTN8I.js                  0.24 kB │ gzip:  0.22 kB
+../../builds/reddit/assets/streakFanfare-CoNWczXG.js                  0.24 kB │ gzip:  0.22 kB
+../../builds/reddit/assets/streakFanfare-CYtxZCtU.js                  0.24 kB │ gzip:  0.25 kB
+../../builds/reddit/assets/streakFanfare-CiFffE4P.js                  0.24 kB │ gzip:  0.22 kB
+../../builds/reddit/assets/streakFanfare-DbdEYngK.js                  0.24 kB │ gzip:  0.23 kB
+../../builds/reddit/assets/streakFanfare-B68ZEMLJ.js                  0.25 kB │ gzip:  0.22 kB
+../../builds/reddit/assets/streakFanfare-_7h3xJnx.js                  0.25 kB │ gzip:  0.22 kB
+../../builds/reddit/assets/streakFanfare-qLbhhx5e.js                  0.25 kB │ gzip:  0.22 kB
+../../builds/reddit/assets/streakFanfare-RU7tUQ6a.js                  0.25 kB │ gzip:  0.22 kB
+../../builds/reddit/assets/streakFanfare-CcEuRTaC.js                  0.26 kB │ gzip:  0.23 kB
+../../builds/reddit/assets/streakFanfare-BVNTII4j.js                  0.26 kB │ gzip:  0.25 kB
+../../builds/reddit/assets/coinPurchase-JOGy0qmc.js                   0.27 kB │ gzip:  0.24 kB
+../../builds/reddit/assets/streakFanfare-CsqZ9FuY.js                  0.27 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/coinPurchase-S3LHouKQ.js                   0.27 kB │ gzip:  0.25 kB
+../../builds/reddit/assets/coinPurchase-C7ASXWB7.js                   0.27 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/coinPurchase-DqhpsdiJ.js                   0.28 kB │ gzip:  0.24 kB
+../../builds/reddit/assets/coinPurchase-3W29am3Z.js                   0.28 kB │ gzip:  0.25 kB
+../../builds/reddit/assets/coinPurchase-D0pVpDZ9.js                   0.28 kB │ gzip:  0.28 kB
+../../builds/reddit/assets/coinPurchase-DC-ee1Z4.js                   0.28 kB │ gzip:  0.25 kB
+../../builds/reddit/assets/coinPurchase-pN1GgFfU.js                   0.28 kB │ gzip:  0.24 kB
+../../builds/reddit/assets/coinPurchase-C9LzawBN.js                   0.28 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/streakFanfare-B8ADHt-p.js                  0.28 kB │ gzip:  0.27 kB
+../../builds/reddit/assets/coinPurchase-C8bjDuJq.js                   0.28 kB │ gzip:  0.28 kB
+../../builds/reddit/assets/aboutLegal-9Lub4aST.js                     0.29 kB │ gzip:  0.25 kB
+../../builds/reddit/assets/race-BWCjrPUN.js                           0.29 kB │ gzip:  0.19 kB
+../../builds/reddit/assets/coinPurchase-D11na4Ir.js                   0.29 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/aboutLegal-CIQlmZyd.js                     0.29 kB │ gzip:  0.29 kB
+../../builds/reddit/assets/coinPurchase-Dfy4vHsX.js                   0.29 kB │ gzip:  0.29 kB
+../../builds/reddit/assets/aboutLegal-BOERrO-7.js                     0.30 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/aboutLegal-BkaUziYk.js                     0.30 kB │ gzip:  0.28 kB
+../../builds/reddit/assets/aboutLegal-BzJhPWZb.js                     0.30 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/aboutLegal-Czoa72th.js                     0.30 kB │ gzip:  0.27 kB
+../../builds/reddit/assets/aboutLegal-BiwDzknj.js                     0.30 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/aboutLegal-B452_NSe.js                     0.31 kB │ gzip:  0.27 kB
+../../builds/reddit/assets/aboutLegal-DQj9hAh9.js                     0.31 kB │ gzip:  0.26 kB
+../../builds/reddit/assets/aboutLegal-B9DtFS4v.js                     0.31 kB │ gzip:  0.27 kB
+../../builds/reddit/assets/coinPurchase-B1ipvSPi.js                   0.31 kB │ gzip:  0.30 kB
+../../builds/reddit/assets/shop-CeHAnN68.js                           0.32 kB │ gzip:  0.31 kB
+../../builds/reddit/assets/aboutLegal-xUlXjvaE.js                     0.32 kB │ gzip:  0.30 kB
+../../builds/reddit/assets/shop-Cyuj6FTi.js                           0.32 kB │ gzip:  0.28 kB
+../../builds/reddit/assets/streakFanfare-Ck_CGuXM.js                  0.32 kB │ gzip:  0.28 kB
+../../builds/reddit/assets/shop-CftVa749.js                           0.32 kB │ gzip:  0.28 kB
+../../builds/reddit/assets/shop-CJPGUsZp.js                           0.33 kB │ gzip:  0.29 kB
+../../builds/reddit/assets/shop-DI5nIg6p.js                           0.33 kB │ gzip:  0.29 kB
+../../builds/reddit/assets/shop-DK6wYOR-.js                           0.33 kB │ gzip:  0.29 kB
+../../builds/reddit/assets/shop-BI5duCyP.js                           0.33 kB │ gzip:  0.29 kB
+../../builds/reddit/assets/aboutLegal-BETt7Q1S.js                     0.33 kB │ gzip:  0.32 kB
+../../builds/reddit/assets/aboutLegal-DE8omzrK.js                     0.33 kB │ gzip:  0.30 kB
+../../builds/reddit/assets/shop-BCOA8lN0.js                           0.34 kB │ gzip:  0.29 kB
+../../builds/reddit/assets/coinPurchase-DbxQErWv.js                   0.34 kB │ gzip:  0.30 kB
+../../builds/reddit/assets/shop-DXUoZYyl.js                           0.34 kB │ gzip:  0.31 kB
+../../builds/reddit/assets/shop-CvOoxpgx.js                           0.35 kB │ gzip:  0.30 kB
+../../builds/reddit/assets/layoutReady-B86Ech8U.js                    0.35 kB │ gzip:  0.25 kB
+../../builds/reddit/assets/shop-Cm2jn5cR.js                           0.35 kB │ gzip:  0.33 kB
+../../builds/reddit/assets/shop-CzJeEB4B.js                           0.36 kB │ gzip:  0.31 kB
+../../builds/reddit/assets/shop-DQsNJ7dr.js                           0.37 kB │ gzip:  0.35 kB
+../../builds/reddit/assets/aboutLegal-C9CEn1K6.js                     0.40 kB │ gzip:  0.33 kB
+../../builds/reddit/assets/coinPurchase-Df3WZgjf.js                   0.40 kB │ gzip:  0.32 kB
+../../builds/reddit/assets/aboutLegal-l9aacrYT.js                     0.40 kB │ gzip:  0.35 kB
+../../builds/reddit/assets/shop-CQHTc95K.js                           0.42 kB │ gzip:  0.35 kB
+../../builds/reddit/assets/levelUpFanfare-IkSP6zKG.js                 0.44 kB │ gzip:  0.34 kB
+../../builds/reddit/assets/levelUpFanfare-BSV7qTuK.js                 0.44 kB │ gzip:  0.35 kB
+../../builds/reddit/assets/levelUpFanfare-B8EKUlLu.js                 0.45 kB │ gzip:  0.36 kB
+../../builds/reddit/assets/levelUpFanfare-DdbQoiY3.js                 0.45 kB │ gzip:  0.33 kB
+../../builds/reddit/assets/levelUpFanfare-C4ORfkJc.js                 0.45 kB │ gzip:  0.34 kB
+../../builds/reddit/assets/levelUpFanfare-Cj4O5s0v.js                 0.47 kB │ gzip:  0.35 kB
+../../builds/reddit/assets/levelUpFanfare-DuMc8ZTt.js                 0.47 kB │ gzip:  0.35 kB
+../../builds/reddit/assets/levelUpFanfare-BMnpPRct.js                 0.47 kB │ gzip:  0.36 kB
+../../builds/reddit/assets/levelUpFanfare-DdnhnMcu.js                 0.47 kB │ gzip:  0.36 kB
+../../builds/reddit/assets/shop-C-JW-fHL.js                           0.48 kB │ gzip:  0.37 kB
+../../builds/reddit/assets/levelUpFanfare-C4f0yIrt.js                 0.49 kB │ gzip:  0.37 kB
+../../builds/reddit/assets/levelUpFanfare-7ftzEHpd.js                 0.51 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/browserStorage-ClWTh26r.js                 0.56 kB │ gzip:  0.31 kB
+../../builds/reddit/assets/levelUpFanfare-Bz5CPf2F.js                 0.57 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/loss-CYC759HX.js                           0.57 kB │ gzip:  0.38 kB
+../../builds/reddit/assets/redditPlatform-NO0DIMgp.js                 0.57 kB │ gzip:  0.42 kB
+../../builds/reddit/assets/loss-DZD3eg0q.js                           0.60 kB │ gzip:  0.37 kB
+../../builds/reddit/assets/navigation-HG3bW032.js                     0.60 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/loss-BvDApK2O.js                           0.60 kB │ gzip:  0.38 kB
+../../builds/reddit/assets/navigation-CEVnRywa.js                     0.60 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/levelUpFanfare-ebsdRUVf.js                 0.60 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/navigation-DyYYuPKb.js                     0.60 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/levelUpFanfare-DQd31DAk.js                 0.60 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/settings-B1LFBtVQ.js                       0.61 kB │ gzip:  0.41 kB
+../../builds/reddit/assets/loss-ByiuR_q2.js                           0.61 kB │ gzip:  0.39 kB
+../../builds/reddit/assets/loss-NQ6EheyS.js                           0.61 kB │ gzip:  0.43 kB
+../../builds/reddit/assets/leaderboard-C_nQkQjt.js                    0.61 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/navigation-BOOVb0wq.js                     0.61 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/loss-CXIQ1poD.js                           0.61 kB │ gzip:  0.39 kB
+../../builds/reddit/assets/settings-BiUZub5u.js                       0.61 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/navigation-f6qqy4Sb.js                     0.62 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/loss-Bk9noke9.js                           0.62 kB │ gzip:  0.40 kB
+../../builds/reddit/assets/settings-BQ0VOnyD.js                       0.62 kB │ gzip:  0.42 kB
+../../builds/reddit/assets/navigation-CTFusaBb.js                     0.62 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/redditPlatform-BeWVfLKN.js                 0.62 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/redditPlatform-DQrQSo8-.js                 0.62 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/settings-BhaoB_oq.js                       0.63 kB │ gzip:  0.42 kB
+../../builds/reddit/assets/navigation-BsNpJ5oL.js                     0.63 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/settings-CQ5iWsTC.js                       0.63 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/settings-CtSogYrK.js                       0.63 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/leaderboard-BvMSXx64.js                    0.63 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/leaderboard-COKjU29R.js                    0.63 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/loss-OZTdIurh.js                           0.63 kB │ gzip:  0.39 kB
+../../builds/reddit/assets/navigation-Cd1c24qw.js                     0.63 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/navigation-D6xjyWV_.js                     0.63 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/redditPlatform-DhIbnMlf.js                 0.63 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/loss-Doi2zsGm.js                           0.64 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/credits-BUHMQe8H.js                        0.64 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/redditPlatform-DLdxdYNO.js                 0.64 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/redditPlatform-Dk0V0-gm.js                 0.64 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/redditPlatform-DzDBmJ2Z.js                 0.64 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/settings-BjgjqXIj.js                       0.65 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/leaderboard-CLBAPhGC.js                    0.65 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/settings-W34iFf6Y.js                       0.65 kB │ gzip:  0.44 kB
+../../builds/reddit/assets/navigation-Db-Onnml.js                     0.65 kB │ gzip:  0.51 kB
+../../builds/reddit/assets/redditPlatform-DkbFl4BS.js                 0.65 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/credits-D5aE9Jzr.js                        0.65 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/stats-mIP995PB.js                          0.65 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/loss-CTnNrJk5.js                           0.65 kB │ gzip:  0.39 kB
+../../builds/reddit/assets/redditPlatform-WTdF7zyJ.js                 0.65 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/settings-5KMS-6Ua.js                       0.65 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/loss-qptvpt-b.js                           0.65 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/navigation-DVaORH4E.js                     0.65 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/leaderboard-B2SVDJjQ.js                    0.66 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/leaderboard-DOuSE9DY.js                    0.66 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/leaderboard-BJLwqpeD.js                    0.66 kB │ gzip:  0.51 kB
+../../builds/reddit/assets/settings-Bvq9AKQm.js                       0.66 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/leaderboard-H7ljF1LZ.js                    0.67 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/loss-DrrdN1ST.js                           0.67 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/leaderboard-t84bq2br.js                    0.67 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/common-lqZx1SM_.js                         0.67 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/credits-C-fTV8Es.js                        0.67 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/redditPlatform-B7pv1esc.js                 0.67 kB │ gzip:  0.50 kB
+../../builds/reddit/assets/credits-B2FMOOee.js                        0.68 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/credits-BAi2MGkp.js                        0.68 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/credits-DLA52QJG.js                        0.68 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/credits-N7-HSvFa.js                        0.68 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/settings-zC3GS2AV.js                       0.68 kB │ gzip:  0.50 kB
+../../builds/reddit/assets/stats-CKZoTo8L.js                          0.69 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/credits-WIsdg--y.js                        0.69 kB │ gzip:  0.50 kB
+../../builds/reddit/assets/credits-BMuqt5mm.js                        0.69 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/common-CJein-tm.js                         0.69 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/common-BVKGsOnP.js                         0.69 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/common-n-P6ZiqJ.js                         0.69 kB │ gzip:  0.46 kB
+../../builds/reddit/assets/settings-PC1e89Gh.js                       0.70 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/stats-BhMNt6gS.js                          0.70 kB │ gzip:  0.50 kB
+../../builds/reddit/assets/stats-B9uVVH6n.js                          0.70 kB │ gzip:  0.48 kB
+../../builds/reddit/assets/stats-CZbMxORv.js                          0.70 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/credits-1_wv8ESf.js                        0.71 kB │ gzip:  0.56 kB
+../../builds/reddit/assets/stats-D_FzSdUS.js                          0.71 kB │ gzip:  0.50 kB
+../../builds/reddit/assets/leaderboard-dL-62jdQ.js                    0.71 kB │ gzip:  0.53 kB
+../../builds/reddit/assets/common-Dw_J1HMX.js                         0.71 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/leaderboard-CCFGtQTb.js                    0.71 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/common-BwIO3epv.js                         0.71 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/navigation-BvveN4-G.js                     0.71 kB │ gzip:  0.57 kB
+../../builds/reddit/assets/redditPlatform-DVd1Lrdv.js                 0.71 kB │ gzip:  0.53 kB
+../../builds/reddit/assets/loss-CkrZTTeh.js                           0.71 kB │ gzip:  0.45 kB
+../../builds/reddit/assets/common-C5vxl13O.js                         0.72 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/stats-BYAzlDU4.js                          0.72 kB │ gzip:  0.56 kB
+../../builds/reddit/assets/common-0T1Fp4PZ.js                         0.72 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/common-B7xIq-DG.js                         0.72 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/stats-gsZ2Zhcx.js                          0.72 kB │ gzip:  0.51 kB
+../../builds/reddit/assets/stats-Xg5ZTDDu.js                          0.73 kB │ gzip:  0.51 kB
+../../builds/reddit/assets/stats-BogWWKhc.js                          0.73 kB │ gzip:  0.51 kB
+../../builds/reddit/assets/redditPlatform-JMhQe933.js                 0.74 kB │ gzip:  0.54 kB
+../../builds/reddit/assets/settings-BQE2hkg5.js                       0.74 kB │ gzip:  0.49 kB
+../../builds/reddit/assets/common-DI-bC8ZO.js                         0.74 kB │ gzip:  0.50 kB
+../../builds/reddit/assets/levelUpFanfare-JTawCUZ6.js                 0.74 kB │ gzip:  0.47 kB
+../../builds/reddit/assets/stats-DL-wHO5L.js                          0.74 kB │ gzip:  0.54 kB
+../../builds/reddit/assets/redditPlatform-Briloaej.js                 0.75 kB │ gzip:  0.55 kB
+../../builds/reddit/assets/navigation-BYU4BtBy.js                     0.76 kB │ gzip:  0.55 kB
+../../builds/reddit/assets/redditPlatform-D-XZWHg3.js                 0.76 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/leaderboard-36KCW9Fg.js                    0.77 kB │ gzip:  0.55 kB
+../../builds/reddit/assets/credits-BVHomOvF.js                        0.77 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/common-Bs_Q8hBU.js                         0.78 kB │ gzip:  0.50 kB
+../../builds/reddit/assets/settings-npX_-5Tm.js                       0.79 kB │ gzip:  0.54 kB
+../../builds/reddit/assets/credits-D5AM3JCO.js                        0.80 kB │ gzip:  0.58 kB
+../../builds/reddit/assets/stats-B4JcruVz.js                          0.80 kB │ gzip:  0.57 kB
+../../builds/reddit/assets/common-_TLj9cwa.js                         0.81 kB │ gzip:  0.54 kB
+../../builds/reddit/assets/common-Srl377cb.js                         0.82 kB │ gzip:  0.55 kB
+../../builds/reddit/assets/loss-DVqcPbls.js                           0.82 kB │ gzip:  0.52 kB
+../../builds/reddit/assets/credits-DocYIUPf.js                        0.83 kB │ gzip:  0.59 kB
+../../builds/reddit/assets/navigation-DZeRltNs.js                     0.83 kB │ gzip:  0.58 kB
+../../builds/reddit/assets/leaderboard-CmGOY-Qf.js                    0.90 kB │ gzip:  0.56 kB
+../../builds/reddit/assets/redditPlatform-3JKFJnCC.js                 0.90 kB │ gzip:  0.61 kB
+../../builds/reddit/assets/settings-CtA6hyi7.js                       0.91 kB │ gzip:  0.54 kB
+../../builds/reddit/assets/onboarding-DirbkJOv.js                     0.92 kB │ gzip:  0.59 kB
+../../builds/reddit/assets/navigation-BEDfLC7r.js                     0.93 kB │ gzip:  0.57 kB
+../../builds/reddit/assets/stats-DT0INrsG.js                          0.93 kB │ gzip:  0.59 kB
+../../builds/reddit/assets/stats-BomADS7E.js                          0.94 kB │ gzip:  0.63 kB
+../../builds/reddit/assets/leaderboard-BI6FIILA.js                    0.95 kB │ gzip:  0.61 kB
+../../builds/reddit/assets/common-BxLdFFQq.js                         0.95 kB │ gzip:  0.59 kB
+../../builds/reddit/assets/onboarding-BhOVm4rB.js                     0.95 kB │ gzip:  0.60 kB
+../../builds/reddit/assets/credits-C5hOuWeV.js                        0.98 kB │ gzip:  0.63 kB
+../../builds/reddit/assets/stats--DHf9LMG.js                          0.98 kB │ gzip:  0.59 kB
+../../builds/reddit/assets/onboarding-BxVBap_6.js                     0.99 kB │ gzip:  0.60 kB
+../../builds/reddit/assets/onboarding-DA3OScEF.js                     0.99 kB │ gzip:  0.67 kB
+../../builds/reddit/assets/onboarding-DhnSB8l9.js                     1.01 kB │ gzip:  0.63 kB
+../../builds/reddit/assets/loss-fvzfjwgz.js                           1.03 kB │ gzip:  0.53 kB
+../../builds/reddit/assets/leaderboard-Cu_dPNAJ.js                    1.04 kB │ gzip:  0.56 kB
+../../builds/reddit/assets/credits-CcHyHvgm.js                        1.05 kB │ gzip:  0.59 kB
+../../builds/reddit/assets/onboarding-B0_bhepm.js                     1.06 kB │ gzip:  0.72 kB
+../../builds/reddit/assets/onboarding-CIvuwGEp.js                     1.06 kB │ gzip:  0.63 kB
+../../builds/reddit/assets/onboarding-DUXgO8Tr.js                     1.07 kB │ gzip:  0.65 kB
+../../builds/reddit/assets/onboarding-BNc7aOSk.js                     1.07 kB │ gzip:  0.66 kB
+../../builds/reddit/assets/onboarding-yXeCHql5.js                     1.07 kB │ gzip:  0.66 kB
+../../builds/reddit/assets/victory-BOt-EJWI.js                        1.08 kB │ gzip:  0.72 kB
+../../builds/reddit/assets/victory-DQz03h3V.js                        1.08 kB │ gzip:  0.68 kB
+../../builds/reddit/assets/victory-CHiYFUo-.js                        1.08 kB │ gzip:  0.68 kB
+../../builds/reddit/assets/victory-BBCEHWs_.js                        1.08 kB │ gzip:  0.71 kB
+../../builds/reddit/assets/victory-SwC6BPeg.js                        1.09 kB │ gzip:  0.69 kB
+../../builds/reddit/assets/common-DLRf0r44.js                         1.09 kB │ gzip:  0.58 kB
+../../builds/reddit/assets/victory-BSurpYZb.js                        1.10 kB │ gzip:  0.72 kB
+../../builds/reddit/assets/redditPlatform-DAfEFqFb.js                 1.11 kB │ gzip:  0.59 kB
+../../builds/reddit/assets/onboarding-DhEdSRME.js                     1.11 kB │ gzip:  0.74 kB
+../../builds/reddit/assets/victory-Ds6eFDbR.js                        1.11 kB │ gzip:  0.76 kB
+../../builds/reddit/assets/onboarding-CZ4brNYq.js                     1.12 kB │ gzip:  0.74 kB
+../../builds/reddit/assets/victory-BG5R_urP.js                        1.12 kB │ gzip:  0.69 kB
+../../builds/reddit/assets/victory-DSWYvMKn.js                        1.14 kB │ gzip:  0.71 kB
+../../builds/reddit/assets/victory-fhnJ2tpo.js                        1.15 kB │ gzip:  0.72 kB
+../../builds/reddit/assets/victory-BUTzSOaB.js                        1.22 kB │ gzip:  0.83 kB
+../../builds/reddit/assets/victory-DiBsCrFr.js                        1.22 kB │ gzip:  0.80 kB
+../../builds/reddit/assets/onboarding-BrUDPGim.js                     1.24 kB │ gzip:  0.78 kB
+../../builds/reddit/assets/victory-CdAQnwGp.js                        1.26 kB │ gzip:  0.79 kB
+../../builds/reddit/assets/onboarding-D1d0muyC.js                     1.33 kB │ gzip:  0.77 kB
+../../builds/reddit/assets/preload-helper-C57RQWSg.js                 1.33 kB │ gzip:  0.75 kB
+../../builds/reddit/assets/victory-CNBe35hS.js                        1.47 kB │ gzip:  0.89 kB
+../../builds/reddit/assets/accessibility-DBWotlLW.js                  1.49 kB │ gzip:  0.89 kB
+../../builds/reddit/assets/accessibility-mnG6Ux4q.js                  1.50 kB │ gzip:  0.88 kB
+../../builds/reddit/assets/accessibility-DoUGjQcm.js                  1.53 kB │ gzip:  0.94 kB
+../../builds/reddit/assets/accessibility-DDdV10oS.js                  1.55 kB │ gzip:  0.91 kB
+../../builds/reddit/assets/accessibility-BTdzn21X.js                  1.56 kB │ gzip:  1.01 kB
+../../builds/reddit/assets/accessibility-CDcYo3NC.js                  1.57 kB │ gzip:  0.91 kB
+../../builds/reddit/assets/vendor-three-RJfuyzAo.js                   1.59 kB │ gzip:  0.57 kB
+../../builds/reddit/assets/accessibility-BtoY_R4l.js                  1.59 kB │ gzip:  0.92 kB
+../../builds/reddit/assets/accessibility-OytD13PE.js                  1.60 kB │ gzip:  0.98 kB
+../../builds/reddit/assets/accessibility-pbCkmE6-.js                  1.65 kB │ gzip:  0.98 kB
+../../builds/reddit/assets/victory-CQY7TXi8.js                        1.67 kB │ gzip:  0.84 kB
+../../builds/reddit/assets/accessibility-CjlDnMhS.js                  1.68 kB │ gzip:  0.98 kB
+../../builds/reddit/assets/onboarding-0spzMYMq.js                     1.73 kB │ gzip:  0.80 kB
+../../builds/reddit/assets/accessibility-5aadonXn.js                  1.76 kB │ gzip:  1.06 kB
+../../builds/reddit/assets/accessibility-Czcbizk8.js                  1.77 kB │ gzip:  1.05 kB
+../../builds/reddit/assets/accessibility-6FKcnuQn.js                  2.00 kB │ gzip:  1.04 kB
+../../builds/reddit/assets/game-CNflmOys.js                           2.00 kB │ gzip:  1.16 kB
+../../builds/reddit/assets/game-BEmm6OG0.js                           2.01 kB │ gzip:  1.15 kB
+../../builds/reddit/assets/game-r5Ir4Jh8.js                           2.02 kB │ gzip:  1.15 kB
+../../builds/reddit/assets/game-BqHhoJxi.js                           2.02 kB │ gzip:  1.13 kB
+../../builds/reddit/assets/game-DP1vieUR.js                           2.02 kB │ gzip:  1.20 kB
+../../builds/reddit/assets/game-D5iiSVmO.js                           2.04 kB │ gzip:  1.16 kB
+../../builds/reddit/assets/game-Dzl9eVQ5.js                           2.07 kB │ gzip:  1.18 kB
+../../builds/reddit/assets/game-Z6k-vNVe.js                           2.07 kB │ gzip:  1.18 kB
+../../builds/reddit/assets/bridge-Bp6w4jp7.js                         2.09 kB │ gzip:  0.76 kB
+../../builds/reddit/assets/game-DRkWBCJy.js                           2.13 kB │ gzip:  1.22 kB
+../../builds/reddit/assets/accessibility-DgPVrXsF.js                  2.21 kB │ gzip:  1.15 kB
+../../builds/reddit/assets/game-uUa4AxK0.js                           2.21 kB │ gzip:  1.31 kB
+../../builds/reddit/assets/game-DHdRy91p.js                           2.31 kB │ gzip:  1.33 kB
+../../builds/reddit/assets/errors-DFFPSE-7.js                         2.36 kB │ gzip:  1.20 kB
+../../builds/reddit/assets/game-BApwafnU.js                           2.37 kB │ gzip:  1.36 kB
+../../builds/reddit/assets/errors-BW1VmJzc.js                         2.38 kB │ gzip:  1.23 kB
+../../builds/reddit/assets/errors-D2-OXfSy.js                         2.40 kB │ gzip:  1.26 kB
+../../builds/reddit/assets/errors-Cehdj1Wx.js                         2.41 kB │ gzip:  1.26 kB
+../../builds/reddit/assets/errors-mq1bZfkt.js                         2.45 kB │ gzip:  1.28 kB
+../../builds/reddit/assets/core-game-CyLsVauI.js                      2.45 kB │ gzip:  1.07 kB
+../../builds/reddit/assets/errors-BH21ki5o.js                         2.48 kB │ gzip:  1.32 kB
+../../builds/reddit/assets/tooltips-CxP_khYh.js                       2.49 kB │ gzip:  1.19 kB
+../../builds/reddit/assets/accessibility-bksbmqER.js                  2.51 kB │ gzip:  1.11 kB
+../../builds/reddit/assets/tooltips-BaDaooE4.js                       2.53 kB │ gzip:  1.13 kB
+../../builds/reddit/assets/errors-ApDyhna7.js                         2.54 kB │ gzip:  1.28 kB
+../../builds/reddit/assets/game-CVqpj1aR.js                           2.55 kB │ gzip:  1.31 kB
+../../builds/reddit/assets/tooltips-yHNOr35R.js                       2.56 kB │ gzip:  1.17 kB
+../../builds/reddit/assets/tooltips-WYqdtrQB.js                       2.57 kB │ gzip:  1.21 kB
+../../builds/reddit/assets/tooltips-6zouP0XA.js                       2.58 kB │ gzip:  1.11 kB
+../../builds/reddit/assets/tooltips-B9i-1jrf.js                       2.60 kB │ gzip:  1.20 kB
+../../builds/reddit/assets/alerts-C9PXxphV.js                         2.61 kB │ gzip:  1.14 kB
+../../builds/reddit/assets/errors-KXrHpEFp.js                         2.62 kB │ gzip:  1.35 kB
+../../builds/reddit/assets/tooltips-C4EgqKK2.js                       2.62 kB │ gzip:  1.19 kB
+../../builds/reddit/assets/alerts-D8Q4PaRN.js                         2.65 kB │ gzip:  1.24 kB
+../../builds/reddit/assets/alerts-D3AcMaT8.js                         2.66 kB │ gzip:  1.18 kB
+../../builds/reddit/assets/alerts-BAwOQ__7.js                         2.66 kB │ gzip:  1.15 kB
+../../builds/reddit/assets/tooltips-AXbH-0mH.js                       2.67 kB │ gzip:  1.19 kB
+../../builds/reddit/assets/game-Dh2yEbJ5.js                           2.68 kB │ gzip:  1.39 kB
+../../builds/reddit/assets/alerts-C0n31vMC.js                         2.68 kB │ gzip:  1.20 kB
+../../builds/reddit/assets/errors-8OKshPzs.js                         2.69 kB │ gzip:  1.33 kB
+../../builds/reddit/assets/alerts-m1zgfbYT.js                         2.69 kB │ gzip:  1.20 kB
+../../builds/reddit/assets/tooltips-P4yGzLRy.js                       2.70 kB │ gzip:  1.31 kB
+../../builds/reddit/assets/errors-BABpJZgl.js                         2.70 kB │ gzip:  1.37 kB
+../../builds/reddit/assets/tooltips-CyQ2-MBP.js                       2.72 kB │ gzip:  1.22 kB
+../../builds/reddit/assets/alerts-Cnr10aP3.js                         2.77 kB │ gzip:  1.29 kB
+../../builds/reddit/assets/errors-SUwuBgtY.js                         2.79 kB │ gzip:  1.39 kB
+../../builds/reddit/assets/alerts--N66OYzn.js                         2.81 kB │ gzip:  1.23 kB
+../../builds/reddit/assets/tooltips-DdGlh_Tv.js                       2.84 kB │ gzip:  1.23 kB
+../../builds/reddit/assets/tooltips-DUOdfoS9.js                       2.90 kB │ gzip:  1.43 kB
+../../builds/reddit/assets/alerts-Dj9tW7q3.js                         2.93 kB │ gzip:  1.26 kB
+../../builds/reddit/assets/alerts-GpU4Awyt.js                         2.93 kB │ gzip:  1.28 kB
+../../builds/reddit/assets/alerts-BYjJt2u1.js                         2.95 kB │ gzip:  1.33 kB
+../../builds/reddit/assets/errors-62EEx56-.js                         3.00 kB │ gzip:  1.45 kB
+../../builds/reddit/assets/tooltips-CO8aJWYs.js                       3.03 kB │ gzip:  1.36 kB
+../../builds/reddit/assets/errors-CyEYyxxk.js                         3.23 kB │ gzip:  1.43 kB
+../../builds/reddit/assets/alerts-CKuWmmSh.js                         3.26 kB │ gzip:  1.38 kB
+../../builds/reddit/assets/tooltips-DE2iImLy.js                       3.27 kB │ gzip:  1.37 kB
+../../builds/reddit/assets/alerts-Cm2YHVk1.js                         3.30 kB │ gzip:  1.33 kB
+../../builds/reddit/assets/game-CLrbk-AC.js                           3.35 kB │ gzip:  1.41 kB
+../../builds/reddit/assets/errors-LMh1MBOC.js                         3.85 kB │ gzip:  1.59 kB
+../../builds/reddit/assets/alerts-C1Z1FHGa.js                         3.89 kB │ gzip:  1.54 kB
+../../builds/reddit/assets/splash-DNO5krMd.js                         4.27 kB │ gzip:  1.08 kB
+../../builds/reddit/assets/errors-CsX4n6XL.js                         4.47 kB │ gzip:  1.54 kB
+../../builds/reddit/assets/alerts-B2FFANV8.js                         4.62 kB │ gzip:  1.42 kB
+../../builds/reddit/assets/tooltips-7ITtr-wV.js                       4.66 kB │ gzip:  1.37 kB
+../../builds/reddit/assets/achievements-D0-dvFAB.js                   4.82 kB │ gzip:  1.55 kB
+../../builds/reddit/assets/achievements-CrCQ7i08.js                   4.84 kB │ gzip:  1.46 kB
+../../builds/reddit/assets/achievements-CmTwLFSs.js                   4.84 kB │ gzip:  1.48 kB
+../../builds/reddit/assets/achievements-Bqou-2Mo.js                   4.87 kB │ gzip:  1.49 kB
+../../builds/reddit/assets/achievements-BA2lQR4_.js                   4.90 kB │ gzip:  1.52 kB
+../../builds/reddit/assets/race-C1086O2C.js                           4.98 kB │ gzip:  1.90 kB
+../../builds/reddit/assets/achievements-BDHewxay.js                   5.00 kB │ gzip:  1.50 kB
+../../builds/reddit/assets/achievements-CSQ4-IL9.js                   5.05 kB │ gzip:  1.53 kB
+../../builds/reddit/assets/achievements-Dr74teUr.js                   5.06 kB │ gzip:  1.56 kB
+../../builds/reddit/assets/achievements-DQyFYdeL.js                   5.11 kB │ gzip:  1.63 kB
+../../builds/reddit/assets/race-P8KgJMna.js                           5.40 kB │ gzip:  2.34 kB
+../../builds/reddit/assets/achievements-C8oKqzbX.js                   5.45 kB │ gzip:  1.64 kB
+../../builds/reddit/assets/achievements-Dy4i2PmY.js                   5.56 kB │ gzip:  1.71 kB
+../../builds/reddit/assets/race-D7fPBpNU.js                           5.57 kB │ gzip:  2.52 kB
+../../builds/reddit/assets/race-BlFzTUXR.js                           5.60 kB │ gzip:  2.50 kB
+../../builds/reddit/assets/race-BmGJwz3C.js                           5.64 kB │ gzip:  2.47 kB
+../../builds/reddit/assets/race-4f213cIp.js                           5.69 kB │ gzip:  2.62 kB
+../../builds/reddit/assets/race-dejnKpLV.js                           5.69 kB │ gzip:  2.49 kB
+../../builds/reddit/assets/race-IPqHQRRj.js                           5.69 kB │ gzip:  2.48 kB
+../../builds/reddit/assets/achievements-BmuGXpqc.js                   5.72 kB │ gzip:  1.75 kB
+../../builds/reddit/assets/profile-8VcJnv57.js                        5.80 kB │ gzip:  2.46 kB
+../../builds/reddit/assets/race-B-dr4w9a.js                           5.85 kB │ gzip:  2.56 kB
+../../builds/reddit/assets/race-CHvSFQnr.js                           5.92 kB │ gzip:  2.58 kB
+../../builds/reddit/assets/profile-BksIfPtr.js                        5.94 kB │ gzip:  2.59 kB
+../../builds/reddit/assets/profile-Bd4oZgyh.js                        5.96 kB │ gzip:  2.68 kB
+../../builds/reddit/assets/race-Mv_F-YOC.js                           6.05 kB │ gzip:  2.67 kB
+../../builds/reddit/assets/profile-DMTv_FKa.js                        6.06 kB │ gzip:  2.78 kB
+../../builds/reddit/assets/profile-BuNXudR8.js                        6.07 kB │ gzip:  2.62 kB
+../../builds/reddit/assets/profile-ChWDNGqx.js                        6.12 kB │ gzip:  2.66 kB
+../../builds/reddit/assets/profile-D32F8tm0.js                        6.17 kB │ gzip:  2.69 kB
+../../builds/reddit/assets/profile-B_VEUm7-.js                        6.21 kB │ gzip:  2.69 kB
+../../builds/reddit/assets/achievements-DwwRGnWl.js                   6.28 kB │ gzip:  1.71 kB
+../../builds/reddit/assets/race-BA46IZFm.js                           6.32 kB │ gzip:  2.63 kB
+../../builds/reddit/assets/profile-Ks9TGl0C.js                        6.35 kB │ gzip:  2.75 kB
+../../builds/reddit/assets/vendor-three-D1CFvLlm.js                   6.48 kB │ gzip:  2.47 kB
+../../builds/reddit/assets/profile-DES2cP9a.js                        6.56 kB │ gzip:  2.89 kB
+../../builds/reddit/assets/race-5QAYbKcl.js                           6.57 kB │ gzip:  2.82 kB
+../../builds/reddit/assets/race-B7dGLlpn.js                           6.65 kB │ gzip:  2.72 kB
+../../builds/reddit/assets/profile-CJdmt61x.js                        6.75 kB │ gzip:  2.86 kB
+../../builds/reddit/assets/profile-DXLkUE9m.js                        7.07 kB │ gzip:  2.96 kB
+../../builds/reddit/assets/achievements-cKp2Svuq.js                   7.25 kB │ gzip:  1.91 kB
+../../builds/reddit/assets/profile-D0po5Ndo.js                        7.57 kB │ gzip:  2.86 kB
+../../builds/reddit/assets/bridge-CTuLFTGB.js                         7.77 kB │ gzip:  2.78 kB
+../../builds/reddit/assets/requestSchemas-rrtAgqoQ.js                 7.82 kB │ gzip:  2.30 kB
+../../builds/reddit/assets/achievements-BG43CNyZ.js                   7.93 kB │ gzip:  1.73 kB
+../../builds/reddit/assets/race-BOdUhmze.js                           8.03 kB │ gzip:  3.03 kB
+../../builds/reddit/assets/profile-B2NF2UfN.js                        8.70 kB │ gzip:  3.23 kB
+../../builds/reddit/assets/vendor-three-C6IKORIQ.js                   9.76 kB │ gzip:  3.08 kB
+../../builds/reddit/assets/race-Dghw5mSG.js                           9.82 kB │ gzip:  2.93 kB
+../../builds/reddit/assets/vendor-three-B3KZuLm7.js                   9.91 kB │ gzip:  3.46 kB
+../../builds/reddit/assets/client-D9Ka2dOe.js                        10.00 kB │ gzip:  3.48 kB
+../../builds/reddit/assets/profile-C8J7su-P.js                       10.28 kB │ gzip:  3.08 kB
+../../builds/reddit/assets/validation-DlfK2B7Y.js                    13.25 kB │ gzip:  4.50 kB
+../../builds/reddit/assets/vendor-three-gZpQ_-sx.js                  13.78 kB │ gzip:  4.54 kB
+../../builds/reddit/assets/RedditRaceEntry-Bo4xxx8J.js               16.02 kB │ gzip:  5.80 kB
+../../builds/reddit/assets/LiveRacePushConsent-CUZjB3-m.js           17.06 kB │ gzip:  6.77 kB
+../../builds/reddit/assets/SolarSystem-CXBB4weF.js                   17.99 kB │ gzip:  6.18 kB
+../../builds/reddit/assets/vendor-three-CLTSHOxw.js                  20.91 kB │ gzip:  4.78 kB
+../../builds/reddit/assets/useAnswerKeyboard-C5WWRTKh.js             27.60 kB │ gzip:  8.53 kB
+../../builds/reddit/assets/vendor-three-j3MrV15Y.js                  37.04 kB │ gzip: 11.77 kB
+../../builds/reddit/assets/ReferralSharingCapability-Cmmgpwum.js     49.50 kB │ gzip: 17.52 kB
+../../builds/reddit/assets/RaceTo10Game-CzwqW08m.js                  49.55 kB │ gzip: 16.12 kB
+../../builds/reddit/assets/GameModalView-Ibw4pK3i.js                 50.52 kB │ gzip: 17.10 kB
+../../builds/reddit/assets/vendor-three-7XJCHUsI.js                  57.09 kB │ gzip: 14.95 kB
+../../builds/reddit/assets/localeModules-Bx8waeRj.js                 57.33 kB │ gzip:  7.60 kB
+../../builds/reddit/assets/vendor-three-Bmgq_BQH.js                  65.49 kB │ gzip: 18.35 kB
+../../builds/reddit/assets/vendor-three-CoISLGu_.js                  74.16 kB │ gzip: 21.24 kB
+../../builds/reddit/assets/vendor-three-vC7o3qzc.js                  78.43 kB │ gzip: 23.20 kB
+../../builds/reddit/assets/raceSchemas-nz9FumkL.js                  107.59 kB │ gzip: 30.85 kB
+../../builds/reddit/assets/game-BNnqwHAn.js                         158.02 kB │ gzip: 46.55 kB
+../../builds/reddit/assets/vendor-three-nCbNXXIp.js                 192.57 kB │ gzip: 42.42 kB
+../../builds/reddit/assets/vendor-react-BaMjfHjM.js                 219.00 kB │ gzip: 68.35 kB
+
+✓ built in 2.19s
+$ node scripts/audit-reddit-artifact.mjs
+Reddit artifact audit passed: 421 regular files, 2 entry documents, 3.86 MB, 0.62 MB initial resources, isolated and same-origin only
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm stage:client && pnpm build:server && pnpm validate
+$ node scripts/stage-client.mjs
+Staged isolated Reddit client as splash.html and game.html
+$ pnpm --filter @qwordly/core build
+../../firebase-functions                 | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+$ vite build
+vite v8.3.1 building ssr environment for production...
+transforming...
+✓ 396 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/server/index.cjs  2,929.91 kB │ gzip: 356.02 kB
+
+✓ built in 97ms
+$ pnpm check:types && pnpm test && node scripts/validate-package.mjs
+$ tsc6 -p tsconfig.json --noEmit
+$ node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs
+✔ the trusted Reddit server builds Core before resolving its generated package exports (0.428292ms)
+✔ workspace build and verification assemble the trusted Reddit package from the isolated client (0.265663ms)
+✔ the Reddit server build replaces its target directory instead of retaining stale release files (102.788456ms)
+✔ direct Devvit mutations fail closed in favor of the immutable release handoff (0.497513ms)
+✔ the package release mutations exit non-zero without invoking Devvit (521.908704ms)
+✔ redacts credentials, provider IDs, profiles and URL query data (1.294472ms)
+✔ rejects unknown types, invalid provenance, residual sensitive values and oversized input (0.593334ms)
+✔ source digests are stable and byte-sensitive (0.434793ms)
+✔ accepts only complete hosted deployment, immutable artifact, approval and device evidence (0.932407ms)
+✔ gate binds clean source provenance and exact package bytes (10.164848ms)
+✔ release preparation checks clean source before building and requires both entrypoints (0.80759ms)
+✔ handoff is immutable, single-link, and hash verified (1.881605ms)
+✔ exclusive retry barrier preserves ambiguous outcomes (2.801588ms)
+✔ concurrent barrier transitions serialize (1.320492ms)
+✔ playtest uploads reject missing, stable, malformed, and extra version arguments before running commands (0.656684ms)
+✔ a private upload retains uncertainty and blocks later versions before running commands (1.74189ms)
+✔ a failed package check leaves no attempted upload and can be corrected (0.419765ms)
+✔ accepted versions are immutable and explicit resolution preserves original failure evidence (1.021245ms)
+✔ separate processes cannot validate or transmit while another playtest owns the lock (19.026216ms)
+✔ process interruption preserves the lock and orphan attempt until explicit recovery (22.361505ms)
+✔ corrupt and orphaned journal evidence fails closed before validation (0.541075ms)
+✔ requires sanitized provenance-bound fixtures for every hosted contract (9.607702ms)
+✔ promotion evidence is bound to the retained read-only candidate (8.286759ms)
+✔ overlapping install, upgrade and moderator calls submit only one canonical post (3.213468ms)
+✔ an ambiguous provider failure remains pending across retries (0.353971ms)
+✔ Redis claim failure never reaches the provider creation boundary (0.86017ms)
+✔ ambiguous post persistence preserves pending or accepted state without resubmitting (0.341947ms)
+✔ missing retained posts and malformed records never authorize replacement (0.466423ms)
+✔ a losing claim reads the winner's completed post without submitting again (0.127903ms)
+✔ invalid provider identifiers remain pending and are never cached as acceptance (0.274681ms)
+✔ identity kill switch degrades to guest core play only for the exact disabled response (0.610386ms)
+✔ matches the Firebase verifier canonical signature fixture byte-for-byte (0.523452ms)
+✔ recovers only matching account and environment orders across bounded pages (0.951683ms)
+✔ fails closed on oversized pages, cursor replay and grant failure (0.237099ms)
+✔ derives stable isolated opaque recovery keys (1.362982ms)
+✔ rejects malformed scope and weak secrets (0.15313ms)
+✔ does not forward the signed assertion through an actual 307 redirect (16.07792ms)
+✔ stops streamed response consumption at the byte limit instead of buffering the whole body (0.762114ms)
+✔ rejects corrupt UTF-8 rather than silently rewriting provider JSON strings (0.264391ms)
+✔ preserves valid payloads and provider failure statuses without retrying (0.697171ms)
+✔ accepts exactly 64 KiB of valid multi-byte UTF-8 and rejects one byte more (0.454621ms)
+✔ rejects route escapes and malformed requests before any transmission (0.113114ms)
+✔ returns fixed diagnostics for network failures, malformed JSON and a redirected response (0.442579ms)
+✔ the ten-second deadline covers a stalled body even when a transport ignores abort (0.503123ms)
+✔ ignores late headers after the deadline and cancels the body without consuming it (0.212553ms)
+✔ projects exact paid and reverted Reddit orders (0.98151ms)
+✔ rejects forged identity, lifecycle, environment, price, SKU, accounting and bundles (0.243662ms)
+✔ projects only paid or delivered orders carrying one exact opaque account tag (0.360893ms)
+✔ accepts only HTTPS Reddit-owned avatar delivery hosts (0.42753ms)
+✔ injects only the server environment into exact referral requests (0.616889ms)
+✔ rejects client environment, extra fields, malformed bodies and invalid deployment configuration (0.152459ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 51
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 554.703084
+Devvit package contract passed: 422 regular files/7.37 MiB, isolated inline/game client, CJS server, Redis, and one gateway host
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/prepare-deploy.js && pnpm check:module-cycles
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs
+✔ accepts an acyclic runtime graph and ignores erased type-only edges (10.596135ms)
+✔ rejects a barrel-induced runtime cycle with deterministic module evidence (6.627796ms)
+✔ excludes test modules from the production graph (1.105324ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.255521
+Production module cycle audit passed (194 modules, 1101 runtime references).
+$ rimraf lib && tsc -p tsconfig.json && rimraf lib/__tests__ lib/__mocks__

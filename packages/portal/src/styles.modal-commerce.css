@@ -102,6 +102,7 @@
   text-align: center;
 }
 .shop-product-name {
+  margin: 0;
   max-width: 100%;
   overflow: hidden;
   color: #401f40;

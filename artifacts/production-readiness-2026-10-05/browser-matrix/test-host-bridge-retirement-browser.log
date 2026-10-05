@@ -1,0 +1,11 @@
+$ node scripts/verify-host-bridge-retirement-browser.mjs && HOST_RETIRE_REACT_MODE=production node scripts/verify-host-bridge-retirement-browser.mjs
+{
+  "mode": "development",
+  "checks": 186,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 186,
+  "failures": []
+}

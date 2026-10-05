@@ -4,6 +4,7 @@ import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.
 import {verifyRedditBrowserRedirects} from "./redditRedirect.jest-playwright.support";
 import {verifyRedditTournamentBoard, verifyRedditTournamentLiveResult} from "./redditTournament.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
+import {expectWebStandards} from "../../play/__tests__/webStandards.jest-playwright.support";
 import {chromium, type Page} from "@playwright/test";
 
 /** Documents global. */
@@ -77,7 +78,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
     /** Provides dist directory behavior. */
     const distDirectory = process.env.PORTAL_REDDIT_BUILD_DIR
       ? path.resolve(process.env.PORTAL_REDDIT_BUILD_DIR)
-      : path.join(packageRoot, "dist-reddit");
+      : path.join(packageRoot, "../../builds/reddit");
     /** Provides server behavior. */
     const server = createServer(async (request, response) => {
       /** Requests url. */
@@ -126,7 +127,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
     try {
       await verifyRedditBrowserRedirects(browser, origin, injectDevvit);
       /** Provides inline behavior. */
-      const inline = await browser.newPage({viewport: {width: 390, height: 844}});
+      const inline = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
       await injectDevvit(inline, 1, origin);
       await inline.addInitScript(() => window.localStorage.setItem("appLanguage", "ar"));
       await inline.route("**/api/session", (route) =>
@@ -140,7 +141,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       await inline.getByRole("button", {name: "العب"}).click();
       expect(await inline.locator("html").getAttribute("lang")).toBe("ar");
       expect(await inline.locator("html").getAttribute("dir")).toBe("rtl");
-      await expect(inline.getByText("حل لغز اليوم وتحدَّ المجتمع.", {exact: true}).count()).resolves.toBe(1);
+      await expect(inline.getByText("حل لغز اليوم وتحدَّ المجتمع.", {exact: true}).count()).resolves.toBe(1);
       await inline.waitForFunction(() => window.__redditEffects.length > 0);
       /** Provides effects behavior. */
       const effects = await inline.evaluate(() => window.__redditEffects);
@@ -148,7 +149,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       expect(JSON.stringify(effects)).toContain("immersiveMode");
 
       /** Provides locale smoke behavior. */
-      const localeSmoke = await browser.newPage({viewport: {width: 390, height: 844}});
+      const localeSmoke = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
       await injectDevvit(localeSmoke, 1, origin);
       await localeSmoke.route("**/api/session", (route) =>
         route.fulfill({
@@ -185,7 +186,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       }
 
       /** Provides authenticated locale smoke behavior. */
-      const authenticatedLocaleSmoke = await browser.newPage({viewport: {width: 390, height: 844}});
+      const authenticatedLocaleSmoke = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
       await injectDevvit(authenticatedLocaleSmoke, 2, origin);
       /** Saves d locale. */
       let savedLocale = "en";
@@ -356,7 +357,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       }
 
       /** Provides guest behavior. */
-      const guest = await browser.newPage({viewport: {width: 390, height: 844}});
+      const guest = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
       /** Provides guest api requests behavior. */
       const guestApiRequests: string[] = [];
       await injectDevvit(guest, 2, origin);
@@ -370,12 +371,13 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       });
       await guest.goto(`${origin}/`);
       await guest.getByText("What has keys but cannot open doors?", {exact: true}).waitFor({timeout: 15_000});
+      await expectWebStandards(guest, "reddit guest game");
       expect(guestApiRequests).toEqual(["/api/session"]);
       await guest.getByRole("button", {name: "Log in to save progress"}).click();
       await guest.waitForFunction(() => JSON.stringify(window.__redditEffects).includes("loginPrompt"));
 
       /** Provides expanded behavior. */
-      const expanded = await browser.newPage({viewport: {width: 390, height: 844}});
+      const expanded = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
       /** Provides api requests behavior. */
       const apiRequests: string[] = [];
       await injectDevvit(expanded, 2, origin);
@@ -577,6 +579,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       const settingsButton = expanded.locator(".game-bottom-navigation button").first();
       await settingsButton.click({force: true});
       await expanded.getByRole("dialog").waitFor();
+      await expectWebStandards(expanded, "reddit settings rtl");
       expect(
         await expanded
           .getByRole("dialog")

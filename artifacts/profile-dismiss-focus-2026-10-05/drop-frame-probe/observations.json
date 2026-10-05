@@ -1,0 +1,66 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "outer keyboard listener is present before native Tab",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "dismissal retains the same connected outer controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "native Tab selects an outer dialog control after dismissal",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "dismissal restoration preserves later native Tab focus",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "outer Profile remains open",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "native dismissal never deletes an account",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "early-tab",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

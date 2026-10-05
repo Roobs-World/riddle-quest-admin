@@ -1,0 +1,67 @@
+{
+  "temporaryBuildRoot": "/tmp/riddle-avatar-cancel-builds-4mx8chbp",
+  "temporaryBuildRootRemoved": true,
+  "preservedBuildFiles": 1300,
+  "firefoxPagesRemaining": [
+    "about:blank"
+  ],
+  "ownedFixtureCachesRemoved": [
+    "avatar-cancel-oQBWy5",
+    "avatar-cancel-4x0KqN"
+  ],
+  "ownedFixtureProcessesRemaining": 0,
+  "servers": [
+    {
+      "session": 19706,
+      "port": 44005,
+      "exit": 130,
+      "reason": "intentional SIGINT; fixture finally cleanup observed"
+    },
+    {
+      "session": 39410,
+      "port": 38775,
+      "exit": 130,
+      "reason": "intentional SIGINT; fixture finally cleanup observed"
+    }
+  ],
+  "verificationJobs": [
+    {
+      "session": 21355,
+      "exit": 1,
+      "expected": "red original expanded counter"
+    },
+    {
+      "session": 75840,
+      "exit": 1,
+      "expected": "red helper-only counter"
+    },
+    {
+      "session": 96575,
+      "exit": 0
+    },
+    {
+      "session": 93155,
+      "exit": 0
+    },
+    {
+      "session": 94220,
+      "exit": 0
+    },
+    {
+      "session": 97949,
+      "exit": 0
+    },
+    {
+      "session": 87148,
+      "exit": 0
+    },
+    {
+      "session": 4290,
+      "exit": 0
+    },
+    {
+      "session": 8687,
+      "exit": 0
+    }
+  ]
+}

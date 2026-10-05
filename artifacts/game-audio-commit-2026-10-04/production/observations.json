@@ -43,6 +43,38 @@
     "width": 390,
     "height": 568,
     "scenario": "spec-unmute",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-unmute",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-unmute",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-unmute",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-unmute",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -107,6 +139,38 @@
     "width": 390,
     "height": 568,
     "scenario": "spec-resume",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-resume",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-resume",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-resume",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-resume",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -179,6 +243,38 @@
     "width": 390,
     "height": 568,
     "scenario": "spec-mute",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-mute",
+    "name": "committed mute matches the selected setting",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-mute",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-mute",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-mute",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -246,6 +342,38 @@
     "name": "media playback follows the visible setting",
     "actual": false,
     "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-pause",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-pause",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-pause",
+    "name": "committed pause matches the selected setting",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "spec-pause",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": true,
+    "expected": true
   },
   {
     "width": 390,
@@ -677,6 +805,38 @@
     "width": 390,
     "height": 844,
     "scenario": "spec-unmute",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-unmute",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-unmute",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-unmute",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-unmute",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -741,6 +901,38 @@
     "width": 390,
     "height": 844,
     "scenario": "spec-resume",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-resume",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-resume",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-resume",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-resume",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -813,6 +1005,38 @@
     "width": 390,
     "height": 844,
     "scenario": "spec-mute",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-mute",
+    "name": "committed mute matches the selected setting",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-mute",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-mute",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-mute",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -880,6 +1104,38 @@
     "name": "media playback follows the visible setting",
     "actual": false,
     "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "committed pause matches the selected setting",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": true,
+    "expected": true
   },
   {
     "width": 390,
@@ -1311,6 +1567,38 @@
     "width": 1280,
     "height": 844,
     "scenario": "spec-unmute",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-unmute",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-unmute",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-unmute",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-unmute",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -1375,6 +1663,38 @@
     "width": 1280,
     "height": 844,
     "scenario": "spec-resume",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-resume",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-resume",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-resume",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-resume",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -1447,6 +1767,38 @@
     "width": 1280,
     "height": 844,
     "scenario": "spec-mute",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-mute",
+    "name": "committed mute matches the selected setting",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-mute",
+    "name": "committed pause matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-mute",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-mute",
     "name": "unexpected media rejections are absent",
     "actual": [],
     "expected": []
@@ -1514,6 +1866,38 @@
     "name": "media playback follows the visible setting",
     "actual": false,
     "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "prepared setting commits once to owner B",
+    "actual": "B",
+    "expected": "B"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "committed mute matches the selected setting",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "committed pause matches the selected setting",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "spec-pause",
+    "name": "committed setting controls actual playback after a native key",
+    "actual": true,
+    "expected": true
   },
   {
     "width": 1280,

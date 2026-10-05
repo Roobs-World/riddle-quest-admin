@@ -1,0 +1,3 @@
+$ node scripts/verify-completion-effects-browser.mjs
+PASS 1280px: completion and accepted-attempt identity, profile rerenders, retired visits, optional callback failures, and owned analytics
+PASS 390px: completion and accepted-attempt identity, profile rerenders, retired visits, optional callback failures, and owned analytics

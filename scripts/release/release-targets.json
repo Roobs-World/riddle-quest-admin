@@ -92,7 +92,7 @@
         "build:netflix"
       ]
     },
-    "handoff": "Use packages/portal/dist-netflix with the Netflix partner delivery tooling.",
+    "handoff": "Use builds/netflix with the Netflix partner delivery tooling.",
     "runbook": "docs/netflix-yahoo-candidate-builds.md",
     "dashboardName": "Netflix",
     "delivery": "web-target"
@@ -110,7 +110,7 @@
         "build:yahoo"
       ]
     },
-    "handoff": "Use packages/portal/dist-yahoo with the Yahoo partner delivery tooling.",
+    "handoff": "Use builds/yahoo with the Yahoo partner delivery tooling.",
     "runbook": "docs/netflix-yahoo-candidate-builds.md",
     "dashboardName": "Yahoo",
     "delivery": "web-target"

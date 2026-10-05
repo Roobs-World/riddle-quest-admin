@@ -31,11 +31,23 @@ export async function withFacebookReleaseLock(receiptDirectory, action) {
 /** Rejects malformed or cross-artifact local state before trusting an outcome. */
 function validateBarrier(record, archiveSha256) {
   if (record?.schemaVersion !== 1 || record.provider !== "facebook" ||
-    record.archiveSha256 !== archiveSha256 || !["transmitting", "ambiguous", "accepted"].includes(record.status) ||
+    record.archiveSha256 !== archiveSha256 || !["transmitting", "ambiguous", "accepted", "reconciled-absent"].includes(record.status) ||
     typeof record.attemptedAt !== "string" || !Number.isFinite(Date.parse(record.attemptedAt))) {
     throw new Error("Invalid Facebook handoff barrier; reconcile retained evidence");
   }
   if (record.status === "accepted") validateFacebookDraftAcceptance(record.evidence, archiveSha256);
+  if (record.status === "reconciled-absent") {
+    const evidence = record.evidence;
+    if (typeof evidence?.reason !== "string" || !evidence.reason.trim() ||
+      !/^[0-9a-f]{64}$/u.test(evidence.dashboardEvidenceSha256 ?? "") ||
+      !Array.isArray(evidence.observedVersions) || evidence.observedVersions.length === 0 ||
+      evidence.observedVersions.some(version => typeof version !== "string" || !/^\d+$/u.test(version)) ||
+      new Set(evidence.observedVersions).size !== evidence.observedVersions.length ||
+      typeof evidence.reconciledAt !== "string" || !Number.isFinite(Date.parse(evidence.reconciledAt)) ||
+      Date.parse(evidence.reconciledAt) < Date.parse(record.attemptedAt)) {
+      throw new Error("Invalid Facebook absence reconciliation; reconcile retained evidence");
+    }
+  }
   return record;
 }
 
@@ -63,7 +75,7 @@ export async function assertFacebookHandoffsSettled(receiptDirectory, {recoverHa
   }
   for (const [hash, barrier] of barriers) {
     if (!archives.has(hash)) throw new Error("Facebook barrier has no immutable archive; reconcile retained evidence");
-    if (barrier.status !== "accepted") {
+    if (barrier.status !== "accepted" && barrier.status !== "reconciled-absent") {
       throw new Error(`Facebook ${barrier.status} handoff ${hash} must be reconciled before preparing another artifact`);
     }
   }

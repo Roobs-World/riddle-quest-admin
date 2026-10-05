@@ -1,0 +1,328 @@
+{
+  "mode": "development",
+  "checks": 109,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "hidden countdown owns no animation timer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "hidden countdown has no native animation wakeups",
+      "actual": 3,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "hidden parent updates never restart animation",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "foregrounding immediately samples countdown",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "finished countdown callbacks cannot sample",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "finished countdown callbacks cannot trigger extra reads",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "clock catch-up sampled immediately",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "initial clock ownership matches visibility",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "hidden countdown owns no animation timer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "hidden countdown has no native animation wakeups",
+      "actual": 3,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "hidden parent updates never restart animation",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "foregrounding immediately samples countdown",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "finished countdown callbacks cannot sample",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "finished countdown callbacks cannot trigger extra reads",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "initially-hidden",
+      "name": "clock catch-up sampled immediately",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "hidden countdown owns no animation timer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "hidden countdown has no native animation wakeups",
+      "actual": 3,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "hidden parent updates never restart animation",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "foregrounding immediately samples countdown",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "finished countdown callbacks cannot sample",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "finished countdown callbacks cannot trigger extra reads",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "parent",
+      "name": "clock catch-up sampled immediately",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "hidden countdown owns no animation timer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "hidden countdown has no native animation wakeups",
+      "actual": 3,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "hidden parent updates never restart animation",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "foregrounding immediately samples countdown",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "each background transition stops countdown",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "each background transition stops countdown",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "each background transition stops countdown",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "each background transition stops countdown",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "finished countdown callbacks cannot sample",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "finished countdown callbacks cannot trigger extra reads",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "cycles",
+      "name": "clock catch-up sampled immediately",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retired",
+      "name": "hidden countdown owns no animation timer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retired",
+      "name": "hidden countdown has no native animation wakeups",
+      "actual": 3,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retired",
+      "name": "hidden parent updates never restart animation",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retired",
+      "name": "foregrounding immediately samples countdown",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "retired",
+      "name": "retired countdown callbacks cannot sample",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live countdown clock ownership
+
+38 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-countdown-clock-browser.mjs:63:236 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 38,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

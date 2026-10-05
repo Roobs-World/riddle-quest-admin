@@ -46,8 +46,8 @@ const definitions = listHtml5DistributionDefinitions();
 for (const {target, artifact} of definitions) await verifyZip(artifact, target);
 await verifyYouTubeZip();
 await verifyZip("build-gamesnacks.zip", "gamesnacks");
-for (const directory of ["dist-jest", "dist-facebook", "dist-netflix", "dist-yahoo"]) {
-  await requireFile(`packages/portal/${directory}/index.html`);
+for (const directory of ["jest", "facebook", "netflix", "yahoo"]) {
+  await requireFile(`builds/${directory}/index.html`);
 }
 await requireFile("packages/reddit-app/dist/client/game.html");
 await requireFile("packages/reddit-app/dist/server/index.cjs");

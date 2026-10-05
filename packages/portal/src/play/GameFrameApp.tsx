@@ -569,10 +569,10 @@ export function GameFrameApp({
           tabIndex={-1}
         >
           <SpinningWheel />
-          <section>
+          <div className="offline-card">
             <strong id="offline-dialog-title">{tr("CommonAlerts.OFFLINE_TITLE")}</strong>
             <p id="offline-dialog-message">{tr("CommonAlerts.OFFLINE_MESSAGE")}</p>
-          </section>
+          </div>
         </div>
       )}
     </main>

@@ -1,0 +1,508 @@
+[
+  {
+    "file": "trace-0.json",
+    "windowMs": 152.892,
+    "leaf": [
+      {
+        "samples": 67,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "focus",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 173,
+          "functionName": "compile",
+          "lineNumber": 1,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:40403/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 7268,
+          "functionName": "e._zod.run",
+          "lineNumber": 2,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:40403/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 20843,
+          "functionName": "e._zod.check",
+          "lineNumber": 0,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:40403/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 133204,
+          "functionName": "loadRiddle",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "request",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "setTimeout",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 17,
+          "functionName": "appears",
+          "lineNumber": 3,
+          "scriptId": 137
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 128691,
+          "functionName": "ef",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 82148,
+          "functionName": "_l",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      }
+    ],
+    "nearestGame": [
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 133204,
+          "functionName": "loadRiddle",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 41718,
+          "functionName": "wn",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 72906,
+          "functionName": "ii",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 39236,
+          "functionName": "yn",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      }
+    ],
+    "geometryStacks": []
+  },
+  {
+    "file": "trace-1.json",
+    "windowMs": 68.237,
+    "leaf": [
+      {
+        "samples": 35,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49079,
+          "functionName": "os",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 121088,
+          "functionName": "co",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 48801,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "clear",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "uniformMatrix3fv",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 12945,
+          "functionName": "K",
+          "lineNumber": 0,
+          "scriptId": 66,
+          "url": "http://127.0.0.1:40403/assets/vendor-three-14j5cCLD.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 7523,
+          "functionName": "q",
+          "lineNumber": 8,
+          "scriptId": 11,
+          "url": "http://127.0.0.1:40403/assets/i18n-gS7Hsjhb.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 23865,
+          "functionName": "oi",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49532,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      }
+    ],
+    "nearestGame": [
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 121088,
+          "functionName": "co",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 48801,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 49532,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 1756,
+          "functionName": "se",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      }
+    ],
+    "geometryStacks": []
+  },
+  {
+    "file": "trace-2.json",
+    "windowMs": 83.074,
+    "leaf": [
+      {
+        "samples": 75,
+        "frame": {
+          "codeType": "other",
+          "functionName": "(program)",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 5,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "removeChild",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 3,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "mark",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 173,
+          "functionName": "compile",
+          "lineNumber": 1,
+          "scriptId": 28,
+          "url": "http://127.0.0.1:40403/assets/raceSchemas-Cke_AfHE.js"
+        }
+      },
+      {
+        "samples": 2,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 51541,
+          "functionName": "bs",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 16558,
+          "functionName": "t",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 135959,
+          "functionName": "Nf",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "setItem",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 8483,
+          "functionName": "onAdvance",
+          "lineNumber": 1,
+          "scriptId": 35,
+          "url": "http://127.0.0.1:40403/assets/GameModalView-BHIOpXOy.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "randomUUID",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "functionName": "request",
+          "scriptId": 0
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 72146,
+          "functionName": "Qc",
+          "lineNumber": 7,
+          "scriptId": 8,
+          "url": "http://127.0.0.1:40403/assets/vendor-react-CuZr8RiT.js"
+        }
+      }
+    ],
+    "nearestGame": [
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 86043,
+          "functionName": "Yi",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 192620,
+          "functionName": "Rc",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 56732,
+          "functionName": "",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      },
+      {
+        "samples": 1,
+        "frame": {
+          "codeType": "JS",
+          "columnNumber": 83528,
+          "functionName": "ji",
+          "lineNumber": 1,
+          "scriptId": 16,
+          "url": "http://127.0.0.1:40403/assets/jest-B3KbLI3W.js"
+        }
+      }
+    ],
+    "geometryStacks": []
+  }
+]

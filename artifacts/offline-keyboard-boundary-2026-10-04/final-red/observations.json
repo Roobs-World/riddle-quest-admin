@@ -1,0 +1,62 @@
+[
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "connection boundary has the committed visible alert",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture phase admits only the current alert",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture keyboard subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "capture focus subscription follows the committed alert",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "surface": "game",
+    "scenario": "reconnect",
+    "key": "Tab",
+    "width": 390,
+    "height": 568,
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

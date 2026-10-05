@@ -1,0 +1,3 @@
+$ node scripts/verify-live-race-native-invite-browser.mjs
+PASS 1280px native invitation ownership and exclusion
+PASS 390px native invitation ownership and exclusion

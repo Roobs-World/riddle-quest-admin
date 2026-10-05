@@ -1,0 +1,15 @@
+{
+  "atKey": {
+    "tag": "BUTTON",
+    "className": "",
+    "inert": false,
+    "targetTag": "BUTTON",
+    "targetClass": ""
+  },
+  "after": {
+    "tag": "BUTTON",
+    "className": "profile-delete-account-button",
+    "inert": false
+  },
+  "prevented": true
+}

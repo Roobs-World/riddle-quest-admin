@@ -52,7 +52,7 @@ export function RaceResultPanel({
     <div className="race-panel race-result" aria-live="polite">
       <h2>{tr(`RaceTo10.RESULT_${(outcome.result === "ghost_win" ? "opponent_win" : outcome.result).toUpperCase()}`)}</h2>
       {run?.opponent ? (
-        <div className="race-result-score" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
+        <div className="race-result-score" role="group" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
           <span>
             <small>{tr("RaceTo10.YOU")}</small>
             <strong>{outcome.correctCount}/{run.rules.targetCorrect}</strong>

@@ -12,10 +12,10 @@ describeBrowser("earned achievement milestones in isolated solo artifacts", () =
   it.each(["youtube", "netflix", "yahoo"] as const)("%s earns, saves and reloads the new win/play badges", async target => {
     /** Portal workspace containing the built isolated artifacts. */
     const packageRoot = path.resolve(__dirname, "../../..");
-    /** Content identity embedded in the exact artifact under test. */
-    const manifest = JSON.parse(await readFile(path.join(packageRoot, `dist-${target}/youtube-content-manifest.json`), "utf8"));
     /** Local HTTP server exposing this target artifact. */
     const artifact = await startYouTubeArtifactServer(target);
+    /** Content identity embedded in the exact artifact under test. */
+    const manifest = JSON.parse(await readFile(path.join(artifact.directory, "youtube-content-manifest.json"), "utf8"));
     /** Browser executing the built gameplay and persistence paths. */
     const browser = await chromium.launch({headless: true});
     /** Directory retaining screenshots of earned milestone badges. */

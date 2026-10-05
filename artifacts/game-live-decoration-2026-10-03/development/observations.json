@@ -128,8 +128,8 @@
   {
     "width": 1280,
     "name": "idle: multiplayer retains healthy graphics resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -146,8 +146,8 @@
   {
     "width": 1280,
     "name": "idle: multiplayer transitions do not reconstruct the scene",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -182,8 +182,8 @@
   {
     "width": 1280,
     "name": "idle: retained callbacks do not repeat cleanup",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -380,8 +380,8 @@
   {
     "width": 1280,
     "name": "timer: multiplayer retains healthy graphics resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 1280,
@@ -398,8 +398,8 @@
   {
     "width": 1280,
     "name": "timer: multiplayer transitions do not reconstruct the scene",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -434,8 +434,8 @@
   {
     "width": 1280,
     "name": "timer: retained callbacks do not repeat cleanup",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -632,8 +632,8 @@
   {
     "width": 390,
     "name": "idle: multiplayer retains healthy graphics resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -650,8 +650,8 @@
   {
     "width": 390,
     "name": "idle: multiplayer transitions do not reconstruct the scene",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -686,8 +686,8 @@
   {
     "width": 390,
     "name": "idle: retained callbacks do not repeat cleanup",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -884,8 +884,8 @@
   {
     "width": 390,
     "name": "timer: multiplayer retains healthy graphics resources",
-    "actual": 76,
-    "expected": 76
+    "actual": 74,
+    "expected": 74
   },
   {
     "width": 390,
@@ -902,8 +902,8 @@
   {
     "width": 390,
     "name": "timer: multiplayer transitions do not reconstruct the scene",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -938,8 +938,8 @@
   {
     "width": 390,
     "name": "timer: retained callbacks do not repeat cleanup",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,

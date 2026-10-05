@@ -1,0 +1,88 @@
+{
+  "mode": "development",
+  "checks": 21,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "hidden countdown owns no animation timer",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "queued cancelled countdown callbacks cannot sample hidden state",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "hidden countdown has no native animation wakeups",
+      "actual": 3,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "hidden countdown has no native animation samples",
+      "actual": 3,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "hidden parent updates never restart animation",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "foregrounding immediately samples countdown",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "finished countdown callbacks cannot sample",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hidden",
+      "name": "foreground answer drafting remains playable",
+      "actual": "",
+      "expected": "te"
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live countdown clock ownership
+
+8 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-countdown-clock-browser.mjs:63:236 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 8,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,0 +1,25 @@
+$ node scripts/verify-guidance-storage-recovery-browser.mjs && GUIDANCE_RECOVERY_REACT_MODE=production node scripts/verify-guidance-storage-recovery-browser.mjs && GUEST_DURABILITY_COLD_ONLY=1 GUEST_DURABILITY_COLD_BLOCKED=1 node scripts/verify-reddit-guest-durability-browser.mjs && GUEST_DURABILITY_COLD_ONLY=1 GUEST_DURABILITY_COLD_BLOCKED=1 GUEST_DURABILITY_REACT_MODE=production node scripts/verify-reddit-guest-durability-browser.mjs
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 114,
+  "failures": []
+}
+{
+  "mode": "production",
+  "baseline": false,
+  "checks": 114,
+  "failures": []
+}
+{
+  "mode": "development",
+  "baseline": false,
+  "checks": 10,
+  "failures": []
+}
+{
+  "mode": "production",
+  "baseline": false,
+  "checks": 10,
+  "failures": []
+}

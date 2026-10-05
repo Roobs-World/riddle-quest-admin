@@ -1,0 +1,11 @@
+$ node scripts/verify-static-keyboard-work-browser.mjs && STATIC_KEYBOARD_REACT_MODE=production node scripts/verify-static-keyboard-work-browser.mjs
+{
+  "mode": "development",
+  "checks": 354,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 354,
+  "failures": []
+}

@@ -1,0 +1,11 @@
+$ node scripts/verify-buffered-terminal-recovery-browser.mjs && BUFFERED_TERMINAL_REACT_MODE=production node scripts/verify-buffered-terminal-recovery-browser.mjs
+{
+  "mode": "development",
+  "checks": 111,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 111,
+  "failures": []
+}

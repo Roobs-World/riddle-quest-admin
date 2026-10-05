@@ -40,7 +40,10 @@ export function TooltipOverlay({
 }: TooltipOverlayProps) {
   /** Measured card size keeps translated text and its action inside the viewport. */
   const [panelSize, setPanelSize] = useState({height: 0, viewportHeight: window.innerHeight});
+  /** Only anchored placement depends on measured panel dimensions. */
+  const needsPanelMeasurement = targetRect !== null;
   useLayoutEffect(() => {
+    if (!needsPanelMeasurement) return;
     /** Tooltip element whose dimensions determine placement. */
     const card = cardRef.current;
     if (!card) return;
@@ -62,7 +65,7 @@ export function TooltipOverlay({
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [activeTooltip, cardRef, content]);
+  }, [activeTooltip, cardRef, content, needsPanelMeasurement]);
   /** Provides panel style behavior. */
   const panelStyle = getTooltipPanelStyle(activeTooltip, targetRect, panelSize.viewportHeight, panelSize.height);
   /** Provides title id behavior. */
@@ -97,7 +100,7 @@ export function TooltipOverlay({
         <small>
           {sequenceIndex + 1}/{sequenceLength}
         </small>
-        <h3 id={titleId}>{content.title}</h3>
+        <h2 id={titleId}>{content.title}</h2>
         <p id={bodyId}>{content.body}</p>
         <button className="play-primary compact" onClick={onAdvance}>
           {tr("Tooltips.GOT_IT_BUTTON")}

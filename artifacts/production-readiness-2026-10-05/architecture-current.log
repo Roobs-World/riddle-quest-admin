@@ -1,0 +1,50 @@
+$ node --test scripts/release/*.test.mjs packages/portal/scripts/web-target-dependencies.test.mjs scripts/monitoring/publish-release-status.test.mjs
+✔ each target rejects every other provider module, including resolved aliases and dynamic imports (0.917107ms)
+✔ transitive SDK packages and tooling fail closed on every artifact (0.243842ms)
+✔ real bundler rejects aliased and lazy provider imports plus SDK packages before minification (5964.579787ms)
+✔ concurrent custom outputs retain separate complete inventories and preserve canonical release evidence (827.516658ms)
+✔ later generation/write failures and generate-only builds cannot leave successful evidence (3399.034826ms)
+✔ published inventory reflects final chunk bytes after private map cleanup (454.894984ms)
+✔ release evidence root is shared by builds and verification without changing canonical source inventories (0.401481ms)
+✔ frozen license inventory preserves exact notices and fails closed without requerying the package store (800.843185ms)
+✔ release refresh preserves newer measurements and removes mismatched game analytics (5.529937ms)
+✔ a concurrent collection causes a fresh read rather than overwriting its measurements (0.618121ms)
+✔ verified Facebook/itch completion creates reviewed rows and preserves external status (1.648202ms)
+✔ stale, incomplete, failed and duplicate verification cannot claim completion (0.225688ms)
+✔ publication replays safely and retries conflicts against current accepted head (0.315898ms)
+✔ refresh failure remains durable, visible and retryable without losing local evidence (8.380077ms)
+Prepared itch HTML5 handoff build-itch.zip (ba04450ca821443fa94fab8a3b79870005c2619a6fddac36f6661b97b9cba2ab).
+Prepared newgrounds HTML5 handoff build-newgrounds.zip (ba04450ca821443fa94fab8a3b79870005c2619a6fddac36f6661b97b9cba2ab).
+✔ one preparation creates many verified handoffs and supports a newly registered destination (23.597907ms)
+Prepared itch HTML5 handoff build-itch.zip (ba04450ca821443fa94fab8a3b79870005c2619a6fddac36f6661b97b9cba2ab).
+Prepared itch HTML5 handoff build-itch.zip (ba04450ca821443fa94fab8a3b79870005c2619a6fddac36f6661b97b9cba2ab).
+✔ single destination prepares fresh and changed source cannot be reused (19.524249ms)
+✔ failed preparation removes stale evidence and never writes a destination receipt (1.978769ms)
+✔ distribution targets have distinct immutable artifact names and honest release boundaries (0.7284ms)
+✔ the public interface exposes one isolated canonical command per release target (2.301791ms)
+✔ the root package exposes target releases and one combined release command (8.990493ms)
+✔ target plans preserve distinct external effects (0.315969ms)
+✔ standalone web and PWA destinations cannot dispatch a build through either release interface (0.630134ms)
+✔ the combined release verifies once before running every adapter (0.473326ms)
+✔ the Facebook adapter performs only the local preflight and immutable handoff (0.535063ms)
+✔ dry runs describe a target without invoking its adapter (0.113696ms)
+✔ execution delegates exactly once and reports the platform handoff (0.10056ms)
+✔ the canonical Jest adapter refuses ambient overrides of its fixed activation policy (0.126911ms)
+✔ the CLI rejects extra stages and supports a read-only plan (35.722948ms)
+✔ formatted plans always disclose command, effect, handoff, and runbook (0.143311ms)
+✔ the process adapter forwards termination and awaits child teardown (59.774745ms)
+✔ production verification uses the canonical release E2E gate without downgrading content to a fixture (1.592858ms)
+✔ backend production coverage retains the unit thresholds and includes the emulator paths (6.70922ms)
+✔ only matching successful browser evidence verifies current archive (0.447999ms)
+✔ a mismatched archive or manifest cannot claim readiness (0.151687ms)
+✔ verified live receipt updates status, links and action queue (0.831856ms)
+✔ live and submitted outcomes require a server receipt and live requires a listing (2.545553ms)
+✔ refreshing a historical live PWA receipt preserves evidence without reopening build or submission work (0.754609ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11520.684304

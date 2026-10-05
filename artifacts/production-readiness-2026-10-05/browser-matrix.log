@@ -1,0 +1,185 @@
+START test:race-navigation-focus:browser
+START test:race:live:browser
+START test:live-confirmation-retirement:browser
+PASS test:live-confirmation-retirement:browser (18.127s; stable=true)
+START test:live-wait-retirement:browser
+PASS test:race:live:browser (31.234s; stable=true)
+START test:live-provider-retirement:browser
+PASS test:live-wait-retirement:browser (32.154s; stable=true)
+START test:live-poll-retirement:browser
+PASS test:live-provider-retirement:browser (35.948s; stable=true)
+START test:live-signal-failures:browser
+PASS test:live-poll-retirement:browser (29.51s; stable=true)
+START test:live-choice-commit:browser
+PASS test:live-signal-failures:browser (19.888s; stable=true)
+START test:live-invite-commit:browser
+PASS test:race-navigation-focus:browser (100.485s; stable=true)
+START test:live-panel-commit:browser
+PASS test:live-choice-commit:browser (29.602s; stable=true)
+START test:live-callback-lifetime:browser
+PASS test:live-invite-commit:browser (32.8s; stable=true)
+START test:live-reconnect-input:browser
+PASS test:live-callback-lifetime:browser (35.11s; stable=true)
+START test:live-question-input:browser
+PASS test:live-panel-commit:browser (69.537s; stable=true)
+START test:live-clock:browser
+PASS test:live-question-input:browser (72.009s; stable=true)
+START test:race-ime-dialog:browser
+PASS test:live-clock:browser (53.768s; stable=true)
+START test:single-player:recovery:browser
+PASS test:live-reconnect-input:browser (117.547s; stable=true)
+START test:gameplay-receipts:browser
+PASS test:gameplay-receipts:browser (1.949s; stable=true)
+START test:reddit-delivery:browser
+PASS test:reddit-delivery:browser (3.703s; stable=true)
+START test:completion-effects:browser
+PASS test:completion-effects:browser (5.371s; stable=true)
+START test:completion-container-work:browser
+PASS test:completion-container-work:browser (9.922s; stable=true)
+START test:completion-outcome-commit:browser
+PASS test:single-player:recovery:browser (45.296s; stable=true)
+START test:race:safety:browser
+PASS test:race-ime-dialog:browser (55.996s; stable=true)
+START test:race:direct-invite:browser
+PASS test:race:safety:browser (4.782s; stable=true)
+START test:race:native-invite:browser
+PASS test:race:direct-invite:browser (4.43s; stable=true)
+START test:race:inbox:browser
+PASS test:completion-outcome-commit:browser (19s; stable=true)
+START test:race:preview:browser
+PASS test:race:native-invite:browser (5.619s; stable=true)
+START test:game-ready:browser
+PASS test:game-ready:browser (2.113s; stable=true)
+START test:game-ready-commit:browser
+PASS test:race:inbox:browser (5.133s; stable=true)
+START test:resize-setup-retirement:browser
+PASS test:race:preview:browser (7.597s; stable=true)
+START test:game-bridge-errors:browser
+PASS test:game-ready-commit:browser (8.026s; stable=true)
+START test:game-bridge-retirement:browser
+PASS test:game-bridge-errors:browser (5.545s; stable=true)
+START test:host-bridge:browser
+PASS test:resize-setup-retirement:browser (10.477s; stable=true)
+START test:host-bridge-commit:browser
+PASS test:host-bridge:browser (7.677s; stable=true)
+START test:host-bridge-retirement:browser
+PASS test:host-bridge-commit:browser (19.704s; stable=true)
+START test:bridge-dispatch:browser
+PASS test:game-bridge-retirement:browser (27.316s; stable=true)
+START test:bridge-recovery:browser
+PASS test:host-bridge-retirement:browser (19.052s; stable=true)
+START test:optional-surfaces:browser
+PASS test:bridge-recovery:browser (4.066s; stable=true)
+START test:solar-animation:browser
+PASS test:bridge-dispatch:browser (11.299s; stable=true)
+START test:solar-resources:browser
+PASS test:solar-animation:browser (7.877s; stable=true)
+START test:live-decoration:browser
+PASS test:optional-surfaces:browser (16.49s; stable=true)
+START test:solar-initialization:browser
+PASS test:live-decoration:browser (25.544s; stable=true)
+START test:solar-layout:browser
+FAIL test:solar-layout:browser (1.218s; stable=true)
+START test:live-render-work:browser
+FAIL test:solar-resources:browser (34.105s; stable=true)
+START test:stable-request-initialization:browser
+PASS test:solar-initialization:browser (40.511s; stable=true)
+START test:static-keyboard-work:browser
+PASS test:live-render-work:browser (33.271s; stable=true)
+START test:answer-keyboard-commit:browser
+PASS test:stable-request-initialization:browser (33.789s; stable=true)
+START test:game-audio-commit:browser
+PASS test:answer-keyboard-commit:browser (10.673s; stable=true)
+START test:keyboard-lifetime:browser
+PASS test:static-keyboard-work:browser (27.787s; stable=true)
+START test:playable-ime-boundary:browser
+PASS test:game-audio-commit:browser (19.023s; stable=true)
+START test:playable-input-admission:browser
+FAIL test:playable-input-admission:browser (2.304s; stable=true)
+START test:playable-text-capacity:browser
+PASS test:playable-ime-boundary:browser (13.982s; stable=true)
+START test:native-editor-callbacks:browser
+PASS test:keyboard-lifetime:browser (18.663s; stable=true)
+START test:native-navigation-tail:browser
+PASS test:playable-text-capacity:browser (10.572s; stable=true)
+START test:native-composition-delivery:browser
+PASS test:native-editor-callbacks:browser (10.511s; stable=true)
+START test:native-composition-retirement:browser
+PASS test:native-composition-retirement:browser (29.836s; stable=true)
+START test:bounded-grapheme-input:browser
+PASS test:bounded-grapheme-input:browser (37.982s; stable=true)
+START test:race-action-focus:browser
+PASS test:native-composition-delivery:browser (123.576s; stable=true)
+START test:playable-action-focus:browser
+PASS test:playable-action-focus:browser (15.536s; stable=true)
+START test:playable-unchanged-input:browser
+PASS test:native-navigation-tail:browser (153.444s; stable=true)
+START test:native-cancelled-keys:browser
+PASS test:playable-unchanged-input:browser (26.159s; stable=true)
+START test:rapid-answer-edits:browser
+PASS test:race-action-focus:browser (116.809s; stable=true)
+START test:live-immediate-submit:browser
+PASS test:native-cancelled-keys:browser (40.713s; stable=true)
+START test:checkpoint-commit:browser
+PASS test:checkpoint-commit:browser (9.995s; stable=true)
+START test:checkpoint-work:browser
+PASS test:checkpoint-work:browser (6.296s; stable=true)
+START test:storage-queue:browser
+PASS test:storage-queue:browser (5.255s; stable=true)
+START test:jest-state-queue:browser
+PASS test:jest-state-queue:browser (15.595s; stable=true)
+START test:save-recovery:browser
+PASS test:save-recovery:browser (25.312s; stable=true)
+START test:provider-save-recovery:browser
+PASS test:rapid-answer-edits:browser (103.027s; stable=true)
+START test:reddit-guest-durability:browser
+PASS test:live-immediate-submit:browser (83.163s; stable=true)
+START test:guidance-storage-recovery:browser
+PASS test:guidance-storage-recovery:browser (92.104s; stable=false)
+START test:reddit-guest-rounds:browser
+PASS test:reddit-guest-rounds:browser (70.806s; stable=true)
+START test:authority-terminal-recovery:browser
+PASS test:provider-save-recovery:browser (212.608s; stable=false)
+START test:terminal-journal-recovery:browser
+PASS test:authority-terminal-recovery:browser (51.284s; stable=true)
+START test:buffered-terminal-recovery:browser
+PASS test:buffered-terminal-recovery:browser (18.262s; stable=true)
+START test:buffered-rollback-recovery:browser
+PASS test:terminal-journal-recovery:browser (80.866s; stable=true)
+START test:cold-draft-recovery:browser
+PASS test:buffered-rollback-recovery:browser (53.473s; stable=true)
+START test:authority-loss-recovery:browser
+PASS test:cold-draft-recovery:browser (26.248s; stable=true)
+START test:save-notice:browser
+PASS test:save-notice:browser (27.329s; stable=true)
+START test:short-viewport:browser
+PASS test:authority-loss-recovery:browser (55.38s; stable=true)
+START test:viewport-fit-reflow:browser
+FAIL test:short-viewport:browser (156.063s; stable=false)
+START test:solar-sizing:browser
+PASS test:solar-sizing:browser (7.357s; stable=false)
+START test:deferred-restoration:browser
+PASS test:deferred-restoration:browser (34.589s; stable=true)
+START test:context-recovery:browser
+PASS test:context-recovery:browser (30.162s; stable=false)
+START test:profile-dismiss-focus:browser
+PASS test:reddit-guest-durability:browser (580.416s; stable=false)
+START test:profile-confirmation-keyboard:browser
+FAIL test:viewport-fit-reflow:browser (252.677s; stable=false)
+START test:modal-scroll-retention:browser
+PASS test:profile-confirmation-keyboard:browser (25.587s; stable=true)
+START test:modal-editor-focus:browser
+PASS test:modal-editor-focus:browser (21.419s; stable=true)
+START test:modal-outside-tab:browser
+PASS test:modal-scroll-retention:browser (47.538s; stable=true)
+START test:modal-keyboard-boundary:browser
+PASS test:profile-dismiss-focus:browser (95.726s; stable=true)
+START test:modal-keyboard-admission:browser
+PASS test:modal-keyboard-admission:browser (28.446s; stable=true)
+START test:modal-close-commit:browser
+PASS test:modal-close-commit:browser (58.782s; stable=false)
+START test:interactive-recovery:browser
+PASS test:interactive-recovery:browser (61.764s; stable=false)
+PASS test:modal-outside-tab:browser (204.302s; stable=false)
+PASS test:modal-keyboard-boundary:browser (217.334s; stable=false)
+87/92 browser scripts passed.

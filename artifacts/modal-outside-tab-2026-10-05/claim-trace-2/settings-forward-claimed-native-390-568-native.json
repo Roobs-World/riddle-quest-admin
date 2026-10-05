@@ -1,0 +1,20 @@
+{
+  "before": {
+    "tag": "BUTTON",
+    "className": "",
+    "inert": true
+  },
+  "atKey": {
+    "tag": "BODY",
+    "className": "",
+    "inert": false,
+    "targetTag": "BODY",
+    "targetClass": ""
+  },
+  "after": {
+    "tag": "BODY",
+    "className": "",
+    "inert": false
+  },
+  "prevented": true
+}

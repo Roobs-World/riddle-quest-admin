@@ -1,0 +1,104 @@
+[
+  {
+    "phase": "original centered after native locale selection",
+    "locale": "de",
+    "copy": {
+      "title": "Climb the leaderboard",
+      "body": "Five correct answers! Open your profile to see how you rank.",
+      "button": "Verstanden"
+    },
+    "expected": {
+      "title": "Steig in der Bestenliste auf",
+      "body": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
+      "button": "Verstanden",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "targetUpdates": 1,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "repaired centered German",
+    "locale": "de",
+    "copy": {
+      "title": "Steig in der Bestenliste auf",
+      "body": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
+      "button": "Verstanden"
+    },
+    "expected": {
+      "title": "Steig in der Bestenliste auf",
+      "body": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
+      "button": "Verstanden",
+      "id": "leaderboardFifthCorrectAnswer"
+    },
+    "targetUpdates": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "repaired centered viewport signals",
+    "before": 0,
+    "after": 0,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "repaired centered native dismissal",
+    "cards": 0,
+    "marker": "seen",
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "original anchored Arabic after fixture reset",
+    "locale": "ar",
+    "title": "Submit your answer",
+    "expectedTitle": "أرسل إجابتك",
+    "targetLeft": 230,
+    "highlightLeft": 34,
+    "highlightMatches": false,
+    "targetUpdates": 1,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "repaired anchored Arabic",
+    "locale": "ar",
+    "title": "أرسل إجابتك",
+    "expectedTitle": "أرسل إجابتك",
+    "targetLeft": 230,
+    "highlightLeft": 224,
+    "highlightMatches": true,
+    "targetUpdates": 2,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "repaired suspended locale change",
+    "locale": "en",
+    "cards": 0,
+    "before": 2,
+    "after": 2,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "repaired resumed English",
+    "locale": "en",
+    "title": "Submit your answer",
+    "expectedTitle": "Submit your answer",
+    "highlightMatches": true,
+    "targetUpdates": 3,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "phase": "repaired anchored native dismissal",
+    "cards": 0,
+    "marker": "seen",
+    "before": 3,
+    "after": 3,
+    "errors": [],
+    "unhandled": []
+  }
+]

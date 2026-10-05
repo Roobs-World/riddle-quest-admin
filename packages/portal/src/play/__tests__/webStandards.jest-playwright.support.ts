@@ -1,0 +1,44 @@
+import {execFileSync} from "node:child_process";
+import {mkdir, mkdtemp, rm, writeFile} from "node:fs/promises";
+import {tmpdir} from "node:os";
+import path from "node:path";
+import {expect} from "@jest/globals";
+import AxeBuilder from "@axe-core/playwright";
+import type {Page} from "@playwright/test";
+
+/** Validates the actual React DOM, including SVG and ARIA, with the pinned local Nu checker. */
+export async function expectConformingHtml(page: Page, state: string): Promise<void> {
+  /** Portal workspace containing the pinned validator. */
+  const packageRoot = path.resolve(__dirname, "../../..");
+  /** Optional retained evidence directory supplied by the verification run. */
+  const retained = process.env.W3C_REPORT_DIR;
+  /** Per-run temporary directory when the caller does not retain HTML snapshots. */
+  const directory = retained ? path.resolve(retained) : await mkdtemp(path.join(tmpdir(), "rq-rendered-html-"));
+  await mkdir(directory, {recursive: true});
+  /** Settled rendered document named for the verified state. */
+  const document = path.join(directory, `${state.replace(/[^a-z0-9]+/gi, "-")}.html`);
+  try {
+    await writeFile(document, await page.content());
+    if (retained) await page.screenshot({path: document.replace(/\.html$/, ".png")});
+    execFileSync(process.execPath, [path.join(packageRoot, "scripts/validate-w3c.mjs"), document], {
+      cwd: packageRoot, encoding: "utf8", timeout: 35_000,
+    });
+  } finally {
+    if (!retained) await rm(directory, {recursive: true, force: true});
+  }
+}
+
+/** Checks settled rendered content against HTML and automated WCAG 2.2 A/AA rules. */
+export async function expectWebStandards(page: Page, state: string): Promise<void> {
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await Promise.all(document.getAnimations()
+      .filter(animation => Number.isFinite(animation.effect?.getComputedTiming().endTime))
+      .map(animation => animation.finished.catch(() => undefined)));
+  });
+  await expectConformingHtml(page, state);
+  /** Automated accessibility findings for the settled browser state. */
+  const {violations} = await new AxeBuilder({page})
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
+  expect(violations.map(({id, help, nodes}) => ({state, id, help, targets: nodes.map(node => node.target)}))).toEqual([]);
+}

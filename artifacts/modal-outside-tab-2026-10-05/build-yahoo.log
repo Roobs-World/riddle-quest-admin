@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (27.829104ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (5.151971ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (8.832954ms)
+✔ rejects imports between different target owners (2.795496ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (1.090836ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.266379ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.516363ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.782973ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.167592ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.757105ms)
+✔ aggregates violations in deterministic file and source order (1.663782ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 176.342798
+Web Target boundary audit passed (315 files, 1366 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../builds/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../builds/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../builds/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../builds/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../builds/yahoo/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../builds/yahoo/assets/playable-pack-en-B3XDoeTL.js   87.86 kB │ gzip: 47.69 kB
+../../builds/yahoo/assets/playable-pack-pt-BBU9SDjM.js   90.15 kB │ gzip: 48.95 kB
+../../builds/yahoo/assets/playable-pack-nl-Bf_EFNaa.js   90.54 kB │ gzip: 49.17 kB
+../../builds/yahoo/assets/playable-pack-id-JLTLXzIh.js   91.21 kB │ gzip: 49.51 kB
+../../builds/yahoo/assets/playable-pack-it-nMG0FlIT.js   91.35 kB │ gzip: 49.57 kB
+../../builds/yahoo/assets/playable-pack-es-Cc9Hz-vr.js   91.65 kB │ gzip: 49.75 kB
+../../builds/yahoo/assets/playable-pack-de-CaiKRzsy.js   92.15 kB │ gzip: 50.04 kB
+../../builds/yahoo/assets/playable-pack-tr-XTnGyLmR.js   92.54 kB │ gzip: 50.23 kB
+../../builds/yahoo/assets/playable-pack-pl-DjVwKy3Y.js   92.70 kB │ gzip: 50.32 kB
+../../builds/yahoo/assets/playable-pack-fr-BYq5f-Lf.js   93.56 kB │ gzip: 50.79 kB
+../../builds/yahoo/assets/playable-pack-ja-CLfmlgsM.js   94.66 kB │ gzip: 51.40 kB
+../../builds/yahoo/assets/playable-pack-vi-BL-cJyJ9.js   96.78 kB │ gzip: 52.53 kB
+../../builds/yahoo/assets/playable-pack-ko-C_4MUl0c.js   97.36 kB │ gzip: 52.85 kB
+../../builds/yahoo/assets/playable-pack-ar-BqZL-L0v.js  102.12 kB │ gzip: 55.48 kB
+../../builds/yahoo/assets/index-BCOYbhun.js             105.36 kB │ gzip: 35.24 kB
+../../builds/yahoo/assets/playable-pack-ru-C0fdrm5P.js  114.09 kB │ gzip: 61.92 kB
+../../builds/yahoo/assets/playable-pack-hi-z7S88YSM.js  134.49 kB │ gzip: 73.00 kB
+../../builds/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.15s
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

@@ -1,0 +1,11 @@
+$ node scripts/verify-cold-draft-recovery-browser.mjs && COLD_DRAFT_REACT_MODE=production node scripts/verify-cold-draft-recovery-browser.mjs
+{
+  "mode": "development",
+  "checks": 366,
+  "failures": []
+}
+{
+  "mode": "production",
+  "checks": 366,
+  "failures": []
+}

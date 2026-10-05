@@ -1,6 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {completeMockOnboarding, prepareProvisionalNextLevel} from "./mockOnboarding.jest-playwright.support";
 import AxeBuilder from "@axe-core/playwright";
+import {expectConformingHtml} from "./webStandards.jest-playwright.support";
 import {chromium, type Page} from "@playwright/test";
 import {version as reactVersion} from "react";
 import {SOLO_COIN_COSTS} from "@qwordly/core/game";
@@ -8,10 +9,7 @@ import {getProfileTour} from "../guidance/guidanceConfig";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 /** Provides hosted browser port behavior. */
-const hostedBrowserPort = Number(process.env.PORTAL_BROWSER_PORT ?? "4178");
-/** Provides hosted browser url behavior. */
-const hostedBrowserUrl = `http://127.0.0.1:${hostedBrowserPort}`;
-  /** Provides wcag tags behavior. */
+const hostedBrowserPort = Number(process.env.PORTAL_BROWSER_PORT ?? "0");
 /** Provides wcag tags behavior. */
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 /** Checks the rendered modal is vertically centered within the Jest viewport. */
@@ -36,6 +34,7 @@ const expectAccessible = async (page: Page, state: string) => {
         .map((animation) => animation.finished.catch(() => undefined)),
     );
   });
+  await expectConformingHtml(page, `jest ${state}`);
   /** Provides {violations} behavior. */
   const {violations} = await new AxeBuilder({page}).withTags(wcagTags).analyze();
   expect(
@@ -144,7 +143,7 @@ describeBrowser("standalone Jest browser game", () => {
     /** Provides dist dir behavior. */
     const distDir = process.env.PORTAL_JEST_BUILD_DIR
       ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
-      : path.join(packageRoot, "dist-jest");
+      : path.join(packageRoot, "../../builds/jest");
     /** Provides content types behavior. */
     const contentTypes: Record<string, string> = {
       ".css": "text/css; charset=utf-8",
@@ -177,7 +176,15 @@ describeBrowser("standalone Jest browser game", () => {
       }
     });
 
-    await new Promise<void>((resolve) => server.listen(hostedBrowserPort, "127.0.0.1", resolve));
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen(hostedBrowserPort, "127.0.0.1", resolve);
+    });
+    /** The bound ephemeral port isolates this journey from overlapping browser checks. */
+    const address = server.address();
+    if (!address || typeof address === "string") throw new Error("hosted-browser-server-address-missing");
+    /** Every navigation and iframe uses this fixture's actual bound origin. */
+    const hostedBrowserUrl = `http://127.0.0.1:${address.port}`;
     /** Provides browser behavior. */
     const browser = await chromium.launch({headless: true, args: ["--renderer-process-limit=4"]});
     try {
@@ -268,7 +275,7 @@ describeBrowser("standalone Jest browser game", () => {
       const firstGuessCell = page.locator(".guess-row .cell").first();
       /** Provides guess before offline behavior. */
       const guessBeforeOffline = await firstGuessCell.textContent();
-      await page.evaluate(() => window.dispatchEvent(new Event("offline")));
+      await context.setOffline(true);
       /** Provides offline dialog behavior. */
       const offlineDialog = page.getByRole("alertdialog", {name: /no internet connection/i});
       await offlineDialog.waitFor();
@@ -280,7 +287,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await firstGuessCell.textContent()).toBe(guessBeforeOffline);
       await page.keyboard.press("Tab");
       expect(await offlineDialog.evaluate((dialog) => document.activeElement === dialog)).toBe(true);
-      await page.evaluate(() => window.dispatchEvent(new Event("online")));
+      await context.setOffline(false);
       await offlineDialog.waitFor({state: "detached"});
 
       expect(await page.locator(".solar-system").count()).toBe(1);
@@ -701,7 +708,7 @@ describeBrowser("standalone Jest browser game", () => {
             };
           }),
         ).toEqual({filter: "none", background: "rgba(0, 0, 0, 0)", image: "none", dimsOutsideSpotlight: false});
-        profileTourHeadings.push(await page.locator(".tooltip-card h3").innerText());
+        profileTourHeadings.push(await page.locator(".tooltip-card h2").innerText());
         await page
           .locator(".tooltip-card")
           .getByRole("button", {name: /got it/i})

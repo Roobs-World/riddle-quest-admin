@@ -1,0 +1,61 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (47.548 s)
+  ● Jest authentication integration › opens the live PvP intro for ordinary multiplayer without recorded fallback
+
+    locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /let's play/i }) to be visible[22m
+
+      109 | /** Provides enter registered game behavior. */
+      110 | export const enterRegisteredGame = async (page: Page, expectedRiddle = /what has keys/i) => {
+    > 111 |   await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+          |                                                         ^
+      112 |   await page.getByRole("button", {name: /let's play/i}).click();
+      113 |   await page.getByRole("button", {name: /got it/i}).click();
+      114 |   await page.getByText(expectedRiddle).waitFor({timeout: 15_000});
+
+      at enterRegisteredGame (src/jest/__tests__/authentication.jest-playwright.support.ts:111:57)
+      at src/jest/__tests__/authentication.jest-playwright.test.ts:1090:30
+
+  ● Jest authentication integration › opens the live PvP intro for retired results inbox without recorded fallback
+
+    locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /let's play/i }) to be visible[22m
+
+      109 | /** Provides enter registered game behavior. */
+      110 | export const enterRegisteredGame = async (page: Page, expectedRiddle = /what has keys/i) => {
+    > 111 |   await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+          |                                                         ^
+      112 |   await page.getByRole("button", {name: /let's play/i}).click();
+      113 |   await page.getByRole("button", {name: /got it/i}).click();
+      114 |   await page.getByText(expectedRiddle).waitFor({timeout: 15_000});
+
+      at enterRegisteredGame (src/jest/__tests__/authentication.jest-playwright.support.ts:111:57)
+      at src/jest/__tests__/authentication.jest-playwright.test.ts:1090:30
+
+  ● Jest authentication integration › opens the live PvP intro for retired recorded challenge without recorded fallback
+
+    locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /let's play/i }) to be visible[22m
+
+      109 | /** Provides enter registered game behavior. */
+      110 | export const enterRegisteredGame = async (page: Page, expectedRiddle = /what has keys/i) => {
+    > 111 |   await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+          |                                                         ^
+      112 |   await page.getByRole("button", {name: /let's play/i}).click();
+      113 |   await page.getByRole("button", {name: /got it/i}).click();
+      114 |   await page.getByText(expectedRiddle).waitFor({timeout: 15_000});
+
+      at enterRegisteredGame (src/jest/__tests__/authentication.jest-playwright.support.ts:111:57)
+      at src/jest/__tests__/authentication.jest-playwright.test.ts:1090:30
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 43 skipped, 1 passed, 47 total
+Snapshots:   0 total
+Time:        47.649 s
+Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "localizes game-owned Shop copy|opens the live PvP intro".
+undefined
+/home/craig-beswetherick/Documents/riddle-quest/packages/portal:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts '--testNamePattern=localizes game-owned Shop copy|opens the live PvP intro'

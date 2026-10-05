@@ -11,7 +11,7 @@ describeBrowser("Jest music startup", () => {
     /** Serves the already-built Jest artifact for the interaction check. */
     const root = process.env.PORTAL_JEST_BUILD_DIR
       ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
-      : path.resolve(__dirname, "../../../dist-jest");
+      : path.resolve(__dirname, "../../../../../builds/jest");
     /** Minimal HTTP server for the already-built Jest artifact. */
     const server = createServer(async (request, response) => {
       /** Path requested by the browser. */

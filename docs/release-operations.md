@@ -53,9 +53,9 @@ The release module owns discovery, operator-visible effects, dry runs, dispatch,
 
 Runtime code remains compile-time isolated:
 
-- `packages/portal/src/jest` contains Jest integration code and builds to `packages/portal/dist-jest`.
-- `packages/portal/src/facebook` contains Facebook integration code and builds to `packages/portal/dist-facebook`.
-- `packages/portal/src/youtube` contains the self-contained YouTube adapter and builds to `packages/portal/dist-youtube`.
+- `packages/portal/src/jest` contains Jest integration code and builds to `builds/jest`.
+- `packages/portal/src/facebook` contains Facebook integration code and builds to `builds/facebook`.
+- `packages/portal/src/youtube` contains the self-contained YouTube adapter and builds to `builds/youtube`.
 - `packages/portal/src/reddit` contains the same-origin webview adapter; `packages/reddit-app/src/server` contains the trusted Devvit Gateway. Together they build the Reddit App package.
 
 Build one target without starting a release:
