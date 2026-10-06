@@ -41,6 +41,10 @@ export async function authenticateFacebook(
   backend?: FacebookBackendPort,
   runtime?: FacebookFirebaseAuthRuntime,
 ): Promise<string> {
+  /** Firebase SDK chunks download while the identity exchange is in flight. */
+  const firebaseRuntimeLoad = runtime ? Promise.resolve(runtime) : defaultFirebaseRuntime();
+  // A failed exchange must not surface the parallel load as an unhandled rejection.
+  firebaseRuntimeLoad.catch(() => undefined);
   /** Resolves d backend. */
   const resolvedBackend = backend ?? (await import("./defaultBackend")).createDefaultFacebookBackend();
   /** Provides initial credentials behavior. */
@@ -50,7 +54,7 @@ export async function authenticateFacebook(
   /** Provides refresh credentials behavior. */
   let refreshCredentials: Promise<FacebookIdentityCredentials> | undefined;
   /** Provides firebase runtime behavior. */
-  const firebaseRuntime = runtime ?? (await defaultFirebaseRuntime());
+  const firebaseRuntime = await firebaseRuntimeLoad;
   await firebaseRuntime.initializeAppCheck(async () => {
     /** Provides credentials behavior. */
     let credentials = nextAppCheckCredentials;
