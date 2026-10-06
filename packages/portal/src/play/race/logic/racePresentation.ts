@@ -185,6 +185,10 @@ export const applyRaceOutcome = (run: RaceRunView, outcome: RaceOutcome): RaceRu
 /** Confirmed presence outranks absence, and a correct position outranks presence. */
 const raceFeedbackStrength: Record<Feedback, number> = {red: 0, yellow: 1, green: 2};
 
+/** Stable content key for a confirmed guess history, so equal histories from separate polls compare equal. */
+export const confirmedGuessesKey = (guesses: readonly ScoredGuess[] | undefined): string =>
+  guesses ? guesses.map(({guess, feedback}) => `${guess.join("\u0000")}\u0001${feedback.join(",")}`).join("\u0002") : "";
+
 /** Keeps the strongest server-scored feedback observed for each keyboard letter. */
 export const getRaceLetterStates = (guesses: readonly ScoredGuess[]): Record<string, Feedback> => {
   /** Provides states behavior. */

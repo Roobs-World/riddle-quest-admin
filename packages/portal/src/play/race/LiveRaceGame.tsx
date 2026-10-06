@@ -19,7 +19,7 @@ import {useRaceGameplayFit} from "./hooks/useRaceGameplayFit";
 import {useAnswerKeyboard} from "../game/hooks/useAnswerKeyboard";
 import {createLiveRaceDraft, editLiveRaceDraft, reconcileLiveRaceDraft, rejectLiveRaceDraft, type LiveRaceDraft} from "./logic/liveRaceDraft";
 import {useLiveRaceDraft} from "./hooks/useLiveRaceDraft";
-import {getRaceLetterStates} from "./logic/racePresentation";
+import {confirmedGuessesKey, getRaceLetterStates} from "./logic/racePresentation";
 
 /** Lobby and live race presentation use one target-owned authenticated transport. */
 export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, coins, ownerId, onCompleted, onRematch, onClose}: {
@@ -404,8 +404,11 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   useRaceGameplayFit({active: phase === "racing", screenRef: dialogRef, viewportRef, gameplayRef});
   /** Server-confirmed guesses shown in the existing answer board. */
   const guesses = view?.run?.currentRiddle?.confirmedGuesses;
+  /** Content identity of the guess history; polls deliver equal histories as new objects. */
+  const guessesKey = confirmedGuessesKey(guesses);
   /** Draft edits retain keyboard feedback until a new authoritative guess history arrives. */
-  const letterStates = useMemo(() => getRaceLetterStates(guesses ?? []), [guesses]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed by content so unchanged polls skip the reduction
+  const letterStates = useMemo(() => getRaceLetterStates(guesses ?? []), [guessesKey]);
   /** Local privacy masking cannot change private scoring or the server winner. */
   const shownView = blocked && view ? {...view, opponent: view.opponent ? {...view.opponent,
     displayName: tr("RaceTo10.BLOCK_SUCCESS"), avatarUrl: null, level: 1} : null,

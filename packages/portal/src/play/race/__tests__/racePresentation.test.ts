@@ -1,6 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {RACE_RULES, type RaceRiddlePrompt, type RaceRunView} from "@qwordly/core/race";
 import {
+  confirmedGuessesKey,
   applyRaceOutcome,
   createRaceAttempt,
   findFirstEditableRaceSlot,
@@ -264,5 +265,18 @@ describe("race presentation helpers", () => {
         {guess: ["A"], feedback: ["gray"]},
       ]),
     ).toEqual({a: "green", b: "yellow", d: "gray"});
+  });
+});
+
+describe("confirmedGuessesKey", () => {
+  it("treats equal guess histories from separate polls as the same content", () => {
+    /** First poll's history. */
+    const first = [{guess: ["z", "z"], feedback: ["red", "red"] as const}];
+    /** A later poll delivering the same history as new objects. */
+    const second = [{guess: ["z", "z"], feedback: ["red", "red"] as const}];
+    expect(confirmedGuessesKey(first as never)).toBe(confirmedGuessesKey(second as never));
+    expect(confirmedGuessesKey([...first, {guess: ["p", "i"], feedback: ["green", "yellow"]}] as never))
+      .not.toBe(confirmedGuessesKey(first as never));
+    expect(confirmedGuessesKey(undefined)).toBe("");
   });
 });
