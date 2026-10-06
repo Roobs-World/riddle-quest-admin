@@ -56,7 +56,7 @@ import {useJestRegistration} from "./useJestRegistration";
 import {createJestHostedPlaySession} from "./JestHostedPlaySession";
 import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
-import {jestStartupOrigins, preconnectJestStartupOrigins} from "./startupWarmup";
+import {firebaseStartupOrigins, preconnectStartupOrigins} from "../platform/startupWarmup";
 
 /**
  * Overlaps Firebase connection setup, SDK chunk downloads and App Check
@@ -65,10 +65,11 @@ import {jestStartupOrigins, preconnectJestStartupOrigins} from "./startupWarmup"
  */
 function warmJestFirebaseStartup(): void {
   try {
-    preconnectJestStartupOrigins(jestStartupOrigins({
-      jestFunctionsBaseUrl: import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL,
+    preconnectStartupOrigins(firebaseStartupOrigins({
+      identityExchangeBaseUrl: import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL,
       functionsRegion: import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION,
-      gameplayRegion: import.meta.env.VITE_FIREBASE_GAMEPLAY_REGION,
+      // Jest gameplay runs beside eur3 unless explicitly overridden.
+      gameplayRegion: import.meta.env.VITE_FIREBASE_GAMEPLAY_REGION || "europe-west1",
       projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
     }));
   } catch (error) {

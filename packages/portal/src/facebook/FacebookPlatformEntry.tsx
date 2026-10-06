@@ -37,6 +37,7 @@ import {usePlayerProjectionRecovery} from "../platform/usePlayerProjectionRecove
 import {PlayerSaveRecoveryLayout} from "../play/PlayerSaveRecoveryLayout";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
 import {installFacebookAnalytics} from "./analytics";
+import {firebaseStartupOrigins, preconnectStartupOrigins} from "../platform/startupWarmup";
 
 /** Native tournament presentation loads only when Facebook multiplayer opens. */
 const FacebookRaceSurface = lazy(() => import("./FacebookRaceEntry").then(module => ({default: module.FacebookRaceEntry})));
@@ -72,6 +73,27 @@ type StartupState =
       /** Stores status. */
       status: "error";
     };
+
+/**
+ * Overlaps Firebase connection setup and SDK chunk downloads with Instant Games
+ * initialization; identity exchange, sign-in and the first profile read then
+ * reuse warm connections instead of opening them serially.
+ */
+function warmFacebookFirebaseStartup(): void {
+  try {
+    preconnectStartupOrigins(firebaseStartupOrigins({
+      identityExchangeBaseUrl: import.meta.env.VITE_FACEBOOK_FUNCTIONS_BASE_URL,
+      functionsRegion: import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    }));
+  } catch (error) {
+    captureBrowserException(error, {component: "facebook_startup_preconnect"});
+  }
+  // Warm-up failures are retried and reported by the authenticated startup path.
+  void import("firebase/auth").catch(() => undefined);
+  void import("./FacebookFirebaseAppCheck").catch(() => undefined);
+  void import("../play/firebaseServices").catch(() => undefined);
+}
 
 /** Facebook-only application composed by the Facebook target entry. */
 export function FacebookPlatformEntry() {
@@ -118,6 +140,7 @@ export function FacebookPlatformEntry() {
     let unsubscribeContext: (() => void) | undefined;
     /** Stops presence. */
     let stopPresence: (() => Promise<void>) | undefined;
+    if (hostServicesMode === "firebase") warmFacebookFirebaseStartup();
     void (async () => {
       try {
         /** Provides age category behavior. */

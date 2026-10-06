@@ -1,9 +1,9 @@
-import {jestStartupOrigins, preconnectJestStartupOrigins} from "../startupWarmup";
+import {firebaseStartupOrigins, preconnectStartupOrigins} from "../startupWarmup";
 
-describe("Jest startup network warm-up", () => {
+describe("platform startup network warm-up", () => {
   it("lists identity, Firebase and both callable regions once in first-use order", () => {
-    expect(jestStartupOrigins({
-      jestFunctionsBaseUrl: "https://us-central1-demo.cloudfunctions.net/",
+    expect(firebaseStartupOrigins({
+      identityExchangeBaseUrl: "https://us-central1-demo.cloudfunctions.net/",
       functionsRegion: "us-central1",
       gameplayRegion: "europe-west1",
       projectId: "demo",
@@ -17,13 +17,20 @@ describe("Jest startup network warm-up", () => {
     ]);
   });
 
+  it("serves gameplay from the default region when no gameplay region is configured", () => {
+    expect(firebaseStartupOrigins({functionsRegion: "us-central1", projectId: "demo"}))
+      .toEqual(expect.arrayContaining(["https://us-central1-demo.cloudfunctions.net"]));
+    expect(firebaseStartupOrigins({functionsRegion: "us-central1", projectId: "demo"}))
+      .not.toContain("https://europe-west1-demo.cloudfunctions.net");
+  });
+
   it("ignores relative, insecure and malformed configuration", () => {
     /** Origins without any usable project or backend configuration. */
-    const origins = jestStartupOrigins({jestFunctionsBaseUrl: "/", projectId: "bad project"});
+    const origins = firebaseStartupOrigins({identityExchangeBaseUrl: "/", projectId: "bad project"});
     expect(origins).toHaveLength(4);
-    expect(jestStartupOrigins({jestFunctionsBaseUrl: "http://example.test"})).not.toContain("http://example.test");
-    expect(jestStartupOrigins({jestFunctionsBaseUrl: "::"})).toHaveLength(4);
-    expect(jestStartupOrigins({projectId: "demo"})).toEqual(expect.arrayContaining([
+    expect(firebaseStartupOrigins({identityExchangeBaseUrl: "http://example.test"})).not.toContain("http://example.test");
+    expect(firebaseStartupOrigins({identityExchangeBaseUrl: "::"})).toHaveLength(4);
+    expect(firebaseStartupOrigins({projectId: "demo", gameplayRegion: "europe-west1"})).toEqual(expect.arrayContaining([
       "https://europe-west1-demo.cloudfunctions.net",
       "https://us-central1-demo.cloudfunctions.net",
     ]));
@@ -38,7 +45,7 @@ describe("Jest startup network warm-up", () => {
       createElement: () => ({}),
       querySelector: (selector: string) => selector.includes("https://a.test") ? {} : null,
     } as unknown as Pick<Document, "head" | "createElement" | "querySelector">;
-    preconnectJestStartupOrigins(["https://a.test", "https://b.test"], doc);
+    preconnectStartupOrigins(["https://a.test", "https://b.test"], doc);
     expect(appended).toEqual([{rel: "preconnect", href: "https://b.test", crossOrigin: "anonymous"}]);
   });
 });

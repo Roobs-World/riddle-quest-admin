@@ -1,4 +1,4 @@
-/** Google endpoints contacted by Firebase Auth, Firestore Lite and App Check during Jest startup. */
+/** Google endpoints contacted by Firebase Auth, Firestore Lite and App Check during platform startup. */
 const FIREBASE_SERVICE_ORIGINS = [
   "https://identitytoolkit.googleapis.com",
   "https://securetoken.googleapis.com",
@@ -24,33 +24,33 @@ function functionsOrigin(region: string | undefined, projectId: string | undefin
   return `https://${region}-${projectId}.cloudfunctions.net`;
 }
 
-/** Network origins on the Jest startup critical path, in first-use order. */
-export function jestStartupOrigins(environment: {
-  /** Jest identity exchange base URL. */ jestFunctionsBaseUrl?: string;
+/** Network origins on a platform's startup critical path, in first-use order. */
+export function firebaseStartupOrigins(environment: {
+  /** Provider identity exchange base URL. */ identityExchangeBaseUrl?: string;
   /** Default callable region. */ functionsRegion?: string;
   /** Single-player and race callable region. */ gameplayRegion?: string;
   /** Firebase project identifier. */ projectId?: string;
 }): string[] {
-  /** Jest gameplay runs beside eur3 unless explicitly overridden. */
-  const gameplayRegion = environment.gameplayRegion || "europe-west1";
+  /** Default callable region, which also serves gameplay unless a target overrides it. */
+  const functionsRegion = environment.functionsRegion || "us-central1";
   /** Ordered candidates; duplicates and unusable values are removed below. */
   const candidates = [
-    httpsOrigin(environment.jestFunctionsBaseUrl),
+    httpsOrigin(environment.identityExchangeBaseUrl),
     ...FIREBASE_SERVICE_ORIGINS,
-    functionsOrigin(gameplayRegion, environment.projectId),
-    functionsOrigin(environment.functionsRegion || "us-central1", environment.projectId),
+    functionsOrigin(environment.gameplayRegion || functionsRegion, environment.projectId),
+    functionsOrigin(functionsRegion, environment.projectId),
   ];
   return [...new Set(candidates.filter((origin): origin is string => origin !== null))];
 }
 
 /**
- * Opens connections to startup endpoints while the Jest SDK is still initializing.
+ * Opens connections to startup endpoints while the platform SDK is still initializing.
  *
  * Identity exchange, sign-in, attestation, profile and question reads otherwise
  * each pay DNS, TCP and TLS setup serially. Firebase transports use anonymous
  * CORS fetches, so the hints must also be anonymous to share those connections.
  */
-export function preconnectJestStartupOrigins(
+export function preconnectStartupOrigins(
   origins: string[],
   doc: Pick<Document, "head" | "createElement" | "querySelector"> = document,
 ): void {
