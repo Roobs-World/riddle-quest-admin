@@ -125,7 +125,7 @@ if(${contextChecks}){
  window.replayContextCallbacks=()=>{for(const row of callbacks){try{if(typeof row.callback==='function')row.callback.call(row.canvas,new Event(row.type,{cancelable:true}));else row.callback.handleEvent(new Event(row.type,{cancelable:true}));}catch(error){window.probe.windowErrors.push(String(error));}}};
 }
 const rawNow=performance.now.bind(performance);performance.now=()=>manual?frameClock:rawNow();
-window.requestAnimationFrame=callback=>{const stack=new Error().stack.split('\\n');const caller=stack.slice(stack[0]==='Error'?2:1).join('\\n');if(!manual||!caller.includes('/assets/')||(!directScene&&!${layoutChecks}&&caller.includes('runWhenLayoutReady')))return rawRequest(callback);const id=--nextFrame;pending.set(id,callback);window.probe.frames++;return id;};
+window.requestAnimationFrame=callback=>{const stack=new Error().stack.split('\\n');const caller=stack.slice(stack[0]==='Error'?2:1).join('\\n');if(!manual||!caller.includes('/assets/')||(!directScene&&!${layoutChecks}&&caller.includes('runWhenLayoutReady'))||/^\\s*at (?:FontFaceSet|ResizeObserver|Window)\\.schedule /.test(caller))return rawRequest(callback);const id=--nextFrame;pending.set(id,callback);window.probe.frames++;return id;};
 window.cancelAnimationFrame=id=>{if(id<0){const callback=pending.get(id);if(callback)retained.set(id,callback);pending.delete(id);}else rawCancel(id);};
 window.controlFrames=()=>{manual=true;};
 window.pendingFrames=()=>pending.size;
