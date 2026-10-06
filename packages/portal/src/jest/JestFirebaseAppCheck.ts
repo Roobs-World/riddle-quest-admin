@@ -42,6 +42,31 @@ export async function ensureJestFirebaseAppCheckReady(): Promise<void> {
     }
     return;
   }
-  await getToken(appCheck);
-  setTokenAutoRefreshEnabled(appCheck, true);
+  await attest(appCheck);
+}
+
+/** First successful attestation, shared by the startup warm-up and the authenticated gate. */
+let attestation: Promise<void> | null = null;
+
+/** Attests once; a failed attempt is forgotten so the next caller retries. */
+function attest(instance: AppCheck): Promise<void> {
+  attestation ??= getToken(instance).then(() => {
+    setTokenAutoRefreshEnabled(instance, true);
+  }, (error: unknown) => {
+    attestation = null;
+    throw error;
+  });
+  return attestation;
+}
+
+/**
+ * Starts attestation while the Jest SDK and identity exchange are still in flight.
+ *
+ * reCAPTCHA Enterprise must download its script and score the session before
+ * Firebase issues a token, which otherwise happens only after identity exchange
+ * and sign-in. Failures are left for {@link ensureJestFirebaseAppCheckReady} to
+ * surface and retry on the authenticated startup path.
+ */
+export function warmJestFirebaseAppCheck(): void {
+  if (appCheck) attest(appCheck).catch(() => undefined);
 }

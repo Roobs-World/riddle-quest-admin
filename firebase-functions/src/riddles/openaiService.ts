@@ -1,6 +1,5 @@
-import OpenAI from "openai";
+import type OpenAI from "openai";
 import type {RaceCategoryId} from "@qwordly/core/race";
-import {zodTextFormat} from "openai/helpers/zod";
 import * as functions from "firebase-functions";
 import {z} from "zod";
 import {captureException, withSentrySpan} from "../shared/sentry";
@@ -8,6 +7,20 @@ import {clueContainsLiteralAnswer} from "./riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 import {type SupportedLocale} from "@qwordly/core/validation";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
+
+/**
+ * Loads the OpenAI SDK on first use. Riddle generation runs only in scheduled
+ * supply work, so player-facing functions sharing this codebase must not pay
+ * for the SDK's large module graph during their cold starts.
+ */
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- Deferred load keeps player cold starts small.
+const loadOpenAI = (): typeof OpenAI => (require("openai") as {
+  /** SDK client constructor. */ default: typeof OpenAI}).default;
+
+/** Structured-output format helper, resolved lazily with the SDK. */
+const zodTextFormat: typeof import("openai/helpers/zod").zodTextFormat = (...args) =>
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- Loaded with the deferred SDK.
+  (require("openai/helpers/zod") as typeof import("openai/helpers/zod")).zodTextFormat(...args);
 
 // Lazy initialization variable
 /** Provides openai client behavior. */
@@ -123,7 +136,9 @@ function initializeOpenAIClient(): OpenAI {
     throw new Error("Missing required environment variable: OPENAI_API_KEY");
   }
 
-  openaiClient = new OpenAI({apiKey: openAIKey, timeout: 15_000, maxRetries: 0});
+  /** SDK client constructor resolved on first use. */
+  const OpenAIClient = loadOpenAI();
+  openaiClient = new OpenAIClient({apiKey: openAIKey, timeout: 15_000, maxRetries: 0});
   return openaiClient;
 }
 

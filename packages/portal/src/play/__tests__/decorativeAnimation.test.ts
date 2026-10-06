@@ -185,4 +185,31 @@ describe("decorative animation ownership", () => {
     expect(browser.pending.size).toBe(0);
     expect(browser.visibilityListeners.size).toBe(0);
   });
+
+  it("caps drawing to the configured interval on fast displays while keeping active time", () => {
+    /** Browser scheduler and clock controlled by this test. */
+    const browser = installBrowser();
+    /** Records drawn deltas. */
+    const render = jest.fn();
+    /** 30 fps decorative loop. */
+    const loop = createDecorativeAnimation({canRender: () => true, render, onError: jest.fn(), frameIntervalMs: 1000 / 30});
+    for (let i = 0; i < 12; i++) browser.frame(1000 / 120);
+    // The first refresh draws immediately; afterwards every fourth 120 Hz refresh is drawn.
+    expect(render).toHaveBeenCalledTimes(3);
+    expect(render.mock.calls[1][0]).toBeCloseTo(4 / 120, 5);
+    expect(browser.pending.size).toBe(1);
+    loop.dispose();
+  });
+
+  it("draws every other refresh at 60 Hz despite timer jitter", () => {
+    /** Browser scheduler and clock controlled by this test. */
+    const browser = installBrowser();
+    /** Records drawn deltas. */
+    const render = jest.fn();
+    /** 30 fps decorative loop. */
+    const loop = createDecorativeAnimation({canRender: () => true, render, onError: jest.fn(), frameIntervalMs: 1000 / 30});
+    for (const delay of [16.7, 16.4, 16.5, 16.9, 16.3, 16.6]) browser.frame(delay);
+    expect(render).toHaveBeenCalledTimes(3);
+    loop.dispose();
+  });
 });

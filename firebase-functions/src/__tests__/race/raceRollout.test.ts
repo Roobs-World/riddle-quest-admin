@@ -1,5 +1,6 @@
 import {
   assertRaceAccess,
+  configureRaceRolloutCache,
   evaluateRaceRollout,
   getRaceAccessForUser,
   hashRaceCohortUser,
@@ -185,5 +186,66 @@ describe("Race rollout cohort evaluation", () => {
 
     expect(create).toHaveBeenCalledWith(expect.objectContaining({createdAtMs: expect.any(Number)}));
     firestore.mockRestore();
+  });
+});
+
+describe("Race rollout configuration cache", () => {
+  /** Mutable fake clock. */
+  let now = 0;
+  /** Database whose rollout reads are counted. */
+  const createCountingDb = (results: Array<unknown | Error>) => {
+    /** Counts document reads. */
+    const get = jest.fn(async () => {
+      /** Next queued result. */
+      const next = results.length > 1 ? results.shift() : results[0];
+      if (next instanceof Error) throw next;
+      return {exists: true, data: () => next};
+    });
+    return {db: {doc: jest.fn(() => ({get}))} as unknown as FirebaseFirestore.Firestore, get};
+  };
+
+  beforeEach(() => {
+    now = 0;
+    configureRaceRolloutCache({ttlMs: 15_000, now: () => now});
+  });
+
+  afterAll(() => configureRaceRolloutCache({ttlMs: 0}));
+
+  it("reuses one read for concurrent and repeated checks within the window", async () => {
+    /** Enabled rollout database. */
+    const {db, get} = createCountingDb([{enabled: true, percentage: 100, allowlistHashes: []}]);
+    await Promise.all([assertRaceAccess("a", "en", db), assertRaceAccess("b", "en", db)]);
+    now = 14_999;
+    await expect(getRaceAccessForUser("c", "en", db)).resolves.toMatchObject({enabled: true});
+    expect(get).toHaveBeenCalledTimes(1);
+  });
+
+  it("observes a disabled rollout after the window expires", async () => {
+    /** Rollout enabled, then disabled. */
+    const {db, get} = createCountingDb([
+      {enabled: true, percentage: 100, allowlistHashes: []},
+      {enabled: false, percentage: 100, allowlistHashes: []},
+    ]);
+    await expect(assertRaceAccess("a", "en", db)).resolves.toBeUndefined();
+    now = 15_000;
+    await expect(assertRaceAccess("a", "en", db)).rejects.toMatchObject({code: "permission-denied"});
+    expect(get).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not retain a failed read", async () => {
+    /** First read fails transiently. */
+    const {db, get} = createCountingDb([new Error("unavailable"), {enabled: true, percentage: 100, allowlistHashes: []}]);
+    await expect(assertRaceAccess("a", "en", db)).rejects.toThrow("unavailable");
+    await expect(assertRaceAccess("a", "en", db)).resolves.toBeUndefined();
+    expect(get).toHaveBeenCalledTimes(2);
+  });
+
+  it("reads through when disabled", async () => {
+    configureRaceRolloutCache({ttlMs: 0});
+    /** Enabled rollout database. */
+    const {db, get} = createCountingDb([{enabled: true, percentage: 100, allowlistHashes: []}]);
+    await assertRaceAccess("a", "en", db);
+    await assertRaceAccess("a", "en", db);
+    expect(get).toHaveBeenCalledTimes(2);
   });
 });

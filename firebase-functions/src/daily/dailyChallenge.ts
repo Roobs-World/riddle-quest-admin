@@ -8,7 +8,7 @@ import {captureException} from "../shared/sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
 import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "@qwordly/core/validation/requestSchemas";
 import {validateCallableResponse} from "../validation/callableValidation";
-import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
+import {gameplayCallableOptions, gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
@@ -70,7 +70,7 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
  */
 export const getCurrentDailyChallenge = onCallWithSentry(
   "getCurrentDailyChallenge",
-  gameplayCallableOptions,
+  gameplayInteractiveCallableOptions,
   async (
     request: CallableRequest<{
       /** Stores locale. */

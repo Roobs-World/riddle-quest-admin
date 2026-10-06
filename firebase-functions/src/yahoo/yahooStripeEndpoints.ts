@@ -1,7 +1,7 @@
 import {getFirestore} from "firebase-admin/firestore";
 import {defineSecret} from "firebase-functions/params";
 import {HttpsError} from "firebase-functions/v2/https";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 import {onCallWithSentry, onRequestWithSentry} from "../shared/sentryHandlers";
 import {resolveYahooStripeProduct} from "./yahooStripeCatalog";
 import {grantVerifiedYahooStripePurchase, refundVerifiedYahooStripePurchase} from "./yahooStripeLedger";
@@ -18,7 +18,16 @@ const region = "us-central1";
 const yahooCoinTaxCode = "txcd_10000000";
 
 /** Provides stripe client behavior. */
-const stripeClient = () => new Stripe(stripeSecretKey.value());
+// Stripe is loaded on first use so every other function's cold start skips its module graph.
+const stripeClient = () => {
+  /** CommonJS Stripe export, unwrapped the same way esModuleInterop would. */
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- Deferred load keeps player cold starts small.
+  const loaded = require("stripe") as typeof Stripe | {
+    /** Interop default export. */ default: typeof Stripe; /** ES module marker. */ __esModule: true};
+  /** Stripe constructor. */
+  const StripeClient = "__esModule" in loaded ? loaded.default : loaded;
+  return new StripeClient(stripeSecretKey.value());
+};
 
 /** Provides require yahoo uid behavior. */
 const requireYahooUid = (

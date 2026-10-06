@@ -56,6 +56,30 @@ import {useJestRegistration} from "./useJestRegistration";
 import {createJestHostedPlaySession} from "./JestHostedPlaySession";
 import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
+import {jestStartupOrigins, preconnectJestStartupOrigins} from "./startupWarmup";
+
+/**
+ * Overlaps Firebase connection setup, SDK chunk downloads and App Check
+ * attestation with Jest SDK initialization and the identity exchange, which
+ * otherwise all wait for the custom token before starting.
+ */
+function warmJestFirebaseStartup(): void {
+  try {
+    preconnectJestStartupOrigins(jestStartupOrigins({
+      jestFunctionsBaseUrl: import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL,
+      functionsRegion: import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION,
+      gameplayRegion: import.meta.env.VITE_FIREBASE_GAMEPLAY_REGION,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    }));
+  } catch (error) {
+    captureBrowserException(error, {component: "jest_startup_preconnect"});
+  }
+  // Warm-up failures are retried and reported by the authenticated startup path.
+  void import("firebase/auth").catch(() => undefined);
+  void import("../play/firebaseServices").catch(() => undefined);
+  void import("./JestFirebaseAppCheck").then((module) => module.warmJestFirebaseAppCheck()).catch(() => undefined);
+}
+
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
   /** Counts confirmed guest Classic wins in this play session for the registration cadence. */
@@ -269,8 +293,8 @@ export function JestPlayApp() {
           import("../firebase"),
           import("./JestFirebaseAppCheck"),
         ]);
-        await signInWithCustomToken(auth, token);
-        await ensureJestFirebaseAppCheckReady();
+        // Attestation is independent of identity; it usually completed during the startup warm-up.
+        await Promise.all([signInWithCustomToken(auth, token), ensureJestFirebaseAppCheckReady()]);
       }
     },
     [authHarness, mockRuntime],
@@ -304,6 +328,7 @@ export function JestPlayApp() {
     let stopAnalytics: (() => void) | undefined;
     startupRiddles.clear();
     playerStateWrites.disable();
+    if (!authHarness && !mockRuntime) warmJestFirebaseStartup();
     /** Provides deletion recovery behavior. */
     void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup, {
       onInitialized: () => {

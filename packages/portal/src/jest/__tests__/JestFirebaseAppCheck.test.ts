@@ -106,3 +106,58 @@ describe("Jest Firebase App Check adapter", () => {
     );
   });
 });
+
+describe("Jest Firebase App Check warm-up", () => {
+  /** Loads a fresh adapter with production attestation configured. */
+  const loadWarmAdapter = async () => {
+    jest.doMock("../../test/firebaseEnvironmentMock", () => ({
+      firebaseEnvironment: {appCheckSiteKey: "site-key", jestRuntime: "1", platformTarget: "jest", production: true},
+    }));
+    Object.defineProperty(globalThis, "window", {configurable: true, value: {location: {search: ""}}});
+    /** Loaded adapter. */
+    let loaded: typeof import("../JestFirebaseAppCheck") | undefined;
+    await jest.isolateModulesAsync(async () => {
+      loaded = await import("../JestFirebaseAppCheck");
+    });
+    return loaded!;
+  };
+
+  beforeEach(() => jest.clearAllMocks());
+
+  afterEach(() => {
+    Reflect.deleteProperty(globalThis, "window");
+    jest.dontMock("../../test/firebaseEnvironmentMock");
+  });
+
+  it("shares one early attestation with the authenticated readiness gate", async () => {
+    /** Token request that resolves only when the test releases it. */
+    let release!: () => void;
+    mockGetToken.mockImplementation(() => new Promise<{token: string}>((resolve) => {
+      release = () => resolve({token: "attested"});
+    }));
+    /** Fresh adapter. */
+    const adapter = await loadWarmAdapter();
+    adapter.warmJestFirebaseAppCheck();
+    /** Gate awaited after sign-in. */
+    const ready = adapter.ensureJestFirebaseAppCheckReady();
+    expect(mockGetToken).toHaveBeenCalledTimes(1);
+    expect(mockSetTokenAutoRefreshEnabled).not.toHaveBeenCalled();
+    release();
+    await expect(ready).resolves.toBeUndefined();
+    expect(mockSetTokenAutoRefreshEnabled).toHaveBeenCalledTimes(1);
+    await adapter.ensureJestFirebaseAppCheckReady();
+    expect(mockGetToken).toHaveBeenCalledTimes(1);
+  });
+
+  it("retries on the readiness gate after a failed warm-up", async () => {
+    mockGetToken.mockRejectedValueOnce(new Error("recaptcha unavailable")).mockResolvedValue({token: "attested"});
+    /** Fresh adapter. */
+    const adapter = await loadWarmAdapter();
+    adapter.warmJestFirebaseAppCheck();
+    await Promise.resolve();
+    await Promise.resolve();
+    await expect(adapter.ensureJestFirebaseAppCheckReady()).resolves.toBeUndefined();
+    expect(mockGetToken).toHaveBeenCalledTimes(2);
+    expect(mockSetTokenAutoRefreshEnabled).toHaveBeenCalledTimes(1);
+  });
+});

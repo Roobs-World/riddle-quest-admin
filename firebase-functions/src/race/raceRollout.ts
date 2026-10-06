@@ -72,9 +72,56 @@ export async function getRaceAccessForUser(
   }
   /** Provides db behavior. */
   const db = dbInput ?? admin.firestore();
-  /** Provides snapshot behavior. */
-  const snapshot = await db.doc("raceConfig/rollout").get();
-  return evaluateRaceRollout(snapshot.exists ? snapshot.data() : DEFAULT_CONFIG, userId, locale);
+  return evaluateRaceRollout(await readRolloutConfig(db), userId, locale);
+}
+
+/**
+ * Seconds-scale reuse of the rollout document on a warm instance.
+ *
+ * Every live-race poll and command is gated by this read, so caching it removes
+ * a serial Firestore round trip and one billed read per call. A disabled or
+ * narrowed rollout therefore reaches warm instances within this bound; run
+ * mutations still evaluate the document inside their own transactions.
+ */
+export const RACE_ROLLOUT_CACHE_TTL_MS = 15_000;
+/** Cache lifetime; emulator and unit-test processes read through so fixtures stay deterministic. */
+let rolloutCacheTtlMs = process.env.FUNCTIONS_EMULATOR === "true" || process.env.JEST_WORKER_ID !== undefined
+  ? 0 : RACE_ROLLOUT_CACHE_TTL_MS;
+/** Clock seam for cache expiry tests. */
+let rolloutCacheNow: () => number = () => Date.now();
+/** Pending or settled rollout reads shared by concurrent callers of the same database. */
+let rolloutCache = new WeakMap<Firestore, {
+  /** Monotonic expiry of this entry. */ expiresAtMs: number;
+  /** Shared read; rejected reads are evicted. */ config: Promise<unknown>}>();
+
+/** Overrides the rollout cache policy; intended for tests and operational tooling. */
+export function configureRaceRolloutCache(options: {
+  /** Entry lifetime; zero disables caching. */ ttlMs: number;
+  /** Optional clock. */ now?: () => number}): void {
+  rolloutCacheTtlMs = Math.max(0, options.ttlMs);
+  rolloutCacheNow = options.now ?? (() => Date.now());
+  rolloutCache = new WeakMap();
+}
+
+/** Reads raw rollout configuration, coalescing and briefly retaining it per database. */
+function readRolloutConfig(db: Firestore): Promise<unknown> {
+  /** Uncached read used when caching is disabled or expired. */
+  const read = () => db.doc("raceConfig/rollout").get().then(snapshot => snapshot.exists ? snapshot.data() : DEFAULT_CONFIG);
+  if (rolloutCacheTtlMs <= 0) return read();
+  /** Current time for this lookup. */
+  const now = rolloutCacheNow();
+  /** Existing entry for this database. */
+  const cached = rolloutCache.get(db);
+  if (cached && cached.expiresAtMs > now) return cached.config;
+  /** Shared read for this window. */
+  const config = read();
+  /** Entry published before the read settles so concurrent callers coalesce. */
+  const entry = {expiresAtMs: now + rolloutCacheTtlMs, config};
+  rolloutCache.set(db, entry);
+  config.catch(() => {
+    if (rolloutCache.get(db) === entry) rolloutCache.delete(db);
+  });
+  return config;
 }
 
 /** Throws unless the player currently belongs to the enabled race cohort. */

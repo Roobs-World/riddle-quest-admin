@@ -67,8 +67,8 @@ import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation"
 const gatewaySecret = defineSecret("REDDIT_GATEWAY_SECRET");
 /** Provides uid secret behavior. */
 const uidSecret = defineSecret("REDDIT_UID_SECRET");
-/** Provides options behavior. */
-const options = {secrets: [gatewaySecret, uidSecret], invoker: "public" as const, timeoutSeconds: 60};
+/** Every Reddit question, guess and race action shares this endpoint, so one warm instance avoids idle cold starts. */
+const options = {secrets: [gatewaySecret, uidSecret], invoker: "public" as const, timeoutSeconds: 60, minInstances: 1};
 /** Defines the max body bytes value. */
 const MAX_BODY_BYTES = 80 * 1_024;
 
